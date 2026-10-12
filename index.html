@@ -39,6 +39,7 @@ img{max-width:100%}
   --blue-soft:#eef1fe;     /* tint fill */
   --blue-line:#d4ddfb;     /* tint border */
   --ink:#121a33;           /* headings */
+  --ok:#0a7f46;            /* success signal — white text clears 4.5:1 on it */
   --body:#48506a;          /* body text */
   --muted:#8990a6;         /* captions */
   --bg:#ffffff;            /* page ground */
@@ -155,25 +156,31 @@ header.nav.scrolled .burger{color:var(--ink)}
 
 /* phone mockup */
 .phone-wrap{display:flex;flex-direction:column;align-items:center;position:relative}
-.glow{position:absolute;inset:-8% 0 4%;z-index:0;pointer-events:none;
-  background:radial-gradient(54% 46% at 50% 40%,rgba(255,255,255,.2),transparent 72%)}
-/* light device: thin bezel, correct inner/outer radius, lifted off the blue */
-.phone{position:relative;z-index:1;width:min(374px,100%);padding:9px;border-radius:30px;
-  background:linear-gradient(165deg,#fdfdff 0%,#eaeef9 56%,#dce2f3 100%);
-  box-shadow:0 1px 0 rgba(255,255,255,.95) inset,
-             0 0 0 1px rgba(255,255,255,.45),
-             0 36px 72px -26px rgba(3,10,42,.62),
-             0 10px 26px -14px rgba(3,10,42,.45)}
-.ph-screen{position:relative;border-radius:21px;overflow:hidden;height:438px;background:#fff}
-.ph-slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;transition:opacity .55s ease;
+/* cool halo so the device is seated in the hero, not pasted on it */
+.glow{position:absolute;inset:-15% -13% -3%;z-index:0;pointer-events:none;
+  background:radial-gradient(50% 45% at 50% 44%,rgba(176,201,255,.34),rgba(124,159,255,.11) 48%,transparent 74%)}
+/* no device frame: the conversation is the subject, shown as one clean card —
+   same construction as the testimonial cards below, just larger */
+.phone{position:relative;z-index:1;width:min(372px,100%);padding:0;border-radius:18px;
+  overflow:hidden;
+  /* the card's own fill matches what sits above it at each corner — navy for the
+     header band, chat paper below — so the rounded clip can't bleed a pale arc */
+  background:linear-gradient(180deg,var(--ink) 0 65px,#f3efe4 65px);
+  box-shadow:0 42px 80px -30px rgba(2,8,38,.70),
+             0 14px 32px -18px rgba(2,8,38,.44)}
+.ph-screen{position:relative;z-index:1;border-radius:0;overflow:hidden;height:452px;background:transparent}
+.ph-slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;transition:opacity .28s ease;
   --win:#fff;--wout:#d9fdd3;--wtx:#111b21;--wmt:#667781;--wtick:#53bdeb;--wlink:#027eb5}
 .ph-slide.on{opacity:1}
-.ph-slide .wa-top{background:#fff;padding:12px 13px}
-.ph-slide .wa-chat{height:auto;flex:1;min-height:0;border-top:1px solid rgba(11,20,26,.07)}
-.ph-dots{display:flex;gap:7px;justify-content:center;margin-top:22px;position:relative;z-index:1}
-.ph-dots button{width:7px;height:7px;border-radius:999px;background:rgba(255,255,255,.32);border:0;padding:0;cursor:pointer;transition:.25s}
-.ph-dots button:hover{background:rgba(255,255,255,.62)}
-.ph-dots button.on{width:20px;background:#fff}
+.ph-slide .wa-top{background:var(--ink);padding:12px 13px}
+.ph-slide .wa-id b{color:#fff}
+.ph-slide .wa-id i{color:rgba(255,255,255,.60)}
+.ph-slide .wa-chat{height:auto;flex:1;min-height:0;border-top:0}
+.ph-dots{display:flex;gap:9px;justify-content:center;margin-top:26px;position:relative;z-index:1}
+.ph-dots button{width:7px;height:7px;border-radius:999px;background:rgba(255,255,255,.34);border:0;padding:0;cursor:pointer;
+  transition:width .3s ease,background .25s ease;box-shadow:0 1px 3px rgba(2,8,38,.3)}
+.ph-dots button:hover{background:rgba(255,255,255,.7)}
+.ph-dots button.on{width:22px;background:#fff}
 .ph-dots button:focus-visible{outline:2px solid #fff;outline-offset:3px}
 /* phone mockup motion */
 @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
@@ -237,7 +244,7 @@ section.section{padding-block:72px}
 .stat-cards .sd{color:var(--muted);font-size:13.5px;margin-top:6px;max-width:24ch;margin-inline:auto}
 
 /* ============ PROCESS — rail + what lands in your portal ============ */
-.flow{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:54px;align-items:start;margin-top:50px;--dwell:5400ms}
+.flow{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:54px;align-items:start;margin-top:50px;--dwell:3600ms}
 .flow-rail{list-style:none;margin:0;padding:0}
 .flow-rail li{position:relative;padding:0 0 24px 36px}
 .flow-rail li:last-child{padding-bottom:0}
@@ -265,7 +272,7 @@ section.section{padding-block:72px}
 .flow-stage{position:relative;min-height:492px;border:1px solid var(--line);border-radius:var(--radius-lg);
   background:linear-gradient(180deg,#fff,#fafbff);box-shadow:var(--shadow-soft);overflow:hidden}
 .fvis{position:absolute;inset:0;padding:26px 26px 24px;opacity:0;transform:translateY(10px);
-  transition:opacity .45s ease,transform .45s ease;pointer-events:none;display:flex;flex-direction:column}
+  transition:opacity .34s ease,transform .34s ease;pointer-events:none;display:flex;flex-direction:column}
 .fvis.on{opacity:1;transform:none;pointer-events:auto}
 .vcap{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);margin-bottom:16px}
 .vcap b{color:var(--ink);font-weight:600}
@@ -393,7 +400,9 @@ section.section{padding-block:72px}
 .wa-rows .track{gap:0;animation-duration:78s;align-items:flex-start}
 .wa-rows .track>.wa{margin-right:16px}   /* margin, not gap, so the -50% loop lands seamlessly */
 .wa{--win:#fff;--wout:#d9fdd3;--wtx:#111b21;--wmt:#667781;--wtick:#53bdeb;--wlink:#027eb5;
-  width:344px;flex:none;display:flex;flex-direction:column;background:#fff;
+  width:344px;flex:none;display:flex;flex-direction:column;
+  /* fill matches the band above it at each corner, so the rounded clip can't bleed a pale arc */
+  background:linear-gradient(180deg,var(--ink) 0 63px,#f3efe4 63px);
   border:1px solid rgba(11,20,26,.09);border-radius:16px;overflow:hidden;
   box-shadow:0 18px 38px -24px rgba(18,26,51,.42)}
 .wa,.ph-slide{-webkit-user-select:none;-moz-user-select:none;user-select:none}  /* chat mockups read as screenshots — no stray selection across bubbles/timestamps */
@@ -404,8 +413,14 @@ section.section{padding-block:72px}
 .wa-id{min-width:0;flex:1}
 .wa-id b{display:block;color:#111b21;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wa-id i{display:block;color:#667781;font-size:11.5px;font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wa-hired{flex:none;display:inline-flex;align-items:center;gap:4px;background:var(--ink);
-  color:#fff;font-size:11px;font-weight:700;padding:4.5px 10px;border-radius:7px}
+.wa-hired{flex:none;display:inline-flex;align-items:center;gap:4px;background:var(--ok);
+  color:#fff;font-size:11px;font-weight:700;padding:4.5px 10px;border-radius:7px;
+  box-shadow:0 2px 6px -2px rgba(4,60,34,.55)}
+/* testimonial wall only: dark header strip, so each card reads as its own record */
+.wa-rows .wa-top{background:var(--ink)}
+.wa-rows .wa-id b{color:#fff}
+.wa-rows .wa-id i{color:rgba(255,255,255,.60)}
+.wa-rows .wa-chat{border-top:0}
 .wa-chat{position:relative;flex:none;height:284px;min-height:0;overflow:hidden;
   display:flex;flex-direction:column;justify-content:flex-end;gap:2px;padding:16px 9px 13px;
   border-top:1px solid rgba(11,20,26,.07);
@@ -923,7 +938,7 @@ if(scr&&dots){
   function stop(){if(timer){clearInterval(timer);timer=null;}}
   function start(){stop();
     if(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches)return;
-    timer=setInterval(function(){show(idx+1);},5200);}
+    timer=setInterval(function(){show(idx+1);},2300);}
   scr.addEventListener('mouseenter',stop); scr.addEventListener('mouseleave',start);
   start();
 }
@@ -1058,7 +1073,7 @@ if(scr&&dots){
   if(!rail||!stage)return;
   var steps=[].slice.call(rail.children),vis=[].slice.call(stage.children),i=0,t=null,locked=false;
   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
-  var DWELL=parseFloat(getComputedStyle(document.querySelector('.flow')).getPropertyValue('--dwell'))||5400;
+  var DWELL=parseFloat(getComputedStyle(document.querySelector('.flow')).getPropertyValue('--dwell'))||3600;
   function go(n){
     i=(n+steps.length)%steps.length;
     steps.forEach(function(li,k){
