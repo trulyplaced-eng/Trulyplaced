@@ -528,6 +528,8 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
 .foot-addr{margin-top:18px;font-style:normal;font-size:12.5px;line-height:1.75;color:#767e9f}
 .foot-addr strong{display:block;color:#aeb6d4;font-weight:600}
 .foot-addr .cin{letter-spacing:.02em;color:#636b8c}
+.foot-addr a{color:#8b93b5;text-decoration:underline;text-underline-offset:2px}
+.foot-addr a:hover{color:#fff}
 .foot-col h4{color:#fff;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;font-family:"Inter";font-weight:700}
 .foot-col a{display:flex;align-items:center;min-height:44px;color:#aeb6d4;font-size:14px;padding:4px 0}
 .foot-col a:hover{color:#fff}
@@ -990,7 +992,11 @@ if(scr&&dots){
     if(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches)return;
     timer=setInterval(function(){show(idx+1);},2300);}
   scr.addEventListener('mouseenter',stop); scr.addEventListener('mouseleave',start);
-  start();
+  if(window.IntersectionObserver){
+    new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ en.isIntersecting ? start() : stop(); });
+    },{threshold:0.2}).observe(scr);
+  } else start();
 }
 })();
 </script>
@@ -1142,7 +1148,19 @@ if(scr&&dots){
   });
   rail.addEventListener('mouseenter',stop);
   rail.addEventListener('mouseleave',start);
-  go(0);start();
+  go(0);
+  // the sequence is the story of the section — it waits until you are looking at it
+  if(window.IntersectionObserver){
+    var armed=false;
+    new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          if(!armed){armed=true;if(!locked)go(0);}   // first arrival always starts at Week 1
+          start();
+        } else stop();
+      });
+    },{rootMargin:'-15% 0px -15% 0px',threshold:0}).observe(document.querySelector('.flow'));
+  } else start();
 })();
 </script>
 
@@ -1276,9 +1294,8 @@ if(scr&&dots){
         <p>A real recruiter tailors your resume and submits applications every business day — so you can focus on the interviews.</p>
         <address class="foot-addr">
           <strong>RepoReserve Technologies Private Limited</strong><br>
-          H.No 3-10-320, Vivekananda Nagar<br>
-          Nizamabad &ndash; 503001, Telangana, India<br>
-          <span class="cin">CIN U62099TS2026PTC213868</span>
+          <span class="cin">CIN U62099TS2026PTC213868</span> &nbsp;·&nbsp;
+          <a href="/contact.html">Registered office</a>
         </address>
       </div>
       <div class="foot-col">
