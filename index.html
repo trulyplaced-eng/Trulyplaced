@@ -100,7 +100,7 @@ header.nav{position:fixed;top:0;left:0;right:0;z-index:60;
   background:transparent;border:1px solid transparent;border-radius:999px;
   transition:background .35s ease,border-color .35s ease,box-shadow .35s ease,
     max-width .45s ease,padding .35s ease}
-.brand{flex:none;display:flex;align-items:center}
+.brand{flex:none;display:flex;align-items:center;min-height:44px}
 .brand .logo-full{height:30px;width:auto;display:block}
 .brand .logo-color{height:30px;width:auto;display:none}
 .nav-links{display:flex;gap:30px;margin-inline:auto}
@@ -112,7 +112,23 @@ header.nav{position:fixed;top:0;left:0;right:0;z-index:60;
   box-shadow:0 10px 24px -12px rgba(0,0,0,.45)}
 .nav-cta .getstarted:hover{background:#eef1fe;transform:translateY(-1px);
   box-shadow:0 14px 28px -12px rgba(0,0,0,.5)}
-.burger{display:none;background:none;border:0;cursor:pointer;padding:6px;color:#fff}
+.burger{display:none;background:none;border:0;cursor:pointer;padding:10px 12px;margin-right:-8px;
+  min-width:46px;color:#fff;
+  line-height:0;border-radius:10px}
+.burger:active{background:rgba(255,255,255,.14)}
+header.nav.scrolled .burger:active{background:rgba(9,56,213,.10)}
+/* mobile menu panel */
+.mobnav{display:none;flex-direction:column;background:#fff;
+  max-width:1260px;margin:10px auto 0;border:1px solid var(--line);border-radius:20px;
+  box-shadow:0 22px 40px -24px rgba(3,10,42,.55);padding:6px 20px 18px}
+.mobnav[hidden]{display:none}
+.mobnav.open{display:flex}
+.mobnav a{display:block;padding:15px 4px;font-size:16px;font-weight:600;color:var(--ink);
+  border-bottom:1px solid var(--line)}
+.mobnav a:last-of-type{border-bottom:0}
+.mobnav .mobnav-cta{margin-top:14px;text-align:center;background:var(--blue);color:#fff;
+  border-radius:999px;padding:15px 20px;border-bottom:0;
+  box-shadow:0 14px 26px -16px rgba(9,56,213,.75)}
 
 header.nav.scrolled{padding-top:calc(12px + env(safe-area-inset-top,0px))}
 header.nav.scrolled .nav-in{background:#fff;border-color:var(--line);
@@ -155,6 +171,11 @@ header.nav.scrolled .burger{color:var(--ink)}
   box-shadow:0 0 0 4px rgba(92,227,155,.20);animation:pulseDot 2.4s ease-in-out infinite}
 @keyframes pulseDot{0%,100%{box-shadow:0 0 0 4px rgba(92,227,155,.20)}
   50%{box-shadow:0 0 0 7px rgba(92,227,155,.07)}}
+/* experience line — the team's own credential, carried under the stats */
+.hero-cred{display:flex;align-items:flex-start;gap:10px;margin-top:26px;padding-top:22px;
+  max-width:46ch;font-size:14px;line-height:1.62;color:rgba(255,255,255,.80);
+  border-top:1px solid rgba(255,255,255,.18)}
+.hero-cred svg{width:19px;height:19px;flex:none;margin-top:2px;color:#bcd0ff}
 .hero-stats{margin-top:30px;display:flex;gap:24px;flex-wrap:nowrap}
 .hero-stats .stat{padding-left:14px;border-left:3px solid rgba(255,255,255,.55);min-width:0}
 .hero-stats .num{font-family:"Poppins";font-weight:800;font-size:22px;color:#fff;
@@ -184,10 +205,13 @@ header.nav.scrolled .burger{color:var(--ink)}
 .ph-slide .wa-id i{color:rgba(255,255,255,.60)}
 .ph-slide .wa-chat{height:auto;flex:1;min-height:0;border-top:0}
 .ph-dots{display:flex;gap:9px;justify-content:center;margin-top:26px;position:relative;z-index:1}
-.ph-dots button{width:7px;height:7px;border-radius:999px;background:rgba(255,255,255,.34);border:0;padding:0;cursor:pointer;
+.ph-dots button{width:7px;height:7px;border-radius:999px;position:relative;background:rgba(255,255,255,.34);border:0;padding:0;cursor:pointer;
   transition:width .3s ease,background .25s ease;box-shadow:0 1px 3px rgba(2,8,38,.3)}
 .ph-dots button:hover{background:rgba(255,255,255,.7)}
 .ph-dots button.on{width:22px;background:#fff}
+/* invisible 44px hit area around each dot */
+.ph-dots button::after{content:"";position:absolute;left:50%;top:50%;width:44px;height:44px;
+  transform:translate(-50%,-50%)}
 .ph-dots button:focus-visible{outline:2px solid #fff;outline-offset:3px}
 /* phone mockup motion */
 @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
@@ -217,7 +241,8 @@ header.nav.scrolled .burger{color:var(--ink)}
 .tabpane[hidden]{display:none}   /* a display rule beats the UA [hidden] style, so say it explicitly */
 .tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
 .tab{font-family:"Inter";font-weight:600;font-size:13.5px;color:var(--body);background:#fff;
-  border:1px solid var(--line);border-radius:999px;padding:9px 18px;cursor:pointer;transition:.2s}
+  border:1px solid var(--line);border-radius:999px;padding:9px 18px;cursor:pointer;transition:.2s;
+  min-height:44px;display:inline-flex;align-items:center}
 .tab:hover{border-color:var(--blue-line);color:var(--blue)}
 .tab.active{background:var(--ink);color:#fff;border-color:var(--ink);box-shadow:0 8px 18px -10px rgba(18,26,51,.55)}
 .row{overflow:hidden;
@@ -251,6 +276,7 @@ section.section{padding-block:72px}
 .stat-cards .sd{color:var(--muted);font-size:13.5px;margin-top:6px;max-width:24ch;margin-inline:auto}
 
 /* ============ PROCESS — rail + what lands in your portal ============ */
+section[id],div[id="top"]{scroll-margin-top:84px}
 .flow{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:54px;align-items:start;margin-top:50px;--dwell:3600ms}
 .flow-rail{list-style:none;margin:0;padding:0}
 .flow-rail li{position:relative;padding:0 0 24px 36px}
@@ -503,7 +529,7 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
 .foot-addr strong{display:block;color:#aeb6d4;font-weight:600}
 .foot-addr .cin{letter-spacing:.02em;color:#636b8c}
 .foot-col h4{color:#fff;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;font-family:"Inter";font-weight:700}
-.foot-col a{display:block;color:#aeb6d4;font-size:14px;padding:5px 0}
+.foot-col a{display:flex;align-items:center;min-height:44px;color:#aeb6d4;font-size:14px;padding:4px 0}
 .foot-col a:hover{color:#fff}
 .foot-bot{border-top:1px solid #1d2545;margin-top:38px;padding-top:22px;
   display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:12.5px;color:#737b9c}
@@ -553,10 +579,18 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
     <div class="nav-cta">
       <a href="https://calendly.com/trulyplaced/30min" target="_blank" rel="noopener" class="getstarted">Get Started</a>
     </div>
-    <button class="burger" id="burger" aria-label="Menu">
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobnav">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
     </button>
   </div>
+  <nav class="mobnav" id="mobnav" hidden>
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#success">Success stories</a>
+    <a href="#team">Team</a>
+    <a href="#faq">FAQ</a>
+    <a class="mobnav-cta" href="https://calendly.com/trulyplaced/30min" target="_blank" rel="noopener">Book a free strategy call &rarr;</a>
+  </nav>
 </header>
 
 <main id="top">
@@ -584,6 +618,10 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
         <div class="stat"><div class="num">850+</div><div class="lbl">interviews generated</div></div>
         <div class="stat"><div class="num">120,000+</div><div class="lbl">applications submitted</div></div>
       </div>
+      <p class="hero-cred">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 3v5.2c0 4.3-2.9 8.3-7 9.6-4.1-1.3-7-5.3-7-9.6V6l7-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12.1l2.1 2.1L15.2 10" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Built by recruiters who have run high-volume application campaigns for job seekers in the US, UK, Canada and Australia.
+      </p>
     </div>
 
     <div class="phone-wrap">
@@ -1289,11 +1327,30 @@ if(scr&&dots){
   items.forEach(d => d.addEventListener('toggle', () => {
     if (d.open) items.forEach(o => { if (o !== d) o.open = false; });
   }));
-  // mobile menu: jump to pricing (simple, no overlay needed on a one-pager)
-  const burger = document.getElementById('burger');
-  if (burger) burger.addEventListener('click', () => {
-    document.getElementById('pricing').scrollIntoView({behavior:'smooth'});
-  });
+  // mobile menu
+  var burger = document.getElementById('burger'), mobnav = document.getElementById('mobnav');
+  function setMenu(open){
+    if(!burger || !mobnav) return;
+    mobnav.hidden = !open;
+    mobnav.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+  if (burger && mobnav){
+    burger.addEventListener('click', function(e){
+      e.stopPropagation();
+      setMenu(mobnav.hidden);
+    });
+    // a link closes it; the browser still handles the jump
+    mobnav.addEventListener('click', function(e){ if(e.target.closest('a')) setMenu(false); });
+    document.addEventListener('click', function(e){
+      if(!mobnav.hidden && !mobnav.contains(e.target) && e.target!==burger) setMenu(false);
+    });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') setMenu(false); });
+    // leaving mobile width resets it, so the desktop nav is never hidden behind state
+    var mq = window.matchMedia('(min-width:901px)');
+    (mq.addEventListener ? mq.addEventListener.bind(mq,'change') : mq.addListener.bind(mq))(function(){ setMenu(false); });
+  }
 </script>
 </body>
 </html>

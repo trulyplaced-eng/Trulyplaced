@@ -26,8 +26,10 @@ a{color:var(--blue)}
 .brand{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none;
   font-family:Poppins;font-weight:700;font-size:19px;letter-spacing:-.01em}
 .brand svg{width:30px;height:30px;flex:none}
-.top a.back{color:rgba(255,255,255,.72);text-decoration:none;font-size:14px}
+.top a.back{color:rgba(255,255,255,.72);text-decoration:none;font-size:14px;
+  display:inline-flex;align-items:center;min-height:44px;padding:0 10px;margin-right:-10px}
 .top a.back:hover{color:#fff}
+.top .brand{min-height:44px}
 header.doc{background:var(--bg-alt);border-bottom:1px solid var(--line);padding-block:52px 44px}
 header.doc h1{font-family:Poppins;font-weight:800;color:var(--ink);margin:0;
   font-size:clamp(30px,5vw,42px);line-height:1.12;letter-spacing:-.02em;text-wrap:balance}
@@ -53,13 +55,16 @@ mark.todo{background:#fff3c4;color:#6b4c00;padding:1px 6px;border-radius:4px;
   font-weight:600;font-size:.95em;box-decoration-break:clone}
 table{width:100%;border-collapse:collapse;margin:0 0 18px;font-size:14.5px}
 th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+td a{display:inline-flex;align-items:center;min-height:44px}
 th{font-family:Poppins;font-weight:600;color:var(--ink);font-size:13px;
   text-transform:uppercase;letter-spacing:.05em}
 .tablewrap{overflow-x:auto}
 footer{background:var(--ink);color:#8d95b4;padding-block:36px;font-size:14px}
 footer a{color:#c3ccf0;text-decoration:none}
 footer a:hover{color:#fff}
-footer .row{display:flex;flex-wrap:wrap;gap:12px 26px;align-items:center;justify-content:space-between}
+footer .row{display:flex;flex-wrap:wrap;gap:4px 26px;align-items:center;justify-content:space-between}
+footer .row a{display:inline-flex;align-items:center;min-height:44px;padding:0 2px}
+@media(max-width:620px){footer .row{gap:0}footer .row span:last-child{display:flex;flex-wrap:wrap;gap:0 18px}}
 @media(max-width:560px){header.doc{padding-block:38px 32px}h2{font-size:19px}}
 </style>
 </head>
