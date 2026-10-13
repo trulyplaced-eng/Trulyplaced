@@ -148,7 +148,14 @@ header.nav.scrolled .burger{color:var(--ink)}
 .hero-actions .btn-primary:hover{background:#eef1fe}
 .hero-actions .btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.5)}
 .hero-actions .btn-ghost:hover{background:rgba(255,255,255,.12);border-color:#fff}
-.hero-stats{margin-top:34px;display:flex;gap:24px;flex-wrap:nowrap}
+/* scarcity note under the CTAs */
+.hero-note{display:inline-flex;align-items:center;gap:9px;margin-top:16px;
+  font-size:13.5px;color:rgba(255,255,255,.80)}
+.hero-note i{width:6px;height:6px;border-radius:999px;background:#5ce39b;flex:none;
+  box-shadow:0 0 0 4px rgba(92,227,155,.20);animation:pulseDot 2.4s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{box-shadow:0 0 0 4px rgba(92,227,155,.20)}
+  50%{box-shadow:0 0 0 7px rgba(92,227,155,.07)}}
+.hero-stats{margin-top:30px;display:flex;gap:24px;flex-wrap:nowrap}
 .hero-stats .stat{padding-left:14px;border-left:3px solid rgba(255,255,255,.55);min-width:0}
 .hero-stats .num{font-family:"Poppins";font-weight:800;font-size:22px;color:#fff;
   line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -486,11 +493,15 @@ details>summary::-webkit-details-marker{display:none}
 /* ============ FINAL CTA + FOOTER ============ */
 .final{margin-block:20px 0}
 footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 32px}
-.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:36px}
+.foot-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:36px}
+@media(max-width:900px){.foot-grid{grid-template-columns:1fr 1fr 1fr;gap:30px}.foot-brand{grid-column:1/-1}}
 @media(max-width:620px){.foot-grid{grid-template-columns:1fr 1fr;gap:28px}.foot-brand{grid-column:1/-1}}
 @media(max-width:380px){.foot-grid{grid-template-columns:1fr}}
 .foot-brand svg{height:30px;width:auto;margin-bottom:14px}
 .foot-brand p{color:#8b93b5;font-size:13.5px;max-width:34ch}
+.foot-addr{margin-top:18px;font-style:normal;font-size:12.5px;line-height:1.75;color:#767e9f}
+.foot-addr strong{display:block;color:#aeb6d4;font-weight:600}
+.foot-addr .cin{letter-spacing:.02em;color:#636b8c}
 .foot-col h4{color:#fff;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;font-family:"Inter";font-weight:700}
 .foot-col a{display:block;color:#aeb6d4;font-size:14px;padding:5px 0}
 .foot-col a:hover{color:#fff}
@@ -521,7 +532,7 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
   .tcards{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}
-  .track,.phone-wrap{animation:none}}
+  .track,.phone-wrap,.hero-note i{animation:none}}
 </style>
 </head>
 <body>
@@ -567,6 +578,7 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
         <a href="https://calendly.com/trulyplaced/30min" target="_blank" rel="noopener" class="btn btn-primary">Book a free strategy call →</a>
         <a href="#how" class="btn btn-ghost">See how it works</a>
       </div>
+      <p class="hero-note"><i></i>Limited active candidates per month</p>
       <div class="hero-stats">
         <div class="stat"><div class="num">150+</div><div class="lbl">job seekers helped</div></div>
         <div class="stat"><div class="num">850+</div><div class="lbl">interviews generated</div></div>
@@ -789,12 +801,12 @@ var CHATS=[
   ["in","Waiting for HR to revert, they said by this week","15:52"],
   ["out","Got it 🤞 keep us posted","15:55"],
   ["day","Today"],
-  ["in","accept your offer: <a href='#' onclick='return false'>https://careers-nimbusworks.icims.com/jobs/41882/software-engineer-ii/job</a>","17:09"],
+  ["in","HR just called ☎️","17:08"],
   ["in","i got the offer guys","17:09",{rx:"❤️"}],
   ["in","thank you so much for the help","17:09",{ed:1,rx:"❤️"}],
   ["out","Amazingg 🥳 That's a great news","17:10"]]},
 
- {n:"Rutuja Deshmukh",r:"Data Scientist",av:"R",c:"#1f7aec",fab:1,m:[
+ {n:"Deepthi Vemula",r:"Data Scientist",av:"D",c:"#1f7aec",fab:1,m:[
   ["day","Yesterday"],
   ["out","Last batch went out this morning, 26 applications ✅","08:30"],
   ["in","Thank you so much 🙏","09:02"],
@@ -802,7 +814,7 @@ var CHATS=[
   ["in","Yes please, I'm joining on the 3rd 😄","11:34"],
   ["day","Today"],
   ["out","Best of luck from the TrulyPlaced team","11:39"],
-  ["in","Thank you guys so much, it was a pleasure working with all of you! Best of luck with everything going forward and let's stay connected :)","11:41",{who:"Rutuja",whoC:"#06cf9c",rx:"🙏"}]]},
+  ["in","Thank you guys so much, it was a pleasure working with all of you! Best of luck with everything going forward and let's stay connected :)","11:41",{who:"Deepthi",whoC:"#06cf9c",rx:"🙏"}]]},
 
  {n:"Anirudh Kandukuri",r:"Production Engineer",av:"A",c:"#0a7a5a",sb:28,m:[
   ["day","Thursday"],
@@ -1224,6 +1236,12 @@ if(scr&&dots){
       <div class="foot-brand">
         <svg viewBox="0 0 901 150" role="img" aria-label="TrulyPlaced"><g transform="translate(0,5)"><g transform="scale(0.2734375)"><rect width="512" height="512" rx="116" fill="#ffffff"/><path d="M256 410 C168 314 138 278 138 206 C138 142 191 94 256 94 C321 94 374 142 374 206 C374 278 344 314 256 410 Z" fill="#0938d5"/><path d="M205 200 L242 236 L318 148" fill="none" stroke="#ffffff" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></g></g><g transform="translate(170.0,112.0) scale(1,-1)" fill="#ffffff"><path d="M66.9 82.8 L66.9 66.7 L45.0 66.7 L45.0 0.0 L24.8 0.0 L24.8 66.7 L2.8 66.7 L2.8 82.8 L66.9 82.8 Z M97.2 54.9 Q100.8 60.3 106.1 63.4 Q111.4 66.6 117.9 66.6 L117.9 45.2 L112.3 45.2 Q104.8 45.2 101.0 41.9 Q97.2 38.7 97.2 30.6 L97.2 0.0 L77.1 0.0 L77.1 65.8 L97.2 65.8 L97.2 54.9 Z M192.6 65.8 L192.6 0.0 L172.4 0.0 L172.4 9.0 Q169.3 4.6 164.1 2.0 Q158.8 -0.7 152.4 -0.7 Q144.9 -0.7 139.1 2.7 Q133.3 6.0 130.1 12.4 Q127.0 18.8 127.0 27.4 L127.0 65.8 L147.0 65.8 L147.0 30.1 Q147.0 23.5 150.4 19.8 Q153.9 16.2 159.7 16.2 Q165.6 16.2 169.0 19.8 Q172.4 23.5 172.4 30.1 L172.4 65.8 L192.6 65.8 Z M227.3 87.3 L227.3 0.0 L207.1 0.0 L207.1 87.3 L227.3 87.3 Z M309.2 65.8 L267.9 -31.3 L246.1 -31.3 L261.2 2.2 L234.5 65.8 L257.0 65.8 L272.2 24.7 L287.3 65.8 L309.2 65.8 Z"/></g><g transform="translate(483.2,112.0) scale(1,-1)" fill="#ffffff"><path d="M70.4 56.2 Q70.4 49.0 67.1 43.0 Q63.8 37.1 57.0 33.4 Q50.1 29.7 40.0 29.7 L27.5 29.7 L27.5 0.0 L7.3 0.0 L7.3 82.8 L40.0 82.8 Q49.9 82.8 56.8 79.4 Q63.6 76.0 67.0 70.0 Q70.4 64.0 70.4 56.2 Z M38.5 45.8 Q44.2 45.8 47.1 48.5 Q49.9 51.2 49.9 56.2 Q49.9 61.1 47.1 63.8 Q44.2 66.6 38.5 66.6 L27.5 66.6 L27.5 45.8 L38.5 45.8 Z M101.1 87.3 L101.1 0.0 L81.0 0.0 L81.0 87.3 L101.1 87.3 Z M111.7 33.0 Q111.7 43.2 115.6 50.9 Q119.4 58.5 126.0 62.7 Q132.6 66.8 140.8 66.8 Q147.7 66.8 153.0 63.9 Q158.2 61.1 161.1 56.5 L161.1 65.8 L181.3 65.8 L181.3 0.0 L161.1 0.0 L161.1 9.3 Q158.1 4.7 152.9 1.9 Q147.6 -0.9 140.7 -0.9 Q132.6 -0.9 126.0 3.2 Q119.4 7.4 115.6 15.2 Q111.7 22.9 111.7 33.0 Z M161.1 32.9 Q161.1 40.5 156.9 44.8 Q152.7 49.2 146.7 49.2 Q140.7 49.2 136.5 44.9 Q132.3 40.6 132.3 33.0 Q132.3 25.5 136.5 21.1 Q140.7 16.6 146.7 16.6 Q152.7 16.6 156.9 21.0 Q161.1 25.4 161.1 32.9 Z M191.9 32.9 Q191.9 43.2 196.1 50.9 Q200.3 58.5 207.8 62.7 Q215.2 66.8 224.9 66.8 Q237.3 66.8 245.6 60.3 Q254.0 53.8 256.5 42.0 L235.1 42.0 Q232.3 49.6 224.6 49.6 Q219.0 49.6 215.7 45.2 Q212.4 40.9 212.4 32.9 Q212.4 24.9 215.7 20.6 Q219.0 16.3 224.6 16.3 Q232.3 16.3 235.1 23.8 L256.5 23.8 Q254.0 12.3 245.6 5.7 Q237.2 -0.9 224.9 -0.9 Q215.2 -0.9 207.8 3.2 Q200.3 7.3 196.1 15.0 Q191.9 22.7 191.9 32.9 Z M329.3 34.0 Q329.3 31.2 329.0 28.1 L283.3 28.1 Q283.8 21.9 287.3 18.7 Q290.8 15.5 295.8 15.5 Q303.4 15.5 306.3 21.8 L327.8 21.8 Q326.2 15.3 321.8 10.1 Q317.5 5.0 311.1 2.0 Q304.6 -0.9 296.5 -0.9 Q286.9 -0.9 279.3 3.2 Q271.8 7.3 267.5 15.0 Q263.3 22.7 263.3 32.9 Q263.3 43.2 267.5 50.9 Q271.7 58.5 279.2 62.7 Q286.8 66.8 296.5 66.8 Q306.1 66.8 313.5 62.8 Q321.0 58.8 325.2 51.3 Q329.3 43.9 329.3 34.0 Z M308.7 39.3 Q308.7 44.5 305.2 47.6 Q301.6 50.6 296.3 50.6 Q291.2 50.6 287.8 47.7 Q284.3 44.7 283.5 39.3 L308.7 39.3 Z M335.9 33.0 Q335.9 43.2 339.8 50.9 Q343.6 58.5 350.2 62.7 Q356.8 66.8 365.0 66.8 Q371.5 66.8 376.8 64.1 Q382.2 61.4 385.3 56.8 L385.3 87.3 L405.5 87.3 L405.5 0.0 L385.3 0.0 L385.3 9.4 Q382.4 4.7 377.2 1.9 Q371.9 -0.9 365.0 -0.9 Q356.8 -0.9 350.2 3.2 Q343.6 7.4 339.8 15.2 Q335.9 22.9 335.9 33.0 Z M385.3 32.9 Q385.3 40.5 381.1 44.8 Q376.9 49.2 370.9 49.2 Q364.9 49.2 360.7 44.9 Q356.5 40.6 356.5 33.0 Q356.5 25.5 360.7 21.1 Q364.9 16.6 370.9 16.6 Q376.9 16.6 381.1 21.0 Q385.3 25.4 385.3 32.9 Z"/></g></svg>
         <p>A real recruiter tailors your resume and submits applications every business day — so you can focus on the interviews.</p>
+        <address class="foot-addr">
+          <strong>RepoReserve Technologies Private Limited</strong><br>
+          H.No 3-10-320, Vivekananda Nagar<br>
+          Nizamabad &ndash; 503001, Telangana, India<br>
+          <span class="cin">CIN U62099TS2026PTC213868</span>
+        </address>
       </div>
       <div class="foot-col">
         <h4>Company</h4>
@@ -1238,9 +1256,14 @@ if(scr&&dots){
         <a href="mailto:hello@trulyplaced.com">hello@trulyplaced.com</a>
         <a href="https://calendly.com/trulyplaced/30min" target="_blank" rel="noopener">Book a strategy call</a>
       </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms of Service</a>
+      </div>
     </div>
     <div class="foot-bot">
-      <span>© <span id="yr"></span> TrulyPlaced. All rights reserved.</span>
+      <span>© <span id="yr"></span> TrulyPlaced — a brand of RepoReserve Technologies Private Limited. All rights reserved.</span>
     </div>
   </div>
 </footer>
