@@ -489,8 +489,10 @@ var state = { user:null, profile:null, tracked:[], ready:false };
 function loadScript(src){
   return new Promise(function(res, rej){ var s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
 }
-// did we just come back from Google? (?code=&state= for PKCE, or #access_token= for older flows)
-var cameFromOAuth = /[?&]code=/.test(location.search) && /[?&]state=/.test(location.search) || /access_token=/.test(location.hash);
+// did we just come back from Google? Supabase's redirect to the app carries ?code= (PKCE);
+// older flows use #access_token=; a denied sign-in comes back with ?error=.
+var cameFromOAuth = /[?&]code=/.test(location.search) || /access_token=/.test(location.hash) || /[?&]error=/.test(location.search);
+var oauthBusy = false;
 function cleanUrl(){
   try{
     var hash = location.hash;
@@ -509,24 +511,28 @@ var store = {
       return Promise.resolve();
     }
     return loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js').then(function(){
-      sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY, {auth:{flowType:'pkce', persistSession:true, detectSessionInUrl:true}});
+      // detectSessionInUrl is OFF so we control the code exchange and never run it twice.
+      sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY, {auth:{flowType:'pkce', persistSession:true, detectSessionInUrl:false}});
       sb.auth.onAuthStateChange(function(ev, session){
+        if(oauthBusy) return; // the initial sign-in is handled explicitly below
         if(ev === 'SIGNED_IN' && session && (!state.user || state.user.id !== session.user.id)){ afterSignIn(session.user); }
         if(ev === 'SIGNED_OUT'){ state.user=null; state.profile=null; state.tracked=[]; render(); }
       });
       return sb.auth.getSession();
     }).then(function(r){
       var s = r && r.data && r.data.session;
-      if(!s && cameFromOAuth){
-        // the code hasn't been exchanged yet (slow network / strict browser) — do it explicitly
-        return sb.auth.exchangeCodeForSession(location.href).then(function(x){
-          cleanUrl();
+      if(s){ cleanUrl(); return afterSignIn(s.user, true); } // already signed in (persisted session)
+      if(/[?&]code=/.test(location.search)){
+        // fresh return from Google — exchange the code for a session, exactly once
+        oauthBusy = true;
+        return sb.auth.exchangeCodeForSession(window.location.href).then(function(x){
+          oauthBusy = false; cleanUrl();
           var ses = x && x.data && x.data.session;
           if(ses) return afterSignIn(ses.user, true);
-        }).catch(function(){ cleanUrl(); });
+          toast('Sign-in didn’t complete — please try again');
+        }).catch(function(){ oauthBusy = false; cleanUrl(); toast('Sign-in didn’t complete — please try again'); });
       }
-      cleanUrl();
-      if(s) return afterSignIn(s.user, true);
+      cleanUrl(); // e.g. ?error= from a cancelled sign-in
     }).catch(function(){
       cleanUrl();
       toast('Sign-in is unavailable right now — browsing still works');
@@ -539,7 +545,7 @@ var store = {
       var u = {id:'local-'+Math.random().toString(36).slice(2,10), email:'you@example.com', name:'Preview user', avatar:'', created:Date.now()};
       return afterSignIn(u);
     }
-    return sb.auth.signInWithOAuth({provider:'google', options:{redirectTo: CONFIG.SITE.replace(/\/$/,'') + '/app.html#dashboard'}});
+    return sb.auth.signInWithOAuth({provider:'google', options:{redirectTo: location.origin + '/app.html#dashboard'}});
   },
   signOut: function(){
     if(!LIVE){ state.user=null; state.profile=null; state.tracked=[]; lsSet('tp_app_v1', null); render(); return Promise.resolve(); }
