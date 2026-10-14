@@ -292,7 +292,9 @@ header.nav.scrolled .burger{color:var(--ink)}
   mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
 .track{display:flex;gap:14px;width:max-content;animation:scrollx 48s linear infinite}
 .track.rev{animation-direction:reverse}
-.row:hover .track{animation-play-state:paused}
+.marquee:hover .track,.marquee:focus-within .track,.wa-rows:hover .track{animation-play-state:paused}
+.jcard .mk{position:relative;overflow:hidden}
+.jcard .mk img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:4px;box-sizing:border-box;border-radius:inherit;box-shadow:inset 0 0 0 1px var(--line)}
 @keyframes scrollx{to{transform:translateX(-50%)}}
 .jcard{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);
   border-radius:14px;padding:11px 18px;box-shadow:0 8px 18px -14px rgba(18,26,51,.4);flex:none}
@@ -329,6 +331,7 @@ section[id],div[id="top"]{scroll-margin-top:84px}
 .flow-rail li.done .fline i{height:100%}
 .flow-rail li.on .fline i{animation:fillbar var(--dwell) linear forwards}
 .flow-rail.locked li.on .fline i{animation:none;height:100%}
+.flow.paused .flow-rail li.on .fline i{animation-play-state:paused}
 @keyframes fillbar{from{height:0}to{height:100%}}
 .fdot{position:absolute;left:0;top:6px;width:16px;height:16px;border-radius:50%;border:2px solid var(--line);
   background:#fff;transition:border-color .3s,background .3s,box-shadow .3s}
@@ -724,29 +727,29 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
     <!-- TAB 1: Tech & Data -->
     <div class="tabpane" data-pane="tech">
       <div class="row"><div class="track">
-        <div class="jcard"><div class="mk" style="background:#a31f34">Ep</div><div><div class="co">Epic Systems · Aug 2026</div><div class="role">Associate Software Engineer</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#0a9b49">Pc</div><div><div class="co">Paycom · 5 weeks ago</div><div class="role">Software Developer I</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#a31f34">Ep</div><div><div class="co">Epic Systems · Aug 2026</div><div class="role">Software Developer</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#0a9b49">Pc</div><div><div class="co">Paycom · Sep 2026</div><div class="role">Software Developer I</div></div></div>
         <div class="jcard"><div class="mk" style="background:#ff6b00">Ve</div><div><div class="co">Veeva Systems · Sep 2026</div><div class="role">Associate Consultant</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#0f4c81">Pl</div><div><div class="co">Paylocity · 2 months ago</div><div class="role">Junior Software Engineer</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#0f4c81">Pl</div><div><div class="co">Paylocity · Aug 2026</div><div class="role">Junior Software Engineer</div></div></div>
         <div class="jcard"><div class="mk" style="background:#0073b1">Sp</div><div><div class="co">SailPoint · Jul 2026</div><div class="role">Associate Software Engineer</div></div></div>
         <!-- dup -->
-        <div class="jcard"><div class="mk" style="background:#a31f34">Ep</div><div><div class="co">Epic Systems · Aug 2026</div><div class="role">Associate Software Engineer</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#0a9b49">Pc</div><div><div class="co">Paycom · 5 weeks ago</div><div class="role">Software Developer I</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#a31f34">Ep</div><div><div class="co">Epic Systems · Aug 2026</div><div class="role">Software Developer</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#0a9b49">Pc</div><div><div class="co">Paycom · Sep 2026</div><div class="role">Software Developer I</div></div></div>
         <div class="jcard"><div class="mk" style="background:#ff6b00">Ve</div><div><div class="co">Veeva Systems · Sep 2026</div><div class="role">Associate Consultant</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#0f4c81">Pl</div><div><div class="co">Paylocity · 2 months ago</div><div class="role">Junior Software Engineer</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#0f4c81">Pl</div><div><div class="co">Paylocity · Aug 2026</div><div class="role">Junior Software Engineer</div></div></div>
         <div class="jcard"><div class="mk" style="background:#0073b1">Sp</div><div><div class="co">SailPoint · Jul 2026</div><div class="role">Associate Software Engineer</div></div></div>
       </div></div>
       <div class="row"><div class="track rev">
-        <div class="jcard"><div class="mk" style="background:#4a3fb8">Wk</div><div><div class="co">Workiva · 3 weeks ago</div><div class="role">Software Engineer I</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#4a3fb8">Wk</div><div><div class="co">Workiva · Sep 2026</div><div class="role">Software Engineer I</div></div></div>
         <div class="jcard"><div class="mk" style="background:#f05a28">Cv</div><div><div class="co">Cvent · Aug 2026</div><div class="role">Associate QA Engineer</div></div></div>
         <div class="jcard"><div class="mk" style="background:#1a1a4b">Pg</div><div><div class="co">Pegasystems · Sep 2026</div><div class="role">Junior Data Analyst</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#00b4ef">Ql</div><div><div class="co">Qualtrics · 6 weeks ago</div><div class="role">Associate Software Engineer</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#00b4ef">Ql</div><div><div class="co">Qualtrics · Sep 2026</div><div class="role">Associate Software Engineer</div></div></div>
         <div class="jcard"><div class="mk" style="background:#0d2f5e">Be</div><div><div class="co">Bentley Systems · Jul 2026</div><div class="role">Graduate Software Engineer</div></div></div>
         <!-- dup -->
-        <div class="jcard"><div class="mk" style="background:#4a3fb8">Wk</div><div><div class="co">Workiva · 3 weeks ago</div><div class="role">Software Engineer I</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#4a3fb8">Wk</div><div><div class="co">Workiva · Sep 2026</div><div class="role">Software Engineer I</div></div></div>
         <div class="jcard"><div class="mk" style="background:#f05a28">Cv</div><div><div class="co">Cvent · Aug 2026</div><div class="role">Associate QA Engineer</div></div></div>
         <div class="jcard"><div class="mk" style="background:#1a1a4b">Pg</div><div><div class="co">Pegasystems · Sep 2026</div><div class="role">Junior Data Analyst</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#00b4ef">Ql</div><div><div class="co">Qualtrics · 6 weeks ago</div><div class="role">Associate Software Engineer</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#00b4ef">Ql</div><div><div class="co">Qualtrics · Sep 2026</div><div class="role">Associate Software Engineer</div></div></div>
         <div class="jcard"><div class="mk" style="background:#0d2f5e">Be</div><div><div class="co">Bentley Systems · Jul 2026</div><div class="role">Graduate Software Engineer</div></div></div>
       </div></div>
     </div>
@@ -755,28 +758,28 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
     <div class="tabpane" data-pane="biz" hidden>
       <div class="row"><div class="track">
         <div class="jcard"><div class="mk" style="background:#ec5400">Pr</div><div><div class="co">Protiviti · Aug 2026</div><div class="role">Business Analyst</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#3f9c35">RS</div><div><div class="co">RSM US · 6 weeks ago</div><div class="role">Associate Consultant</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#3f9c35">RS</div><div><div class="co">RSM US · Sep 2026</div><div class="role">Associate Consultant</div></div></div>
         <div class="jcard"><div class="mk" style="background:#0a7d3c">CH</div><div><div class="co">C.H. Robinson · Sep 2026</div><div class="role">Operations Analyst</div></div></div>
         <div class="jcard"><div class="mk" style="background:#5e2d7d">GT</div><div><div class="co">Grant Thornton · Jul 2026</div><div class="role">Advisory Analyst</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#004b8d">Nw</div><div><div class="co">Nationwide · 4 weeks ago</div><div class="role">Financial Analyst</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#004b8d">Nw</div><div><div class="co">Nationwide · Sep 2026</div><div class="role">Financial Analyst</div></div></div>
         <!-- dup -->
         <div class="jcard"><div class="mk" style="background:#ec5400">Pr</div><div><div class="co">Protiviti · Aug 2026</div><div class="role">Business Analyst</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#3f9c35">RS</div><div><div class="co">RSM US · 6 weeks ago</div><div class="role">Associate Consultant</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#3f9c35">RS</div><div><div class="co">RSM US · Sep 2026</div><div class="role">Associate Consultant</div></div></div>
         <div class="jcard"><div class="mk" style="background:#0a7d3c">CH</div><div><div class="co">C.H. Robinson · Sep 2026</div><div class="role">Operations Analyst</div></div></div>
         <div class="jcard"><div class="mk" style="background:#5e2d7d">GT</div><div><div class="co">Grant Thornton · Jul 2026</div><div class="role">Advisory Analyst</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#004b8d">Nw</div><div><div class="co">Nationwide · 4 weeks ago</div><div class="role">Financial Analyst</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#004b8d">Nw</div><div><div class="co">Nationwide · Sep 2026</div><div class="role">Financial Analyst</div></div></div>
       </div></div>
       <div class="row"><div class="track rev">
-        <div class="jcard"><div class="mk" style="background:#0033a0">Ci</div><div><div class="co">Cintas · 2 months ago</div><div class="role">Management Trainee</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#0033a0">Ci</div><div><div class="co">Cintas · Aug 2026</div><div class="role">Management Trainee</div></div></div>
         <div class="jcard"><div class="mk" style="background:#c8102e">SW</div><div><div class="co">Sherwin-Williams · Aug 2026</div><div class="role">Operations Analyst</div></div></div>
         <div class="jcard"><div class="mk" style="background:#002d62">Fa</div><div><div class="co">Fastenal · Sep 2026</div><div class="role">Supply Chain Associate</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#0a4fa0">53</div><div><div class="co">Fifth Third Bank · 5 weeks ago</div><div class="role">Financial Analyst</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#0a4fa0">53</div><div><div class="co">Fifth Third Bank · Sep 2026</div><div class="role">Financial Analyst</div></div></div>
         <div class="jcard"><div class="mk" style="background:#005776">NM</div><div><div class="co">Northwestern Mutual · Jul 2026</div><div class="role">Associate Financial Rep</div></div></div>
         <!-- dup -->
-        <div class="jcard"><div class="mk" style="background:#0033a0">Ci</div><div><div class="co">Cintas · 2 months ago</div><div class="role">Management Trainee</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#0033a0">Ci</div><div><div class="co">Cintas · Aug 2026</div><div class="role">Management Trainee</div></div></div>
         <div class="jcard"><div class="mk" style="background:#c8102e">SW</div><div><div class="co">Sherwin-Williams · Aug 2026</div><div class="role">Operations Analyst</div></div></div>
         <div class="jcard"><div class="mk" style="background:#002d62">Fa</div><div><div class="co">Fastenal · Sep 2026</div><div class="role">Supply Chain Associate</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#0a4fa0">53</div><div><div class="co">Fifth Third Bank · 5 weeks ago</div><div class="role">Financial Analyst</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#0a4fa0">53</div><div><div class="co">Fifth Third Bank · Sep 2026</div><div class="role">Financial Analyst</div></div></div>
         <div class="jcard"><div class="mk" style="background:#005776">NM</div><div><div class="co">Northwestern Mutual · Jul 2026</div><div class="role">Associate Financial Rep</div></div></div>
       </div></div>
     </div>
@@ -784,30 +787,30 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
     <!-- TAB 3: Marketing & Sales -->
     <div class="tabpane" data-pane="mktg" hidden>
       <div class="row"><div class="track">
-        <div class="jcard"><div class="mk" style="background:#002856">Ga</div><div><div class="co">Gartner · 3 weeks ago</div><div class="role">Business Development Rep</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#002856">Ga</div><div><div class="co">Gartner · Sep 2026</div><div class="role">Business Development Rep</div></div></div>
         <div class="jcard"><div class="mk" style="background:#59cb59">Ss</div><div><div class="co">Sprout Social · Aug 2026</div><div class="role">Marketing Associate</div></div></div>
         <div class="jcard"><div class="mk" style="background:#ff492c">G2</div><div><div class="co">G2 · Sep 2026</div><div class="role">Sales Development Rep</div></div></div>
         <div class="jcard"><div class="mk" style="background:#1a1a1a">Kl</div><div><div class="co">Klaviyo · Jul 2026</div><div class="role">Growth Associate</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#00b0b9">Es</div><div><div class="co">Epsilon · 5 weeks ago</div><div class="role">Digital Marketing Analyst</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#00b0b9">Es</div><div><div class="co">Epsilon · Sep 2026</div><div class="role">Digital Marketing Analyst</div></div></div>
         <!-- dup -->
-        <div class="jcard"><div class="mk" style="background:#002856">Ga</div><div><div class="co">Gartner · 3 weeks ago</div><div class="role">Business Development Rep</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#002856">Ga</div><div><div class="co">Gartner · Sep 2026</div><div class="role">Business Development Rep</div></div></div>
         <div class="jcard"><div class="mk" style="background:#59cb59">Ss</div><div><div class="co">Sprout Social · Aug 2026</div><div class="role">Marketing Associate</div></div></div>
         <div class="jcard"><div class="mk" style="background:#ff492c">G2</div><div><div class="co">G2 · Sep 2026</div><div class="role">Sales Development Rep</div></div></div>
         <div class="jcard"><div class="mk" style="background:#1a1a1a">Kl</div><div><div class="co">Klaviyo · Jul 2026</div><div class="role">Growth Associate</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#00b0b9">Es</div><div><div class="co">Epsilon · 5 weeks ago</div><div class="role">Digital Marketing Analyst</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#00b0b9">Es</div><div><div class="co">Epsilon · Sep 2026</div><div class="role">Digital Marketing Analyst</div></div></div>
       </div></div>
       <div class="row"><div class="track rev">
-        <div class="jcard"><div class="mk" style="background:#6b2fb3">Me</div><div><div class="co">Merkle · 2 months ago</div><div class="role">Associate — Paid Media</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#6b2fb3">Me</div><div><div class="co">Merkle · Aug 2026</div><div class="role">Associate — Paid Media</div></div></div>
         <div class="jcard"><div class="mk" style="background:#ff5a36">Ti</div><div><div class="co">Tinuiti · Aug 2026</div><div class="role">Marketing Associate</div></div></div>
         <div class="jcard"><div class="mk" style="background:#d0271d">AD</div><div><div class="co">ADP · Sep 2026</div><div class="role">Sales Associate</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#d32323">Ye</div><div><div class="co">Yelp · 6 weeks ago</div><div class="role">Account Executive</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#0a66c2">Vc</div><div><div class="co">Vericast · Jul 2026</div><div class="role">Social Media Executive</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#d32323">Ye</div><div><div class="co">Yelp · Sep 2026</div><div class="role">Account Executive</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#0a66c2">Vc</div><div><div class="co">Vericast · Jul 2026</div><div class="role">Social Media Specialist</div></div></div>
         <!-- dup -->
-        <div class="jcard"><div class="mk" style="background:#6b2fb3">Me</div><div><div class="co">Merkle · 2 months ago</div><div class="role">Associate — Paid Media</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#6b2fb3">Me</div><div><div class="co">Merkle · Aug 2026</div><div class="role">Associate — Paid Media</div></div></div>
         <div class="jcard"><div class="mk" style="background:#ff5a36">Ti</div><div><div class="co">Tinuiti · Aug 2026</div><div class="role">Marketing Associate</div></div></div>
         <div class="jcard"><div class="mk" style="background:#d0271d">AD</div><div><div class="co">ADP · Sep 2026</div><div class="role">Sales Associate</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#d32323">Ye</div><div><div class="co">Yelp · 6 weeks ago</div><div class="role">Account Executive</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#0a66c2">Vc</div><div><div class="co">Vericast · Jul 2026</div><div class="role">Social Media Executive</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#d32323">Ye</div><div><div class="co">Yelp · Sep 2026</div><div class="role">Account Executive</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#0a66c2">Vc</div><div><div class="co">Vericast · Jul 2026</div><div class="role">Social Media Specialist</div></div></div>
       </div></div>
     </div>
 
@@ -815,29 +818,29 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
     <div class="tabpane" data-pane="logi" hidden>
       <div class="row"><div class="track">
         <div class="jcard"><div class="mk" style="background:#003d6b">JB</div><div><div class="co">J.B. Hunt · Aug 2026</div><div class="role">Transportation Analyst</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#c8102e">XP</div><div><div class="co">XPO · 3 weeks ago</div><div class="role">Logistics Analyst</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#c8102e">XP</div><div><div class="co">XPO · Sep 2026</div><div class="role">Logistics Analyst</div></div></div>
         <div class="jcard"><div class="mk" style="background:#d6001c">Ry</div><div><div class="co">Ryder System · Sep 2026</div><div class="role">Supply Chain Analyst</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#0b3d4f">GX</div><div><div class="co">GXO Logistics · 5 weeks ago</div><div class="role">Operations Analyst</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#0b3d4f">GX</div><div><div class="co">GXO Logistics · Sep 2026</div><div class="role">Operations Analyst</div></div></div>
         <div class="jcard"><div class="mk" style="background:#003f72">Ex</div><div><div class="co">Expeditors · Jul 2026</div><div class="role">Import/Export Coordinator</div></div></div>
         <!-- dup -->
         <div class="jcard"><div class="mk" style="background:#003d6b">JB</div><div><div class="co">J.B. Hunt · Aug 2026</div><div class="role">Transportation Analyst</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#c8102e">XP</div><div><div class="co">XPO · 3 weeks ago</div><div class="role">Logistics Analyst</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#c8102e">XP</div><div><div class="co">XPO · Sep 2026</div><div class="role">Logistics Analyst</div></div></div>
         <div class="jcard"><div class="mk" style="background:#d6001c">Ry</div><div><div class="co">Ryder System · Sep 2026</div><div class="role">Supply Chain Analyst</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#0b3d4f">GX</div><div><div class="co">GXO Logistics · 5 weeks ago</div><div class="role">Operations Analyst</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#0b3d4f">GX</div><div><div class="co">GXO Logistics · Sep 2026</div><div class="role">Operations Analyst</div></div></div>
         <div class="jcard"><div class="mk" style="background:#003f72">Ex</div><div><div class="co">Expeditors · Jul 2026</div><div class="role">Import/Export Coordinator</div></div></div>
       </div></div>
       <div class="row"><div class="track rev">
         <div class="jcard"><div class="mk" style="background:#f36b21">Sc</div><div><div class="co">Schneider National · Sep 2026</div><div class="role">Network Planning Analyst</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#00539f">We</div><div><div class="co">Werner Enterprises · 6 weeks ago</div><div class="role">Logistics Coordinator</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#00539f">We</div><div><div class="co">Werner Enterprises · Sep 2026</div><div class="role">Logistics Coordinator</div></div></div>
         <div class="jcard"><div class="mk" style="background:#0033a0">Pe</div><div><div class="co">Penske Logistics · Aug 2026</div><div class="role">Operations Supervisor</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#00573f">Hb</div><div><div class="co">Hub Group · 2 months ago</div><div class="role">Demand Planner</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#0d4f8b">Am</div><div><div class="co">Americold · 4 weeks ago</div><div class="role">Inventory Analyst</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#00573f">Hb</div><div><div class="co">Hub Group · Aug 2026</div><div class="role">Demand Planner</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#0d4f8b">Am</div><div><div class="co">Americold · Sep 2026</div><div class="role">Inventory Analyst</div></div></div>
         <!-- dup -->
         <div class="jcard"><div class="mk" style="background:#f36b21">Sc</div><div><div class="co">Schneider National · Sep 2026</div><div class="role">Network Planning Analyst</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#00539f">We</div><div><div class="co">Werner Enterprises · 6 weeks ago</div><div class="role">Logistics Coordinator</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#00539f">We</div><div><div class="co">Werner Enterprises · Sep 2026</div><div class="role">Logistics Coordinator</div></div></div>
         <div class="jcard"><div class="mk" style="background:#0033a0">Pe</div><div><div class="co">Penske Logistics · Aug 2026</div><div class="role">Operations Supervisor</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#00573f">Hb</div><div><div class="co">Hub Group · 2 months ago</div><div class="role">Demand Planner</div></div></div>
-        <div class="jcard"><div class="mk" style="background:#0d4f8b">Am</div><div><div class="co">Americold · 4 weeks ago</div><div class="role">Inventory Analyst</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#00573f">Hb</div><div><div class="co">Hub Group · Aug 2026</div><div class="role">Demand Planner</div></div></div>
+        <div class="jcard"><div class="mk" style="background:#0d4f8b">Am</div><div><div class="co">Americold · Sep 2026</div><div class="role">Inventory Analyst</div></div></div>
       </div></div>
     </div>
   </div>
@@ -858,6 +861,30 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
     </div>
   </div>
 </section>
+
+<script>
+/* company logos on the role cards; if one fails to load, the coloured letter tile shows instead */
+(function(){
+  var D={"Gartner":"gartner.com","Fastenal":"fastenal.com","Cintas":"cintas.com","Penske Logistics":"penskelogistics.com",
+  "J.B. Hunt":"jbhunt.com","Expeditors":"expeditors.com","Nationwide":"nationwide.com","Werner Enterprises":"werner.com",
+  "Hub Group":"hubgroup.com","Northwestern Mutual":"northwesternmutual.com","SailPoint":"sailpoint.com","Epsilon":"epsilon.com",
+  "Qualtrics":"qualtrics.com","Vericast":"vericast.com","C.H. Robinson":"chrobinson.com","Paycom":"paycom.com",
+  "GXO Logistics":"gxo.com","Bentley Systems":"bentley.com","Americold":"americold.com","Paylocity":"paylocity.com",
+  "Klaviyo":"klaviyo.com","Pegasystems":"pega.com","RSM US":"rsmus.com","Workiva":"workiva.com","Sprout Social":"sproutsocial.com",
+  "Grant Thornton":"grantthornton.com","Merkle":"merkle.com","Epic Systems":"epic.com","Sherwin-Williams":"sherwin-williams.com",
+  "XPO":"xpo.com","ADP":"adp.com","Yelp":"yelp.com","Ryder System":"ryder.com","Protiviti":"protiviti.com","Cvent":"cvent.com",
+  "Schneider National":"schneider.com","Tinuiti":"tinuiti.com","Veeva Systems":"veeva.com","Fifth Third Bank":"53.com","G2":"g2.com"};
+  [].forEach.call(document.querySelectorAll('.jcard'),function(c){
+    var co=c.querySelector('.co'),mk=c.querySelector('.mk');if(!co||!mk||mk.querySelector('img'))return;
+    var name=co.textContent.split(' · ')[0].trim(),d=D[name];if(!d)return;
+    var im=new Image();im.alt='';im.decoding='async';im.referrerPolicy='no-referrer';
+    im.onerror=function(){im.remove();};
+    im.onload=function(){if(im.naturalWidth<24)im.remove();};   // tiny generic icon = no real logo
+    im.src='https://www.google.com/s2/favicons?domain='+d+'&sz=128';
+    mk.setAttribute('aria-hidden','true');mk.appendChild(im);
+  });
+})();
+</script>
 
 <!-- ================= TESTIMONIALS =================
      NOTE: the conversations below are SAMPLES written for layout.
@@ -1213,14 +1240,18 @@ if(scr&&dots){
     vis.forEach(function(v,k){v.classList.toggle('on',k===i);
       if(k===i)v.removeAttribute('aria-hidden'); else v.setAttribute('aria-hidden','true');});
   }
-  function stop(){if(t){clearInterval(t);t=null;}}
-  function start(){stop();if(locked||reduce)return;t=setInterval(function(){go(i+1);},DWELL);}
+  var flow=document.querySelector('.flow'),left=DWELL,began=0,hovering=false,inView=false;
+  function stop(){if(t){clearTimeout(t);t=null;left=Math.max(0,left-(Date.now()-began));}}
+  function tick(){t=null;left=DWELL;go(i+1);run();}
+  function run(){if(t||locked||reduce||hovering||!inView)return;began=Date.now();t=setTimeout(tick,left);}
+  function start(){run();}
   steps.forEach(function(li,k){
     li.querySelector('.fstep').addEventListener('click',function(){
       locked=true;rail.classList.add('locked');stop();go(k);});
   });
-  rail.addEventListener('mouseenter',stop);
-  rail.addEventListener('mouseleave',start);
+  // hovering the steps or the picture beside them holds the current step, line included
+  flow.addEventListener('mouseenter',function(){hovering=true;flow.classList.add('paused');stop();});
+  flow.addEventListener('mouseleave',function(){hovering=false;flow.classList.remove('paused');run();});
   go(0);
   // the sequence is the story of the section — it waits until you are looking at it
   if(window.IntersectionObserver){
@@ -1228,12 +1259,13 @@ if(scr&&dots){
     new IntersectionObserver(function(entries){
       entries.forEach(function(en){
         if(en.isIntersecting){
-          if(!armed){armed=true;if(!locked)go(0);}   // first arrival always starts at Week 1
+          inView=true;
+          if(!armed){armed=true;left=DWELL;if(!locked)go(0);}   // first arrival always starts at Week 1
           start();
-        } else stop();
+        } else {inView=false;stop();}
       });
     },{rootMargin:'-15% 0px -15% 0px',threshold:0}).observe(document.querySelector('.flow'));
-  } else start();
+  } else {inView=true;start();}
 })();
 </script>
 
