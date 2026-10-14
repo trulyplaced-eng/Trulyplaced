@@ -280,6 +280,150 @@ textarea.post{width:100%;min-height:260px;border:1px solid var(--line);border-ra
   padding:12px 18px;border-radius:12px;font-size:14px;font-weight:500;transition:.25s;pointer-events:none;max-width:calc(100% - 32px)}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* ---------- smart search + view switch ---------- */
+.search.smart{border:1.5px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(90deg,#0938d5,#7c3aed 55%,#0a7f46) border-box}
+.search.smart svg:first-of-type{color:#7c3aed}
+.search.smart svg:last-of-type{color:var(--muted);width:18px;height:18px}
+.qchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center;font-size:12.5px}
+.qchips:empty{display:none}
+.qchips .ql{display:inline-flex;gap:5px;align-items:center;color:var(--muted);font-weight:600;margin-right:2px}
+.qchips .ql svg{width:14px;height:14px;color:#7c3aed}
+.qc{background:#f3f0ff;color:#4c1d95;border:1px solid #e3dbff;border-radius:999px;padding:3px 10px;font-weight:600}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;background:#fff;padding:3px;margin-left:auto}
+.seg button{display:inline-flex;align-items:center;gap:6px;border:0;background:none;min-height:34px;padding:0 12px;border-radius:7px;font-size:13px;font-weight:600;color:var(--body)}
+.seg button svg{width:16px;height:16px}
+.seg button.on{background:var(--blue-soft);color:var(--blue)}
+.lnk{border:0;background:none;color:var(--blue);font-weight:600;font-size:inherit;padding:0;display:inline-flex;align-items:center;gap:5px;cursor:pointer;min-height:28px}
+.lnk svg{width:14px;height:14px}
+.pill.mp{background:#fff;border-color:currentColor}
+
+/* ---------- swipe deck ---------- */
+.deckwrap{display:flex;flex-direction:column;align-items:center}
+.deck{position:relative;width:100%;max-width:580px}
+.dcard{background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 22px 44px -32px rgba(18,26,51,.5);position:relative;overflow:hidden;min-width:0}
+.dcard.back{position:absolute;inset:0;transform:translateY(12px) scale(.96);opacity:.55;pointer-events:none;z-index:0}
+.dcard.front{z-index:1;touch-action:pan-y;transition:transform .24s ease,opacity .24s ease;cursor:grab;user-select:none;-webkit-user-select:none}
+.dcard.front.dragging{transition:none;cursor:grabbing}
+.stamp{position:absolute;top:24px;z-index:3;font-family:Poppins;font-weight:800;font-size:28px;letter-spacing:.08em;text-transform:uppercase;padding:2px 14px;border:4px solid;border-radius:10px;opacity:0;pointer-events:none;background:rgba(255,255,255,.85)}
+.stamp.st-pass{right:20px;color:#be123c;border-color:#be123c;transform:rotate(12deg)}
+.stamp.st-save{left:20px;color:#0a7f46;border-color:#0a7f46;transform:rotate(-12deg)}
+.dh{display:flex;gap:16px;align-items:center}
+.dhx{min-width:0}
+.logo.lg{width:64px;height:64px;border-radius:16px;font-size:26px}
+.dco{font-size:14px;color:var(--body);font-weight:600}
+.dt{font-family:Poppins;font-weight:700;font-size:20px;line-height:1.25;color:var(--ink);margin-top:2px;text-wrap:balance}
+.dt a{color:inherit;text-decoration:none}
+.dt a:hover{color:var(--blue)}
+.ms{margin-top:20px}
+.msl{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.msl b{font-size:15px;letter-spacing:0}
+.msl em,.msl .lnk{font-style:normal;text-transform:none;letter-spacing:0;font-size:12.5px}
+.msb{height:8px;border-radius:99px;background:#eceef5;margin-top:8px;overflow:hidden}
+.msb i{display:block;height:100%;border-radius:99px;transition:width .4s}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px;margin-top:20px}
+.mgi{min-width:0}
+.mlbl{display:block;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.mv{display:flex;gap:7px;align-items:flex-start;margin-top:5px;color:var(--ink);font-size:14.5px;line-height:1.35}
+.mv svg{width:16px;height:16px;flex:none;color:var(--muted);margin-top:2px}
+.mv span{min-width:0;overflow-wrap:anywhere}
+.sal{background:var(--ok);color:#fff;border-radius:7px;padding:1px 9px;font-weight:600;font-size:13.5px}
+.sal.nd{background:#eef0f6;color:var(--body);font-weight:500}
+.dpost{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.dcard .mlbl{margin-top:16px}
+.dov{margin-top:6px;font-size:14.5px;color:#33395a;line-height:1.55}
+.chip.y{background:#fdf6e3;border:1px solid #f1dc9f;color:#6e4a00}
+.dcard .chips{margin-top:8px}
+.seemore{display:inline-block;margin-top:16px;font-size:13.5px;font-weight:600;color:var(--blue);text-decoration:none}
+.skl{display:block;height:12px;border-radius:6px;background:linear-gradient(90deg,#eef0f6,#f7f8fc,#eef0f6);background-size:200% 100%;animation:sh 1.2s infinite;margin-top:7px}
+.skl.s{width:55%}
+.dacts{display:flex;justify-content:center;align-items:flex-end;gap:30px;margin-top:22px}
+.da{display:flex;flex-direction:column;align-items:center;gap:7px;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.da.ap{color:var(--blue)}
+.dbtn{border:0;border-radius:50%;display:grid;place-items:center;width:62px;height:62px;transition:transform .15s}
+.dbtn:hover{transform:translateY(-2px)}
+.dbtn:active{transform:scale(.93)}
+.dbtn svg{width:24px;height:24px}
+.dbtn.pass{background:#e9ebf2;color:#5b637f}
+.dbtn.apply{background:var(--blue);color:#fff;width:78px;height:78px;box-shadow:0 14px 26px -12px rgba(9,56,213,.75)}
+.dbtn.apply svg{width:28px;height:28px}
+.dbtn.save{background:var(--ok);color:#fff;box-shadow:0 12px 22px -12px rgba(10,127,70,.75)}
+.dfoot{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 16px;margin-top:14px;font-size:12.5px;color:var(--muted);text-align:center}
+.dfoot .hint{flex-basis:100%}
+
+/* ---------- floating resume button ---------- */
+.fab{position:fixed;right:24px;bottom:24px;z-index:70;display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 22px;border-radius:999px;border:0;background:#1d2b6b;color:#fff;font-weight:600;font-size:14.5px;box-shadow:0 18px 34px -14px rgba(10,16,38,.65)}
+.fab:hover{background:#15205a}
+.fab svg{width:19px;height:19px}
+
+/* ---------- job detail v2 ---------- */
+.dr-body{padding-bottom:110px}
+.jd-head{align-items:flex-start}
+.jdh{flex:1;min-width:0}
+.jd-head .logo.lg{width:64px;height:64px}
+.pd{font-size:13px;color:var(--muted);margin-top:6px}
+.jd-head .bm{flex:none}
+.jd-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 18px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink)}
+.jd-meta div{display:flex;gap:8px;align-items:flex-start;min-width:0}
+.jd-meta svg{width:17px;height:17px;flex:none;color:var(--muted);margin-top:1px}
+.jd-meta span{min-width:0;overflow-wrap:anywhere}
+#matchBox{margin-top:20px}
+#matchBox .card.match{margin-top:0}
+.mrow{display:flex;gap:20px;align-items:center}
+.mrow .txt{min-width:0}
+.mrow .ring .v{font-size:24px}
+.lbl2{font-family:Poppins;font-weight:700;font-size:14px;letter-spacing:.03em;text-transform:uppercase;color:var(--ink)}
+.mrow p{font-size:14px;margin-top:4px}
+.sbd{border:1px solid var(--line);border-radius:14px;margin-top:16px;background:#fff}
+.sbd summary{list-style:none;display:flex;align-items:center;gap:8px;min-height:50px;padding:0 16px;cursor:pointer;font-size:14px;color:var(--ink);font-weight:500}
+.sbd summary::-webkit-details-marker{display:none}
+.sbd summary .chev{margin-left:auto;width:18px;height:18px;color:var(--muted);transition:transform .2s}
+.sbd[open] summary .chev{transform:rotate(180deg)}
+.qm{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--muted);color:var(--muted);font-size:11px;font-weight:700;display:grid;place-items:center}
+.sbd .brk{padding:0 16px;margin-top:4px}
+.sbd .fine{padding:0 16px 14px}
+.jd-apply{display:flex;gap:10px;margin-top:14px}
+.jd-apply .btn.out{flex:1;border-radius:999px;min-height:48px}
+.jd-apply .btn:not(.out){border-radius:999px;min-height:48px}
+.navy{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:0;border-radius:16px;background:#14205a;color:rgba(255,255,255,.85);padding:16px 18px;margin-top:14px;font-size:13.5px;line-height:1.45}
+.navy:hover{background:#0f1a4d}
+.navy b{display:block;font-size:14.5px;color:#fff;margin-bottom:2px}
+.navy svg{width:26px;height:26px;flex:none;color:#fff}
+.navy .chevr{width:20px;height:20px;margin-left:auto}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:#f1f3f8;border-radius:12px;padding:4px;margin-top:22px}
+.tabs button{border:0;background:none;min-height:44px;border-radius:9px;font-weight:600;font-size:14px;color:var(--muted)}
+.tabs button.on{background:#fff;color:var(--ink);box-shadow:0 2px 8px -4px rgba(18,26,51,.35)}
+#jdPane{margin-top:6px}
+.dsec{margin-top:22px}
+.dsec h4{display:flex;align-items:center;gap:10px;font-family:Poppins;font-weight:600;font-size:16px;color:var(--ink)}
+.dsec h4 svg{width:20px;height:20px;flex:none}
+.dsec h4.bad svg{color:var(--bad)}
+.dsec h4.good svg{color:var(--ok)}
+.dsb{padding-left:30px;margin-top:8px}
+.dsec > .fine{padding-left:30px}
+.dsb p{font-size:14.5px;color:#33395a;line-height:1.65;margin:0 0 10px}
+.dsb h5{font-size:14px;color:var(--ink);margin:14px 0 8px}
+.ticks{list-style:none;display:grid;gap:10px;margin:4px 0 12px}
+.ticks li{display:flex;gap:12px;font-size:14.5px;color:#33395a;line-height:1.55}
+.ticks svg{width:20px;height:20px;flex:none;color:var(--ok);margin-top:1px}
+.chip.m,.chip.h{border-radius:999px;padding:6px 13px;font-size:13px}
+.chip.h svg,.chip.wk svg{width:13px;height:13px;vertical-align:-2px;margin-right:4px}
+.chip.wk{background:#fff4d9;color:#7a4a00;border-radius:999px;padding:6px 13px;font-size:13px}
+.tblwrap{overflow-x:auto;margin-top:12px}
+.anat{width:100%;border-collapse:collapse;font-size:13.5px;min-width:300px}
+.anat th,.anat td{padding:12px 10px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.anat thead th{font-weight:500;color:var(--muted);font-size:13px;background:#fff}
+.anat tbody th{font-weight:600;color:var(--ink);white-space:nowrap}
+.anat tbody th span{margin-right:6px}
+.anat tbody th svg{width:17px;height:17px;vertical-align:-4px}
+.anat tr.ok{background:#effaf3}.anat tr.no{background:#fff0f2}.anat tr.warn{background:#fffaeb}.anat tr.na{background:#f8f9fc}
+.anat tr.ok th svg{color:var(--ok)}.anat tr.no th svg{color:var(--bad)}.anat tr.warn th svg{color:#c27c00}.anat tr.na th svg{color:#a3a9c2}
+.anat td{color:#33395a;overflow-wrap:anywhere}
+.anat .nf{color:var(--muted);font-style:italic}
+.anat.anat2 td{width:72%}
+.anh{font-family:Poppins;font-size:17px;color:var(--ink);margin:28px 0 0}
+.rtext{white-space:pre-wrap;font:13px/1.6 Inter,sans-serif;color:#33395a;background:var(--bg);border-radius:12px;padding:14px;margin-top:14px;max-height:55vh;overflow:auto}
+.empty.slim{padding:32px 18px;margin-top:16px}
+
 /* ---------- mobile ---------- */
 .tabbar{display:none}
 @media(max-width:980px){
@@ -288,6 +432,21 @@ textarea.post{width:100%;min-height:260px;border:1px solid var(--line);border-ra
   .set{grid-template-columns:1fr}.set-nav{display:none}
 }
 @media(max-width:820px){
+  .fab{right:16px;bottom:calc(76px + env(safe-area-inset-bottom,0px));min-height:48px;padding:0 18px;font-size:14px}
+  .toast{bottom:calc(140px + env(safe-area-inset-bottom,0px))}
+  .dcard{padding:20px 18px;border-radius:20px}
+  .logo.lg{width:56px;height:56px;font-size:22px}
+  .dt{font-size:18px}
+  .dacts{gap:22px}
+  .jd-meta{grid-template-columns:1fr 1fr}
+  .mrow{gap:14px}
+  .mrow .ring{transform:scale(.9);transform-origin:left center}
+  .dsb,.dsec > .fine{padding-left:0}
+  .anat th,.anat td{padding:10px 7px;font-size:12.5px}
+  .anat tbody th{white-space:normal}
+  .seg span{display:none}
+  .seg button{padding:0 10px}
+  .hide-s{display:none}
   .app{grid-template-columns:1fr}
   .side{display:none}
   .top{padding:0 16px;padding-top:env(safe-area-inset-top,0px);height:calc(60px + env(safe-area-inset-top,0px))}
@@ -358,6 +517,7 @@ textarea.post{width:100%;min-height:260px;border:1px solid var(--line);border-ra
 <nav class="tabbar" id="tabbar"></nav>
 <div id="drawerRoot"></div>
 <div id="modalRoot"></div>
+<button class="fab" id="fab" type="button" hidden></button>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <input type="file" id="fileIn" accept=".pdf,.docx,.txt" hidden>
 
@@ -477,6 +637,25 @@ var I = {
   send:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>',
   phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>',
   star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>',
+  spark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>',
+  cards:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="6" y="3" width="13" height="17" rx="2.5"/><path d="M3 7v11a3 3 0 0 0 3 3h9"/></svg>',
+  listv:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg>',
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>',
+  dollar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 2v20"/><path d="M17 6.5c-.8-1.4-2.6-2.3-5-2.3-2.9 0-4.6 1.4-4.6 3.4 0 4.7 9.9 2.4 9.9 7.6 0 2.1-1.9 3.6-5 3.6-2.6 0-4.5-1-5.3-2.6"/></svg>',
+  timer:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 1.5M10 2h4"/></svg>',
+  building:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/><path d="M16 9h2a2 2 0 0 1 2 2v10M2 21h20M8 7h4M8 11h4M8 15h4"/></svg>',
+  tag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>',
+  clip:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 2h6v4H9zM9 11h6M9 15h6M9 19h3"/></svg>',
+  doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>',
+  monitor:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+  chevd:'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
+  chevr:'<svg class="chevr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>',
+  undo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>',
+  okc:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1.2 14.2-4-4 1.4-1.4 2.6 2.6 5.6-5.6 1.4 1.4z"/></svg>',
+  noc:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.2 12.8-1.4 1.4L12 13.4l-2.8 2.8-1.4-1.4 2.8-2.8-2.8-2.8 1.4-1.4 2.8 2.8 2.8-2.8 1.4 1.4-2.8 2.8z"/></svg>',
+  nac:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm5 11H7v-2h10z"/></svg>',
+  warn:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 1 21.5h22zm1 15.5h-2v-2h2zm0-4h-2V9h2z"/></svg>',
+  tick:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="m8 12.3 2.7 2.7L16.2 9.5"/></svg>',
   g:'<svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2A11.9 11.9 0 0 1 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3a12 12 0 0 1-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>'
 };
 
@@ -644,20 +823,50 @@ function regions(loc, country, remote){
   if(remote || /remote/i.test(loc||'')) r.push('Remote');
   return r;
 }
-function category(t){
-  t = t.toLowerCase();
-  if(/security|privacy engineer|trust & safety/.test(t)) return 'Security';
-  if(/sales|account executive|business development|\bbdr\b|\bsdr\b|partnership|account manager|solutions engineer|solutions architect|sales engineer|revenue/.test(t)) return 'Sales';
-  if(/\bdata\b|analytics|analyst|machine learning|\bml\b|\bai\b|scientist|research engineer|researcher|statistic/.test(t) && !/business analyst/.test(t)) return 'Data & AI';
-  if(/design|\bux\b|\bui\b|creative|illustrat/.test(t)) return 'Design';
-  if(/product manager|product owner|program manager|\btpm\b|product lead|head of product/.test(t)) return 'Product';
-  if(/marketing|growth|brand|content|communications|\bseo\b|social media|\bpr\b/.test(t)) return 'Marketing';
-  if(/recruit|talent|people|\bhr\b|human resources/.test(t)) return 'People';
-  if(/support|customer success|customer experience|implementation|onboarding|technical account/.test(t)) return 'Customer';
-  if(/finance|accounting|accountant|fp&a|\btax\b|treasury|operations|strategy|business analyst|procurement|supply|legal|counsel|compliance|payroll|controller/.test(t)) return 'Finance & Ops';
-  if(/engineer|developer|\bsre\b|devops|infrastructure|backend|frontend|front-end|full[- ]?stack|mobile|\bios\b|android|platform|\bqa\b|\btest|architect|software/.test(t)) return 'Engineering';
-  return 'Other';
-}
+/* Two-level classification used everywhere: [domain, sub-domain, title pattern]. First match wins,
+   so the more specific patterns come first. */
+var TAX = [
+ ['Security','Security Engineer',/security|appsec|infosec|detection (and|&) response|threat|vulnerab|privacy engineer|trust (&|and) safety|\bgrc\b/],
+ ['Design','Product Designer',/product design|\bux\b|\bui\b|interaction design|user research|design research/],
+ ['People','Recruiting',/recruit|talent acquisition|sourcer|sourcing/],
+ ['Product','Product Manager',/product manager|product owner|product lead|head of product|director of product|product management|\bgpm\b|\bapm\b/],
+ ['Product','Program Manager',/program manager|\btpm\b|project manager|delivery manager|program management/],
+ ['Sales','Solutions / Sales Engineer',/solutions? (engineer|architect|consultant)|sales engineer|forward deployed|pre-?sales|field engineer/],
+ ['Customer Success','Customer Success',/customer success|customer experience|implementation|onboarding specialist|onboarding manager|technical account manager|support engineer|customer support|support specialist|\bsupport\b|customer service/],
+ ['AI & ML','Research Scientist',/research (scientist|engineer)|researcher|research lead/],
+ ['AI & ML','ML Engineer',/machine learning|\bml\b|mlops|\bai\b|deep learning|computer vision|\bnlp\b|\bllms?\b|applied scientist|inference|model (training|serving)|perception/],
+ ['Data','Analytics Engineer',/analytics engineer/],
+ ['Data','Data Engineer',/data engineer|data platform|data infrastructure|\betl\b|data warehouse|data pipeline/],
+ ['Data','Data Scientist',/data scien|decision scien|quantitative|statistic|econometric|economist/],
+ ['Data','Data Analyst',/data analyst|analytics|business intelligence|\bbi\b|insights|reporting analyst|data specialist/],
+ ['Sales','Account Executive',/account executive|\bae\b/],
+ ['Sales','Business Development',/business development|\bbdr\b|\bsdr\b|sales development|partnerships?\b|alliances|channel/],
+ ['Sales','Account Management',/account manager|account director|client partner|relationship manager/],
+ ['Sales','Sales',/\bsales\b|revenue|deal desk|commercial/],
+ ['Design','Brand & Visual Design',/design|creative|illustrat|motion graphics|art director|visual/],
+ ['Software Engineering','Mobile Engineer',/\bios\b|android|mobile|react native|flutter/],
+ ['Software Engineering','Frontend Engineer',/front[- ]?end|web engineer|web developer/],
+ ['Software Engineering','Full Stack Engineer',/full[- ]?stack/],
+ ['Software Engineering','DevOps / SRE',/\bsre\b|site reliability|devops|reliability engineer|release engineer|build engineer/],
+ ['Software Engineering','Infrastructure / Platform',/infrastructure|platform|cloud|systems engineer|kernel|network|storage|compute|distributed systems|database engineer|\bdba\b/],
+ ['Software Engineering','QA / Test Engineer',/\bqa\b|quality assurance|quality engineer|test engineer|\bsdet\b|automation engineer|\btest\b/],
+ ['Software Engineering','Backend Engineer',/back[- ]?end|\bapi\b|server[- ]side/],
+ ['Marketing','Product Marketing',/product marketing/],
+ ['Marketing','Growth Marketing',/growth market|growth manager|performance marketing|demand gen|lifecycle|user acquisition|paid (media|social|search)/],
+ ['Marketing','Content & Communications',/content|communications|\bpr\b|public relations|editor|writer|copywriter|social media|community/],
+ ['Marketing','Marketing',/marketing|brand|\bseo\b|events/],
+ ['People','People & HR',/people|\bhr\b|human resources|talent|learning (&|and) development|total rewards|benefits|workplace experience/],
+ ['Finance','Accounting',/accountant|accounting|controller|\btax\b|audit|payroll|accounts (payable|receivable)/],
+ ['Finance','Finance & FP&A',/finance|financial|fp&a|treasury|investor relations|billing/],
+ ['Legal','Legal & Compliance',/legal|counsel|attorney|paralegal|compliance|regulatory|policy|privacy/],
+ ['Operations','Business Operations',/business operations|bizops|strategy|chief of staff|operations analyst|business analyst|\bstrategic\b/],
+ ['Operations','Operations',/operations|procurement|supply|logistics|workplace|facilities|office|\bops\b|executive assistant|administrative/],
+ ['IT','IT & Systems',/\bit\b|help ?desk|systems administrator|corporate engineering|enterprise applications|salesforce (admin|developer)|technical support/],
+ ['Software Engineering','Software Engineer',/engineer|developer|programmer|architect|software|\bswe\b|coding/]
+];
+var DOMAINS = ['Software Engineering','Data','AI & ML','Product','Design','Sales','Customer Success','Marketing','Finance','Operations','People','Legal','Security','IT','Other'];
+function taxonomy(t){ t = String(t||'').toLowerCase(); for(var i=0;i<TAX.length;i++){ if(TAX[i][2].test(t)) return TAX[i]; } return ['Other','Other',null]; }
+function category(t){ return taxonomy(t)[0]; }
 function level(t){
   t = t.toLowerCase();
   if(/intern\b|internship|co-op/.test(t)) return 'Intern';
@@ -666,12 +875,19 @@ function level(t){
   if(/senior|\bsr\b|\bsr\.|\biii\b/.test(t)) return 'Senior';
   return 'Mid';
 }
+function typeFromTitle(t){ t = t.toLowerCase(); return /\bintern(ship)?s?\b|co-?op\b/.test(t) ? 'Internship' : /\bcontract(or)?\b|\btemporary\b|\btemp\b/.test(t) ? 'Contract' : /part[- ]time/.test(t) ? 'Part Time' : ''; }
+var CURSYM = {USD:'$', CAD:'CA$', AUD:'A$', GBP:'£', EUR:'€'};
+function fmtMoney(v, cur){ var s = CURSYM[cur] || (cur ? cur+' ' : '$'); return s + (v >= 1000 ? Math.round(v/1000)+'K' : Math.round(v)); }
 function mk(src, board, company, id, title, loc, posted, url, opts){
   opts = opts || {};
   title = (title||'').trim();
+  var tx = taxonomy(title);
   var j = {key: src+':'+board+':'+id, src:src, board:board, id:String(id), title:title, company:company,
            location: loc || 'Location not listed', posted: posted || 0, url: url, dept: opts.dept || '',
-           remote: !!opts.remote, cat: category(title), lvl: level(title)};
+           remote: !!opts.remote, domain: tx[0], sub: tx[1], cat: tx[0], lvl: level(title),
+           type: opts.type || typeFromTitle(title), mode: opts.mode || '', salary: opts.salary || ''};
+  if(!j.mode){ var l = (j.location + ' ' + title).toLowerCase(); j.mode = /\bhybrid\b/.test(l) ? 'Hybrid' : (j.remote || /\bremote\b/.test(l)) ? 'Remote' : ''; }
+  if(j.mode === 'Remote') j.remote = true;
   j.reg = regions(j.location + ' ' + (opts.extraLoc||''), opts.country, j.remote);
   return j;
 }
@@ -685,20 +901,30 @@ var NORM = {
     });
   },
   ashby: function(c, d){
+    var TYPES = {FullTime:'Full Time', PartTime:'Part Time', Intern:'Internship', Contract:'Contract', Temporary:'Temporary'};
+    var MODES = {Remote:'Remote', Hybrid:'Hybrid', OnSite:'On-site', Onsite:'On-site'};
     return (d.jobs||[]).filter(function(x){ return x.isListed !== false; }).map(function(x){
       var sec = (x.secondaryLocations||[]).map(function(s){ return typeof s === 'string' ? s : (s.location||''); }).join(' · ');
+      var comp = x.compensation && (x.compensation.compensationTierSummary || x.compensation.scrapeableCompensationSalarySummary) || '';
+      comp = String(comp).split('•')[0].trim();
       var j = mk('ashby', c.board, c.name, x.id, x.title, x.location + (sec ? ' · ' + sec : ''), Date.parse(x.publishedAt)||0,
-                 x.jobUrl, {dept:x.department, remote:x.isRemote, extraLoc:x.address && (x.address.postalAddress ? JSON.stringify(x.address.postalAddress) : String(x.address))});
+                 x.jobUrl, {dept:x.department, remote:x.isRemote, type:TYPES[x.employmentType]||'', mode:MODES[x.workplaceType] || (x.isRemote ? 'Remote' : ''),
+                 salary:comp, extraLoc:x.address && (x.address.postalAddress ? JSON.stringify(x.address.postalAddress) : String(x.address))});
       if(x.descriptionPlain) DESC[j.key] = {plain:x.descriptionPlain, apply:x.applyUrl};
       return j;
     });
   },
   lever: function(c, d){
+    var MODES = {remote:'Remote', hybrid:'Hybrid', onsite:'On-site', 'on-site':'On-site'};
     return (Array.isArray(d)?d:[]).map(function(x){
       var cat = x.categories || {};
       var loc = (cat.allLocations && cat.allLocations.join(' · ')) || cat.location || '';
+      var cm = String(cat.commitment||''), type = /full/i.test(cm) ? 'Full Time' : /part/i.test(cm) ? 'Part Time' : /intern/i.test(cm) ? 'Internship' : /contract|temp/i.test(cm) ? 'Contract' : cm;
+      var sr = x.salaryRange, sal = '';
+      if(sr && sr.min && sr.max && !/hour/i.test(sr.interval||'')) sal = fmtMoney(sr.min, sr.currency) + ' – ' + fmtMoney(sr.max, sr.currency) + (sr.currency ? ' ' + sr.currency : '');
       var j = mk('lever', c.board, c.name, x.id, x.text, loc, x.createdAt||0, x.hostedUrl,
-                 {dept:cat.department || cat.team, remote:(x.workplaceType||'')==='remote', country:x.country});
+                 {dept:cat.department || cat.team, remote:(x.workplaceType||'')==='remote', country:x.country,
+                  type:type, mode:MODES[String(x.workplaceType||'').toLowerCase()]||'', salary:sal});
       DESC[j.key] = {plain:x.descriptionPlain||'', lists:x.lists||[], extra:x.additionalPlain||'', apply:x.applyUrl};
       return j;
     });
@@ -706,7 +932,7 @@ var NORM = {
 };
 var URLS = {
   gh: function(b){ return 'https://boards-api.greenhouse.io/v1/boards/'+b+'/jobs'; },
-  ashby: function(b){ return 'https://api.ashbyhq.com/posting-api/job-board/'+b; },
+  ashby: function(b){ return 'https://api.ashbyhq.com/posting-api/job-board/'+b+'?includeCompensation=true'; },
   lever: function(b){ return 'https://api.lever.co/v0/postings/'+b+'?mode=json'; }
 };
 var jobsPromise = null;
@@ -716,7 +942,7 @@ function loadJobs(force){
   return jobsPromise;
 }
 function loadJobsNow(force){
-  var cached = ssGet('tp_jobs_v1', null);
+  var cached = ssGet('tp_jobs_v2', null);
   if(!force && cached && Date.now() - cached.at < 30*60*1000 && cached.jobs && cached.jobs.length){
     JOBS = cached.jobs; jobsMeta = {loaded:cached.loaded, failed:cached.failed, at:cached.at, loading:false};
     return Promise.resolve();
@@ -731,7 +957,7 @@ function loadJobsNow(force){
   })).then(function(){
     all.sort(function(a,b){ return b.posted - a.posted; });
     JOBS = all; jobsMeta.at = Date.now(); jobsMeta.loading = false;
-    ssSet('tp_jobs_v1', {at:jobsMeta.at, loaded:jobsMeta.loaded, failed:jobsMeta.failed, jobs:JOBS});
+    ssSet('tp_jobs_v2', {at:jobsMeta.at, loaded:jobsMeta.loaded, failed:jobsMeta.failed, jobs:JOBS});
   });
 }
 function findJob(key){ return JOBS.filter(function(j){ return j.key === key; })[0]; }
@@ -739,19 +965,26 @@ function findJob(key){ return JOBS.filter(function(j){ return j.key === key; })[
 /* description — rendered as plain text blocks, never as third-party HTML */
 function htmlToBlocks(html){
   var doc = new DOMParser().parseFromString(html, 'text/html');
-  var out = [], nodes = doc.body.querySelectorAll('h1,h2,h3,h4,h5,p,li');
+  var out = [], nodes = doc.body.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li');
   [].forEach.call(nodes, function(n){
     if(n.tagName === 'P' && n.closest('li')) return;
     var t = n.textContent.replace(/\s+/g,' ').trim(); if(!t) return;
-    out.push({k: n.tagName === 'LI' ? 'li' : /^H/.test(n.tagName) ? 'h' : 'p', t:t});
+    var k = n.tagName === 'LI' ? 'li' : /^H/.test(n.tagName) ? 'h' : 'p';
+    if(k === 'p'){
+      // <p><strong>About the role</strong></p> is a heading in disguise
+      var bold = n.querySelector('strong,b');
+      if(bold && bold.textContent.replace(/\s+/g,' ').trim() === t && t.length <= 80) k = 'h';
+      else if(t.length <= 60 && /:$/.test(t)) k = 'h';
+    }
+    out.push({k:k, t:k === 'h' ? t.replace(/:\s*$/,'') : t});
   });
   if(!out.length) plainToBlocks(doc.body.textContent||'').forEach(function(b){ out.push(b); });
   return out;
 }
 function plainToBlocks(s){
   return String(s||'').split(/\n+/).map(function(l){ return l.trim(); }).filter(Boolean).map(function(l){
-    if(/^[•\-\*·▪◦]\s*/.test(l)) return {k:'li', t:l.replace(/^[•\-\*·▪◦]\s*/,'')};
-    if(l.length < 60 && /:$/.test(l)) return {k:'h', t:l.replace(/:$/,'')};
+    if(/^[•\-\*·▪◦–]\s*/.test(l)) return {k:'li', t:l.replace(/^[•\-\*·▪◦–]\s*/,'')};
+    if((l.length <= 60 && /:$/.test(l)) || (l.length <= 50 && !/[.!?,;]$/.test(l) && headKind(l))) return {k:'h', t:l.replace(/:$/,'')};
     return {k:'p', t:l};
   });
 }
@@ -769,9 +1002,14 @@ function decodeEntities(s){ var t=document.createElement('textarea'); t.innerHTM
 function loadDesc(job){
   if(DESC[job.key] && (DESC[job.key].blocks || DESC[job.key].plain != null)) return Promise.resolve(DESC[job.key]);
   if(job.src === 'gh'){
-    return fetch('https://boards-api.greenhouse.io/v1/boards/'+job.board+'/jobs/'+job.id)
+    return fetch('https://boards-api.greenhouse.io/v1/boards/'+job.board+'/jobs/'+job.id+'?pay_transparency=true')
       .then(function(r){ if(!r.ok) throw 0; return r.json(); })
-      .then(function(d){ DESC[job.key] = {blocks: htmlToBlocks(decodeEntities(d.content||'')), apply: d.absolute_url}; return DESC[job.key]; });
+      .then(function(d){
+        var pr = (d.pay_input_ranges||[])[0], sal = '';
+        if(pr && pr.min_cents && pr.max_cents) sal = fmtMoney(pr.min_cents/100, pr.currency_type) + ' – ' + fmtMoney(pr.max_cents/100, pr.currency_type) + (pr.currency_type ? ' ' + pr.currency_type : '');
+        DESC[job.key] = {blocks: htmlToBlocks(decodeEntities(d.content||'')), apply: d.absolute_url, salary: sal};
+        return DESC[job.key];
+      });
   }
   // Ashby/Lever descriptions come with the board — refetch that one board if the page was reloaded
   var c = CONFIG.COMPANIES.filter(function(x){ return x.src === job.src && x.board === job.board; })[0];
@@ -787,6 +1025,77 @@ function descBlocks(d){
   return bs;
 }
 function descText(d){ return descBlocks(d).map(function(b){ return b.t; }).join('\n'); }
+
+/* ---------- sections, salary, experience: read out of the posting ---------- */
+var SECRX = [
+  ['overview', /^(about (the|this) (role|job|position|opportunity|team)|the role|role overview|the opportunity|(position|job|role) (summary|overview|description)|overview|summary|your role|the position|what is the role)\b/i],
+  ['resp', /(responsibilit|what you('|’)?ll (do|be doing|work on|own|achieve)|what you will (do|be doing)|in this role|day[- ]to[- ]day|your impact|what you('|’)?ll accomplish|key duties|duties|^you will\b|the work|how you('|’)?ll contribute|what you('|’)?ll be working on)/i],
+  ['req', /(requirement|qualification|what you('|’)?ll (bring|need)|what we('|’)?re looking for|what we look for|^you (have|bring|might be|may be|should have|are)\b|who you are|about you|skills|experience|must[- ]have|nice[- ]to[- ]have|preferred|bonus|ideal candidate|you('|’)?ll thrive|what makes you|we('|’)?d love)/i],
+  ['ben', /(benefit|perks|what we offer|compensation|salary|pay (range|transparency)|total rewards|why join|why you('|’)?ll love|we offer|what('|’)?s in it for you|base pay|annual base|our offer)/i],
+  ['about', /^(about\b|who we are|our (mission|company|story|team|culture)|company overview|life at|why [a-z0-9 ]{2,24}\??$)/i]
+];
+function headKind(t){ t = String(t).replace(/[:：]\s*$/,'').trim(); if(t.length > 90) return null; for(var i=0;i<SECRX.length;i++){ if(SECRX[i][1].test(t)) return SECRX[i][0]; } return null; }
+function isAboutish(t, co){
+  var l = t.toLowerCase();
+  return (co && l.indexOf(co) > -1 && /\b(is|are|builds?|helps?|mission|founded|leading|platform|company|powers?)\b/.test(l)) || /^(at [a-z]|we('|’)re |we are |founded|our mission)/.test(l);
+}
+function sectionize(bs, j){
+  var S = {about:null, overview:null, resp:null, req:null, ben:null, other:[]}, cur = 'pre', pre = [];
+  bs.forEach(function(b){
+    if(b.k === 'h'){
+      var k = headKind(b.t);
+      if(k){ if(S[k]) S[k].items.push({k:'sh', t:b.t}); else S[k] = {title:b.t, items:[]}; cur = k; return; }
+      cur = {title:b.t, items:[]}; S.other.push(cur); return;
+    }
+    if(cur === 'pre') pre.push(b);
+    else if(typeof cur === 'string') S[cur].items.push(b);
+    else cur.items.push(b);
+  });
+  var co = String(j.company||'').toLowerCase(), i0 = 0;
+  if(!S.about){ var ab = []; while(i0 < pre.length && pre[i0].k === 'p' && isAboutish(pre[i0].t, co)){ ab.push(pre[i0]); i0++; } if(ab.length) S.about = {title:'About the company', items:ab}; }
+  var restPre = pre.slice(i0);
+  if(restPre.length){ if(!S.overview) S.overview = {title:'Job overview', items:restPre}; else S.overview.items = restPre.concat(S.overview.items); }
+  S.other = S.other.filter(function(o){ return o.items.length; });
+  return S;
+}
+var SAL_RX = /(US\$|CA\$|C\$|A\$|AU\$|\$|£|€)\s?(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d{2,3}(?:\.\d)?\s?[kK]|\d{5,7})\s*(?:-|–|—|to)\s*(?:US\$|CA\$|C\$|A\$|AU\$|\$|£|€)?\s?(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d{2,3}(?:\.\d)?\s?[kK]|\d{5,7})(?:\s*(USD|CAD|GBP|AUD|EUR))?/i;
+function salaryFromText(t){
+  var m = SAL_RX.exec(t||''); if(!m) return '';
+  var sym = m[1].toUpperCase(), cur = m[4] ? m[4].toUpperCase() : (sym === '£' ? 'GBP' : sym === '€' ? 'EUR' : /CA|C\$/.test(sym) ? 'CAD' : /A\$|AU/.test(sym) ? 'AUD' : 'USD');
+  function n(x){ x = x.replace(/,/g,'').trim(); var v = parseFloat(x); if(/k$/i.test(x)) v *= 1000; return v; }
+  var a = n(m[2]), b = n(m[3]);
+  if(!(a >= 15000 && b >= a && b < 3000000)) return '';   // skips hourly rates and stray numbers
+  return fmtMoney(a, cur) + ' – ' + fmtMoney(b, cur) + ' ' + cur;
+}
+var ENR = {}, ENRP = {}, MATCHC = {};
+function enrich(j, d){
+  var bs = descBlocks(d), text = bs.map(function(b){ return b.t; }).join('\n'), low = text.toLowerCase();
+  var S = sectionize(bs, j);
+  var e = {loaded:true, text:text, sections:S, bs:bs};
+  e.exp = jdYears(text);
+  var co = String(j.company||'').toLowerCase();
+  e.skills = skillsIn(j.title + '\n' + text).filter(function(s){ return s.name.toLowerCase() !== co; }).sort(function(a,b){ return b.n - a.n; }).slice(0, 15).map(function(s){ return s.name; });
+  e.salary = j.salary || d.salary || salaryFromText(text) || '';
+  e.type = j.type || (/\bpart[- ]time\b/.test(low) && !/\bfull[- ]time\b/.test(low) ? 'Part Time' : /\bfull[- ]time\b/.test(low) ? 'Full Time' : '');
+  e.mode = j.mode || (/\bhybrid\b/.test(low) ? 'Hybrid' : /\b(fully remote|remote[- ]first|100% remote|work from anywhere|remote-friendly)\b/.test(low) ? 'Remote' : /\b(in[- ]office|on-?site|in person|days a week in|days per week in)\b/.test(low) ? 'On-site' : '');
+  var pick = function(sec){ return sec && sec.items.filter(function(b){ return b.k === 'p' && b.t.length > 40; })[0]; };
+  var ov = pick(S.overview) || pick(S.about) || bs.filter(function(b){ return b.k === 'p' && b.t.length > 60; })[0];
+  e.overview = ov ? (ov.t.length > 230 ? ov.t.slice(0, 227).replace(/\s+\S*$/,'') + '…' : ov.t) : '';
+  return e;
+}
+var NOENR = {loaded:true, failed:true, text:'', sections:{other:[]}, skills:[], bs:[]};
+function getEnr(j){
+  if(ENR[j.key]) return Promise.resolve(ENR[j.key]);
+  if(!ENRP[j.key]){
+    ENRP[j.key] = loadDesc(j).then(function(d){ ENR[j.key] = enrich(j, d); }, function(){ ENR[j.key] = NOENR; })
+      .then(function(){ delete ENRP[j.key]; refreshCard(j.key); return ENR[j.key]; });
+  }
+  return ENRP[j.key];
+}
+function typeOf(j){ var e = ENR[j.key]; return (e && e.type) || j.type || (e ? 'Not specified' : '…'); }
+function modeOf(j){ var e = ENR[j.key]; return (e && e.mode) || j.mode || (e ? 'Not specified' : '…'); }
+function salaryOf(j){ var e = ENR[j.key]; return (e && e.salary) || j.salary || (e ? 'Not disclosed' : '…'); }
+function expOf(j){ var e = ENR[j.key]; return e ? (e.exp != null ? e.exp + '+ years' : 'Not specified') : '…'; }
 
 /* =====================================================================
    resume + honest match score
@@ -837,8 +1146,11 @@ function yearsIn(text){
   return Math.max(0, Math.min(40, end - start));
 }
 function jdYears(text){
-  var m = /(\d{1,2})\s*\+?\s*(?:-|–|to)?\s*(\d{1,2})?\s*\+?\s*years?/i.exec(text||'');
-  return m ? +m[1] : null;
+  var t = String(text||'');
+  var m = /(\d{1,2})\s*\+?\s*(?:-|–|to)?\s*(?:\d{1,2})?\s*\+?\s*(?:years?|yrs?)\b[^.\n]{0,70}?(?:experience|exp\b|industry|professional|relevant|working|hands-on|building|in (?:a|an|the)\b)/i.exec(t)
+       || /(?:experience|exp)\b[^.\n]{0,30}?(\d{1,2})\s*\+?\s*(?:years?|yrs?)/i.exec(t);
+  if(!m) return null;
+  var n = +m[1]; return n >= 1 && n <= 20 ? n : null;
 }
 var TITLE_STOP = /\b(senior|sr|junior|jr|staff|principal|lead|head|of|and|the|ii|iii|iv|i|new|grad|associate|intern|manager|remote|us|usa)\b/gi;
 function titleTokens(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(TITLE_STOP,' ').split(/\s+/).filter(function(w){ return w.length > 1; }); }
@@ -849,7 +1161,8 @@ function titleFit(jobTitle, target){
   return hit / Math.max(a.length, 1);
 }
 function match(job, jdText, resumeText, target){
-  var jd = skillsIn(job.title + '\n' + jdText).sort(function(a,b){ return b.n - a.n; }).slice(0, 15);
+  var co = String(job.company||'').toLowerCase();   // “Figma” at Figma is the employer, not a skill
+  var jd = skillsIn(job.title + '\n' + jdText).filter(function(s){ return s.name.toLowerCase() !== co; }).sort(function(a,b){ return b.n - a.n; }).slice(0, 15);
   var rs = skillsIn(resumeText).map(function(s){ return s.name; });
   var hit = jd.filter(function(s){ return rs.indexOf(s.name) > -1; }).map(function(s){ return s.name; });
   var miss = jd.filter(function(s){ return rs.indexOf(s.name) < 0; }).map(function(s){ return s.name; });
@@ -875,7 +1188,7 @@ function readFile(f){
         if(!window.pdfjsLib) return rej('The PDF reader didn’t load — check your connection.');
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         pdfjsLib.getDocument({data:fr.result}).promise.then(function(doc){
-          var ps = []; for(var i=1;i<=doc.numPages;i++) ps.push(doc.getPage(i).then(function(p){ return p.getTextContent(); }).then(function(tc){ return tc.items.map(function(x){ return x.str; }).join(' '); }));
+          var ps = []; for(var i=1;i<=doc.numPages;i++) ps.push(doc.getPage(i).then(function(p){ return p.getTextContent(); }).then(function(tc){ return tc.items.map(function(x){ return x.str + (x.hasEOL ? '\n' : ' '); }).join(''); }));
           return Promise.all(ps).then(function(pp){ res({name:f.name, text:pp.join('\n'), pages:doc.numPages}); });
         }).catch(function(){ rej('Couldn’t read that PDF.'); });
       } else if(ext === 'docx'){
@@ -931,53 +1244,128 @@ function render(soft){
     lastView = route.name;
   }
   if(route.job) openJob(route.job); else closeDrawer(true);
+  updateFab();
 }
 window.addEventListener('hashchange', function(){ render(true); });
 
 /* ---------- Jobs ---------- */
 var F = lsGet('tp_filters', {q:'', region:'ours', cat:'', lvl:'', age:'30', sort:'new'});
+if(F.cat && DOMAINS.indexOf(F.cat) < 0) F.cat = '';
+var VIEW = lsGet('tp_view', 'cards');
+var PASSED = lsGet('tp_passed', {});
+var undoStack = [];
 var shown = 30;
+
+function scoreCol(s){ return s >= 75 ? '#0a7f46' : s >= 50 ? '#0938d5' : s >= 30 ? '#b45309' : '#be123c'; }
+function lvlLabel(l){ return l === 'Lead+' ? 'Lead & above' : l === 'Entry' ? 'Entry level' : l === 'Intern' ? 'Internship' : l + ' level'; }
+function trunc(s, n){ s = String(s||''); return s.length > n ? s.slice(0, n-1) + '…' : s; }
+function fmtDate(ts){ try{ return new Date(ts).toLocaleDateString('en-GB', {day:'2-digit', month:'long', year:'numeric'}); }catch(e){ return ''; } }
+function matchFor(j){
+  var rt = resumeText(); if(!rt) return null;
+  var e = ENR[j.key]; if(!e || e.failed) return null;
+  var k = j.key + '|' + rt.length;
+  if(!(k in MATCHC)) MATCHC[k] = match(j, e.text, rt, state.profile && state.profile.target_role).score;
+  return MATCHC[k];
+}
+
+/* ---- smart search: plain English → filters. Runs in the browser; no AI service, nothing sent anywhere ---- */
+var STATES = {alabama:'AL',alaska:'AK',arizona:'AZ',arkansas:'AR',california:'CA',colorado:'CO',connecticut:'CT',delaware:'DE',florida:'FL',georgia:'GA',hawaii:'HI',idaho:'ID',illinois:'IL',indiana:'IN',iowa:'IA',kansas:'KS',kentucky:'KY',louisiana:'LA',maine:'ME',maryland:'MD',massachusetts:'MA',michigan:'MI',minnesota:'MN',mississippi:'MS',missouri:'MO',montana:'MT',nebraska:'NE',nevada:'NV','new hampshire':'NH','new jersey':'NJ','new mexico':'NM','north carolina':'NC','north dakota':'ND',ohio:'OH',oklahoma:'OK',oregon:'OR',pennsylvania:'PA','rhode island':'RI','south carolina':'SC','south dakota':'SD',tennessee:'TN',texas:'TX',utah:'UT',vermont:'VT',virginia:'VA','washington state':'WA','west virginia':'WV',wisconsin:'WI',wyoming:'WY',ontario:'ON','british columbia':'BC',quebec:'QC',alberta:'AB'};
+var CITIES = {'new york':['new york','nyc','brooklyn','manhattan'],'nyc':['new york','nyc'],'san francisco':['san francisco'],'sf':['san francisco'],'bay area':['san francisco','bay area','palo alto','mountain view','menlo park','sunnyvale','san jose','oakland','san mateo','redwood city'],'silicon valley':['palo alto','mountain view','menlo park','sunnyvale','san jose','santa clara','cupertino'],'seattle':['seattle','bellevue','redmond','kirkland'],'austin':['austin'],'boston':['boston','cambridge'],'chicago':['chicago'],'los angeles':['los angeles','santa monica','culver city'],'la':['los angeles','santa monica'],'denver':['denver','boulder'],'atlanta':['atlanta'],'miami':['miami'],'washington dc':['washington, dc','washington dc','district of columbia'],'dc':['washington, dc','washington dc'],'dallas':['dallas'],'houston':['houston'],'toronto':['toronto'],'vancouver':['vancouver'],'montreal':['montreal','montréal'],'london':['london'],'dublin':['dublin'],'sydney':['sydney'],'melbourne':['melbourne'],'san diego':['san diego'],'portland':['portland'],'philadelphia':['philadelphia'],'pittsburgh':['pittsburgh'],'salt lake city':['salt lake'],'phoenix':['phoenix'],'raleigh':['raleigh','durham']};
+var COUNTRIES = [[/\b(usa|u\.s\.a?\.?|united states|america)\b/,'US','United States'],[/\b(uk|united kingdom|britain|england)\b/,'UK','United Kingdom'],[/\bcanada\b/,'CA','Canada'],[/\baustralia\b/,'AU','Australia']];
+var DOMAIN_WORDS = [[/\b(software|engineering|developers?|coding|swe)\b/,'Software Engineering'],[/\bdata\b/,'Data'],[/\b(ai|ml|machine learning)\b/,'AI & ML'],[/\b(product|pm)\b/,'Product'],[/\bdesign(ers?)?\b/,'Design'],[/\bsales\b/,'Sales'],[/\bmarketing\b/,'Marketing'],[/\b(finance|accounting)\b/,'Finance'],[/\b(operations|ops)\b/,'Operations'],[/\b(hr|people|recruiting)\b/,'People'],[/\blegal\b/,'Legal'],[/\bsecurity\b/,'Security'],[/\b(customer success|support)\b/,'Customer Success']];
+var Q_STOP = /\b(jobs?|roles?|positions?|openings?|in|at|for|near|with|and|or|the|a|an|me|show|find|looking|want|need|i|am|my|any|some|level|experience|exp|of|based|work|working|from|home|hiring|companies|company|opportunit(y|ies)|new|latest|fresh|posted|only|that|are|is|to|who|which|role|engineer|engineers|developer|developers)\b/g;
+var SKILLWORDS = null;
+function skillWord(w){
+  if(!SKILLWORDS){ SKILLWORDS = {}; SKILLS.forEach(function(s){ s.forEach(function(t, i){ if(i) SKILLWORDS[t.toLowerCase()] = s[0]; }); }); }
+  return SKILLWORDS[w] || null;
+}
+function title1(s){ return s.replace(/\b\w/g, function(x){ return x.toUpperCase(); }); }
+function parseQuery(raw){
+  var q = ' ' + String(raw||'').toLowerCase().replace(/[“”"]/g,'').replace(/\s+/g,' ') + ' ';
+  var p = {chips:[], words:[], skills:[]}, rest = q;
+  if(!q.trim()) return p;
+  function eat(rx){ rest = rest.replace(new RegExp(rx.source, 'g'), ' '); }
+  if(/\bremote\b/.test(q)){ p.mode = 'Remote'; p.chips.push('Remote'); eat(/\b(fully )?remote\b/); }
+  else if(/\bhybrid\b/.test(q)){ p.mode = 'Hybrid'; p.chips.push('Hybrid'); eat(/\bhybrid\b/); }
+  else if(/\b(on-?site|in[- ]office|in person)\b/.test(q)){ p.mode = 'On-site'; p.chips.push('On-site'); eat(/\b(on-?site|in[- ]office|in person)\b/); }
+  var L = [[/\b(intern|interns|internships?|co-?op)\b/,'Intern'],[/\b(entry[- ]level|entry|junior|jr|new grads?|new graduates?|graduates?|freshers?|early career)\b/,'Entry'],[/\b(mid[- ]level|mid)\b/,'Mid'],[/\b(senior|sr)\b/,'Senior'],[/\b(staff|principal|lead|director|head of)\b/,'Lead+']];
+  for(var i=0;i<L.length;i++){ if(L[i][0].test(q)){ p.lvl = L[i][1]; p.chips.push(lvlLabel(L[i][1])); eat(L[i][0]); break; } }
+  var ym = /(\d{1,2})\s*\+?\s*(?:-|to)?\s*\d{0,2}\s*(?:years?|yrs?)/.exec(q);
+  if(ym){ p.years = +ym[1]; p.chips.push('Up to ~' + p.years + ' yrs required'); eat(/\d{1,2}\s*\+?\s*(?:-|to)?\s*\d{0,2}\s*(?:years?|yrs?)( of experience)?/); }
+  if(/\b(today|last 24 hours|past day|past 24 hours)\b/.test(q)){ p.age = 1; p.chips.push('Posted today'); eat(/\b(posted )?(today|last 24 hours|past day|past 24 hours)\b/); }
+  else if(/\b(this week|last week|past week|last 7 days)\b/.test(q)){ p.age = 7; p.chips.push('Posted this week'); eat(/\b(posted )?(this week|last week|past week|last 7 days)\b/); }
+  else { var dm = /\blast (\d{1,2}) days\b/.exec(q); if(dm){ p.age = +dm[1]; p.chips.push('Last ' + dm[1] + ' days'); eat(/\blast \d{1,2} days\b/); } }
+  Object.keys(CITIES).some(function(c){ var rx = new RegExp('\\b' + c + '\\b'); if(rx.test(rest)){ p.city = CITIES[c]; p.chips.push(c.length <= 3 ? c.toUpperCase() : title1(c)); eat(rx); return true; } return false; });
+  if(!p.city) Object.keys(STATES).some(function(s){ var rx = new RegExp('\\b' + s + '\\b'); if(rx.test(rest)){ p.state = STATES[s]; p.stateName = s.replace(' state',''); p.chips.push(title1(p.stateName)); eat(rx); return true; } return false; });
+  COUNTRIES.some(function(c){ if(c[0].test(rest)){ p.region = c[1]; p.chips.push(c[2]); eat(c[0]); return true; } return false; });
+  for(var t=0;t<TAX.length-1;t++){ if(TAX[t][2].test(rest)){ p.domain = TAX[t][0]; p.sub = TAX[t][1]; p.chips.push(TAX[t][1]); eat(TAX[t][2]); break; } }
+  if(!p.domain){ for(var d=0;d<DOMAIN_WORDS.length;d++){ if(DOMAIN_WORDS[d][0].test(rest)){ p.domain = DOMAIN_WORDS[d][1]; p.chips.push(p.domain); eat(DOMAIN_WORDS[d][0]); break; } } }
+  rest.replace(Q_STOP, ' ').replace(/[^a-z0-9+#.&\- ]/g, ' ').split(/\s+/).forEach(function(w){
+    w = w.replace(/^[.\-]+|[.\-]+$/g, ''); if(w.length < 2) return;
+    var sk = skillWord(w);
+    if(sk){ p.skills.push(sk); p.chips.push('Skill: ' + sk); } else { p.words.push(w); p.chips.push('“' + w + '”'); }
+  });
+  return p;
+}
 function filtered(){
-  var q = (F.q||'').trim().toLowerCase(), now = Date.now(), maxAge = F.age === 'any' ? Infinity : +F.age;
+  var p = parseQuery(F.q), now = Date.now();
+  var maxAge = p.age || (F.age === 'any' ? Infinity : +F.age);
   var target = state.profile && state.profile.target_role;
+  var cap = p.years != null ? (p.years <= 2 ? ['Senior','Lead+'] : p.years <= 4 ? ['Lead+'] : []) : [];
   var out = JOBS.filter(function(j){
-    if(F.region === 'ours'){ if(!j.reg.some(function(r){ return r==='US'||r==='CA'||r==='UK'||r==='AU'; })) return false; }
+    if(p.region){ if(j.reg.indexOf(p.region) < 0) return false; }
+    else if(F.region === 'ours'){ if(!j.reg.some(function(r){ return r==='US'||r==='CA'||r==='UK'||r==='AU'; })) return false; }
     else if(F.region && F.region !== 'all' && j.reg.indexOf(F.region) < 0) return false;
-    if(F.cat && j.cat !== F.cat) return false;
+    if(F.cat && j.domain !== F.cat) return false;
     if(F.lvl && j.lvl !== F.lvl) return false;
+    if(p.lvl && j.lvl !== p.lvl) return false;
+    if(cap.indexOf(j.lvl) > -1) return false;
+    if(p.years != null){ var e = ENR[j.key]; if(e && e.exp != null && e.exp > p.years + 1) return false; }
     if(j.posted && (now - j.posted)/864e5 > maxAge) return false;
-    if(q && (j.title + ' ' + j.company + ' ' + j.location + ' ' + j.dept).toLowerCase().indexOf(q) < 0) return false;
+    if(p.mode){ var mo = modeOf(j); if(p.mode === 'On-site' ? (mo === 'Remote' || mo === 'Hybrid') : mo !== p.mode) return false; }
+    var loc = j.location.toLowerCase();
+    if(p.city && !p.city.some(function(c){ return loc.indexOf(c) > -1; })) return false;
+    if(p.state && !(new RegExp(',\\s*' + p.state + '\\b').test(j.location) || loc.indexOf(p.stateName) > -1)) return false;
+    if(p.domain && j.domain !== p.domain) return false;
+    if(p.sub && j.sub !== p.sub) return false;
+    if(p.words.length){ var hay = (j.title+' '+j.company+' '+j.location+' '+j.dept+' '+j.sub).toLowerCase(); if(!p.words.every(function(w){ return hay.indexOf(w) > -1; })) return false; }
     return true;
   });
   if(F.sort === 'fit' && target){
     out = out.map(function(j){ return [j, titleFit(j.title, target) || 0]; })
-             .sort(function(a,b){ return b[1]-a[1] || b[0].posted-a[0].posted; }).map(function(p){ return p[0]; });
+             .sort(function(a,b){ return b[1]-a[1] || b[0].posted-a[0].posted; }).map(function(x){ return x[0]; });
+  }
+  if(p.skills.length){   // skills rank roles up rather than hiding the ones we haven't read yet
+    out = out.map(function(j, i){ var e = ENR[j.key], hay = (j.title + ' ' + (e ? e.skills.join(' ') : '')).toLowerCase();
+      return [j, p.skills.filter(function(s){ return hay.indexOf(s.toLowerCase()) > -1; }).length, i]; })
+      .sort(function(a,b){ return b[1]-a[1] || a[2]-b[2]; }).map(function(x){ return x[0]; });
   }
   return out;
 }
 function opt(v, l, cur){ return '<option value="'+v+'"'+(cur===v?' selected':'')+'>'+l+'</option>'; }
 function vJobs(v){
-  var cats = ['Engineering','Data & AI','Product','Design','Sales','Marketing','Finance & Ops','Customer','People','Security','Other'];
   var hasTarget = !!(state.profile && state.profile.target_role);
   v.innerHTML =
-    '<label class="search"><span class="sr">Search jobs</span>'+I.search+'<input id="q" type="search" placeholder="Search a role, company or keyword — e.g. data analyst" value="'+esc(F.q)+'" autocomplete="off"></label>'+
+    '<label class="search smart"><span class="sr">Smart search</span>'+I.spark+'<input id="q" type="search" placeholder="Describe the job — e.g. remote data analyst, entry level, New York" value="'+esc(F.q)+'" autocomplete="off" enterkeyhint="search">'+I.search+'</label>'+
+    '<div class="qchips" id="qchips"></div>'+
     '<div class="filters">'+
       '<label class="sel"><span class="sr">Region</span><select id="fRegion">'+opt('ours','US · UK · Canada · Australia',F.region)+opt('US','United States',F.region)+opt('UK','United Kingdom',F.region)+opt('CA','Canada',F.region)+opt('AU','Australia',F.region)+opt('Remote','Remote',F.region)+opt('all','All locations',F.region)+'</select></label>'+
-      '<label class="sel"><span class="sr">Category</span><select id="fCat">'+opt('','All categories',F.cat)+cats.map(function(c){ return opt(c,c,F.cat); }).join('')+'</select></label>'+
+      '<label class="sel"><span class="sr">Field</span><select id="fCat">'+opt('','All fields',F.cat)+DOMAINS.map(function(c){ return opt(c,c,F.cat); }).join('')+'</select></label>'+
       '<label class="sel"><span class="sr">Level</span><select id="fLvl">'+opt('','All levels',F.lvl)+opt('Intern','Internship',F.lvl)+opt('Entry','Entry level',F.lvl)+opt('Mid','Mid level',F.lvl)+opt('Senior','Senior',F.lvl)+opt('Lead+','Lead & above',F.lvl)+'</select></label>'+
       '<label class="sel"><span class="sr">Posted</span><select id="fAge">'+opt('1','Last 24 hours',F.age)+opt('3','Last 3 days',F.age)+opt('7','Last 7 days',F.age)+opt('30','Last 30 days',F.age)+opt('any','Any time',F.age)+'</select></label>'+
       '<label class="sel"><span class="sr">Sort</span><select id="fSort">'+opt('new','Most recent',F.sort)+(hasTarget?opt('fit','Best fit for my role',F.sort):'')+'</select></label>'+
+      '<div class="seg" role="group" aria-label="View"><button type="button" data-dk="view" data-v="cards" class="'+(VIEW==='cards'?'on':'')+'" aria-pressed="'+(VIEW==='cards')+'">'+I.cards+'<span>Cards</span></button><button type="button" data-dk="view" data-v="list" class="'+(VIEW==='list'?'on':'')+'" aria-pressed="'+(VIEW==='list')+'">'+I.listv+'<span>List</span></button></div>'+
     '</div>'+
     '<div class="meta-row" id="metaRow"></div>'+
-    '<div class="jlist" id="jlist"></div>'+
+    '<div id="jlist"></div>'+
     '<div class="more" id="moreWrap"></div>';
   var deb;
-  $('#q').addEventListener('input', function(e){ clearTimeout(deb); deb = setTimeout(function(){ F.q = e.target.value; shown = 30; lsSet('tp_filters', F); drawList(); }, 160); });
+  $('#q').addEventListener('input', function(e){ clearTimeout(deb); deb = setTimeout(function(){ F.q = e.target.value; shown = 30; lsSet('tp_filters', F); drawList(); }, 220); });
   [['fRegion','region'],['fCat','cat'],['fLvl','lvl'],['fAge','age'],['fSort','sort']].forEach(function(p){
     $('#'+p[0]).addEventListener('change', function(e){ F[p[1]] = e.target.value; shown = 30; lsSet('tp_filters', F); drawList(); });
   });
   if(!JOBS.length){
-    $('#jlist').innerHTML = '<div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>';
+    $('#jlist').innerHTML = '<div class="jlist"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>';
     updateLoadingNote();
     loadJobs().then(function(){ if(route.name === 'jobs') drawList(); });
   } else drawList();
@@ -986,42 +1374,188 @@ function updateLoadingNote(){
   var m = $('#metaRow'); if(!m || !jobsMeta.loading) return;
   m.innerHTML = '<span>Loading live roles from '+CONFIG.COMPANIES.length+' companies… '+(jobsMeta.loaded+jobsMeta.failed)+' / '+CONFIG.COMPANIES.length+'</span>';
 }
+function drawChips(){
+  var c = $('#qchips'); if(!c) return;
+  var p = parseQuery(F.q);
+  c.innerHTML = p.chips.length ? '<span class="ql">'+I.spark+'Searching for</span>' + p.chips.map(function(x){ return '<span class="qc">'+esc(x)+'</span>'; }).join('') + '<button type="button" class="lnk" data-dk="clearq">Clear</button>' : '';
+}
 function isTracked(k){ return state.tracked.some(function(t){ return t.job_key === k; }); }
 function jobCard(j){
-  var fresh = j.posted && daysAgo(j.posted) <= 4;
+  var fresh = j.posted && daysAgo(j.posted) <= 4, mo = modeOf(j), sc = matchFor(j);
   return '<div class="job" data-job="'+esc(j.key)+'" role="button" tabindex="0">'+logo(j.company)+
-    '<div class="body"><div class="t">'+esc(j.title)+'</div><div class="c">'+esc(j.company)+(j.dept?' · '+esc(j.dept):'')+'</div>'+
-      '<div class="tags"><span>'+I.pin+esc(j.location.length>60 ? j.location.slice(0,57)+'…' : j.location)+'</span>'+
+    '<div class="body"><div class="t">'+esc(j.title)+'</div><div class="c">'+esc(j.company)+' · '+esc(j.sub !== 'Other' ? j.sub : (j.dept || 'Other'))+'</div>'+
+      '<div class="tags"><span>'+I.pin+esc(trunc(j.location, 60))+'</span>'+
       (j.posted?'<span class="'+(fresh?'fresh':'')+'">'+I.clock+agoLabel(j.posted)+'</span>':'')+
-      '<span>'+I.level+esc(j.lvl === 'Lead+' ? 'Lead & above' : j.lvl === 'Entry' ? 'Entry level' : j.lvl)+'</span>'+
-      (j.remote?'<span class="pill remote">Remote</span>':'')+'</div></div>'+
+      '<span>'+I.level+esc(lvlLabel(j.lvl))+'</span>'+
+      (mo === 'Remote' || mo === 'Hybrid' ? '<span class="pill'+(mo==='Remote'?' remote':'')+'">'+esc(mo)+'</span>' : '')+
+      (sc != null ? '<span class="pill mp" style="color:'+scoreCol(sc)+'">'+sc+'% match</span>' : '')+'</div></div>'+
     '<div class="side-act"><button class="bm '+(isTracked(j.key)?'on':'')+'" type="button" data-save="'+esc(j.key)+'" aria-label="Save job">'+(isTracked(j.key)?I.bmf:I.bm)+'</button>'+
     '<span class="btn sm">View</span></div></div>';
 }
 function drawList(){
   var list = filtered(), jl = $('#jlist'); if(!jl) return;
+  drawChips();
   var m = $('#metaRow');
-  if(m) m.innerHTML = '<span><b>'+list.length.toLocaleString()+'</b> roles match</span><span>Live from '+jobsMeta.loaded+' company job boards'+(jobsMeta.failed?' ('+jobsMeta.failed+' unavailable)':'')+' · official listings only</span>';
+  if(m && !jobsMeta.loading) m.innerHTML = '<span><b>'+list.length.toLocaleString()+'</b> roles match</span><span>Live from '+jobsMeta.loaded+' company job boards'+(jobsMeta.failed?' ('+jobsMeta.failed+' unavailable)':'')+' · official listings only</span>';
   if(!JOBS.length && !jobsMeta.loading){
+    jl.className = '';
     jl.innerHTML = '<div class="empty">'+I.globe+'<h3>Couldn’t reach the job boards</h3><p>This usually means a connection problem. Try again in a moment.</p><button class="btn pri" type="button" data-act="reload">Try again</button></div>';
     $('#moreWrap').innerHTML = ''; return;
   }
+  if(!JOBS.length) return;
   if(!list.length){
-    jl.innerHTML = '<div class="empty">'+I.search+'<h3>No roles match those filters</h3><p>Try widening the date range or clearing a filter.</p><button class="btn" type="button" data-act="clearf">Clear filters</button></div>';
+    jl.className = '';
+    jl.innerHTML = '<div class="empty">'+I.search+'<h3>No roles match that search</h3><p>Try fewer words, a wider date range, or clear a filter.</p><button class="btn" type="button" data-act="clearf">Clear search & filters</button></div>';
     $('#moreWrap').innerHTML = ''; return;
   }
+  if(VIEW === 'cards'){ $('#moreWrap').innerHTML = ''; return drawDeck(list); }
+  jl.className = 'jlist';
   jl.innerHTML = list.slice(0, shown).map(jobCard).join('');
   $('#moreWrap').innerHTML = list.length > shown ? '<button class="btn" type="button" data-act="more">Show more roles</button>' : '';
 }
 
+/* ---- swipe deck: pass / apply / save ---- */
+var drag = null;
+function deckList(list){ return (list || filtered()).filter(function(j){ return !PASSED[j.key] && !isTracked(j.key); }); }
+function mgi(label, icon, val, pill){
+  var v = val || 'Not specified', nd = /^(not |…)/i.test(v);
+  return '<div class="mgi"><span class="mlbl">'+label+'</span><span class="mv">'+icon+(pill ? '<span class="sal'+(nd?' nd':'')+'">'+esc(v)+'</span>' : '<span>'+esc(v)+'</span>')+'</span></div>';
+}
+function deckCardInner(j){
+  var e = ENR[j.key], rt = resumeText(), sc = matchFor(j), bar;
+  if(!rt) bar = '<div class="ms"><div class="msl"><span>Match score</span><button type="button" class="lnk" data-act="upload">Add your resume to see it</button></div><div class="msb"><i style="width:0"></i></div></div>';
+  else if(sc == null) bar = '<div class="ms"><div class="msl"><span>Match score</span><em>'+(e ? 'Not enough detail to score' : 'Checking…')+'</em></div><div class="msb"><i style="width:0"></i></div></div>';
+  else bar = '<div class="ms"><div class="msl"><span>Match score</span><b style="color:'+scoreCol(sc)+'">'+sc+'%</b></div><div class="msb"><i style="width:'+Math.max(sc, 2)+'%;background:'+scoreCol(sc)+'"></i></div></div>';
+  var href = '#job=' + encodeURIComponent(j.key);
+  return '<div class="dinner">'+
+    '<div class="dh">'+logo(j.company, 'lg')+'<div class="dhx"><div class="dco">'+esc(j.company)+'</div><h3 class="dt"><a href="'+href+'">'+esc(j.title)+'</a></h3></div></div>'+
+    bar+
+    '<div class="mg">'+
+      mgi('Location', I.pin, j.location)+
+      mgi('Type', I.team, typeOf(j))+
+      mgi('Work mode', I.home, modeOf(j))+
+      mgi('Experience', I.timer, expOf(j))+
+      mgi('Salary', I.dollar, salaryOf(j), true)+
+      mgi('Domain', I.building, j.domain)+
+      mgi('Sub-domain', I.tag, j.sub)+
+    '</div>'+
+    '<div class="dpost">• '+(j.posted ? agoLabel(j.posted) : 'Posting date not listed')+'</div>'+
+    '<span class="mlbl">Job overview</span><p class="dov">'+(e ? esc(e.failed ? 'The full description is on the company’s careers page.' : (e.overview || 'See the full posting for details.')) : '<span class="skl"></span><span class="skl"></span><span class="skl s"></span>')+'</p>'+
+    '<span class="mlbl">Required skills</span><div class="chips">'+(e ? (e.skills.length ? e.skills.slice(0, 5).map(function(s){ return '<span class="chip y">'+esc(s)+'</span>'; }).join('') : '<span class="chip n">Listed in the full posting</span>') : '<span class="skl s"></span>')+'</div>'+
+    '<a class="seemore" href="'+href+'">See full details and resume analysis →</a>'+
+  '</div>';
+}
+function drawDeck(list){
+  var jl = $('#jlist'); if(!jl) return;
+  jl.className = 'deckwrap';
+  var dl = deckList(list);
+  var nPassed = Object.keys(PASSED).length;
+  if(!dl.length){
+    jl.innerHTML = '<div class="empty">'+I.cards+'<h3>You’ve been through every role in this search</h3><p>'+(nPassed ? 'Bring back the roles you passed on, or widen your search.' : 'Widen your search to see more roles.')+'</p><div class="jd-acts" style="justify-content:center">'+(nPassed ? '<button class="btn pri" type="button" data-dk="resetpass">Show passed roles again</button>' : '')+'<button class="btn" type="button" data-dk="view" data-v="list">Switch to list</button></div></div>';
+    return;
+  }
+  var top = dl[0], next = dl[1];
+  jl.innerHTML = '<div class="deck">'+
+      (next ? '<div class="dcard back" data-key="'+esc(next.key)+'" aria-hidden="true">'+deckCardInner(next)+'</div>' : '')+
+      '<article class="dcard front" id="dtop" data-key="'+esc(top.key)+'" aria-label="'+esc(top.title+' at '+top.company)+'"><span class="stamp st-pass">Pass</span><span class="stamp st-save">Save</span>'+deckCardInner(top)+'</article>'+
+    '</div>'+
+    '<div class="dacts">'+
+      '<div class="da"><button type="button" class="dbtn pass" data-dk="pass" aria-label="Pass on this role">'+I.x+'</button><span>Pass</span></div>'+
+      '<div class="da ap"><button type="button" class="dbtn apply" data-dk="apply" aria-label="Apply on the company site">'+I.send+'</button><span>Apply</span></div>'+
+      '<div class="da"><button type="button" class="dbtn save" data-dk="save" aria-label="Save this role">'+I.bm+'</button><span>Save</span></div>'+
+    '</div>'+
+    '<div class="dfoot"><span>'+dl.length.toLocaleString()+' role'+(dl.length===1?'':'s')+' left to review</span>'+
+      (undoStack.length ? '<button type="button" class="lnk" data-dk="undo">'+I.undo+'Undo</button>' : '')+
+      (nPassed ? '<button type="button" class="lnk" data-dk="resetpass">Reset passed ('+nPassed+')</button>' : '')+
+      '<span class="hint">Swipe right to save, left to pass<span class="hide-s"> · ← → keys work too</span></span></div>';
+  bindSwipe($('#dtop'));
+  dl.slice(0, 4).forEach(getEnr);
+}
+function refreshCard(key){
+  if(drag){ setTimeout(function(){ refreshCard(key); }, 400); return; }
+  var j = findJob(key); if(!j) return;
+  $$('.dcard').forEach(function(c){
+    if(c.getAttribute('data-key') !== key) return;
+    var inner = c.querySelector('.dinner'); if(!inner) return;
+    var tmp = document.createElement('div'); tmp.innerHTML = deckCardInner(j);
+    inner.parentNode.replaceChild(tmp.firstChild, inner);
+  });
+  var row = document.querySelector('.job[data-job="'+CSS.escape(key)+'"]');
+  if(row){ var tmp2 = document.createElement('div'); tmp2.innerHTML = jobCard(j); row.parentNode.replaceChild(tmp2.firstChild, row); }
+  if(drawerKey === key) paintJob(j);
+}
+function bindSwipe(el){
+  if(!el) return;
+  el.addEventListener('pointerdown', function(ev){
+    if(ev.pointerType === 'mouse' && ev.button !== 0) return;
+    if(ev.target.closest('a,button,select,input')) return;
+    drag = {x:ev.clientX, y:ev.clientY, dx:0, id:ev.pointerId, moved:false};
+  });
+  el.addEventListener('pointermove', function(ev){
+    if(!drag || ev.pointerId !== drag.id) return;
+    var dx = ev.clientX - drag.x, dy = ev.clientY - drag.y;
+    if(!drag.moved){
+      if(Math.abs(dx) < 10) return;
+      if(Math.abs(dy) > Math.abs(dx)){ drag = null; return; }
+      drag.moved = true; el.classList.add('dragging');
+      try{ el.setPointerCapture(ev.pointerId); }catch(_){}
+    }
+    drag.dx = dx;
+    el.style.transform = 'translateX('+dx+'px) rotate('+(dx/22)+'deg)';
+    el.querySelector('.stamp.st-pass').style.opacity = Math.min(1, Math.max(0, -dx/120));
+    el.querySelector('.stamp.st-save').style.opacity = Math.min(1, Math.max(0, dx/120));
+  });
+  function end(ev, cancel){
+    if(!drag || ev.pointerId !== drag.id) return;
+    var dx = drag.dx, moved = drag.moved; drag = null;
+    el.classList.remove('dragging');
+    if(!moved) return;
+    if(!cancel && dx > 120) return deckAct('save');
+    if(!cancel && dx < -120) return deckAct('pass');
+    resetCard(el);
+  }
+  el.addEventListener('pointerup', function(ev){ end(ev, false); });
+  el.addEventListener('pointercancel', function(ev){ end(ev, true); });
+}
+function resetCard(el){ el.style.transform = ''; $$('.stamp', el).forEach(function(s){ s.style.opacity = ''; }); }
+function fly(el, dir, cb){
+  el.classList.add('fly');
+  el.querySelector(dir < 0 ? '.stamp.st-pass' : '.stamp.st-save').style.opacity = 1;
+  el.style.transform = 'translateX('+(dir*120)+'%) rotate('+(dir*16)+'deg)';
+  el.style.opacity = '0';
+  setTimeout(cb, 240);
+}
+function deckAct(kind){
+  var el = $('#dtop'); if(!el || el.classList.contains('fly')) return;
+  var key = el.getAttribute('data-key'), job = findJob(key); if(!job) return;
+  if(kind === 'pass'){
+    fly(el, -1, function(){ PASSED[key] = Date.now(); lsSet('tp_passed', PASSED); undoStack.push({key:key, kind:'pass'}); drawDeck(); });
+    return;
+  }
+  if(kind === 'save'){
+    if(!state.user){ resetCard(el); return requireSignIn('Sign in to save jobs', function(){ store.track(job, 'saved'); undoStack.push({key:key, kind:'save'}); toast('Saved to your dashboard'); if(route.name === 'jobs') drawList(); }); }
+    fly(el, 1, function(){ store.track(job, 'saved'); undoStack.push({key:key, kind:'save'}); toast('Saved to your dashboard'); drawDeck(); });
+    return;
+  }
+  if(kind === 'apply') applyTo(key, function(){ if(route.name === 'jobs' && VIEW === 'cards' && !drawerKey) drawDeck(); });
+}
+function deckUndo(){
+  var u = undoStack.pop(); if(!u) return;
+  if(u.kind === 'pass'){ delete PASSED[u.key]; lsSet('tp_passed', PASSED); }
+  else if(u.kind === 'save') store.untrack(u.key);
+  drawDeck();
+}
+
 /* ---------- Job drawer ---------- */
-var drawerKey = null;
+var drawerKey = null, drawerTab = 'desc';
 function closeDrawer(silent){
   var d = $('.drawer'), s = $('.scrim');
-  if(!d){ drawerKey = null; return; }
+  if(!d){ drawerKey = null; updateFab(); return; }
   d.classList.remove('on'); s.classList.remove('on'); drawerKey = null;
   setTimeout(function(){ $('#drawerRoot').innerHTML = ''; }, silent ? 0 : 250);
   document.body.style.overflow = '';
+  updateFab();
+  if(route.name === 'jobs' && VIEW === 'cards' && $('#jlist') && JOBS.length) drawDeck();
 }
 function openJob(key){
   var job = findJob(key);
@@ -1037,82 +1571,224 @@ function openJob(key){
   document.body.style.overflow = 'hidden';
   requestAnimationFrame(function(){ $('.scrim').classList.add('on'); $('.drawer').classList.add('on'); });
   drawJob(job);
+  updateFab();
 }
 function drawJob(job){
   var b = $('#drBody'); if(!b) return;
-  var saved = isTracked(job.key);
-  b.innerHTML =
-    '<div class="jd-head">'+logo(job.company)+'<div><h2>'+esc(job.title)+'</h2><div class="co">'+esc(job.company)+'</div></div></div>'+
-    '<div class="jd-grid">'+
+  drawerTab = 'desc';
+  b.innerHTML = '<div id="jdTop"></div>'+
+    '<div class="tabs" role="tablist"><button type="button" role="tab" aria-selected="true" data-dk="tab" data-t="desc" class="on">Job Description</button><button type="button" role="tab" aria-selected="false" data-dk="tab" data-t="ana">Job Analysis</button></div>'+
+    '<div id="jdPane"></div>';
+  paintJob(job);
+  getEnr(job);
+}
+function paintJob(job){
+  var top = $('#jdTop'); if(!top) return;
+  var saved = isTracked(job.key), k = esc(job.key);
+  top.innerHTML =
+    '<div class="jd-head">'+logo(job.company, 'lg')+'<div class="jdh"><h2>'+esc(job.title)+'</h2><div class="co">'+esc(job.company)+'</div>'+
+      '<div class="pd">'+(job.posted ? 'Posted on '+fmtDate(job.posted)+' · '+agoLabel(job.posted).replace(/^Posted /,'') : 'Posting date not listed')+'</div></div>'+
+      '<button type="button" class="bm'+(saved?' on':'')+'" data-save="'+k+'" aria-label="Save job">'+(saved?I.bmf:I.bm)+'</button></div>'+
+    '<div class="jd-meta">'+
       '<div>'+I.pin+'<span>'+esc(job.location)+'</span></div>'+
-      '<div>'+I.clock+'<span>'+(job.posted?agoLabel(job.posted):'Posting date not listed')+'</span></div>'+
-      '<div>'+I.level+'<span>'+esc(job.lvl === 'Lead+' ? 'Lead & above' : job.lvl === 'Entry' ? 'Entry level' : job.lvl+' level')+'</span></div>'+
-      '<div>'+I.team+'<span>'+esc(job.dept || job.cat)+'</span></div>'+
-    '</div>'+
-    '<div class="jd-acts">'+
-      '<button class="btn pri" type="button" data-apply="'+esc(job.key)+'">'+I.ext+'Apply on '+esc(job.company)+'</button>'+
-      '<button class="btn" type="button" data-save="'+esc(job.key)+'">'+(saved?I.bmf:I.bm)+(saved?'Saved':'Save')+'</button>'+
-      '<button class="btn" type="button" data-share="'+esc(job.key)+'">'+I.link+'Copy link</button>'+
+      '<div>'+I.team+'<span>'+esc(typeOf(job))+'</span></div>'+
+      '<div>'+I.home+'<span>'+esc(modeOf(job))+'</span></div>'+
+      '<div>'+I.dollar+'<span>'+esc(salaryOf(job))+'</span></div>'+
+      '<div>'+I.timer+'<span>'+esc(expOf(job))+'</span></div>'+
+      '<div>'+I.tag+'<span>'+esc(job.domain + (job.sub !== job.domain && job.sub !== 'Other' ? ' › ' + job.sub : ''))+'</span></div>'+
     '</div>'+
     '<div id="matchBox"></div>'+
-    '<div class="upsell"><div class="tx"><b>Want this — and 249 more — done for you?</b><p>A TrulyPlaced recruiter tailors your resume to each role and applies to 25–30 matched jobs every business day.</p></div>'+
-      '<button class="btn" type="button" data-act="upsell">See how it works</button></div>'+
-    '<div class="desc" id="descBox"><h3>About the role</h3><div class="skel" style="height:140px;margin-top:10px"></div></div>';
-  drawMatch(job, null);
-  loadDesc(job).then(function(d){
-    if(drawerKey !== job.key) return;
-    var bs = descBlocks(d);
-    $('#descBox').innerHTML = '<h3>About the role</h3>' + (bs.length ? blocksToHTML(bs) : '<p>The full description is on the company’s site.</p>');
-    drawMatch(job, descText(d));
-  }).catch(function(){
-    if(drawerKey !== job.key) return;
-    $('#descBox').innerHTML = '<h3>About the role</h3><p>We couldn’t load the description just now. The full posting is on '+esc(job.company)+'’s careers page.</p>';
-    drawMatch(job, '');
-  });
+    '<div class="jd-apply"><button class="btn out" type="button" data-apply="'+k+'">'+I.ext+'Apply on '+esc(job.company)+'</button><button class="btn" type="button" data-share="'+k+'" aria-label="Copy link">'+I.link+'<span class="hide-s">Copy link</span></button></div>'+
+    '<button type="button" class="navy" data-act="upsell">'+I.monitor+'<span><b>Want a recruiter to tailor your resume and apply for you?</b>We apply to 25–30 matched roles every business day, so you can focus on interviews.</span>'+I.chevr+'</button>';
+  drawMatch(job);
+  paintPane(job);
+}
+function paintPane(job){
+  var p = $('#jdPane'); if(!p) return;
+  p.innerHTML = drawerTab === 'ana' ? paneAna(job) : paneDesc(job);
 }
 function ring(score, size){
-  var r = size/2 - 9, C = 2*Math.PI*r, col = score >= 75 ? '#0a7f46' : score >= 50 ? '#0938d5' : score >= 30 ? '#b45309' : '#be123c';
+  var r = size/2 - 9, C = 2*Math.PI*r, col = scoreCol(score);
   return '<div class="ring" style="width:'+size+'px;height:'+size+'px"><svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'">'+
     '<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="#eef0f7" stroke-width="10"/>'+
     '<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="'+col+'" stroke-width="10" stroke-linecap="round" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+(C*(1-score/100)).toFixed(1)+'"/></svg>'+
-    '<div class="v">'+score+'%</div></div>';
+    '<div class="v" style="color:'+col+'">'+score+'%</div></div>';
 }
-function drawMatch(job, jdText){
+function drawMatch(job){
   var box = $('#matchBox'); if(!box) return;
   if(!state.user){
-    box.innerHTML = '<div class="card match"><div class="txt"><h3>See how your resume matches this role</h3><p>Sign in free to get a match score, the skills this posting wants that your resume is missing, and to track your applications.</p></div>'+
+    box.innerHTML = '<div class="card match"><div class="txt"><h3>See how your resume matches this role</h3><p>Sign in free to get a match score, a line-by-line job analysis, and the skills this posting wants that your resume is missing.</p></div>'+
       '<button class="btn pri" type="button" data-act="signin">'+I.star+'See my match</button></div>';
     return;
   }
   var rt = resumeText();
   if(!rt){
-    box.innerHTML = '<div class="card match"><div class="txt"><h3>Add your resume to see your match</h3><p>We compare it with this posting and show exactly which skills you’re missing. Your file is read on your device.</p></div>'+
+    box.innerHTML = '<div class="card match"><div class="txt"><h3>Add your resume to see your match</h3><p>We compare it with this posting and show exactly what lines up and what’s missing. Your file is read on your device.</p></div>'+
       '<button class="btn pri" type="button" data-act="upload">'+I.up+'Upload resume</button></div>';
     return;
   }
-  if(jdText == null){ box.innerHTML = '<div class="card match"><div class="txt"><h3>Checking your match…</h3><p>Reading the full posting.</p></div></div>'; return; }
-  var r = match(job, jdText, rt, state.profile && state.profile.target_role);
+  var e = ENR[job.key];
+  if(!e){ box.innerHTML = '<div class="card match"><div class="txt"><h3>Checking your match…</h3><p>Reading the full posting.</p></div></div>'; return; }
+  var r = match(job, e.text, rt, state.profile && state.profile.target_role);
   if(r.score == null){
     box.innerHTML = '<div class="card match"><div class="txt"><h3>Not enough detail to score this one</h3><p>This posting doesn’t list specific skills we can compare against. Read it below and judge for yourself.</p></div></div>';
     return;
   }
-  var verdict = r.score >= 75 ? 'Strong match' : r.score >= 50 ? 'Good match' : r.score >= 30 ? 'Partial match' : 'Low match';
   var advice = r.score >= 75 ? 'Your resume already covers most of what this posting asks for.' :
                r.score >= 50 ? 'Worth applying. Adding the missing skills you genuinely have would lift your ranking.' :
-               'Your resume doesn’t yet show most of what this posting asks for. Tailoring it — truthfully — matters here.';
-  box.innerHTML = '<div class="card match">'+ring(r.score, 104)+
-    '<div class="txt"><h3>'+verdict+'</h3><p>'+advice+'</p></div>'+
-    '<div class="brk">'+r.parts.map(function(p){
-      var pc = Math.round(p[1]*100), col = pc >= 75 ? '#0a7f46' : pc >= 50 ? '#0938d5' : pc >= 30 ? '#b45309' : '#be123c';
-      return '<div class="r"><span>'+p[0]+'</span><span class="tr"><span class="fi" style="width:'+pc+'%;background:'+col+'"></span></span><span>'+pc+'%</span></div>';
-    }).join('')+
-    (r.need != null ? '<div style="font-size:12.5px;color:var(--muted)">Posting asks for '+r.need+'+ years'+(r.have!=null?' · your resume shows about '+r.have:'')+'</div>' : '')+
-    '</div>'+
-    '<div class="skills"><div><h4 style="color:var(--bad)">Missing from your resume</h4><div class="chips">'+(r.miss.length ? r.miss.map(function(s){ return '<span class="chip m">'+esc(s)+'</span>'; }).join('') : '<span class="chip n">None — nice</span>')+'</div></div>'+
-    '<div><h4 style="color:var(--ok)">Already on your resume</h4><div class="chips">'+(r.hit.length ? r.hit.map(function(s){ return '<span class="chip h">'+esc(s)+'</span>'; }).join('') : '<span class="chip n">None yet</span>')+'</div></div></div>'+
-    '<p class="fine" style="width:100%">Only add a missing skill if it’s genuinely true of you — interviewers check.</p>'+
-    '</div>';
+               r.score >= 30 ? 'A partial match. Tailoring your resume to this posting — truthfully — would help.' :
+               'Your resume has a low match with this job. Consider tailoring your experience and skills to align with the role.';
+  box.innerHTML = '<div class="mrow">'+ring(r.score, 112)+'<div class="txt"><div class="lbl2">Resume match score</div><p>'+advice+'</p></div></div>'+
+    '<details class="sbd"><summary><span>Score breakdown</span><span class="qm" aria-hidden="true">?</span>'+I.chevd+'</summary>'+
+      '<div class="brk">'+r.parts.map(function(p){
+        var pc = Math.round(p[1]*100);
+        return '<div class="r"><span>'+p[0]+'</span><span class="tr"><span class="fi" style="width:'+pc+'%;background:'+scoreCol(pc)+'"></span></span><span>'+pc+'%</span></div>';
+      }).join('')+'</div>'+
+      '<p class="fine">How it’s worked out: the skills this posting asks for that also appear on your resume (65%), how closely your role title matches (20%), and your years of experience against what the posting asks for (15%). Anything we can’t measure for this posting is left out, not guessed.</p>'+
+    '</details>';
 }
+function secHTML(icon, title, sec, cls){
+  if(!sec || !sec.items.length) return '';
+  var h = '', inL = false;
+  sec.items.forEach(function(b){
+    if(b.k === 'li'){ if(!inL){ h += '<ul class="ticks">'; inL = true; } h += '<li>'+I.tick+'<span>'+esc(b.t)+'</span></li>'; return; }
+    if(inL){ h += '</ul>'; inL = false; }
+    h += b.k === 'sh' || b.k === 'h' ? '<h5>'+esc(b.t)+'</h5>' : '<p>'+esc(b.t)+'</p>';
+  });
+  if(inL) h += '</ul>';
+  return '<section class="dsec'+(cls?' '+cls:'')+'"><h4>'+icon+esc(title)+'</h4><div class="dsb">'+h+'</div></section>';
+}
+function chipsSec(icon, title, cls, chips){ return '<section class="dsec"><h4 class="'+cls+'">'+icon+esc(title)+'</h4><div class="dsb"><div class="chips">'+chips+'</div></div></section>'; }
+function paneDesc(job){
+  var e = ENR[job.key];
+  if(!e) return '<div class="skel" style="height:90px"></div><div class="skel" style="height:160px;margin-top:12px"></div>';
+  if(e.failed) return '<p class="dsb">We couldn’t load the description just now. The full posting is on '+esc(job.company)+'’s careers page.</p>';
+  var S = e.sections, rt = state.user && resumeText(), h = '';
+  h += secHTML(I.building, 'About the Company', S.about);
+  h += secHTML(I.team, 'Job Overview', S.overview);
+  if(rt){
+    var r = match(job, e.text, rt, state.profile && state.profile.target_role);
+    if(r.hit.length + r.miss.length){
+      h += chipsSec(I.tag, 'Missing Skills', 'bad', r.miss.length ? r.miss.map(function(s){ return '<span class="chip m">'+esc(s)+'</span>'; }).join('') : '<span class="chip h">Nothing missing</span>');
+      h += chipsSec(I.tag, 'Matching Skills', 'good', r.hit.length ? r.hit.map(function(s){ return '<span class="chip h">'+esc(s)+'</span>'; }).join('') : '<span class="chip h">No matching skills found</span>');
+    }
+  } else if(e.skills.length){
+    h += chipsSec(I.tag, 'Skills this posting asks for', '', e.skills.slice(0, 12).map(function(s){ return '<span class="chip y">'+esc(s)+'</span>'; }).join('')) .replace('</div></section>', '</div><p class="fine">'+(state.user ? '<button type="button" class="lnk" data-act="upload">Add your resume</button> to see which ones you’re missing.' : '<button type="button" class="lnk" data-act="signin">Sign in</button> and add your resume to see which ones you’re missing.')+'</p></section>');
+  }
+  h += secHTML(I.clip, 'Responsibilities', S.resp);
+  h += secHTML(I.star, 'Requirements & Qualifications', S.req);
+  h += secHTML(I.dollar, 'Benefits', S.ben);
+  S.other.forEach(function(o){ h += secHTML(I.doc, o.title, o); });
+  return h || '<p class="dsb">The full description is on the company’s site.</p>';
+}
+
+/* ---- Job Analysis: the posting vs the resume, line by line ---- */
+function resumeProfile(rt){
+  var lines = String(rt).split(/\n+/).map(function(l){ return l.replace(/\s+/g,' ').trim(); }).filter(Boolean);
+  var P = {title:'', domain:'', sub:'', location:'', years: yearsIn(rt)};
+  for(var i=0;i<Math.min(lines.length, 30) && !P.title;i++){
+    var l = lines[i];
+    if(l.length > 90 || /@|https?:|www\.|\d{3}[\s.)-]\d{3}/.test(l) || /:/.test(l) || l.split(' ').length > 10) continue;
+    var tx = taxonomy(l);
+    if(tx[0] !== 'Other'){ P.title = l.split(/\s[|•·]\s|\s[–—-]\s|,\s/)[0].replace(/\b(19|20)\d{2}\b.*$/,'').trim(); P.domain = tx[0]; P.sub = tx[1]; }
+  }
+  if(!P.title){   // PDFs without line breaks: earliest role phrase in the top of the resume
+    var head = String(rt).slice(0, 1200).toLowerCase(), best = null;
+    TAX.forEach(function(t){ var m = t[2].exec(head); if(m && (!best || m.index < best.i)) best = {i:m.index, t:t}; });
+    if(best){ P.title = best.t[1]; P.domain = best.t[0]; P.sub = best.t[1]; }
+  }
+  var top = lines.slice(0, 15).join('  ');
+  var lm = new RegExp('\\b([A-Z][a-zA-Z.]+(?: [A-Z][a-zA-Z.]+){0,2}),\\s*(' + US_ST + '|ON|BC|QC|AB|India|USA|United States|Canada|UK|United Kingdom|Australia|NSW|VIC)\\b').exec(top);
+  if(lm) P.location = lm[0];
+  else if(/\bremote\b/i.test(top)) P.location = 'Remote';
+  return P;
+}
+function locMatch(job, rl){
+  var a = rl.toLowerCase(), b = job.location.toLowerCase();
+  if(a === 'remote') return modeOf(job) === 'Remote';
+  var city = a.split(',')[0].trim();
+  if(city && b.indexOf(city) > -1) return true;
+  if(modeOf(job) === 'Remote'){ var ra = regions(rl, null, false); return ra.some(function(r){ return job.reg.indexOf(r) > -1; }); }
+  return false;
+}
+function summaryCheck(rt, job, e){
+  var m = /(professional summary|career summary|summary|profile|objective|about me)\s*:?\s*\n?([\s\S]{40,700}?)(?=\n\s*\n|\n(?:experience|work experience|professional experience|education|skills|projects)\b|$)/i.exec(rt);
+  if(!m) return {ok:false, msg:'We couldn’t find a summary section. Two or three lines at the top, written for this kind of role, help a recruiter see the fit in seconds.'};
+  var s = m[2].toLowerCase();
+  var sk = e.skills.filter(function(x){ return s.indexOf(x.toLowerCase()) > -1; });
+  var tw = titleTokens(job.title).filter(function(w){ return s.indexOf(w) > -1; });
+  if(sk.length >= 2 || (tw.length && sk.length >= 1)) return {ok:true, msg:'Your summary already speaks to this role' + (sk.length ? ' — it mentions ' + sk.slice(0, 3).join(', ') : '') + '.'};
+  var want = e.skills.filter(function(x){ return sk.indexOf(x) < 0; }).slice(0, 3);
+  return {ok:false, msg:'Your current summary doesn’t clearly show your fit for this job' + (want.length ? '. If they’re true of you, mention ' + want.join(', ') + ' and the kind of work this posting describes' : '') + '.'};
+}
+function paneAna(job){
+  var rt = state.user && resumeText();
+  if(!rt) return '<div class="empty slim">'+I.resume+'<h3>Compare this job with your resume</h3><p>See, line by line, how your title, field, experience, location and skills line up with what this posting asks for.</p>'+
+    (state.user ? '<button class="btn pri" type="button" data-act="upload">'+I.up+'Upload resume</button>' : '<button class="btn pri" type="button" data-act="signin">Sign in to start</button>')+'</div>';
+  var e = ENR[job.key];
+  if(!e) return '<div class="skel" style="height:220px"></div>';
+  if(e.failed) return '<p class="dsb">We couldn’t load this posting, so there’s nothing to compare yet.</p>';
+  var R = resumeProfile(rt), rows = [];
+  var tf = R.title ? titleFit(job.title, R.title) : null;
+  rows.push(['Title', job.title, R.title || '', R.title ? ((R.sub === job.sub && job.sub !== 'Other') || tf >= .75 ? 1 : 0) : null]);
+  rows.push(['Domain', job.domain, R.domain || '', R.domain ? (R.domain === job.domain ? 1 : 0) : null]);
+  rows.push(['Sub-domain', job.sub, R.sub || '', R.sub ? (R.sub === job.sub ? 1 : 0) : null]);
+  rows.push(['Experience', e.exp != null ? e.exp + '+ years' : 'Not specified', R.years != null ? 'About ' + R.years + ' years' : '', (e.exp != null && R.years != null) ? (R.years >= e.exp ? 1 : 0) : null]);
+  var rl = R.location || (state.profile && state.profile.target_location) || '';
+  rows.push(['Location', job.location + (modeOf(job) === 'Remote' || modeOf(job) === 'Hybrid' ? ' (' + modeOf(job) + ')' : ''), rl ? rl + (R.location ? '' : ' (your target)') : '', rl ? (locMatch(job, rl) ? 1 : 0) : null]);
+  var t1 = '<div class="tblwrap"><table class="anat"><thead><tr><th scope="col"><span class="sr">Check</span></th><th scope="col">Job requirement</th><th scope="col">Your resume</th></tr></thead><tbody>'+
+    rows.map(function(r){
+      var st = r[3] === 1 ? 'ok' : r[3] === 0 ? 'no' : 'na';
+      return '<tr class="'+st+'"><th scope="row"><span>'+r[0]+'</span>'+(st === 'ok' ? I.okc : st === 'no' ? I.noc : I.nac)+'</th><td>'+esc(r[1])+'</td><td>'+(r[2] ? esc(r[2]) : '<span class="nf">Not found on resume</span>')+'</td></tr>';
+    }).join('')+'</tbody></table></div>';
+  var m = match(job, e.text, rt, state.profile && state.profile.target_role), sm = summaryCheck(rt, job, e), tot = m.hit.length + m.miss.length;
+  var t2 = '<h3 class="anh">Summary and skills analysis</h3><div class="tblwrap"><table class="anat anat2"><thead><tr><th scope="col"><span class="sr">Check</span></th><th scope="col">Analysis</th></tr></thead><tbody>'+
+    '<tr class="'+(sm.ok ? 'ok' : 'warn')+'"><th scope="row"><span>Summary</span>'+(sm.ok ? I.okc : I.warn)+'</th><td>'+esc(sm.msg)+'</td></tr>'+
+    (tot ? '<tr class="'+(m.miss.length ? 'warn' : 'ok')+'"><th scope="row"><span>Skills ('+m.hit.length+'/'+tot+')</span>'+(m.miss.length ? I.warn : I.okc)+'</th><td><div class="chips">'+
+      m.hit.map(function(s){ return '<span class="chip h">'+I.check+esc(s)+'</span>'; }).join('')+
+      m.miss.map(function(s){ return '<span class="chip wk">'+I.warn+esc(s)+'</span>'; }).join('')+'</div></td></tr>' : '')+
+    '</tbody></table></div>'+
+    '<p class="fine">Read from your resume on your device. “Not found on resume” means we couldn’t spot it, not that you don’t have it — make it easy for recruiters to spot too.</p>';
+  return t1 + t2;
+}
+
+/* ---- floating resume button ---- */
+function updateFab(){
+  var f = $('#fab'); if(!f) return;
+  if(!(route.name === 'jobs' || drawerKey)){ f.hidden = true; return; }
+  var has = !!(state.user && resumeText());
+  f.hidden = false;
+  f.innerHTML = has ? I.resume + '<span>Show resume</span>' : I.send + '<span>Go to resume upload</span>';
+  if(has){ f.setAttribute('data-dk', 'showresume'); f.removeAttribute('data-act'); }
+  else { f.setAttribute('data-act', 'upload'); f.removeAttribute('data-dk'); }
+}
+function openResume(){
+  modal('<h2>Your resume</h2><p>'+esc(resumeName() || 'Resume')+' · read on your device</p><pre class="rtext">'+esc(resumeText())+'</pre>'+
+    '<div class="jd-acts"><button class="btn" type="button" data-act="upload">'+I.up+'Replace</button><a class="btn" href="#resume" data-act="mclose">Manage resume</a></div>', true);
+}
+
+/* deck + drawer controls */
+document.addEventListener('click', function(e){
+  var t = e.target.closest('[data-dk]'); if(!t) return;
+  var k = t.getAttribute('data-dk');
+  if(k === 'view'){ VIEW = t.getAttribute('data-v'); lsSet('tp_view', VIEW); $$('.seg button').forEach(function(b){ var on = b.getAttribute('data-v') === VIEW; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); }); shown = 30; return drawList(); }
+  if(k === 'pass' || k === 'save' || k === 'apply') return deckAct(k);
+  if(k === 'undo') return deckUndo();
+  if(k === 'resetpass'){ PASSED = {}; lsSet('tp_passed', PASSED); undoStack = []; return drawDeck(); }
+  if(k === 'clearq'){ F.q = ''; lsSet('tp_filters', F); var qi = $('#q'); if(qi) qi.value = ''; return drawList(); }
+  if(k === 'tab'){
+    drawerTab = t.getAttribute('data-t');
+    $$('.tabs button').forEach(function(b){ var on = b === t; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+    var j = findJob(drawerKey); if(j) paintPane(j); return;
+  }
+  if(k === 'showresume') return openResume();
+});
+document.addEventListener('keydown', function(e){
+  if(route.name !== 'jobs' || VIEW !== 'cards' || drawerKey || $('#modalRoot').innerHTML) return;
+  if(/INPUT|TEXTAREA|SELECT/.test((e.target.tagName||''))) return;
+  if(e.key === 'ArrowLeft'){ e.preventDefault(); deckAct('pass'); }
+  if(e.key === 'ArrowRight'){ e.preventDefault(); deckAct('save'); }
+});
 
 /* ---------- Dashboard ---------- */
 function vDashboard(v){
@@ -1376,13 +2052,14 @@ function toggleSave(key){
     });
   });
 }
-function applyTo(key){
+function applyTo(key, after){
   var job = findJob(key); if(!job) return;
   var url = (DESC[key] && DESC[key].apply) || job.url;
   var go = function(){
     window.open(url, '_blank', 'noopener');
     var cur = state.tracked.filter(function(t){ return t.job_key === key; })[0];
     if(!cur || cur.status === 'saved') store.track(job, 'applied').then(function(){ toast('Marked as applied — update it from your dashboard'); });
+    if(after) after();
   };
   if(!CONFIG.REQUIRE_SIGNIN_TO_APPLY || state.user) return go();
   pendingSkip = url;

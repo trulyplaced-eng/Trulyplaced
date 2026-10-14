@@ -1489,5 +1489,40 @@ if(scr&&dots){
     (mq.addEventListener ? mq.addEventListener.bind(mq,'change') : mq.addListener.bind(mq))(function(){ setMenu(false); });
   }
 </script>
+
+<script>
+(function(){
+  function signedIn(){
+    try{
+      for(var i=0;i<localStorage.length;i++){
+        var k=localStorage.key(i);
+        if(/^sb-.+-auth-token$/.test(k)){
+          var v=JSON.parse(localStorage.getItem(k)||'null');
+          var exp=v&&(v.expires_at||(v.currentSession&&v.currentSession.expires_at));
+          if(exp && exp*1000>Date.now()) return true;
+        }
+      }
+    }catch(e){}
+    return false;
+  }
+  if(!signedIn()) return;
+  var PERSON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>';
+  function logout(e){
+    if(e) e.preventDefault();
+    try{ for(var i=localStorage.length-1;i>=0;i--){ var k=localStorage.key(i); if(/^sb-.+-auth-token/.test(k)) localStorage.removeItem(k); } }catch(_){}
+    location.href='/';
+  }
+  var links=document.querySelectorAll('a[href="/app.html#signin"]');
+  [].forEach.call(links,function(a){
+    var inNav=a.classList.contains('signin');
+    a.setAttribute('href','/app.html#dashboard');
+    a.innerHTML=(inNav?PERSON:'')+'Dashboard';
+    var lo=document.createElement('a');
+    lo.href='#'; lo.textContent='Log out'; lo.addEventListener('click',logout);
+    if(inNav) lo.className='signin';
+    a.parentNode.insertBefore(lo,a.nextSibling);
+  });
+})();
+</script>
 </body>
 </html>
