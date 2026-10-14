@@ -409,6 +409,20 @@ footer a:hover{color:#fff}
 #printRep .sev{font-size:7.5pt;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:2px 6px;border-radius:4px;white-space:nowrap}
 #printRep .note{font-size:8.5pt;color:#5b637f;margin-top:16px;border-top:1px solid #e3e6ef;padding-top:8px}
 #printRep .pr-paper{border:1px solid #d7dbe8;padding:14px 18px;font-size:9pt}
+.intake.locked>:not(.agate){display:none!important}
+.agate{text-align:left}
+.agate .glk{width:48px;height:48px;border-radius:14px;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center;margin-bottom:14px}
+.agate .glk svg{width:24px;height:24px}
+.agate h2{font-family:Poppins;font-size:21px;line-height:1.25;color:var(--ink);display:block}
+.agate p{margin-top:6px;font-size:14.5px}
+.agate ul{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.agate li{display:flex;gap:10px;align-items:flex-start}
+.agate li svg{flex:none;width:18px;height:18px;color:var(--ok);margin-top:2px}
+.agate .gbtn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:52px;margin-top:20px;border:1px solid #d8dce8;border-radius:12px;background:#fff;color:var(--ink);font:600 15px Inter,sans-serif;text-decoration:none;transition:.15s}
+.agate .gbtn:hover{border-color:var(--blue);box-shadow:0 8px 20px -12px rgba(9,56,213,.6)}
+.agate .gbtn svg{width:20px;height:20px}
+.agate .fine{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.5}
+.savednote{margin-top:10px;font-size:13px;color:var(--blue,#0938d5);background:var(--blue-soft,#eef2ff);border-radius:10px;padding:8px 12px}
 </style>
 </head>
 <body>
@@ -419,13 +433,13 @@ footer a:hover{color:#fff}
   </a>
   <a class="nl" href="/">Done-for-you service</a>
   <a class="nl" href="/app.html#jobs">Job board</a>
-  <a class="nl cta" href="/app.html#signin">Sign in</a>
+  <a class="nl cta" id="topSign" href="/app.html?next=%2Fats-check.html#signin">Sign in</a>
 </div></div>
 
 <section class="hero" id="top">
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow"><i></i>Free resume X-ray · no sign-up</span>
+      <span class="eyebrow"><i></i>Free resume X-ray</span>
       <h1>See your resume <em>the way the robots do.</em></h1>
       <p class="lede">Most resumes are filtered by software before a person reads them. Upload yours and see exactly what an applicant tracking system pulls out, what it drops, and what to fix first.</p>
       <ul class="gets">
@@ -451,6 +465,7 @@ footer a:hover{color:#fff}
         <button type="button" id="fclear" aria-label="Remove file">&times;</button>
       </div>
       <div style="margin-top:8px"><button type="button" class="linkbtn" id="pasteToggle">Or paste your resume as text</button></div>
+      <p class="savednote" id="savedNote" hidden>We’ve filled in your saved resume. Upload the file itself as well to test how its layout parses.</p>
       <textarea class="paste" id="paste" hidden placeholder="Paste your resume text here. (Uploading the real file is better — it lets us test whether it parses.)"></textarea>
 
       <div class="sep"></div>
@@ -581,7 +596,7 @@ footer a:hover{color:#fff}
 
 <footer><div class="wrap"><div class="row">
   <span>© 2026 TrulyPlaced — a brand of RepoReserve Technologies Private Limited.</span>
-  <span><a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="/refunds.html">Refunds</a> · <a href="/contact.html">Contact</a></span>
+  <span><a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="/refunds.html">Refunds</a> · <a href="/contact.html">Contact</a> · <a href="https://wa.me/918142442139?text=Hi%20TrulyPlaced%2C%20I%27d%20like%20to%20know%20more" target="_blank" rel="noopener">WhatsApp</a></span>
 </div></div></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -1137,6 +1152,32 @@ function score(R){
    5. BUILDING THE DOCUMENT MODEL
    ===================================================================== */
 var S = {kind:'', buf:null, name:'', size:0, region:'US', sample:false};
+/* the resume the person already gave us — on the job board or here — so nobody uploads twice */
+var RESUME_DB = {
+  go:function(mode, fn){ return new Promise(function(res, rej){ try{
+      var r = indexedDB.open('trulyplaced', 1);
+      r.onupgradeneeded = function(){ if(!r.result.objectStoreNames.contains('kv')) r.result.createObjectStore('kv'); };
+      r.onerror = function(){ rej(r.error); };
+      r.onsuccess = function(){ var db = r.result; try{
+          var t = db.transaction('kv', mode), q = fn(t.objectStore('kv'));
+          t.oncomplete = function(){ db.close(); res(q && q.result); }; t.onerror = function(){ db.close(); rej(t.error); };
+        }catch(e){ db.close(); rej(e); } };
+    }catch(e){ rej(e); } }); },
+  get:function(){ return RESUME_DB.go('readonly', function(st){ return st.get('resume'); }); },
+  set:function(v){ return RESUME_DB.go('readwrite', function(st){ return st.put(v, 'resume'); }); }
+};
+var ACCOUNT = {url:'https://yubgrhxdhofnynfocpef.supabase.co', key:'sb_publishable_1CHFJ4-tBN42ThTgDqgvpg_xcVjzpg5'};
+function lsJSON(k){ try{ return JSON.parse(localStorage.getItem(k) || 'null'); }catch(e){ return null; } }
+function accountText(){   // signed in on the job board on this browser, but the file was added on another device
+  var tok = null;
+  try{ for(var i = 0; i < localStorage.length; i++){ var k = localStorage.key(i); if(/^sb-.*-auth-token$/.test(k)){ tok = lsJSON(k); break; } } }catch(e){}
+  if(!tok || !tok.access_token || !tok.user || (tok.expires_at && tok.expires_at*1000 < Date.now())) return Promise.resolve(null);
+  return fetch(ACCOUNT.url + '/rest/v1/profiles?select=resume_text,resume_name&id=eq.' + encodeURIComponent(tok.user.id),
+    {headers:{apikey:ACCOUNT.key, Authorization:'Bearer ' + tok.access_token}})
+    .then(function(r){ return r.ok ? r.json() : []; })
+    .then(function(rows){ var p = rows && rows[0]; return p && p.resume_text ? {text:p.resume_text, name:p.resume_name || 'resume'} : null; })
+    .catch(function(){ return null; });
+}
 var PUA_BUL = /[\uF0B7\uF0A7\uF0D8\uF076\uF0FC\uF0A8\uF06E\uF0A4]/g;
 function sizeName(w, h){ var a = Math.min(w,h), b = Math.max(w,h); if(Math.abs(a-612) < 9 && Math.abs(b-792) < 9) return 'Letter'; if(Math.abs(a-595) < 9 && Math.abs(b-842) < 9) return 'A4'; return ''; }
 function buildDoc(){
@@ -1460,7 +1501,7 @@ function setFile(f){
   if(f.size > 15*1024*1024){ fail('That file is over 15 MB. Export a smaller PDF and try again.'); return; }
   var fr = new FileReader();
   fr.onload = function(){
-    S.buf = fr.result; S.kind = ext; S.name = f.name; S.size = f.size; S.sample = false;
+    S.buf = fr.result; S.kind = ext; S.name = f.name; S.size = f.size; S.sample = false; S.fresh = true;
     $('fkind').textContent = ext.toUpperCase(); $('fname').textContent = f.name;
     $('fmeta').textContent = (f.size < 1048576 ? Math.max(1, Math.round(f.size/1024)) + ' KB' : (f.size/1048576).toFixed(1) + ' MB') + ' · ready to scan';
     $('ftag').hidden = false; $('drop').hidden = true; sync();
@@ -1468,7 +1509,33 @@ function setFile(f){
   fr.onerror = function(){ fail('Couldn’t open that file.'); };
   fr.readAsArrayBuffer(f);
 }
-function clearFile(){ S.buf = null; S.kind = ''; S.name = ''; S.size = 0; $('file').value = ''; $('ftag').hidden = true; $('drop').hidden = false; sync(); }
+function shareResume(){   // after a successful scan of a real file: the job board and the next visit get it too
+  if(!S.fresh || !R || !D || S.sample) return;
+  S.fresh = false;
+  var text = R.text.slice(0, 30000);
+  try{ localStorage.setItem('tp_resume_local', JSON.stringify({text:text, name:D.name || S.name || 'resume', at:Date.now(), from:'ats'})); }catch(e){}
+  try{ RESUME_DB.set({buf:S.buf.slice(0), kind:S.kind, name:S.name, size:S.size, text:text, at:Date.now()}).catch(function(){}); }catch(e){}
+}
+function loadSaved(){
+  return RESUME_DB.get().catch(function(){ return null; }).then(function(v){
+    if(S.buf || S.sample) return false;
+    if(v && v.buf && v.kind){
+      S.buf = v.buf; S.kind = v.kind; S.name = v.name || 'resume.' + v.kind; S.size = v.size || v.buf.byteLength; S.sample = false; S.fresh = false;
+      $('fkind').textContent = String(v.kind).toUpperCase(); $('fname').textContent = S.name;
+      $('fmeta').textContent = 'Your saved resume · ready to scan';
+      $('ftag').hidden = false; $('drop').hidden = true; sync();
+      return true;
+    }
+    var local = lsJSON('tp_resume_local');
+    return (local && local.text ? Promise.resolve(local) : accountText()).then(function(t){
+      if(!t || !t.text || S.buf || $('paste').value.trim()) return false;
+      var p = $('paste'); p.value = t.text; p.hidden = false;
+      var n = $('savedNote'); if(n){ n.hidden = false; }
+      sync(); return true;
+    });
+  });
+}
+function clearFile(){ var n = $('savedNote'); if(n) n.hidden = true; S.buf = null; S.kind = ''; S.name = ''; S.size = 0; $('file').value = ''; $('ftag').hidden = true; $('drop').hidden = false; sync(); }
 
 var STEPS = ['Reading your file', 'Mapping the layout like a parser', 'Building your ATS candidate record', 'Grading your bullet points', 'Matching against the job', 'Ranking your fixes'];
 var TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
@@ -1487,6 +1554,7 @@ function stepAt(n){   // n = position among the steps being shown; everything be
 }
 function stepResult(n, text){ var el = $$('#steps li')[n]; if(!el || !text) return; el.querySelector('.rs').textContent = text; el.classList.add('has'); }
 function go(){
+  if(GATED){ location.href = '/app.html?next=%2Fats-check.html#signin'; return; }
   fail('');
   if(!S.buf){ if($('paste').value.trim().length < 80){ fail('Add your resume first — upload the file, or paste at least a few lines.'); return; } S.kind = 'paste'; S.name = ''; }
   if(S.kind === 'pdf' && !window.pdfjsLib){ fail('The PDF reader didn’t load — check your connection, or paste your resume as text.'); return; }
@@ -1524,7 +1592,7 @@ function go(){
     stepAt(++n); $('slabel').textContent = 'Your X-ray is ready'; return wait(450);
   }).then(function(){
     $('scan').hidden = true; $('report').hidden = false; $('run').disabled = false;
-    renderReport();
+    renderReport(); shareResume();
     setTimeout(function(){ $('report').scrollIntoView({behavior:'smooth'}); }, 60);
   }).catch(function(e){
     if(window.console) console.warn(e);
@@ -1622,12 +1690,194 @@ $('print').addEventListener('click', function(){
   buildPrint().then(function(){ b.disabled = false; b.innerHTML = t; window.print(); }, function(){ b.disabled = false; b.innerHTML = t; window.print(); });
 });
 $('again').addEventListener('click', function(){ clearFile(); $('paste').value = ''; $('report').hidden = true; window.scrollTo({top:0, behavior:'smooth'}); });
-$('toJobs').addEventListener('click', function(){ if(R && !S.sample){ try{ localStorage.setItem('tp_resume_local', JSON.stringify({text:R.text.slice(0, 30000), name:D.name || 'resume'})); }catch(e){} } });
+$('toJobs').addEventListener('click', function(){ if(R && !S.sample){ try{ localStorage.setItem('tp_resume_local', JSON.stringify({text:R.text.slice(0, 30000), name:D.name || 'resume', at:Date.now(), from:'ats'})); }catch(e){} } });
 /* highlight the section you're reading in the sticky tabs */
 if('IntersectionObserver' in window){
   var io = new IntersectionObserver(function(es){ es.forEach(function(en){ if(en.isIntersecting){ $$('#tabs a').forEach(function(a){ a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id); }); } }); }, {rootMargin:'-45% 0px -50% 0px'});
   ['xray','profile','bullets','match','fixes'].forEach(function(id){ io.observe($(id)); });
 }
+
+/* ---- sign-in gate: the X-ray is for signed-in visitors (Google, via the job board) ---- */
+function signedIn(){
+  try{
+    var d = lsJSON('tp_app_v1'); if(d && d.user) return true;   // preview mode of the job board
+    for(var i = 0; i < localStorage.length; i++){ var k = localStorage.key(i); if(/^sb-.*-auth-token$/.test(k)){ var t = lsJSON(k); if(t && (t.refresh_token || t.access_token)) return true; } }
+  }catch(e){}
+  return false;
+}
+var GATED = !signedIn();
+if(GATED){
+  var ik = $('intake'); ik.classList.add('locked');
+  var g = document.createElement('div'); g.className = 'agate';
+  g.innerHTML = '<span class="glk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>'+
+    '<h2>Sign in to X-ray your resume</h2><p>Free with your Google account. You’ll come straight back here.</p>'+
+    '<ul>'+['The full ATS X-ray of your actual file','Every bullet graded, with a rewrite to try','Your match to any job description','Your resume saved for the job board too — upload once'].map(function(t){ return '<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'+t+'</li>'; }).join('')+'</ul>'+
+    '<a class="gbtn" href="/app.html?next=%2Fats-check.html#signin"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2c-2 1.5-4.5 2.4-7.2 2.4-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 38.2 44 33 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Continue with Google</a>'+
+    '<p class="fine">By continuing you agree to our <a href="/terms.html">Terms</a> and <a href="/privacy.html">Privacy Policy</a>. Your resume is read on your device and never uploaded.</p>';
+  ik.appendChild(g);
+} else {
+  var ts = $('topSign'); if(ts){ ts.textContent = 'My jobs'; ts.href = '/app.html#jobs'; }
+}
+/* ---------- first-visit tour: spotlight + card, skippable, keyboard friendly ---------- */
+var TOUR = (function(){
+  var css = '.tpt-block{position:fixed;inset:0;z-index:9998;background:transparent}'+
+    '.tpt-spot{position:fixed;z-index:9999;border-radius:14px;box-shadow:0 0 0 9999px rgba(10,15,35,.58);pointer-events:none;transition:all .32s cubic-bezier(.3,.7,.3,1)}'+
+    '.tpt-spot.none{left:50%!important;top:42%!important;width:0!important;height:0!important}'+
+    '.tpt-spot:not(.none)::after{content:"";position:absolute;inset:-4px;border-radius:17px;border:2px solid #7c9bff;animation:tptp 1.8s ease-out infinite}'+
+    '@keyframes tptp{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.06)}}'+
+    '.tpt-card{position:fixed;z-index:10000;width:min(360px,calc(100vw - 32px));background:#fff;color:#4b5473;border-radius:16px;padding:20px 20px 16px;'+
+      'box-shadow:0 24px 60px -18px rgba(10,15,35,.55);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:14.5px;line-height:1.55;'+
+      'transition:top .32s cubic-bezier(.3,.7,.3,1),left .32s cubic-bezier(.3,.7,.3,1),opacity .2s;opacity:0}'+
+    '.tpt-card.on{opacity:1}'+
+    '.tpt-card .tpt-n{font-size:12px;font-weight:600;color:#0938d5;letter-spacing:.04em;text-transform:uppercase}'+
+    '.tpt-card h3{font-family:Poppins,Inter,sans-serif;font-size:17px;color:#121a33;margin:4px 0 6px;line-height:1.3}'+
+    '.tpt-card p{margin:0}'+
+    '.tpt-dots{display:flex;gap:5px;margin:14px 0 0}'+
+    '.tpt-dots i{width:6px;height:6px;border-radius:9px;background:#dfe3f0;transition:.25s}'+
+    '.tpt-dots i.on{width:18px;background:#0938d5}'+
+    '.tpt-row{display:flex;align-items:center;gap:8px;margin-top:14px}'+
+    '.tpt-row .sp{flex:1}'+
+    '.tpt-btn{font:inherit;font-size:14px;font-weight:600;border-radius:10px;min-height:40px;padding:0 16px;cursor:pointer;border:1px solid #e3e7f2;background:#fff;color:#121a33}'+
+    '.tpt-btn.pri{background:#0938d5;border-color:#0938d5;color:#fff}'+
+    '.tpt-btn.pri:hover{background:#072ca8}'+
+    '.tpt-skip{font:inherit;font-size:13.5px;background:none;border:0;color:#737b9c;cursor:pointer;padding:8px 4px;min-height:40px}'+
+    '.tpt-skip:hover{color:#121a33;text-decoration:underline}'+
+    '.tpt-card.center{left:50%!important;top:50%!important;transform:translate(-50%,-50%)}'+
+    '.tpt-card .tpt-hero{width:44px;height:44px;border-radius:12px;background:#eef2ff;color:#0938d5;display:grid;place-items:center;margin-bottom:10px}'+
+    '.tpt-card .tpt-hero svg{width:24px;height:24px}'+
+    '@media (prefers-reduced-motion:reduce){.tpt-spot,.tpt-card{transition:none}.tpt-spot::after{animation:none}}';
+  var el = {}, steps = [], i = 0, opts = {}, waitT = null, alive = false;
+  function q(sel){
+    var list = [].concat(sel || []);
+    for(var k = 0; k < list.length; k++){
+      var all = document.querySelectorAll(list[k]);
+      for(var m = 0; m < all.length; m++){ var r = all[m].getBoundingClientRect(); if(r.width > 0 && r.height > 0 && getComputedStyle(all[m]).visibility !== 'hidden') return all[m]; }
+    }
+    return null;
+  }
+  function mount(){
+    if(!document.getElementById('tpt-css')){ var s = document.createElement('style'); s.id = 'tpt-css'; s.textContent = css; document.head.appendChild(s); }
+    el.block = document.createElement('div'); el.block.className = 'tpt-block';
+    el.spot = document.createElement('div'); el.spot.className = 'tpt-spot none';
+    el.card = document.createElement('div'); el.card.className = 'tpt-card'; el.card.setAttribute('role', 'dialog'); el.card.setAttribute('aria-modal', 'true'); el.card.setAttribute('aria-labelledby', 'tpt-t');
+    document.body.appendChild(el.block); document.body.appendChild(el.spot); document.body.appendChild(el.card);
+    el.card.addEventListener('click', function(e){
+      var b = e.target.closest('[data-t]'); if(!b) return;
+      var a = b.getAttribute('data-t');
+      if(a === 'next') go(i + 1); else if(a === 'back') go(i - 1); else end(a === 'done' ? 'done' : 'skip');
+    });
+    document.addEventListener('keydown', key, true);
+    window.addEventListener('resize', place); window.addEventListener('scroll', place, true);
+  }
+  function key(e){
+    if(!alive) return;
+    if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); end('skip'); }
+    else if(e.key === 'ArrowRight'){ e.preventDefault(); go(i + 1); }
+    else if(e.key === 'ArrowLeft' && i > 0){ e.preventDefault(); go(i - 1); }
+    else if(e.key === 'Tab'){ // keep focus inside the card
+      var f = el.card.querySelectorAll('button'); if(!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    }
+  }
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function draw(target){
+    var st = steps[i], n = steps.length, last = i === n - 1, first = i === 0;
+    var dots = '<div class="tpt-dots" aria-hidden="true">' + steps.map(function(_, k){ return '<i class="' + (k === i ? 'on' : '') + '"></i>'; }).join('') + '</div>';
+    el.card.innerHTML = (st.icon ? '<div class="tpt-hero">' + st.icon + '</div>' : '') +
+      (first || last ? '' : '<div class="tpt-n">Step ' + i + ' of ' + (n - 2) + '</div>') +
+      '<h3 id="tpt-t">' + esc(st.title) + '</h3><p>' + st.text + '</p>' + dots +
+      '<div class="tpt-row">' +
+        (last ? '' : '<button type="button" class="tpt-skip" data-t="skip">' + (first ? 'Skip tour' : 'Skip') + '</button>') +
+        '<span class="sp"></span>' +
+        (!first && !last ? '<button type="button" class="tpt-btn" data-t="back">Back</button>' : '') +
+        '<button type="button" class="tpt-btn pri" data-t="' + (last ? 'done' : 'next') + '">' + esc(st.cta || (last ? 'Got it' : 'Next')) + '</button>' +
+      '</div>';
+    el.target = target;
+    el.card.classList.toggle('center', !target);
+    el.spot.classList.toggle('none', !target);
+    place();
+    requestAnimationFrame(function(){ el.card.classList.add('on'); var b = el.card.querySelector('.tpt-btn.pri'); if(b) b.focus({preventScroll:true}); });
+  }
+  function place(){
+    if(!alive) return;
+    var t = el.target, vw = window.innerWidth, vh = window.innerHeight;
+    if(!t || !document.body.contains(t)){ el.card.style.left = ''; el.card.style.top = ''; return; }
+    var r = t.getBoundingClientRect(), pad = 8;
+    el.spot.style.left = (r.left - pad) + 'px'; el.spot.style.top = (r.top - pad) + 'px';
+    el.spot.style.width = (r.width + pad*2) + 'px'; el.spot.style.height = (r.height + pad*2) + 'px';
+    var cw = el.card.offsetWidth, ch = el.card.offsetHeight, gap = 16, x, y;
+    if(vw < 640){   // phones: dock the card to whichever edge is away from the highlight
+      x = 16; y = (r.top + r.height/2 > vh/2) ? Math.max(16, r.top - pad - gap - ch) : Math.min(vh - ch - 16, r.bottom + pad + gap);
+      if(y < 16 || y + ch > vh - 16) y = (r.top > vh/2) ? 16 : vh - ch - 16;
+    } else {
+      var below = r.bottom + pad + gap, above = r.top - pad - gap - ch, right = r.right + pad + gap;
+      if(below + ch <= vh - 12){ y = below; x = r.left + r.width/2 - cw/2; }
+      else if(above >= 12){ y = above; x = r.left + r.width/2 - cw/2; }
+      else if(right + cw <= vw - 12){ x = right; y = r.top + r.height/2 - ch/2; }
+      else { x = r.left - pad - gap - cw; y = r.top + r.height/2 - ch/2; }
+      x = Math.max(16, Math.min(x, vw - cw - 16)); y = Math.max(12, Math.min(y, vh - ch - 12));
+    }
+    el.card.style.left = x + 'px'; el.card.style.top = y + 'px';
+  }
+  function go(n){
+    if(n < 0 || n >= steps.length) return;
+    clearTimeout(waitT); i = n; el.card.classList.remove('on');
+    var st = steps[i];
+    if(st.before) try{ st.before(); }catch(e){}
+    if(!st.sel){ draw(null); return; }
+    var t0 = Date.now();
+    (function look(){
+      if(!alive || i !== n) return;
+      var t = q(st.sel);
+      if(t){
+        var r = t.getBoundingClientRect();
+        if(r.top < 70 || r.bottom > window.innerHeight - 90) t.scrollIntoView({block:'center'});
+        setTimeout(function(){ if(alive && i === n) draw(t); }, 60);
+      } else if(Date.now() - t0 < 2500) waitT = setTimeout(look, 120);
+      else if(st.optional) go(n + (n >= i ? 1 : -1));   // not on this screen: move on
+      else draw(null);
+    })();
+  }
+  function end(how){
+    if(!alive) return; alive = false; clearTimeout(waitT);
+    document.removeEventListener('keydown', key, true);
+    window.removeEventListener('resize', place); window.removeEventListener('scroll', place, true);
+    [el.block, el.spot, el.card].forEach(function(x){ if(x && x.parentNode) x.parentNode.removeChild(x); });
+    try{ localStorage.setItem(opts.key, JSON.stringify({at:Date.now(), how:how})); }catch(e){}
+    if(opts.onEnd) opts.onEnd(how);
+  }
+  return {
+    seen: function(k){ try{ return !!localStorage.getItem(k); }catch(e){ return true; } },
+    running: function(){ return alive; },
+    start: function(s, o){ if(alive) return; steps = s; opts = o || {}; alive = true; i = 0; mount(); go(0); },
+    stop: function(){ end('skip'); }
+  };
+})();
+
+var fromBoard = location.hash === '#mine';
+if(fromBoard) try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
+function atsTour(){
+  if(GATED || TOUR.running() || TOUR.seen('tp_tour_ats_v1')) return;
+  var ready = !$('ftag').hidden;
+  TOUR.start([
+    {title:'Your resume X-ray', text:'See your resume the way hiring software reads it — and exactly what to fix first. Four quick pointers.', cta:'Show me',
+     icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/></svg>'},
+    ready ? {sel:['#ftag'], title:'Your resume is already here', text:'This is the file you added on the job board. To check a different version, tap × and choose another.'}
+          : {sel:['#drop'], title:'Start with your file', text:'Drop in the exact PDF or Word file you send employers. It’s read on your device — never uploaded.'},
+    {sel:['#jd'], title:'Add the job you want', text:'Paste the job description to see your match, the must-have skills you’re missing, and the keywords to add.'},
+    {sel:['.regions'], title:'Where are you applying?', text:'US, UK, Canada and Australia expect different things — like leaving out your photo or date of birth.'},
+    {sel:['#run'], title:'Run the X-ray', text:'Your report shows a marked-up copy of your resume, every bullet graded, and a fix list ordered by impact.'},
+    {title:'That’s it', text:'Add your resume and press “X-ray my resume”. You can save the full report as a PDF.', cta:'Let’s go',
+     icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'}
+  ], {key:'tp_tour_ats_v1'});
+}
+if(GATED){ /* nothing loads until they sign in */ }
+else loadSaved().then(function(ok){
+  if(ok && fromBoard){ try{ localStorage.setItem('tp_tour_ats_v1', '{"how":"auto"}'); }catch(e){} go(); }
+  else setTimeout(atsTour, 600);
+});
 var rz; window.addEventListener('resize', function(){ clearTimeout(rz); rz = setTimeout(function(){ if(D && D.kind === 'pdf' && !$('report').hidden){ var cs = $$('#papers .page'); D.pdfPages.slice(0,3).forEach(function(pg, i){ if(cs[i]) drawPage(pg, cs[i].querySelector('canvas'), cs[i]); }); } }, 250); });
 })();
 </script>
