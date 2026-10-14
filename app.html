@@ -97,7 +97,7 @@ img{max-width:100%}
 .job{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;
   padding:16px 18px;text-align:left;width:100%;transition:border-color .15s,box-shadow .15s}
 .job:hover{border-color:#cdd3e6;box-shadow:0 10px 26px -22px rgba(18,26,51,.5)}
-.logo{width:44px;height:44px;border-radius:11px;flex:none;display:grid;place-items:center;color:#fff;
+.logo{position:relative;overflow:hidden;width:44px;height:44px;border-radius:11px;flex:none;display:grid;place-items:center;color:#fff;
   font-family:Poppins;font-weight:700;font-size:17px}
 .job .body{flex:1;min-width:0}
 .job .t{font-weight:600;color:var(--ink);font-size:15.5px;line-height:1.35}
@@ -123,6 +123,9 @@ img{max-width:100%}
 @keyframes sh{to{background-position:-200% 0}}
 .loading-note{font-size:13px;color:var(--muted);margin:14px 2px}
 
+.logo img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:16%}
+.logo.has-img{box-shadow:inset 0 0 0 1px var(--line)}
+.logo.has-img img{border-radius:inherit}
 /* ---------- drawer (job detail) ---------- */
 .scrim{position:fixed;inset:0;background:rgba(10,16,38,.42);z-index:60;opacity:0;transition:opacity .2s}
 .scrim.on{opacity:1}
@@ -547,26 +550,59 @@ var CONFIG = {
   REFERRAL_REWARD: '',
 
   // Official public job boards. src: gh = Greenhouse, ashby = Ashby, lever = Lever.
+  // Official public job boards. src: gh = Greenhouse, ashby = Ashby, lever = Lever.
+  // domain = the company's website, used only to show its logo.
   COMPANIES: [
-    {src:'gh', board:'stripe',     name:'Stripe'},
-    {src:'gh', board:'airbnb',     name:'Airbnb'},
-    {src:'gh', board:'figma',      name:'Figma'},
-    {src:'gh', board:'anthropic',  name:'Anthropic'},
-    {src:'gh', board:'databricks', name:'Databricks'},
-    {src:'gh', board:'coinbase',   name:'Coinbase'},
-    {src:'gh', board:'robinhood',  name:'Robinhood'},
-    {src:'gh', board:'lyft',       name:'Lyft'},
-    {src:'gh', board:'pinterest',  name:'Pinterest'},
-    {src:'gh', board:'reddit',     name:'Reddit'},
-    {src:'gh', board:'discord',    name:'Discord'},
-    {src:'gh', board:'dropbox',    name:'Dropbox'},
-    {src:'gh', board:'cloudflare', name:'Cloudflare'},
-    {src:'gh', board:'datadog',    name:'Datadog'},
-    {src:'ashby', board:'ramp',    name:'Ramp'},
-    {src:'ashby', board:'openai',  name:'OpenAI'},
-    {src:'ashby', board:'notion',  name:'Notion'},
-    {src:'lever', board:'spotify', name:'Spotify'},
-    {src:'lever', board:'palantir',name:'Palantir'}
+    {src:'gh', board:'stripe',     name:'Stripe',     domain:'stripe.com'},
+    {src:'gh', board:'airbnb',     name:'Airbnb',     domain:'airbnb.com'},
+    {src:'gh', board:'figma',      name:'Figma',      domain:'figma.com'},
+    {src:'gh', board:'anthropic',  name:'Anthropic',  domain:'anthropic.com'},
+    {src:'gh', board:'databricks', name:'Databricks', domain:'databricks.com'},
+    {src:'gh', board:'coinbase',   name:'Coinbase',   domain:'coinbase.com'},
+    {src:'gh', board:'robinhood',  name:'Robinhood',  domain:'robinhood.com'},
+    {src:'gh', board:'lyft',       name:'Lyft',       domain:'lyft.com'},
+    {src:'gh', board:'pinterest',  name:'Pinterest',  domain:'pinterest.com'},
+    {src:'gh', board:'reddit',     name:'Reddit',     domain:'reddit.com'},
+    {src:'gh', board:'discord',    name:'Discord',    domain:'discord.com'},
+    {src:'gh', board:'dropbox',    name:'Dropbox',    domain:'dropbox.com'},
+    {src:'gh', board:'cloudflare', name:'Cloudflare', domain:'cloudflare.com'},
+    {src:'gh', board:'datadog',    name:'Datadog',    domain:'datadoghq.com'},
+    {src:'gh', board:'gitlab',     name:'GitLab',     domain:'gitlab.com'},
+    {src:'gh', board:'twilio',     name:'Twilio',     domain:'twilio.com'},
+    {src:'gh', board:'instacart',  name:'Instacart',  domain:'instacart.com'},
+    {src:'gh', board:'doordashusa',name:'DoorDash',   domain:'doordash.com'},
+    {src:'gh', board:'asana',      name:'Asana',      domain:'asana.com'},
+    {src:'gh', board:'duolingo',   name:'Duolingo',   domain:'duolingo.com'},
+    {src:'gh', board:'affirm',     name:'Affirm',     domain:'affirm.com'},
+    {src:'gh', board:'brex',       name:'Brex',       domain:'brex.com'},
+    {src:'gh', board:'gusto',      name:'Gusto',      domain:'gusto.com'},
+    {src:'gh', board:'chime',      name:'Chime',      domain:'chime.com'},
+    {src:'gh', board:'samsara',    name:'Samsara',    domain:'samsara.com'},
+    {src:'gh', board:'mongodb',    name:'MongoDB',    domain:'mongodb.com'},
+    {src:'gh', board:'okta',       name:'Okta',       domain:'okta.com'},
+    {src:'gh', board:'roblox',     name:'Roblox',     domain:'roblox.com'},
+    {src:'gh', board:'scaleai',    name:'Scale AI',   domain:'scale.com'},
+    {src:'gh', board:'airtable',   name:'Airtable',   domain:'airtable.com'},
+    {src:'gh', board:'elastic',    name:'Elastic',    domain:'elastic.co'},
+    {src:'gh', board:'squarespace',name:'Squarespace',domain:'squarespace.com'},
+    {src:'gh', board:'toast',      name:'Toast',      domain:'toasttab.com'},
+    {src:'gh', board:'vercel',     name:'Vercel',     domain:'vercel.com'},
+    {src:'gh', board:'webflow',    name:'Webflow',    domain:'webflow.com'},
+    {src:'gh', board:'waymo',      name:'Waymo',      domain:'waymo.com'},
+    {src:'gh', board:'andurilindustries', name:'Anduril', domain:'anduril.com'},
+    {src:'gh', board:'pagerduty',  name:'PagerDuty',  domain:'pagerduty.com'},
+    {src:'gh', board:'carta',      name:'Carta',      domain:'carta.com'},
+    {src:'ashby', board:'ramp',    name:'Ramp',       domain:'ramp.com'},
+    {src:'ashby', board:'openai',  name:'OpenAI',     domain:'openai.com'},
+    {src:'ashby', board:'notion',  name:'Notion',     domain:'notion.so'},
+    {src:'ashby', board:'linear',  name:'Linear',     domain:'linear.app'},
+    {src:'ashby', board:'supabase',name:'Supabase',   domain:'supabase.com'},
+    {src:'ashby', board:'replit',  name:'Replit',     domain:'replit.com'},
+    {src:'ashby', board:'cursor',  name:'Cursor',     domain:'cursor.com'},
+    {src:'ashby', board:'posthog', name:'PostHog',    domain:'posthog.com'},
+    {src:'ashby', board:'perplexity', name:'Perplexity', domain:'perplexity.ai'},
+    {src:'lever', board:'spotify', name:'Spotify',    domain:'spotify.com'},
+    {src:'lever', board:'palantir',name:'Palantir',   domain:'palantir.com'}
   ],
 
   // Add a join link (WhatsApp, Discord, Telegram, LinkedIn group) when each one exists.
@@ -607,7 +643,17 @@ function agoLabel(ts){
 }
 var PAL = ['#0938d5','#0a7f46','#7c3aed','#c2410c','#0e7490','#be185d','#4338ca','#15803d','#b45309','#1d4ed8'];
 function hue(s){ var h=0; for(var i=0;i<s.length;i++) h=(h*31 + s.charCodeAt(i))>>>0; return PAL[h % PAL.length]; }
-function logo(name, cls){ return '<span class="logo '+(cls||'')+'" style="background:'+hue(name)+'" aria-hidden="true">'+esc((name||'?').charAt(0).toUpperCase())+'</span>'; }
+var DOM_BY = {};
+CONFIG.COMPANIES.forEach(function(c){ DOM_BY['b:' + c.board] = c.domain; DOM_BY['n:' + c.name.toLowerCase()] = c.domain; });
+function domFor(nameOrKey){
+  var s = String(nameOrKey||''), m = /^(gh|ashby|lever):([^:]+):/.exec(s);
+  return m ? DOM_BY['b:' + m[2]] : DOM_BY['n:' + s.toLowerCase()];
+}
+function logo(name, cls, dom){
+  dom = dom || domFor(name);
+  var img = dom ? '<img src="https://www.google.com/s2/favicons?domain=' + encodeURIComponent(dom) + '&amp;sz=128" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '';
+  return '<span class="logo '+(cls||'')+(dom ? ' has-img' : '')+'" style="background:'+hue(name)+'" aria-hidden="true">'+esc((name||'?').charAt(0).toUpperCase())+img+'</span>';
+}
 function toast(m){ var t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('on'); }, 2600); }
 function copy(text){
   if(navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text).then(function(){ toast('Copied'); }, function(){ toast('Select the text and copy it'); });
@@ -885,7 +931,7 @@ function mk(src, board, company, id, title, loc, posted, url, opts){
   var j = {key: src+':'+board+':'+id, src:src, board:board, id:String(id), title:title, company:company,
            location: loc || 'Location not listed', posted: posted || 0, url: url, dept: opts.dept || '',
            remote: !!opts.remote, domain: tx[0], sub: tx[1], cat: tx[0], lvl: level(title),
-           type: opts.type || typeFromTitle(title), mode: opts.mode || '', salary: opts.salary || ''};
+           type: opts.type || typeFromTitle(title), mode: opts.mode || '', salary: opts.salary || '', dom: opts.dom || ''};
   if(!j.mode){ var l = (j.location + ' ' + title).toLowerCase(); j.mode = /\bhybrid\b/.test(l) ? 'Hybrid' : (j.remote || /\bremote\b/.test(l)) ? 'Remote' : ''; }
   if(j.mode === 'Remote') j.remote = true;
   j.reg = regions(j.location + ' ' + (opts.extraLoc||''), opts.country, j.remote);
@@ -897,7 +943,7 @@ var NORM = {
       var loc = typeof x.location === 'string' ? x.location : (x.location && x.location.name) || '';
       var t = Date.parse(x.first_published || x.updated_at) || 0;
       var dept = x.departments && x.departments[0] && x.departments[0].name;
-      return mk('gh', c.board, x.company_name || c.name, x.id, x.title, loc, t, x.absolute_url, {dept:dept});
+      return mk('gh', c.board, c.name || x.company_name, x.id, x.title, loc, t, x.absolute_url, {dept:dept, dom:c.domain});
     });
   },
   ashby: function(c, d){
@@ -909,7 +955,7 @@ var NORM = {
       comp = String(comp).split('•')[0].trim();
       var j = mk('ashby', c.board, c.name, x.id, x.title, x.location + (sec ? ' · ' + sec : ''), Date.parse(x.publishedAt)||0,
                  x.jobUrl, {dept:x.department, remote:x.isRemote, type:TYPES[x.employmentType]||'', mode:MODES[x.workplaceType] || (x.isRemote ? 'Remote' : ''),
-                 salary:comp, extraLoc:x.address && (x.address.postalAddress ? JSON.stringify(x.address.postalAddress) : String(x.address))});
+                 salary:comp, dom:c.domain, extraLoc:x.address && (x.address.postalAddress ? JSON.stringify(x.address.postalAddress) : String(x.address))});
       if(x.descriptionPlain) DESC[j.key] = {plain:x.descriptionPlain, apply:x.applyUrl};
       return j;
     });
@@ -924,7 +970,7 @@ var NORM = {
       if(sr && sr.min && sr.max && !/hour/i.test(sr.interval||'')) sal = fmtMoney(sr.min, sr.currency) + ' – ' + fmtMoney(sr.max, sr.currency) + (sr.currency ? ' ' + sr.currency : '');
       var j = mk('lever', c.board, c.name, x.id, x.text, loc, x.createdAt||0, x.hostedUrl,
                  {dept:cat.department || cat.team, remote:(x.workplaceType||'')==='remote', country:x.country,
-                  type:type, mode:MODES[String(x.workplaceType||'').toLowerCase()]||'', salary:sal});
+                  type:type, mode:MODES[String(x.workplaceType||'').toLowerCase()]||'', salary:sal, dom:c.domain});
       DESC[j.key] = {plain:x.descriptionPlain||'', lists:x.lists||[], extra:x.additionalPlain||'', apply:x.applyUrl};
       return j;
     });
@@ -942,7 +988,7 @@ function loadJobs(force){
   return jobsPromise;
 }
 function loadJobsNow(force){
-  var cached = ssGet('tp_jobs_v2', null);
+  var cached = ssGet('tp_jobs_v3', null);
   if(!force && cached && Date.now() - cached.at < 30*60*1000 && cached.jobs && cached.jobs.length){
     JOBS = cached.jobs; jobsMeta = {loaded:cached.loaded, failed:cached.failed, at:cached.at, loading:false};
     return Promise.resolve();
@@ -957,7 +1003,7 @@ function loadJobsNow(force){
   })).then(function(){
     all.sort(function(a,b){ return b.posted - a.posted; });
     JOBS = all; jobsMeta.at = Date.now(); jobsMeta.loading = false;
-    ssSet('tp_jobs_v2', {at:jobsMeta.at, loaded:jobsMeta.loaded, failed:jobsMeta.failed, jobs:JOBS});
+    ssSet('tp_jobs_v3', {at:jobsMeta.at, loaded:jobsMeta.loaded, failed:jobsMeta.failed, jobs:JOBS});
   });
 }
 function findJob(key){ return JOBS.filter(function(j){ return j.key === key; })[0]; }
@@ -1249,7 +1295,8 @@ function render(soft){
 window.addEventListener('hashchange', function(){ render(true); });
 
 /* ---------- Jobs ---------- */
-var F = lsGet('tp_filters', {q:'', region:'ours', cat:'', lvl:'', age:'30', sort:'new'});
+var F = lsGet('tp_filters', {q:'', region:'US', cat:'', lvl:'', age:'30', sort:'new', r2:1});
+if(!F.r2){ if(F.region === 'ours') F.region = 'US'; F.r2 = 1; lsSet('tp_filters', F); }
 if(F.cat && DOMAINS.indexOf(F.cat) < 0) F.cat = '';
 var VIEW = lsGet('tp_view', 'cards');
 var PASSED = lsGet('tp_passed', {});
@@ -1349,7 +1396,7 @@ function vJobs(v){
     '<label class="search smart"><span class="sr">Smart search</span>'+I.spark+'<input id="q" type="search" placeholder="Describe the job — e.g. remote data analyst, entry level, New York" value="'+esc(F.q)+'" autocomplete="off" enterkeyhint="search">'+I.search+'</label>'+
     '<div class="qchips" id="qchips"></div>'+
     '<div class="filters">'+
-      '<label class="sel"><span class="sr">Region</span><select id="fRegion">'+opt('ours','US · UK · Canada · Australia',F.region)+opt('US','United States',F.region)+opt('UK','United Kingdom',F.region)+opt('CA','Canada',F.region)+opt('AU','Australia',F.region)+opt('Remote','Remote',F.region)+opt('all','All locations',F.region)+'</select></label>'+
+      '<label class="sel"><span class="sr">Region</span><select id="fRegion">'+opt('US','United States',F.region)+opt('ours','US · UK · Canada · Australia',F.region)+opt('UK','United Kingdom',F.region)+opt('CA','Canada',F.region)+opt('AU','Australia',F.region)+opt('Remote','Remote',F.region)+opt('all','All locations',F.region)+'</select></label>'+
       '<label class="sel"><span class="sr">Field</span><select id="fCat">'+opt('','All fields',F.cat)+DOMAINS.map(function(c){ return opt(c,c,F.cat); }).join('')+'</select></label>'+
       '<label class="sel"><span class="sr">Level</span><select id="fLvl">'+opt('','All levels',F.lvl)+opt('Intern','Internship',F.lvl)+opt('Entry','Entry level',F.lvl)+opt('Mid','Mid level',F.lvl)+opt('Senior','Senior',F.lvl)+opt('Lead+','Lead & above',F.lvl)+'</select></label>'+
       '<label class="sel"><span class="sr">Posted</span><select id="fAge">'+opt('1','Last 24 hours',F.age)+opt('3','Last 3 days',F.age)+opt('7','Last 7 days',F.age)+opt('30','Last 30 days',F.age)+opt('any','Any time',F.age)+'</select></label>'+
@@ -1382,7 +1429,7 @@ function drawChips(){
 function isTracked(k){ return state.tracked.some(function(t){ return t.job_key === k; }); }
 function jobCard(j){
   var fresh = j.posted && daysAgo(j.posted) <= 4, mo = modeOf(j), sc = matchFor(j);
-  return '<div class="job" data-job="'+esc(j.key)+'" role="button" tabindex="0">'+logo(j.company)+
+  return '<div class="job" data-job="'+esc(j.key)+'" role="button" tabindex="0">'+logo(j.company, '', j.dom)+
     '<div class="body"><div class="t">'+esc(j.title)+'</div><div class="c">'+esc(j.company)+' · '+esc(j.sub !== 'Other' ? j.sub : (j.dept || 'Other'))+'</div>'+
       '<div class="tags"><span>'+I.pin+esc(trunc(j.location, 60))+'</span>'+
       (j.posted?'<span class="'+(fresh?'fresh':'')+'">'+I.clock+agoLabel(j.posted)+'</span>':'')+
@@ -1428,7 +1475,7 @@ function deckCardInner(j){
   else bar = '<div class="ms"><div class="msl"><span>Match score</span><b style="color:'+scoreCol(sc)+'">'+sc+'%</b></div><div class="msb"><i style="width:'+Math.max(sc, 2)+'%;background:'+scoreCol(sc)+'"></i></div></div>';
   var href = '#job=' + encodeURIComponent(j.key);
   return '<div class="dinner">'+
-    '<div class="dh">'+logo(j.company, 'lg')+'<div class="dhx"><div class="dco">'+esc(j.company)+'</div><h3 class="dt"><a href="'+href+'">'+esc(j.title)+'</a></h3></div></div>'+
+    '<div class="dh">'+logo(j.company, 'lg', j.dom)+'<div class="dhx"><div class="dco">'+esc(j.company)+'</div><h3 class="dt"><a href="'+href+'">'+esc(j.title)+'</a></h3></div></div>'+
     bar+
     '<div class="mg">'+
       mgi('Location', I.pin, j.location)+
@@ -1586,7 +1633,7 @@ function paintJob(job){
   var top = $('#jdTop'); if(!top) return;
   var saved = isTracked(job.key), k = esc(job.key);
   top.innerHTML =
-    '<div class="jd-head">'+logo(job.company, 'lg')+'<div class="jdh"><h2>'+esc(job.title)+'</h2><div class="co">'+esc(job.company)+'</div>'+
+    '<div class="jd-head">'+logo(job.company, 'lg', job.dom)+'<div class="jdh"><h2>'+esc(job.title)+'</h2><div class="co">'+esc(job.company)+'</div>'+
       '<div class="pd">'+(job.posted ? 'Posted on '+fmtDate(job.posted)+' · '+agoLabel(job.posted).replace(/^Posted /,'') : 'Posting date not listed')+'</div></div>'+
       '<button type="button" class="bm'+(saved?' on':'')+'" data-save="'+k+'" aria-label="Save job">'+(saved?I.bmf:I.bm)+'</button></div>'+
     '<div class="jd-meta">'+
@@ -1821,7 +1868,7 @@ function vDashboard(v){
 function stat(ic, n, l){ return '<div class="stat"><span class="ic">'+ic+'</span><div class="n">'+n+'</div><div class="l">'+l+'</div></div>'; }
 function trackRow(t){
   var st = ['saved','applied','interview','offer','rejected'];
-  return '<div class="trow">'+logo(t.company||'?')+'<div class="i"><b>'+esc(t.title)+'</b><span>'+esc(t.company)+'</span></div>'+
+  return '<div class="trow">'+logo(t.company||'?', '', domFor(t.job_key))+'<div class="i"><b>'+esc(t.title)+'</b><span>'+esc(t.company)+'</span></div>'+
     '<label><span class="sr">Status</span><select data-status="'+esc(t.job_key)+'">'+st.map(function(s){ return '<option value="'+s+'"'+(t.status===s?' selected':'')+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>'; }).join('')+'</select></label>'+
     '<button class="rm" type="button" data-untrack="'+esc(t.job_key)+'" aria-label="Remove">'+I.trash+'</button></div>';
 }
@@ -2004,7 +2051,7 @@ document.addEventListener('click', function(e){
     case 'post': return openPost();
     case 'more': shown += 30; return drawList();
     case 'reload': JOBS = []; jobsPromise = null; loadJobs(true).then(function(){ drawList(); }); return vJobs($('#view'));
-    case 'clearf': F = {q:'', region:'ours', cat:'', lvl:'', age:'any', sort:'new'}; lsSet('tp_filters', F); return vJobs($('#view'));
+    case 'clearf': F = {q:'', region:'US', cat:'', lvl:'', age:'any', sort:'new', r2:1}; lsSet('tp_filters', F); return vJobs($('#view'));
     case 'upload': return requireSignIn('Sign in to add your resume', function(){ $('#fileIn').click(); });
     case 'rmresume':
       lsSet('tp_resume_local', null);
