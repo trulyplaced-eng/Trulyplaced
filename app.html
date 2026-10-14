@@ -11,7 +11,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='116' fill='%230938d5'/%3E%3Cpath d='M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z' fill='%23fff'/%3E%3Cpath d='M205 200l37 36 76-88' fill='none' stroke='%230938d5' stroke-width='30' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"></noscript>
 <style>
 :root{--blue:#0938d5;--blue-d:#072ca8;--blue-soft:#eef2ff;--blue-line:#cfd9ff;--ink:#121a33;--body:#4b5473;
   --muted:#737b9c;--line:#e7e9f2;--bg:#f6f7fc;--card:#fff;--ok:#0a7f46;--ok-soft:#e6f6ee;--warn:#b45309;
@@ -226,15 +227,54 @@ img{max-width:100%}
 .toggle b{display:block;color:var(--ink);font-size:14px}
 .toggle small{display:block;font-size:12.5px;color:var(--muted)}
 
-/* ---------- communities ---------- */
-.cgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.comm{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
-.comm .h{display:flex;gap:10px;align-items:center}
-.comm .h .logo{width:38px;height:38px;font-size:13px;border-radius:9px}
-.comm .h b{color:var(--ink);font-size:14.5px;line-height:1.3}
-.comm .tags{margin-top:0}
-.comm .f{display:flex;justify-content:space-between;align-items:center;margin-top:auto;gap:8px}
-.comm .f span{font-size:12.5px;color:var(--muted)}
+/* ---------- admin: add jobs ---------- */
+.adm textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.5;background:#fff;resize:vertical}
+.adm textarea:focus,.adm select:focus{outline:2px solid var(--blue);outline-offset:-1px;border-color:transparent}
+.adm .flabel{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.adm .field select{min-height:44px;border:1px solid var(--line);border-radius:10px;padding:0 10px;background:#fff;font-size:14px}
+.adm .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:8px}
+.adm .grid3 .wide{grid-column:1/-1}
+.aprev{display:flex;flex-direction:column;gap:12px}
+.aitem{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff;display:flex;flex-direction:column;gap:8px}
+.aitem.off{opacity:.55}
+.aitem .ah{display:flex;gap:10px;align-items:flex-start}
+.aitem .ah .logo{width:36px;height:36px;font-size:13px;border-radius:9px;flex:none}
+.aitem .ah .ai{flex:1;min-width:0}
+.aitem .ah b{display:block;color:var(--ink);font-size:14.5px;line-height:1.35;word-break:break-word}
+.aitem .ah small{display:block;font-size:12.5px;color:var(--muted);word-break:break-all}
+.aitem .ah label{display:flex;gap:6px;align-items:center;font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;min-height:32px;flex:none}
+.astat{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;width:max-content;max-width:100%}
+.astat.ok{background:var(--ok-soft);color:var(--ok)}.astat.warn{background:var(--warn-soft);color:var(--warn)}.astat.bad{background:var(--bad-soft);color:var(--bad)}.astat.info{background:var(--blue-soft);color:var(--blue)}
+.alist{display:flex;flex-direction:column;margin-top:8px}
+.arow{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.arow:first-child{border-top:0}
+.arow .logo{width:34px;height:34px;font-size:12px;border-radius:9px;flex:none}
+.arow .i{flex:1;min-width:0}
+.arow .i b{display:block;color:var(--ink);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arow .i span{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arow .rm{border:0;background:none;color:var(--muted);width:40px;height:40px;border-radius:10px;display:grid;place-items:center;flex:none}
+.arow .rm:hover{background:var(--bad-soft);color:var(--bad)}
+.arow .rm svg{width:18px;height:18px}
+.arow a.lk{font-size:13px;font-weight:600;flex:none}
+.cnt{font-family:Inter;font-weight:600;font-size:12.5px;color:var(--muted);margin-left:6px}
+.pill.team{background:#fff7e6;border-color:#f6d9a6;color:#8a5300}
+.pill.team svg{width:12px;height:12px}
+.dco .pill.team{margin-left:8px;vertical-align:1px}
+@media (max-width:720px){.adm .grid3{grid-template-columns:1fr}}
+
+/* ---------- reading a resume ---------- */
+.reading{position:relative;display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--blue-line);border-radius:16px;padding:20px 22px;overflow:hidden}
+.reading b{display:block;color:var(--ink);font-size:15px;word-break:break-word}
+.reading span{display:block;font-size:13px;color:var(--muted)}
+.rspin{flex:none;width:26px;height:26px;border-radius:50%;border:3px solid var(--blue-soft);border-top-color:var(--blue);animation:rsp .8s linear infinite}
+@keyframes rsp{to{transform:rotate(360deg)}}
+.rbar{position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--blue-soft)}
+.rbar i{position:absolute;inset:0 auto 0 0;width:35%;background:var(--blue);border-radius:3px;animation:rbr 1.3s ease-in-out infinite}
+@keyframes rbr{0%{left:-35%}100%{left:100%}}
+@media (prefers-reduced-motion:reduce){.rspin,.rbar i{animation-duration:3s}}
+.nav a,.tabbar a,.btn,.fab{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn:active,.fab:active{transform:scale(.97)}
+
 
 /* ---------- settings ---------- */
 .set{display:grid;grid-template-columns:220px 1fr;gap:20px;align-items:start}
@@ -524,8 +564,6 @@ textarea.post{width:100%;min-height:260px;border:1px solid var(--line);border-ra
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <input type="file" id="fileIn" accept=".pdf,.docx,.txt" hidden>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script>
 (function(){
 "use strict";
@@ -549,7 +587,6 @@ var CONFIG = {
   // '25 bonus applications on any plan when a friend you invite buys one'
   REFERRAL_REWARD: '',
 
-  // Official public job boards. src: gh = Greenhouse, ashby = Ashby, lever = Lever.
   // Official public job boards. src: gh = Greenhouse, ashby = Ashby, lever = Lever.
   // domain = the company's website, used only to show its logo.
   COMPANIES: [
@@ -603,20 +640,6 @@ var CONFIG = {
     {src:'ashby', board:'perplexity', name:'Perplexity', domain:'perplexity.ai'},
     {src:'lever', board:'spotify', name:'Spotify',    domain:'spotify.com'},
     {src:'lever', board:'palantir',name:'Palantir',   domain:'palantir.com'}
-  ],
-
-  // Add a join link (WhatsApp, Discord, Telegram, LinkedIn group) when each one exists.
-  // Until then the button collects interest instead — that's a lead too.
-  COMMUNITIES: [
-    {name:'Bay Area · Data', role:'Data Analyst / Data Engineer', city:'San Francisco Bay Area', url:''},
-    {name:'Bay Area · Software', role:'Software Engineer', city:'San Francisco Bay Area', url:''},
-    {name:'New York · Data', role:'Data Analyst / Data Scientist', city:'New York', url:''},
-    {name:'New York · Product', role:'Product Manager', city:'New York', url:''},
-    {name:'Seattle · Software', role:'Software Engineer', city:'Seattle', url:''},
-    {name:'Austin · Business', role:'Business Analyst', city:'Austin', url:''},
-    {name:'Remote US · Data', role:'Data roles, remote', city:'Remote (US)', url:''},
-    {name:'International students · OPT/H-1B', role:'All roles, visa sponsorship', city:'United States', url:''},
-    {name:'Toronto · Tech', role:'Software & Data', city:'Toronto', url:''}
   ]
 };
 
@@ -662,6 +685,7 @@ function copy(text){
 }
 
 var I = {
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>',
   dash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 13a9 9 0 0 1 9 0"/><path d="M3 13a9 9 0 0 1 18 0"/><path d="m12 13 4-4"/><circle cx="12" cy="13" r="1.5"/></svg>',
   jobs:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
   resume:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>',
@@ -733,7 +757,7 @@ var store = {
     if(!LIVE){
       $('#demoBar').hidden = false;
       var d = lsGet('tp_app_v1', null);
-      if(d && d.user){ state.user=d.user; state.profile=d.profile||{}; state.tracked=d.tracked||[]; }
+      if(d && d.user){ state.user=d.user; state.profile=d.profile||{}; state.tracked=d.tracked||[]; state.isAdmin=true; }
       return Promise.resolve();
     }
     return loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js').then(function(){
@@ -742,7 +766,7 @@ var store = {
       sb.auth.onAuthStateChange(function(ev, session){
         if(oauthBusy) return; // the initial sign-in is handled explicitly below
         if(ev === 'SIGNED_IN' && session && (!state.user || state.user.id !== session.user.id)){ afterSignIn(session.user); }
-        if(ev === 'SIGNED_OUT'){ state.user=null; state.profile=null; state.tracked=[]; render(); }
+        if(ev === 'SIGNED_OUT'){ state.user=null; state.profile=null; state.tracked=[]; state.isAdmin=false; render(); }
       });
       return sb.auth.getSession();
     }).then(function(r){
@@ -774,7 +798,7 @@ var store = {
     return sb.auth.signInWithOAuth({provider:'google', options:{redirectTo: location.origin + '/app.html#dashboard'}});
   },
   signOut: function(){
-    if(!LIVE){ state.user=null; state.profile=null; state.tracked=[]; lsSet('tp_app_v1', null); render(); return Promise.resolve(); }
+    if(!LIVE){ state.user=null; state.profile=null; state.tracked=[]; state.isAdmin=false; lsSet('tp_app_v1', null); render(); return Promise.resolve(); }
     return sb.auth.signOut();
   },
   saveProfile: function(patch){
@@ -818,8 +842,10 @@ function afterSignIn(u, silent){
   var load = LIVE
     ? Promise.all([
         sb.from('profiles').select('*').eq('id', u.id).maybeSingle(),
-        sb.from('tracked_jobs').select('*').order('updated_at', {ascending:false})
+        sb.from('tracked_jobs').select('*').order('updated_at', {ascending:false}),
+        sb.rpc('is_admin').then(function(r){ return r; }, function(){ return {data:false}; })
       ]).then(function(rs){
+        state.isAdmin = !!(rs[2] && rs[2].data === true);
         var p = rs[0].data, isNew = !p;
         state.tracked = rs[1].data || [];
         if(isNew){
@@ -830,6 +856,7 @@ function afterSignIn(u, silent){
         state.profile = p; return false;
       })
     : Promise.resolve(!state.profile || !state.profile.onboarded).then(function(isNew){
+        state.isAdmin = true;   // preview mode: show the team page so it can be tried
         if(isNew){ state.profile = Object.assign({email:state.user.email, full_name:state.user.name, marketing_consent:false, referred_by: ref||null}, state.profile||{}); store.saveLocal(); }
         return isNew;
       });
@@ -986,19 +1013,68 @@ var URLS = {
 var jobsPromise = null, drawTimer = null;
 function loadJobs(force){
   if(jobsPromise && !force) return jobsPromise;
-  jobsPromise = loadJobsNow(force).then(function(){ jobsPromise = null; }, function(){ jobsPromise = null; });
+  var cp = loadTeamJobs(force);
+  jobsPromise = loadJobsNow(force).then(function(){ jobsPromise = null; mergeTeam(); }, function(){ jobsPromise = null; mergeTeam(); });
+  cp.then(function(){ if(mergeTeam() && route.name === 'jobs') scheduleDraw(); });
   return jobsPromise;
+}
+
+/* ---- jobs the team added by link (Add jobs page) — stored in Supabase, readable by everyone ---- */
+var TEAM = {rows:[], jobs:[], boards:[], boardJobs:[]}, teamP = null;
+function teamRows(all){
+  if(!LIVE) return Promise.resolve(lsGet('tp_team_demo', []).filter(function(r){ return all || r.active !== false; }));
+  if(all && sb) return sb.from('custom_jobs').select('*').order('created_at', {ascending:false}).limit(500).then(function(r){ if(r.error) throw r.error; return r.data || []; });
+  return fetchT(CONFIG.SUPABASE_URL + '/rest/v1/custom_jobs?select=*&active=eq.true&order=created_at.desc&limit=1000', 8000, {apikey:CONFIG.SUPABASE_ANON_KEY});
+}
+function teamJob(r){
+  var src = URLS[r.src] ? r.src : 'custom', board = src === 'custom' ? 'team' : r.board, id = src === 'custom' ? r.id : r.ext_id;
+  var j = mk(src, board, r.company || 'Company', id, r.title || 'Role', r.location || '', Date.parse(r.posted_at) || Date.now(), r.url,
+             {dept:r.dept || '', mode:r.work_mode || '', salary:r.salary || '', dom:r.domain || ''});
+  j.picked = true; j.fromTeam = true;
+  if(r.description) DESC[j.key] = {plain:r.description, apply:r.url};
+  return j;
+}
+function loadTeamJobs(force){
+  if(teamP && !force) return teamP;
+  teamP = teamRows(false).catch(function(){ return []; }).then(function(rows){
+    TEAM.rows = rows || [];
+    TEAM.jobs = TEAM.rows.filter(function(r){ return r.kind !== 'board' && r.url; }).map(function(r){ try{ return teamJob(r); }catch(e){ return null; } }).filter(Boolean);
+    var known = {}; CONFIG.COMPANIES.forEach(function(c){ known[c.src + ':' + c.board] = 1; });
+    TEAM.boards = TEAM.rows.filter(function(r){ return r.kind === 'board' && URLS[r.src] && r.board && !known[r.src + ':' + r.board]; })
+      .map(function(r){ return {src:r.src, board:r.board, name:r.company || title1(r.board), domain:r.domain || ''}; });
+    TEAM.boards.forEach(function(c){ if(c.domain){ DOM_BY['b:' + c.board] = c.domain; DOM_BY['n:' + c.name.toLowerCase()] = c.domain; } });
+    TEAM.boardJobs = [];
+    // whole company boards the team added: fetched live (the 3-hourly snapshot picks them up too)
+    return Promise.all(TEAM.boards.map(function(c){
+      return fetchT(URLS[c.src](c.board), 15000).then(function(d){
+        NORM[c.src](c, d).forEach(function(j){ j.fromTeam = true; TEAM.boardJobs.push(j); });
+      }, function(){});
+    }));
+  });
+  return teamP;
+}
+function mergeTeam(){
+  var keep = {}, before = JOBS.length;
+  TEAM.jobs.concat(TEAM.boardJobs).forEach(function(j){ keep[j.key] = j; });
+  var picked = {}; TEAM.jobs.forEach(function(j){ picked[j.key] = 1; });
+  JOBS = JOBS.filter(function(j){ return !j.fromTeam || keep[j.key]; });
+  var have = {};
+  JOBS.forEach(function(j){ have[j.key] = 1; j.picked = !!picked[j.key]; });
+  Object.keys(keep).forEach(function(k){ if(!have[k]) JOBS.push(keep[k]); });
+  JOBS.sort(byNewest);
+  return JOBS.length !== before || TEAM.jobs.length > 0;
 }
 /* compact rows: [src, board, id, title, company, location, posted, url, dept, remote, type, mode, salary, domain, extraLoc, country]
    — the same shape the hourly snapshot (jobs.json) uses */
 function toRow(j){ return [j.src, j.board, j.id, j.title, j.company, j.location, j.posted, j.url, j.dept, j.remote ? 1 : 0, j.type, j.mode, j.salary, j.dom, j.xl || '', j.cc || '']; }
 function fromRow(r){ return mk(r[0], r[1], r[4], r[2], r[3], r[5], r[6], r[7], {dept:r[8], remote:!!r[9], type:r[10], mode:r[11], salary:r[12], dom:r[13], extraLoc:r[14], country:r[15]}); }
 function byNewest(a, b){ return b.posted - a.posted; }
-function saveCache(){ try{ localStorage.setItem('tp_jobs_v4', JSON.stringify({at:jobsMeta.at, n:jobsMeta.loaded, f:jobsMeta.failed, rows:JOBS.map(toRow)})); }catch(e){ try{ localStorage.removeItem('tp_jobs_v4'); }catch(_){} } }
+function saveCache(){ try{ localStorage.setItem('tp_jobs_v4', JSON.stringify({at:jobsMeta.at, n:jobsMeta.loaded, f:jobsMeta.failed, rows:JOBS.filter(function(j){ return !j.fromTeam; }).map(toRow)})); }catch(e){ try{ localStorage.removeItem('tp_jobs_v4'); }catch(_){} } }
 function scheduleDraw(){ if(drawTimer) return; drawTimer = setTimeout(function(){ drawTimer = null; if(drag){ scheduleDraw(); return; } if(route.name === 'jobs') drawList(); }, 300); }
-function fetchT(url, ms){
+function fetchT(url, ms, headers){
   var ctl = window.AbortController ? new AbortController() : null, t = ctl ? setTimeout(function(){ ctl.abort(); }, ms) : null;
-  return fetch(url, ctl ? {signal:ctl.signal} : {}).then(function(r){ if(t) clearTimeout(t); if(!r.ok) throw new Error(r.status); return r.json(); }, function(e){ if(t) clearTimeout(t); throw e; });
+  var o = headers ? {headers:headers} : {}; if(ctl) o.signal = ctl.signal;
+  return fetch(url, o).then(function(r){ if(t) clearTimeout(t); if(!r.ok) throw new Error(r.status); return r.json(); }, function(e){ if(t) clearTimeout(t); throw e; });
 }
 function loadJobsNow(force){
   // 1. instant: the copy saved in this browser last time, so the board is never empty on a repeat visit
@@ -1082,8 +1158,9 @@ function loadDesc(job){
       });
   }
   // Ashby/Lever descriptions come with the board — refetch that one board if the page was reloaded
-  var c = CONFIG.COMPANIES.filter(function(x){ return x.src === job.src && x.board === job.board; })[0];
-  if(!c) return Promise.reject();
+  if(!URLS[job.src]) return Promise.reject();
+  var c = CONFIG.COMPANIES.concat(TEAM.boards).filter(function(x){ return x.src === job.src && x.board === job.board; })[0]
+          || {src:job.src, board:job.board, name:job.company, domain:job.dom};
   var bk = c.src + ':' + c.board;
   if(!BOARDP[bk]) BOARDP[bk] = fetchT(URLS[c.src](c.board), 20000).then(function(d){ NORM[c.src](c, d); }, function(e){ delete BOARDP[bk]; throw e; });
   return BOARDP[bk].then(function(){ if(!DESC[job.key]) throw 0; return DESC[job.key]; });
@@ -1248,24 +1325,44 @@ function match(job, jdText, resumeText, target){
   var score = wsum ? Math.round(total / wsum * 100) : null;
   return {score:score, parts:parts, hit:hit, miss:miss, need:need, have:have};
 }
+/* file readers (~1 MB) load only when needed, so the app opens instantly */
+var PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+    PDFW  = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
+    MAMMOTH = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js', RD = {};
+function needReader(kind){
+  if(kind === 'pdf'){
+    if(window.pdfjsLib) return Promise.resolve();
+    if(!RD.pdf && window.fetch) fetch(PDFW, {mode:'cors', credentials:'omit'}).catch(function(){});   // fetch the reader's helper at the same time
+    return RD.pdf || (RD.pdf = loadScript(PDFJS).then(function(){ pdfjsLib.GlobalWorkerOptions.workerSrc = PDFW; })
+      .catch(function(){ RD.pdf = null; throw 'The PDF reader didn’t load — check your connection and try again.'; }));
+  }
+  if(window.mammoth) return Promise.resolve();
+  return RD.docx || (RD.docx = loadScript(MAMMOTH).catch(function(){ RD.docx = null; throw 'The Word reader didn’t load — check your connection and try again.'; }));
+}
+function warmReaders(){   // fetch the PDF reader in the background once the page is idle
+  if(RD.warm) return; RD.warm = true;
+  var go = function(){ needReader('pdf').catch(function(){ RD.warm = false; }); };
+  if(route.name === 'resume') return go();   // on the upload screen: start now
+  if(window.requestIdleCallback) requestIdleCallback(go, {timeout:4000}); else setTimeout(go, 1500);
+}
 function readFile(f){
   return new Promise(function(res, rej){
     if(!f) return rej('none');
     if(f.size > 10*1024*1024) return rej('That file is over 10 MB.');
     var ext = (f.name.split('.').pop()||'').toLowerCase(), fr = new FileReader();
+    if(ext !== 'pdf' && ext !== 'docx' && ext !== 'txt') return rej('Please choose a PDF, Word (.docx) or text file.');
     fr.onerror = function(){ rej('Couldn’t read that file.'); };
     fr.onload = function(){
-      if(ext === 'pdf'){
-        if(!window.pdfjsLib) return rej('The PDF reader didn’t load — check your connection.');
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      if(ext === 'pdf') needReader('pdf').then(function(){
         pdfjsLib.getDocument({data:fr.result}).promise.then(function(doc){
           var ps = []; for(var i=1;i<=doc.numPages;i++) ps.push(doc.getPage(i).then(function(p){ return p.getTextContent(); }).then(function(tc){ return tc.items.map(function(x){ return x.str + (x.hasEOL ? '\n' : ' '); }).join(''); }));
           return Promise.all(ps).then(function(pp){ res({name:f.name, text:pp.join('\n'), pages:doc.numPages}); });
         }).catch(function(){ rej('Couldn’t read that PDF.'); });
-      } else if(ext === 'docx'){
-        if(!window.mammoth) return rej('The Word reader didn’t load — check your connection.');
+      }, rej);
+      else if(ext === 'docx') needReader('docx').then(function(){
         mammoth.extractRawText({arrayBuffer:fr.result}).then(function(r){ res({name:f.name, text:r.value}); }).catch(function(){ rej('Couldn’t read that Word file.'); });
-      } else res({name:f.name, text:new TextDecoder().decode(fr.result)});
+      }, rej);
+      else res({name:f.name, text:new TextDecoder().decode(fr.result)});
     };
     fr.readAsArrayBuffer(f);
   });
@@ -1280,21 +1377,21 @@ var NAV = [
   {id:'dashboard', label:'Dashboard', icon:I.dash},
   {id:'jobs', label:'Jobs', icon:I.jobs},
   {id:'resume', label:'Resume', icon:I.resume},
-  {id:'communities', label:'Communities', icon:I.comm},
   {id:'settings', label:'Settings', icon:I.set}
 ];
+function navItems(){ return state.isAdmin ? NAV.concat([{id:'admin', label:'Add jobs', icon:I.plus}]) : NAV; }
 var route = {name:'jobs', job:null};
 function parseRoute(){
   var h = location.hash.replace(/^#/, '');
   var m = /^job=(.+)$/.exec(h);
   if(m) return {name:'jobs', job:decodeURIComponent(m[1])};
-  var n = NAV.map(function(x){ return x.id; }).indexOf(h) > -1 ? h : 'jobs';
+  var n = navItems().map(function(x){ return x.id; }).indexOf(h) > -1 ? h : (h === 'admin' && !state.ready ? 'admin' : 'jobs');
   return {name:n, job:null};
 }
 function renderNav(){
-  var h = NAV.map(function(n){ return '<a href="#'+n.id+'" class="'+(route.name===n.id?'on':'')+'">'+n.icon+'<span>'+n.label+'</span></a>'; }).join('');
+  var h = navItems().map(function(n){ return '<a href="#'+n.id+'" class="'+(route.name===n.id?'on':'')+'">'+n.icon+'<span>'+n.label+'</span></a>'; }).join('');
   $('#nav').innerHTML = h; $('#tabbar').innerHTML = h;
-  $('#pageTitle').textContent = {dashboard:'Dashboard', jobs:'Job Board', resume:'My Resume', communities:'Communities', settings:'Settings'}[route.name];
+  $('#pageTitle').textContent = {dashboard:'Dashboard', jobs:'Job Board', resume:'My Resume', settings:'Settings', admin:'Add jobs'}[route.name];
   var w = $('#who');
   if(state.user){
     var u = state.user;
@@ -1311,7 +1408,7 @@ function render(soft){
   var v = $('#view');
   // opening/closing a job keeps the list (and scroll position) as it is
   if(!(soft && prev === route.name && lastView === route.name)){
-    ({dashboard:vDashboard, jobs:vJobs, resume:vResume, communities:vCommunities, settings:vSettings}[route.name])(v);
+    ({dashboard:vDashboard, jobs:vJobs, resume:vResume, settings:vSettings, admin:vAdmin}[route.name])(v);
     lastView = route.name;
   }
   if(route.job) openJob(route.job); else closeDrawer(true);
@@ -1393,7 +1490,7 @@ function filtered(){
     if(p.lvl && j.lvl !== p.lvl) return false;
     if(cap.indexOf(j.lvl) > -1) return false;
     if(p.years != null){ var e = ENR[j.key]; if(e && e.exp != null && e.exp > p.years + 1) return false; }
-    if(j.posted && (now - j.posted)/864e5 > maxAge) return false;
+    if(j.posted && !j.picked && (now - j.posted)/864e5 > maxAge) return false;
     if(p.mode){ var mo = modeOf(j); if(p.mode === 'On-site' ? (mo === 'Remote' || mo === 'Hybrid') : mo !== p.mode) return false; }
     var loc = j.location.toLowerCase();
     if(p.city && !p.city.some(function(c){ return loc.indexOf(c) > -1; })) return false;
@@ -1406,6 +1503,10 @@ function filtered(){
   if(F.sort === 'fit' && target){
     out = out.map(function(j){ return [j, titleFit(j.title, target) || 0]; })
              .sort(function(a,b){ return b[1]-a[1] || b[0].posted-a[0].posted; }).map(function(x){ return x[0]; });
+  }
+  {   // roles the team picked by hand lead the list (keeping the chosen order among them)
+    var pk = out.filter(function(j){ return j.picked; });
+    if(pk.length) out = pk.concat(out.filter(function(j){ return !j.picked; }));
   }
   if(p.skills.length){   // skills rank roles up rather than hiding the ones we haven't read yet
     out = out.map(function(j, i){ var e = ENR[j.key], hay = (j.title + ' ' + (e ? e.skills.join(' ') : '')).toLowerCase();
@@ -1460,7 +1561,8 @@ function jobCard(j){
       (j.posted?'<span class="'+(fresh?'fresh':'')+'">'+I.clock+agoLabel(j.posted)+'</span>':'')+
       '<span>'+I.level+esc(lvlLabel(j.lvl))+'</span>'+
       (mo === 'Remote' || mo === 'Hybrid' ? '<span class="pill'+(mo==='Remote'?' remote':'')+'">'+esc(mo)+'</span>' : '')+
-      (sc != null ? '<span class="pill mp" style="color:'+scoreCol(sc)+'">'+sc+'% match</span>' : '')+'</div></div>'+
+      (sc != null ? '<span class="pill mp" style="color:'+scoreCol(sc)+'">'+sc+'% match</span>' : '')+
+      (j.picked ? '<span class="pill team">'+I.star+'Picked by our team</span>' : '')+'</div></div>'+
     '<div class="side-act"><button class="bm '+(isTracked(j.key)?'on':'')+'" type="button" data-save="'+esc(j.key)+'" aria-label="Save job">'+(isTracked(j.key)?I.bmf:I.bm)+'</button>'+
     '<span class="btn sm">View</span></div></div>';
 }
@@ -1503,7 +1605,7 @@ function deckCardInner(j){
   else bar = '<div class="ms"><div class="msl"><span>Match score</span><b style="color:'+scoreCol(sc)+'">'+sc+'%</b></div><div class="msb"><i style="width:'+Math.max(sc, 2)+'%;background:'+scoreCol(sc)+'"></i></div></div>';
   var href = '#job=' + encodeURIComponent(j.key);
   return '<div class="dinner">'+
-    '<div class="dh">'+logo(j.company, 'lg', j.dom)+'<div class="dhx"><div class="dco">'+esc(j.company)+'</div><h3 class="dt"><a href="'+href+'">'+esc(j.title)+'</a></h3></div></div>'+
+    '<div class="dh">'+logo(j.company, 'lg', j.dom)+'<div class="dhx"><div class="dco">'+esc(j.company)+(j.picked ? '<span class="pill team">Picked by our team</span>' : '')+'</div><h3 class="dt"><a href="'+href+'">'+esc(j.title)+'</a></h3></div></div>'+
     bar+
     '<div class="mg">'+
       mgi('Location', I.pin, j.location)+
@@ -1913,8 +2015,8 @@ function vResume(v){
   var rt = resumeText();
   if(!rt){
     v.innerHTML = '<div class="hello">Your resume</div><div class="sub">Add it once — every job shows how well you match.</div>'+
-      '<div class="drop sec" id="drop" role="button" tabindex="0">'+I.up+'<b>Upload your resume</b><span>PDF or Word · read on your device</span></div>';
-    bindDrop(); return;
+      (reading ? readingCard() : '<div class="drop sec" id="drop" role="button" tabindex="0">'+I.up+'<b>Upload your resume</b><span>PDF or Word · read on your device</span></div>');
+    bindDrop(); warmReaders(); return;
   }
   var sk = skillsIn(rt).sort(function(a,b){ return b.n-a.n; }), yrs = yearsIn(rt);
   var wc = rt.trim().split(/\s+/).length;
@@ -1935,38 +2037,288 @@ function vResume(v){
 }
 function bindDrop(){
   var d = $('#drop'); if(!d) return;
-  d.addEventListener('click', function(){ $('#fileIn').click(); });
+  d.addEventListener('click', function(){ needReader('pdf').catch(function(){}); $('#fileIn').click(); });
   d.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); $('#fileIn').click(); } });
   ['dragenter','dragover'].forEach(function(ev){ d.addEventListener(ev, function(e){ e.preventDefault(); d.classList.add('over'); }); });
   ['dragleave','drop'].forEach(function(ev){ d.addEventListener(ev, function(e){ e.preventDefault(); d.classList.remove('over'); }); });
   d.addEventListener('drop', function(e){ handleResume(e.dataTransfer.files[0]); });
 }
 $('#fileIn').addEventListener('change', function(e){ handleResume(e.target.files[0]); e.target.value=''; });
+var reading = null;
+function readingCard(){
+  return '<div class="reading sec" role="status"><span class="rspin" aria-hidden="true"></span><div><b>Reading '+esc(reading)+'…</b><span>This takes a few seconds. Your file stays on your device.</span></div><i class="rbar"><i></i></i></div>';
+}
 function handleResume(f){
   if(!f) return;
-  toast('Reading your resume…');
+  reading = f.name;
+  if(route.name === 'resume'){ var d = $('#drop'); if(d) d.outerHTML = readingCard(); else { var v = $('#view'); if(v) v.insertAdjacentHTML('afterbegin', readingCard()); } }
+  else toast('Reading your resume…');
   readFile(f).then(function(r){
+    reading = null;
     var text = (r.text||'').slice(0, 30000);
-    if(text.replace(/\s/g,'').length < 200){ toast('Almost no text found — is this a scan or image? Export a fresh PDF from Word or Docs.'); return; }
+    if(text.replace(/\s/g,'').length < 200){ render(); toast('Almost no text found — is this a scan or image? Export a fresh PDF from Word or Docs.'); return; }
     lsSet('tp_resume_local', {text:text, name:r.name});
-    return store.saveProfile({resume_text:text, resume_name:r.name}).then(function(){
-      toast('Resume added'); render(); if(drawerKey){ var k = drawerKey; drawerKey = null; openJob(k); }
-    });
-  }).catch(function(m){ toast(typeof m === 'string' ? m : 'Couldn’t read that file'); });
+    var saving = store.saveProfile({resume_text:text, resume_name:r.name});   // updates this page now; the account copy saves in the background
+    MATCHC = {};
+    toast('Resume added'); render(); if(drawerKey){ var k = drawerKey; drawerKey = null; openJob(k); }
+    return saving;
+  }).catch(function(m){ reading = null; render(); toast(typeof m === 'string' ? m : 'Couldn’t read that file'); });
 }
 
-/* ---------- Communities ---------- */
-function vCommunities(v){
-  var interest = (state.profile && state.profile.community_interest) || [];
-  v.innerHTML = '<div class="hello">Communities</div><div class="sub">Job seekers in the same city and role, sharing openings, referrals and interview notes.</div>'+
-    '<div class="cgrid sec">'+CONFIG.COMMUNITIES.map(function(c){
-      var on = interest.indexOf(c.name) > -1;
-      var btn = c.url ? '<a class="btn sm pri" href="'+esc(c.url)+'" target="_blank" rel="noopener" data-join="'+esc(c.name)+'">Join</a>'
-                      : '<button class="btn sm '+(on?'':'pri')+'" type="button" data-notify="'+esc(c.name)+'"'+(on?' disabled':'')+'>'+(on?'You’re on the list':'Notify me')+'</button>';
-      return '<div class="comm"><div class="h">'+logo(c.name.split('·')[0].trim())+'<b>'+esc(c.name)+'</b></div>'+
-        '<div class="tags"><span>'+I.pin+esc(c.city)+'</span><span>'+I.team+esc(c.role)+'</span></div>'+
-        '<div class="f"><span>'+(c.url?'Open now':'Opening soon')+'</span>'+btn+'</div></div>';
-    }).join('')+'</div>';
+/* ---------- Add jobs (team only): paste links found while searching; they go live for everyone ---------- */
+var ADP = [];
+var JOB_SITES = /(^|\.)(linkedin\.com|indeed\.com|glassdoor\.[a-z.]+|ziprecruiter\.com|wellfound\.com|angel\.co|monster\.com|dice\.com|simplyhired\.com|builtin\.com|google\.com|naukri\.com|joinhandshake\.com|workatastartup\.com|ycombinator\.com|otta\.com|welcometothejungle\.com|careerbuilder\.com|levels\.fyi)$/;
+var ATS_SITES = /(^|\.)(icims\.com|taleo\.net|successfactors\.com|smartrecruiters\.com|workable\.com|bamboohr\.com|jobvite\.com|recruitee\.com|breezy\.hr|teamtailor\.com|personio\.de|rippling\.com|paylocity\.com|ultipro\.com|dayforcehcm\.com|oraclecloud\.com|adp\.com|myworkdayjobs\.com|myworkdaysite\.com)$/;
+var UUIDRX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+function slugName(s){ return title1(String(s||'').replace(/[-_.]+/g, ' ').trim()); }
+function cleanDomain(d){ return String(d||'').trim().toLowerCase().replace(/^https?:\/\//,'').replace(/^www\./,'').split(/[\/?#]/)[0]; }
+function cleanLink(u){
+  ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','trk','trackingId','refId','gh_src','lever-source','lever-origin','source','src','ref','referrer'].forEach(function(k){ u.searchParams.delete(k); });
+  u.hash = '';
+  return u.toString();
+}
+function guessFromUrl(u, h, seg){
+  var g = {company:'', domain:'', title:''}, wd = /^([a-z0-9-]+)\.wd\d+\.myworkday(jobs|site)\.com$/.exec(h);
+  if(wd) g.company = slugName(wd[1]);
+  else if(ATS_SITES.test(h)){
+    var sub = h.split('.')[0], first = seg[0] || '';
+    var name = /^(careers|jobs|apply|www|recruiting|hcm|workforcenow|jobs2)$/.test(sub) ? first : sub;
+    if(name && !/\d{3,}/.test(name) && name.length < 40) g.company = slugName(name);
+  } else if(!JOB_SITES.test(h)){
+    var parts = h.split('.'), base = parts.length > 2 && /^(co|com|org|net|ac|gov)$/.test(parts[parts.length-2]) ? parts.slice(-3) : parts.slice(-2);
+    g.domain = base.join('.'); g.company = slugName(base[0]);
+  }
+  for(var i = seg.length - 1; i >= 0; i--){       // the job title is usually the last readable slug in the path
+    var w = seg[i].replace(/\.(html?|aspx?|php)$/i,'').replace(/[_+]/g,'-');
+    if(!/[a-z]{3,}-[a-z]{2,}/i.test(w) || /^(job|jobs|careers|apply|view|details|position|en-us|en-gb)$/i.test(w)) continue;
+    w = w.replace(/(-[a-z]{0,4}\d[\w]*)+$/i, '');
+    var at = /^(.+?)-at-(.+)$/i.exec(w);            // linkedin style: senior-data-analyst-at-acme
+    if(at){ g.title = slugName(at[1]); if(!g.company) g.company = slugName(at[2]); }
+    else g.title = slugName(w);
+    break;
+  }
+  return g;
+}
+function parseLink(raw){
+  var u; try{ u = new URL(String(raw).trim()); }catch(e){ return null; }
+  if(!/^https?:$/.test(u.protocol)) return null;
+  var h = u.hostname.toLowerCase().replace(/^www\./,''), seg = u.pathname.split('/').filter(Boolean).map(function(x){ try{ return decodeURIComponent(x); }catch(e){ return x; } });
+  var it = {raw:String(raw).trim(), url:cleanLink(u)};
+  if(h === 'boards.greenhouse.io' || h === 'job-boards.greenhouse.io'){
+    var gb = u.searchParams.get('for'), gt = u.searchParams.get('token') || u.searchParams.get('gh_jid');
+    if(seg[0] === 'embed' && gb) return Object.assign(it, gt ? {src:'gh', board:gb, id:gt, kind:'job'} : {src:'gh', board:gb, kind:'board'});
+    if(seg[0] && seg[0] !== 'embed'){
+      var gid = seg[1] === 'jobs' && /^\d+$/.test(seg[2]||'') ? seg[2] : u.searchParams.get('gh_jid');
+      return Object.assign(it, gid ? {src:'gh', board:seg[0], id:gid, kind:'job'} : {src:'gh', board:seg[0], kind:'board'});
+    }
+  }
+  if(h === 'jobs.lever.co' && seg[0]) return Object.assign(it, seg[1] && UUIDRX.test(seg[1]) ? {src:'lever', board:seg[0], id:seg[1], kind:'job'} : {src:'lever', board:seg[0], kind:'board'});
+  if(h === 'jobs.ashbyhq.com' && seg[0]) return Object.assign(it, seg[1] && UUIDRX.test(seg[1]) ? {src:'ashby', board:seg[0], id:seg[1], kind:'job'} : {src:'ashby', board:seg[0], kind:'board'});
+  var g = guessFromUrl(u, h, seg);
+  return Object.assign(it, {src:'custom', kind:'job', host:h, title:g.title, company:g.company, domain:g.domain});
+}
+function teamHas(it){
+  return TEAM.all && TEAM.all.some(function(r){ return r.url === it.url || (it.id && r.src === it.src && r.board === it.board && r.ext_id === it.id) || (it.kind === 'board' && r.kind === 'board' && r.src === it.src && r.board === it.board); });
+}
+function resolveLink(it){
+  var known = CONFIG.COMPANIES.concat(TEAM.boards).filter(function(c){ return c.src === it.src && c.board === it.board; })[0];
+  if(known){ it.company = it.company || known.name; it.domain = it.domain || known.domain; }
+  function done(state, msg){ it.state = state; it.msg = msg; it.on = state === 'ok' || state === 'warn'; return it; }
+  if(teamHas(it)) return Promise.resolve(done('skip', 'Already added by the team'));
+  if(it.src === 'custom'){
+    return Promise.resolve(done('warn', JOB_SITES.test(it.host) ? 'We can’t read this site automatically — type the details below' : 'Check the details below — they were guessed from the link'));
+  }
+  if(it.kind === 'board'){
+    if(CONFIG.COMPANIES.some(function(c){ return c.src === it.src && c.board === it.board; })) return Promise.resolve(done('skip', 'Already on the job board — every role here is listed'));
+    it.url = {gh:'https://job-boards.greenhouse.io/', lever:'https://jobs.lever.co/', ashby:'https://jobs.ashbyhq.com/'}[it.src] + encodeURIComponent(it.board);
+    return fetchT(URLS[it.src](it.board), 20000).then(function(d){
+      if(it.src === 'gh' && d.jobs && d.jobs[0] && d.jobs[0].company_name) it.company = it.company || d.jobs[0].company_name;
+      it.company = it.company || slugName(it.board);
+      var n = NORM[it.src]({src:it.src, board:it.board, name:it.company, domain:it.domain || ''}, d).length;
+      it.count = n;
+      return n ? done('ok', n + ' open role' + (n === 1 ? '' : 's') + ' found — all will be listed and kept up to date')
+               : done('warn', 'No open roles right now — they’ll appear when the company posts some');
+    }, function(){ return done('bad', 'Couldn’t open this careers board — check the link'); });
+  }
+  var key = it.src + ':' + it.board + ':' + it.id;
+  function onBoard(){ return findJob(key) ? ' · already listed, this marks it “Picked by our team”' : ''; }
+  if(it.src === 'gh'){
+    return fetchT('https://boards-api.greenhouse.io/v1/boards/' + encodeURIComponent(it.board) + '/jobs/' + it.id, 15000).then(function(d){
+      it.title = d.title; it.company = it.company || d.company_name || slugName(it.board);
+      it.location = (d.location && d.location.name) || ''; it.posted = Date.parse(d.first_published || d.updated_at) || 0;
+      if(d.absolute_url){ it.url = d.absolute_url; var ah = cleanDomain(d.absolute_url); if(!it.domain && !/greenhouse\.io$/.test(ah)) it.domain = ah.replace(/^(careers|jobs)\./,''); }
+      return done('ok', 'Found on Greenhouse' + onBoard());
+    }, function(){ return done('bad', 'This job is closed or the link is wrong'); });
+  }
+  if(it.src === 'lever'){
+    return fetchT('https://api.lever.co/v0/postings/' + encodeURIComponent(it.board) + '/' + it.id, 15000).then(function(x){
+      var cat = x.categories || {};
+      it.title = x.text; it.company = it.company || slugName(it.board);
+      it.location = (cat.allLocations && cat.allLocations.join(' · ')) || cat.location || '';
+      it.posted = x.createdAt || 0; it.url = x.hostedUrl || it.url;
+      it.mode = {remote:'Remote', hybrid:'Hybrid', onsite:'On-site'}[String(x.workplaceType||'').toLowerCase()] || '';
+      return done('ok', 'Found on Lever' + onBoard());
+    }, function(){ return done('bad', 'This job is closed or the link is wrong'); });
+  }
+  return fetchT(URLS.ashby(it.board), 20000).then(function(d){
+    var x = (d.jobs || []).filter(function(j){ return j.id === it.id; })[0];
+    if(!x) return done('bad', 'This job is closed or the link is wrong');
+    it.title = x.title; it.company = it.company || slugName(it.board);
+    it.location = x.location || ''; it.posted = Date.parse(x.publishedAt) || 0; it.url = x.jobUrl || it.url;
+    it.mode = {Remote:'Remote', Hybrid:'Hybrid', OnSite:'On-site', Onsite:'On-site'}[x.workplaceType] || (x.isRemote ? 'Remote' : '');
+    return done('ok', 'Found on Ashby' + onBoard());
+  }, function(){ return done('bad', 'Couldn’t open this job — check the link'); });
+}
+function adField(i, k, label, val, ph, cls){
+  return '<div class="field'+(cls ? ' '+cls : '')+'"><label for="ad'+k+i+'">'+label+'</label><input id="ad'+k+i+'" data-i="'+i+'" data-k="'+k+'" value="'+esc(val||'')+'" placeholder="'+esc(ph||'')+'" autocomplete="off"></div>';
+}
+function adItem(it, i){
+  var st = {ok:'ok', warn:'warn', bad:'bad', skip:'info', checking:'info'}[it.state] || 'info';
+  var can = it.state === 'ok' || it.state === 'warn', f = '';
+  if(can && it.kind === 'board'){
+    f = '<div class="grid3">'+adField(i, 'company', 'Company name', it.company, 'e.g. Ramp')+adField(i, 'domain', 'Company website (for the logo)', it.domain, 'e.g. ramp.com')+'</div>';
+  } else if(can){
+    f = '<div class="grid3">'+
+      adField(i, 'title', 'Job title', it.title, 'e.g. Data Analyst')+
+      adField(i, 'company', 'Company', it.company, 'e.g. Acme')+
+      adField(i, 'location', 'Location', it.location, 'e.g. Austin, TX or Remote - US')+
+      '<div class="field"><label for="admode'+i+'">Work mode</label><select id="admode'+i+'" data-i="'+i+'" data-k="mode">'+
+        ['','Remote','Hybrid','On-site'].map(function(m){ return '<option value="'+m+'"'+(it.mode===m?' selected':'')+'>'+(m||'Not stated')+'</option>'; }).join('')+'</select></div>'+
+      adField(i, 'domain', 'Company website (for the logo)', it.domain, 'e.g. acme.com')+
+      adField(i, 'salary', 'Salary (if listed)', it.salary, 'e.g. $90K – $120K USD')+
+      (it.src === 'custom' ? '<div class="field wide"><label for="addescription'+i+'">Job description <span style="font-weight:500;color:var(--muted)">— paste it so members get a match score</span></label><textarea id="addescription'+i+'" data-i="'+i+'" data-k="description" rows="4" placeholder="Optional">'+esc(it.description||'')+'</textarea></div>' : '')+
+    '</div>';
+  }
+  var head = it.kind === 'board' ? (it.company || slugName(it.board)) + ' — whole careers board' : (it.title || 'Job link');
+  return '<div class="aitem'+(can && !it.on ? ' off' : '')+'" id="adit'+i+'">'+
+    '<div class="ah">'+logo(it.company || '?', '', cleanDomain(it.domain))+'<div class="ai"><b>'+esc(head)+'</b><small>'+esc(it.raw)+'</small></div>'+
+      (can ? '<label><input type="checkbox" data-i="'+i+'" data-k="on"'+(it.on ? ' checked' : '')+'> Add</label>' : '')+'</div>'+
+    '<span class="astat '+st+'">'+(it.state === 'checking' ? '<span class="rspin" style="width:12px;height:12px;border-width:2px"></span>' : '')+esc(it.msg || '')+'</span>'+f+'</div>';
+}
+function adCount(){ return ADP.filter(function(it){ return it.on; }).length; }
+function drawAdminPrev(){
+  var box = $('#adPrev'); if(!box) return;
+  if(!ADP.length){ box.innerHTML = ''; return; }
+  var n = adCount(), busy = ADP.some(function(it){ return it.state === 'checking'; });
+  box.innerHTML = '<div class="aprev">'+ADP.map(adItem).join('')+'</div>'+
+    '<div class="jd-acts"><button class="btn pri" type="button" data-act="adsave" id="adSave"'+(n && !busy ? '' : ' disabled')+'>'+I.plus+(busy ? 'Checking links…' : 'Add '+n+' to the job board')+'</button>'+
+    '<button class="btn" type="button" data-act="adclear">Clear</button></div>';
+}
+function adSaveBtn(){
+  var b = $('#adSave'); if(!b) return;
+  var n = adCount(), busy = ADP.some(function(it){ return it.state === 'checking'; });
+  b.disabled = !n || busy; b.innerHTML = I.plus + (busy ? 'Checking links…' : 'Add '+n+' to the job board');
+}
+function vAdmin(v){
+  if(!state.ready){ v.innerHTML = '<div class="jlist"><div class="skel"></div><div class="skel"></div></div>'; return; }
+  if(!state.isAdmin){
+    v.innerHTML = '<div class="empty">'+I.plus+'<h3>For the TrulyPlaced team</h3><p>'+(state.user ? 'Your account isn’t on the team list. The account owner can add your email in Supabase (the admins table).' : 'Sign in with your team account to add jobs.')+'</p>'+(state.user ? '' : '<button class="btn pri" type="button" data-act="signin">Sign in</button>')+'</div>';
+    return;
+  }
+  v.innerHTML = '<div class="adm"><div class="hello">Add jobs</div><div class="sub">Paste links you find while searching. Once added they’re live on the job board for everyone, marked “Picked by our team”.</div>'+
+    '<div class="card sec"><label class="flabel" for="adIn">Job links — one per line</label>'+
+    '<textarea id="adIn" rows="5" spellcheck="false" autocomplete="off" placeholder="https://job-boards.greenhouse.io/stripe/jobs/1234567&#10;https://jobs.lever.co/palantir/…&#10;https://jobs.ashbyhq.com/ramp&#10;https://www.linkedin.com/jobs/view/…"></textarea>'+
+    '<p class="fine" style="margin-top:10px">Greenhouse, Lever and Ashby job links fill themselves in. A careers-board link with no job in it (like jobs.ashbyhq.com/ramp) adds every open role at that company and keeps them updated. For any other link — LinkedIn, Workday, Indeed, a company site — check the title, company and location before adding.</p>'+
+    '<div class="jd-acts"><button class="btn pri" type="button" data-act="adcheck">'+I.search+'Check links</button></div></div>'+
+    '<div id="adPrev" class="sec"></div>'+
+    '<div class="card sec"><h3>Added by the team<span class="cnt" id="adCnt"></span></h3><div id="adList" class="alist"><div class="skel"></div></div></div></div>';
+  drawAdminPrev();
+  var pv = $('#adPrev');
+  function sync(e){
+    var el = e.target, i = +el.getAttribute('data-i'), k = el.getAttribute('data-k'); if(!k || !ADP[i]) return;
+    ADP[i][k] = el.type === 'checkbox' ? el.checked : el.value;
+    if(k === 'on'){ var c = $('#adit'+i); if(c) c.classList.toggle('off', !el.checked); adSaveBtn(); }
+  }
+  pv.addEventListener('input', sync); pv.addEventListener('change', sync);
+  adminList();
+}
+function teamErr(e){
+  var m = JSON.stringify(e || '');
+  if(/42P01|does not exist|PGRST20|schema cache/i.test(m)) return 'Supabase isn’t set up for team jobs yet — run supabase-team-jobs.sql once.';
+  if(/42501|row-level security|permission/i.test(m)) return 'Your account isn’t on the team list (admins table in Supabase).';
+  return 'Couldn’t save — check your connection and try again.';
+}
+function adminCheck(){
+  var ta = $('#adIn'); if(!ta) return;
+  var links = (ta.value.match(/https?:\/\/[^\s<>"'，、]+/gi) || []).map(function(l){ return l.replace(/[).,;]+$/,''); });
+  var seen = {}; links = links.filter(function(l){ if(seen[l]) return false; seen[l] = 1; return true; }).slice(0, 30);
+  if(!links.length){ toast('Paste at least one link that starts with https://'); ta.focus(); return; }
+  ADP = links.map(function(l){ var it = parseLink(l); if(!it) return {raw:l, state:'bad', msg:'That isn’t a valid link'}; it.state = 'checking'; it.msg = 'Checking…'; return it; });
+  drawAdminPrev();
+  (TEAM.all ? Promise.resolve() : teamRows(true).then(function(r){ TEAM.all = r; }, function(){})).then(function(){
+    ADP.forEach(function(it, i){
+      if(it.state !== 'checking') return;
+      resolveLink(it).then(function(){
+        if(ADP[i] !== it) return;
+        var c = $('#adit'+i); if(c) c.outerHTML = adItem(it, i);
+        adSaveBtn();
+      });
+    });
+  });
+}
+function adminSave(){
+  var rows = [], missing = 0;
+  ADP.forEach(function(it){
+    if(!it.on) return;
+    var title = String(it.title||'').trim(), company = String(it.company||'').trim(), loc = String(it.location||'').trim();
+    if(it.kind === 'job' && (!title || !company || !loc)){ missing++; return; }
+    rows.push({kind:it.kind, url:it.url, src:it.src, board:it.board || null, ext_id:it.id || null,
+      title:it.kind === 'job' ? title : null, company:company || slugName(it.board), location:it.kind === 'job' ? loc : null,
+      work_mode:it.mode || null, salary:String(it.salary||'').trim() || null, domain:cleanDomain(it.domain) || null,
+      description:String(it.description||'').trim() || null,
+      posted_at:new Date(it.posted || Date.now()).toISOString()});
+  });
+  if(missing){ toast('Add a title, company and location for ' + missing + ' link' + (missing === 1 ? '' : 's')); return; }
+  if(!rows.length){ toast('Tick at least one link to add'); return; }
+  var b = $('#adSave'); if(b){ b.disabled = true; b.textContent = 'Adding…'; }
+  var save = LIVE
+    ? Promise.all(rows.map(function(r){ return sb.from('custom_jobs').insert(r).then(function(x){ return x.error ? (x.error.code === '23505' ? 'dup' : x.error) : 'ok'; }, function(e){ return e; }); }))
+    : Promise.resolve(rows.map(function(r){
+        var list = lsGet('tp_team_demo', []);
+        if(list.some(function(x){ return x.url === r.url; })) return 'dup';
+        list.unshift(Object.assign({id:'d' + Math.random().toString(36).slice(2, 10), active:true, created_at:new Date().toISOString(), added_by:state.user && state.user.email}, r));
+        lsSet('tp_team_demo', list); return 'ok';
+      }));
+  save.then(function(res){
+    var ok = res.filter(function(x){ return x === 'ok'; }).length, dup = res.filter(function(x){ return x === 'dup'; }).length;
+    var err = res.filter(function(x){ return x !== 'ok' && x !== 'dup'; })[0];
+    if(err && !ok){ toast(teamErr(err)); drawAdminPrev(); return; }
+    toast((ok ? 'Added ' + ok + ' — live on the job board now' : 'Nothing new to add') + (dup ? ' · ' + dup + ' already there' : '') + (err ? ' · some failed, try them again' : ''));
+    ADP = []; var ta = $('#adIn'); if(ta) ta.value = '';
+    TEAM.all = null; drawAdminPrev(); refreshTeam();
+  });
+}
+function refreshTeam(){
+  return loadTeamJobs(true).then(function(){ mergeTeam(); adminList(); });
+}
+function adminList(){
+  if(!$('#adList')) return;
+  teamRows(true).then(function(rows){
+    TEAM.all = rows;
+    var b = $('#adList'); if(!b) return;
+    $('#adCnt').textContent = rows.length ? ' · ' + rows.length : '';
+    if(!rows.length){ b.innerHTML = '<p class="fine" style="margin-top:4px">Nothing added yet. Links you add show here, newest first.</p>'; return; }
+    b.innerHTML = rows.map(function(r){
+      var board = r.kind === 'board';
+      var name = board ? (r.company || r.board) : (r.title || 'Job');
+      var line = (board ? 'Whole careers board' : (r.company || '') + (r.location ? ' · ' + r.location : '')) + ' · added ' + fmtDate(r.created_at) + (r.added_by ? ' by ' + r.added_by : '');
+      return '<div class="arow">'+logo(r.company || '?', '', r.domain)+'<div class="i"><b>'+esc(name)+'</b><span>'+esc(line)+'</span></div>'+
+        '<a class="lk" href="'+esc(r.url)+'" target="_blank" rel="noopener">Open</a>'+
+        '<button class="rm" type="button" data-adrm="'+esc(r.id)+'" aria-label="Remove '+esc(name)+' from the job board" title="Remove from the job board">'+I.trash+'</button></div>';
+    }).join('');
+  }).catch(function(e){ var b = $('#adList'); if(b) b.innerHTML = '<p class="fine" style="margin-top:4px">'+esc(teamErr(e))+'</p>'; });
+}
+function adminRemove(id, btn){
+  if(!btn.getAttribute('data-sure')){
+    btn.setAttribute('data-sure', '1'); btn.style.color = 'var(--bad)'; btn.style.background = 'var(--bad-soft)';
+    toast('Tap the bin again to remove it');
+    setTimeout(function(){ btn.removeAttribute('data-sure'); btn.style.color = ''; btn.style.background = ''; }, 3500);
+    return;
+  }
+  btn.disabled = true;
+  var del = LIVE ? sb.from('custom_jobs').delete().eq('id', id).then(function(r){ if(r.error) throw r.error; })
+                 : Promise.resolve(lsSet('tp_team_demo', lsGet('tp_team_demo', []).filter(function(x){ return x.id !== id; })));
+  del.then(function(){ toast('Removed from the job board'); return refreshTeam(); }, function(e){ btn.disabled = false; toast(teamErr(e)); });
 }
 
 /* ---------- Settings ---------- */
@@ -2053,7 +2405,7 @@ function openPost(){
    events
    ===================================================================== */
 document.addEventListener('click', function(e){
-  var t = e.target.closest('[data-act],[data-job],[data-save],[data-apply],[data-share],[data-untrack],[data-copy],[data-copypost],[data-notify],[data-join]');
+  var t = e.target.closest('[data-act],[data-job],[data-save],[data-apply],[data-share],[data-untrack],[data-copy],[data-copypost],[data-adrm]');
   if(!t) return;
   var a = t.getAttribute('data-act');
   if(t.hasAttribute('data-save')){ e.stopPropagation(); return toggleSave(t.getAttribute('data-save')); }
@@ -2063,16 +2415,11 @@ document.addEventListener('click', function(e){
   if(t.hasAttribute('data-untrack')){ store.untrack(t.getAttribute('data-untrack')).then(function(){ render(); toast('Removed'); }); return; }
   if(t.hasAttribute('data-copy')){ return copy(t.getAttribute('data-copy')); }
   if(t.hasAttribute('data-copypost')){ var ta = $('#postTxt'); ta.select(); return copy(ta.value); }
-  if(t.hasAttribute('data-notify')){
-    var n = t.getAttribute('data-notify');
-    return requireSignIn('Sign in to join ' + n, function(){
-      var cur = (state.profile && state.profile.community_interest) || [];
-      if(cur.indexOf(n) < 0) cur = cur.concat([n]);
-      store.saveProfile({community_interest:cur}).then(function(){ toast('We’ll let you know when it opens'); render(); });
-    });
-  }
-  if(t.hasAttribute('data-join')){ if(!state.user){ e.preventDefault(); requireSignIn('Sign in to join', function(){ window.open(t.href, '_blank', 'noopener'); }); } return; }
+  if(t.hasAttribute('data-adrm')) return adminRemove(t.getAttribute('data-adrm'), t);
   switch(a){
+    case 'adcheck': return adminCheck();
+    case 'adsave': return adminSave();
+    case 'adclear': ADP = []; var ai = $('#adIn'); if(ai) ai.value = ''; return drawAdminPrev();
     case 'signin': pendingSkip = null; return openSignIn();
     case 'google': closeModal(); return store.signIn();
     case 'mclose': if(e.target === t || t.classList.contains('x') || t.classList.contains('skip')) closeModal(); return;
@@ -2083,7 +2430,7 @@ document.addEventListener('click', function(e){
     case 'more': shown += 30; return drawList();
     case 'reload': JOBS = []; jobsPromise = null; loadJobs(true).then(function(){ drawList(); }); return vJobs($('#view'));
     case 'clearf': F = {q:'', region:'US', cat:'', lvl:'', age:'any', sort:'new', r2:1}; lsSet('tp_filters', F); return vJobs($('#view'));
-    case 'upload': return requireSignIn('Sign in to add your resume', function(){ $('#fileIn').click(); });
+    case 'upload': needReader('pdf').catch(function(){}); return requireSignIn('Sign in to add your resume', function(){ $('#fileIn').click(); });
     case 'rmresume':
       lsDel('tp_resume_local');
       return store.saveProfile({resume_text:null, resume_name:null}).then(function(){ toast('Resume removed'); render(); });
@@ -2157,6 +2504,7 @@ if(wantSignIn) history.replaceState(null, '', location.pathname + location.searc
 render();
 store.init().then(function(){
   state.ready = true; render();
+  if(state.user) warmReaders();
   if(wantSignIn && !state.user){ pendingSkip = null; openSignIn('Sign in to TrulyPlaced'); }
 });
 loadJobs().then(function(){ if(route.name === 'jobs'){ drawList(); } if(route.job){ drawerKey = null; openJob(route.job); } });
