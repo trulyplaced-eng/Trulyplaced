@@ -628,7 +628,8 @@ var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
 var $ = function(s, r){ return (r||document).querySelector(s); };
 var $$ = function(s, r){ return [].slice.call((r||document).querySelectorAll(s)); };
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-function lsGet(k, d){ try{ var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } }
+function lsGet(k, d){ try{ var v = localStorage.getItem(k); var p = v ? JSON.parse(v) : null; return p == null ? d : p; }catch(e){ return d; } }
+function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
 function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 function ssGet(k, d){ try{ var v = sessionStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } }
 function ssSet(k, v){ try{ sessionStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
@@ -934,6 +935,7 @@ function mk(src, board, company, id, title, loc, posted, url, opts){
            type: opts.type || typeFromTitle(title), mode: opts.mode || '', salary: opts.salary || '', dom: opts.dom || ''};
   if(!j.mode){ var l = (j.location + ' ' + title).toLowerCase(); j.mode = /\bhybrid\b/.test(l) ? 'Hybrid' : (j.remote || /\bremote\b/.test(l)) ? 'Remote' : ''; }
   if(j.mode === 'Remote') j.remote = true;
+  j.xl = opts.extraLoc || ''; j.cc = opts.country || '';
   j.reg = regions(j.location + ' ' + (opts.extraLoc||''), opts.country, j.remote);
   return j;
 }
@@ -981,29 +983,51 @@ var URLS = {
   ashby: function(b){ return 'https://api.ashbyhq.com/posting-api/job-board/'+b+'?includeCompensation=true'; },
   lever: function(b){ return 'https://api.lever.co/v0/postings/'+b+'?mode=json'; }
 };
-var jobsPromise = null;
+var jobsPromise = null, drawTimer = null;
 function loadJobs(force){
   if(jobsPromise && !force) return jobsPromise;
-  jobsPromise = loadJobsNow(force).then(function(){ jobsPromise = null; });
+  jobsPromise = loadJobsNow(force).then(function(){ jobsPromise = null; }, function(){ jobsPromise = null; });
   return jobsPromise;
 }
+/* compact rows: [src, board, id, title, company, location, posted, url, dept, remote, type, mode, salary, domain, extraLoc, country]
+   — the same shape the hourly snapshot (jobs.json) uses */
+function toRow(j){ return [j.src, j.board, j.id, j.title, j.company, j.location, j.posted, j.url, j.dept, j.remote ? 1 : 0, j.type, j.mode, j.salary, j.dom, j.xl || '', j.cc || '']; }
+function fromRow(r){ return mk(r[0], r[1], r[4], r[2], r[3], r[5], r[6], r[7], {dept:r[8], remote:!!r[9], type:r[10], mode:r[11], salary:r[12], dom:r[13], extraLoc:r[14], country:r[15]}); }
+function byNewest(a, b){ return b.posted - a.posted; }
+function saveCache(){ try{ localStorage.setItem('tp_jobs_v4', JSON.stringify({at:jobsMeta.at, n:jobsMeta.loaded, f:jobsMeta.failed, rows:JOBS.map(toRow)})); }catch(e){ try{ localStorage.removeItem('tp_jobs_v4'); }catch(_){} } }
+function scheduleDraw(){ if(drawTimer) return; drawTimer = setTimeout(function(){ drawTimer = null; if(drag){ scheduleDraw(); return; } if(route.name === 'jobs') drawList(); }, 300); }
+function fetchT(url, ms){
+  var ctl = window.AbortController ? new AbortController() : null, t = ctl ? setTimeout(function(){ ctl.abort(); }, ms) : null;
+  return fetch(url, ctl ? {signal:ctl.signal} : {}).then(function(r){ if(t) clearTimeout(t); if(!r.ok) throw new Error(r.status); return r.json(); }, function(e){ if(t) clearTimeout(t); throw e; });
+}
 function loadJobsNow(force){
-  var cached = ssGet('tp_jobs_v3', null);
-  if(!force && cached && Date.now() - cached.at < 30*60*1000 && cached.jobs && cached.jobs.length){
-    JOBS = cached.jobs; jobsMeta = {loaded:cached.loaded, failed:cached.failed, at:cached.at, loading:false};
-    return Promise.resolve();
+  // 1. instant: the copy saved in this browser last time, so the board is never empty on a repeat visit
+  var cached = !force && lsGet('tp_jobs_v4', null);
+  if(cached && cached.rows && cached.rows.length && !JOBS.length){
+    try{ JOBS = cached.rows.map(fromRow).sort(byNewest); jobsMeta = {loaded:cached.n || 0, failed:cached.f || 0, at:cached.at, loading:false}; }catch(e){ JOBS = []; }
   }
-  jobsMeta = {loaded:0, failed:0, at:0, loading:true};
-  var all = [];
+  if(!force && JOBS.length && Date.now() - jobsMeta.at < 20*60*1000) return Promise.resolve();
+  // 2. one small pre-built file, refreshed every few hours by the site's GitHub Action
+  return fetchT('/jobs.json?v=' + Math.floor(Date.now()/9e5), 8000).then(function(d){
+    if(!d || !d.rows || !d.rows.length || Date.now() - d.at > 30*36e5) throw new Error('stale');
+    JOBS = d.rows.map(fromRow).sort(byNewest);
+    jobsMeta = {loaded:d.n || CONFIG.COMPANIES.length, failed:d.f || 0, at:d.at, loading:false};
+    saveCache();
+  }).catch(function(){ return liveFetch(); });
+}
+/* 3. straight from each company's job board — shows roles as each company arrives */
+function liveFetch(){
+  var keep = JOBS.length > 0, all = [];
+  jobsMeta = {loaded:0, failed:0, at:jobsMeta.at || 0, loading:true, bg:keep};
+  if(!keep) updateLoadingNote();
   return Promise.all(CONFIG.COMPANIES.map(function(c){
-    return fetch(URLS[c.src](c.board)).then(function(r){ if(!r.ok) throw 0; return r.json(); })
-      .then(function(d){ all = all.concat(NORM[c.src](c, d)); jobsMeta.loaded++; })
+    return fetchT(URLS[c.src](c.board), 15000)
+      .then(function(d){ all = all.concat(NORM[c.src](c, d)); jobsMeta.loaded++; if(!keep){ JOBS = all.slice().sort(byNewest); scheduleDraw(); } })
       .catch(function(){ jobsMeta.failed++; })
-      .then(function(){ if(route.name === 'jobs') updateLoadingNote(); });
+      .then(function(){ if(!keep && route.name === 'jobs' && !JOBS.length) updateLoadingNote(); });
   })).then(function(){
-    all.sort(function(a,b){ return b.posted - a.posted; });
-    JOBS = all; jobsMeta.at = Date.now(); jobsMeta.loading = false;
-    ssSet('tp_jobs_v3', {at:jobsMeta.at, loaded:jobsMeta.loaded, failed:jobsMeta.failed, jobs:JOBS});
+    jobsMeta.loading = false;
+    if(all.length){ JOBS = all.sort(byNewest); jobsMeta.at = Date.now(); saveCache(); }
   });
 }
 function findJob(key){ return JOBS.filter(function(j){ return j.key === key; })[0]; }
@@ -1060,8 +1084,9 @@ function loadDesc(job){
   // Ashby/Lever descriptions come with the board — refetch that one board if the page was reloaded
   var c = CONFIG.COMPANIES.filter(function(x){ return x.src === job.src && x.board === job.board; })[0];
   if(!c) return Promise.reject();
-  return fetch(URLS[c.src](c.board)).then(function(r){ if(!r.ok) throw 0; return r.json(); })
-    .then(function(d){ NORM[c.src](c, d); if(!DESC[job.key]) throw 0; return DESC[job.key]; });
+  var bk = c.src + ':' + c.board;
+  if(!BOARDP[bk]) BOARDP[bk] = fetchT(URLS[c.src](c.board), 20000).then(function(d){ NORM[c.src](c, d); }, function(e){ delete BOARDP[bk]; throw e; });
+  return BOARDP[bk].then(function(){ if(!DESC[job.key]) throw 0; return DESC[job.key]; });
 }
 function descBlocks(d){
   if(d.blocks) return d.blocks;
@@ -1113,7 +1138,7 @@ function salaryFromText(t){
   if(!(a >= 15000 && b >= a && b < 3000000)) return '';   // skips hourly rates and stray numbers
   return fmtMoney(a, cur) + ' – ' + fmtMoney(b, cur) + ' ' + cur;
 }
-var ENR = {}, ENRP = {}, MATCHC = {};
+var ENR = {}, ENRP = {}, MATCHC = {}, BOARDP = {};
 function enrich(j, d){
   var bs = descBlocks(d), text = bs.map(function(b){ return b.t; }).join('\n'), low = text.toLowerCase();
   var S = sectionize(bs, j);
@@ -1245,8 +1270,8 @@ function readFile(f){
     fr.readAsArrayBuffer(f);
   });
 }
-function resumeText(){ return (state.profile && state.profile.resume_text) || lsGet('tp_resume_local', {}).text || ''; }
-function resumeName(){ return (state.profile && state.profile.resume_name) || lsGet('tp_resume_local', {}).name || ''; }
+function resumeText(){ return (state.profile && state.profile.resume_text) || (lsGet('tp_resume_local', null) || {}).text || ''; }
+function resumeName(){ return (state.profile && state.profile.resume_name) || (lsGet('tp_resume_local', null) || {}).name || ''; }
 
 /* =====================================================================
    routing + render
@@ -1419,7 +1444,7 @@ function vJobs(v){
 }
 function updateLoadingNote(){
   var m = $('#metaRow'); if(!m || !jobsMeta.loading) return;
-  m.innerHTML = '<span>Loading live roles from '+CONFIG.COMPANIES.length+' companies… '+(jobsMeta.loaded+jobsMeta.failed)+' / '+CONFIG.COMPANIES.length+'</span>';
+  m.innerHTML = '<span>Loading live roles… '+(jobsMeta.loaded+jobsMeta.failed)+' of '+CONFIG.COMPANIES.length+' companies</span>';
 }
 function drawChips(){
   var c = $('#qchips'); if(!c) return;
@@ -1443,7 +1468,10 @@ function drawList(){
   var list = filtered(), jl = $('#jlist'); if(!jl) return;
   drawChips();
   var m = $('#metaRow');
-  if(m && !jobsMeta.loading) m.innerHTML = '<span><b>'+list.length.toLocaleString()+'</b> roles match</span><span>Live from '+jobsMeta.loaded+' company job boards'+(jobsMeta.failed?' ('+jobsMeta.failed+' unavailable)':'')+' · official listings only</span>';
+  if(m){
+    var mins = jobsMeta.at ? Math.round((Date.now() - jobsMeta.at)/60000) : 0;
+    m.innerHTML = '<span><b>'+list.length.toLocaleString()+'</b> roles match</span><span>'+(jobsMeta.loading && !jobsMeta.bg ? 'Loading… '+(jobsMeta.loaded+jobsMeta.failed)+' of '+CONFIG.COMPANIES.length+' companies so far' : 'From '+jobsMeta.loaded+' company job boards · '+(mins < 2 ? 'updated just now' : mins < 60 ? 'updated '+mins+' min ago' : 'updated '+Math.round(mins/60)+' h ago'))+' · official listings only</span>';
+  }
   if(!JOBS.length && !jobsMeta.loading){
     jl.className = '';
     jl.innerHTML = '<div class="empty">'+I.globe+'<h3>Couldn’t reach the job boards</h3><p>This usually means a connection problem. Try again in a moment.</p><button class="btn pri" type="button" data-act="reload">Try again</button></div>';
@@ -1457,12 +1485,12 @@ function drawList(){
   }
   if(VIEW === 'cards'){ $('#moreWrap').innerHTML = ''; return drawDeck(list); }
   jl.className = 'jlist';
-  jl.innerHTML = list.slice(0, shown).map(jobCard).join('');
+  jl.innerHTML = list.slice(0, shown).map(function(j){ try{ return jobCard(j); }catch(e){ return ''; } }).join('');
   $('#moreWrap').innerHTML = list.length > shown ? '<button class="btn" type="button" data-act="more">Show more roles</button>' : '';
 }
 
 /* ---- swipe deck: pass / apply / save ---- */
-var drag = null;
+var drag = null, deckPin = null;
 function deckList(list){ return (list || filtered()).filter(function(j){ return !PASSED[j.key] && !isTracked(j.key); }); }
 function mgi(label, icon, val, pill){
   var v = val || 'Not specified', nd = /^(not |…)/i.test(v);
@@ -1501,7 +1529,9 @@ function drawDeck(list){
     jl.innerHTML = '<div class="empty">'+I.cards+'<h3>You’ve been through every role in this search</h3><p>'+(nPassed ? 'Bring back the roles you passed on, or widen your search.' : 'Widen your search to see more roles.')+'</p><div class="jd-acts" style="justify-content:center">'+(nPassed ? '<button class="btn pri" type="button" data-dk="resetpass">Show passed roles again</button>' : '')+'<button class="btn" type="button" data-dk="view" data-v="list">Switch to list</button></div></div>';
     return;
   }
+  if(deckPin){ var pi = dl.map(function(j){ return j.key; }).indexOf(deckPin); if(pi > 0) dl.unshift(dl.splice(pi, 1)[0]); }
   var top = dl[0], next = dl[1];
+  deckPin = top.key;
   jl.innerHTML = '<div class="deck">'+
       (next ? '<div class="dcard back" data-key="'+esc(next.key)+'" aria-hidden="true">'+deckCardInner(next)+'</div>' : '')+
       '<article class="dcard front" id="dtop" data-key="'+esc(top.key)+'" aria-label="'+esc(top.title+' at '+top.company)+'"><span class="stamp st-pass">Pass</span><span class="stamp st-save">Save</span>'+deckCardInner(top)+'</article>'+
@@ -1575,6 +1605,7 @@ function fly(el, dir, cb){
 function deckAct(kind){
   var el = $('#dtop'); if(!el || el.classList.contains('fly')) return;
   var key = el.getAttribute('data-key'), job = findJob(key); if(!job) return;
+  if(kind !== 'apply') deckPin = null;
   if(kind === 'pass'){
     fly(el, -1, function(){ PASSED[key] = Date.now(); lsSet('tp_passed', PASSED); undoStack.push({key:key, kind:'pass'}); drawDeck(); });
     return;
@@ -2054,7 +2085,7 @@ document.addEventListener('click', function(e){
     case 'clearf': F = {q:'', region:'US', cat:'', lvl:'', age:'any', sort:'new', r2:1}; lsSet('tp_filters', F); return vJobs($('#view'));
     case 'upload': return requireSignIn('Sign in to add your resume', function(){ $('#fileIn').click(); });
     case 'rmresume':
-      lsSet('tp_resume_local', null);
+      lsDel('tp_resume_local');
       return store.saveProfile({resume_text:null, resume_name:null}).then(function(){ toast('Resume removed'); render(); });
     case 'saveprefs':
       return store.saveProfile({target_role:$('#sRole').value.trim(), target_location:$('#sLoc').value.trim()}).then(function(){ toast('Saved'); });
@@ -2069,7 +2100,7 @@ document.addEventListener('click', function(e){
       return;
     case 'delno': return render();
     case 'delyes':
-      return store.deleteAccount().then(function(){ lsSet('tp_resume_local', null); location.hash = 'jobs'; render(); toast('Your account has been deleted'); })
+      return store.deleteAccount().then(function(){ lsDel('tp_resume_local'); location.hash = 'jobs'; render(); toast('Your account has been deleted'); })
         .catch(function(){ toast('Couldn’t delete — email hello@trulyplaced.com and we’ll do it'); });
   }
 });
