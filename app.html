@@ -489,6 +489,16 @@ var state = { user:null, profile:null, tracked:[], ready:false };
 function loadScript(src){
   return new Promise(function(res, rej){ var s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
 }
+// did we just come back from Google? (?code=&state= for PKCE, or #access_token= for older flows)
+var cameFromOAuth = /[?&]code=/.test(location.search) && /[?&]state=/.test(location.search) || /access_token=/.test(location.hash);
+function cleanUrl(){
+  try{
+    var hash = location.hash;
+    if(/access_token=|[?&]error=/.test(hash)) hash = '#dashboard';
+    if(!hash || hash === '#') hash = cameFromOAuth ? '#dashboard' : location.hash;
+    history.replaceState(null, '', location.pathname + hash);
+  }catch(e){}
+}
 
 var store = {
   init: function(){
@@ -506,11 +516,19 @@ var store = {
       });
       return sb.auth.getSession();
     }).then(function(r){
-      // tidy the ?code= left behind by the Google redirect
-      if(location.search.indexOf('code=') > -1) history.replaceState(null, '', location.pathname + location.hash);
       var s = r && r.data && r.data.session;
+      if(!s && cameFromOAuth){
+        // the code hasn't been exchanged yet (slow network / strict browser) — do it explicitly
+        return sb.auth.exchangeCodeForSession(location.href).then(function(x){
+          cleanUrl();
+          var ses = x && x.data && x.data.session;
+          if(ses) return afterSignIn(ses.user, true);
+        }).catch(function(){ cleanUrl(); });
+      }
+      cleanUrl();
       if(s) return afterSignIn(s.user, true);
     }).catch(function(){
+      cleanUrl();
       toast('Sign-in is unavailable right now — browsing still works');
     });
   },
@@ -521,7 +539,7 @@ var store = {
       var u = {id:'local-'+Math.random().toString(36).slice(2,10), email:'you@example.com', name:'Preview user', avatar:'', created:Date.now()};
       return afterSignIn(u);
     }
-    return sb.auth.signInWithOAuth({provider:'google', options:{redirectTo: CONFIG.SITE.replace(/\/$/,'') + '/app.html'}});
+    return sb.auth.signInWithOAuth({provider:'google', options:{redirectTo: CONFIG.SITE.replace(/\/$/,'') + '/app.html#dashboard'}});
   },
   signOut: function(){
     if(!LIVE){ state.user=null; state.profile=null; state.tracked=[]; lsSet('tp_app_v1', null); render(); return Promise.resolve(); }
@@ -584,8 +602,10 @@ function afterSignIn(u, silent){
         return isNew;
       });
   return load.then(function(isNew){
-    var back = ssGet('tp_after', null);
-    if(back){ try{ sessionStorage.removeItem('tp_after'); }catch(e){} if(back !== location.hash) location.hash = back; }
+    var back = ssGet('tp_after', null) || (cameFromOAuth ? '#dashboard' : null);
+    try{ sessionStorage.removeItem('tp_after'); }catch(e){}
+    if(back && back !== location.hash) location.hash = back;
+    cameFromOAuth = false;
     render();
     if(isNew || !state.profile.onboarded) openOnboarding();
     else if(!silent) toast('Signed in as ' + state.user.email);

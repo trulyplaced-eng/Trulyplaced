@@ -2,6 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>
+/* If a Google/Supabase sign-in ever lands on the homepage instead of the app,
+   forward it to /app.html with the login details intact. */
+(function(){try{
+  if(location.pathname.indexOf('app.html')>-1) return;
+  var qs=location.search, hs=location.hash;
+  var oauth=(/[?&]code=/.test(qs)&&/[?&]state=/.test(qs))||/access_token=|[?&]error=/.test(hs);
+  if(oauth){ location.replace('/app.html'+qs+((hs&&hs.length>1)?hs:'#dashboard')); }
+}catch(e){}})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="A real recruiter rewrites your resume and applies to 25-30 matched roles every business day. You focus on the interviews.">
 <meta name="robots" content="index, follow">
