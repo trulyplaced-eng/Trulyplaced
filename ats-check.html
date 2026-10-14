@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Free ATS Resume Check | TrulyPlaced</title>
+<meta name="description" content="Check whether your resume parses correctly in applicant tracking systems and how well it matches a job description. Runs entirely in your browser — your resume is never uploaded.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0938d5">
+<link rel="canonical" href="https://trulyplaced.com/ats-check.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='116' fill='%230938d5'/%3E%3Cpath d='M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z' fill='%23fff'/%3E%3Cpath d='M205 200l37 36 76-88' fill='none' stroke='%230938d5' stroke-width='30' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#0938d5;--ink:#121a33;--body:#4b5473;--muted:#737b9c;--line:#e7e9f2;--bg-alt:#f6f7fc;
+  --ok:#0a7f46;--warn:#b45309;--bad:#be123c}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{background:#fff;color:var(--body);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased}
+img{max-width:100%}
+a{color:var(--blue)}
+.wrap{width:min(1000px,100%);margin:0 auto;padding-inline:20px}
+
+/* header */
+.top{background:var(--ink);padding:16px 0}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none;min-height:44px;
+  font-family:Poppins;font-weight:700;font-size:19px;letter-spacing:-.01em}
+.brand svg{width:30px;height:30px;flex:none}
+.top a.back{color:rgba(255,255,255,.72);text-decoration:none;font-size:14px;
+  display:inline-flex;align-items:center;min-height:44px;padding:0 10px;margin-right:-10px}
+.top a.back:hover{color:#fff}
+
+/* hero */
+header.pg{background:var(--bg-alt);border-bottom:1px solid var(--line);padding-block:48px 40px;text-align:center}
+header.pg .eyebrow{display:inline-flex;align-items:center;gap:8px;background:#e8edff;color:var(--blue);
+  border:1px solid #cfd9ff;border-radius:999px;padding:7px 15px;font-size:12px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase}
+header.pg h1{font-family:Poppins;font-weight:800;color:var(--ink);font-size:clamp(30px,5vw,44px);
+  line-height:1.1;letter-spacing:-.022em;margin-top:18px;text-wrap:balance}
+header.pg p{margin:14px auto 0;max-width:56ch;color:var(--body)}
+.privacy-pill{display:inline-flex;align-items:center;gap:9px;margin-top:20px;background:#eaf7f0;
+  border:1px solid #bfe6d2;color:#0a7f46;border-radius:999px;padding:9px 16px;font-size:13.5px;font-weight:600}
+.privacy-pill svg{width:16px;height:16px;flex:none}
+
+main{padding-block:38px 70px}
+
+/* inputs */
+.panes{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.pane{border:1px solid var(--line);border-radius:16px;background:#fff;padding:22px;
+  box-shadow:0 10px 30px -22px rgba(18,26,51,.3)}
+.pane h2{font-family:Poppins;font-weight:600;color:var(--ink);font-size:17px;display:flex;align-items:center;gap:9px}
+.pane h2 .n{width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;flex:none;
+  display:grid;place-items:center;font-size:12.5px;font-weight:700;font-family:Inter}
+.pane .opt{font-size:12.5px;color:var(--muted);font-weight:500;margin-left:auto}
+.pane>p.help{font-size:13.5px;color:var(--muted);margin-top:8px;line-height:1.55}
+.drop{margin-top:14px;border:2px dashed #cdd4ea;border-radius:13px;padding:26px 18px;text-align:center;
+  cursor:pointer;transition:.18s;background:#fbfcff}
+.drop:hover,.drop.over{border-color:var(--blue);background:#f4f7ff}
+.drop svg{width:28px;height:28px;color:var(--blue);opacity:.8}
+.drop b{display:block;color:var(--ink);font-size:14.5px;margin-top:8px;font-weight:600}
+.drop span{display:block;font-size:12.5px;color:var(--muted);margin-top:3px}
+.or{text-align:center;font-size:12px;color:var(--muted);margin:12px 0 10px;letter-spacing:.06em;font-weight:600}
+textarea{width:100%;min-height:150px;border:1px solid var(--line);border-radius:11px;padding:13px 14px;
+  font-family:Inter,sans-serif;font-size:14px;line-height:1.6;color:var(--ink);resize:vertical;background:#fff}
+textarea:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:transparent}
+#jd{min-height:232px}
+.filetag{display:none;align-items:center;gap:9px;margin-top:12px;background:#eef2ff;border:1px solid #d3dcff;
+  border-radius:10px;padding:10px 13px;font-size:13.5px;color:var(--ink)}
+.filetag.on{display:flex}
+.filetag svg{width:16px;height:16px;color:var(--blue);flex:none}
+.filetag .x{margin-left:auto;background:none;border:0;cursor:pointer;color:var(--muted);font-size:17px;
+  line-height:1;padding:6px;min-width:34px;min-height:34px}
+
+.runrow{display:flex;justify-content:center;margin-top:26px}
+.run{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;
+  background:var(--blue);color:#fff;border:0;border-radius:999px;padding:0 40px;font-family:Inter;
+  font-size:16.5px;font-weight:700;cursor:pointer;transition:.2s;
+  box-shadow:0 16px 32px -16px rgba(9,56,213,.8)}
+.run:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 20px 38px -16px rgba(9,56,213,.9)}
+.run:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.err{display:none;margin-top:14px;text-align:center;color:var(--bad);font-size:14px;font-weight:500}
+.err.on{display:block}
+
+/* results */
+#out{display:none;margin-top:44px}
+#out.on{display:block}
+.score-card{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:#fff;
+  box-shadow:0 14px 40px -26px rgba(18,26,51,.4)}
+.score-top{display:flex;align-items:center;gap:30px;padding:30px;background:linear-gradient(180deg,#fafbff,#fff);
+  border-bottom:1px solid var(--line);flex-wrap:wrap}
+.ring{position:relative;width:132px;height:132px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring .val{position:absolute;inset:0;display:grid;place-items:center;font-family:Poppins;font-weight:800;
+  font-size:36px;color:var(--ink);line-height:1}
+.ring .val small{display:block;font-family:Inter;font-size:11.5px;font-weight:600;color:var(--muted);
+  letter-spacing:.07em;text-transform:uppercase;margin-top:2px}
+.score-txt{flex:1;min-width:230px}
+.score-txt h2{font-family:Poppins;font-weight:700;color:var(--ink);font-size:22px;letter-spacing:-.015em}
+.score-txt p{margin-top:7px;font-size:14.5px}
+.bars{padding:24px 30px;display:grid;gap:15px;border-bottom:1px solid var(--line)}
+.bar-row{display:grid;grid-template-columns:1fr auto;gap:5px 14px;align-items:center}
+.bar-row .lab{font-size:14px;font-weight:600;color:var(--ink)}
+.bar-row .pts{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.bar-row .track{grid-column:1/-1;height:7px;border-radius:99px;background:#eef0f7;overflow:hidden}
+.bar-row .fill{height:100%;border-radius:99px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+
+.findings{padding:26px 30px}
+.findings h3{font-family:Poppins;font-weight:700;color:var(--ink);font-size:17px;margin-bottom:14px}
+.f{display:flex;gap:13px;padding:14px 0;border-top:1px solid var(--line)}
+.f:first-of-type{border-top:0;padding-top:0}
+.f .ic{width:26px;height:26px;border-radius:7px;flex:none;display:grid;place-items:center;margin-top:1px}
+.f .ic svg{width:15px;height:15px}
+.f.bad .ic{background:#ffe8ed;color:var(--bad)}
+.f.warn .ic{background:#fef3e2;color:var(--warn)}
+.f.good .ic{background:#e6f6ee;color:var(--ok)}
+.f b{display:block;color:var(--ink);font-size:14.8px;font-weight:600;line-height:1.45}
+.f p{font-size:13.8px;margin-top:3px;line-height:1.6}
+
+.kw{padding:0 30px 28px}
+.kw h3{font-family:Poppins;font-weight:700;color:var(--ink);font-size:17px;margin-bottom:6px}
+.kw .sub{font-size:13.5px;color:var(--muted);margin-bottom:14px}
+.kwgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.kwgrid h4{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px}
+.kwgrid .miss h4{color:var(--bad)}
+.kwgrid .hit h4{color:var(--ok)}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.c{font-size:13px;padding:6px 11px;border-radius:7px;font-weight:500}
+.c.m{background:#ffe8ed;color:#9f1239}
+.c.h{background:#e6f6ee;color:#065f3c}
+.none{font-size:13.5px;color:var(--muted);font-style:italic}
+
+.cta{margin-top:30px;background:linear-gradient(135deg,#0a31bd,#0938d5);border-radius:20px;
+  padding:38px 32px;text-align:center;color:#fff}
+.cta h3{font-family:Poppins;font-weight:800;font-size:clamp(21px,3vw,27px);letter-spacing:-.018em}
+.cta p{color:rgba(255,255,255,.86);margin:12px auto 0;max-width:50ch;font-size:15px}
+.cta a{display:inline-flex;align-items:center;gap:9px;min-height:52px;margin-top:22px;background:#fff;
+  color:var(--blue);text-decoration:none;border-radius:999px;padding:0 32px;font-weight:700;font-size:15.5px}
+.cta a:hover{background:#eef1fe}
+
+footer{background:var(--ink);color:#8d95b4;padding-block:30px;font-size:14px;margin-top:10px}
+footer .row{display:flex;flex-wrap:wrap;gap:6px 24px;align-items:center;justify-content:space-between}
+footer a{color:#c3ccf0;text-decoration:none;display:inline-flex;align-items:center;min-height:44px}
+footer a:hover{color:#fff}
+
+@media(max-width:820px){.panes{grid-template-columns:1fr}#jd{min-height:150px}}
+@media(max-width:600px){
+  .score-top{padding:24px;gap:20px}.bars,.findings{padding:20px}.kw{padding:0 20px 24px}
+  .kwgrid{grid-template-columns:1fr;gap:16px}
+  .ring{width:112px;height:112px}.ring .val{font-size:31px}
+}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="wrap">
+  <a class="brand" href="/">
+    <svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="#fff"/><path d="M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z" fill="#0938d5"/><path d="M205 200l37 36 76-88" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    TrulyPlaced
+  </a>
+  <a class="back" href="/">&larr; Back to site</a>
+</div></div>
+
+<header class="pg"><div class="wrap">
+  <span class="eyebrow">Free tool</span>
+  <h1>Will your resume survive the robot?</h1>
+  <p>Most applications are read by an applicant tracking system before a human ever sees them. This checks whether yours parses cleanly, and how well it matches a specific job description.</p>
+  <div class="privacy-pill">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.4 7.8 8 10 4.6-2.2 8-5 8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+    Runs entirely in your browser — your resume is never uploaded
+  </div>
+</div></header>
+
+<main><div class="wrap">
+
+  <div class="panes">
+    <div class="pane">
+      <h2><span class="n">1</span>Your resume</h2>
+      <p class="help">PDF or Word file. We read it on your own device — it never leaves your computer.</p>
+      <div class="drop" id="drop" role="button" tabindex="0" aria-label="Choose a resume file">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5-5 5 5"/><path d="M12 5v12"/></svg>
+        <b>Choose a file or drop it here</b>
+        <span>PDF or DOCX, up to 10&nbsp;MB</span>
+      </div>
+      <input type="file" id="file" accept=".pdf,.docx,.txt" hidden>
+      <div class="filetag" id="ftag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        <span id="fname"></span>
+        <button class="x" id="fclear" aria-label="Remove file">&times;</button>
+      </div>
+      <div class="or">OR PASTE IT</div>
+      <textarea id="resume" placeholder="Paste your resume text here…" aria-label="Resume text"></textarea>
+    </div>
+
+    <div class="pane">
+      <h2><span class="n">2</span>Job description<span class="opt">optional</span></h2>
+      <p class="help">Paste the posting you're applying to and we'll show which of its keywords your resume is missing. Skip it and we'll still check how well your resume parses.</p>
+      <textarea id="jd" placeholder="Paste the full job description here…" aria-label="Job description"></textarea>
+    </div>
+  </div>
+
+  <div class="runrow"><button class="run" id="run" disabled>
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    Check my resume
+  </button></div>
+  <div class="err" id="err"></div>
+
+  <div id="out">
+    <div class="score-card">
+      <div class="score-top">
+        <div class="ring">
+          <svg width="132" height="132" viewBox="0 0 132 132">
+            <circle cx="66" cy="66" r="57" fill="none" stroke="#eef0f7" stroke-width="13"/>
+            <circle cx="66" cy="66" r="57" fill="none" stroke="#0938d5" stroke-width="13"
+              stroke-linecap="round" id="ringArc" stroke-dasharray="358" stroke-dashoffset="358"
+              style="transition:stroke-dashoffset 1s cubic-bezier(.4,0,.2,1),stroke .5s"/>
+          </svg>
+          <div class="val"><span id="scoreNum">0</span><small>out of 100</small></div>
+        </div>
+        <div class="score-txt">
+          <h2 id="verdict"></h2>
+          <p id="verdictSub"></p>
+        </div>
+      </div>
+      <div class="bars" id="bars"></div>
+      <div class="findings">
+        <h3>What to fix</h3>
+        <div id="findings"></div>
+      </div>
+      <div class="kw" id="kwBlock" style="display:none">
+        <h3>Keywords from the job description</h3>
+        <p class="sub">Applicant tracking systems rank you partly on these. Only add what's genuinely true of you.</p>
+        <div class="kwgrid">
+          <div class="miss"><h4>Missing from your resume</h4><div class="chips" id="kwMiss"></div></div>
+          <div class="hit"><h4>Already there</h4><div class="chips" id="kwHit"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta">
+      <h3>Want a recruiter to rewrite it properly?</h3>
+      <p>A checker can spot problems. Fixing them well — and then applying to 25–30 matched roles every business day — is what we do.</p>
+      <a href="/#pricing">See how TrulyPlaced works &rarr;</a>
+    </div>
+  </div>
+
+</div></main>
+
+<footer><div class="wrap"><div class="row">
+  <span>© 2026 TrulyPlaced — a brand of RepoReserve Technologies Private Limited.</span>
+  <span><a href="/privacy.html">Privacy</a> &nbsp;·&nbsp; <a href="/terms.html">Terms</a> &nbsp;·&nbsp; <a href="/contact.html">Contact</a></span>
+</div></div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script>
+(function(){
+"use strict";
+if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+var $ = function(id){ return document.getElementById(id); };
+var fileText = '', fileKind = '', pdfPages = 0, pdfCharsPerPage = 0;
+
+/* ---------- file reading (all local) ---------- */
+function readPDF(buf){
+  return pdfjsLib.getDocument({data:buf}).promise.then(function(doc){
+    pdfPages = doc.numPages;
+    var jobs = [];
+    for (var i=1; i<=doc.numPages; i++) jobs.push(
+      doc.getPage(i).then(function(p){ return p.getTextContent(); })
+                    .then(function(tc){ return tc.items.map(function(it){return it.str;}).join(' '); })
+    );
+    return Promise.all(jobs).then(function(pages){
+      var t = pages.join('\n');
+      pdfCharsPerPage = doc.numPages ? t.replace(/\s/g,'').length / doc.numPages : 0;
+      return t;
+    });
+  });
+}
+function readDOCX(buf){
+  return mammoth.extractRawText({arrayBuffer:buf}).then(function(r){ return r.value; });
+}
+function handleFile(f){
+  if(!f) return;
+  if(f.size > 10*1024*1024){ fail('That file is over 10 MB. Try exporting a smaller PDF.'); return; }
+  var ext = (f.name.split('.').pop()||'').toLowerCase();
+  fail('');
+  var fr = new FileReader();
+  fr.onload = function(){
+    var done = function(txt){
+      fileText = txt || ''; fileKind = ext;
+      $('fname').textContent = f.name;
+      $('ftag').classList.add('on');
+      sync();
+    };
+    try{
+      if(ext === 'pdf'){
+        if(!window.pdfjsLib){ fail("The PDF reader didn't load — check your connection, or paste the text instead."); return; }
+        readPDF(fr.result).then(done).catch(function(){ fail("Couldn't read that PDF. Try pasting the text instead."); });
+      } else if(ext === 'docx'){
+        if(!window.mammoth){ fail("The Word reader didn't load — check your connection, or paste the text instead."); return; }
+        readDOCX(fr.result).then(done).catch(function(){ fail("Couldn't read that Word file. Try pasting the text instead."); });
+      } else done(new TextDecoder().decode(fr.result));
+    }catch(e){ fail("Couldn't read that file. Try pasting the text instead."); }
+  };
+  fr.onerror = function(){ fail("Couldn't read that file."); };
+  fr.readAsArrayBuffer(f);
+}
+function fail(m){ var e=$('err'); e.textContent=m; e.classList.toggle('on', !!m); }
+
+var drop=$('drop');
+drop.addEventListener('click', function(){ $('file').click(); });
+drop.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); $('file').click(); }});
+['dragenter','dragover'].forEach(function(ev){ drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('over');}); });
+['dragleave','drop'].forEach(function(ev){ drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('over');}); });
+drop.addEventListener('drop', function(e){ handleFile(e.dataTransfer.files[0]); });
+$('file').addEventListener('change', function(e){ handleFile(e.target.files[0]); });
+$('fclear').addEventListener('click', function(){
+  fileText=''; fileKind=''; pdfPages=0; pdfCharsPerPage=0;
+  $('file').value=''; $('ftag').classList.remove('on'); fail(''); sync();
+});
+$('resume').addEventListener('input', sync);
+function resumeText(){ return (fileText || $('resume').value || '').trim(); }
+function sync(){ $('run').disabled = resumeText().length < 80; }
+
+/* ---------- language data ---------- */
+var STOP = ('a about above after again against all am an and any are as at be because been before being below between both but by cannot could did do does doing down during each few for from further had has have having he her here hers herself him himself his how i if in into is it its itself me more most my myself no nor not of off on once only or other ought our ours ourselves out over own same she should so some such than that the their theirs them themselves then there these they this those through to too under until up very was we were what when where which while who whom why with would you your yours yourself yourselves will shall may might must can able across among etc per via you re ve ll role job work working works position candidate candidates applicant applicants company team teams within strong excellent good great ability abilities including include includes included required require requires requirement requirements responsibility responsibilities preferred plus years year experience experiences skill skills knowledge understanding familiar familiarity proficient proficiency demonstrated proven track record ideal successful opportunity opportunities environment business new well also help helps helping support supporting ensure ensuring provide providing deliver delivering drive driving build building manage managing develop developing create creating us our we their them please apply looking seeking join joining').split(' ');
+var STOPSET = {}; STOP.forEach(function(w){ STOPSET[w]=1; });
+
+var WEAK = [
+  ['responsible for','led / owned / delivered'],
+  ['duties included','shipped / ran / built'],
+  ['worked on','built / delivered / shipped'],
+  ['helped with','drove / delivered'],
+  ['assisted in','ran / delivered'],
+  ['tasked with','owned'],
+  ['involved in','led / delivered'],
+  ['participated in','contributed X to'],
+  ['familiar with','used X to do Y']
+];
+var STRONG = ('led built shipped launched delivered designed created developed implemented automated reduced increased improved optimized migrated scaled architected owned drove negotiated streamlined cut grew saved accelerated resolved rebuilt established introduced'.split(' '));
+
+/* ---------- analysis ---------- */
+function words(t){ return (t.toLowerCase().match(/[a-z][a-z+#.\-]{1,}/g) || []); }
+
+function clean(w){ return w.replace(/^[.\-]+|[.\-]+$/g,''); }
+
+function keywordsFrom(jd){
+  var ws = words(jd).map(clean).filter(function(w){ return w.length >= 3; });
+  var freq = {};
+  ws.forEach(function(w){
+    if(STOPSET[w] || /^\d+$/.test(w)) return;
+    freq[w] = (freq[w]||0)+1;
+  });
+  // bigrams catch multi-word skills ("machine learning", "power bi")
+  for(var i=0;i<ws.length-1;i++){
+    var a=ws[i], b=ws[i+1];
+    if(STOPSET[a]||STOPSET[b]||a.length<3||b.length<3) continue;
+    var bg=a+' '+b; freq[bg]=(freq[bg]||0)+1.4;
+  }
+  return Object.keys(freq).map(function(k){ return {k:k,n:freq[k]}; })
+    .sort(function(x,y){ return y.n-x.n || x.k.localeCompare(y.k); })
+    .filter(function(o,i,arr){ // drop a unigram if a bigram containing it scored higher
+      if(o.k.indexOf(' ')>-1) return true;
+      return !arr.some(function(p){ return p.k.indexOf(' ')>-1 && p.n>=o.n && p.k.indexOf(o.k)>-1; });
+    })
+    .slice(0,26);
+}
+
+function analyse(res, jd){
+  var low = res.toLowerCase(), cats = [], finds = [];
+  // whitespace split is the honest measure of length — words() drops numbers, which resumes are full of
+  var wc = res.trim().split(/\s+/).filter(function(t){ return /[A-Za-z0-9]/.test(t); }).length;
+  var lines = res.split(/\n+/).map(function(l){return l.trim();}).filter(Boolean);
+
+  /* 1. machine-readable (critical) — only assessable on a real uploaded file */
+  var usedFile = !!fileText, mr = 25, scanned = false;
+  if(!usedFile){
+    finds.push(['warn','Upload your real file to test parsing',
+      'You pasted text, so we can only check the writing — not whether your actual PDF parses. That is the single most common reason good resumes get rejected. Upload the file you actually send to check it.']);
+  } else if(fileKind === 'pdf' && pdfPages > 0 && pdfCharsPerPage < 350){
+    mr = 0; scanned = true;
+    finds.push(['bad','Your PDF has almost no readable text',
+      'This looks like a scan or an exported image. An applicant tracking system reads text, not pictures — to it, this resume is blank. Export a fresh PDF directly from Word or Google Docs ("Save as PDF", not "Print to image").']);
+  } else if(wc < 180){
+    mr = 12;
+    finds.push(['warn','Very little text came through',
+      'Only about ' + wc + ' words were readable. If your resume is longer than that, parts of it may be inside text boxes, tables or images that parsers skip.']);
+  } else {
+    finds.push(['good','Your resume is machine-readable','Text extracted cleanly, which is the first thing an ATS needs.']);
+  }
+  if(usedFile) cats.push(['Machine-readable', mr, 25]);
+
+  /* 2. contact details */
+  var hasEmail = /[\w.+-]+@[\w-]+\.[\w.]{2,}/.test(res);
+  var hasPhone = /(\+?\d[\d\s().-]{7,}\d)/.test(res);
+  var hasLink  = /(linkedin\.com|github\.com|[a-z0-9-]+\.(com|io|dev|me)\/)/i.test(res);
+  var cPts = (hasEmail?7:0)+(hasPhone?5:0)+(hasLink?3:0);
+  var missC = [];
+  if(!hasEmail) missC.push('an email address');
+  if(!hasPhone) missC.push('a phone number');
+  if(!hasLink)  missC.push('a LinkedIn or portfolio link');
+  if(missC.length) finds.push([hasEmail?'warn':'bad','Contact details are incomplete',
+    'We couldn’t find ' + missC.join(', ') + '. Recruiters filter on these, and some systems reject a record with no email. Put them as plain text at the top — not in the header or footer, which many parsers ignore.']);
+  else finds.push(['good','Contact details are all present','Email, phone and a link were all found.']);
+  cats.push(['Contact details', cPts, 15]);
+
+  /* 3. standard sections */
+  var secs = [
+    ['experience', /(work\s+experience|professional\s+experience|employment|^experience)/im],
+    ['education',  /education|academic/i],
+    ['skills',     /(technical\s+skills|^skills|core\s+competenc)/im]
+  ];
+  var found = secs.filter(function(s){ return s[1].test(res); }).map(function(s){return s[0];});
+  var sPts = Math.round(found.length/3*15);
+  if(found.length < 3){
+    var missS = secs.map(function(s){return s[0];}).filter(function(n){ return found.indexOf(n)<0; });
+    finds.push(['warn','Missing a standard section heading',
+      'We couldn’t find a clear ' + missS.join(' or ') + ' heading. Parsers use these exact words to sort your resume into fields. Creative headings like "My Journey" often get dropped.']);
+  } else finds.push(['good','All standard sections found','Experience, Education and Skills headings were all detected.']);
+  cats.push(['Standard sections', sPts, 15]);
+
+  /* 4. quantified impact */
+  var bullets = lines.filter(function(l){ return /^[•\-•*●▪‣⁃]/.test(l) || (l.length>40 && l.length<260 && /^[A-Z]/.test(l)); });
+  var quant = bullets.filter(function(l){ return /(\d+\s?%|\$\s?\d|\d[\d,.]*\s?(k|m|bn|million|billion|users|customers|hours|days|weeks|months|x\b)|\b\d{2,}\b)/i.test(l); });
+  var qRatio = bullets.length ? quant.length/bullets.length : 0;
+  var qPts = Math.round(Math.min(qRatio/0.4,1)*15);
+  if(qRatio < 0.25) finds.push(['warn','Very few results have numbers',
+    'About ' + Math.round(qRatio*100) + '% of your bullet points contain a figure. Numbers are what make a claim checkable — "cut report time from 3 days to 4 hours" lands where "improved reporting" does not.']);
+  else if(qRatio < 0.4) finds.push(['warn','Add numbers to more bullets',
+    'Roughly ' + Math.round(qRatio*100) + '% of your bullets are quantified. Aim for about half.']);
+  else finds.push(['good','Your results are quantified','A good share of your bullets contain concrete figures.']);
+  cats.push(['Quantified impact', qPts, 15]);
+
+  /* 5. strong language */
+  var weakHits = WEAK.filter(function(p){ return low.indexOf(p[0]) > -1; });
+  var strongN = STRONG.filter(function(v){ return new RegExp('\\b'+v,'i').test(res); }).length;
+  var lPts = Math.max(0, Math.min(10, Math.round(strongN/8*10)) - weakHits.length*2);
+  if(weakHits.length) finds.push(['warn','Passive phrasing is costing you',
+    'Found ' + weakHits.map(function(p){return '"'+p[0]+'"';}).join(', ') + '. Swap for ' + weakHits[0][1] + ' — describe what you did, not what you were assigned.']);
+  else if(strongN >= 6) finds.push(['good','Strong, active verbs','Your bullets lead with action verbs rather than passive phrasing.']);
+  cats.push(['Strong language', lPts, 10]);
+
+  /* 6. length */
+  var lenPts = (wc>=400 && wc<=900) ? 10 : (wc>=300 && wc<=1150) ? 7 : (wc>=200) ? 4 : 1;
+  if(wc < 300) finds.push(['warn','Your resume looks thin',
+    'About ' + wc + ' words. Most strong one-page resumes run 400–800. Thin resumes read as thin experience even when they aren’t.']);
+  else if(wc > 1150) finds.push(['warn','Your resume is long',
+    'About ' + wc + ' words — likely over two pages. Recruiters skim. Cut the oldest roles back to one line each.']);
+  else finds.push(['good','Length is in a good range', 'About ' + wc + ' words.']);
+  cats.push(['Length', lenPts, 10]);
+
+  /* 7. keyword match */
+  var kwPts = 0, hit = [], miss = [], haveJD = jd.length > 120;
+  if(haveJD){
+    keywordsFrom(jd).forEach(function(o){
+      var re = new RegExp('\\b' + o.k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'i');
+      (re.test(res) ? hit : miss).push(o.k);
+    });
+    var total = hit.length + miss.length;
+    var ratio = total ? hit.length/total : 0;
+    kwPts = Math.round(ratio*10);
+    if(ratio < 0.4) finds.push(['bad','Weak match to this job description',
+      'Your resume contains ' + hit.length + ' of the ' + total + ' terms this posting leans on. That’s usually what a low ATS ranking looks like. Work the missing ones in below — but only where they’re genuinely true of you.']);
+    else if(ratio < 0.65) finds.push(['warn','Partial match to this job description',
+      hit.length + ' of ' + total + ' key terms appear. Adding a few of the missing ones, truthfully, would lift your ranking.']);
+    else finds.push(['good','Strong match to this job description',
+      hit.length + ' of ' + total + ' key terms already appear in your resume.']);
+  }
+  cats.push(['Job-description match', kwPts, 10]);
+
+  var got = cats.reduce(function(s,c){ return s+c[1]; },0);
+  var max = cats.reduce(function(s,c){ return s+c[2]; },0);
+  if(!haveJD) max -= 10;                       // don't penalise for a test they didn't take
+  var score = max>0 ? Math.max(0, Math.min(100, Math.round(got/max*100))) : 0;
+  if(scanned) score = Math.min(score, 25);     // unreadable is unreadable
+
+  // worst first
+  var order = {bad:0, warn:1, good:2};
+  finds.sort(function(a,b){ return order[a[0]] - order[b[0]]; });
+
+  return {score:score, cats:cats, finds:finds, hit:hit, miss:miss, haveJD:haveJD, scanned:scanned};
+}
+
+/* ---------- render ---------- */
+function colour(p){ return p>=0.75 ? '#0a7f46' : p>=0.45 ? '#b45309' : '#be123c'; }
+
+function render(r){
+  var out=$('out'); out.classList.add('on');
+
+  var arc=$('ringArc'), C=358;
+  arc.style.stroke = colour(r.score/100);
+  setTimeout(function(){ arc.style.strokeDashoffset = C - C*r.score/100; }, 60);
+
+  // count up
+  var n=0, step=Math.max(1,Math.round(r.score/28));
+  var t=setInterval(function(){ n+=step; if(n>=r.score){n=r.score;clearInterval(t);} $('scoreNum').textContent=n; }, 26);
+
+  var v,s;
+  if(r.scanned){ v='Your resume may be invisible'; s='The file has almost no readable text, so most applicant tracking systems will see an empty record. Fix that first — nothing else matters until you do.'; }
+  else if(r.score>=80){ v='In good shape'; s='Your resume parses cleanly and reads well. The fixes below are refinements rather than repairs.'; }
+  else if(r.score>=60){ v='Solid, with real gaps'; s='It will parse, but a few things below are likely costing you rankings against other applicants.'; }
+  else if(r.score>=40){ v='Needs work'; s='There are problems here that will push you down the pile before a human ever reads it.'; }
+  else { v='This needs a rebuild'; s='Several fundamentals are missing. The good news is that these are all fixable, and the list below is in priority order.'; }
+  $('verdict').textContent=v; $('verdictSub').textContent=s;
+
+  var bars=$('bars'); bars.innerHTML='';
+  r.cats.forEach(function(c){
+    if(c[0]==='Job-description match' && !r.haveJD) return;
+    var p=c[2]?c[1]/c[2]:0;
+    var d=document.createElement('div'); d.className='bar-row';
+    d.innerHTML='<span class="lab"></span><span class="pts">'+c[1]+' / '+c[2]+'</span>'+
+                '<span class="track"><span class="fill" style="width:0;background:'+colour(p)+'"></span></span>';
+    d.querySelector('.lab').textContent=c[0];
+    bars.appendChild(d);
+    setTimeout(function(){ d.querySelector('.fill').style.width=(p*100)+'%'; },90);
+  });
+
+  var fw=$('findings'); fw.innerHTML='';
+  var ICON={
+    bad:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+    warn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 8v5"/><path d="M12 17h.01"/></svg>',
+    good:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
+  };
+  r.finds.forEach(function(f){
+    var d=document.createElement('div'); d.className='f '+f[0];
+    d.innerHTML='<span class="ic">'+ICON[f[0]]+'</span><div><b></b><p></p></div>';
+    d.querySelector('b').textContent=f[1];
+    d.querySelector('p').textContent=f[2];
+    fw.appendChild(d);
+  });
+
+  if(r.haveJD){
+    $('kwBlock').style.display='block';
+    var mk=function(el,arr,cls){
+      el.innerHTML='';
+      if(!arr.length){ el.innerHTML='<span class="none">None — nice work.</span>'; return; }
+      arr.slice(0,18).forEach(function(k){
+        var c=document.createElement('span'); c.className='c '+cls; c.textContent=k; el.appendChild(c);
+      });
+    };
+    mk($('kwMiss'), r.miss, 'm');
+    mk($('kwHit'),  r.hit,  'h');
+  } else {
+    $('kwBlock').style.display='none';
+    $('kwMiss').innerHTML=''; $('kwHit').innerHTML='';
+  }
+
+  out.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+$('run').addEventListener('click', function(){
+  var res=resumeText();
+  if(res.length<80){ fail('Add your resume first — upload a file or paste the text.'); return; }
+  fail('');
+  try{ render(analyse(res, $('jd').value.trim())); }
+  catch(e){ fail('Something went wrong analysing that. Try pasting the text instead.'); }
+});
+sync();
+})();
+</script>
+</body>
+</html>

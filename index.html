@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="A real recruiter rewrites your resume and applies to 25-30 matched roles every business day. You focus on the interviews.">
+<meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0938d5">
 <link rel="canonical" href="https://trulyplaced.com/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='116' fill='%230938d5'/%3E%3Cpath d='M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z' fill='%23fff'/%3E%3Cpath d='M205 200l37 36 76-88' fill='none' stroke='%230938d5' stroke-width='30' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -14,6 +15,31 @@
 <meta property="og:title" content="TrulyPlaced - The job hunt, truly handled">
 <meta property="og:description" content="A real recruiter rewrites your resume and applies to 25-30 matched roles every business day. You focus on the interviews.">
 <meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "TrulyPlaced",
+  "legalName": "RepoReserve Technologies Private Limited",
+  "url": "https://trulyplaced.com/",
+  "description": "A real recruiter rewrites your resume and applies to 25-30 matched roles every business day. You focus on the interviews.",
+  "email": "hello@trulyplaced.com",
+  "foundingDate": "2026",
+  "areaServed": ["US", "GB", "CA", "AU"],
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Nizamabad",
+    "addressRegion": "Telangana",
+    "postalCode": "503001",
+    "addressCountry": "IN"
+  },
+  "identifier": {
+    "@type": "PropertyValue",
+    "name": "CIN",
+    "value": "U62099TS2026PTC213868"
+  }
+}
+</script>
 <style>
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -21,7 +47,7 @@ body{margin:0}
 img{max-width:100%}
 [hidden]{display:none!important}
 </style>
-<title>TrulyPlaced</title>
+<title>TrulyPlaced | Done-for-you job applications</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap">
@@ -104,12 +130,18 @@ header.nav{position:fixed;top:0;left:0;right:0;z-index:60;
 .brand .logo-full{height:30px;width:auto;display:block}
 .brand .logo-color{height:30px;width:auto;display:none}
 .nav-links{display:flex;gap:30px;margin-inline:auto}
-.nav-links a{font-weight:600;font-size:14.5px;color:rgba(255,255,255,.9);transition:color .35s ease}
+.nav-links a{white-space:nowrap;font-weight:600;font-size:14.5px;color:rgba(255,255,255,.9);transition:color .35s ease}
 .nav-links a:hover{color:#fff}
 .nav-cta{display:flex;align-items:center;gap:12px}
 .nav-cta .getstarted{font-weight:700;font-size:15.5px;padding:13px 30px;border-radius:999px;
   background:#fff;color:var(--blue);border:1.5px solid #fff;transition:.3s;white-space:nowrap;
   box-shadow:0 10px 24px -12px rgba(0,0,0,.45)}
+.nav-cta .signin{font-weight:600;font-size:14.5px;color:#fff;padding:10px 14px;border-radius:999px;white-space:nowrap;
+  min-height:44px;display:inline-flex;align-items:center;gap:7px;transition:color .35s ease,background .2s}
+.nav-cta .signin svg{width:17px;height:17px;flex:none}
+.nav-cta .signin:hover{background:rgba(255,255,255,.12)}
+header.nav.scrolled .nav-cta .signin{color:var(--ink)}
+header.nav.scrolled .nav-cta .signin:hover{background:var(--bg-alt);color:var(--blue)}
 .nav-cta .getstarted:hover{background:#eef1fe;transform:translateY(-1px);
   box-shadow:0 14px 28px -12px rgba(0,0,0,.5)}
 .burger{display:none;background:none;border:0;cursor:pointer;padding:10px 12px;margin-right:-8px;
@@ -409,6 +441,9 @@ section[id],div[id="top"]{scroll-margin-top:84px}
 .tier .tname{font-family:"Poppins";font-weight:700;font-size:20px;color:var(--ink)}
 .tier.feat .tname{color:#fff}
 .tier .vol{font-size:13px;color:var(--muted);margin-top:2px}
+.tier .dur{font-size:12px;color:var(--muted);margin-top:6px;display:inline-flex;align-items:center;gap:5px}
+.tier .dur svg{width:13px;height:13px;flex:none;opacity:.7}
+.tier.feat .dur{color:#9fa9cf}
 .tier.feat .vol{color:#9fa9cf}
 .tier .price{margin-top:20px;font-family:"Poppins";font-weight:800;font-size:44px;color:var(--ink);line-height:1}
 .tier.feat .price{color:#fff}
@@ -538,6 +573,13 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
 .placeholder{outline:1px dashed rgba(9,56,213,.35)}
 
 /* ============ RESPONSIVE ============ */
+@media(max-width:1120px){
+  .nav-in{gap:16px}
+  .nav-links{gap:20px}
+  .nav-links a{font-size:14px}
+  .nav-cta{gap:6px}
+  .nav-cta .getstarted{padding:12px 22px}
+}
 @media(max-width:900px){
   .hero-grid{grid-template-columns:1fr;gap:34px}
   .faq-grid{grid-template-columns:1fr;gap:28px}
@@ -546,6 +588,7 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
   .nav-links{display:none}
   .burger{display:block}
   .nav-cta .getstarted{font-size:14.5px;padding:11px 22px}
+  .nav-cta .signin{display:none}
 }
 @media(max-width:440px){            /* logo + button + burger stop fighting for the row */
   .nav-in{gap:10px;padding-right:8px}
@@ -561,6 +604,22 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}
   .track,.phone-wrap,.hero-note i{animation:none}}
+
+/* ============ SECURITY ============ */
+.sec-band{background:linear-gradient(180deg,#0c1230,#0b1026);border-block:1px solid #161e40}
+.sec-band .eyebrow{background:rgba(9,56,213,.22);border-color:rgba(118,142,240,.4);color:#aebcff}
+.sec-band .sec-head h2{color:#fff}
+.sec-band .sec-head p{color:#b8c0dc}
+.sec-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:44px}
+.sec-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.09);border-radius:16px;
+  padding:26px 24px;display:flex;gap:16px;align-items:flex-start}
+.sec-card .ic{flex:none;width:42px;height:42px;border-radius:11px;display:grid;place-items:center;
+  background:rgba(92,227,155,.12);color:#5ce39b}
+.sec-card .ic svg{width:21px;height:21px}
+.sec-card h3{color:#fff;font-family:"Poppins";font-weight:600;font-size:16.5px;margin:2px 0 7px}
+.sec-card p{color:#aab3d4;font-size:14px;line-height:1.6;margin:0}
+.sec-pledge{margin-top:22px;text-align:center;color:#8d96bb;font-size:13.5px}
+@media(max-width:720px){.sec-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -575,10 +634,12 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
       <a href="#how">How it works</a>
       <a href="#pricing">Pricing</a>
       <a href="#success">Success</a>
-      <a href="#team">Team</a>
+      <a href="#security">Security</a>
       <a href="#faq">FAQ</a>
+      <a href="/app.html">Jobs</a>
     </nav>
     <div class="nav-cta">
+      <a class="signin" href="/app.html#signin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Sign in</a>
       <a href="https://calendly.com/trulyplaced/30min" target="_blank" rel="noopener" class="getstarted">Get Started</a>
     </div>
     <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobnav">
@@ -589,8 +650,10 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
     <a href="#how">How it works</a>
     <a href="#pricing">Pricing</a>
     <a href="#success">Success stories</a>
-    <a href="#team">Team</a>
+    <a href="#security">Security</a>
     <a href="#faq">FAQ</a>
+    <a href="/app.html">Free job board</a>
+    <a href="/app.html#signin">Sign in</a>
     <a class="mobnav-cta" href="https://calendly.com/trulyplaced/30min" target="_blank" rel="noopener">Book a free strategy call &rarr;</a>
   </nav>
 </header>
@@ -616,9 +679,9 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
       </div>
       <p class="hero-note"><i></i>Limited active candidates per month</p>
       <div class="hero-stats">
-        <div class="stat"><div class="num">150+</div><div class="lbl">job seekers helped</div></div>
-        <div class="stat"><div class="num">850+</div><div class="lbl">interviews generated</div></div>
-        <div class="stat"><div class="num">120,000+</div><div class="lbl">applications submitted</div></div>
+        <div class="stat"><div class="num">25–30</div><div class="lbl">applications every business day</div></div>
+        <div class="stat"><div class="num">1–4 days</div><div class="lbl">role freshness when we apply</div></div>
+        <div class="stat"><div class="num">100%</div><div class="lbl">recruiter-led — never a bot</div></div>
       </div>
       <p class="hero-cred">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 3v5.2c0 4.3-2.9 8.3-7 9.6-4.1-1.3-7-5.3-7-9.6V6l7-3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 12.1l2.1 2.1L15.2 10" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -779,9 +842,9 @@ footer{background:var(--navy);color:#aeb6d4;margin-top:72px;padding-block:52px 3
       <p>A team of 5 experts apply for 1000+ tailored jobs on your behalf.</p>
     </div>
     <div class="stat-cards">
-      <div class="c"><div class="big">91%</div><div class="bar"></div><div class="st">Success rate</div><div class="sd">of members get interview calls within a month</div></div>
-      <div class="c"><div class="big">85%</div><div class="bar"></div><div class="st">Placement rate</div><div class="sd">of members land a role within three months</div></div>
-      <div class="c"><div class="big">1,000+</div><div class="bar"></div><div class="st">Applications</div><div class="sd">sent on your behalf across a focused sprint</div></div>
+      <div class="c"><div class="big">25–30</div><div class="bar"></div><div class="st">Every business day</div><div class="sd">tailored applications submitted on your behalf</div></div>
+      <div class="c"><div class="big">1–4 days</div><div class="bar"></div><div class="st">Fresh roles</div><div class="sd">we apply within days of a job being posted</div></div>
+      <div class="c"><div class="big">1,000+</div><div class="bar"></div><div class="st">Applications</div><div class="sd">across a full Super Saver sprint</div></div>
     </div>
   </div>
 </section>
@@ -1006,8 +1069,8 @@ if(scr&&dots){
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">Our process, end to end</span>
-      <h2>What happens in your first seven weeks</h2>
-      <p>You tell us the roles you want. From there the work is ours — writing, sourcing, applying, and changing the plan when the results say to.</p>
+      <h2>What a full sprint looks like</h2>
+      <p>You tell us the roles you want. From there the work is ours — writing, sourcing, applying, and changing the plan when the results say to. The timeline below shows a complete Super Saver sprint (1,000 applications, ~7–8 weeks); Starter and Growth follow the same steps over a shorter run — about 2 and 4 weeks. Your resume is ready within roughly 5 business days on every plan.</p>
     </div>
 
     <div class="flow">
@@ -1177,6 +1240,7 @@ if(scr&&dots){
       <div class="tier">
         <div class="tname">Starter</div>
         <div class="vol">250 applications</div>
+        <div class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg>Resume in ~5 business days · applying ~2 weeks</div>
         <div class="price">$299<small>one-time</small></div>
         <ul>
           <li><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Hand-crafted, FAANG-style resume</li>
@@ -1193,6 +1257,7 @@ if(scr&&dots){
       <div class="tier">
         <div class="tname">Growth</div>
         <div class="vol">500 applications</div>
+        <div class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg>Resume in ~5 business days · applying ~4 weeks</div>
         <div class="price">$449<small>one-time</small></div>
         <ul>
           <li><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Everything in Starter</li>
@@ -1209,18 +1274,61 @@ if(scr&&dots){
         <span class="best">BEST VALUE</span>
         <div class="tname">Super Saver</div>
         <div class="vol">1,000 applications</div>
+        <div class="dur"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round"/></svg>Resume in ~5 business days · applying ~7–8 weeks</div>
         <div class="price">$699<small>one-time</small></div>
         <ul>
           <li><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Everything in Growth</li>
           <li><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Full resume switch on feedback</li>
           <li><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Dedicated application team</li>
-          <li><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Bonus applications guarantee</li>
+          <li><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Top-up applications if a week runs short</li>
         </ul>
         <div class="fill"></div>
         <a href="https://calendly.com/trulyplaced/30min" target="_blank" rel="noopener" class="btn btn-primary">Get Started</a>
         <div class="cancel">Cancel anytime</div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ================= SECURITY ================= -->
+<section class="section sec-band" id="security">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Your data, protected</span>
+      <h2>Your resume and logins stay yours</h2>
+      <p>You're trusting us with your resume, your work-authorisation details and, if you choose, access to job boards in your name. We treat that access the way you would.</p>
+    </div>
+    <div class="sec-grid">
+      <div class="sec-card">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+        <div>
+          <h3>Used only to apply — nothing else</h3>
+          <p>When you give us job-board access, we sign in only to submit the applications you've authorised. We never read your personal messages, change your profile, or use your login for anything beyond applying — and we sign out the moment the work is done.</p>
+        </div>
+      </div>
+      <div class="sec-card">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.4 7.8 8 10 4.6-2.2 8-5 8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span>
+        <div>
+          <h3>Accessed only during active work</h3>
+          <p>We open your account to apply, then log out for the rest of the day. There is no standing, always-on connection to your logins — access happens in a short, deliberate session and ends with it.</p>
+        </div>
+      </div>
+      <div class="sec-card">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V8a5 5 0 0 1 10 0v3"/><circle cx="12" cy="16" r="1.3"/></svg></span>
+        <div>
+          <h3>Encrypted and need-to-know</h3>
+          <p>Any credentials you share are stored encrypted, never in plain documents or chat. Only the recruiter assigned to your search can see your details, and everyone on our team is bound by confidentiality.</p>
+        </div>
+      </div>
+      <div class="sec-card">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4"/><path d="M3 4v4h4"/></svg></span>
+        <div>
+          <h3>You can revoke access instantly</h3>
+          <p>It's your account. Change your password at any time and our access ends immediately — no request to us required. Tell us and we'll confirm it and delete anything we held. We never sell or share your data with advertisers.</p>
+        </div>
+      </div>
+    </div>
+    <p class="sec-pledge">Handled by a registered company &mdash; RepoReserve Technologies Private Limited, India &nbsp;&middot;&nbsp; full detail in our <a href="/privacy.html" style="color:#c3ccf0">Privacy Policy</a></p>
   </div>
 </section>
 
@@ -1236,27 +1344,27 @@ if(scr&&dots){
     <div class="faq-list">
       <details class="faq-item" open>
         <summary class="faq-q">Is there a refund policy if I'm not satisfied with the service?<span class="ic">+</span></summary>
-        <div class="faq-a">We prioritise your satisfaction and offer prorated refunds. A one-time base fee covers your resume review, portal access and taxes; the remaining amount is prorated against the applications we've actually submitted — so you only ever pay for the work you've received.</div>
+        <div class="faq-a">Yes. Each plan includes a one-time, non-refundable Platform &amp; onboarding fee of $100 that covers activating your account, your portal and your rewritten resume. Beyond that, the rest of your plan is refunded pro-rata for the applications we haven't yet submitted — so you only pay for the work you've actually received. The full method, with a worked example, is on our <a href="/refunds.html">Cancellation &amp; Refund Policy</a> page.</div>
       </details>
       <details class="faq-item">
         <summary class="faq-q">What if I don't receive any interview calls?<span class="ic">+</span></summary>
-        <div class="faq-a">If you don't receive interview calls or assessments by the end of your plan, we make it right — an additional set of 100+ applications and a free resume rebuild (on the Super Saver plan). We're committed to making sure every penny you spend with us is worth it.</div>
+        <div class="faq-a">We don't guarantee interviews — no honest service can, because hiring decisions sit with employers, not us. What we commit to is the work: a properly built resume and a sustained volume of well-targeted applications every business day. If responses are low partway through your plan, your recruiter will rework your resume and retarget your roles at no extra cost — adjusting the approach is part of the service, not an add-on.</div>
       </details>
       <details class="faq-item">
         <summary class="faq-q">Why should I pay when I can apply to jobs on my own?<span class="ic">+</span></summary>
-        <div class="faq-a">You can absolutely apply on your own — but TrulyPlaced handles the heavy lifting of job hunting, resume tailoring and application tracking, so you can focus on interview prep and networking. On average, our members cut their job-search time by 90% and see a 2× increase in interview-call rates.</div>
+        <div class="faq-a">You can absolutely apply on your own. What you're paying for is time and consistency: a recruiter rewrites your resume, finds roles within days of posting, tailors every application, submits 25–30 each business day, and tracks it all in one portal — so your search keeps moving while you focus on interviews and networking.</div>
       </details>
       <details class="faq-item">
         <summary class="faq-q">What is TrulyPlaced's success rate?<span class="ic">+</span></summary>
-        <div class="faq-a">91% of our members receive interview calls within the first 4 weeks, and 85% secure a full-time role within three months. Those results come from pairing experienced recruiters with a proven, data-backed application playbook.</div>
+        <div class="faq-a">We don't publish a single success-rate figure, because outcomes depend on your field, experience and the market — any one number would be misleading. What we can show you is exactly what we do: 25–30 tailored applications every business day, roles sourced within 1–4 days of posting, and a resume built and reworked by an experienced recruiter. We'd rather be judged on the work we control than on a statistic we can't.</div>
       </details>
       <details class="faq-item">
         <summary class="faq-q">How quickly can I expect an interview call?<span class="ic">+</span></summary>
-        <div class="faq-a">We don't guarantee interview calls — that depends on factors beyond our control — but we do guarantee the strongest possible set of applications built on a properly crafted resume. On average, 91% of our members receive interview calls within 4 weeks.</div>
+        <div class="faq-a">We can't promise a timeline — interview calls depend on employers and the market. What we can promise is that applications begin within two business days of your resume approval, at 25–30 per business day, so your search is active fast. When responses come, they typically arrive a few weeks into a sprint.</div>
       </details>
       <details class="faq-item">
         <summary class="faq-q">How does TrulyPlaced compare to other job-search services?<span class="ic">+</span></summary>
-        <div class="faq-a">We pair experienced recruiters with proven playbooks at every step — crafting resumes to FAANG standards, benchmarking them against 775+ interview-winning resumes, finding roles within hours of posting, tailoring to each job description, and tracking everything in one transparent portal.</div>
+        <div class="faq-a">We pair experienced recruiters with a repeatable process: resumes built to FAANG standards and reworked on your feedback, roles found within days of posting, every application tailored to the job description, and everything tracked in one transparent portal — so you always see exactly what's been done.</div>
       </details>
       <details class="faq-item">
         <summary class="faq-q">Can I track my job applications and progress?<span class="ic">+</span></summary>
@@ -1304,6 +1412,8 @@ if(scr&&dots){
         <a href="#pricing">Pricing</a>
         <a href="#success">Success stories</a>
         <a href="#faq">FAQ</a>
+        <a href="/app.html">Free job board</a>
+        <a href="/ats-check.html">Free ATS resume check</a>
       </div>
       <div class="foot-col">
         <h4>Get in touch</h4>
