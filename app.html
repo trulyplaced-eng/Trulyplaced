@@ -9,6 +9,8 @@
 <meta name="theme-color" content="#0938d5">
 <link rel="canonical" href="https://trulyplaced.com/app.html">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='116' fill='%230938d5'/%3E%3Cpath d='M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z' fill='%23fff'/%3E%3Cpath d='M205 200l37 36 76-88' fill='none' stroke='%230938d5' stroke-width='30' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://yubgrhxdhofnynfocpef.supabase.co" crossorigin>
+<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -310,6 +312,8 @@ img{max-width:100%}
 .done-ok{display:flex;align-items:center;gap:10px;color:var(--ok);font-weight:600;margin-top:4px}
 .done-ok svg{width:20px;height:20px}
 
+.inapp{margin-top:12px;font-size:13px;line-height:1.5;color:var(--body);background:var(--warn-soft);border-radius:12px;padding:10px 12px}
+.inapp .btn{margin:8px 8px 0 0}
 /* ---------- reading a resume ---------- */
 .reading{position:relative;display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--blue-line);border-radius:16px;padding:20px 22px;overflow:hidden}
 .reading b{display:block;color:var(--ink);font-size:15px;word-break:break-word}
@@ -812,11 +816,12 @@ function loadScript(src){
 // older flows use #access_token=; a denied sign-in comes back with ?error=.
 var cameFromOAuth = /[?&]code=/.test(location.search) || /access_token=/.test(location.hash) || /[?&]error=/.test(location.search);
 var oauthBusy = false;
+var SIGNING = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY) && /[?&]code=/.test(location.search);
 function cleanUrl(){
   try{
     var hash = location.hash;
-    if(/access_token=|[?&]error=/.test(hash)) hash = '#dashboard';
-    if(!hash || hash === '#') hash = cameFromOAuth ? '#dashboard' : location.hash;
+    if(/access_token=|[?&]error=/.test(hash)) hash = '#jobs';
+    if(!hash || hash === '#' || (cameFromOAuth && hash === '#dashboard')) hash = cameFromOAuth ? '#jobs' : location.hash;
     history.replaceState(null, '', location.pathname + hash);
   }catch(e){}
 }
@@ -835,7 +840,7 @@ var store = {
       sb.auth.onAuthStateChange(function(ev, session){
         if(oauthBusy) return; // the initial sign-in is handled explicitly below
         if(ev === 'SIGNED_IN' && session && (!state.user || state.user.id !== session.user.id)){ afterSignIn(session.user); }
-        if(ev === 'SIGNED_OUT'){ state.user=null; state.profile=null; state.tracked=[]; state.isAdmin=false; lastView=null; render(); }
+        if(ev === 'SIGNED_OUT'){ lsDel('tp_acct'); state.user=null; state.profile=null; state.tracked=[]; state.isAdmin=false; lastView=null; render(); }
       });
       return sb.auth.getSession();
     }).then(function(r){
@@ -848,23 +853,30 @@ var store = {
           oauthBusy = false; cleanUrl();
           var ses = x && x.data && x.data.session;
           if(ses) return afterSignIn(ses.user, true);
+          SIGNING = false; lastView = null;
           toast('Sign-in didn’t complete — please try again');
-        }).catch(function(){ oauthBusy = false; cleanUrl(); toast('Sign-in didn’t complete — please try again'); });
+        }).catch(function(){ oauthBusy = false; SIGNING = false; lastView = null; cleanUrl(); toast('Sign-in didn’t complete — please try again'); });
       }
       cleanUrl(); // e.g. ?error= from a cancelled sign-in
+      if(state.user){ state.user = null; state.profile = null; state.tracked = []; state.isAdmin = false; lsDel('tp_acct'); lastView = null; }
     }).catch(function(){
+      SIGNING = false; lastView = null;
       cleanUrl();
       toast('Sign-in is unavailable right now — browsing still works');
     });
   },
   saveLocal: function(){ if(!LIVE) lsSet('tp_app_v1', {user:state.user, profile:state.profile, tracked:state.tracked}); },
   signIn: function(){
-    ssSet('tp_after', location.hash || '#jobs');
+    var h = location.hash; ssSet('tp_after', !h || h === '#' || h === '#dashboard' || h === '#signin' ? '#jobs' : h);
+    $$('[data-act=google]').forEach(function(b){ b.disabled = true; if(b.lastChild && b.lastChild.nodeType === 3) b.lastChild.textContent = 'Opening Google…'; });
     if(!LIVE){
       var u = {id:'local-'+Math.random().toString(36).slice(2,10), email:'you@example.com', name:'Preview user', avatar:'', created:Date.now()};
       return afterSignIn(u);
     }
-    return sb.auth.signInWithOAuth({provider:'google', options:{redirectTo: location.origin + '/app.html#dashboard'}});
+    return (sb ? Promise.resolve() : INIT).then(function(){
+      if(!sb){ toast('Sign-in is unavailable right now — check your connection and try again'); $$('[data-act=google]').forEach(function(b){ b.disabled = false; }); return; }
+      return sb.auth.signInWithOAuth({provider:'google', options:{redirectTo: location.origin + '/app.html#dashboard'}});
+    });
   },
   signOut: function(){
     if(!LIVE){ state.user=null; state.profile=null; state.tracked=[]; state.isAdmin=false; lsSet('tp_app_v1', null); lastView=null; render(); return Promise.resolve(); }
@@ -873,6 +885,7 @@ var store = {
   saveProfile: function(patch){
     state.profile = Object.assign({}, state.profile, patch);
     if(!LIVE){ store.saveLocal(); return Promise.resolve(); }
+    cacheAccount();
     var row = Object.assign({id:state.user.id}, patch);
     return sb.from('profiles').upsert(row, {onConflict:'id'}).then(function(r){ if(r.error) toast('Couldn’t save — try again'); });
   },
@@ -883,6 +896,7 @@ var store = {
                applied_at: status === 'applied' ? now : (cur && cur.applied_at) || null};
     state.tracked = [row].concat(state.tracked.filter(function(t){ return t.job_key !== job.key; }));
     if(!LIVE){ store.saveLocal(); return Promise.resolve(); }
+    cacheAccount();
     return sb.from('tracked_jobs').upsert(Object.assign({user_id:state.user.id}, row), {onConflict:'user_id,job_key'});
   },
   untrack: function(key){
@@ -907,7 +921,13 @@ function afterSignIn(u, silent){
     avatar: u.avatar || meta.avatar_url || meta.picture || '',
     created: u.created || Date.parse(u.created_at) || Date.now()
   };
+  SIGNING = false;
   var ref = ssGet('tp_ref', null);
+  var back = ssGet('tp_after', null) || (cameFromOAuth ? '#jobs' : null);
+  if(back === '#dashboard' || back === '#signin') back = '#jobs';
+  try{ sessionStorage.removeItem('tp_after'); }catch(e){}
+  if(back && back !== location.hash) location.hash = back;
+  state.ready = true; render();   // the jobs appear now; profile and saved roles fill in next
   var load = LIVE
     ? Promise.all([
         sb.from('profiles').select('*').eq('id', u.id).maybeSingle(),
@@ -930,10 +950,8 @@ function afterSignIn(u, silent){
         return isNew;
       });
   return load.then(function(isNew){
-    var back = ssGet('tp_after', null) || (cameFromOAuth ? '#dashboard' : null);
-    try{ sessionStorage.removeItem('tp_after'); }catch(e){}
-    if(back && back !== location.hash) location.hash = back;
     cameFromOAuth = false;
+    cacheAccount();
     adoptAtsResume();
     render();
     if(isNew || !state.profile.onboarded) openOnboarding();
@@ -958,9 +976,14 @@ function goNext(){
   try{ sessionStorage.removeItem('tp_next'); }catch(e){}
   location.replace(n); return true;
 }
+function cacheAccount(){
+  if(!LIVE || !state.user) return;
+  lsSet('tp_acct', {id:state.user.id, user:state.user, profile:state.profile, tracked:(state.tracked || []).slice(0, 300), isAdmin:!!state.isAdmin, at:Date.now()});
+}
 var pendingAction = null;
 function requireSignIn(why, then){
   if(state.user){ then && then(); return; }
+  if(SIGNING){ pendingAction = then || null; toast('Finishing sign-in…'); return; }
   pendingAction = then || null;
   openSignIn(why);
 }
@@ -1500,7 +1523,19 @@ function gateHTML(){
     (n ? '<span class="gnum"><i></i>'+n.toLocaleString()+' fresh US roles right now</span>' : '')+
     '<ul class="bul"><li>'+I.check+'Live roles from '+CONFIG.COMPANIES.length+'+ top companies, updated every few hours</li><li>'+I.check+'Your match score on every job</li><li>'+I.check+'The full resume X-ray (ATS check)</li><li>'+I.check+'Save jobs and track every application</li></ul>'+
     '<button class="gbtn" type="button" data-act="google">'+I.g+(LIVE ? 'Continue with Google' : 'Continue (preview mode)')+'</button>'+
+    inAppHelp()+
     '<p class="fine">By continuing you agree to our <a href="/terms.html">Terms</a> and <a href="/privacy.html">Privacy Policy</a>. We never post to your accounts or read your email.</p></div></div>';
+}
+var IN_APP = /LinkedInApp|FBAN|FBAV|FB_IAB|Instagram|Snapchat|Line\/|MicroMessenger|; wv\)/i.test(navigator.userAgent || '');
+function inAppHelp(){
+  if(!IN_APP) return '';
+  var to = location.hash ? '?to=' + encodeURIComponent(location.hash.slice(1)) : '';
+  var url = location.origin + location.pathname + to;
+  var android = /Android/i.test(navigator.userAgent);
+  var intent = 'intent://' + location.host + location.pathname + to + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(url) + ';end';
+  return '<div class="inapp"><b>Sign-in not opening?</b> Google can block sign-in inside the LinkedIn or Instagram app. '+
+    (android ? '<a class="btn sm" href="'+esc(intent)+'">Open in Chrome</a>' : 'Tap <b>•••</b> at the top and choose <b>Open in Safari</b>, or ')+
+    '<button class="btn sm" type="button" data-copy="'+esc(url)+'">Copy link</button></div>';
 }
 function updateGate(){ if(!state.user && state.ready && lastView === '_gate'){ var v = $('#view'); if(v) v.innerHTML = gateHTML(); } }
 function render(soft){
@@ -1508,7 +1543,7 @@ function render(soft){
   route = parseRoute();
   renderNav();
   var v = $('#view');
-  if(!state.user){
+  if(!state.user && !SIGNING){
     if(lastView !== (state.ready ? '_gate' : '_wait')){
       v.innerHTML = state.ready ? gateHTML() : '<div class="jlist"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>';
       lastView = state.ready ? '_gate' : '_wait';
@@ -1849,7 +1884,7 @@ function closeDrawer(silent){
   if(route.name === 'jobs' && VIEW === 'cards' && $('#jlist') && JOBS.length) drawDeck();
 }
 function openJob(key){
-  if(!state.user) return;
+  if(!state.user && !SIGNING) return;
   var job = findJob(key);
   if(!job){
     if(!JOBS.length && (jobsMeta.loading || jobsPromise)) return;
@@ -2866,10 +2901,41 @@ function applyTo(key, after){
   if(m){ ssSet('tp_ref', decodeURIComponent(m[1])); history.replaceState(null, '', location.pathname + location.hash); }
 })();
 // trulyplaced.com/app.html#signin — the "Sign in" button on the main site
+(function(){   // ?to=<hash>: arriving from an "open in Chrome" hand-off — restore the page they were on
+  var m = /[?&]to=([^&#]+)/.exec(location.search);
+  if(m){ var h = decodeURIComponent(m[1]); if(/^#?[A-Za-z0-9_=:%.\-]+$/.test(h)) history.replaceState(null, '', location.pathname + (h.charAt(0) === '#' ? h : '#' + h)); }
+})();
+function storedSession(){
+  try{
+    for(var i = 0; i < localStorage.length; i++){
+      var k = localStorage.key(i);
+      if(/^sb-.*-auth-token$/.test(k)){ var t = JSON.parse(localStorage.getItem(k) || 'null'); if(t && t.user && (t.refresh_token || t.access_token)) return t; }
+    }
+  }catch(e){}
+  return null;
+}
+if(LIVE && !cameFromOAuth){
+  var SS0 = storedSession();
+  if(!SS0) state.ready = true;   // nobody signed in on this browser: show the sign-in card straight away
+  else {
+    var A0 = lsGet('tp_acct', null);
+    if(A0 && A0.id === SS0.user.id && A0.user){   // returning member: open their app from the copy on this device, then refresh it
+      state.user = A0.user; state.profile = A0.profile || {}; state.tracked = A0.tracked || []; state.isAdmin = !!A0.isAdmin; state.ready = true;
+    }
+  }
+}
+if(SIGNING){
+  var to0 = ssGet('tp_after', null);
+  if(!to0 || to0 === '#dashboard' || to0 === '#signin') to0 = '#jobs';
+  try{ history.replaceState(null, '', location.pathname + location.search + to0); }catch(e){}
+  state.ready = true;
+  setTimeout(function(){ if(SIGNING) toast('Signing you in…'); }, 400);
+}
 var wantSignIn = location.hash === '#signin';
-if(wantSignIn) history.replaceState(null, '', location.pathname + location.search + '#dashboard');
+if(wantSignIn) history.replaceState(null, '', location.pathname + location.search + '#jobs');
 render();
-store.init().then(function(){
+var INIT = store.init();
+INIT.then(function(){
   state.ready = true; adoptAtsResume(); render();
   if(state.user && !LIVE){ if(!goNext()) maybeTour(); }
   if(state.user) warmReaders();
