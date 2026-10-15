@@ -1,0 +1,51 @@
+name: Daily job email
+
+on:
+  schedule:
+    - cron: '20 12 * * *'   # 12:20 UTC every day = about 8:20 AM in New York, 5:50 PM in India
+  workflow_dispatch:         # run it by hand from the Actions tab
+    inputs:
+      mode:
+        description: 'preview = build the emails only (download them below the run) · test = send one sample to the address below · send = the real daily run'
+        type: choice
+        options: [preview, test, send]
+        default: preview
+      test_to:
+        description: 'Your email, for a test send'
+        required: false
+      test_role:
+        description: 'Role to use for the test (if that email isn''t subscribed yet)'
+        required: false
+        default: 'Data Analyst'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-email
+  cancel-in-progress: false
+
+jobs:
+  email:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4          # gets the latest jobs.json (refreshed every 3 hours)
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Pick each subscriber's new roles and email them
+        env:
+          MODE: ${{ github.event_name == 'schedule' && 'send' || inputs.mode }}
+          TEST_TO: ${{ inputs.test_to }}
+          TEST_ROLE: ${{ inputs.test_role }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+        run: python .github/scripts/daily_email.py
+      - name: Save the previews
+        if: ${{ inputs.mode == 'preview' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: email-previews
+          path: email-previews/
+          if-no-files-found: ignore
