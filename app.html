@@ -344,6 +344,29 @@ img{max-width:100%}
 .callc .btn:hover{background:#eef2ff}
 .callc .x2{flex:none;border:0;background:none;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;padding:8px}
 .callc .x2:hover{color:#fff}
+.human{margin-top:18px}
+.hu-h{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.hu-h::before,.hu-h::after{content:"";flex:1;height:1px;background:var(--line)}
+.hu-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hu{display:flex;flex-direction:column;gap:8px;border-radius:14px;padding:14px;text-decoration:none;transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden}
+.hu:hover{transform:translateY(-2px)}
+.hu-ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center}
+.hu-ic svg{width:19px;height:19px}
+.hu-t b{display:block;font-family:Poppins;font-size:15px;line-height:1.3}
+.hu-t small{display:block;font-size:12.5px;line-height:1.45;margin-top:3px}
+.hu-go{font-size:13px;font-weight:700;margin-top:auto}
+.hu.call{background:#eef3ff;border:1px solid #cfdcff;color:var(--ink)}
+.hu.call .hu-ic{background:#fff;color:var(--blue);box-shadow:0 2px 8px -3px rgba(9,56,213,.35)}
+.hu.call small{color:var(--body)}.hu.call .hu-go{color:var(--blue)}
+.hu.call:hover{box-shadow:0 12px 26px -16px rgba(9,56,213,.55)}
+.hu.done4u{background:linear-gradient(140deg,#0b1b4d,#0938d5 70%,#3b6bff);color:#fff;box-shadow:0 14px 30px -18px rgba(9,56,213,.9)}
+.hu.done4u::after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.08)}
+.hu.done4u .hu-ic{background:rgba(255,255,255,.14);color:#fff}
+.hu.done4u b{color:#fff}.hu.done4u small{color:rgba(255,255,255,.82)}.hu.done4u .hu-go{color:#fff}
+.hu.done4u:hover{box-shadow:0 18px 36px -16px rgba(9,56,213,.95)}
+@media (max-width:520px){.hu-g{grid-template-columns:1fr}}
+.gss{font-weight:600;font-size:11px;color:#b45309;background:var(--warn-soft);border-radius:999px;padding:1px 7px;margin-left:4px}
+.alogo{display:contents}
 .preline{display:block;text-align:center;margin-top:10px;font-size:13.5px;font-weight:600}
 .pre button.alt{width:100%;background:none;border:0;color:var(--blue);cursor:pointer;font:inherit;font-size:13.5px;padding:6px}
 .done-ok{display:flex;align-items:center;gap:10px;color:var(--ok);font-weight:600;margin-top:4px}
@@ -713,7 +736,7 @@ var CONFIG = {
   SUPABASE_ANON_KEY: 'sb_publishable_1CHFJ4-tBN42ThTgDqgvpg_xcVjzpg5',
 
   SITE: 'https://trulyplaced.com',
-  BOOK_CALL: 'https://calendly.com/trulyplaced/30min',
+  BOOK_CALL: 'https://calendly.com/hello-trulyplaced/career-hunt-2026',
   PRICING: '/#pricing',
 
   // true = visitors sign in before going to the company's apply page (the lead-capture step).
@@ -787,7 +810,7 @@ var CONFIG = {
 };
 
 var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
-var APP_VERSION = '2026-10-15.9';   // also in /version.txt — lets us check which version the live site is serving
+var APP_VERSION = '2026-10-15.10';   // also in /version.txt — lets us check which version the live site is serving
 
 /* =====================================================================
    utils
@@ -1064,8 +1087,8 @@ function afterSignIn(u, silent){
     cacheAccount();
     adoptAtsResume();
     render();
-    if(isNew || !state.profile.onboarded) openOnboarding();
-    else if(goNext()) return;
+    if(isNew || !state.profile.onboarded) store.saveProfile({onboarded:true}).catch(function(){});   // no welcome questions: straight to the jobs
+    if(goNext()) return;
     else { if(!silent) toast('Signed in as ' + state.user.email); if(ssGet('tp_intent', null)) runIntent(); else maybeTour(); }
     if(pendingAction){ var f = pendingAction; pendingAction = null; f(); }
   });
@@ -2613,6 +2636,34 @@ function parseLink(raw){
   var g = guessFromUrl(u, h, seg);
   return Object.assign(it, {src:'custom', kind:'job', host:h, title:g.title, company:g.company, domain:g.domain});
 }
+function compact(s){ return String(s || '').toLowerCase().replace(/&/g, 'and').replace(/\b(inc|llc|ltd|limited|corp|corporation|co|group|technologies|technology|labs|hq|the)\b/g, '').replace(/[^a-z0-9]/g, ''); }
+function htmlText(h){ var d = document.createElement('div'); d.innerHTML = String(h || '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&amp;/g, '&'); return (d.textContent || '').replace(/\s+\n/g, '\n').replace(/[ \t]+/g, ' ').trim(); }
+// the company's own website, for the logo: a link to it in the posting, else the obvious <name>.com (marked as a guess)
+function findDomain(it, text){
+  if(it.domain) return;
+  var c = compact(it.company); if(!c) return;
+  var m = String(text || '').match(/https?:\/\/[^\s"'<>)]+|\bwww\.[a-z0-9.-]+\.[a-z]{2,}/gi) || [];
+  for(var i = 0; i < m.length; i++){ var d = cleanDomain(m[i]); if(d && compact(d.split('.').slice(0, -1).join('')).indexOf(c.slice(0, 6)) > -1 && !/(greenhouse|lever|ashby|workday|linkedin|glassdoor|indeed|bamboohr|smartrecruiters|workable|recruitee|google|facebook|twitter|x\.com|instagram|youtube)/.test(d)){ it.domain = d.replace(/^(careers|jobs)\./, ''); return; } }
+  if(c.length >= 3 && c.length <= 24){ it.domain = c + '.com'; it.domainGuess = true; }
+}
+function modeFrom(text){
+  var t = String(text || '').toLowerCase();
+  if(/\bhybrid\b/.test(t)) return 'Hybrid';
+  if(/\b(fully remote|remote[- ]first|100% remote|remote \(|remote - |, remote|^remote)\b/.test(t) || /^remote/.test(t)) return 'Remote';
+  return '';
+}
+function money(n){ n = +n; return n >= 1000 ? '$' + Math.round(n/1000) + 'K' : '$' + n; }
+// pages we can't read from the browser (BambooHR, Workday, SmartRecruiters, Workable, company sites…) are read by our job-info server function
+function serverRead(it){
+  if(!LIVE || !sb) return Promise.reject('preview');
+  return sb.auth.getSession().then(function(r){
+    var tok = r.data && r.data.session && r.data.session.access_token; if(!tok) throw 'auth';
+    var ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function(){ if(ctl) ctl.abort(); }, 20000);
+    return fetch(CONFIG.SUPABASE_URL + '/functions/v1/job-info', {method:'POST', signal:ctl ? ctl.signal : undefined,
+      headers:{'Content-Type':'application/json', apikey:CONFIG.SUPABASE_ANON_KEY, Authorization:'Bearer ' + tok}, body:JSON.stringify({url:it.raw})})
+      .then(function(x){ clearTimeout(tm); if(!x.ok) throw x.status; return x.json(); });
+  });
+}
 function teamHas(it){
   return TEAM.all && TEAM.all.some(function(r){ return r.url === it.url || (it.id && r.src === it.src && r.board === it.board && r.ext_id === it.id) || (it.kind === 'board' && r.kind === 'board' && r.src === it.src && r.board === it.board); });
 }
@@ -2622,14 +2673,23 @@ function resolveLink(it){
   function done(state, msg){ it.state = state; it.msg = msg; it.on = state === 'ok' || state === 'warn'; return it; }
   if(teamHas(it)) return Promise.resolve(done('skip', 'Already added by the team'));
   if(it.src === 'custom'){
-    return Promise.resolve(done('warn', JOB_SITES.test(it.host) ? 'We can’t read this site automatically — type the details below' : 'Check the details below — they were guessed from the link'));
+    var guess = function(){ findDomain(it, ''); return done('warn', JOB_SITES.test(it.host) ? 'We couldn’t read this page — type the details below' : 'We couldn’t read this page — check the details below (guessed from the link)'); };
+    return serverRead(it).then(function(d){
+      if(!d || !d.title) return guess();
+      it.title = d.title; it.company = d.company || it.company; it.location = d.location || it.location || '';
+      it.mode = d.mode || modeFrom(d.location) || ''; it.salary = d.salary || ''; it.description = d.description || '';
+      it.posted = Date.parse(d.posted) || 0; if(d.url) it.url = d.url;
+      if(d.domain){ it.domain = d.domain; it.domainGuess = !!d.domainGuess; } else findDomain(it, d.description);
+      var gaps = ['title', 'company', 'location'].filter(function(k){ return !it[k]; });
+      return gaps.length ? done('warn', 'Read from ' + (d.source || 'the page') + ' — add the ' + gaps.join(' and ')) : done('ok', 'Found on ' + (d.source || 'the job page'));
+    }, guess);
   }
   if(it.kind === 'board'){
     if(CONFIG.COMPANIES.some(function(c){ return c.src === it.src && c.board === it.board; })) return Promise.resolve(done('skip', 'Already on the job board — every role here is listed'));
     it.url = {gh:'https://job-boards.greenhouse.io/', lever:'https://jobs.lever.co/', ashby:'https://jobs.ashbyhq.com/'}[it.src] + encodeURIComponent(it.board);
     return fetchT(URLS[it.src](it.board), 20000).then(function(d){
       if(it.src === 'gh' && d.jobs && d.jobs[0] && d.jobs[0].company_name) it.company = it.company || d.jobs[0].company_name;
-      it.company = it.company || slugName(it.board);
+      it.company = it.company || slugName(it.board); findDomain(it, '');
       var n = NORM[it.src]({src:it.src, board:it.board, name:it.company, domain:it.domain || ''}, d).length;
       it.count = n;
       return n ? done('ok', n + ' open role' + (n === 1 ? '' : 's') + ' found — all will be listed and kept up to date')
@@ -2639,10 +2699,15 @@ function resolveLink(it){
   var key = it.src + ':' + it.board + ':' + it.id;
   function onBoard(){ return findJob(key) ? ' · already listed, this marks it “Picked by our team”' : ''; }
   if(it.src === 'gh'){
-    return fetchT('https://boards-api.greenhouse.io/v1/boards/' + encodeURIComponent(it.board) + '/jobs/' + it.id, 15000).then(function(d){
+    return fetchT('https://boards-api.greenhouse.io/v1/boards/' + encodeURIComponent(it.board) + '/jobs/' + it.id + '?pay_transparency=true', 15000).then(function(d){
       it.title = d.title; it.company = it.company || d.company_name || slugName(it.board);
       it.location = (d.location && d.location.name) || ''; it.posted = Date.parse(d.first_published || d.updated_at) || 0;
       if(d.absolute_url){ it.url = d.absolute_url; var ah = cleanDomain(d.absolute_url); if(!it.domain && !/greenhouse\.io$/.test(ah)) it.domain = ah.replace(/^(careers|jobs)\./,''); }
+      var body = htmlText(d.content); it.description = it.description || body.slice(0, 12000);
+      it.mode = it.mode || modeFrom(it.location) || modeFrom(it.title) || (/\bthis (is a|role is) (fully )?remote\b/i.test(body) ? 'Remote' : /\bhybrid\b/i.test(body.slice(0, 1500)) ? 'Hybrid' : '');
+      var pr = (d.pay_input_ranges || [])[0];
+      if(pr && !it.salary) it.salary = money(pr.min_cents/100) + ' – ' + money(pr.max_cents/100) + ' ' + (pr.currency_type || 'USD');
+      findDomain(it, d.content ? htmlText(d.content) + ' ' + d.content : '');
       return done('ok', 'Found on Greenhouse' + onBoard());
     }, function(){ return done('bad', 'This job is closed or the link is wrong'); });
   }
@@ -2652,7 +2717,10 @@ function resolveLink(it){
       it.title = x.text; it.company = it.company || slugName(it.board);
       it.location = (cat.allLocations && cat.allLocations.join(' · ')) || cat.location || '';
       it.posted = x.createdAt || 0; it.url = x.hostedUrl || it.url;
-      it.mode = {remote:'Remote', hybrid:'Hybrid', onsite:'On-site'}[String(x.workplaceType||'').toLowerCase()] || '';
+      it.mode = {remote:'Remote', hybrid:'Hybrid', onsite:'On-site'}[String(x.workplaceType||'').toLowerCase()] || modeFrom(it.location);
+      var sr = x.salaryRange; if(sr && sr.min && !it.salary) it.salary = money(sr.min) + ' – ' + money(sr.max) + ' ' + (sr.currency || 'USD') + (sr.interval && !/year/i.test(sr.interval) ? ' (' + sr.interval.replace(/-/g, ' ') + ')' : '');
+      it.description = it.description || [x.descriptionPlain].concat((x.lists || []).map(function(l){ return l.text + '\n' + htmlText(l.content); }), [x.additionalPlain]).filter(Boolean).join('\n\n').slice(0, 12000);
+      findDomain(it, (x.description || '') + ' ' + (x.additional || ''));
       return done('ok', 'Found on Lever' + onBoard());
     }, function(){ return done('bad', 'This job is closed or the link is wrong'); });
   }
@@ -2662,6 +2730,9 @@ function resolveLink(it){
     it.title = x.title; it.company = it.company || slugName(it.board);
     it.location = x.location || ''; it.posted = Date.parse(x.publishedAt) || 0; it.url = x.jobUrl || it.url;
     it.mode = {Remote:'Remote', Hybrid:'Hybrid', OnSite:'On-site', Onsite:'On-site'}[x.workplaceType] || (x.isRemote ? 'Remote' : '');
+    var cs = x.compensation && (x.compensation.compensationTierSummary || x.compensation.scrapeableCompensationSalarySummary); if(cs && !it.salary) it.salary = cs;
+    it.description = it.description || String(x.descriptionPlain || htmlText(x.descriptionHtml) || '').slice(0, 12000);
+    findDomain(it, x.descriptionHtml || x.descriptionPlain || '');
     return done('ok', 'Found on Ashby' + onBoard());
   }, function(){ return done('bad', 'Couldn’t open this job — check the link'); });
 }
@@ -2672,7 +2743,7 @@ function adItem(it, i){
   var st = {ok:'ok', warn:'warn', bad:'bad', skip:'info', checking:'info'}[it.state] || 'info';
   var can = it.state === 'ok' || it.state === 'warn', f = '';
   if(can && it.kind === 'board'){
-    f = '<div class="grid3">'+adField(i, 'company', 'Company name', it.company, 'e.g. Ramp')+adField(i, 'domain', 'Company website (for the logo)', it.domain, 'e.g. ramp.com')+'</div>';
+    f = '<div class="grid3">'+adField(i, 'company', 'Company name', it.company, 'e.g. Ramp')+adField(i, 'domain', 'Company website (for the logo)'+(it.domainGuess ? ' <span class="gss">guessed — check it</span>' : ''), it.domain, 'e.g. ramp.com')+'</div>';
   } else if(can){
     f = '<div class="grid3">'+
       adField(i, 'title', 'Job title', it.title, 'e.g. Data Analyst')+
@@ -2680,14 +2751,14 @@ function adItem(it, i){
       adField(i, 'location', 'Location', it.location, 'e.g. Austin, TX or Remote - US')+
       '<div class="field"><label for="admode'+i+'">Work mode</label><select id="admode'+i+'" data-i="'+i+'" data-k="mode">'+
         ['','Remote','Hybrid','On-site'].map(function(m){ return '<option value="'+m+'"'+(it.mode===m?' selected':'')+'>'+(m||'Not stated')+'</option>'; }).join('')+'</select></div>'+
-      adField(i, 'domain', 'Company website (for the logo)', it.domain, 'e.g. acme.com')+
+      adField(i, 'domain', 'Company website (for the logo)'+(it.domainGuess ? ' <span class="gss">guessed — check it</span>' : ''), it.domain, 'e.g. acme.com')+
       adField(i, 'salary', 'Salary (if listed)', it.salary, 'e.g. $90K – $120K USD')+
-      (it.src === 'custom' ? '<div class="field wide"><label for="addescription'+i+'">Job description <span style="font-weight:500;color:var(--muted)">— paste it so members get a match score</span></label><textarea id="addescription'+i+'" data-i="'+i+'" data-k="description" rows="4" placeholder="Optional">'+esc(it.description||'')+'</textarea></div>' : '')+
+      (it.src === 'custom' || !it.description ? '<div class="field wide"><label for="addescription'+i+'">Job description <span style="font-weight:500;color:var(--muted)">— paste it so members get a match score</span></label><textarea id="addescription'+i+'" data-i="'+i+'" data-k="description" rows="4" placeholder="Optional">'+esc(it.description||'')+'</textarea></div>' : '')+
     '</div>';
   }
   var head = it.kind === 'board' ? (it.company || slugName(it.board)) + ' — whole careers board' : (it.title || 'Job link');
   return '<div class="aitem'+(can && !it.on ? ' off' : '')+'" id="adit'+i+'">'+
-    '<div class="ah">'+logo(it.company || '?', '', cleanDomain(it.domain))+'<div class="ai"><b>'+esc(head)+'</b><small>'+esc(it.raw)+'</small></div>'+
+    '<div class="ah"><span class="alogo" id="adlogo'+i+'">'+logo(it.company || '?', '', cleanDomain(it.domain))+'</span><div class="ai"><b>'+esc(head)+'</b><small>'+esc(it.raw)+'</small></div>'+
       (can ? '<label><input type="checkbox" data-i="'+i+'" data-k="on"'+(it.on ? ' checked' : '')+'> Add</label>' : '')+'</div>'+
     '<span class="astat '+st+'">'+(it.state === 'checking' ? '<span class="rspin" style="width:12px;height:12px;border-width:2px"></span>' : '')+esc(it.msg || '')+'</span>'+f+'</div>';
 }
@@ -2714,7 +2785,7 @@ function vAdmin(v){
   v.innerHTML = '<div class="adm"><div class="hello">Add jobs</div><div class="sub">Paste links you find while searching. Once added they’re live on the job board for everyone, marked “Picked by our team”.</div>'+
     '<div class="card sec"><label class="flabel" for="adIn">Job links — one per line</label>'+
     '<textarea id="adIn" rows="5" spellcheck="false" autocomplete="off" placeholder="https://job-boards.greenhouse.io/stripe/jobs/1234567&#10;https://jobs.lever.co/palantir/…&#10;https://jobs.ashbyhq.com/ramp&#10;https://www.linkedin.com/jobs/view/…"></textarea>'+
-    '<p class="fine" style="margin-top:10px">Greenhouse, Lever and Ashby job links fill themselves in. A careers-board link with no job in it (like jobs.ashbyhq.com/ramp) adds every open role at that company and keeps them updated. For any other link — LinkedIn, Workday, Indeed, a company site — check the title, company and location before adding.</p>'+
+    '<p class="fine" style="margin-top:10px">Paste links and they’re read straight away — title, company, location, work mode, salary, description and logo. Greenhouse, Lever and Ashby always work; BambooHR, Workday, SmartRecruiters, Workable, Recruitee and most company career pages work once the <b>job-info</b> function is set up in Supabase. Anything we can’t read, you type in. A careers-board link with no job in it (like jobs.ashbyhq.com/ramp) adds every open role at that company and keeps them updated.</p>'+
     '<div class="jd-acts"><button class="btn pri" type="button" data-act="adcheck">'+I.search+'Check links</button></div></div>'+
     '<div id="adPrev" class="sec"></div>'+
     '<div class="card sec"><h3>Added by the team<span class="cnt" id="adCnt"></span></h3><div id="adList" class="alist"><div class="skel"></div></div></div></div>';
@@ -2722,10 +2793,23 @@ function vAdmin(v){
   var pv = $('#adPrev');
   function sync(e){
     var el = e.target, i = +el.getAttribute('data-i'), k = el.getAttribute('data-k'); if(!k || !ADP[i]) return;
-    ADP[i][k] = el.type === 'checkbox' ? el.checked : el.value;
+    var it = ADP[i];
+    it[k] = el.type === 'checkbox' ? el.checked : el.value;
     if(k === 'on'){ var c = $('#adit'+i); if(c) c.classList.toggle('off', !el.checked); adSaveBtn(); }
+    if(k === 'domain' || k === 'company'){
+      if(k === 'domain'){ it.domainGuess = false; var g = el.parentNode.querySelector('.gss'); if(g) g.remove(); }
+      clearTimeout(it._lt); it._lt = setTimeout(function(){ var lg = $('#adlogo'+i); if(lg) lg.innerHTML = logo(it.company || '?', '', cleanDomain(it.domain)); }, 250);   // logo updates as you type
+    }
+    // once the required details are there, tick "Add" for them
+    if(it.kind === 'job' && k !== 'on' && !it.on && it.state !== 'bad' && it.state !== 'skip' && String(it.title||'').trim() && String(it.company||'').trim() && String(it.location||'').trim()){
+      it.on = true; var cb = $('#adit'+i+' input[data-k=on]'); if(cb) cb.checked = true; var c2 = $('#adit'+i); if(c2) c2.classList.remove('off'); adSaveBtn();
+    }
   }
   pv.addEventListener('input', sync); pv.addEventListener('change', sync);
+  // paste links and they're checked straight away
+  var ta0 = $('#adIn'), autoT;
+  if(ta0) ta0.addEventListener('paste', function(){ clearTimeout(autoT); autoT = setTimeout(function(){ if(/https?:\/\//.test(ta0.value)) adminCheck(); }, 120); });
+  if(ta0) ta0.addEventListener('input', function(){ clearTimeout(autoT); autoT = setTimeout(function(){ if(/https?:\/\/\S+\s*$/.test(ta0.value) && /\n\s*$|\s$/.test(ta0.value)) adminCheck(); }, 700); });
   adminList();
 }
 function teamErr(e){
@@ -2757,14 +2841,15 @@ function adminSave(){
   ADP.forEach(function(it){
     if(!it.on) return;
     var title = String(it.title||'').trim(), company = String(it.company||'').trim(), loc = String(it.location||'').trim();
-    if(it.kind === 'job' && (!title || !company || !loc)){ missing++; return; }
+    if(it.kind === 'job' && (!title || !company)){ missing++; return; }
+    if(it.kind === 'job' && !loc) loc = it.mode === 'Remote' ? 'Remote' : 'Location not listed';
     rows.push({kind:it.kind, url:it.url, src:it.src, board:it.board || null, ext_id:it.id || null,
       title:it.kind === 'job' ? title : null, company:company || slugName(it.board), location:it.kind === 'job' ? loc : null,
       work_mode:it.mode || null, salary:String(it.salary||'').trim() || null, domain:cleanDomain(it.domain) || null,
       description:String(it.description||'').trim() || null,
       posted_at:new Date(it.posted || Date.now()).toISOString()});
   });
-  if(missing){ toast('Add a title, company and location for ' + missing + ' link' + (missing === 1 ? '' : 's')); return; }
+  if(missing){ toast('Add a job title and company for ' + missing + ' link' + (missing === 1 ? '' : 's')); return; }
   if(!rows.length){ toast('Tick at least one link to add'); return; }
   var b = $('#adSave'); if(b){ b.disabled = true; b.textContent = 'Adding…'; }
   var save = LIVE
@@ -3231,8 +3316,10 @@ function preApply(job, go){
        : ready ? '<button class="btn pri" type="button" data-act="prego">'+I.ext+'Apply on '+co+'</button><button class="btn" type="button" data-act="precheck">Check it against this job first</button>'
        : '<button class="btn pri" type="button" data-act="precheck">Check my resume for this job — free</button><button class="btn" type="button" data-act="prego">'+I.ext+'Apply anyway</button>')+
     '</div>'+
-    (rt && !ready ? '<a class="preline" href="'+esc(bookUrl('before_apply'))+'" target="_blank" rel="noopener">Want a recruiter to look at it before you send it? Book a free call →</a>' : '')+
-    '<a class="alt" href="#" data-act="upsell">No time to tailor it? Let our recruiters apply for you →</a></div>');
+    '<div class="human"><div class="hu-h"><span>Prefer a human?</span></div><div class="hu-g">'+
+      '<a class="hu call" href="'+esc(bookUrl('before_apply'))+'" target="_blank" rel="noopener"><span class="hu-ic">'+I.phone+'</span><span class="hu-t"><b>Talk to a recruiter</b><small>Free 15-minute call — they’ll review your resume before you send it.</small></span><span class="hu-go">Book a call →</span></a>'+
+      '<a class="hu done4u" href="#" data-act="upsell"><span class="hu-ic">'+I.send+'</span><span class="hu-t"><b>Let us apply for you</b><small>A recruiter tailors your resume and applies to 25–30 matched roles every business day.</small></span><span class="hu-go">See how it works →</span></a>'+
+    '</div></div></div>');
   if(rt && !e) getEnr(job).then(function(){ if(APPLYING && APPLYING.job === job && $('#modalRoot .pre')) preApply(job, go); });
 }
 function preCheck(){

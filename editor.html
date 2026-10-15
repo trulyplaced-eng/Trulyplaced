@@ -29,6 +29,9 @@ svg{flex:none}
 
 /* ---------- app chrome ---------- */
 .top{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:10px 18px;min-height:58px}
+.backb{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 14px 0 10px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:600;font-size:13.5px;text-decoration:none;white-space:nowrap;transition:.15s}
+.backb:hover{border-color:var(--blue);color:var(--blue);background:#fafbff}
+.backb svg{width:17px;height:17px}
 .brand{display:flex;align-items:center;gap:9px;font:700 16px Poppins,Inter,sans-serif;color:var(--ink);text-decoration:none}
 .brand img{width:28px;height:28px;border-radius:8px}
 .tabs{display:flex;background:var(--bg);border-radius:10px;padding:3px;gap:2px}
@@ -313,11 +316,25 @@ body.embed .banner{max-width:none}
 .omsub{font-size:13.5px;color:var(--muted);margin-top:4px}
 .omsub b{color:var(--ink)}
 .om-pick{max-width:470px;padding:26px 26px 22px;text-align:center}
-.orows{margin-top:16px;text-align:left;border-top:1px solid var(--line)}
+.orows{margin-top:8px;text-align:left;border-top:1px solid var(--line)}
 .orow{display:flex;align-items:center;justify-content:space-between;width:100%;border:0;border-bottom:1px solid var(--line);background:none;padding:12px 2px;font-size:15px;color:var(--ink)}
-.orow .pill{font-size:12.5px;font-weight:600;border-radius:999px;padding:4px 11px;background:var(--bg);color:var(--muted);transition:.15s}
-.orow.on .pill{background:#ddf6e8;color:#0a7f46}
-.orow:hover .pill{box-shadow:0 0 0 1px #bfe8d0}
+.orow{transition:background .2s;border-radius:10px;padding-left:8px;padding-right:6px;margin:0 -8px 0 -8px;width:calc(100% + 16px)}
+.orow:hover{background:#fafbff}
+.orow.on{animation:rowFlash .6s ease}
+@keyframes rowFlash{0%{background:#e9f9f0}100%{background:transparent}}
+.orow .pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;border-radius:999px;padding:4px 12px 4px 6px;background:#fff;color:var(--muted);box-shadow:inset 0 0 0 1.5px #d7dbe8;transition:background .2s,color .2s,box-shadow .2s}
+.orow .pill em{font-style:normal}
+.orow .ck{width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 1.5px #c7ccdc;display:grid;place-items:center;transition:background .2s,box-shadow .2s}
+.orow .ck svg{width:12px;height:12px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:22;stroke-dashoffset:22;transition:stroke-dashoffset .3s ease .08s}
+.orow:hover .pill{box-shadow:inset 0 0 0 1.5px #9fd9b8;color:#0a7f46}
+.orow.on .pill{background:#dcf6e7;color:#0a7f46;box-shadow:inset 0 0 0 1.5px #9fd9b8;animation:pop .35s cubic-bezier(.3,1.6,.5,1)}
+.orow.on .ck{background:#0a7f46;box-shadow:none}
+.orow.on .ck svg{stroke-dashoffset:0}
+@keyframes pop{0%{transform:scale(.88)}60%{transform:scale(1.07)}100%{transform:scale(1)}}
+.ohd{display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.ohd button{border:0;background:none;color:var(--blue);font:600 12.5px Inter,sans-serif;text-transform:none;letter-spacing:0;padding:4px}
+.omgo[disabled]{background:#c9cede;border-color:#c9cede;opacity:1;cursor:not-allowed}
+.omhint{font-size:12.5px;color:var(--muted);margin-top:8px;min-height:18px}
 .omlbl{display:block;text-align:left;font-weight:600;color:var(--ink);font-size:13.5px;margin:16px 0 6px}
 .omlbl span{color:var(--muted);font-weight:500}
 .om textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13.5px;resize:vertical;min-height:72px}
@@ -388,6 +405,8 @@ body.embed .banner{max-width:none}
 @media (max-width:640px){
   .top{gap:8px;padding:8px 12px}
   .brand span,.toplink.hide-m{display:none}
+  .backb span{display:none}
+  .backb{padding:0 10px}
   .status{display:none}
   .canvas{padding:10px 12px 60px}
   .tb{top:62px}
@@ -416,6 +435,7 @@ body.embed .banner{max-width:none}
 </head>
 <body>
 <header class="top">
+  <a class="backb" id="backB" href="/app.html#jobs" aria-label="Back to the job board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg><span>Back to jobs</span></a>
   <a class="brand" href="/app.html#jobs"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='116' fill='%230938d5'/%3E%3Cpath d='M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z' fill='%23fff'/%3E%3Cpath d='M205 200l37 36 76-88' fill='none' stroke='%230938d5' stroke-width='30' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" alt=""><span>TrulyPlaced</span></a>
   <div class="tabs" id="tabs" hidden><button type="button" class="on" data-a="tab" data-v="resume">Resume</button><button type="button" data-a="tab" data-v="cover">Cover letter</button></div>
   <div class="sp"></div>
@@ -479,7 +499,7 @@ body.embed .banner{max-width:none}
 var CONFIG = {
   SUPABASE_URL: 'https://yubgrhxdhofnynfocpef.supabase.co',
   SUPABASE_ANON_KEY: 'sb_publishable_1CHFJ4-tBN42ThTgDqgvpg_xcVjzpg5',
-  BOOK_CALL: 'https://calendly.com/trulyplaced/30min',
+  BOOK_CALL: 'https://calendly.com/hello-trulyplaced/career-hunt-2026',
   AI_FUNCTION: 'resume-ai'   // Supabase Edge Function (see supabase/functions/resume-ai). Until it's deployed, built-in suggestions are used.
 };
 var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
@@ -1688,15 +1708,25 @@ function openOptimise(){
   var rows = [['summary', 'Summary'], ['headline', 'Job title'], ['experience', 'Work experience'], ['skills', 'Skills']];
   if(JOB && JOB.loc && !/remote|anywhere/i.test(JOB.loc)) rows.splice(2, 0, ['location', 'Location']);
   OPT = {sel:{}};
-  rows.forEach(function(r){ OPT.sel[r[0]] = was[r[0]] !== 0; });
+  rows.forEach(function(r){ OPT.sel[r[0]] = false; });   // you choose — nothing is pre-selected
   modalOpen('<div class="om om-pick" role="dialog" aria-modal="true" aria-labelledby="omT"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
     '<h2 id="omT">Optimise by</h2>' +
     (JOB ? '<p class="omsub">Choose what to tailor for <b>' + esc(cleanTitle(JOB.title) || 'this job') + '</b>' + (JOB.company ? ' at <b>' + esc(JOB.company) + '</b>' : '') + '</p>'
          : '<p class="omsub">Paste the job you’re applying for, then choose what to tailor.</p><div class="omjd"><textarea id="optJd" rows="5" placeholder="Paste the job description here"></textarea></div>') +
-    '<div class="orows">' + rows.map(function(r){ return '<button type="button" class="orow' + (OPT.sel[r[0]] ? ' on' : '') + '" data-a="opt-t" data-v="' + r[0] + '"><span>' + r[1] + '</span><span class="pill">' + (OPT.sel[r[0]] ? 'Selected ✓' : 'Select') + '</span></button>'; }).join('') + '</div>' +
+    '<div class="ohd"><span>Choose one or more</span><button type="button" data-a="opt-all">Select all</button></div>' +
+    '<div class="orows">' + rows.map(function(r){ return '<button type="button" class="orow" data-a="opt-t" data-v="' + r[0] + '" aria-pressed="false"><span class="ol">' + r[1] + '</span><span class="pill"><i class="ck"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i><em>Select</em></span></button>'; }).join('') + '</div>' +
     '<label class="omlbl" for="optIns">Special instructions <span>(optional)</span></label>' +
     '<textarea id="optIns" rows="3" maxlength="400" placeholder="e.g. Keep the summary to 36–38 words and each experience bullet between 18–22 words.">' + esc(pref.ins || '') + '</textarea>' +
-    '<button class="btn omgo" type="button" data-a="opt-go">Proceed →</button></div>');
+    '<button class="btn omgo" type="button" data-a="opt-go" id="optGo" disabled>Proceed →</button><p class="omhint" id="optHint">Pick at least one to continue</p></div>');
+}
+function optPick(row, on){
+  var v = row.getAttribute('data-v'); OPT.sel[v] = on;
+  row.classList.toggle('on', on); row.setAttribute('aria-pressed', on ? 'true' : 'false');
+  row.querySelector('em').textContent = on ? 'Selected' : 'Select';
+  var n = Object.keys(OPT.sel).filter(function(k){ return OPT.sel[k]; }).length, go = $('#optGo'), hint = $('#optHint'), all = $('[data-a=opt-all]');
+  if(go){ go.disabled = !n; go.textContent = n ? 'Proceed with ' + n + ' →' : 'Proceed →'; }
+  if(hint) hint.textContent = n ? '' : 'Pick at least one to continue';
+  if(all) all.textContent = n === $$('.orow').length ? 'Clear all' : 'Select all';
 }
 function runOptimise(){
   var sel = OPT.sel, ins = (($('#optIns') || {}).value || '').trim();
@@ -2014,7 +2044,9 @@ document.addEventListener('click', function(e){
     case 'jd-clear': JOB = null; DOC.meta.job = null; try{ localStorage.removeItem('tp_ats_job'); }catch(x){} structural(); return;
     case 'cv-write': return writeCover();
     case 'optimize': return openOptimise();
-    case 'opt-t': OPT.sel[v] = !OPT.sel[v]; t.classList.toggle('on', OPT.sel[v]); t.querySelector('.pill').textContent = OPT.sel[v] ? 'Selected ✓' : 'Select'; return;
+    case 'opt-t': return optPick(t, !OPT.sel[v]);
+    case 'opt-all': var allOn = $$('.orow').every(function(r){ return OPT.sel[r.getAttribute('data-v')]; });
+      $$('.orow').forEach(function(r, n){ setTimeout(function(){ optPick(r, !allOn); }, n*70); }); return;
     case 'opt-go': return runOptimise();
     case 'r-ok': if(applyRow(+v)){ structural(); } countRows(); return;
     case 'r-no': var rr = OPT.rows[+v]; if(rr && rr.st === 'p'){ rr.st = 'r'; markRow(+v, 'r'); } countRows(); return;
@@ -2228,9 +2260,15 @@ function fromSource(src, fresh){
     SRC = src; startDoc(D);
   }).catch(function(){ toast('We couldn’t read your resume file. Upload it again, or start from a blank template.'); showStart(); });
 }
+function backLink(){
+  var b = $('#backB'); if(!b) return;
+  var fromJob = JOB && JOB.key && /app\.html/.test(document.referrer || '');
+  b.href = fromJob ? '/app.html#job=' + encodeURIComponent(JOB.key) : '/app.html#jobs';
+  b.lastChild.textContent = fromJob ? 'Back to the job' : 'Back to jobs';
+}
 function startDoc(D){
   DOC = D; SUG = {}; HIST = []; HI = -1;
-  JOB = loadJob();
+  JOB = loadJob(); backLink();
   show('wrap'); $('#tabs').hidden = false;
   renderAll(); snap(); persist();
   tell({act:'ready'});
