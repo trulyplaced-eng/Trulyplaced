@@ -314,6 +314,17 @@ img{max-width:100%}
 
 .inapp{margin-top:12px;font-size:13px;line-height:1.5;color:var(--body);background:var(--warn-soft);border-radius:12px;padding:10px 12px}
 .inapp .btn{margin:8px 8px 0 0}
+/* ---------- a role that has closed ---------- */
+.closed .cl-ic{width:48px;height:48px;border-radius:14px;background:var(--warn-soft);color:var(--warn);display:grid;place-items:center;margin-bottom:12px}
+.closed .cl-ic svg{width:24px;height:24px}
+.closed h2{font-family:Poppins;font-size:21px;color:var(--ink);line-height:1.3}
+.closed>p{margin-top:6px}
+.closed h3{font-family:Poppins;font-size:15px;color:var(--ink);margin:22px 0 10px}
+.closed .jlist{gap:10px}
+.cl-cta{margin-top:18px;border:1px solid var(--blue-line);background:var(--blue-soft);border-radius:16px;padding:18px}
+.cl-cta b{display:block;color:var(--ink);font-family:Poppins;font-size:15.5px}
+.cl-cta p{font-size:13.5px;margin-top:4px}
+.cl-cta .gbtn{margin-top:14px}
 /* ---------- reading a resume ---------- */
 .reading{position:relative;display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--blue-line);border-radius:16px;padding:20px 22px;overflow:hidden}
 .reading b{display:block;color:var(--ink);font-size:15px;word-break:break-word}
@@ -700,7 +711,7 @@ var CONFIG = {
 };
 
 var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
-var APP_VERSION = '2026-10-15.3';   // also in /version.txt — lets us check which version the live site is serving
+var APP_VERSION = '2026-10-15.5';   // also in /version.txt — lets us check which version the live site is serving
 
 /* =====================================================================
    utils
@@ -726,8 +737,11 @@ var RESUME_DB = {
 };
 function saveResumeFile(f, text, ext){ try{ if(f && f.arrayBuffer) f.arrayBuffer().then(function(buf){ RESUME_DB.set({buf:buf, kind:ext, name:f.name, size:f.size, text:text, at:Date.now()}).catch(function(){}); }, function(){}); }catch(e){} }
 function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
-function ssGet(k, d){ try{ var v = sessionStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } }
-function ssSet(k, v){ try{ sessionStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+/* short-lived notes that must survive the trip to Google and back. Some phones drop sessionStorage on that trip,
+   so they live in localStorage and expire after 30 minutes. */
+function ssGet(k, d){ try{ var v = JSON.parse(localStorage.getItem('tmp_' + k) || 'null'); if(!v) return d; if(Date.now() - v.t > 30*60*1000){ localStorage.removeItem('tmp_' + k); return d; } return v.v; }catch(e){ return d; } }
+function ssSet(k, v){ try{ localStorage.setItem('tmp_' + k, JSON.stringify({v:v, t:Date.now()})); }catch(e){} }
+function ssDel(k){ try{ localStorage.removeItem('tmp_' + k); }catch(e){} }
 function daysAgo(ts){ return Math.max(0, Math.floor((Date.now() - ts) / 864e5)); }
 function agoLabel(ts){
   var d = daysAgo(ts);
@@ -941,7 +955,7 @@ function afterSignIn(u, silent){
   var ref = ssGet('tp_ref', null);
   var back = ssGet('tp_after', null) || (cameFromOAuth ? '#jobs' : null);
   if(back === '#dashboard' || back === '#signin') back = '#jobs';
-  try{ sessionStorage.removeItem('tp_after'); }catch(e){}
+  ssDel('tp_after');
   if(back && back !== location.hash) location.hash = back;
   state.ready = true; render();   // the jobs appear now; profile and saved roles fill in next
   var load = LIVE
@@ -972,7 +986,7 @@ function afterSignIn(u, silent){
     render();
     if(isNew || !state.profile.onboarded) openOnboarding();
     else if(goNext()) return;
-    else { if(!silent) toast('Signed in as ' + state.user.email); maybeTour(); }
+    else { if(!silent) toast('Signed in as ' + state.user.email); if(ssGet('tp_intent', null)) runIntent(); else maybeTour(); }
     if(pendingAction){ var f = pendingAction; pendingAction = null; f(); }
   });
 }
@@ -987,9 +1001,21 @@ function adoptAtsResume(){
     toast('Using the resume you scanned in the ATS check');
   }
 }
+function runIntent(){   // finish what they were doing when we asked them to sign in
+  var it = ssGet('tp_intent', null); if(!it || !state.user) return;
+  ssDel('tp_intent');
+  loadJobs().then(function(){
+    var j = findJob(it.key); if(!j) return;
+    if(route.job !== it.key) location.hash = 'job=' + encodeURIComponent(it.key);
+    setTimeout(function(){
+      if(it.act === 'save' && !isTracked(it.key)) toggleSave(it.key);
+      if(it.act === 'apply') applyTo(it.key);
+    }, 400);
+  });
+}
 function goNext(){
   var n = ssGet('tp_next', null); if(!n || !state.user) return false;
-  try{ sessionStorage.removeItem('tp_next'); }catch(e){}
+  ssDel('tp_next');
   location.replace(n); return true;
 }
 function cacheAccount(){
@@ -1564,7 +1590,7 @@ function render(soft){
       v.innerHTML = state.ready ? gateHTML() : '<div class="jlist"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>';
       lastView = state.ready ? '_gate' : '_wait';
     }
-    closeDrawer(true);
+    if(route.job && state.ready) openJob(route.job); else closeDrawer(true);   // shared job links are open to everyone
     var fb = $('#fab'); if(fb) fb.hidden = true;
     return;
   }
@@ -1899,12 +1925,42 @@ function closeDrawer(silent){
   updateFab();
   if(route.name === 'jobs' && VIEW === 'cards' && $('#jlist') && JOBS.length) drawDeck();
 }
+/* an old link to a role that has closed: say so plainly, then show what's open at that company right now */
+function closedJob(key){
+  if(drawerKey === key) return;
+  drawerKey = key;
+  var m = /^(gh|ashby|lever|custom):([^:]+):/.exec(key) || [], board = m[2] || '';
+  var t = state.tracked.filter(function(x){ return x.job_key === key; })[0];
+  var co = CONFIG.COMPANIES.concat(TEAM.boards).filter(function(c){ return c.board === board; })[0];
+  var name = (t && t.company) || (co && co.name) || '', title = t && t.title;
+  var same = JOBS.filter(function(j){ return j.board === board && j.src === m[1]; });
+  if(title) same = same.map(function(j){ return [j, titleFit(j.title, title) || 0]; }).sort(function(a, b){ return b[1] - a[1] || b[0].posted - a[0].posted; }).map(function(x){ return x[0]; });
+  var list = same.length ? same : JOBS.filter(function(j){ return j.reg.indexOf('US') > -1; });
+  var show = list.slice(0, 5);
+  var unsure = !!co && !same.length;   // a company we list, but none of its roles loaded: its job board may simply not have answered
+  $('#drawerRoot').innerHTML = '<div class="scrim" data-act="close"></div><section class="drawer" role="dialog" aria-modal="true" aria-label="Role closed">'+
+    '<div class="dr-top"><button class="x" type="button" data-act="close" aria-label="Close">'+I.x+'</button><span>Job details</span></div>'+
+    '<div class="dr-body"><div class="closed">'+
+      '<span class="cl-ic">'+I.clock+'</span>'+
+      (unsure ? '<h2>We can’t find this role right now</h2><p>It may have been filled — or '+esc(name)+'’s job board didn’t respond the last time we checked. Try again in a few minutes.</p>'+
+        '<button class="btn" type="button" data-act="reload" style="margin-top:12px">Try again</button>' :
+      '<h2>This role is no longer open</h2>'+
+      '<p>'+(title ? '<b>'+esc(title)+'</b>'+(name ? ' at '+esc(name) : '')+' has' : (name ? 'This '+esc(name)+' posting has' : 'This posting has'))+' been filled or removed by the company. Good roles go fast — here’s what’s open now.</p>')+
+      (t ? '<p class="fine" style="margin-top:8px">You saved this role, so it stays on your Dashboard.</p>' : '')+
+      '<h3>'+(same.length ? 'Open at '+esc(name || 'this company')+' right now · '+same.length : 'Fresh roles you can apply to today')+'</h3>'+
+      '<div class="jlist">'+show.map(function(j){ try{ return jobCard(j); }catch(e){ return ''; } }).join('')+'</div>'+
+      (list.length > 5 ? '<a class="btn" href="#jobs" style="width:100%;margin-top:12px">See all '+list.length.toLocaleString()+' roles</a>' : '')+
+      (!state.user ? '<div class="cl-cta"><b>Get roles like this the day they open</b><p>Sign in free — new roles every few hours, and your match score on each one.</p><button class="gbtn" type="button" data-act="google">'+I.g+(LIVE ? 'Continue with Google' : 'Continue (preview mode)')+'</button></div>' : '')+
+    '</div></div></section>';
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(function(){ var sc = $('.scrim'), dr = $('.drawer'); if(sc) sc.classList.add('on'); if(dr) dr.classList.add('on'); });
+  updateFab();
+}
 function openJob(key){
-  if(!state.user && !SIGNING) return;
   var job = findJob(key);
   if(!job){
-    if(!JOBS.length && (jobsMeta.loading || jobsPromise)) return;
-    toast('That role has been filled or removed'); history.replaceState(null,'','#jobs'); return;
+    if(!JOBS.length || (jobsMeta.loading && !jobsMeta.bg) || jobsPromise) return;   // still loading: it opens once the roles arrive
+    return closedJob(key);
   }
   if(drawerKey === key) return;
   drawerKey = key;
@@ -2098,7 +2154,7 @@ function paneAna(job){
 /* ---- floating resume button ---- */
 function updateFab(){
   var f = $('#fab'); if(!f) return;
-  if(!(route.name === 'jobs' || drawerKey)){ f.hidden = true; return; }
+  if(!state.user || !(route.name === 'jobs' || drawerKey)){ f.hidden = true; return; }
   var has = !!(state.user && resumeText());
   f.hidden = false;
   f.innerHTML = has ? I.resume + '<span>Show resume</span>' : I.send + '<span>Go to resume upload</span>';
@@ -2773,14 +2829,18 @@ document.addEventListener('click', function(e){
     case 'adsave': return adminSave();
     case 'adclear': ADP = []; var ai = $('#adIn'); if(ai) ai.value = ''; return drawAdminPrev();
     case 'signin': pendingSkip = null; return openSignIn();
-    case 'google': closeModal(); return store.signIn();
+    case 'google': closeModal(); if(!LIVE) ssDel('tp_intent'); return store.signIn();
     case 'mclose': if(e.target === t || t.classList.contains('x') || t.classList.contains('skip')) closeModal(); return;
     case 'close': history.pushState(null, '', '#' + (route.name || 'jobs')); closeDrawer(); route = parseRoute(); return maybeTour();
     case 'upsell': e.preventDefault(); return openUpsell();
     case 'invite': return openInvite();
     case 'post': return openPost();
     case 'more': shown += 30; return drawList();
-    case 'reload': JOBS = []; jobsPromise = null; loadJobs(true).then(function(){ drawList(); }); return vJobs($('#view'));
+    case 'reload':
+      JOBS = []; jobsPromise = null;
+      var rl = loadJobs(true); drawerKey = null; lastView = null; closeDrawer(true); render();
+      rl.then(function(){ drawerKey = null; lastView = null; render(); });
+      return;
     case 'clearf': F = {q:'', region:'US', cat:'', lvl:'', age:'any', sort:'new', r2:1}; lsSet('tp_filters', F); return vJobs($('#view'));
     case 'upload': needReader('pdf').catch(function(){}); return requireSignIn('Sign in to add your resume', function(){ $('#fileIn').click(); });
     case 'rmresume':
@@ -2792,7 +2852,7 @@ document.addEventListener('click', function(e){
       var patch = {target_role:$('#oRole').value.trim(), target_location:$('#oLoc').value.trim(), marketing_consent:$('#oMail').checked, onboarded:true};
       if(patch.marketing_consent) patch.consent_at = new Date().toISOString();
       if(patch.target_role && F.sort === 'new'){ F.sort = 'fit'; lsSet('tp_filters', F); }
-      return store.saveProfile(patch).then(function(){ closeModal(); if(goNext()) return; render(); maybeTour(); });
+      return store.saveProfile(patch).then(function(){ closeModal(); if(goNext()) return; render(); if(ssGet('tp_intent', null)) runIntent(); else maybeTour(); });
     case 'signout': return store.signOut().then(function(){ location.hash = 'jobs'; toast('Signed out'); });
     case 'delask':
       $('#delWrap').innerHTML = '<p style="font-size:13.5px;margin-bottom:10px"><b>Are you sure?</b> Everything is deleted immediately.</p><div class="jd-acts" style="margin-top:0"><button class="btn" type="button" data-act="delno">Keep my account</button><button class="btn pri" type="button" data-act="delyes" style="background:var(--bad);border-color:var(--bad)">Yes, delete everything</button></div>';
@@ -2817,6 +2877,7 @@ document.addEventListener('change', function(e){
 function toggleSave(key){
   var job = findJob(key) || state.tracked.filter(function(t){ return t.job_key === key; })[0];
   if(!job) return;
+  if(!state.user) ssSet('tp_intent', {act:'save', key:key});
   requireSignIn('Sign in to save jobs', function(){
     var j = job.key ? job : {key:job.job_key, title:job.title, company:job.company, location:job.location, url:job.url};
     (isTracked(j.key) ? store.untrack(j.key) : store.track(j, 'saved')).then(function(){
@@ -2901,7 +2962,7 @@ function applyTo(key, after){
   };
   if(state.user) return preApply(job, go);
   if(!CONFIG.REQUIRE_SIGNIN_TO_APPLY) return go();
-  pendingSkip = url;
+  pendingSkip = null; ssSet('tp_intent', {act:'apply', key:key});
   requireSignIn('Sign in to apply and track this role', go);
 }
 
