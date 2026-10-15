@@ -352,6 +352,14 @@ img{max-width:100%}
 .lead .tag.ok{background:#e7f8ee;color:#128c4a}
 @media (max-width:640px){.lead{grid-template-columns:1fr}.lead .acts{justify-content:flex-start}}
 
+.edcta{display:flex;align-items:center;gap:14px;border-radius:16px;padding:16px 18px;text-decoration:none;color:#fff;background:linear-gradient(135deg,#6d28d9,#0938d5);margin-bottom:14px}
+.edcta .ic{flex:none;width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.16);display:grid;place-items:center}
+.edcta .ic svg{width:22px;height:22px}
+.edcta .tx{flex:1;min-width:0}
+.edcta b{display:block;font-family:Poppins;font-size:16px;color:#fff}
+.edcta small{display:block;font-size:13px;color:rgba(255,255,255,.85);margin-top:2px}
+.edcta .go{flex:none;font-weight:600;font-size:14px;background:#fff;color:var(--blue);border-radius:10px;padding:8px 12px}
+@media (max-width:560px){.edcta{flex-wrap:wrap}.edcta .go{width:100%;text-align:center}}
 /* ---------- reading a resume ---------- */
 .reading{position:relative;display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--blue-line);border-radius:16px;padding:20px 22px;overflow:hidden}
 .reading b{display:block;color:var(--ink);font-size:15px;word-break:break-word}
@@ -742,7 +750,7 @@ var CONFIG = {
 };
 
 var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
-var APP_VERSION = '2026-10-15.7';   // also in /version.txt — lets us check which version the live site is serving
+var APP_VERSION = '2026-10-15.8';   // also in /version.txt — lets us check which version the live site is serving
 
 /* =====================================================================
    utils
@@ -1564,6 +1572,7 @@ var NAV = [
   {id:'dashboard', label:'Dashboard', icon:I.dash},
   {id:'jobs', label:'Jobs', icon:I.jobs},
   {id:'resume', label:'Resume', icon:I.resume},
+  {id:'editor', label:'Editor', icon:I.spark, href:'/editor.html'},
   {id:'settings', label:'Settings', icon:I.set}
 ];
 function navItems(){ return state.isAdmin ? NAV.concat([{id:'leads', label:'Leads', icon:I.team}, {id:'admin', label:'Add jobs', icon:I.plus}]) : NAV; }
@@ -1572,11 +1581,11 @@ function parseRoute(){
   var h = location.hash.replace(/^#/, '');
   var m = /^job=(.+)$/.exec(h);
   if(m) return {name:'jobs', job:decodeURIComponent(m[1])};
-  var n = navItems().map(function(x){ return x.id; }).indexOf(h) > -1 ? h : ((h === 'admin' || h === 'leads') && !state.ready ? h : 'jobs');
+  var n = navItems().filter(function(x){ return !x.href; }).map(function(x){ return x.id; }).indexOf(h) > -1 ? h : ((h === 'admin' || h === 'leads') && !state.ready ? h : 'jobs');
   return {name:n, job:null};
 }
 function renderNav(){
-  var h = navItems().map(function(n){ return '<a href="#'+n.id+'" class="'+(route.name===n.id?'on':'')+'">'+n.icon+'<span>'+n.label+'</span></a>'; }).join('');
+  var h = navItems().map(function(n){ return '<a href="'+(n.href || '#'+n.id)+'" class="'+(route.name===n.id?'on':'')+'">'+n.icon+'<span>'+n.label+'</span></a>'; }).join('');
   $('#nav').innerHTML = h; $('#tabbar').innerHTML = h;
   $('#pageTitle').textContent = {dashboard:'Dashboard', jobs:'Job Board', resume:'My Resume', settings:'Settings', admin:'Add jobs', leads:'Leads'}[route.name];
   var w = $('#who');
@@ -2291,6 +2300,7 @@ function vResume(v){
     '<div class="card sec"><h3>Skills we found</h3><p>These are what we match against each posting. If something you have is missing, it isn’t clearly on your resume.</p>'+
       '<div class="chips">'+(sk.length ? sk.map(function(s){ return '<span class="chip n">'+esc(s.name)+'</span>'; }).join('') : '<span class="chip n">None recognised</span>')+'</div></div>'+
     '<div class="card sec"><label class="toggle"><input type="checkbox" id="keepResume"'+(saved?' checked':'')+'><span class="sw"></span><span><b>Keep my resume on my account</b><small>So your match scores work on any device. Off = it stays only in this browser.</small></span></label></div>'+
+    '<a class="edcta sec" href="/editor.html"><span class="ic">'+I.spark+'</span><span class="tx"><b>Edit &amp; improve it with AI</b><small>Suggestions for every bullet, tailor it to a job, download a clean PDF.</small></span><span class="go">Open editor →</span></a>'+
     '<div class="jd-acts"><button class="btn" type="button" data-act="upload">'+I.up+'Replace resume</button><a class="btn" href="/ats-check.html#mine">Full ATS check</a>'+
     '<button class="btn" type="button" data-act="rmresume">'+I.trash+'Remove</button></div>'+
     '<div class="upsell"><div class="tx"><b>Want a recruiter to rewrite it?</b><p>We rebuild it properly, then tailor it for every role we apply to on your behalf.</p></div><button class="btn" type="button" data-act="upsell">Learn more</button></div>';
@@ -2378,7 +2388,8 @@ function openTailor(key){
      : '<p style="margin-top:12px">Your resume already mentions every skill this posting lists.</p>')+
     '<div class="tl-score" id="tlScore"></div>'+
     '<div class="stack" style="margin-top:16px"><button class="btn pri" type="button" data-act="tlsave">Add to my resume here</button>'+
-      '<button class="btn" type="button" data-act="tldoc">'+I.doc+'Download the updated skills section</button></div>'+
+      '<button class="btn" type="button" data-act="tldoc">'+I.doc+'Download the updated skills section</button>'+
+      '<button class="btn" type="button" data-act="tledit">'+I.spark+'Tailor it in the resume editor</button></div>'+
     '<p class="fine">Recruiters see the file you send, not this score — add these to your real resume too. Want a specialist to rewrite it properly? <a href="'+esc(bookUrl('tailor'))+'" target="_blank" rel="noopener">Book a free call</a>.</p></div>', true);
   $('#modalRoot .tailor').addEventListener('change', function(ev){ var i = ev.target.getAttribute('data-tl'); if(i == null) return; TAILOR.picked[i] = ev.target.checked; tailorScore(); });
   tailorScore();
@@ -3002,6 +3013,10 @@ document.addEventListener('click', function(e){
     case 'tlsave': return tailorSave();
     case 'tldoc': return tailorDoc();
     case 'tour': return maybeTour(true);
+    case 'tledit':
+      e.preventDefault();
+      if(TAILOR) lsSet('tp_ats_job', {key:TAILOR.job.key, title:TAILOR.job.title, company:TAILOR.job.company, text:String(TAILOR.text || '').slice(0, 12000), at:Date.now()});
+      closeModal(); location.href = '/editor.html'; return;
     case 'prego':
       e.preventDefault();
       if(!APPLYING){ closeModal(); return; }
@@ -3161,7 +3176,7 @@ function applyTo(key, after){
    ===================================================================== */
 (function(){   // ?next=/ats-check.html — where to go once signed in
   var m = /[?&]next=([^&#]+)/.exec(location.search);
-  if(m){ var n = decodeURIComponent(m[1]); if(/^\/(ats-check\.html|app\.html)(#[A-Za-z0-9_-]*)?$/.test(n)) ssSet('tp_next', n);
+  if(m){ var n = decodeURIComponent(m[1]); if(/^\/(ats-check\.html|app\.html|editor\.html)(#[A-Za-z0-9_-]*)?$/.test(n)) ssSet('tp_next', n);
     history.replaceState(null, '', location.pathname + location.search.replace(/([?&])next=[^&#]*&?/, '$1').replace(/[?&]$/, '') + location.hash); }
 })();
 (function(){

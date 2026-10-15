@@ -152,6 +152,7 @@ h1,h2,h3{text-wrap:balance}
 .tile .v{font-family:Poppins;font-weight:700;font-size:20px;color:var(--ink);margin-top:2px;line-height:1.25}
 .tile .v small{font:500 12.5px Inter;color:var(--muted)}
 .sumacts{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.edbtn{background:linear-gradient(135deg,#6d28d9,#0938d5)!important;color:#fff!important;border:0!important}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:600;font-size:14px;text-decoration:none;white-space:nowrap}
 .btn:hover{border-color:#cbd2e6}
 .btn.pri{background:var(--blue);border-color:var(--blue);color:#fff}
@@ -1918,6 +1919,10 @@ function afterReport(){
   if(S.sample) return;
   try{ localStorage.setItem('tp_xray', JSON.stringify({score:R.score, at:Date.now(), name:S.name || (D && D.name) || '', match:R.match && R.match.score != null ? R.match.score : null, job:JOBCTX ? JOBCTX.key : null})); }catch(e){}
   var old = $('backJob'); if(old) old.remove();
+  var oe = $('toEditor'); if(oe) oe.remove();
+  var ed = document.createElement('a'); ed.className = 'btn edbtn'; ed.id = 'toEditor'; ed.href = '/editor.html';
+  ed.textContent = '✨ Fix it in the resume editor';
+  var acts0 = document.querySelector('.sumacts'); if(acts0) acts0.insertBefore(ed, acts0.firstChild);
   if(JOBCTX){
     var a = document.createElement('a'); a.className = 'btn backjob'; a.id = 'backJob';
     a.href = '/app.html#job=' + encodeURIComponent(JOBCTX.key);

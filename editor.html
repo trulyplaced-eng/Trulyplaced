@@ -1,0 +1,1918 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Resume Editor | TrulyPlaced</title>
+<meta name="description" content="Edit your resume with AI suggestions, tailor it to a job, and download a clean PDF.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0938d5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='116' fill='%230938d5'/%3E%3Cpath d='M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z' fill='%23fff'/%3E%3Cpath d='M205 200l37 36 76-88' fill='none' stroke='%230938d5' stroke-width='30' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://yubgrhxdhofnynfocpef.supabase.co" crossorigin>
+<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style id="pageCss">@page{size:letter;margin:.5in}</style>
+<style>
+:root{--blue:#0938d5;--blue-d:#072ca8;--blue-soft:#eef2ff;--blue-line:#cfd9ff;--ink:#121a33;--body:#4b5473;--muted:#737b9c;
+  --line:#e7e9f2;--bg:#f2f4fa;--ok:#0a7f46;--ok-soft:#e6f6ee;--warn:#b45309;--warn-soft:#fff4e0;--bad:#be123c;--bad-soft:#ffe9ee;
+  --vio:#6d28d9;--vio-soft:#f3eeff;color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--body);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--blue)}
+[hidden]{display:none!important}
+svg{flex:none}
+
+/* ---------- app chrome ---------- */
+.top{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:10px 18px;min-height:58px}
+.brand{display:flex;align-items:center;gap:9px;font:700 16px Poppins,Inter,sans-serif;color:var(--ink);text-decoration:none}
+.brand img{width:28px;height:28px;border-radius:8px}
+.tabs{display:flex;background:var(--bg);border-radius:10px;padding:3px;gap:2px}
+.tabs button{border:0;background:none;padding:6px 14px;border-radius:8px;font-weight:600;font-size:13.5px;color:var(--body)}
+.tabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(18,26,51,.14)}
+.top .sp{flex:1}
+.status{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.status i{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.status.busy i{background:var(--warn)}
+.toplink{font-size:13.5px;font-weight:600;text-decoration:none;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 16px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:600;font-size:14px;text-decoration:none;transition:.15s}
+.btn:hover{border-color:var(--blue-line);background:#fafbff}
+.btn.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.pri:hover{background:var(--blue-d)}
+.btn.ai{background:linear-gradient(135deg,#6d28d9,#0938d5);border:0;color:#fff}
+.btn.ai:hover{filter:brightness(1.08)}
+.btn.sm{min-height:32px;padding:0 11px;font-size:13px;border-radius:8px}
+.btn.wide{width:100%}
+.btn svg{width:17px;height:17px}
+.btn[disabled]{opacity:.55;cursor:default}
+
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) 352px;min-height:calc(100vh - 58px)}
+.canvas{min-width:0;padding:14px 20px 80px;position:relative}
+.tb{position:sticky;top:68px;z-index:30;display:flex;justify-content:flex-end;max-width:816px;margin:0 auto 12px;pointer-events:none}
+.tbi{pointer-events:auto;display:flex;align-items:center;gap:2px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px;box-shadow:0 6px 20px -10px rgba(18,26,51,.25);flex-wrap:wrap}
+.tbi button{height:36px;min-width:36px;border:0;background:none;border-radius:8px;display:grid;place-items:center;color:var(--body);position:relative}
+.tbi button:hover,.tbi button.on{background:var(--bg);color:var(--ink)}
+.tbi button[disabled]{opacity:.3;cursor:default;background:none}
+.tbi button svg{width:18px;height:18px}
+.tbi .dv{width:1px;height:22px;background:var(--line);margin:0 3px}
+.tbi .dl{display:flex;gap:6px;padding:0 12px;background:var(--blue);color:#fff;font-weight:600;font-size:13.5px}
+.tbi .dl:hover{background:var(--blue-d);color:#fff}
+.tbi [data-tip]:hover::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:11.5px;font-weight:500;padding:3px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;z-index:5}
+.pop{position:absolute;z-index:35;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 50px -14px rgba(18,26,51,.35);padding:14px;width:300px;max-width:calc(100vw - 32px);max-height:min(76vh,640px);overflow:auto}
+.pop h4{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:14px 0 7px;display:flex;justify-content:space-between}
+.pop h4:first-child{margin-top:0}
+.pop h4 span{text-transform:none;letter-spacing:0;color:var(--ink);font-weight:600}
+.pop select{width:100%;height:38px;border:1px solid var(--line);border-radius:9px;padding:0 10px;background:#fff}
+.pop input[type=range]{width:100%;accent-color:var(--blue)}
+.so{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:9px;padding:5px 6px 5px 8px;margin-bottom:5px;background:#fff;font-size:13.5px;color:var(--ink)}
+.so.drag{opacity:.4}.so.over{border-color:var(--blue)}
+.so .grip{cursor:grab;color:#b3b9cf;letter-spacing:-2px;font-weight:700;user-select:none}
+.so .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.so.off .nm{color:#a3a9c0;text-decoration:line-through}
+.so button{border:0;background:none;width:26px;height:26px;border-radius:6px;color:var(--muted);display:grid;place-items:center}
+.so button:hover{background:var(--bg);color:var(--ink)}
+.so button svg{width:15px;height:15px}
+.seg{display:flex;background:var(--bg);border-radius:9px;padding:3px}
+.seg button{flex:1;border:0;background:none;border-radius:7px;padding:6px;font-size:13px;font-weight:600;color:var(--body)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(18,26,51,.12)}
+.sw{display:flex;gap:8px;flex-wrap:wrap}
+.sw button{width:26px;height:26px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.sw button.on{box-shadow:0 0 0 2px var(--ink)}
+.lays{display:grid;gap:8px}
+.lay{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:11px;padding:8px;background:#fff;text-align:left}
+.lay.on{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+.lay svg{width:54px;height:70px;border:1px solid var(--line);border-radius:4px;background:#fff}
+.lay b{display:block;color:var(--ink);font-size:14px}.lay span{font-size:12.5px;color:var(--muted)}
+.chk{display:flex;gap:10px;align-items:center;padding:7px 4px;font-size:14px;color:var(--ink);cursor:pointer}
+.chk input{width:17px;height:17px;accent-color:var(--blue)}
+.dlo{display:flex;gap:12px;align-items:flex-start;width:100%;border:1px solid var(--line);border-radius:11px;padding:11px;background:#fff;text-align:left;margin-bottom:8px}
+.dlo:hover{border-color:var(--blue)}
+.dlo svg{width:22px;height:22px;color:var(--blue);margin-top:1px}
+.dlo b{display:block;color:var(--ink)}.dlo span{font-size:12.5px;color:var(--muted)}
+
+/* ---------- the page ---------- */
+.stage{position:relative;display:flex;justify-content:center}
+.pane{display:none;justify-content:center;width:100%}
+.pane.on{display:flex}
+.paper{--pw:816px;--ph:1056px;--mg:.5in;--fs:10.5pt;--lh:1.2;--ff:"Times New Roman",Times,serif;--al:left;--ac:#0938d5;
+  position:relative;flex:none;width:var(--pw);min-height:var(--ph);padding:var(--mg);background:#fff;color:#111;font-family:var(--ff);font-size:var(--fs);line-height:var(--lh);text-align:var(--al);
+  box-shadow:0 1px 3px rgba(18,26,51,.08),0 16px 44px -16px rgba(18,26,51,.22);border-radius:2px;overflow-wrap:break-word}
+.paper [contenteditable]{outline:none;border-radius:2px;transition:background .12s}
+.paper [contenteditable]:hover{background:rgba(9,56,213,.045)}
+.paper [contenteditable]:focus{background:rgba(9,56,213,.07);box-shadow:0 0 0 1px rgba(9,56,213,.35)}
+.paper [contenteditable]:empty::before{content:attr(data-ph);color:#a1a7bd;font-style:italic}
+.paper .ph-h{text-align:center;position:relative}
+.paper .ph-h h1{font-size:2em;line-height:1.15;font-weight:700}
+.paper .ph-h .hl{font-size:1.08em;margin-top:.05em}
+.paper .ct{margin-top:.2em;font-size:.95em}
+.paper .ct .sep{margin:0 .4em;color:#555}
+.paper .ct .pref{font-style:italic}
+.paper .ps{margin-top:.6em;position:relative}
+.paper .ps>h2{font-size:1.1em;font-weight:700;text-transform:uppercase;border-bottom:1px solid #111;margin-bottom:.3em;line-height:1.3;letter-spacing:.01em}
+.paper .en{position:relative;margin-top:.35em}
+.paper .en:first-of-type{margin-top:0}
+.paper .er{display:flex;justify-content:space-between;align-items:baseline;gap:1em}
+.paper .er .l{flex:1;min-width:0}
+.paper .er .r{flex:none;text-align:right;max-width:45%}
+.paper .er1 .l,.paper .er1 .r{font-weight:700}
+.paper .er2{font-style:italic}
+.paper .en:not(:hover):not(:focus-within)>.er2.opt{display:none}
+.paper .bl{padding-left:1.3em;margin:.12em 0 0}
+.paper .bl li{margin:.06em 0;padding-left:.15em}
+.paper .bl li>span{display:inline}
+.paper .sk>div{margin:.06em 0}
+.paper .sk b{font-weight:700}
+.paper .sum{text-align:var(--al)}
+.paper mark{color:inherit;border-radius:2px}
+.paper mark.ph{background:#fff0b3;box-shadow:0 0 0 1px #f3d36b}
+.paper mark.add{background:#fde9a8;box-shadow:0 0 0 1px #f0c445}
+.paper .prt{display:none}
+/* layouts */
+.paper.L-classic .ph-h h1{font-size:2.35em;font-variant:small-caps;letter-spacing:.02em;font-weight:700}
+.paper.L-classic .ps>h2{font-variant:small-caps;text-transform:none;font-size:1.28em;font-weight:600;letter-spacing:.02em}
+.paper.L-classic .er1 .r{font-weight:400}
+.paper.L-classic .er2 .r{font-style:italic}
+.paper.L-modern .ph-h{text-align:left}
+.paper.L-modern .ph-h h1{color:var(--ac);font-size:2.15em;letter-spacing:-.01em}
+.paper.L-modern .ps>h2{color:var(--ac);letter-spacing:.1em;font-size:.95em;border-bottom:2px solid var(--ac);padding-bottom:.1em}
+.paper.L-modern .er1 .r{font-weight:600;color:#4a4f60}
+.paper.L-modern .er2{color:#3c4150}
+/* cover letter */
+.paper .cv-date{margin-top:1.6em}
+.paper .cv-to{margin-top:1em;white-space:pre-wrap}
+.paper .cv-body{margin-top:1em;white-space:pre-wrap;min-height:20em;text-align:var(--al)}
+/* on-page tools (never printed) */
+.nopr{font-family:Inter,sans-serif;line-height:1.3}
+.etools,.stools{position:absolute;right:0;top:-1.7em;display:none;gap:4px;z-index:4;font-size:12px;text-align:left}
+.stools{top:-.2em;right:0}
+.en:hover>.etools,.en:focus-within>.etools,.ps:hover>.stools,.ps:focus-within>.stools,.ph-h:hover>.stools{display:flex}
+.etools button,.stools button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 10px;font:600 11.5px Inter,sans-serif;color:var(--body);box-shadow:0 2px 8px -3px rgba(18,26,51,.25);white-space:nowrap}
+.etools button:hover,.stools button:hover{border-color:var(--blue);color:var(--blue)}
+.etools .ai,.stools .ai{color:var(--vio);border-color:#ddd0ff;background:#faf7ff}
+.pbrk{position:absolute;left:-14px;right:-14px;border-top:1.5px dashed #c3c9de;pointer-events:none;z-index:2}
+.pbrk span{position:absolute;right:16px;top:-10px;background:var(--bg);font:600 10.5px Inter,sans-serif;color:#7d84a3;padding:1px 7px;border-radius:99px;border:1px solid #d9deec}
+/* suggestions */
+.sug{display:grid;grid-template-columns:1fr 1fr;gap:.6em;margin:.3em 0 .25em;font-size:.97em}
+.sug .o,.sug .n,.msug .mo,.msug .mn{border-radius:6px;padding:.45em .7em}
+.sug .o,.msug .mo{background:#fff2f2;border:1px solid #f2b9b9}
+.sug .n,.msug .mn{background:#ebf8f0;border:1px solid #a7dbbb}
+.sug,.msug{font-family:var(--ff);line-height:var(--lh)}
+.sug b.k{display:block;font:700 11px Inter,sans-serif;color:#b42318;margin-bottom:.2em}
+.sug .n b.k{color:#0a7f46}
+.sug ul{padding-left:1.15em}
+.sug li{margin:.08em 0}
+.sug [contenteditable]{outline:none}
+.sug [contenteditable]:focus{background:#fff}
+.sacts{grid-column:1/-1;display:flex;gap:6px;align-items:center;flex-wrap:wrap;font:12px Inter,sans-serif;margin-top:.1em}
+.sacts .ok,.sacts .no{border:0;border-radius:6px;padding:5px 13px;font:600 12px Inter,sans-serif}
+.sacts .ok{background:#0a7f46;color:#fff}.sacts .ok:hover{background:#086b3b}
+.sacts .no{background:#e6e8ef;color:#333}.sacts .no:hover{background:#d9dce6}
+.sacts .hint{color:#8a6a00;font-size:11.5px}
+.sacts .busy{color:#b77800;font-weight:600}
+.msug{list-style:none;margin:.25em 0 .3em -1.3em;display:grid;gap:.3em}
+.msug .mo{text-decoration:line-through;text-decoration-color:rgba(180,35,24,.45);color:#5b2b2b}
+.shim{display:grid;gap:.45em;padding:.3em 0}
+.shim i{display:block;height:.75em;border-radius:4px;background:linear-gradient(90deg,#d5eedd 0,#f1fbf4 40%,#d5eedd 80%);background-size:300% 100%;animation:sh 1.2s linear infinite}
+.shim i:nth-child(2n){width:86%}
+@keyframes sh{to{background-position:-150% 0}}
+/* bullet toolbar */
+#btb{position:absolute;z-index:25;display:flex;gap:2px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:2px;box-shadow:0 6px 18px -8px rgba(18,26,51,.35)}
+#btb button{width:30px;height:28px;border:0;background:none;border-radius:6px;display:grid;place-items:center;color:var(--body)}
+#btb button:hover{background:var(--bg)}
+#btb .add{color:var(--ok)}#btb .del{color:var(--bad)}#btb .ai{color:var(--vio)}
+#btb svg{width:16px;height:16px}
+#bmenu{position:absolute;z-index:26;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 30px -10px rgba(18,26,51,.35);padding:4px;min-width:210px}
+#bmenu button{display:flex;gap:9px;align-items:center;width:100%;border:0;background:none;padding:8px 10px;border-radius:7px;text-align:left;font-size:13.5px;color:var(--ink)}
+#bmenu button:hover{background:var(--bg)}
+#bmenu svg{width:18px;height:18px;color:var(--vio)}
+#bmenu small{display:block;color:var(--muted);font-size:11.5px}
+
+/* ---------- side panel ---------- */
+.side{background:#fff;border-left:1px solid var(--line);padding:18px 18px 40px;position:sticky;top:58px;height:calc(100vh - 58px);overflow:auto}
+.side h3{font:600 15px Poppins,Inter,sans-serif;color:var(--ink);margin:22px 0 8px}
+.side .fine{font-size:12.5px;color:var(--muted);line-height:1.5}
+.score{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:14px}
+.ring{--v:0;--c:#be123c;flex:none;width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--c) calc(var(--v)*1%),#eef0f6 0);transition:--v .4s}
+.ring span{width:58px;height:58px;border-radius:50%;background:#fff;display:grid;place-items:center;font:700 20px Poppins,Inter,sans-serif;color:var(--ink)}
+.score b{display:block;color:var(--ink);font-size:15px}
+.score p{font-size:12.5px;color:var(--muted);margin-top:2px}
+.score .up{color:var(--ok);font-weight:700}
+.pend{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--ok-soft);color:#075a33;border-radius:12px;padding:10px 12px;margin-top:12px;font-size:13px;font-weight:600}
+.pend .sp{flex:1}
+.ainote{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45}
+.tips{display:flex;flex-direction:column;gap:8px}
+.tip{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start}
+.tip .dot{flex:none;width:8px;height:8px;border-radius:50%;margin-top:6px;background:var(--warn)}
+.tip.hi .dot{background:var(--bad)}.tip.ok .dot{background:var(--ok)}
+.tip .tx{flex:1;min-width:0}
+.tip b{display:block;color:var(--ink);font-size:13.5px;line-height:1.35}
+.tip p{font-size:12.5px;color:var(--muted);margin-top:2px}
+.tip .btn{margin-top:7px}
+.alldone{display:flex;gap:10px;align-items:center;background:var(--ok-soft);color:#075a33;border-radius:12px;padding:11px 12px;font-size:13.5px;font-weight:600}
+.job{border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+.job .jt{display:flex;gap:8px;align-items:flex-start}
+.job .jt b{flex:1;color:var(--ink);font-size:13.5px;line-height:1.35}
+.job .jt button{border:0;background:none;color:var(--muted);font-size:18px;line-height:1;padding:0 2px}
+.jm{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:13px}
+.jm .bar{flex:1;height:7px;border-radius:9px;background:#eef0f6;overflow:hidden}
+.jm .bar i{display:block;height:100%;border-radius:9px;background:var(--blue)}
+.kws{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.kw{border:1px dashed #c8cee2;background:#fff;border-radius:999px;padding:4px 10px;font-size:12.5px;font-weight:600;color:var(--ink)}
+.kw:hover{border-color:var(--blue);color:var(--blue);border-style:solid}
+.kw.have{border:1px solid #b8e2c8;background:var(--ok-soft);color:#075a33;cursor:default}
+.side textarea{width:100%;min-height:96px;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13.5px;resize:vertical}
+.side input[type=text]{width:100%;height:40px;border:1px solid var(--line);border-radius:10px;padding:0 11px;font-size:14px}
+.side label.f{display:block;font-size:12.5px;font-weight:600;color:var(--ink);margin:10px 0 5px}
+.callc{border-radius:14px;padding:15px 16px;background:linear-gradient(135deg,#0a31bd,#0938d5);color:#fff;margin-top:22px}
+.callc b{font:600 15px Poppins,Inter,sans-serif;display:block;line-height:1.35;color:#fff}
+.callc p{font-size:13px;color:rgba(255,255,255,.88);margin-top:4px}
+.callc .btn{margin-top:10px;background:#fff;color:var(--blue);border-color:#fff}
+.sidefoot{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px;font-size:13px}
+.sidefoot button{border:0;background:none;color:var(--blue);text-align:left;padding:3px 0;font-weight:600}
+
+/* ---------- start / gate / banners ---------- */
+.center{max-width:560px;margin:48px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:0 12px 40px -24px rgba(18,26,51,.3)}
+.card h1{font:700 23px Poppins,Inter,sans-serif;color:var(--ink);line-height:1.25}
+.card>p{margin-top:6px}
+.card ul{list-style:none;margin-top:16px;display:grid;gap:8px;font-size:14px}
+.card li{display:flex;gap:10px}
+.card li svg{width:18px;height:18px;color:var(--ok);margin-top:2px}
+.drop{margin-top:18px;border:2px dashed var(--blue-line);border-radius:14px;padding:26px;text-align:center;background:#fafbff;cursor:pointer;transition:.15s}
+.drop:hover,.drop.over{border-color:var(--blue);background:var(--blue-soft)}
+.drop svg{width:30px;height:30px;color:var(--blue)}
+.drop b{display:block;color:var(--ink);margin-top:6px}
+.drop span{font-size:13px;color:var(--muted)}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:52px;margin-top:20px;border:1px solid #d8dce8;border-radius:12px;background:#fff;color:var(--ink);font:600 15px Inter,sans-serif;text-decoration:none}
+.gbtn:hover{border-color:var(--blue)}
+.gbtn svg{width:20px;height:20px}
+.or{display:flex;align-items:center;gap:10px;margin:16px 0 0;font-size:12.5px;color:var(--muted)}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.loading{display:flex;gap:12px;align-items:center;justify-content:center;padding:60px 16px;color:var(--muted)}
+.spin{width:22px;height:22px;border-radius:50%;border:3px solid var(--blue-soft);border-top-color:var(--blue);animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.banner{max-width:816px;margin:0 auto 12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--blue-soft);border:1px solid var(--blue-line);color:var(--ink);border-radius:12px;padding:10px 14px;font-size:13.5px}
+.banner .sp{flex:1;min-width:160px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;z-index:90;transition:.2s;display:flex;gap:12px;align-items:center;max-width:calc(100vw - 32px)}
+.toast.on{opacity:1;transform:translateX(-50%);pointer-events:auto}
+.toast button{border:0;background:none;color:#9db4ff;font-weight:700}
+.modal{position:fixed;inset:0;z-index:80;background:rgba(18,26,51,.45);display:grid;place-items:center;padding:16px}
+.modal .card{max-width:440px;width:100%}
+.modal h2{font:700 19px Poppins,Inter,sans-serif;color:var(--ink)}
+.modal p{margin-top:6px}
+.modal .acts{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+
+@media (max-width:1060px){
+  .wrap{grid-template-columns:1fr}
+  .side{position:static;height:auto;border-left:0;border-top:1px solid var(--line)}
+}
+@media (max-width:640px){
+  .top{gap:8px;padding:8px 12px}
+  .brand span,.toplink.hide-m{display:none}
+  .status{display:none}
+  .canvas{padding:10px 12px 60px}
+  .tb{top:62px}
+  .tabs button{padding:6px 10px}
+  .tbi .dl span{display:none}
+  .tbi .dl{padding:0 10px}
+}
+
+@media print{
+  html,body{background:#fff!important}
+  .top,.side,.tb,.pop,#btb,#bmenu,.nopr,.banner,.toast,.modal,.pbrk,#gate,#start{display:none!important}
+  .wrap,.canvas,.stage{display:block!important;padding:0!important;margin:0!important;background:#fff!important}
+  .pane.on{display:block!important}
+  .pane:not(.on){display:none!important}
+  .paper{box-shadow:none!important;width:auto!important;min-height:0!important;padding:0!important;zoom:1!important;border-radius:0}
+  .paper .prt{display:block!important}
+  .paper li.prt{display:list-item!important}
+  .paper mark{background:none!important;box-shadow:none!important}
+  .paper [contenteditable]:empty,.paper .opt{display:none!important}
+  .paper [contenteditable]{box-shadow:none!important;background:none!important}
+  .paper .en,.paper .bl li{break-inside:avoid}
+  .paper .ps>h2{break-after:avoid}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="/app.html#jobs"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='116' fill='%230938d5'/%3E%3Cpath d='M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z' fill='%23fff'/%3E%3Cpath d='M205 200l37 36 76-88' fill='none' stroke='%230938d5' stroke-width='30' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" alt=""><span>TrulyPlaced</span></a>
+  <div class="tabs" id="tabs" hidden><button type="button" class="on" data-a="tab" data-v="resume">Resume</button><button type="button" data-a="tab" data-v="cover">Cover letter</button></div>
+  <div class="sp"></div>
+  <span class="status" id="status" hidden><i></i><span></span></span>
+  <a class="toplink hide-m" href="/ats-check.html#mine">Resume X-ray</a>
+  <a class="toplink" href="/app.html#jobs">My jobs</a>
+</header>
+
+<div id="gate" class="center" hidden></div>
+<div id="start" class="center" hidden></div>
+<div id="boot" class="loading"><span class="spin"></span>Opening your resume…</div>
+
+<div class="wrap" id="wrap" hidden>
+  <main class="canvas" id="canvas">
+    <div class="banner" id="banner" hidden></div>
+    <div class="tb"><div class="tbi" id="tbi">
+      <button type="button" data-a="undo" data-tip="Undo" id="bUndo" aria-label="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+      <button type="button" data-a="redo" data-tip="Redo" id="bRedo" aria-label="Redo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
+      <span class="dv"></span>
+      <button type="button" data-a="pop" data-v="design" data-tip="Design" aria-label="Design"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 1 10-10c0 2.8-2.2 4-4 4h-1.5a1.5 1.5 0 0 0-1 2.6c.6.6.5 1.6-.2 2.1-.9.8-2.1 1.3-3.3 1.3z"/><circle cx="7.5" cy="10.5" r="1.2" fill="currentColor"/><circle cx="11" cy="6.5" r="1.2" fill="currentColor"/><circle cx="16" cy="8" r="1.2" fill="currentColor"/></svg></button>
+      <button type="button" data-a="pop" data-v="layout" data-tip="Layout" aria-label="Layout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></button>
+      <button type="button" data-a="pop" data-v="loc" data-tip="Open to…" aria-label="Location preferences" id="bLoc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></button>
+      <button type="button" data-a="edit" data-tip="Preview" aria-label="Preview without editing tools" id="bEdit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      <span class="dv"></span>
+      <button type="button" data-a="pop" data-v="download" class="dl" aria-label="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg><span>Download</span></button>
+    </div></div>
+    <div class="pop" id="pop" hidden></div>
+    <div class="stage" id="stage">
+      <div class="pane on" id="paneR"><div class="paper" id="paper"></div></div>
+      <div class="pane" id="paneC"><div class="paper" id="cpaper"></div></div>
+      <div id="btb" hidden>
+        <button type="button" class="add" data-a="b-add" aria-label="Add a bullet below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+        <button type="button" class="del" data-a="b-del" aria-label="Delete this bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        <button type="button" class="ai" data-a="b-ai" aria-label="Improve with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button>
+      </div>
+      <div id="bmenu" hidden>
+        <button type="button" data-a="b-mode" data-v="improve"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Improve it<small>Stronger verb, clearer wording</small></span></button>
+        <button type="button" data-a="b-mode" data-v="concise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h6"/></svg><span>Make more concise<small>Same facts, fewer words</small></span></button>
+        <button type="button" data-a="b-mode" data-v="expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 10h16M4 14h16M4 18h11"/></svg><span>Expand with more detail<small>Scope, method and result</small></span></button>
+      </div>
+    </div>
+  </main>
+  <aside class="side" id="side"></aside>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="modal" id="modal" hidden></div>
+<input type="file" id="fileIn" accept=".pdf,.docx,.txt" hidden>
+
+<script>
+'use strict';
+/* =====================================================================
+   TrulyPlaced resume editor.
+   Your resume is read on your device. Edits save to this browser and,
+   when you're signed in, to your account (the job board's match scores
+   then use the edited version). AI suggestions call our own server
+   function only when you press an improve button.
+   ===================================================================== */
+var CONFIG = {
+  SUPABASE_URL: 'https://yubgrhxdhofnynfocpef.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_1CHFJ4-tBN42ThTgDqgvpg_xcVjzpg5',
+  BOOK_CALL: 'https://calendly.com/trulyplaced/30min',
+  AI_FUNCTION: 'resume-ai'   // Supabase Edge Function (see supabase/functions/resume-ai). Until it's deployed, built-in suggestions are used.
+};
+var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
+var SBLIB = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
+var PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', PDFW = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
+    MAMMOTH = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js';
+
+var $ = function(s, r){ return (r || document).querySelector(s); };
+var $$ = function(s, r){ return [].slice.call((r || document).querySelectorAll(s)); };
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function uid(){ return Math.random().toString(36).slice(2, 9); }
+function uniq(a){ var s = {}; return a.filter(function(x){ var k = String(x).toLowerCase(); if(s[k]) return false; s[k] = 1; return true; }); }
+function lsGet(k, d){ try{ var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } }
+function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
+function ssGet(k){ try{ return sessionStorage.getItem(k); }catch(e){ return null; } }
+function ssSet(k, v){ try{ sessionStorage.setItem(k, v); }catch(e){} }
+function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+function debounce(fn, ms){ var t; return function(){ clearTimeout(t); t = setTimeout(fn, ms); }; }
+function byId(arr, id){ for(var i = 0; i < (arr || []).length; i++) if(arr[i].id === id) return arr[i]; return null; }
+function idx(arr, id){ for(var i = 0; i < (arr || []).length; i++) if(arr[i].id === id) return i; return -1; }
+var SCRIPTS = {};
+function loadScript(src){
+  return SCRIPTS[src] || (SCRIPTS[src] = new Promise(function(res, rej){
+    var s = document.createElement('script'); s.src = src; s.async = true;
+    s.onload = function(){ res(); }; s.onerror = function(){ delete SCRIPTS[src]; rej(new Error('load ' + src)); };
+    document.head.appendChild(s);
+  }));
+}
+function need(kind){
+  if(kind === 'pdf') return window.pdfjsLib ? Promise.resolve() : loadScript(PDFJS).then(function(){ pdfjsLib.GlobalWorkerOptions.workerSrc = PDFW; });
+  return window.mammoth ? Promise.resolve() : loadScript(MAMMOTH);
+}
+var toastT;
+function toast(msg, act){
+  var t = $('#toast'); t.innerHTML = '<span>' + esc(msg) + '</span>' + (act ? '<button type="button" data-a="' + act.a + '">' + esc(act.label) + '</button>' : '');
+  t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(function(){ t.classList.remove('on'); }, act ? 6000 : 3200);
+}
+
+var BUL = '•●▪◦‣∙·*–—\\-➢➤►✓✔◆■□○';
+var BUL_RX = new RegExp('^\\s*[' + BUL + ']\\s*');
+
+function readPDF(buf){
+  return pdfjsLib.getDocument({data:buf}).promise.then(function(pdf){
+    var jobs = [];
+    for(var i=1;i<=pdf.numPages;i++) jobs.push(pdf.getPage(i).then(readPage));
+    return Promise.all(jobs).then(function(pages){ return {pdf:pdf, pages:pages}; });
+  });
+}
+function readPage(page){
+  var vp = page.getViewport({scale:1});
+  return Promise.all([page.getTextContent(), page.getOperatorList()]).then(function(r){
+    var tc = r[0], ops = r[1], O = pdfjsLib.OPS, big = 0, small = 0;
+    ops.fnArray.forEach(function(f, i){
+      if(f === O.paintImageXObject || f === O.paintInlineImageXObject || f === O.paintImageXObjectRepeat){
+        var a = ops.argsArray[i] || [], w = +a[1] || 0, h = +a[2] || 0;
+        if(f === O.paintInlineImageXObject && a[0]){ w = a[0].width || 0; h = a[0].height || 0; }
+        if(w >= 90 && h >= 90) big++; else small++;
+      }
+    });
+    var items = tc.items.filter(function(it){ return typeof it.str === 'string' && it.str.length; }).map(function(it){
+      var t = pdfjsLib.Util.transform(vp.transform, it.transform);
+      var fh = Math.hypot(t[2], t[3]) || Math.abs(it.height) || 10;
+      return {str:it.str, x:t[4], y:t[5] - fh*0.82, w:Math.abs(it.width) || it.str.length*fh*0.5, h:fh};
+    });
+    return {page:page, w:vp.width, h:vp.height, items:items, big:big, small:small, lines:buildLines(items, vp.width)};
+  });
+}
+/* group text into visual lines, then split each line where there is a wide horizontal gap */
+function buildLines(items, W){
+  var its = items.filter(function(i){ return i.str.trim(); }).sort(function(a,b){ return (a.y + a.h/2) - (b.y + b.h/2) || a.x - b.x; });
+  var lines = [];
+  its.forEach(function(it){
+    var cy = it.y + it.h/2, hit = null;
+    for(var k=lines.length-1;k>=0 && k>=lines.length-3;k--){ if(Math.abs(lines[k].cy - cy) < Math.max(lines[k].h, it.h)*0.5){ hit = lines[k]; break; } }
+    if(hit){ hit.items.push(it); hit.cy = (hit.cy*hit.n + cy)/(hit.n+1); hit.n++; hit.h = Math.max(hit.h, it.h); }
+    else lines.push({items:[it], cy:cy, n:1, h:it.h});
+  });
+  lines.forEach(function(L){
+    L.items.sort(function(a,b){ return a.x - b.x; });
+    var s = '', segs = [], seg = null;
+    L.items.forEach(function(it, i){
+      var gap = i ? it.x - (L.items[i-1].x + L.items[i-1].w) : 0;
+      if(i && gap > W*0.06){ seg = null; }
+      if(i && gap > Math.max(1.2, it.h*0.12) && !/\s$/.test(s) && !/^\s/.test(it.str)) s += gap > W*0.06 ? '   ' : ' ';
+      it.o = s.length; s += it.str;
+      if(!seg){ seg = {x0:it.x, x1:it.x + it.w, items:[it]}; segs.push(seg); } else { seg.items.push(it); seg.x1 = it.x + it.w; }
+    });
+    L.text = s; L.segs = segs; L.y = Math.min.apply(null, L.items.map(function(i){ return i.y; }));
+    L.x0 = L.items[0].x; L.size = L.h;
+    segs.forEach(function(g){ g.text = g.items.map(function(i){ return i.str; }).join(' ').replace(/\s+/g,' ').trim(); });
+  });
+  return lines;
+}
+var DATEISH = /^(?:\(?\s*)?(?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\.?\s*)?(?:\d{1,2}[\/.\-])?(?:19|20)\d{2}|present|current|remote|[A-Z][a-z]+,\s*[A-Z]{2}\b/i;
+/* two-column layouts: an empty vertical "gutter" with real text on both sides, down most of the page */
+function detectColumns(pg){
+  var W = pg.w, H = pg.h, its = pg.items.filter(function(i){ return i.str.trim() && i.y > H*0.12; });
+  if(its.length < 20) return null;
+  var bins = []; for(var b=0;b<100;b++) bins.push(0);
+  its.forEach(function(it){ var a = Math.max(0, Math.floor(it.x/W*100)), z = Math.min(99, Math.floor((it.x + it.w)/W*100)); for(var k=a;k<=z;k++) bins[k]++; });
+  var best = null, run = null;
+  for(var k=20;k<=78;k++){
+    if(bins[k] === 0){ if(!run) run = {a:k, b:k}; else run.b = k; }
+    else { if(run && (!best || run.b - run.a > best.b - best.a)) best = run; run = null; }
+  }
+  if(run && (!best || run.b - run.a > best.b - best.a)) best = run;
+  if(!best) return null;
+  var split = (best.a + best.b + 1)/200*W;
+  var left = its.filter(function(i){ return i.x + i.w <= split; }), right = its.filter(function(i){ return i.x >= split; });
+  var chars = function(arr){ return arr.filter(function(i){ return !DATEISH.test(i.str.trim()); }).reduce(function(n, i){ return n + i.str.trim().length; }, 0); };
+  var span = function(arr){ if(!arr.length) return 0; var ys = arr.map(function(i){ return i.y; }); return (Math.max.apply(null, ys) - Math.min.apply(null, ys))/H; };
+  if(chars(left) < 150 || chars(right) < 150 || span(left) < 0.3 || span(right) < 0.3) return null;
+  return split;
+}
+function sideText(items){ var s = ''; items.forEach(function(it, i){ if(i){ var p = items[i-1], gap = it.x - (p.x + p.w); if(gap > Math.max(1.2, it.h*0.12) && !/\s$/.test(s) && !/^\s/.test(it.str)) s += ' '; } s += it.str; }); return s.replace(/\s+/g,' ').trim(); }
+function readDOCX(buf){
+  return mammoth.convertToHtml({arrayBuffer:buf}).then(function(r){
+    var doc = new DOMParser().parseFromString('<div>' + r.value + '</div>', 'text/html');
+    var lines = [], tables = doc.querySelectorAll('table').length, images = doc.querySelectorAll('img').length;
+    var walk = function(node, inTable){
+      [].forEach.call(node.children, function(el){
+        var tag = el.tagName;
+        if(tag === 'TABLE'){ lines.push({t:'', tblStart:true}); walk(el, true); lines.push({t:'', tblEnd:true}); return; }
+        if(/^(P|H[1-6]|LI)$/.test(tag)){
+          var t = el.textContent.replace(/\s+/g,' ').trim();
+          if(t) lines.push({t:t, bullet:tag === 'LI', head:/^H/.test(tag), tbl:inTable, bold:!!el.querySelector('strong') && el.querySelector('strong').textContent.trim() === t});
+          if(tag === 'LI'){ [].forEach.call(el.children, function(c){ if(/^(UL|OL)$/.test(c.tagName)) walk(c, inTable); }); }
+          return;
+        }
+        walk(el, inTable);
+      });
+    };
+    walk(doc.body.firstChild, false);
+    return {lines:lines.filter(function(l){ return l.t; }), rawLines:lines, tables:tables, images:images};
+  });
+}
+
+/* =====================================================================
+   2. LANGUAGE DATA
+   ===================================================================== */
+var HEADS = [
+  ['summary', /^((professional|career|executive|personal) )?(summary|profile)$|^about( me)?$|^(career )?objective$|^overview$|^summary of qualifications$|^professional overview$/i],
+  ['experience', /^((work|professional|employment|relevant|industry) )?(experience|history)$|^employment( history)?$|^career history$|^work history$|^experience$/i],
+  ['education', /^education( (&|and) (training|certifications?))?$|^academic (background|qualifications?|details)$|^academics$|^educational qualifications?$|^qualifications$/i],
+  ['skills', /^((technical|core|key|professional|relevant) )?(skills|competenc(ies|e))( (&|and) (tools|technologies|interests|expertise))?$|^technologies$|^tech(nical)? stack$|^tools( (&|and) technologies)?$|^areas of expertise$|^expertise$|^technical proficienc(y|ies)$/i],
+  ['projects', /^((academic|personal|key|selected|notable) )?projects$/i],
+  ['certifications', /^(certifications?|licen[cs]es( (&|and) certifications?)?|courses|training|certificates|certifications (&|and) (training|courses))$/i],
+  ['awards', /^(awards( (&|and) (honou?rs|achievements))?|honou?rs( (&|and) awards)?|achievements|accomplishments)$/i],
+  ['personal', /^personal (details|information|profile|data)$|^personal$/i],
+  ['declaration', /^declaration$/i],
+  ['other', /^(contact( (details|information|info|me))?|get in touch|volunteer(ing)?( experience| work)?|publications|languages|interests|hobbies( (&|and) interests)?|extra[- ]?curricular( activities)?|activities|leadership( experience)?|references)$/i]
+];
+function headKind(t){
+  var s = String(t).replace(/[:|•\-–—_]+\s*$/,'').trim();
+  if(!s || s.length > 42 || s.split(/\s+/).length > 5 || !/^[A-Z0-9]/.test(s)) return null;
+  for(var i=0;i<HEADS.length;i++) if(HEADS[i][1].test(s)) return HEADS[i][0];
+  return null;
+}
+var VERBS = ('accelerated achieved acquired adapted administered advised advocated analysed analyzed architected arranged assembled assessed audited authored automated balanced benchmarked boosted briefed budgeted built calculated campaigned captured centralized centralised championed changed chaired clarified closed coached collaborated compiled completed composed computed conceived conceptualized condensed conducted configured consolidated constructed consulted contracted contributed controlled converted convinced coordinated corrected counseled created cultivated curated customized cut debugged decreased defined delegated delivered demonstrated deployed designed detected determined developed devised diagnosed directed discovered documented doubled drafted drove earned edited educated eliminated enabled encouraged engineered enhanced established estimated evaluated examined exceeded executed expanded expedited experimented facilitated finalized forecasted formalized formed formulated founded gained generated grew guided halved handled headed hired identified implemented improved incorporated increased influenced initiated innovated inspected installed instituted instructed integrated interpreted interviewed introduced invented investigated launched led leveraged lifted lowered maintained managed mapped marketed maximized measured mediated mentored merged migrated minimized mobilized modeled modelled modernized monitored motivated negotiated onboarded operated optimized optimised orchestrated organized organised originated outperformed overhauled oversaw owned partnered performed persuaded piloted pioneered planned predicted prepared presented prioritized processed produced programmed projected promoted proposed prototyped proved provided published purchased raised ran rebuilt recommended reconciled recruited redesigned reduced refactored refined reorganized replaced reported represented researched resolved restructured revamped reviewed revised revitalized saved scaled scheduled scoped screened secured segmented selected served shaped shipped simplified sold solved spearheaded standardized started steered streamlined strengthened structured supervised surpassed synthesized systematized tested trained transformed translated tripled troubleshot tuned uncovered unified upgraded validated verified visualized won wrote').split(' ');
+var VERBSET = {}; VERBS.forEach(function(v){ VERBSET[v] = 1; });
+var WEAK = [
+  ['responsible for', 'Owned'], ['duties included', 'Handled'], ['duties include', 'Handled'], ['worked on', 'Built'], ['working on', 'Built'],
+  ['helped with', 'Supported'], ['helped to', 'Supported'], ['helped', 'Supported'], ['assisted in', 'Supported'], ['assisted with', 'Supported'], ['assisted', 'Supported'],
+  ['tasked with', 'Owned'], ['involved in', 'Contributed to'], ['participated in', 'Contributed to'], ['in charge of', 'Led'], ['handled', 'Managed'],
+  ['was part of', 'Contributed to'], ['part of a team', 'Worked with a team'], ['exposure to', 'Used'], ['familiar with', 'Used'], ['knowledge of', 'Applied']
+];
+var GERUND = {managing:'Managed',developing:'Developed',creating:'Created',leading:'Led',handling:'Handled',maintaining:'Maintained',building:'Built',designing:'Designed',coordinating:'Coordinated',analyzing:'Analyzed',analysing:'Analysed',preparing:'Prepared',ensuring:'Ensured',supporting:'Supported',monitoring:'Monitored',testing:'Tested',writing:'Wrote',running:'Ran',overseeing:'Oversaw',conducting:'Conducted',implementing:'Implemented',providing:'Provided',tracking:'Tracked',reviewing:'Reviewed',training:'Trained',planning:'Planned',executing:'Executed',generating:'Generated',improving:'Improved',reducing:'Reduced',collaborating:'Collaborated',automating:'Automated',delivering:'Delivered',organizing:'Organized',organising:'Organised',reporting:'Reported',resolving:'Resolved',optimizing:'Optimized',drafting:'Drafted',researching:'Researched',onboarding:'Onboarded',mentoring:'Mentored',deploying:'Deployed',migrating:'Migrated',launching:'Launched',negotiating:'Negotiated',selling:'Sold',recruiting:'Recruited',scheduling:'Scheduled',updating:'Updated',cleaning:'Cleaned',processing:'Processed',creating:'Created',making:'Made',setting:'Set up',documenting:'Documented',identifying:'Identified',integrating:'Integrated',debugging:'Debugged',configuring:'Configured',administering:'Administered'};
+var FAMILY = [
+  [/^(built|developed|designed|created|engineered|implemented|launched|shipped|automated|architected|prototyped|programmed|deployed|configured|integrated|rebuilt|redesigned|refactored|wrote|authored|produced|established|founded|instituted|introduced|invented|set)/, ' — used by [__ users / teams]', ' — saving [__ hours a week]'],
+  [/^(improved|increased|reduced|optimi[sz]ed|streamlined|accelerated|cut|grew|boosted|lowered|lifted|doubled|tripled|halved|enhanced|maximi[sz]ed|minimi[sz]ed|upgraded|modernized|revamped|simplified|strengthened|expanded)/, ' by [__%]', ' from [__] to [__]'],
+  [/^(led|managed|directed|mentored|coordinated|supervised|oversaw|headed|chaired|trained|coached|guided|hired|recruited|onboarded|orchestrated|ran|owned|steered|spearheaded)/, ' — a team of [__]', ' across [__ projects / markets]'],
+  [/^(analy[sz]ed|evaluated|researched|modell?ed|forecasted|audited|identified|assessed|investigated|measured|examined|tested|validated|benchmarked|reviewed|mapped|uncovered|discovered|diagnosed)/, ', leading to [the decision / saving it drove]', ' covering [__ records / accounts]'],
+  [/^(sold|negotiated|closed|generated|won|secured|acquired|raised|earned|exceeded|surpassed|marketed|promoted|campaigned|partnered)/, ' worth [$__]', ' — [__%] of target']
+];
+var BUZZ = ['team player','hard-working','hardworking','hard working','detail-oriented','detail oriented','results-driven','results driven','results-oriented','go-getter','self-starter','self starter','think outside the box','out of the box','synergy','dynamic individual','passionate about','highly motivated','self-motivated','excellent communication skills','good communication skills','proven track record','fast learner','quick learner','multitasker','multi-tasking','goal-oriented','goal oriented','strategic thinker','go-to person','rockstar','ninja','guru','wheelhouse','best of breed','value add','dedicated professional','sincere','punctual','honest and hardworking'];
+var PERSONAL = [
+  ['Date of birth', /\b(date of birth|d\.?\s?o\.?\s?b\.?|born on)\b/i],
+  ['Age', /\bage\s*[:\-]\s*\d{2}\b/i],
+  ['Marital status', /\bmarital status\b|\b(married|unmarried)\b/i],
+  ['Gender', /\b(gender|sex)\s*[:\-]/i],
+  ['Nationality', /\bnationality\b/i],
+  ['Religion', /\breligion\b/i],
+  ['Caste', /\bcaste\b/i],
+  ["Parent's name", /\b(father'?s|mother'?s|husband'?s|spouse'?s)\s+name\b/i],
+  ['Passport number', /\bpassport\s*(no|number|#)\b/i],
+  ['Languages known (as a personal detail)', /\blanguages known\b/i]
+];
+var DECL = /\b(i\s+hereby\s+declare|hereby declare|declaration\s*:?|the above (information|details) (is|are) (true|correct))/i;
+var REFS = /\breferences (are )?(available )?(up)?on request\b/i;
+var BRIT = ['organise','organisation','optimise','optimisation','analyse','prioritise','utilise','standardise','customise','minimise','maximise','realise','specialise','recognise','colour','behaviour','centre','programme','modelling','labelled','travelled','licence','favour','honour','catalogue','cancelled','enrol','judgement','fulfil'];
+var SKILLS = [
+ ['Python','python'],['Java','java'],['JavaScript','javascript','js'],['TypeScript','typescript'],['C++','c++'],['C#','c#'],['Go','golang'],['Rust','rust'],
+ ['Ruby','ruby'],['PHP','php'],['Scala','scala'],['Kotlin','kotlin'],['Swift','swift'],['SQL','sql'],['NoSQL','nosql'],['Bash','bash','shell scripting'],
+ ['React','react','react.js','reactjs'],['Angular','angular'],['Vue','vue','vue.js'],['Next.js','next.js','nextjs'],['Node.js','node.js','nodejs'],
+ ['Django','django'],['Flask','flask'],['FastAPI','fastapi'],['Spring','spring boot','spring'],['Rails','rails','ruby on rails'],['GraphQL','graphql'],
+ ['REST APIs','rest api','restful','rest apis'],['HTML','html'],['CSS','css'],['iOS','ios'],['Android','android'],['React Native','react native'],['Flutter','flutter'],
+ ['AWS','aws','amazon web services'],['GCP','gcp','google cloud'],['Azure','azure'],['Kubernetes','kubernetes','k8s'],['Docker','docker'],['Terraform','terraform'],
+ ['Linux','linux'],['CI/CD','ci/cd','continuous integration'],['Microservices','microservices'],['Distributed systems','distributed systems'],
+ ['Snowflake','snowflake'],['dbt','dbt'],['Airflow','airflow'],['Dagster','dagster'],['Spark','spark','pyspark'],['Kafka','kafka'],['Databricks','databricks'],
+ ['BigQuery','bigquery'],['Redshift','redshift'],['PostgreSQL','postgres','postgresql'],['MySQL','mysql'],['MongoDB','mongodb'],['Redis','redis'],
+ ['Elasticsearch','elasticsearch'],['ETL','etl','elt'],['Reverse ETL','reverse etl'],['Data modeling','data modeling','data modelling'],['Data pipelines','data pipelines','data pipeline'],
+ ['Pandas','pandas'],['NumPy','numpy'],['scikit-learn','scikit-learn','sklearn'],['Tableau','tableau'],['Looker','looker'],['Power BI','power bi'],['Excel','excel'],
+ ['Statistics','statistics','statistical'],['A/B testing','a/b test','a/b testing','experimentation'],['R','r programming'],
+ ['Machine learning','machine learning'],['Deep learning','deep learning'],['PyTorch','pytorch'],['TensorFlow','tensorflow'],['NLP','nlp','natural language processing'],
+ ['Computer vision','computer vision'],['LLMs','llm','llms','large language model'],['Generative AI','generative ai','genai'],['RAG','retrieval augmented','rag'],['MLOps','mlops'],
+ ['Product strategy','product strategy'],['User research','user research'],['Figma','figma'],['Prototyping','prototyping'],['Design systems','design systems','design system'],
+ ['Jira','jira'],['Agile','agile'],['Scrum','scrum'],['OKRs','okrs','okr'],['Roadmapping','roadmapping','product roadmap'],
+ ['Salesforce','salesforce'],['HubSpot','hubspot'],['CRM','crm'],['SaaS','saas'],['B2B','b2b'],['Enterprise sales','enterprise sales'],['Prospecting','prospecting'],
+ ['Pipeline management','pipeline management'],['Negotiation','negotiation'],['SEO','seo'],['SEM','sem','paid search'],['Google Analytics','google analytics'],
+ ['Content marketing','content marketing'],['Email marketing','email marketing','lifecycle marketing'],['Marketo','marketo'],['Demand generation','demand generation','demand gen'],
+ ['Go-to-market','go-to-market','gtm'],['Financial modeling','financial modeling','financial modelling'],['Forecasting','forecasting'],['Budgeting','budgeting'],
+ ['FP&A','fp&a'],['GAAP','gaap'],['SOX','sox'],['NetSuite','netsuite'],['SAP','sap'],['ERP','erp'],['Supply chain','supply chain'],['Procurement','procurement'],
+ ['IAM','iam','identity and access'],['SOC 2','soc 2','soc2'],['Penetration testing','penetration testing','pentest'],['SIEM','siem'],['Incident response','incident response'],
+ ['Threat modeling','threat modeling'],['Cryptography','cryptography'],['Workday','workday'],['Recruiting','recruiting','talent acquisition'],['Stakeholder management','stakeholder management']
+];
+var SKRX = SKILLS.map(function(s){ return {name:s[0], rx:s.slice(1).map(function(t){ return new RegExp('(^|[^a-z0-9+#])' + t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '(?=$|[^a-z0-9+#])', 'i'); })}; });
+function skillsIn(text){ return SKRX.filter(function(s){ return s.rx.some(function(r){ return r.test(text); }); }).map(function(s){ return s.name; }); }
+var STOP = {}; ('a about above after again against all am an and any are as at be because been before being below between both but by can cannot could did do does doing down during each few for from further had has have having he her here hers him his how i if in into is it its me more most my no nor not of off on once only or other our out over own same she should so some such than that the their them then there these they this those through to too under until up very was we were what when where which while who whom why with would you your will shall may might must able across among etc per via role job jobs work working position candidate candidates company team teams within strong excellent good great ability including include includes required requires requirement requirements responsibilities responsibility preferred plus years year experience skill skills knowledge understanding familiarity proficient proficiency demonstrated proven ideal successful opportunity environment business new well also help support ensure provide deliver drive build manage develop create us we our looking seeking join you’ll you’re we’re what we’d love bonus nice have has using use used day days like make more other best based help hire hiring based remote office hybrid full time part benefits salary pay range equal employer applicants status regard race color religion sex gender identity national origin disability veteran protected law data growth product products decisions leaders findings actions field fast growing turn recommend present design analyze analyse closely partner partners across cross-functional world class mission values culture people customers users').split(/\s+/).forEach(function(w){ STOP[w] = 1; });
+
+/* =====================================================================
+   3. ANALYSIS
+   ===================================================================== */
+var EMAIL = /[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,}/gi;
+var LINKEDIN = /(https?:\/\/)?(www\.)?linkedin\.com\/in\/[A-Za-z0-9_\-%]+\/?/gi;
+var WEB = /\b(https?:\/\/[^\s|,]+|(www\.)?github\.com\/[\w\-]+|[a-z0-9\-]+\.(dev|io|me|site|tech|design|portfolio)(\/[\w\-]*)?)\b/gi;
+var PHONE = /(?:\+?\d{1,3}[\s.\-]?)?(?:\(\d{2,4}\)[\s.\-]?)?\d[\d\s.\-]{5,14}\d/g;
+var US_ST = 'AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|DC';
+var LOC = new RegExp('\\b([A-Z][a-zA-Z.]+(?:[ \\-][A-Z][a-zA-Z.]+){0,2}),\\s*(' + US_ST + '|ON|BC|QC|AB|NSW|VIC|QLD|WA|India|USA|U\\.S\\.A?\\.?|United States|Canada|UK|U\\.K\\.|United Kingdom|England|Australia|Ireland|Germany|Singapore|UAE)\\b');
+var RANGE = /((?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\.?\s*|\d{1,2}[\/.\-]\s*)?((?:19|20)\d{2})\s*(?:–|—|-|to|until|till)\s*(?:((?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\.?\s*|\d{1,2}[\/.\-]\s*)?((?:19|20)\d{2})|(present|current|now|today|date|ongoing))/gi;
+var METRIC = /(?:[$£€₹]\s?\d[\d,.]*\s?(?:k|m|mm|bn|b|million|billion|lakh|crore|cr)?\b|\b\d[\d,.]*\s?%|\b\d[\d,.]*\s?(?:x|k|m|bn|million|billion|lakh|crore|hours?|hrs?|days?|weeks?|months?|minutes?|mins?|users?|customers?|clients?|people|members|engineers|accounts|records|rows|reports|dashboards|projects|stores|countries|markets|languages|apps?|models|teams?|stakeholders|tickets|transactions|leads|deals|sites|servers|pipelines)\b|\b(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|fifty|hundred|thousands|hundreds|dozens|millions)\b\s+(?:\w+\s+){0,2}?(?:users?|customers?|clients?|people|members|engineers|accounts|projects|teams?|countries|markets|stakeholders|reports|stores)|\b\d{2,}\b)/gi;
+function stripYears(t){ return t.replace(RANGE, ' ').replace(/\b(19|20)\d{2}\b/g, ' '); }
+function hasMetric(t){ METRIC.lastIndex = 0; return METRIC.test(stripYears(t)); }
+var MON = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,sept:8,oct:9,nov:10,dec:11};
+function ranges(text){
+  var out = [], m, now = new Date(), cy = now.getFullYear() + now.getMonth()/12;
+  RANGE.lastIndex = 0;
+  while((m = RANGE.exec(text))){
+    var mon = function(s){ if(!s) return null; s = s.toLowerCase().trim(); var a = /^([a-z]+)/.exec(s); if(a){ var k = a[1].slice(0, a[1] === 'sept' ? 4 : 3); return MON[k] != null ? MON[k] : null; } var n = parseInt(s, 10); return n >= 1 && n <= 12 ? n-1 : null; };
+    var m1 = mon(m[1]), y1 = +m[2], m2 = mon(m[3]), y2 = m[4] ? +m[4] : null;
+    var a = y1 + (m1 != null ? m1/12 : 0), b = y2 != null ? y2 + (m2 != null ? m2/12 : (m1 != null ? 11/12 : 0)) : cy;
+    if(y2 != null && m2 == null && m1 == null) b = y2;   // "2019 – 2021": whole years
+    if(b >= a && a > cy - 50 && b <= cy + 0.1) out.push({a:a, b:b, raw:m[0], fmt: m[1] ? (/^\d/.test(m[1]) ? 'MM/YYYY' : (m[1].trim().length > 4 ? 'Month YYYY' : 'Mon YYYY')) : 'YYYY'});
+  }
+  return out;
+}
+function totalYears(rs){
+  if(!rs.length) return null;
+  var s = rs.map(function(r){ return [r.a, r.b]; }).sort(function(x,y){ return x[0]-y[0]; }), merged = [];
+  s.forEach(function(r){ var L = merged[merged.length-1]; if(L && r[0] <= L[1]) L[1] = Math.max(L[1], r[1]); else merged.push(r.slice()); });
+  var t = merged.reduce(function(n, r){ return n + (r[1]-r[0]); }, 0);
+  return Math.round(t*2)/2;
+}
+var ROLEWORD = /\b(engineer|developer|analyst|manager|designer|scientist|consultant|specialist|associate|intern|lead|architect|administrator|coordinator|officer|executive|director|accountant|recruiter|marketer|strategist|programmer|technician|advisor|representative|assistant|head|vp|president|founder|product owner|researcher|writer|editor|teacher|nurse|tester|qa|sre|devops)\b/i;
+var DEGREE = [[5, /\b(ph\.?\s?d|doctorate|doctor of)\b/i],[4, /\b(master'?s?|m\.?\s?s\.?c?\b|m\.?\s?tech|m\.?\s?e\.?\b|mba|m\.?b\.?a|m\.?\s?a\.?\b|mca|m\.?com|pgdm|post\s?graduate)\b/i],[3, /\b(bachelor'?s?|b\.?\s?s\.?c?\b|b\.?\s?tech|b\.?\s?e\.?\b|b\.?\s?a\.?\b|bca|b\.?\s?com|bba|b\.?\s?eng|undergraduate degree)\b/i],[2, /\b(associate'?s? degree|diploma)\b/i],[1, /\b(high school|secondary school|hsc|ssc|12th|10th)\b/i]];
+var DEGNAME = {5:'Doctorate',4:"Master's",3:"Bachelor's",2:'Associate / Diploma',1:'High school'};
+
+function sectionsOf(lines){
+  var secs = [], cur = null;
+  lines.forEach(function(L, i){
+    var k = headKind(L.t) || (L.head && i > 1 ? 'other' : null);
+    if(k && !L.bullet){ cur = {k:k, title:L.t, start:i, end:lines.length}; if(secs.length) secs[secs.length-1].end = i; secs.push(cur); L.isHead = k; }
+  });
+  return secs;
+}
+function linesIn(lines, secs, keys){
+  var out = []; secs.forEach(function(s){ if(keys.indexOf(s.k) > -1) for(var i=s.start+1;i<s.end;i++) out.push(lines[i]); }); return out;
+}
+function findBullets(lines, secs){
+  var scope = linesIn(lines, secs, ['experience','projects']);
+  if(!scope.length) scope = lines.filter(function(L){ return !L.isHead; }).slice(3);
+  var hasMarks = scope.some(function(L){ return L.bullet || BUL_RX.test(L.t); });
+  var out = [], cur = null;
+  scope.forEach(function(L){
+    var t = L.t.trim(); if(!t || L.isHead) return;
+    var marked = L.bullet || BUL_RX.test(t);
+    var roleish = ranges(t).length || (t.length < 90 && ROLEWORD.test(t) && !/[.;]$/.test(t) && t.split(' ').length <= 12) || DATEISH.test(t.split('   ').pop()) && t.length < 80;
+    if(marked){ cur = {t:t.replace(BUL_RX, '').trim(), line:L}; out.push(cur); return; }
+    if(!hasMarks){ if(!roleish && t.split(/\s+/).length >= 7){ cur = {t:t, line:L}; out.push(cur); } else cur = null; return; }
+    if(cur && !roleish && (/^[a-z(,&]/.test(t) || !/[.!?]$/.test(cur.t)) && t.split(/\s+/).length < 30) cur.t += ' ' + t;
+    else cur = null;
+  });
+  return out.filter(function(b){ return b.t.split(/\s+/).length >= 4; });
+}
+function gradeBullet(b){
+  var s = b.t.replace(/\s+/g,' ').trim(), low = s.toLowerCase();
+  var words = s.split(' '), wc = words.length, first = (words[0]||'').toLowerCase().replace(/[^a-z]/g,'');
+  var weak = null; WEAK.some(function(w){ if(low.indexOf(w[0]) === 0 || (low.indexOf(' ' + w[0] + ' ') > -1 && low.indexOf(' ' + w[0] + ' ') < 25)){ weak = w; return true; } return false; });
+  var strong = !!VERBSET[first];
+  var okVerb = !strong && /ed$/.test(first) && first.length > 4;
+  var metric = hasMetric(s);
+  var pron = /\b(i|my|me)\b/i.test(s.replace(/\bi\.e\./ig,''));
+  var buzz = BUZZ.filter(function(z){ return low.indexOf(z) > -1; });
+  var sc = 20, iss = [];
+  if(strong){ sc += 30; iss.push(['g','Strong opening verb']); }
+  else if(okVerb){ sc += 18; }
+  else if(!weak){ iss.push(['a','Doesn’t open with an action verb']); }
+  if(weak){ sc -= 12; iss.push(['r','Weak opener: “' + weak[0] + '”']); }
+  if(metric){ sc += 35; iss.push(['g','Shows a number']); } else iss.push(['r','No result or number']);
+  if(wc >= 10 && wc <= 30) sc += 15; else if(wc > 30 && wc <= 40){ sc += 5; iss.push(['a', wc + ' words — trim it']); } else if(wc > 40){ sc -= 10; iss.push(['r', wc + ' words — too long']); } else { sc -= 8; iss.push(['a','Very short — add context']); }
+  if(pron){ sc -= 8; iss.push(['a','Uses “I/my”']); }
+  if(buzz.length){ sc -= 6; iss.push(['a','Cliché: “' + buzz[0] + '”']); }
+  sc = Math.max(0, Math.min(100, sc));
+  var grade = sc >= 85 ? 'A' : sc >= 65 ? 'B' : sc >= 45 ? 'C' : 'D';
+  return {t:s, score:sc, grade:grade, issues:iss, weak:weak, strong:strong, metric:metric, verb:strong ? first : null, rewrite: rewrite(s, weak, metric, strong || okVerb), wc:wc};
+}
+function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+function rewrite(s, weak, metric, verbOk){
+  if(metric && verbOk && !weak) return null;
+  var r = s.replace(/[.;]\s*$/,'');
+  if(weak){
+    var re = new RegExp('^(.*?)\\b' + weak[0].replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '\\b\\s*', 'i');
+    var rest = r.replace(re, '');
+    var g = /^(\w+ing)\b\s*/.exec(rest);
+    if(g && GERUND[g[1].toLowerCase()]) r = GERUND[g[1].toLowerCase()] + ' ' + rest.slice(g[0].length);
+    else r = weak[1] + ' ' + rest.replace(/^the\b/i, 'the');
+  } else if(!verbOk){
+    r = '[Action verb] ' + r.charAt(0).toLowerCase() + r.slice(1);
+  }
+  r = cap(r.trim());
+  if(!metric){
+    var v = r.split(' ')[0].toLowerCase(), add = ', [add the result: by __%, $__ or __ users]';
+    FAMILY.some(function(f){ if(f[0].test(v)){ add = f[1]; return true; } return false; });
+    r += add;
+  }
+  return r + '.';
+}
+
+function jdParts(jd){
+  var lines = jd.split(/\n+/).map(function(l){ return l.trim(); }).filter(Boolean), req = [], nice = [], mode = 'req';
+  lines.forEach(function(l){
+    var h = l.replace(/[:：]\s*$/,'');
+    if(h.length < 60 && /(preferred|nice[- ]to[- ]have|bonus|plus|desired|good to have|would be great|extra credit)/i.test(h) && !/[.]$/.test(h)){ mode = 'nice'; return; }
+    if(h.length < 60 && /(requirement|qualification|must[- ]have|what you('|’)?ll (bring|need)|you have|who you are|what we('|’)?re looking for|about you|minimum|basic)/i.test(h) && !/[.]$/.test(h)){ mode = 'req'; return; }
+    (mode === 'nice' ? nice : req).push(l);
+  });
+  return {req:req.join('\n'), nice:nice.join('\n'), title: (lines[0] || '').replace(/^(job\s*title|position|role)\s*[:\-]\s*/i,'').split(/\s[—–|]\s|\s-\s|\s\(/)[0].trim().slice(0, 90)};
+}
+function kwFrom(text){
+  var ws = (text.toLowerCase().match(/[a-z][a-z0-9+#.\-/]{1,}/g) || []).map(function(w){ return w.replace(/^[.\-/]+|[.\-/]+$/g,''); }).filter(function(w){ return w.length >= 3; });
+  var f = {};
+  ws.forEach(function(w){ if(STOP[w] || /^\d/.test(w)) return; f[w] = (f[w]||0) + 1; });
+  for(var i=0;i<ws.length-1;i++){ var a = ws[i], b = ws[i+1]; if(STOP[a] || STOP[b]) continue; f[a+' '+b] = (f[a+' '+b]||0) + 1.5; }
+  return Object.keys(f).map(function(k){ return {k:k, n:f[k]}; }).filter(function(o){ return o.n >= (o.k.indexOf(' ') > -1 ? 2.5 : 2); })
+    .sort(function(a,b){ return b.n - a.n; })
+    .filter(function(o, i, arr){ if(o.k.indexOf(' ') > -1) return true; return !arr.some(function(p){ return p.k.indexOf(' ') > -1 && p.n >= o.n && p.k.split(' ').indexOf(o.k) > -1; }); })
+    .slice(0, 16).map(function(o){ return o.k; });
+}
+function inText(term, low){
+  var t = term.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  return new RegExp('(^|[^a-z0-9+#])' + t + '(s|es)?(?=$|[^a-z0-9+#])', 'i').test(low);
+}
+function jdYears(t){
+  var m = /(\d{1,2})\s*\+?\s*(?:-|–|to)?\s*(?:\d{1,2})?\s*\+?\s*(?:years?|yrs?)\b[^.\n]{0,70}?(?:experience|industry|professional|relevant|working|hands-on|in (?:a|an|the)\b|of)/i.exec(t) || /(?:experience)\b[^.\n]{0,30}?(\d{1,2})\s*\+?\s*(?:years?|yrs?)/i.exec(t);
+  var n = m ? +m[1] : null; return n && n <= 20 ? n : null;
+}
+var TSTOP = /\b(senior|sr|junior|jr|staff|principal|lead|head|of|and|the|ii|iii|iv|i|new|grad|associate|intern|remote|us|usa|hybrid|onsite|full|time|contract|f|m|x)\b/gi;
+function tTok(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(TSTOP,' ').split(/\s+/).filter(function(w){ return w.length > 1; }); }
+
+
+
+/* editor-specific tweaks to the shared wording rules */
+WEAK.forEach(function(w){ if(w[0] === 'worked on' || w[0] === 'working on') w[1] = 'Delivered'; });
+var PUA_BUL = /[]/g;
+
+/* =====================================================================
+   1. WHERE THE RESUME COMES FROM — the file you added on the job board or X-ray
+   ===================================================================== */
+var RESUME_DB = {
+  go:function(mode, fn){ return new Promise(function(res, rej){ try{
+      var r = indexedDB.open('trulyplaced', 1);
+      r.onupgradeneeded = function(){ if(!r.result.objectStoreNames.contains('kv')) r.result.createObjectStore('kv'); };
+      r.onerror = function(){ rej(r.error); };
+      r.onsuccess = function(){ var db = r.result; try{
+          var t = db.transaction('kv', mode), q = fn(t.objectStore('kv'));
+          t.oncomplete = function(){ db.close(); res(q && q.result); }; t.onerror = function(){ db.close(); rej(t.error); };
+        }catch(e){ db.close(); rej(e); } };
+    }catch(e){ rej(e); } }); },
+  get:function(){ return RESUME_DB.go('readonly', function(st){ return st.get('resume'); }); },
+  set:function(v){ return RESUME_DB.go('readwrite', function(st){ return st.put(v, 'resume'); }); }
+};
+function storedSession(){
+  try{
+    for(var i = 0; i < localStorage.length; i++){
+      var k = localStorage.key(i);
+      if(/^sb-.*-auth-token$/.test(k)){ var t = JSON.parse(localStorage.getItem(k) || 'null'); if(t && t.user && (t.refresh_token || t.access_token)) return t; }
+    }
+  }catch(e){}
+  return null;
+}
+function previewUser(){ var d = lsGet('tp_app_v1', null); return d && d.user ? d : null; }   // the job board's preview mode (no Supabase keys)
+var SESSION0 = LIVE ? storedSession() : null;
+var PREVIEW = !LIVE ? previewUser() : null;
+var USER = SESSION0 ? {id:SESSION0.user.id, email:SESSION0.user.email || '', name:((SESSION0.user.user_metadata || {}).full_name || (SESSION0.user.user_metadata || {}).name || '')}
+         : PREVIEW ? {id:PREVIEW.user.id, email:PREVIEW.user.email || '', name:PREVIEW.user.name || ''} : null;
+var PROFILE = PREVIEW ? (PREVIEW.profile || {}) : ((lsGet('tp_acct', null) || {}).profile || {});
+
+var sb = null, lockQ = Promise.resolve();
+function pageLock(name, timeout, fn){ var run = lockQ.then(function(){ return fn(); }); lockQ = run.then(function(){}, function(){}); return run; }
+function sbReady(){
+  if(!LIVE) return Promise.resolve(null);
+  if(sb) return Promise.resolve(sb);
+  return loadScript(SBLIB).then(function(){
+    if(!sb) sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY, {auth:{flowType:'pkce', persistSession:true, detectSessionInUrl:false, lock:pageLock}});
+    return sb;
+  });
+}
+function session(){ return sbReady().then(function(c){ return c ? c.auth.getSession().then(function(r){ return r.data && r.data.session; }) : null; }).catch(function(){ return null; }); }
+function fetchProfile(){
+  if(!LIVE) return Promise.resolve(PROFILE);
+  return session().then(function(s){
+    if(!s) return null;
+    USER = {id:s.user.id, email:s.user.email || '', name:((s.user.user_metadata || {}).full_name || (s.user.user_metadata || {}).name || '')};
+    return sb.from('profiles').select('*').eq('id', s.user.id).maybeSingle().then(function(r){ if(r.data) PROFILE = r.data; return PROFILE; });
+  }).catch(function(){ return PROFILE; });
+}
+function source(){
+  return RESUME_DB.get().catch(function(){ return null; }).then(function(v){
+    if(v && v.buf) return {kind:v.kind, name:v.name || 'resume', buf:v.buf, text:v.text || '', at:v.at || 0};
+    var l = lsGet('tp_resume_local', null);
+    if(l && l.text && l.from !== 'editor') return {kind:'text', name:l.name || 'resume', text:l.text, at:l.at || 0};
+    return null;
+  });
+}
+
+/* =====================================================================
+   2. TURNING THE FILE INTO EDITABLE SECTIONS
+   ===================================================================== */
+function clean(t){ return String(t || '').replace(PUA_BUL, '•').replace(/\s{3,}/g, '   ').trim(); }
+function linesFrom(src){
+  if(src.kind === 'pdf') return need('pdf').then(function(){ return readPDF(src.buf.slice(0)); }).then(function(r){
+    var out = [];
+    r.pages.forEach(function(pg){
+      var split = detectColumns(pg);
+      if(split){
+        var head = [], left = [], right = [];
+        pg.lines.forEach(function(L){
+          if(L.y < pg.h*0.12){ head.push({t:clean(L.text)}); return; }
+          var l = sideText(L.items.filter(function(i){ return i.x < split; })), rr = sideText(L.items.filter(function(i){ return i.x >= split; }));
+          if(l) left.push({t:clean(l)}); if(rr) right.push({t:clean(rr)});
+        });
+        out = out.concat(head, left, right); out.columns = true;
+      } else pg.lines.forEach(function(L){ out.push({t:clean(L.text)}); });
+    });
+    if(r.pages.some(function(pg){ return detectColumns(pg); })) out.columns = true;
+    return out;
+  });
+  if(src.kind === 'docx') return need('docx').then(function(){ return readDOCX(src.buf.slice(0)); }).then(function(r){
+    return r.lines.map(function(l){ return {t:clean(l.t), bullet:l.bullet, head:l.head}; });
+  });
+  var txt = src.text || (src.buf ? new TextDecoder().decode(src.buf) : '');
+  return Promise.resolve(txt.split(/\r?\n/).map(function(t){ return {t:clean(t)}; }));
+}
+var EM1 = /[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,}/i, PH1 = /(?:\+?\d{1,3}[\s.\-]?)?(?:\(\d{2,4}\)[\s.\-]?)?\d[\d\s.\-]{6,14}\d/,
+    URL1 = /(https?:\/\/|www\.)|\b[a-z0-9\-]+\.(com|dev|io|me|site|tech|design|net|org|in)\b(\/\S*)?/i;
+function isContact(p){ return EM1.test(p) || PH1.test(p) || URL1.test(p) || /linkedin|github/i.test(p); }
+function pieces(t){ return t.split(/\s{3,}|\s*[|•·◆♦]\s*|\s+[–—]\s+/).map(function(s){ return s.trim(); }).filter(Boolean); }
+function nameCase(s){ return /[a-z]/.test(s) ? s : s.toLowerCase().replace(/(^|[\s\-'.])([a-z])/g, function(m, a, b){ return a + b.toUpperCase(); }); }
+function titleCase(s){ s = s.replace(/[:|•\-–—_]+\s*$/, '').trim(); return /[a-z]/.test(s) ? s : nameCase(s); }
+function headerish(t){
+  return ranges(t).length > 0 || (t.length < 90 && ROLEWORD.test(t) && !/[.;]$/.test(t) && t.split(/\s+/).length <= 12) || (t.length < 80 && DATEISH.test(t.split('   ').pop()) && /\d/.test(t));
+}
+function isCont(t, prev){
+  if(/^[a-z(,&%]/.test(t)) return true;
+  if(/^\d/.test(t) && !/[.!?]$/.test(prev) && !headerish(t)) return true;
+  if((/[,&(\-–]$/.test(prev) || /\b(and|or|of|the|to|for|with|in|a|an|by|from|on|at)$/i.test(prev)) && !headerish(t)) return true;
+  return false;
+}
+var ENTRY_K = {experience:1, education:1, projects:1, volunteering:1};
+var CATALOG = [['summary','Summary'],['experience','Experience'],['education','Education'],['projects','Projects'],['skills','Skills'],
+  ['volunteering','Volunteering'],['awards','Achievements'],['certifications','Certifications'],['publications','Publications'],['languages','Languages']];
+function typeOf(k){ return k === 'summary' ? 'summary' : ENTRY_K[k] ? 'entries' : k === 'skills' ? 'skills' : 'list'; }
+function newSection(k, title){
+  var s = {id:uid(), k:k, title:title || (CATALOG.filter(function(c){ return c[0] === k; })[0] || [0, 'Section'])[1], type:typeOf(k)};
+  if(s.type === 'summary') s.text = '';
+  if(s.type === 'entries') s.items = [];
+  if(s.type === 'skills') s.rows = [];
+  if(s.type === 'list') s.list = [];
+  return s;
+}
+function newEntry(){ return {id:uid(), title:'', sub:'', dates:'', loc:'', bullets:[]}; }
+function addHead(e, t){
+  RANGE.lastIndex = 0;
+  var m = RANGE.exec(t), dates = '';
+  if(m){ dates = m[0].trim(); t = t.slice(0, m.index) + '   ' + t.slice(m.index + m[0].length); }
+  else {
+    var y = /(?:^|\s)((?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\.?\s+)?(?:19|20)\d{2})\s*\)?$/i.exec(t);
+    if(y && t.length - y[0].length > 2){ dates = y[1]; t = t.slice(0, y.index); }
+  }
+  dates = dates.replace(/^\(|\)$/g, '');
+  var parts = t.split(/\s{3,}/).map(function(s){ return s.replace(/^[\s|,–—\-()]+|[\s|,–—\-(]+$/g, '').trim(); }).filter(Boolean);
+  var left = parts[0] || '', right = parts.slice(1).join(', ');
+  if(!e._h){ e.title = left; if(right) e.loc = right; if(dates) e.dates = dates; }
+  else { if(e.sub) e.sub += ' · ' + left; else e.sub = left; if(right){ if(!e.loc) e.loc = right; else e.sub += ', ' + right; } if(dates && !e.dates) e.dates = dates; }
+  e._h = (e._h || 0) + 1;
+}
+function parseEntries(body){
+  var marks = body.some(function(l){ return l.bullet; }), items = [], cur = null, lastB = null;
+  function fresh(){ cur = newEntry(); cur._h = 0; items.push(cur); lastB = null; }
+  body.forEach(function(L){
+    var t = L.t;
+    if(lastB && !L.bullet && isCont(t, lastB.t)){ lastB.t += ' ' + t; return; }
+    var wc = t.split(/\s+/).length;
+    if(L.bullet || (!marks && cur && !headerish(t) && wc >= 7 && !(cur._h === 1 && !cur.bullets.length && wc < 16 && !/[.]$/.test(t)))){
+      if(!cur) fresh();
+      lastB = {id:uid(), t:t}; cur.bullets.push(lastB); return;
+    }
+    if(!cur || cur.bullets.length || cur._h >= 2) fresh();
+    addHead(cur, t);
+  });
+  items.forEach(function(it){ delete it._h; });
+  return items;
+}
+function parseList(body){
+  var out = [], last = null;
+  body.forEach(function(L){
+    if(last && !L.bullet && isCont(L.t, last.t)) last.t += ' ' + L.t;
+    else { last = {id:uid(), t:L.t}; out.push(last); }
+  });
+  return out;
+}
+function parseSkills(body){
+  var rows = [];
+  body.forEach(function(L){
+    var t = L.t, m = /^([^:]{2,42}):\s*(.+)$/.exec(t), p = rows[rows.length - 1];
+    if(m) rows.push({id:uid(), label:m[1].trim(), value:m[2].trim()});
+    else if(p && isCont(t, p.value)) p.value += ' ' + t;
+    else rows.push({id:uid(), label:'', value:t});
+  });
+  var out = [];
+  rows.forEach(function(r){
+    var p = out[out.length - 1];
+    if(!r.label && p && !p.label && r.value.length < 70 && p.value.length < 420) p.value = p.value.replace(/[.,;]+$/, '') + ', ' + r.value.replace(/[.,;]+$/, '');
+    else out.push(r);
+  });
+  return out;
+}
+function blankDoc(){
+  return {v:1, name:'', headline:'', contact:[], prefs:{}, sections:[],
+    design:{layout:'compact', font:'Times New Roman', align:'left', size:10.5, page:'letter', margin:0.5, lh:1.2, accent:'#0938d5'},
+    cover:{company:'', role:'', text:''}, meta:{created:Date.now(), added:[]}};
+}
+function parseDoc(raw, srcName){
+  var lines = raw.map(function(L){ var t = L.t || '', b = !!L.bullet || BUL_RX.test(t); return {t:t.replace(BUL_RX, '').replace(/^[•\s]+/, '').trim(), bullet:b, head:L.head}; })
+                 .filter(function(l){ return l.t && !/^page \d+( of \d+)?$/i.test(l.t); });
+  var secs = sectionsOf(lines), D = blankDoc(), bits = [];
+  var topEnd = secs.length ? secs[0].start : Math.min(lines.length, 3), top = lines.slice(0, topEnd), ni = -1;
+  for(var i = 0; i < top.length; i++){ var tt = pieces(top[i].t)[0] || ''; if(!isContact(tt) && tt.split(/\s+/).length <= 5 && /[A-Za-z]/.test(tt) && tt.length < 42){ ni = i; break; } }
+  top.forEach(function(L, i){
+    var ps = pieces(L.t);
+    if(i === ni){ D.name = nameCase(ps.shift()); }
+    else if(ni > -1 && i === ni + 1 && ps.length === 1 && !isContact(ps[0]) && ps[0].split(/\s+/).length <= 9 && !/,\s*[A-Z]{2}\b|india|usa|united/i.test(ps[0])){ D.headline = ps[0]; return; }
+    ps.forEach(function(p){ bits.push(p); });
+  });
+  secs.forEach(function(s){
+    var body = lines.slice(s.start + 1, s.end).filter(function(l){ return !l.isHead; }), title = titleCase(s.title), k = s.k;
+    if(k === 'other' && /^contact|get in touch/i.test(title)){ body.forEach(function(l){ pieces(l.t).forEach(function(p){ bits.push(p); }); }); return; }
+    if(k === 'other') k = /volunteer|leadership|extra/i.test(title) ? 'volunteering' : /language/i.test(title) ? 'languages' : /publication/i.test(title) ? 'publications' : /interest|hobb/i.test(title) ? 'interests' : /reference/i.test(title) ? 'references' : 'other';
+    var sec = newSection(k, title);
+    if(sec.type === 'summary') sec.text = body.map(function(l){ return l.t; }).join(' ').replace(/\s+/g, ' ').trim();
+    else if(sec.type === 'entries') sec.items = parseEntries(body);
+    else if(sec.type === 'skills') sec.rows = parseSkills(body);
+    else sec.list = parseList(body);
+    var prev = D.sections.filter(function(x){ return x.k === sec.k && x.type === 'summary'; })[0];
+    if(prev && sec.type === 'summary'){ prev.text = (prev.text + ' ' + sec.text).trim(); return; }
+    D.sections.push(sec);
+  });
+  if(!secs.length){
+    var ex = newSection('experience'); ex.items = parseEntries(lines.slice(topEnd)); D.sections.push(ex);
+  }
+  if(raw.columns){
+    var RANK = {summary:0, experience:1, projects:2, education:3, skills:4, certifications:5, awards:6, volunteering:7, languages:8, publications:8, other:8, interests:9, references:9, personal:10, declaration:11};
+    D.sections = D.sections.map(function(s, i){ return [s, i]; }).sort(function(a, b){ return ((RANK[a[0].k] != null ? RANK[a[0].k] : 8) - (RANK[b[0].k] != null ? RANK[b[0].k] : 8)) || a[1] - b[1]; }).map(function(x){ return x[0]; });
+  }
+  D.contact = uniq(bits.map(function(b){ return b.replace(/^(e-?mail|phone|mobile|tel|linkedin|address|location)\s*[:\-]\s*/i, '').trim(); }).filter(Boolean)).slice(0, 7);
+  if(!D.name && USER && USER.name) D.name = USER.name;
+  D.meta.srcName = srcName || '';
+  return D;
+}
+function starterDoc(){
+  var D = blankDoc();
+  D.name = (USER && USER.name) || '';
+  D.headline = (PROFILE && PROFILE.target_role) || '';
+  D.contact = [USER && USER.email].filter(Boolean);
+  var sm = newSection('summary'); D.sections.push(sm);
+  var ex = newSection('experience'); var e = newEntry(); e.bullets.push({id:uid(), t:''}); ex.items.push(e); D.sections.push(ex);
+  var ed = newSection('education'); ed.items.push(newEntry()); D.sections.push(ed);
+  var sk = newSection('skills'); sk.rows.push({id:uid(), label:'Skills', value:''}); D.sections.push(sk);
+  D.meta.srcName = 'New resume';
+  return D;
+}
+
+/* =====================================================================
+   3. STATE, HISTORY AND SAVING
+   ===================================================================== */
+var DOC = null, SRC = null, HIST = [], HI = -1, EDIT = true, TAB = 'resume', SUG = {}, JOB = null, BT = null, PAGES_N = 1;
+var STORE_KEY = 'tp_editor_v1';
+function snap(){
+  var j = JSON.stringify(DOC);
+  if(HIST[HI] === j) return;
+  HIST = HIST.slice(0, HI + 1); HIST.push(j); if(HIST.length > 100) HIST.shift(); HI = HIST.length - 1; undoState();
+}
+function undoState(){ $('#bUndo').disabled = HI <= 0; $('#bRedo').disabled = HI >= HIST.length - 1; }
+function undo(){ if(HI <= 0) return; HI--; DOC = JSON.parse(HIST[HI]); SUG = {}; renderAll(); persist(); undoState(); }
+function redo(){ if(HI >= HIST.length - 1) return; HI++; DOC = JSON.parse(HIST[HI]); SUG = {}; renderAll(); persist(); undoState(); }
+var snapLater = debounce(snap, 700), sideLater = debounce(function(){ breaks(); renderSide(); }, 450);
+function status(t, busy){ var s = $('#status'); s.hidden = false; s.classList.toggle('busy', !!busy); s.lastChild.textContent = t; }
+function persist(){
+  DOC.meta.saved = Date.now();
+  lsSet(STORE_KEY, DOC) ? status(LIVE ? 'Saving…' : 'Saved on this device', LIVE) : status('Couldn’t save in this browser', true);
+  syncLater();
+}
+function changed(){ snapLater(); persist(); sideLater(); }
+function structural(){ snap(); persist(); renderAll(); }
+var syncLater = debounce(sync, 3500);
+function docText(D){
+  D = D || DOC; var out = [];
+  if(D.name) out.push(D.name); if(D.headline) out.push(D.headline);
+  var ct = D.contact.filter(Boolean).concat(prefText(D) ? [prefText(D)] : []); if(ct.length) out.push(ct.join(' | '));
+  D.sections.forEach(function(s){
+    if(s.hidden) return;
+    out.push('', s.title.toUpperCase());
+    if(s.type === 'summary') out.push(s.text || '');
+    if(s.type === 'entries') s.items.forEach(function(it){
+      out.push([it.title, it.dates].filter(Boolean).join('   '));
+      if(it.sub || it.loc) out.push([it.sub, it.loc].filter(Boolean).join('   '));
+      it.bullets.forEach(function(b){ if(b.t) out.push('• ' + b.t); });
+    });
+    if(s.type === 'skills') s.rows.forEach(function(r){ if(r.value) out.push((r.label ? r.label + ': ' : '') + r.value); });
+    if(s.type === 'list') s.list.forEach(function(b){ if(b.t) out.push('• ' + b.t); });
+  });
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+function sync(){
+  if(!DOC) return;
+  var text = docText(), name = (DOC.meta.srcName || 'Resume').replace(/\s*\(edited\)$/, '') + ' (edited)';
+  // the job board and X-ray read this copy, so match scores use the edited resume
+  var local = lsGet('tp_resume_local', null), localOnly = !!(local && local.text && local.from !== 'editor' && PROFILE && !PROFILE.resume_text && PROFILE.id);   // they chose “keep my resume only in this browser” on the job board
+  lsSet('tp_resume_local', {text:text, name:name, from:'editor', at:Date.now()});
+  if(!LIVE){
+    var d = previewUser(); if(d){ d.profile = d.profile || {}; d.profile.resume_text = text; d.profile.resume_name = name; lsSet('tp_app_v1', d); }
+    status('Saved on this device'); return;
+  }
+  if(localOnly){ status('Saved on this device'); return; }
+  session().then(function(s){
+    if(!s){ status('Saved on this device'); return; }
+    var row = {resume_text:text, resume_name:name, resume_doc:DOC};
+    return sb.from('profiles').update(row).eq('id', s.user.id).then(function(r){
+      if(r.error && /resume_doc/.test(r.error.message || '')){ delete row.resume_doc; return sb.from('profiles').update(row).eq('id', s.user.id); }
+      return r;
+    }).then(function(r){
+      if(r && r.error) status('Saved on this device', true);
+      else { status('Saved to your account'); PROFILE.resume_text = text; var a = lsGet('tp_acct', null); if(a && a.profile){ a.profile.resume_text = text; a.profile.resume_name = name; lsSet('tp_acct', a); } }
+    });
+  }).catch(function(){ status('Saved on this device', true); });
+}
+
+/* =====================================================================
+   4. FINDING THINGS IN THE DOCUMENT
+   ===================================================================== */
+function secById(id){ return byId(DOC.sections, id); }
+function owner(key){
+  var p = key.split(':'), s = secById(p[0]); if(!s) return null;
+  if(p[1] === '_') return s.list ? {arr:s.list, ctx:{title:s.title}, sec:s} : null;
+  var it = byId(s.items, p[1]); return it ? {arr:it.bullets, ctx:it, sec:s, item:it} : null;
+}
+function bpath(sid, iid, bid){ return iid ? 's|' + sid + '|i|' + iid + '|b|' + bid : 's|' + sid + '|l|' + bid; }
+function setField(path, v){
+  var a = path.split('|');
+  if(a[0] === 'name') DOC.name = v;
+  else if(a[0] === 'headline') DOC.headline = v;
+  else if(a[0] === 'c') DOC.contact[+a[1]] = v;
+  else if(a[0] === 'cv') DOC.cover[a[1]] = v;
+  else if(a[0] === 's'){
+    var s = secById(a[1]); if(!s) return;
+    if(a.length === 3) s[a[2]] = v;
+    else if(a[2] === 'i'){ var it = byId(s.items, a[3]); if(!it) return; if(a[4] === 'b'){ var b = byId(it.bullets, a[5]); if(b) b.t = v; } else it[a[4]] = v; }
+    else if(a[2] === 'l'){ var b2 = byId(s.list, a[3]); if(b2) b2.t = v; }
+    else if(a[2] === 'r'){ var r = byId(s.rows, a[3]); if(r) r[a[4]] = v; }
+  }
+}
+function entryBullets(){
+  var out = [];
+  DOC.sections.forEach(function(s){
+    if(s.hidden || s.type !== 'entries' || s.k === 'education') return;
+    s.items.forEach(function(it){ it.bullets.forEach(function(b){ if(b.t && b.t.split(/\s+/).length >= 3) out.push({key:s.id + ':' + it.id, b:b, g:gradeBullet({t:b.t})}); }); });
+  });
+  return out;
+}
+function prefText(D){
+  var p = (D || DOC).prefs || {}, a = [];
+  if(p.remote) a.push('remote'); if(p.hybrid) a.push('hybrid'); if(p.onsite) a.push('on-site'); if(p.relocate) a.push('relocation');
+  return a.length ? 'Open to ' + (a.length > 1 ? a.slice(0, -1).join(', ') + ' & ' + a[a.length - 1] : a[0]) : '';
+}
+function targetRole(){ return (PROFILE && PROFILE.target_role) || DOC.headline || ''; }
+function jobText(){ return JOB && JOB.text ? JOB.text : ''; }
+function placeholders(D){ var m = docText(D).match(/\[[^\]\n]{1,100}\]/g); return m ? m.length : 0; }
+
+/* =====================================================================
+   5. DRAWING THE PAGE
+   ===================================================================== */
+var FONTS = [
+  ['Times New Roman', '"Times New Roman",Times,"Liberation Serif",serif', ''],
+  ['Georgia', 'Georgia,"Times New Roman",serif', ''],
+  ['EB Garamond', '"EB Garamond",Garamond,Georgia,serif', 'EB+Garamond:ital,wght@0,400;0,600;0,700;1,400'],
+  ['Merriweather', 'Merriweather,Georgia,serif', 'Merriweather:ital,wght@0,400;0,700;1,400'],
+  ['Arial', 'Arial,Helvetica,"Liberation Sans",sans-serif', ''],
+  ['Lato', 'Lato,Arial,sans-serif', 'Lato:ital,wght@0,400;0,700;1,400'],
+  ['Roboto', 'Roboto,Arial,sans-serif', 'Roboto:ital,wght@0,400;0,500;0,700;1,400'],
+  ['Source Sans 3', '"Source Sans 3","Source Sans Pro",Arial,sans-serif', 'Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400'],
+  ['Inter', 'Inter,Arial,sans-serif', '']
+];
+var PAGES = {letter:{w:816, h:1056, css:'letter', label:'Letter (US, Canada)'}, a4:{w:794, h:1123, css:'A4', label:'A4 (UK, Europe, India, Australia)'}, legal:{w:816, h:1344, css:'legal', label:'Legal'}};
+var ACCENTS = ['#0938d5', '#111827', '#0f766e', '#7c3aed', '#b91c1c', '#9a3412'];
+var FONT_LOADED = {};
+function loadFont(q){ if(!q || FONT_LOADED[q]) return; FONT_LOADED[q] = 1; var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=' + q + '&display=swap'; document.head.appendChild(l); }
+function applyDesign(){
+  var d = DOC.design, f = FONTS.filter(function(x){ return x[0] === d.font; })[0] || FONTS[0], pg = PAGES[d.page] || PAGES.letter;
+  loadFont(f[2]);
+  [$('#paper'), $('#cpaper')].forEach(function(p){
+    p.className = 'paper L-' + d.layout;
+    p.style.setProperty('--ff', f[1]); p.style.setProperty('--fs', d.size + 'pt'); p.style.setProperty('--lh', d.lh);
+    p.style.setProperty('--mg', d.margin + 'in'); p.style.setProperty('--al', d.align); p.style.setProperty('--pw', pg.w + 'px');
+    p.style.setProperty('--ph', pg.h + 'px'); p.style.setProperty('--ac', d.accent);
+  });
+  $('#pageCss').textContent = '@page{size:' + pg.css + ';margin:' + d.margin + 'in}';
+  fit(); breaks();
+}
+function fit(){
+  var pg = PAGES[DOC.design.page] || PAGES.letter, w = $('#stage').clientWidth, z = Math.min(1, w / pg.w);
+  [$('#paper'), $('#cpaper')].forEach(function(p){ p.style.zoom = z < 1 ? String(Math.floor(z*1000)/1000) : ''; });
+}
+function breaks(){
+  var p = TAB === 'cover' ? $('#cpaper') : $('#paper'), pg = PAGES[DOC.design.page] || PAGES.letter, mg = DOC.design.margin*96, per = pg.h - 2*mg;
+  $$('.pbrk', p).forEach(function(x){ x.remove(); });
+  var z = p.style.zoom; p.style.zoom = '';
+  var H = p.scrollHeight - 2*mg; p.style.zoom = z;
+  var n = Math.max(1, Math.ceil((H - 4) / per));
+  if(TAB === 'resume') PAGES_N = n;
+  for(var i = 1; i < n; i++){ var b = document.createElement('div'); b.className = 'pbrk nopr'; b.style.top = (mg + i*per) + 'px'; b.innerHTML = '<span>Page ' + (i + 1) + '</span>'; p.appendChild(b); }
+}
+function fmt(t, extra){
+  var h = esc(t || '');
+  (extra || []).forEach(function(term){
+    var rx = new RegExp('(^|[^A-Za-z0-9+#])(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')(?![A-Za-z0-9+#])', 'gi');
+    h = h.replace(rx, '$1<mark class="add">$2</mark>');
+  });
+  return h.replace(/\[[^\]\n<]{1,100}\]/g, '<mark class="ph">$&</mark>');
+}
+function ce(path, html, ph, tag, cls){
+  tag = tag || 'span';
+  return '<' + tag + (cls ? ' class="' + cls + '"' : '') + (EDIT ? ' contenteditable="true"' : '') + ' data-f="' + esc(path) + '" data-ph="' + esc(ph || '') + '">' + html + '</' + tag + '>';
+}
+function headerHTML(){
+  var D = DOC, ct = [];
+  D.contact.forEach(function(c, i){ if(c || EDIT) ct.push(ce('c|' + i, fmt(c), 'Contact')); });
+  var pt = prefText(); if(pt) ct.push('<span class="pref">' + esc(pt) + '</span>');
+  return '<header class="ph-h">' +
+    (EDIT ? '<div class="stools nopr" style="top:-1.9em"><button type="button" data-a="ct-add">+ Contact detail</button>' + (D.headline ? '' : '<button type="button" data-a="hl-add">+ Headline</button>') + '</div>' : '') +
+    ce('name', esc(D.name), 'Your name', 'h1') +
+    (D.headline || EDIT && D.headline === '' && D._hl ? ce('headline', fmt(D.headline), 'Headline, e.g. Data Analyst', 'div', 'hl') : '') +
+    '<div class="ct">' + ct.join('<span class="sep">|</span>') + '</div></header>';
+}
+function liPlain(b){ return '<li class="prt">' + esc(b.t) + '</li>'; }
+function bulletsHTML(sid, iid, arr){
+  var key = sid + ':' + (iid || '_'), S = SUG[key];
+  if(!arr.length) return '';
+  var li = function(b){ return '<li class="b" data-k="' + key + '" data-b="' + b.id + '">' + ce(bpath(sid, iid, b.id), fmt(b.t), 'What you did, and the result') + '</li>'; };
+  if(S && S.all) return '<ul class="bl prt">' + arr.map(liPlain).join('') + '</ul>' + bigSug(key, arr, S);
+  return '<ul class="bl">' + arr.map(function(b){ return S && S.ids.indexOf(b.id) > -1 ? liPlain(b) + miniSug(key, b, S) : li(b); }).join('') + '</ul>';
+}
+function shim(n){ var h = ''; for(var i = 0; i < Math.max(2, Math.min(n*2, 7)); i++) h += '<i></i>'; return '<div class="shim">' + h + '</div>'; }
+function sugActs(key, S, bid){
+  if(S.loading) return '<div class="sacts"><span class="busy">Optimizing…</span></div>';
+  return '<div class="sacts"><button type="button" class="ok" data-a="s-ok" data-k="' + key + '"' + (bid ? ' data-b="' + bid + '"' : '') + '>Accept</button>' +
+    '<button type="button" class="no" data-a="s-no" data-k="' + key + '"' + (bid ? ' data-b="' + bid + '"' : '') + '>Reject</button>' +
+    (S.src !== 'ai' && /\[/.test(JSON.stringify(S.sug || S.text || '')) ? '<span class="hint">Replace each [ ] with your real number before you send it.</span>' : '') + '</div>';
+}
+function bigSug(key, arr, S){
+  return '<div class="sug nopr" data-k="' + key + '"><div class="o"><b class="k">Original</b><ul>' + arr.map(function(b){ return '<li>' + fmt(b.t) + '</li>'; }).join('') + '</ul></div>' +
+    '<div class="n"><b class="k">' + (S.src === 'ai' ? 'AI suggestion' : 'Suggestion') + '</b>' +
+    (S.loading ? shim(arr.length) : '<ul>' + arr.map(function(b){ return '<li contenteditable="true" data-sb="' + b.id + '">' + fmt(S.sug[b.id] != null ? S.sug[b.id] : b.t) + '</li>'; }).join('') + '</ul>') +
+    '</div>' + sugActs(key, S) + '</div>';
+}
+function miniSug(key, b, S){
+  return '<li class="msug nopr" data-k="' + key + '" data-b="' + b.id + '"><div class="mo">' + fmt(b.t) + '</div>' +
+    (S.loading && S.sug[b.id] == null ? '<div class="mn">' + shim(1) + '</div>' : '<div class="mn" contenteditable="true" data-sb="' + b.id + '">' + fmt(S.sug[b.id] != null ? S.sug[b.id] : b.t) + '</div>') +
+    sugActs(key, S.sug[b.id] == null ? {loading:true} : S, b.id) + '</li>';
+}
+function entryHTML(s, it){
+  var P = 's|' + s.id + '|i|' + it.id + '|', ed = s.k === 'education';
+  var r2 = it.sub || it.loc || EDIT;
+  return '<div class="en" data-s="' + s.id + '" data-i="' + it.id + '">' +
+    (EDIT ? '<div class="etools nopr">' + (!ed && it.bullets.some(function(b){ return b.t; }) ? '<button type="button" class="ai" data-a="e-ai" data-k="' + s.id + ':' + it.id + '">✨ Improve bullets</button>' : '') +
+      '<button type="button" data-a="b-new" data-k="' + s.id + ':' + it.id + '">+ Bullet</button><button type="button" data-a="e-del" data-s="' + s.id + '" data-i="' + it.id + '">Remove</button></div>' : '') +
+    '<div class="er er1"><div class="l">' + ce(P + 'title', fmt(it.title), ed ? 'Degree, subject' : (s.k === 'projects' ? 'Project name' : 'Job title, Company')) + '</div><div class="r">' + ce(P + 'dates', fmt(it.dates), 'Dates') + '</div></div>' +
+    (r2 ? '<div class="er er2' + (!it.sub && !it.loc ? ' opt' : '') + '"><div class="l">' + ce(P + 'sub', fmt(it.sub), ed ? 'School' : 'Company or team') + '</div><div class="r">' + ce(P + 'loc', fmt(it.loc), 'Location') + '</div></div>' : '') +
+    bulletsHTML(s.id, it.id, it.bullets) + '</div>';
+}
+function sectionHTML(s){
+  var tools = '', body = '';
+  if(s.type === 'summary'){
+    var S = SUG['sum:' + s.id];
+    tools = '<button type="button" class="ai" data-a="sum-ai" data-s="' + s.id + '">✨ ' + (s.text ? 'Improve summary' : 'Write it for me') + '</button>';
+    body = S ? '<div class="sum prt">' + esc(s.text) + '</div><div class="sug nopr" data-k="sum:' + s.id + '"><div class="o"><b class="k">Original</b>' + (fmt(s.text) || '<i>Empty</i>') + '</div><div class="n"><b class="k">' + (S.src === 'ai' ? 'AI suggestion' : 'Suggestion') + '</b>' +
+      (S.loading ? shim(2) : '<div contenteditable="true" data-sb="sum">' + fmt(S.text) + '</div>') + '</div>' + sugActs('sum:' + s.id, S) + '</div>'
+      : ce('s|' + s.id + '|text', fmt(s.text), 'Two or three lines: who you are, your years of experience and your strongest skills.', 'div', 'sum');
+  } else if(s.type === 'entries'){
+    tools = '<button type="button" data-a="sec-add" data-s="' + s.id + '">+ Add ' + (s.k === 'education' ? 'school' : s.k === 'projects' ? 'project' : 'role') + '</button>';
+    body = s.items.map(function(it){ return entryHTML(s, it); }).join('');
+  } else if(s.type === 'skills'){
+    tools = '<button type="button" data-a="sec-add" data-s="' + s.id + '">+ Add a line</button>';
+    var add = DOC.meta.added || [];
+    body = '<div class="sk">' + s.rows.map(function(r){
+      return '<div>' + (r.label ? '<b>' + ce('s|' + s.id + '|r|' + r.id + '|label', esc(r.label), 'Label') + ':</b> ' : '') + ce('s|' + s.id + '|r|' + r.id + '|value', fmt(r.value, add), 'Skill, skill, skill') + '</div>';
+    }).join('') + '</div>';
+  } else {
+    tools = '<button type="button" data-a="sec-add" data-s="' + s.id + '">+ Add a line</button>';
+    body = bulletsHTML(s.id, null, s.list);
+  }
+  return '<section class="ps" data-s="' + s.id + '">' + (EDIT ? '<div class="stools nopr">' + tools + '<button type="button" data-a="sec-hide" data-s="' + s.id + '">Hide</button></div>' : '') +
+    ce('s|' + s.id + '|title', esc(s.title), 'Section', 'h2') + body + '</section>';
+}
+function renderPaper(){
+  var p = $('#paper'), keep = focusInfo();
+  p.innerHTML = headerHTML() + DOC.sections.filter(function(s){ return !s.hidden; }).map(sectionHTML).join('');
+  $('#btb').hidden = true; $('#bmenu').hidden = true;
+  restoreFocus(keep);
+  breaks();
+}
+function renderCover(){
+  var D = DOC, c = D.cover, ct = D.contact.filter(Boolean);
+  var today = new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+  $('#cpaper').innerHTML = '<header class="ph-h"><h1>' + esc(D.name || 'Your name') + '</h1><div class="ct">' + ct.map(esc).join('<span class="sep">|</span>') + '</div></header>' +
+    '<div class="cv-date">' + esc(today) + '</div>' +
+    '<div class="cv-to">' + ce('cv|to', fmt(c.to || ('Hiring Team' + (c.company ? '\n' + c.company : ''))), 'Hiring Team, Company', 'div') + '</div>' +
+    ce('cv|text', fmt(c.text), 'Press “Write it for me” on the right, or start typing your letter here.', 'div', 'cv-body');
+  if(TAB === 'cover') breaks();
+}
+function renderAll(){ applyDesign(); renderPaper(); renderCover(); renderSide(); }
+function focusInfo(){
+  var a = document.activeElement; if(!a || !a.getAttribute) return null;
+  var f = a.getAttribute('data-f'); if(!f) return null;
+  var sel = window.getSelection(), off = null;
+  try{ if(sel.rangeCount){ var r = sel.getRangeAt(0).cloneRange(), pre = document.createRange(); pre.selectNodeContents(a); pre.setEnd(r.endContainer, r.endOffset); off = pre.toString().length; } }catch(e){}
+  return {f:f, off:off};
+}
+function restoreFocus(k){ if(k) focusPath(k.f, k.off); }
+function fieldEl(path){ var all = $$('[data-f]'); for(var i = 0; i < all.length; i++) if(all[i].getAttribute('data-f') === path) return all[i]; return null; }
+function focusPath(path, off){
+  var el = fieldEl(path); if(!el) return;
+  el.focus();
+  try{
+    var sel = window.getSelection(), r = document.createRange(), left = off == null ? Infinity : off, done = false;
+    var walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n;
+    while((n = walk.nextNode())){ if(left <= n.length){ r.setStart(n, left); done = true; break; } left -= n.length; }
+    if(!done){ r.selectNodeContents(el); r.collapse(false); } else r.collapse(true);
+    sel.removeAllRanges(); sel.addRange(r);
+  }catch(e){}
+}
+
+/* =====================================================================
+   6. SCORE AND FIX LIST
+   ===================================================================== */
+var BUZZ_RX = new RegExp('(' + BUZZ.map(function(z){ return z.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|') + ')', 'i');
+function analyse(D){
+  D = D || DOC;
+  var save = DOC; DOC = D;
+  var bl = entryBullets(), text = docText(D), low = text.toLowerCase(), vis = D.sections.filter(function(s){ return !s.hidden; });
+  var has = function(k){ return vis.some(function(s){ return s.k === k && (s.text || (s.items && s.items.length) || (s.rows && s.rows.some(function(r){ return r.value; })) || (s.list && s.list.length)); }); };
+  var weak = bl.filter(function(x){ return x.g.weak || (!x.g.strong && !/ed$/i.test(x.b.t.split(/\s+/)[0] || '')); });
+  var nonum = bl.filter(function(x){ return !x.g.metric; });
+  var long = bl.filter(function(x){ return x.g.wc > 34; });
+  var avg = bl.length ? bl.reduce(function(n, x){ return n + x.g.score; }, 0) / bl.length : 0;
+  var sum = vis.filter(function(s){ return s.k === 'summary'; })[0];
+  var sumBad = sum && sum.text && (/\b(to work in|seeking|looking for|challenging (environment|position|role)|objective|utili[sz]e my skills|growth of the organi[sz]ation)\b/i.test(sum.text) || BUZZ_RX.test(sum.text));
+  var personal = vis.filter(function(s){ return s.k === 'personal' || s.k === 'declaration' || /personal (details|information)|declaration/i.test(s.title); });
+  var skills = vis.filter(function(s){ return s.k === 'skills'; })[0];
+  var buzz = (skills ? skills.rows.map(function(r){ return r.value; }).join(', ') : '') + ' ' + (sum ? sum.text || '' : '');
+  var buzzHits = BUZZ.filter(function(z){ return buzz.toLowerCase().indexOf(z) > -1; });
+  var ph = placeholders(D), ct = D.contact.join(' ');
+  var yrs = totalYears(ranges(vis.filter(function(s){ return s.k === 'experience'; }).map(function(s){ return s.items.map(function(i){ return i.dates; }).join('\n'); }).join('\n')));
+  var sc = 0;
+  sc += bl.length ? avg*0.42 : 0;
+  sc += (has('summary') && !sumBad ? 7 : has('summary') ? 3 : 0) + (has('experience') || has('projects') ? 9 : 0) + (has('education') ? 5 : 0) + (has('skills') ? 7 : 0);
+  sc += (EM1.test(ct) ? 4 : 0) + (PH1.test(ct) ? 3 : 0) + (/linkedin/i.test(ct) ? 3 : 0) + (D.name ? 2 : 0);
+  var wc = text.split(/\s+/).length; sc += wc >= 250 && wc <= 900 ? 8 : wc >= 150 ? 4 : 0;
+  sc += bl.length >= 6 ? 6 : bl.length*1;
+  sc -= personal.length*6 + Math.min(9, buzzHits.length*3) + Math.min(10, ph*2) + (PAGES_N > 2 ? 6 : 0) + Math.min(6, long.length*2);
+  sc = Math.max(0, Math.min(100, Math.round(sc)));
+  DOC = save;
+  return {score:sc, bl:bl, weak:weak, nonum:nonum, long:long, sum:sum, sumBad:sumBad, personal:personal, buzzHits:buzzHits, ph:ph, has:has, ct:ct, yrs:yrs, skills:skills};
+}
+function tips(A){
+  var T = [];
+  if(A.weak.length) T.push({sev:'hi', t:A.weak.length + (A.weak.length > 1 ? ' bullets start weakly' : ' bullet starts weakly'), p:'Like “' + A.weak[0].b.t.split(/\s+/).slice(0, 4).join(' ') + '…”. Lead with what you did.', a:'fix-weak', l:'✨ Fix them'});
+  if(!A.has('summary')) T.push({sev:'hi', t:'Add a short summary', p:'Two lines at the top: who you are and what you’re best at. It’s the first thing a recruiter reads.', a:'add-sum', l:'✨ Write one for me'});
+  else if(A.sumBad) T.push({sev:'hi', t:'Your summary reads like an objective', p:'Recruiters skip “seeking a challenging role…”. Say what you bring instead.', a:'fix-sum', l:'✨ Rewrite it'});
+  if(A.personal.length) T.push({sev:'hi', t:'Remove “' + A.personal[0].title + '”', p:'Date of birth, marital status and declarations aren’t expected in the US, UK, Canada or Australia — some employers must discard resumes with them.', a:'rm-sec', s:A.personal[0].id, l:'Remove section'});
+  if(A.nonum.length) T.push({sev:A.nonum.length > A.bl.length/2 ? 'hi' : '', t:A.nonum.length + (A.nonum.length > 1 ? ' bullets have' : ' bullet has') + ' no number', p:'Numbers are what recruiters remember: %, ₹/$, time saved, people, volume. We’ll mark where one belongs.', a:'fix-num', l:'Show me where'});
+  if(A.buzzHits.length) T.push({sev:'', t:'Clichés like “' + A.buzzHits[0] + '”', p:'They take space and prove nothing. Show it in a bullet instead.', a:'rm-buzz', l:'Remove them'});
+  if(A.ph) T.push({sev:'hi', t:'Fill in ' + A.ph + ' blank' + (A.ph > 1 ? 's' : '') + ' marked [ ]', p:'Replace each one with your real number — or delete it. Never guess.', a:'go-ph', l:'Go to the first one'});
+  if(A.long.length) T.push({sev:'', t:A.long.length + ' long bullet' + (A.long.length > 1 ? 's' : ''), p:'Over 34 words. Recruiters skim — one line or two is plenty.', a:'fix-long', l:'✨ Make them concise'});
+  if(!A.has('skills')) T.push({sev:'', t:'Add a skills section', p:'Hiring software looks for skills by name.', a:'add-sec', k:'skills', l:'Add skills'});
+  if(!/linkedin/i.test(A.ct)) T.push({sev:'', t:'Add your LinkedIn', p:'Most recruiters check it before calling.', a:'ct-add', l:'Add it'});
+  if(PAGES_N > 1 && (A.yrs == null || A.yrs < 10)) T.push({sev:'', t:'Runs to ' + PAGES_N + ' pages', p:'Under 10 years’ experience reads best on one page. Try a smaller font or margin.', a:'pop-design', l:'Open Design'});
+  return T;
+}
+var START = null;
+function renderSide(){
+  if(TAB === 'cover') return renderCoverSide();
+  var A = analyse(), T = tips(A), sc = A.score, col = sc >= 80 ? '#0a7f46' : sc >= 60 ? '#b45309' : '#be123c';
+  if(DOC.meta.startScore == null){ DOC.meta.startScore = sc; }
+  var st = DOC.meta.startScore, pend = Object.keys(SUG).filter(function(k){ return !SUG[k].loading; }).length;
+  var h = '<div class="score"><div class="ring" style="--v:' + sc + ';--c:' + col + '"><span>' + sc + '</span></div><div><b>Resume score</b><p>' +
+    (sc > st ? 'Started at ' + st + ' · <span class="up">+' + (sc - st) + '</span>' : 'Bullets, numbers, sections and length.') + '</p></div></div>';
+  if(pend) h += '<div class="pend"><span class="sp">' + pend + ' suggestion' + (pend > 1 ? 's' : '') + ' waiting on the page</span><button class="btn sm" type="button" data-a="s-all-ok">Accept all</button><button class="btn sm" type="button" data-a="s-all-no">Reject all</button></div>';
+  h += '<div style="margin-top:12px"><button class="btn ai wide" type="button" data-a="improve-all"' + (Object.keys(SUG).some(function(k){ return SUG[k].loading; }) ? ' disabled' : '') + '>✨ Improve every bullet</button>' +
+    '<p class="ainote">' + (AI_OFF ? 'Using our built-in writing rules. Anything we can’t know — like your numbers — is marked [ ] for you to fill in.' : 'AI suggests a rewrite for each bullet. You choose what to keep — nothing changes until you press Accept.') + '</p></div>';
+  h += '<h3>Fix list</h3>' + (T.length ? '<div class="tips">' + T.map(function(t){
+    return '<div class="tip ' + t.sev + '"><span class="dot"></span><div class="tx"><b>' + esc(t.t) + '</b><p>' + esc(t.p) + '</p>' +
+      (t.a ? '<button class="btn sm" type="button" data-a="' + t.a + '"' + (t.s ? ' data-s="' + t.s + '"' : '') + (t.k ? ' data-k="' + t.k + '"' : '') + '>' + esc(t.l) + '</button>' : '') + '</div></div>';
+  }).join('') + '</div>' : '<div class="alldone">✓ Nothing left on the fix list. Download it and apply.</div>');
+  h += tailorHTML();
+  h += '<div class="callc"><b>Want a specialist to rewrite it?</b><p>Our resume specialists rewrite resumes for the exact roles you’re going after. The first call is free.</p><a class="btn sm" href="' + esc(bookUrl('editor')) + '" target="_blank" rel="noopener">Book a free call</a></div>';
+  h += '<div class="sidefoot"><button type="button" data-a="upload">Start from a different file</button>' + (SRC ? '<button type="button" data-a="reset">Undo all edits (back to my file)</button>' : '') + '</div>';
+  $('#side').innerHTML = h;
+}
+function bookUrl(from){
+  var q = [];
+  if(DOC && DOC.name) q.push('name=' + encodeURIComponent(DOC.name)); else if(USER && USER.name) q.push('name=' + encodeURIComponent(USER.name));
+  if(USER && USER.email) q.push('email=' + encodeURIComponent(USER.email));
+  q.push('utm_source=trulyplaced', 'utm_medium=app', 'utm_campaign=resume_call', 'utm_content=' + encodeURIComponent(from));
+  return CONFIG.BOOK_CALL + (CONFIG.BOOK_CALL.indexOf('?') > -1 ? '&' : '?') + q.join('&');
+}
+
+/* ---- tailoring to a job ---- */
+function loadJob(){
+  if(DOC.meta.job && DOC.meta.job.text) return DOC.meta.job;
+  var j = lsGet('tp_ats_job', null);
+  return j && j.text && Date.now() - (j.at || 0) < 21*864e5 ? {title:j.title || '', company:j.company || '', text:j.text, key:j.key} : null;
+}
+function jobFit(){
+  if(!JOB) return null;
+  var want = skillsIn(JOB.text), have = skillsIn(docText()), hv = {};
+  have.forEach(function(s){ hv[s] = 1; });
+  return {want:want, have:want.filter(function(s){ return hv[s]; }), miss:want.filter(function(s){ return !hv[s]; })};
+}
+function tailorHTML(){
+  var h = '<h3>Tailor it to a job</h3>';
+  if(!JOB) return h + '<p class="fine">Paste the job description. We’ll show the skills it asks for that your resume doesn’t mention.</p>' +
+    '<textarea id="jdIn" placeholder="Paste the job description here"></textarea><button class="btn sm" type="button" data-a="jd-use" style="margin-top:8px">Check this job</button>';
+  var f = jobFit(), pct = f.want.length ? Math.round(f.have.length / f.want.length * 100) : null;
+  return h + '<div class="job"><div class="jt"><b>' + esc(JOB.title || 'This job') + (JOB.company ? ' · ' + esc(JOB.company) : '') + '</b><button type="button" data-a="jd-clear" aria-label="Remove this job">×</button></div>' +
+    (pct != null ? '<div class="jm"><span class="bar"><i style="width:' + pct + '%"></i></span><b>' + pct + '% of its skills</b></div>' : '<p class="fine" style="margin-top:6px">We couldn’t pick out named skills from this posting.</p>') +
+    (f.miss.length ? '<p class="fine" style="margin-top:9px">Missing from your resume — tap one you genuinely have to add it to Skills:</p><div class="kws">' + f.miss.map(function(m){ return '<button type="button" class="kw" data-a="kw" data-v="' + esc(m) + '">+ ' + esc(m) + '</button>'; }).join('') + '</div>' : '') +
+    (f.have.length ? '<div class="kws">' + f.have.map(function(m){ return '<span class="kw have">✓ ' + esc(m) + '</span>'; }).join('') + '</div>' : '') +
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px"><button class="btn sm" type="button" data-a="tab" data-v="cover">Write a cover letter for it</button>' +
+    (JOB.key ? '<a class="btn sm" href="/app.html#job=' + encodeURIComponent(JOB.key) + '">Back to the job</a>' : '') + '</div></div>';
+}
+function addSkill(term){
+  var s = DOC.sections.filter(function(x){ return x.k === 'skills'; })[0];
+  if(!s){ s = newSection('skills'); s.rows.push({id:uid(), label:'Skills', value:''}); var at = idx(DOC.sections, (DOC.sections.filter(function(x){ return x.k === 'education'; })[0] || {}).id); DOC.sections.splice(at > -1 ? at + 1 : DOC.sections.length, 0, s); }
+  s.hidden = false;
+  var row = s.rows.filter(function(r){ return /tech|tool|software|platform|skill/i.test(r.label); })[0] || s.rows[0];
+  if(!row){ row = {id:uid(), label:'Skills', value:''}; s.rows.push(row); }
+  row.value = row.value ? row.value.replace(/[.\s]+$/, '') + ', ' + term : term;
+  DOC.meta.added = uniq((DOC.meta.added || []).concat([term]));
+}
+
+/* =====================================================================
+   7. SUGGESTIONS — AI when our server function is set up, built-in rules otherwise
+   ===================================================================== */
+var AI_OFF = !LIVE || ssGet('tp_ai_off') === '1', AI_FAILS = 0, LIMIT_TOLD = false;
+function ai(payload){
+  if(AI_OFF) return Promise.reject('off');
+  return session().then(function(s){
+    if(!s) throw 'auth';
+    var ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function(){ if(ctl) ctl.abort(); }, 30000);
+    return fetch(CONFIG.SUPABASE_URL + '/functions/v1/' + CONFIG.AI_FUNCTION, {method:'POST', signal:ctl ? ctl.signal : undefined,
+      headers:{'Content-Type':'application/json', apikey:CONFIG.SUPABASE_ANON_KEY, Authorization:'Bearer ' + s.access_token}, body:JSON.stringify(payload)})
+      .then(function(r){
+        clearTimeout(tm);
+        if(r.status === 429){ if(!LIMIT_TOLD){ LIMIT_TOLD = true; toast('That’s today’s AI suggestions used up — built-in suggestions until tomorrow.'); } throw 'limit'; }
+        if(r.status === 404){ AI_OFF = true; ssSet('tp_ai_off', '1'); throw 'off'; }
+        if(!r.ok) throw 'http';
+        AI_FAILS = 0; return r.json();
+      }, function(e){ clearTimeout(tm); if(++AI_FAILS >= 2){ AI_OFF = true; ssSet('tp_ai_off', '1'); } throw e; });
+  });
+}
+var FILLER = [[/\bsuccessfully\s+/gi, ''], [/\beffectively\s+/gi, ''], [/\bactively\s+/gi, ''], [/\bin order to\b/gi, 'to'], [/\bon a regular basis\b/gi, 'regularly'],
+  [/\bon a (daily|weekly|monthly) basis\b/gi, '$1'], [/\bas and when (required|needed)\b/gi, 'as needed'], [/\bwith the help of\b/gi, 'with'], [/\bfor the purpose of\b/gi, 'for'],
+  [/\bin a timely manner\b/gi, 'on time'], [/\ba (wide )?(variety|range|number) of\b/gi, 'multiple'], [/\bvarious\s+/gi, ''], [/\butili[sz]ed\b/gi, 'used'], [/\butili[sz](e|ing)\b/gi, 'use'],
+  [/\bdue to the fact that\b/gi, 'because'], [/\b(the )?process of\s+/gi, ''], [/\bvery\s+/gi, ''], [/\breally\s+/gi, ''], [/\bbasically\s+/gi, ''], [/\b(each and every|any and all)\b/gi, 'every'],
+  [/\bin conjunction with\b/gi, 'with'], [/\bwas (able to|responsible for)\s+/gi, ''], [/\bthat were\b/gi, ''], [/\bwhich (was|were)\b/gi, '']];
+function tidy(s){ return s.replace(/\s+/g, ' ').replace(/\s+([,.;:])/g, '$1').replace(/,\s*,/g, ',').trim(); }
+function past(w){ var g = GERUND[w.toLowerCase()]; return g ? g : null; }
+function strongStart(s){
+  s = s.replace(/^(i|we)\s+/i, '');
+  var low = s.toLowerCase(), weak = null;
+  WEAK.some(function(w){ if(low.indexOf(w[0] + ' ') === 0 || low === w[0]){ weak = w; return true; } return false; });
+  if(weak){
+    var rest = s.slice(weak[0].length).trim(), g = /^(\w+ing)\b\s*/.exec(rest);
+    if(g && past(g[1])) s = past(g[1]) + ' ' + rest.slice(g[0].length);
+    else s = weak[1] + ' ' + rest.replace(/^the creation of\b/i, 'creating').replace(/^the\s+/i, 'the ');
+  } else { var g2 = /^(\w+ing)\b/.exec(s); if(g2 && past(g2[1])) s = past(g2[1]) + s.slice(g2[0].length); }
+  // "… and preparing reports" → "… and prepared reports"
+  s = s.replace(/\b(and|while|then)\s+(\w+ing)\b/g, function(m, a, w){ var p = past(w); return p ? a + ' ' + p.charAt(0).toLowerCase() + p.slice(1) : m; });
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+function endLike(orig, s){ s = s.replace(/[.;]+$/, ''); return /\.\s*$/.test(orig) ? s + '.' : s; }
+function localRewrite(mode, t){
+  var s = tidy(t.replace(/[.;]\s*$/, ''));
+  if(mode === 'concise'){
+    FILLER.forEach(function(f){ s = s.replace(f[0], f[1]); });
+    s = s.replace(/\b(the|our|all the)\s+(business|management|leadership|senior)\s+(team|teams|managers)\b/gi, '$2 $3').replace(/\s+by the managers\b/gi, '');
+    if(/\bas needed\b/i.test(s)) s = s.replace(/\s+regularly\b/i, '');
+    s = tidy(strongStart(s));
+    var w = s.split(' ');
+    if(w.length > 26){ var cut = s.search(/,?\s+(including|such as|as well as|which|while)\b/i); if(cut > 60) s = s.slice(0, cut); }
+    return endLike(t, tidy(s));
+  }
+  FILLER.slice(0, 12).forEach(function(f){ s = s.replace(f[0], f[1]); });
+  s = tidy(strongStart(s));
+  BUZZ.forEach(function(z){ s = s.replace(new RegExp('\\b' + z.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b,?\\s*', 'ig'), ''); });
+  if(mode === 'expand'){
+    var v = (s.split(' ')[0] || '').toLowerCase(), add = null;
+    if(!hasMetric(s)) add = /^(improved|increased|reduced|cut|grew|boosted|lowered|lifted|raised|accelerated|optimi[sz]ed|streamlined|expanded|doubled|halved|minimi[sz]ed|maximi[sz]ed)$/.test(v) ? ' by [__%]'
+      : /^(sold|negotiated|closed|generated|won|secured|raised|earned)$/.test(v) ? ' worth [$__]'
+      : ', [add the result — e.g. saving __ hours a week, or used by __ people]';
+    else if(s.split(' ').length < 18 && !/\b(using|with|via|in)\b/i.test(s)) add = ' using [tools or method]';
+    if(add) s = s + add;
+  }
+  return endLike(t, tidy(s));
+}
+function localSummary(){
+  var A = analyse(), role = DOC.headline || targetRole();
+  var firstExp = DOC.sections.filter(function(s){ return s.k === 'experience' && !s.hidden; })[0], firstIt = firstExp && firstExp.items[0];
+  if(!role && firstIt) role = firstIt.title.split(/,|\s+at\s+|\s[–—|]\s/)[0];
+  var sk = skillsIn(docText()).slice(0, 4), yrs = A.yrs;
+  var best = A.bl.filter(function(x){ return x.g.metric && x.g.wc <= 28; }).sort(function(a, b){ return b.g.score - a.g.score; })[0];
+  var s = (role ? role.replace(/\.$/, '') : 'Professional') + (yrs && yrs >= 1 ? ' with ' + Math.floor(yrs) + '+ years of experience' : '') +
+    (sk.length ? (yrs && yrs >= 1 ? ' in ' : ' skilled in ') + (sk.length > 1 ? sk.slice(0, -1).join(', ') + ' and ' + sk[sk.length - 1] : sk[0]) : '') + '.';
+  if(best){ var b = localRewrite('improve', best.b.t).replace(/\.$/, ''); s += ' Recently ' + b.charAt(0).toLowerCase() + b.slice(1) + '.'; }
+  else s += ' [One line on the result you’re proudest of, with a number.]';
+  return s;
+}
+function improveOwner(key, mode, ids){
+  var o = owner(key); if(!o || !o.arr.length) return Promise.resolve();
+  var all = !ids, S = SUG[key];
+  ids = (ids || o.arr.map(function(b){ return b.id; })).filter(function(id){ var b = byId(o.arr, id); return b && b.t.trim(); });
+  if(!ids.length) return Promise.resolve();
+  if(S && S.all) return Promise.resolve();
+  if(S && !all) ids.forEach(function(id){ if(S.ids.indexOf(id) < 0) S.ids.push(id); delete S.sug[id]; });
+  else S = SUG[key] = {all:all && ids.length === o.arr.length, ids:ids.slice(), sug:{}, src:'local', mode:mode};
+  S.loading = true; renderPaper(); renderSide();
+  var texts = ids.map(function(id){ return byId(o.arr, id).t; });
+  var asked = ai({task:'bullets', mode:mode, bullets:texts, role:o.ctx.title || '', org:o.ctx.sub || '', target:targetRole(), jd:jobText().slice(0, 4000)})
+    .then(function(r){ if(!r || !Array.isArray(r.bullets) || r.bullets.length !== texts.length) throw 'shape'; return {list:r.bullets.map(function(x, i){ return String(x || '').trim() || texts[i]; }), src:'ai'}; })
+    .catch(function(){ return wait(450).then(function(){ return {list:texts.map(function(t){ return localRewrite(mode, t); }), src:'local'}; }); });
+  return asked.then(function(r){
+    var S2 = SUG[key]; if(!S2) return;
+    ids.forEach(function(id, i){ S2.sug[id] = r.list[i]; });
+    S2.src = r.src; S2.loading = false; renderPaper(); renderSide();
+  });
+}
+function improveSummary(sid){
+  var s = secById(sid); if(!s) return;
+  var S = SUG['sum:' + sid] = {loading:true, src:'local'}; renderPaper(); renderSide();
+  ai({task:'summary', current:s.text || '', resume:docText().slice(0, 8000), target:targetRole(), jd:jobText().slice(0, 3000)})
+    .then(function(r){ if(!r || !r.text) throw 'shape'; return {text:String(r.text).trim(), src:'ai'}; })
+    .catch(function(){ return wait(450).then(function(){ return {text:localSummary(), src:'local'}; }); })
+    .then(function(r){ if(SUG['sum:' + sid] !== S) return; S.loading = false; S.text = r.text; S.src = r.src; renderPaper(); renderSide(); });
+}
+function acceptSug(key, bid){
+  var S = SUG[key]; if(!S || S.loading) return;
+  if(key.indexOf('sum:') === 0){
+    var el = $('.sug[data-k="' + key + '"] [data-sb]'), s = secById(key.slice(4));
+    if(s){ s.text = el ? el.innerText.replace(/\s+/g, ' ').trim() : S.text; if(/objective/i.test(s.title)) s.title = /^[A-Z\s]+$/.test(s.title) ? 'SUMMARY' : 'Summary'; }
+    delete SUG[key]; structural(); return;
+  }
+  var o = owner(key); if(!o){ delete SUG[key]; return; }
+  var ids = bid ? [bid] : S.ids.slice();
+  ids.forEach(function(id){
+    var b = byId(o.arr, id), el = $('[data-k="' + key + '"] [data-sb="' + id + '"]');
+    var v = el ? el.innerText.replace(/\s+/g, ' ').trim() : S.sug[id];
+    if(b && v) b.t = v;
+    S.ids = S.ids.filter(function(x){ return x !== id; }); delete S.sug[id];
+  });
+  if(!S.ids.length || !bid) delete SUG[key];
+  structural();
+}
+function rejectSug(key, bid){
+  var S = SUG[key]; if(!S) return;
+  if(bid && S.ids){ S.ids = S.ids.filter(function(x){ return x !== bid; }); delete S.sug[bid]; if(!S.ids.length) delete SUG[key]; }
+  else delete SUG[key];
+  renderPaper(); renderSide();
+}
+function improveAll(){
+  var keys = [];
+  DOC.sections.forEach(function(s){ if(s.hidden || s.type !== 'entries' || s.k === 'education') return; s.items.forEach(function(it){ if(it.bullets.some(function(b){ return b.t.trim(); })) keys.push(s.id + ':' + it.id); }); });
+  if(!keys.length){ toast('Add a few bullets under your roles first.'); return; }
+  var first = $('.en[data-i="' + keys[0].split(':')[1] + '"]'); if(first) first.scrollIntoView({behavior:'smooth', block:'center'});
+  var chain = Promise.resolve();
+  keys.forEach(function(k){ if(!SUG[k]) chain = chain.then(function(){ return improveOwner(k, 'improve'); }); });
+  chain.then(function(){ toast('Suggestions are ready on the page — accept the ones you like.'); });
+}
+
+/* =====================================================================
+   8. COVER LETTER
+   ===================================================================== */
+function renderCoverSide(){
+  var c = DOC.cover;
+  $('#side').innerHTML = '<h3 style="margin-top:0">Cover letter</h3><p class="fine">Written from your resume' + (JOB ? ' and the job you picked' : '') + '. Read it, make it yours, then download it.</p>' +
+    '<label class="f" for="cvRole">Role</label><input type="text" id="cvRole" value="' + esc(c.role || (JOB && JOB.title) || targetRole()) + '" placeholder="e.g. Data Analyst">' +
+    '<label class="f" for="cvCo">Company</label><input type="text" id="cvCo" value="' + esc(c.company || (JOB && JOB.company) || '') + '" placeholder="e.g. Stripe">' +
+    '<button class="btn ai wide" type="button" data-a="cv-write" style="margin-top:14px"' + (COVER_BUSY ? ' disabled' : '') + '>✨ ' + (COVER_BUSY ? 'Writing…' : c.text ? 'Write it again' : 'Write it for me') + '</button>' +
+    '<p class="ainote">' + (AI_OFF ? 'Built from your resume with our template. Lines in [ ] are for you to fill in.' : 'Uses only facts from your resume — read it before you send it.') + '</p>' +
+    (JOB ? '' : '<p class="fine" style="margin-top:14px">Tip: add the job description under “Tailor it to a job” on the Resume tab and the letter will speak to it.</p>') +
+    '<div class="callc"><b>Applying to a lot of roles?</b><p>Our team can tailor your resume and apply for you, every day.</p><a class="btn sm" href="' + esc(bookUrl('cover_letter')) + '" target="_blank" rel="noopener">Book a free call</a></div>';
+}
+var COVER_BUSY = false;
+function localCover(role, co){
+  var A = analyse(), sk = skillsIn(docText()), f = jobFit(), name = DOC.name || '';
+  var ex = DOC.sections.filter(function(s){ return s.k === 'experience' && !s.hidden; })[0], it = ex && ex.items[0];
+  var best = A.bl.filter(function(x){ return x.g.metric; }).sort(function(a, b){ return b.g.score - a.g.score; }).slice(0, 2)
+    .map(function(x){ var b = localRewrite('improve', x.b.t).replace(/\.$/, ''); return b.charAt(0).toLowerCase() + b.slice(1); });
+  var p1 = 'I’m applying for the ' + (role || '[role]') + ' role at ' + (co || '[company]') + '. ' +
+    (A.yrs && A.yrs >= 1 ? 'I bring ' + Math.floor(A.yrs) + '+ years of experience' : 'I bring hands-on experience') + (sk.length ? ' with ' + sk.slice(0, 3).join(', ') : '') + ', and I’d like to put it to work for your team.';
+  var p2 = it ? 'In my ' + (/present|current|now/i.test(it.dates) ? 'current' : 'most recent') + ' role' + (it.title ? ' (' + it.title + (it.sub ? ', ' + it.sub : '') + ')' : '') + ', I ' + (best[0] || '[one result you’re proud of, with a number]') + '.' + (best[1] ? ' I also ' + best[1] + '.' : '') : 'In my recent work, I [one result you’re proud of, with a number].';
+  var p3 = f && f.have.length ? 'Your posting asks for ' + (f.have.length > 1 ? f.have.slice(0, 3).slice(0, -1).join(', ') + ' and ' + f.have.slice(0, 3).slice(-1)[0] : f.have[0]) + ' — these are tools I use every week.' : '[One line on why this company or team interests you.]';
+  return 'Dear Hiring Team,\n\n' + p1 + '\n\n' + p2 + '\n\n' + p3 + '\n\nI’d welcome the chance to talk about how I can help ' + (co || 'your team') + '. Thank you for your time.\n\nSincerely,\n' + name;
+}
+function writeCover(){
+  var role = ($('#cvRole') || {}).value || '', co = ($('#cvCo') || {}).value || '';
+  DOC.cover.role = role.trim(); DOC.cover.company = co.trim(); DOC.cover.to = 'Hiring Team' + (DOC.cover.company ? '\n' + DOC.cover.company : '');
+  COVER_BUSY = true; renderCoverSide();
+  ai({task:'cover', role:DOC.cover.role, company:DOC.cover.company, resume:docText().slice(0, 8000), jd:jobText().slice(0, 4000), name:DOC.name || ''})
+    .then(function(r){ if(!r || !r.text) throw 'shape'; return r.text; })
+    .catch(function(){ return wait(500).then(function(){ return localCover(DOC.cover.role, DOC.cover.company); }); })
+    .then(function(t){ COVER_BUSY = false; DOC.cover.text = String(t).trim(); renderCover(); renderCoverSide(); structural(); });
+}
+
+/* =====================================================================
+   9. TOOLBAR PANELS
+   ===================================================================== */
+var ICON_UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>', ICON_DN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>', ICON_EYE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>', ICON_EYEOFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.2M6.6 6.6C3.9 8.3 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+function layoutSVG(k){
+  var c = k === 'modern' ? '#0938d5' : '#222';
+  var name = k === 'modern' ? '<rect x="6" y="6" width="26" height="4" fill="' + c + '"/>' : '<rect x="14" y="6" width="26" height="4" fill="' + c + '"/>';
+  var rule = k === 'modern' ? '<rect x="6" y="19" width="42" height="1.4" fill="' + c + '"/>' : '<rect x="6" y="19" width="42" height=".8" fill="#222"/>';
+  var lines = ''; for(var y = 23; y < 66; y += 4) lines += '<rect x="' + (y % 12 === 3 ? 6 : 9) + '" y="' + y + '" width="' + (y % 12 === 3 ? 42 : 36) + '" height="1.6" fill="#c4c9d6"/>';
+  return '<svg viewBox="0 0 54 70" aria-hidden="true">' + name + '<rect x="' + (k === 'modern' ? 6 : 10) + '" y="12" width="34" height="1.6" fill="#9aa0b4"/>' + rule + '<rect x="6" y="15.5" width="14" height="2" fill="' + c + '"/>' + lines + '</svg>';
+}
+function popHTML(kind){
+  var d = DOC.design;
+  if(kind === 'design'){
+    var add = CATALOG.filter(function(c){ return !DOC.sections.some(function(s){ return s.k === c[0]; }); });
+    var range = function(label, id, min, max, step, val, unit){ return '<h4>' + label + '<span id="' + id + 'V">' + val + unit + '</span></h4><input type="range" id="' + id + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '">'; };
+    return '<h4>Section order</h4><div class="solist" id="solist">' + DOC.sections.map(function(s){
+        return '<div class="so' + (s.hidden ? ' off' : '') + '" draggable="true" data-s="' + s.id + '"><span class="grip" aria-hidden="true">⋮⋮</span><span class="nm">' + esc(s.title) + '</span>' +
+          '<button type="button" data-a="so-up" data-s="' + s.id + '" aria-label="Move up">' + ICON_UP + '</button><button type="button" data-a="so-dn" data-s="' + s.id + '" aria-label="Move down">' + ICON_DN + '</button>' +
+          '<button type="button" data-a="so-vis" data-s="' + s.id + '" aria-label="' + (s.hidden ? 'Show' : 'Hide') + '">' + (s.hidden ? ICON_EYEOFF : ICON_EYE) + '</button></div>';
+      }).join('') + '</div>' +
+      (add.length ? '<select id="addSec" style="margin-top:4px"><option value="">+ Add a section…</option>' + add.map(function(c){ return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join('') + '</select>' : '') +
+      '<h4>Font family<span>' + esc(d.font) + '</span></h4><select id="dFont">' + FONTS.map(function(f){ return '<option' + (f[0] === d.font ? ' selected' : '') + '>' + f[0] + '</option>'; }).join('') + '</select>' +
+      '<h4>Text align</h4><div class="seg"><button type="button" data-a="al" data-v="left" class="' + (d.align === 'left' ? 'on' : '') + '">Left</button><button type="button" data-a="al" data-v="justify" class="' + (d.align === 'justify' ? 'on' : '') + '">Justified</button></div>' +
+      range('Font size', 'dSize', 9, 12.5, 0.5, d.size, 'pt') +
+      '<h4>Page size</h4><select id="dPage">' + Object.keys(PAGES).map(function(k){ return '<option value="' + k + '"' + (k === d.page ? ' selected' : '') + '>' + PAGES[k].label + '</option>'; }).join('') + '</select>' +
+      range('Page margin', 'dMg', 0.3, 1, 0.05, d.margin, 'in') + range('Line height', 'dLh', 1, 1.6, 0.05, d.lh, '') +
+      '<h4>Accent colour</h4><div class="sw">' + ACCENTS.map(function(c){ return '<button type="button" data-a="ac" data-v="' + c + '" class="' + (c === d.accent ? 'on' : '') + '" style="background:' + c + '" aria-label="Accent ' + c + '"></button>'; }).join('') + '</div>' +
+      '<p class="fine" style="margin-top:6px">Colour shows in the Modern layout.</p>';
+  }
+  if(kind === 'layout') return '<h4>Resume layout</h4><div class="lays">' + [['compact', 'Compact', 'Centred name, tight spacing. Fits the most on one page.'], ['classic', 'Classic', 'Small-caps headings. The traditional favourite.'], ['modern', 'Modern', 'Left-aligned with an accent colour.']].map(function(l){
+      return '<button type="button" class="lay' + (d.layout === l[0] ? ' on' : '') + '" data-a="lay" data-v="' + l[0] + '">' + layoutSVG(l[0]) + '<div><b>' + l[1] + '</b><span>' + l[2] + '</span></div></button>';
+    }).join('') + '</div><p class="fine" style="margin-top:10px">All three are single-column, which hiring software reads cleanly.</p>';
+  if(kind === 'loc'){
+    var p = DOC.prefs || {};
+    return '<h4>Show next to your contact details</h4>' + [['remote', 'Open to remote'], ['relocate', 'Open to relocate'], ['hybrid', 'Open to hybrid'], ['onsite', 'Open to on-site']].map(function(o){
+      return '<label class="chk"><input type="checkbox" data-pref="' + o[0] + '"' + (p[o[0]] ? ' checked' : '') + '>' + o[1] + '</label>';
+    }).join('') + '<p class="fine" style="margin-top:6px">Recruiters filter by this. Only tick what you’d genuinely accept.</p>';
+  }
+  if(kind === 'download') return '<h4>Download ' + (TAB === 'cover' ? 'cover letter' : 'resume') + '</h4>' +
+    '<button type="button" class="dlo" data-a="dl-pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><div><b>PDF</b><span>Best for applying. In the print window, choose “Save as PDF”.</span></div></button>' +
+    '<button type="button" class="dlo" data-a="dl-doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="m8.5 12 1.2 5 1.8-4 1.8 4 1.2-5"/></svg><div><b>Word (.doc)</b><span>For sites that ask for Word, or to keep editing in Word or Google Docs.</span></div></button>';
+  return '';
+}
+var POP = null;
+function openPop(kind, btn){
+  var pop = $('#pop');
+  if(POP === kind){ closePop(); return; }
+  POP = kind; pop.innerHTML = popHTML(kind); pop.hidden = false;
+  $$('#tbi button').forEach(function(b){ b.classList.toggle('on', b === btn); });
+  var cr = $('#canvas').getBoundingClientRect(), br = (btn || $('#tbi')).getBoundingClientRect();
+  var left = Math.min(Math.max(8, br.right - cr.left - pop.offsetWidth), cr.width - pop.offsetWidth - 8);
+  pop.style.left = Math.max(8, left) + 'px'; pop.style.top = (br.bottom - cr.top + 8) + 'px';
+  if(kind === 'design') bindOrder();
+}
+function closePop(){ POP = null; $('#pop').hidden = true; $$('#tbi button').forEach(function(b){ b.classList.remove('on'); }); }
+function refreshPop(){ if(!POP) return; var k = POP, sc = $('#pop').scrollTop; $('#pop').innerHTML = popHTML(k); $('#pop').scrollTop = sc; if(k === 'design') bindOrder(); }
+function bindOrder(){
+  var drag = null;
+  $$('#solist .so').forEach(function(row){
+    row.addEventListener('dragstart', function(e){ drag = row.getAttribute('data-s'); row.classList.add('drag'); try{ e.dataTransfer.setData('text/plain', drag); e.dataTransfer.effectAllowed = 'move'; }catch(x){} });
+    row.addEventListener('dragend', function(){ row.classList.remove('drag'); $$('#solist .so').forEach(function(r){ r.classList.remove('over'); }); });
+    row.addEventListener('dragover', function(e){ e.preventDefault(); row.classList.add('over'); });
+    row.addEventListener('dragleave', function(){ row.classList.remove('over'); });
+    row.addEventListener('drop', function(e){
+      e.preventDefault(); var to = row.getAttribute('data-s'); if(!drag || drag === to) return;
+      var a = idx(DOC.sections, drag), s = DOC.sections.splice(a, 1)[0], b = idx(DOC.sections, to);
+      DOC.sections.splice(a <= b ? b + 1 : b, 0, s); drag = null; structural(); refreshPop();
+    });
+  });
+}
+function moveSec(id, dir){ var a = idx(DOC.sections, id), b = a + dir; if(a < 0 || b < 0 || b >= DOC.sections.length) return; var s = DOC.sections.splice(a, 1)[0]; DOC.sections.splice(b, 0, s); structural(); refreshPop(); }
+
+/* =====================================================================
+   10. DOWNLOAD
+   ===================================================================== */
+function confirmBox(title, text, okLabel, then){
+  var m = $('#modal');
+  m.innerHTML = '<div class="card" role="dialog" aria-modal="true"><h2>' + esc(title) + '</h2><p>' + esc(text) + '</p><div class="acts"><button class="btn pri" type="button" id="mOk">' + esc(okLabel) + '</button><button class="btn" type="button" id="mNo">Go back and fix</button></div></div>';
+  m.hidden = false;
+  $('#mOk').onclick = function(){ m.hidden = true; then(); };
+  $('#mNo').onclick = function(){ m.hidden = true; if(TAB === 'resume') goPlaceholder(); };
+}
+function checkThen(fn){
+  var n = TAB === 'cover' ? ((DOC.cover.text || '').match(/\[[^\]\n]{1,100}\]/g) || []).length : placeholders();
+  var pend = Object.keys(SUG).length;
+  if(n) return confirmBox(n + ' blank' + (n > 1 ? 's' : '') + ' still marked [ ]', 'They’ll print exactly as they are. Fill each in with your real number, or delete it.', 'Download anyway', fn);
+  if(pend && TAB === 'resume') return confirmBox('You have suggestions waiting', 'The download uses your current text — suggestions you haven’t accepted aren’t included.', 'Download anyway', fn);
+  fn();
+}
+function fileBase(){ return ((DOC.name || 'Resume').replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '_') || 'Resume') + (TAB === 'cover' ? '_Cover_Letter' : '_Resume'); }
+function downloadPDF(){
+  closePop();
+  checkThen(function(){
+    if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    var t = document.title; document.title = fileBase();
+    setTimeout(function(){ window.print(); setTimeout(function(){ document.title = t; }, 500); }, 60);
+  });
+}
+function downloadDoc(){
+  closePop();
+  checkThen(function(){
+    var src = (TAB === 'cover' ? $('#cpaper') : $('#paper')).cloneNode(true);
+    $$('.nopr,.pbrk', src).forEach(function(x){ x.remove(); });
+    $$('.prt', src).forEach(function(x){ x.classList.remove('prt'); });
+    $$('[contenteditable]', src).forEach(function(x){ x.removeAttribute('contenteditable'); if(!x.textContent.trim()) x.remove(); });
+    $$('mark', src).forEach(function(x){ x.replaceWith(document.createTextNode(x.textContent)); });
+    var d = DOC.design, f = FONTS.filter(function(x){ return x[0] === d.font; })[0] || FONTS[0];
+    var css = 'body{font-family:' + f[1] + ';font-size:' + d.size + 'pt;line-height:' + d.lh + ';color:#111}h1{font-size:' + (d.size*2) + 'pt;margin:0;text-align:' + (d.layout === 'modern' ? 'left' : 'center') + '}' +
+      '.ph-h{text-align:' + (d.layout === 'modern' ? 'left' : 'center') + '}h2{font-size:' + (d.size*1.1) + 'pt;text-transform:uppercase;border-bottom:1px solid #111;margin:10pt 0 3pt}' +
+      '.er{overflow:hidden}.er .r{float:right}.er1{font-weight:bold}.er2{font-style:italic}ul{margin:2pt 0 0 14pt;padding:0}li{margin:0}.cv-body{white-space:pre-wrap}.sep{margin:0 5pt}';
+    var html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>' + esc(fileBase()) + '</title><style>@page{margin:' + d.margin + 'in}' + css + '</style></head><body>' + src.innerHTML + '</body></html>';
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + html], {type:'application/msword'})); a.download = fileBase() + '.doc';
+    document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+    toast('Downloaded ' + fileBase() + '.doc');
+  });
+}
+function goPlaceholder(){
+  var m = $('#paper mark.ph'); if(!m){ toast('No blanks left.'); return; }
+  m.scrollIntoView({behavior:'smooth', block:'center'});
+  var host = m.closest('[contenteditable]'); if(host){ host.focus(); try{ var r = document.createRange(); r.selectNodeContents(m); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); }catch(e){} }
+}
+
+/* =====================================================================
+   11. EVENTS
+   ===================================================================== */
+document.addEventListener('click', function(e){
+  var t = e.target.closest('[data-a]');
+  if(POP && !e.target.closest('#pop') && !(t && t.getAttribute('data-a') === 'pop')) closePop();
+  if(!$('#bmenu').hidden && !e.target.closest('#bmenu') && !(t && t.getAttribute('data-a') === 'b-ai')) $('#bmenu').hidden = true;
+  if(!t) return;
+  var a = t.getAttribute('data-a'), v = t.getAttribute('data-v'), k = t.getAttribute('data-k'), sid = t.getAttribute('data-s');
+  switch(a){
+    case 'undo': return undo();
+    case 'redo': return redo();
+    case 'pop': return openPop(v, t);
+    case 'edit': EDIT = !EDIT; t.classList.toggle('on', !EDIT); t.setAttribute('data-tip', EDIT ? 'Preview' : 'Back to editing'); renderPaper(); renderCover(); return;
+    case 'tab': return setTab(v);
+    case 'lay': DOC.design.layout = v; structural(); refreshPop(); return;
+    case 'al': DOC.design.align = v; structural(); refreshPop(); return;
+    case 'ac': DOC.design.accent = v; structural(); refreshPop(); return;
+    case 'so-up': return moveSec(sid, -1);
+    case 'so-dn': return moveSec(sid, 1);
+    case 'so-vis': var s0 = secById(sid); s0.hidden = !s0.hidden; structural(); refreshPop(); return;
+    case 'dl-pdf': return downloadPDF();
+    case 'dl-doc': return downloadDoc();
+    case 'b-add': case 'b-del': case 'b-ai': return bulletTool(a, t);
+    case 'b-mode': $('#bmenu').hidden = true; if(BT) improveOwner(BT.key, v, [BT.bid]); return;
+    case 'b-new': var o = owner(k); if(!o) return; var nb = {id:uid(), t:''}; o.arr.push(nb); structural(); focusPath(bpath(o.sec.id, o.item && o.item.id, nb.id)); return;
+    case 'e-ai': return improveOwner(k, 'improve');
+    case 'e-del':
+      var s1 = secById(sid), i1 = idx(s1.items, t.getAttribute('data-i')); s1.items.splice(i1, 1); structural(); toast('Removed', {a:'undo', label:'Undo'}); return;
+    case 'sec-add': return secAdd(sid);
+    case 'sec-hide': secById(sid).hidden = true; structural(); toast('“' + secById(sid).title + '” hidden — show it again from Design', {a:'undo', label:'Undo'}); return;
+    case 'sum-ai': return improveSummary(sid);
+    case 's-ok': return acceptSug(k, t.getAttribute('data-b'));
+    case 's-no': return rejectSug(k, t.getAttribute('data-b'));
+    case 's-all-ok': Object.keys(SUG).forEach(function(kk){ if(!SUG[kk].loading) acceptSug(kk); }); return;
+    case 's-all-no': Object.keys(SUG).forEach(function(kk){ if(!SUG[kk].loading) delete SUG[kk]; }); renderPaper(); renderSide(); return;
+    case 'improve-all': return improveAll();
+    case 'fix-weak': return groupFix(analyse().weak, 'improve');
+    case 'fix-num': return groupFix(analyse().nonum, 'expand');
+    case 'fix-long': return groupFix(analyse().long, 'concise');
+    case 'add-sum':
+      var sm = DOC.sections.filter(function(s){ return s.k === 'summary'; })[0];
+      if(!sm){ sm = newSection('summary'); DOC.sections.unshift(sm); } sm.hidden = false; structural(); improveSummary(sm.id); scrollToSec(sm.id); return;
+    case 'fix-sum': var sm2 = analyse().sum; if(sm2){ improveSummary(sm2.id); scrollToSec(sm2.id); } return;
+    case 'rm-sec': var rs = secById(sid); DOC.sections.splice(idx(DOC.sections, sid), 1); structural(); toast('Removed “' + rs.title + '”', {a:'undo', label:'Undo'}); return;
+    case 'rm-buzz': removeBuzz(); return;
+    case 'go-ph': return goPlaceholder();
+    case 'add-sec': var ns = newSection(k); if(ns.type === 'skills') ns.rows.push({id:uid(), label:'Skills', value:''}); DOC.sections.push(ns); structural(); scrollToSec(ns.id); return;
+    case 'ct-add': DOC.contact.push(''); structural(); focusPath('c|' + (DOC.contact.length - 1)); return;
+    case 'hl-add': DOC._hl = true; renderPaper(); focusPath('headline'); return;
+    case 'pop-design': return openPop('design', $('[data-v=design]'));
+    case 'kw': addSkill(v); structural(); toast('Added “' + v + '” to Skills', {a:'undo', label:'Undo'}); return;
+    case 'jd-use': var jd = ($('#jdIn') || {}).value || ''; if(jd.trim().length < 80){ toast('Paste the full job description — a few lines at least.'); return; }
+      var first = jd.trim().split(/\n/)[0].trim(), m = /^(.{3,80}?)\s+(?:[—–|@-]|at)\s+(.{2,60})$/.exec(first);
+      JOB = DOC.meta.job = {title:m ? m[1].trim() : first.length <= 90 ? first : '', company:m ? m[2].trim() : '', text:jd.slice(0, 15000)}; structural(); return;
+    case 'jd-clear': JOB = null; DOC.meta.job = null; try{ localStorage.removeItem('tp_ats_job'); }catch(x){} structural(); return;
+    case 'cv-write': return writeCover();
+    case 'upload': return $('#fileIn').click();
+    case 'reset': return confirmBox('Go back to your original file?', 'All your edits will be replaced with what’s in “' + (SRC && SRC.name) + '”. You can still press Undo afterwards.', 'Start again from my file', function(){ fromSource(SRC, true); });
+    case 'blank': SRC = null; startDoc(starterDoc()); return;
+    case 'newsrc': $('#banner').hidden = true; fromSource(NEWSRC, true); return;
+    case 'keep': $('#banner').hidden = true; DOC.meta.srcAt = NEWSRC.at; persist(); return;
+  }
+});
+function scrollToSec(id){ var el = $('.ps[data-s="' + id + '"]'); if(el) el.scrollIntoView({behavior:'smooth', block:'center'}); }
+function groupFix(list, mode){
+  var by = {};
+  list.forEach(function(x){ (by[x.key] = by[x.key] || []).push(x.b.id); });
+  var keys = Object.keys(by); if(!keys.length) return;
+  var first = $('[data-b="' + list[0].b.id + '"]'); if(first) first.scrollIntoView({behavior:'smooth', block:'center'});
+  var chain = Promise.resolve();
+  keys.forEach(function(k){ chain = chain.then(function(){ return improveOwner(k, mode, by[k]); }); });
+}
+function removeBuzz(){
+  var n = 0;
+  DOC.sections.forEach(function(s){
+    if(s.type === 'skills') s.rows.forEach(function(r){
+      var parts = r.value.split(/\s*,\s*/), keep = parts.filter(function(p){ var bad = BUZZ.some(function(z){ return p.toLowerCase().indexOf(z) > -1; }); if(bad) n++; return !bad; });
+      r.value = keep.join(', ');
+    });
+    if(s.type === 'summary' && s.text) BUZZ.forEach(function(z){ var rx = new RegExp('\\b' + z.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b,?\\s*(and\\s+)?', 'ig'); if(rx.test(s.text)){ n++; s.text = tidy(s.text.replace(rx, '')); } });
+    if(s.type === 'skills') s.rows = s.rows.filter(function(r){ return r.value.trim() || r.label; });
+  });
+  structural(); toast(n ? 'Removed ' + n + ' cliché' + (n > 1 ? 's' : '') : 'Nothing to remove', n ? {a:'undo', label:'Undo'} : null);
+}
+function secAdd(sid){
+  var s = secById(sid); if(!s) return;
+  if(s.type === 'entries'){ var e = newEntry(); if(s.k !== 'education') e.bullets.push({id:uid(), t:''}); s.items.push(e); structural(); focusPath('s|' + s.id + '|i|' + e.id + '|title'); }
+  else if(s.type === 'skills'){ var r = {id:uid(), label:'', value:''}; s.rows.push(r); structural(); focusPath('s|' + s.id + '|r|' + r.id + '|value'); }
+  else if(s.type === 'list'){ var b = {id:uid(), t:''}; s.list.push(b); structural(); focusPath(bpath(s.id, null, b.id)); }
+}
+function bulletTool(a, btn){
+  if(!BT) return;
+  var o = owner(BT.key); if(!o) return;
+  var i = idx(o.arr, BT.bid); if(i < 0) return;
+  if(a === 'b-add'){ var nb = {id:uid(), t:''}; o.arr.splice(i + 1, 0, nb); structural(); focusPath(bpath(o.sec.id, o.item && o.item.id, nb.id)); }
+  if(a === 'b-del'){ o.arr.splice(i, 1); structural(); toast('Bullet deleted', {a:'undo', label:'Undo'}); }
+  if(a === 'b-ai'){
+    var m = $('#bmenu'), sr = $('#stage').getBoundingClientRect(), br = btn.getBoundingClientRect();
+    m.hidden = false;
+    m.style.top = (br.bottom - sr.top + 4) + 'px';
+    m.style.left = Math.max(0, Math.min(br.right - sr.left - m.offsetWidth, sr.width - m.offsetWidth)) + 'px';
+  }
+}
+function showBtb(li){
+  if(!EDIT || TAB !== 'resume') return;
+  var b = $('#btb'), sr = $('#stage').getBoundingClientRect(), r = li.getBoundingClientRect();
+  BT = {key:li.getAttribute('data-k'), bid:li.getAttribute('data-b')};
+  b.hidden = false;
+  b.style.top = Math.max(0, r.top - sr.top - b.offsetHeight - 2) + 'px';
+  b.style.left = Math.max(0, Math.min(r.right - sr.left - b.offsetWidth, sr.width - b.offsetWidth)) + 'px';
+}
+var stage = $('#stage');
+stage.addEventListener('mouseover', function(e){
+  if(e.target.closest('#btb,#bmenu')) return;
+  var li = e.target.closest('li.b'); if(li){ if(!BT || BT.bid !== li.getAttribute('data-b') || $('#btb').hidden) showBtb(li); }
+});
+stage.addEventListener('mouseleave', function(){ if(!$('#bmenu').hidden) return; var f = document.activeElement && document.activeElement.closest && document.activeElement.closest('li.b'); if(!f) $('#btb').hidden = true; });
+document.addEventListener('focusin', function(e){
+  var li = e.target.closest && e.target.closest('li.b'); if(li) showBtb(li);
+  if(e.target.id === 'cvRole' || e.target.id === 'cvCo') return;
+});
+function onEdit(e){
+  var el = e.target.closest && e.target.closest('[data-f]'); if(!el) return;
+  var f = el.getAttribute('data-f'), multi = f === 'cv|text' || f === 'cv|to';
+  var v = multi ? el.innerText.replace(/\n{3,}/g, '\n\n').replace(/\s+$/, '') : el.innerText.replace(/\s+/g, ' ').trim();
+  setField(f, v);
+  changed();
+}
+$('#paper').addEventListener('input', onEdit);
+$('#cpaper').addEventListener('input', onEdit);
+document.addEventListener('focusout', function(e){
+  var el = e.target.closest && e.target.closest('[data-f]'); if(!el) return;
+  var f = el.getAttribute('data-f');
+  if(/^c\|\d+$/.test(f) && !DOC.contact[+f.split('|')[1]]){ DOC.contact = DOC.contact.filter(Boolean); setTimeout(function(){ if(!document.activeElement || !document.activeElement.closest || !document.activeElement.closest('.ph-h')) structural(); }, 0); }
+  if(f === 'headline' && !DOC.headline){ delete DOC._hl; setTimeout(renderPaper, 0); }
+});
+document.addEventListener('keydown', function(e){
+  var mod = e.ctrlKey || e.metaKey;
+  if(mod && !e.altKey && (e.key === 'z' || e.key === 'Z') && DOC && !e.target.closest('textarea,input')){ e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
+  if(mod && (e.key === 'y' || e.key === 'Y') && DOC && !e.target.closest('textarea,input')){ e.preventDefault(); redo(); return; }
+  if(e.key === 'Escape'){ closePop(); $('#bmenu').hidden = true; if(!$('#modal').hidden) $('#modal').hidden = true; }
+  var el = e.target.closest && e.target.closest('[data-f]'); if(!el) return;
+  var f = el.getAttribute('data-f');
+  if(f === 'cv|text' || f === 'cv|to') return;
+  var li = el.closest('li.b');
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    if(li){ BT = {key:li.getAttribute('data-k'), bid:li.getAttribute('data-b')}; bulletTool('b-add'); }
+    else el.blur();
+  }
+  if(e.key === 'Backspace' && li && !el.innerText.trim()){
+    e.preventDefault();
+    var o = owner(li.getAttribute('data-k')), i = idx(o.arr, li.getAttribute('data-b')); if(i < 0) return;
+    var prev = o.arr[i - 1]; o.arr.splice(i, 1); structural();
+    if(prev) focusPath(bpath(o.sec.id, o.item && o.item.id, prev.id));
+  }
+});
+document.addEventListener('paste', function(e){
+  var el = e.target.closest && e.target.closest('[contenteditable]'); if(!el) return;
+  e.preventDefault();
+  var txt = (e.clipboardData || window.clipboardData).getData('text/plain') || '';
+  var multi = /^cv\|/.test(el.getAttribute('data-f') || '');
+  document.execCommand('insertText', false, multi ? txt : txt.replace(/\s*\n\s*/g, ' '));
+});
+document.addEventListener('input', function(e){
+  var t = e.target;
+  if(!POP || !t.closest('#pop')) return;
+  var d = DOC.design;
+  if(t.id === 'dSize'){ d.size = +t.value; $('#dSizeV').textContent = t.value + 'pt'; }
+  else if(t.id === 'dMg'){ d.margin = +t.value; $('#dMgV').textContent = t.value + 'in'; }
+  else if(t.id === 'dLh'){ d.lh = +t.value; $('#dLhV').textContent = t.value; }
+  else return;
+  applyDesign(); snapLater(); persist(); sideLater();
+});
+document.addEventListener('change', function(e){
+  var t = e.target;
+  if(t.id === 'fileIn'){ if(t.files[0]) readUpload(t.files[0]); t.value = ''; return; }
+  if(t.id === 'dFont'){ DOC.design.font = t.value; structural(); refreshPop(); return; }
+  if(t.id === 'dPage'){ DOC.design.page = t.value; structural(); return; }
+  if(t.id === 'addSec' && t.value){ var ns = newSection(t.value); if(ns.type === 'entries'){ var e1 = newEntry(); if(ns.k !== 'education') e1.bullets.push({id:uid(), t:''}); ns.items.push(e1); } if(ns.type === 'skills') ns.rows.push({id:uid(), label:'Skills', value:''}); if(ns.type === 'list') ns.list.push({id:uid(), t:''});
+    DOC.sections.push(ns); structural(); refreshPop(); scrollToSec(ns.id); return; }
+  if(t.hasAttribute && t.hasAttribute('data-pref')){ DOC.prefs = DOC.prefs || {}; DOC.prefs[t.getAttribute('data-pref')] = t.checked; structural(); return; }
+  if(t.id === 'cvRole'){ DOC.cover.role = t.value.trim(); persist(); }
+  if(t.id === 'cvCo'){ DOC.cover.company = t.value.trim(); persist(); }
+});
+window.addEventListener('resize', debounce(function(){ if(DOC){ fit(); breaks(); } }, 150));
+window.addEventListener('beforeprint', function(){ if(DOC) $$('.pbrk').forEach(function(x){ x.remove(); }); });
+window.addEventListener('afterprint', function(){ if(DOC) breaks(); });
+function setTab(v){
+  TAB = v; closePop();
+  $$('#tabs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === v); });
+  $('#paneR').classList.toggle('on', v === 'resume'); $('#paneC').classList.toggle('on', v === 'cover');
+  $('#btb').hidden = true; $('#bLoc').hidden = v === 'cover';
+  if(v === 'cover'){ renderCover(); if(!DOC.cover.role && JOB) DOC.cover.role = JOB.title; if(!DOC.cover.company && JOB) DOC.cover.company = JOB.company; }
+  renderSide(); breaks(); window.scrollTo(0, 0);
+}
+
+/* =====================================================================
+   12. STARTING UP
+   ===================================================================== */
+var NEWSRC = null;
+function show(id){ ['gate', 'start', 'boot', 'wrap'].forEach(function(x){ $('#' + x).hidden = x !== id; }); }
+var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+function showGate(){
+  $('#gate').innerHTML = '<div class="card"><h1>Sign in to edit your resume</h1><p>Free with your Google account. You’ll come straight back here.</p><ul>' +
+    ['AI suggestions for every bullet — you choose what to keep', 'Tailor it to any job in a few taps', 'Download a clean, ATS-friendly PDF', 'A cover letter written from your resume'].map(function(t){ return '<li>' + CHECK + t + '</li>'; }).join('') + '</ul>' +
+    '<a class="gbtn" href="/app.html?next=%2Feditor.html#signin"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2c-2 1.5-4.5 2.4-7.2 2.4-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 38.2 44 33 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Continue with Google</a>' +
+    '<p class="fine" style="font-size:12px;color:var(--muted);margin-top:12px">By continuing you agree to our <a href="/terms.html">Terms</a> and <a href="/privacy.html">Privacy Policy</a>.</p></div>';
+  show('gate');
+}
+function showStart(){
+  $('#start').innerHTML = '<div class="card"><h1>Let’s make your resume stronger</h1><p>Add your resume and we’ll lay it out on the page, ready to edit — with suggestions for every bullet.</p>' +
+    '<div class="drop" id="drop" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V5"/><path d="m7 10 5-5 5 5"/><path d="M5 20h14"/></svg><b>Upload your resume</b><span>PDF or Word · read on your device</span></div>' +
+    '<div class="or">or</div><button class="btn wide" type="button" data-a="blank" style="margin-top:12px">Start from a blank template</button></div>';
+  show('start');
+  var d = $('#drop');
+  d.addEventListener('click', function(){ need('pdf').catch(function(){}); $('#fileIn').click(); });
+  d.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); $('#fileIn').click(); } });
+  ['dragenter', 'dragover'].forEach(function(ev){ d.addEventListener(ev, function(e){ e.preventDefault(); d.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function(ev){ d.addEventListener(ev, function(e){ e.preventDefault(); d.classList.remove('over'); }); });
+  d.addEventListener('drop', function(e){ if(e.dataTransfer.files[0]) readUpload(e.dataTransfer.files[0]); });
+}
+function readUpload(f){
+  var ext = (/\.(pdf|docx|txt)$/i.exec(f.name || '') || [])[1];
+  if(!ext){ toast('Please choose a PDF or Word (.docx) file.'); return; }
+  if(f.size > 8*1048576){ toast('That file is over 8 MB — please choose a smaller one.'); return; }
+  show('boot'); $('#boot').lastChild.textContent = 'Reading ' + f.name + '…';
+  f.arrayBuffer().then(function(buf){
+    var src = {kind:ext.toLowerCase(), name:f.name, buf:buf, at:Date.now()};
+    return linesFrom(src).then(function(lines){
+      var text = lines.map(function(l){ return l.t; }).join('\n');
+      if(text.replace(/\s/g, '').length < 120){ toast('We couldn’t read text from that file — it may be a scanned image. Try the Word version.'); DOC ? show('wrap') : showStart(); return; }
+      src.text = text;
+      RESUME_DB.set({buf:buf.slice(0), kind:src.kind, name:src.name, size:f.size, text:text, at:src.at}).catch(function(){});
+      fromSource(src, true);
+    });
+  }).catch(function(){ toast('We couldn’t read that file. Try again, or use the Word version.'); DOC ? show('wrap') : showStart(); });
+}
+function fromSource(src, fresh){
+  show('boot');
+  return linesFrom(src).then(function(lines){
+    var keepDesign = DOC && DOC.design, keepCover = DOC && DOC.cover;
+    var D = parseDoc(lines, src.name);
+    if(keepDesign && fresh) D.design = keepDesign;
+    if(keepCover && fresh) D.cover = keepCover;
+    D.meta.srcAt = src.at || Date.now();
+    SRC = src; startDoc(D);
+  }).catch(function(){ toast('We couldn’t read your resume file. Upload it again, or start from a blank template.'); showStart(); });
+}
+function startDoc(D){
+  DOC = D; SUG = {}; HIST = []; HI = -1;
+  JOB = loadJob();
+  show('wrap'); $('#tabs').hidden = false;
+  renderAll(); snap(); persist();
+  if(location.hash === '#cover') setTab('cover');
+}
+function boot(){
+  if(LIVE ? !SESSION0 : !PREVIEW){ showGate(); return; }
+  var saved = lsGet(STORE_KEY, null);
+  var other = !!(saved && saved.meta && saved.meta.owner && USER && saved.meta.owner !== USER.id);
+  if(other) saved = null;   // another account used this browser: don't show them that person's resume or file
+  var prof = fetchProfile();
+  (other ? Promise.resolve(null) : source()).then(function(src){
+    if(saved && saved.v === 1 && saved.sections){
+      SRC = src;
+      startDoc(saved);
+      if(src && src.at && src.at > (saved.meta.srcAt || 0) + 1000){
+        NEWSRC = src;
+        var b = $('#banner'); b.hidden = false;
+        b.innerHTML = '<span class="sp">You added a newer resume (“' + esc(src.name) + '”). Start from it, or keep editing this one?</span><button class="btn sm pri" type="button" data-a="newsrc">Use the new file</button><button class="btn sm" type="button" data-a="keep">Keep editing</button>';
+      }
+      return;
+    }
+    if(src) return fromSource(src);
+    return prof.then(function(p){
+      if(LIVE && !p){ showGate(); return; }   // the saved sign-in had expired
+      if(p && p.resume_doc && p.resume_doc.sections) return startDoc(p.resume_doc);
+      if(p && p.resume_text) return fromSource({kind:'text', name:p.resume_name || 'resume', text:p.resume_text, at:0});
+      showStart();
+    });
+  });
+}
+// whose resume this is, so a shared computer doesn't mix accounts
+var _persist = persist;
+persist = function(){ if(DOC && USER) DOC.meta.owner = USER.id; _persist(); };
+boot();
+</script>
+</body>
+</html>
