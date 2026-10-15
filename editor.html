@@ -398,6 +398,61 @@ body.embed .banner{max-width:none}
   .om-pick{padding:22px 18px 18px}
 }
 
+/* ---------- live writing checks (underlines with one-click fixes) ---------- */
+.paper mark.iss{background:none;color:inherit;border-radius:0;cursor:pointer;text-decoration-line:underline;text-decoration-style:wavy;text-decoration-thickness:1.4px;text-underline-offset:3px;transition:background .15s}
+.paper mark.iss.k-weak{text-decoration-color:#e04848}
+.paper mark.iss.k-pron,.paper mark.iss.k-buzz{text-decoration-color:#e08a00}
+.paper mark.iss.k-fill{text-decoration-color:#2f6bff}
+.paper mark.iss.k-pass{text-decoration-color:#8b5cf6}
+.paper mark.iss:hover,.paper mark.iss.on{background:rgba(224,72,72,.08)}
+.paper.wchk li.b[data-q=r]::marker{color:#e04848}
+.paper.wchk li.b[data-q=a]::marker{color:#e08a00}
+.paper.wchk li.b[data-q=g]::marker{color:#12a150}
+.paper .fixed{animation:fixFlash 1.3s ease}
+@keyframes fixFlash{0%{background:#c9f2d9;box-shadow:0 0 0 3px #c9f2d9}100%{background:transparent;box-shadow:0 0 0 3px transparent}}
+#iss{position:absolute;z-index:28;width:300px;max-width:calc(100% - 16px);background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 44px -14px rgba(18,26,51,.38);padding:12px 14px 12px;font-size:13.5px;color:var(--body);animation:popIn .18s cubic-bezier(.16,1,.3,1);transform-origin:top left}
+#iss .ik{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+#iss .ik i{width:8px;height:8px;border-radius:50%;background:currentColor}
+#iss .ik.k-weak{color:#d03b3b}#iss .ik.k-pron,#iss .ik.k-buzz{color:#c27400}#iss .ik.k-fill{color:#2457e6}#iss .ik.k-pass{color:#7c3aed}
+#iss p{margin-top:5px;line-height:1.45}
+#iss .ifx{margin-top:9px;background:#f3fbf6;border:1px solid #c9ead6;border-radius:10px;padding:8px 10px;font-size:13px;color:#155f37;line-height:1.45}
+#iss .ifx s{color:#a33;text-decoration-color:rgba(170,51,51,.5)}
+#iss .ia{display:flex;gap:6px;margin-top:10px}
+#iss .ia button{border:0;border-radius:8px;padding:7px 12px;font:600 12.5px Inter,sans-serif}
+#iss .ia .go{background:#0a7f46;color:#fff}#iss .ia .go:hover{background:#086b3b}
+#iss .ia .ai{background:linear-gradient(135deg,#6d28d9,#0938d5);color:#fff}
+#iss .ia .no{background:var(--bg);color:var(--body)}#iss .ia .no:hover{background:#e6e9f2}
+#btb .bq{display:flex;align-items:center;gap:5px;padding:0 9px 0 7px;margin-right:2px;border-right:1px solid var(--line);font:600 11.5px Inter,sans-serif;white-space:nowrap}
+#btb .bq i{width:7px;height:7px;border-radius:50%;background:currentColor}
+#btb .bq.r{color:#d03b3b}#btb .bq.a{color:#c27400}#btb .bq.g{color:#0a7f46}
+/* ---------- motion polish ---------- */
+@property --v{syntax:'<number>';inherits:true;initial-value:0}
+.ring{transition:--v .9s cubic-bezier(.16,1,.3,1)}
+.score{position:relative}
+.sc-up{position:absolute;left:60px;top:6px;background:#0a7f46;color:#fff;font:700 12px Inter,sans-serif;border-radius:999px;padding:2px 8px;animation:scUp 1.6s cubic-bezier(.16,1,.3,1) forwards;pointer-events:none}
+@keyframes scUp{0%{opacity:0;transform:translateY(8px) scale(.8)}15%{opacity:1;transform:translateY(0) scale(1.05)}70%{opacity:1;transform:translateY(-6px)}100%{opacity:0;transform:translateY(-14px)}}
+.pop,#bmenu{animation:popIn .2s cubic-bezier(.16,1,.3,1);transform-origin:top right}
+#btb{animation:btbIn .16s ease}
+@keyframes popIn{from{opacity:0;transform:translateY(-4px) scale(.97)}}
+@keyframes btbIn{from{opacity:0;transform:translateY(3px)}}
+.sug,.msug{animation:sugIn .4s cubic-bezier(.16,1,.3,1)}
+@keyframes sugIn{from{opacity:0;transform:translateY(6px)}}
+.typing::after{content:"";display:inline-block;width:2px;height:1.05em;margin-left:1px;vertical-align:-.15em;background:#0a7f46;animation:blink .75s steps(1) infinite}
+.cv-body.typing::after{background:#0938d5}
+@keyframes blink{50%{opacity:0}}
+.status i{transition:background .2s}
+.status.ok i{animation:okPop .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes okPop{0%{transform:scale(.4)}100%{transform:scale(1)}}
+.paper li.b{transition:background .2s}
+/* score pill (shown when the editor sits beside a job) */
+.tbi .scorep{display:none;align-items:center;gap:7px;padding:0 11px 0 6px;font-weight:600;font-size:13px;color:var(--ink)}
+body.embed .tbi .scorep{display:flex}
+.scorep .sr{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--c,#be123c) calc(var(--v)*1%),#eef0f6 0);transition:--v .9s cubic-bezier(.16,1,.3,1)}
+.scorep .sr b{width:20px;height:20px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:10.5px}
+.pop.wide{width:360px}
+.pop .score{padding:12px}
+.pop .tips{margin-top:4px}
+
 @media (max-width:1060px){
   .wrap{grid-template-columns:1fr}
   .side{position:static;height:auto;border-left:0;border-top:1px solid var(--line)}
@@ -428,6 +483,8 @@ body.embed .banner{max-width:none}
   .paper [contenteditable]:empty,.paper .opt{display:none!important}
   .paper [contenteditable]{box-shadow:none!important;background:none!important}
   .paper .hl,.paper li.b.hl{background:none!important;box-shadow:none!important}
+  .paper mark.iss{text-decoration:none!important}
+  .paper li::marker{color:#111!important}
   .paper .en,.paper .bl li{break-inside:avoid}
   .paper .ps>h2{break-after:avoid}
 }
@@ -455,12 +512,14 @@ body.embed .banner{max-width:none}
       <button type="button" data-a="undo" data-tip="Undo" id="bUndo" aria-label="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
       <button type="button" data-a="redo" data-tip="Redo" id="bRedo" aria-label="Redo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
       <span class="dv"></span>
+      <button type="button" class="scorep" data-a="pop" data-v="checks" id="bScore" aria-label="Resume score and fix list"><span class="sr" id="scR"><b id="scN">–</b></span><span>Score</span></button>
       <button type="button" class="optb" data-a="optimize" aria-label="Optimise for a job"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Optimise</span></button>
       <span class="dv"></span>
       <button type="button" data-a="pop" data-v="design" data-tip="Design" aria-label="Design"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 1 10-10c0 2.8-2.2 4-4 4h-1.5a1.5 1.5 0 0 0-1 2.6c.6.6.5 1.6-.2 2.1-.9.8-2.1 1.3-3.3 1.3z"/><circle cx="7.5" cy="10.5" r="1.2" fill="currentColor"/><circle cx="11" cy="6.5" r="1.2" fill="currentColor"/><circle cx="16" cy="8" r="1.2" fill="currentColor"/></svg></button>
       <button type="button" data-a="pop" data-v="layout" data-tip="Layout" aria-label="Layout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></button>
       <button type="button" data-a="pop" data-v="addsec" data-tip="Add section" aria-label="Add a section" id="bAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/></svg></button>
       <button type="button" data-a="pop" data-v="loc" data-tip="Open to…" aria-label="Location preferences" id="bLoc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></button>
+      <button type="button" data-a="checks" data-tip="Writing checks" aria-label="Writing checks on or off" id="bChk" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9M4 12h7M4 17h5"/><path d="m14 16 2.5 2.5L21 13"/></svg></button>
       <button type="button" data-a="edit" data-tip="Preview" aria-label="Preview without editing tools" id="bEdit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
       <span class="dv"></span>
       <button type="button" data-a="pop" data-v="download" class="dl" aria-label="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg><span>Download</span></button>
@@ -470,10 +529,12 @@ body.embed .banner{max-width:none}
       <div class="pane on" id="paneR"><div class="paper" id="paper"></div></div>
       <div class="pane" id="paneC"><div class="cvcol"><div class="cvbar nopr" id="cvbar"></div><div class="paper" id="cpaper"></div></div></div>
       <div id="btb" hidden>
+        <span class="bq" id="bq"></span>
         <button type="button" class="add" data-a="b-add" aria-label="Add a bullet below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
         <button type="button" class="del" data-a="b-del" aria-label="Delete this bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
         <button type="button" class="ai" data-a="b-ai" aria-label="Improve with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button>
       </div>
+      <div id="iss" hidden></div>
       <div id="bmenu" hidden>
         <button type="button" data-a="b-mode" data-v="improve"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Improve it<small>Stronger verb, clearer wording</small></span></button>
         <button type="button" data-a="b-mode" data-v="concise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h6"/></svg><span>Make more concise<small>Same facts, fewer words</small></span></button>
@@ -1110,7 +1171,8 @@ function undoState(){ $('#bUndo').disabled = HI <= 0; $('#bRedo').disabled = HI 
 function undo(){ if(HI <= 0) return; HI--; DOC = JSON.parse(HIST[HI]); SUG = {}; renderAll(); persist(); undoState(); }
 function redo(){ if(HI >= HIST.length - 1) return; HI++; DOC = JSON.parse(HIST[HI]); SUG = {}; renderAll(); persist(); undoState(); }
 var snapLater = debounce(snap, 700), sideLater = debounce(function(){ breaks(); renderSide(); }, 450);
-function status(t, busy){ var s = $('#status'); s.hidden = false; s.classList.toggle('busy', !!busy); s.lastChild.textContent = t; }
+function status(t, busy){ var s = $('#status'); s.hidden = false; s.classList.toggle('busy', !!busy); var was = s.lastChild.textContent; s.lastChild.textContent = t;
+  if(!busy && /^Saved/.test(t) && was !== t){ s.classList.remove('ok'); void s.offsetWidth; s.classList.add('ok'); } }
 var tellResume = debounce(function(){ if(DOC) tell({act:'resume', text:docText()}); }, 500);
 function persist(){
   DOC.meta.saved = Date.now(); tellResume();
@@ -1225,7 +1287,7 @@ function applyDesign(){
   var d = DOC.design, f = FONTS.filter(function(x){ return x[0] === d.font; })[0] || FONTS[0], pg = PAGES[d.page] || PAGES.letter;
   loadFont(f[2]);
   [$('#paper'), $('#cpaper')].forEach(function(p){
-    p.className = 'paper L-' + d.layout;
+    p.className = 'paper L-' + d.layout + (p.id === 'paper' && CHECKS && EDIT ? ' wchk' : '');
     p.style.setProperty('--ff', f[1]); p.style.setProperty('--fs', d.size + 'pt'); p.style.setProperty('--lh', d.lh);
     p.style.setProperty('--mg', d.margin + 'in'); p.style.setProperty('--al', d.align); p.style.setProperty('--pw', pg.w + 'px');
     p.style.setProperty('--ph', pg.h + 'px'); p.style.setProperty('--ac', d.accent);
@@ -1246,14 +1308,67 @@ function breaks(){
   if(TAB === 'resume') PAGES_N = n;
   for(var i = 1; i < n; i++){ var b = document.createElement('div'); b.className = 'pbrk nopr'; b.style.top = (mg + i*per) + 'px'; b.innerHTML = '<span>Page ' + (i + 1) + '</span>'; p.appendChild(b); }
 }
-function fmt(t, extra){
-  var h = esc(t || '');
-  (extra || []).forEach(function(term){
-    var rx = new RegExp('(^|[^A-Za-z0-9+#])(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')(?![A-Za-z0-9+#])', 'gi');
-    h = h.replace(rx, '$1<mark class="add">$2</mark>');
-  });
-  return h.replace(/\[[^\]\n<]{1,100}\]/g, '<mark class="ph">$&</mark>');
+function escRx(x){ return String(x).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+/* ---- live writing checks: what a recruiter would flag, each with a one-click fix ---- */
+var CHECKS = lsGet('tp_checks', true) !== false;
+var FIX_FILL = [['successfully', ''], ['effectively', ''], ['actively', ''], ['various', ''], ['in order to', 'to'], ['on a regular basis', 'regularly'], ['on a daily basis', 'daily'],
+  ['as and when required', 'as needed'], ['as and when needed', 'as needed'], ['utilized', 'used'], ['utilised', 'used'], ['utilize', 'use'], ['utilise', 'use'], ['utilizing', 'using'],
+  ['a variety of', 'multiple'], ['a number of', 'several'], ['due to the fact that', 'because'], ['very', ''], ['really', ''], ['in a timely manner', 'on time'], ['with the help of', 'with']];
+var ISS_TXT = {
+  weak:['Weak opener', 'Recruiters skim the first two words. Start with what you did.'],
+  pron:['Drop “I” and “my”', 'Resumes are written without pronouns — it reads tighter.'],
+  buzz:['Cliché', 'Everyone says this, so it proves nothing. Show it with a result instead.'],
+  fill:['Filler word', 'It adds length, not meaning.'],
+  pass:['Passive voice', 'Lead with the action you took — “Led…”, “Built…”, not “was responsible…”.']
+};
+function issuesIn(t){
+  t = String(t || ''); var out = [], m, ign = (DOC && DOC.meta.ign) || [];
+  var add = function(st, en, k, extra){ var sig = k + ':' + t.slice(st, en).toLowerCase(); if(ign.indexOf(sig) < 0) out.push(Object.assign({s:st, e:en, k:k}, extra || {})); };
+  var lead = /^\s*/.exec(t)[0].length, low = t.toLowerCase();
+  WEAK.some(function(w){ if(low.indexOf(w[0], lead) === lead && !/[a-z]/.test(low.charAt(lead + w[0].length) || '')){ add(lead, lead + w[0].length, 'weak'); return true; } return false; });
+  if(!out.length){ var g = /^\s*(\w+ing)\b/.exec(t); if(g && GERUND[g[1].toLowerCase()]) add(lead, lead + g[1].length, 'weak'); }
+  var pr = /\b(I|my|me|we|our)\b/g; while((m = pr.exec(t))){ if(m[1] === 'I' || /^(my|me|our|we)$/i.test(m[1])) add(m.index, m.index + m[1].length, 'pron'); }
+  BUZZ.forEach(function(z){ var r = new RegExp('\\b' + escRx(z) + '\\b', 'ig'); while((m = r.exec(t))) add(m.index, m.index + m[0].length, 'buzz'); });
+  FIX_FILL.forEach(function(f){ var r = new RegExp('\\b' + escRx(f[0]) + '\\b', 'ig'); while((m = r.exec(t))) add(m.index, m.index + m[0].length, 'fill', {rep:f[1]}); });
+  var ps = /\b(was|were|been|being)\s+(\w+ed)\b/ig; while((m = ps.exec(t))) add(m.index, m.index + m[0].length, 'pass');
+  out.sort(function(a, b){ return a.s - b.s || b.e - a.e; });
+  return out;
 }
+function fixFor(x, t){
+  if(x.k === 'pass') return null;
+  var nt;
+  if(x.k === 'weak') nt = strongStart(t);
+  else if(x.k === 'fill') nt = t.slice(0, x.s) + (x.rep ? (x.s === 0 ? x.rep.charAt(0).toUpperCase() + x.rep.slice(1) : x.rep) : '') + t.slice(x.e);
+  else { nt = t.slice(0, x.s) + t.slice(x.e).replace(/^\s*,?/, ''); if(x.k === 'pron' && x.s <= 1) nt = strongStart(nt.trim()); }
+  nt = tidy(nt).replace(/^\s*[,;:]\s*/, ''); nt = nt.charAt(0).toUpperCase() + nt.slice(1);
+  return nt && nt !== t ? nt : null;
+}
+function fmt(t, extra, chk){
+  t = String(t || ''); var R = [], m;
+  var rx = /\[[^\]\n<]{1,100}\]/g; while((m = rx.exec(t))) R.push({s:m.index, e:m.index + m[0].length, c:'ph'});
+  (extra || []).forEach(function(term){
+    var r2 = new RegExp('(^|[^A-Za-z0-9+#])(' + escRx(term) + ')(?![A-Za-z0-9+#])', 'gi');
+    while((m = r2.exec(t))){ var st = m.index + m[1].length; R.push({s:st, e:st + m[2].length, c:'add'}); }
+  });
+  if(chk && CHECKS && EDIT) issuesIn(t).forEach(function(x, i){ R.push({s:x.s, e:x.e, c:'iss k-' + x.k, n:i}); });
+  R.sort(function(a, b){ return a.s - b.s || b.e - a.e; });
+  var out = '', pos = 0;
+  R.forEach(function(r){ if(r.s < pos || r.e <= r.s) return; out += esc(t.slice(pos, r.s)) + '<mark class="' + r.c + '"' + (r.n != null ? ' data-n="' + r.n + '"' : '') + '>' + esc(t.slice(r.s, r.e)) + '</mark>'; pos = r.e; });
+  return out + esc(t.slice(pos));
+}
+function getField(path){
+  var a = path.split('|');
+  if(a[0] === 's'){
+    var s = secById(a[1]); if(!s) return '';
+    if(a.length === 3) return s[a[2]] || '';
+    if(a[2] === 'i'){ var it = byId(s.items, a[3]); if(!it) return ''; if(a[4] === 'b'){ var b = byId(it.bullets, a[5]); return b ? b.t : ''; } return it[a[4]] || ''; }
+    if(a[2] === 'l'){ var b2 = byId(s.list, a[3]); return b2 ? b2.t : ''; }
+    if(a[2] === 'r'){ var r = byId(s.rows, a[3]); return r ? r[a[4]] || '' : ''; }
+  }
+  return a[0] === 'name' ? DOC.name : a[0] === 'headline' ? DOC.headline : '';
+}
+function checked(path){ return /^s\|[^|]+\|(i\|[^|]+\|b\|[^|]+|l\|[^|]+|text)$/.test(path); }
+function quality(t){ if(!t || t.split(/\s+/).length < 4) return ''; var g = gradeBullet({t:t}); return g.score >= 80 ? 'g' : g.score >= 55 ? 'a' : 'r'; }
 function ce(path, html, ph, tag, cls){
   tag = tag || 'span';
   return '<' + tag + (cls ? ' class="' + cls + '"' : '') + (EDIT ? ' contenteditable="true"' : '') + ' data-f="' + esc(path) + '" data-ph="' + esc(ph || '') + '">' + html + '</' + tag + '>';
@@ -1272,7 +1387,8 @@ function liPlain(b){ return '<li class="prt">' + esc(b.t) + '</li>'; }
 function bulletsHTML(sid, iid, arr){
   var key = sid + ':' + (iid || '_'), S = SUG[key];
   if(!arr.length) return '';
-  var li = function(b){ return '<li class="b' + (HL[b.id] ? ' hl' : '') + '" data-k="' + key + '" data-b="' + b.id + '">' + ce(bpath(sid, iid, b.id), fmt(b.t), 'What you did, and the result') + '</li>'; };
+  var sec0 = secById(sid), graded = sec0 && sec0.type === 'entries' && sec0.k !== 'education';
+  var li = function(b){ var q = graded ? quality(b.t) : ''; return '<li class="b' + (HL[b.id] ? ' hl' : '') + '" data-k="' + key + '" data-b="' + b.id + '"' + (q ? ' data-q="' + q + '"' : '') + '>' + ce(bpath(sid, iid, b.id), fmt(b.t, null, true), 'What you did, and the result') + '</li>'; };
   if(S && S.all) return '<ul class="bl prt">' + arr.map(liPlain).join('') + '</ul>' + bigSug(key, arr, S);
   return '<ul class="bl">' + arr.map(function(b){ return S && S.ids.indexOf(b.id) > -1 ? liPlain(b) + miniSug(key, b, S) : li(b); }).join('') + '</ul>';
 }
@@ -1311,7 +1427,7 @@ function sectionHTML(s){
     tools = '<button type="button" class="ai" data-a="sum-ai" data-s="' + s.id + '">✨ ' + (s.text ? 'Improve summary' : 'Write it for me') + '</button>';
     body = S ? '<div class="sum prt">' + esc(s.text) + '</div><div class="sug nopr" data-k="sum:' + s.id + '"><div class="o"><b class="k">Original</b>' + (fmt(s.text) || '<i>Empty</i>') + '</div><div class="n"><b class="k">' + (S.src === 'ai' ? 'AI suggestion' : 'Suggestion') + '</b>' +
       (S.loading ? shim(2) : '<div contenteditable="true" data-sb="sum">' + fmt(S.text) + '</div>') + '</div>' + sugActs('sum:' + s.id, S) + '</div>'
-      : ce('s|' + s.id + '|text', fmt(s.text), 'Two or three lines: who you are, your years of experience and your strongest skills.', 'div', 'sum' + (HL['sum:' + s.id] ? ' hl' : ''));
+      : ce('s|' + s.id + '|text', fmt(s.text, null, true), 'Two or three lines: who you are, your years of experience and your strongest skills.', 'div', 'sum' + (HL['sum:' + s.id] ? ' hl' : ''));
   } else if(s.type === 'entries'){
     tools = '<button type="button" data-a="sec-add" data-s="' + s.id + '">+ Add ' + (s.k === 'education' ? 'school' : s.k === 'projects' ? 'project' : 'role') + '</button>';
     body = s.items.map(function(it){ return entryHTML(s, it); }).join('');
@@ -1330,6 +1446,7 @@ function sectionHTML(s){
 }
 function renderPaper(){
   var p = $('#paper'), keep = focusInfo();
+  p.classList.toggle('wchk', CHECKS && EDIT); var ib = $('#iss'); if(ib) ib.hidden = true;
   p.innerHTML = headerHTML() + DOC.sections.filter(function(s){ return !s.hidden; }).map(sectionHTML).join('');
   $('#btb').hidden = true; $('#bmenu').hidden = true;
   restoreFocus(keep);
@@ -1422,24 +1539,45 @@ function tips(A){
   return T;
 }
 var START = null;
+var LAST_SC = null;
+function scoreCol(sc){ return sc >= 80 ? '#0a7f46' : sc >= 60 ? '#b45309' : '#be123c'; }
+function countUp(el, from, to){
+  if(!el) return; if(from == null || from === to){ el.textContent = to; return; }
+  var t0 = null; function st(now){ if(t0 === null) t0 = now; var p = Math.min(1, (now - t0)/800), e = 1 - Math.pow(1 - p, 3); el.textContent = Math.round(from + (to - from)*e); if(p < 1) requestAnimationFrame(st); }
+  requestAnimationFrame(st);
+}
+function scoreBits(sc, prev){
+  // ring starts at the previous score, then glides to the new one
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){
+    $$('.ring[data-sc], #scR').forEach(function(r){ r.style.setProperty('--v', sc); r.style.setProperty('--c', scoreCol(sc)); });
+    $$('.ring[data-sc] span').forEach(function(s){ countUp(s, prev, sc); }); countUp($('#scN'), prev, sc);
+    if(prev != null && sc > prev) $$('.score').forEach(function(box){ var u = document.createElement('span'); u.className = 'sc-up'; u.textContent = '+' + (sc - prev); box.appendChild(u); setTimeout(function(){ u.remove(); }, 1700); });
+  }); });
+}
+function tipsHTML(T){
+  return T.length ? '<div class="tips">' + T.map(function(t){
+    return '<div class="tip ' + t.sev + '"><span class="dot"></span><div class="tx"><b>' + esc(t.t) + '</b><p>' + esc(t.p) + '</p>' +
+      (t.a ? '<button class="btn sm" type="button" data-a="' + t.a + '"' + (t.s ? ' data-s="' + t.s + '"' : '') + (t.k ? ' data-k="' + t.k + '"' : '') + '>' + esc(t.l) + '</button>' : '') + '</div></div>';
+  }).join('') + '</div>' : '<div class="alldone">✓ Nothing left on the fix list. Download it and apply.</div>';
+}
 function renderSide(){
   if(TAB === 'cover') return renderCoverSide();
-  var A = analyse(), T = tips(A), sc = A.score, col = sc >= 80 ? '#0a7f46' : sc >= 60 ? '#b45309' : '#be123c';
+  var A = analyse(), sc = A.score, prev = LAST_SC; LAST_SC = sc;
+  if(EMBED){ scoreBits(sc, prev); if(POP === 'checks') refreshPop(); return; }   // beside a job: the score lives in the toolbar
+  var T = tips(A), col = scoreCol(sc);
   if(DOC.meta.startScore == null){ DOC.meta.startScore = sc; }
   var st = DOC.meta.startScore, pend = Object.keys(SUG).filter(function(k){ return !SUG[k].loading; }).length;
-  var h = '<div class="score"><div class="ring" style="--v:' + sc + ';--c:' + col + '"><span>' + sc + '</span></div><div><b>Resume score</b><p>' +
+  var h = '<div class="score"><div class="ring" data-sc="1" style="--v:' + (prev == null ? sc : prev) + ';--c:' + scoreCol(prev == null ? sc : prev) + '"><span>' + (prev == null ? sc : prev) + '</span></div><div><b>Resume score</b><p>' +
     (sc > st ? 'Started at ' + st + ' · <span class="up">+' + (sc - st) + '</span>' : 'Bullets, numbers, sections and length.') + '</p></div></div>';
   if(pend) h += '<div class="pend"><span class="sp">' + pend + ' suggestion' + (pend > 1 ? 's' : '') + ' waiting on the page</span><button class="btn sm" type="button" data-a="s-all-ok">Accept all</button><button class="btn sm" type="button" data-a="s-all-no">Reject all</button></div>';
   h += '<div style="margin-top:12px"><button class="btn ai wide" type="button" data-a="improve-all"' + (Object.keys(SUG).some(function(k){ return SUG[k].loading; }) ? ' disabled' : '') + '>✨ Improve every bullet</button>' +
     '<p class="ainote">' + (AI_OFF ? 'Using our built-in writing rules. Anything we can’t know — like your numbers — is marked [ ] for you to fill in.' : 'AI suggests a rewrite for each bullet. You choose what to keep — nothing changes until you press Accept.') + '</p></div>';
-  h += '<h3>Fix list</h3>' + (T.length ? '<div class="tips">' + T.map(function(t){
-    return '<div class="tip ' + t.sev + '"><span class="dot"></span><div class="tx"><b>' + esc(t.t) + '</b><p>' + esc(t.p) + '</p>' +
-      (t.a ? '<button class="btn sm" type="button" data-a="' + t.a + '"' + (t.s ? ' data-s="' + t.s + '"' : '') + (t.k ? ' data-k="' + t.k + '"' : '') + '>' + esc(t.l) + '</button>' : '') + '</div></div>';
-  }).join('') + '</div>' : '<div class="alldone">✓ Nothing left on the fix list. Download it and apply.</div>');
+  h += '<h3>Fix list</h3>' + tipsHTML(T);
   h += tailorHTML();
   h += '<div class="callc"><b>Want a specialist to rewrite it?</b><p>Our resume specialists rewrite resumes for the exact roles you’re going after. The first call is free.</p><a class="btn sm" href="' + esc(bookUrl('editor')) + '" target="_blank" rel="noopener">Book a free call</a></div>';
   h += '<div class="sidefoot"><button type="button" data-a="upload">Start from a different file</button>' + (SRC ? '<button type="button" data-a="reset">Undo all edits (back to my file)</button>' : '') + '</div>';
   $('#side').innerHTML = h;
+  scoreBits(sc, prev);
 }
 function bookUrl(from){
   var q = [];
@@ -1564,6 +1702,23 @@ function localSummary(cap){
   if(cap && wordsIn(s) > cap.max){ var one = s.split(/\.\s+/)[0].replace(/\.?$/, '.'); if(wordsIn(one) <= cap.max) s = one; }
   return s;
 }
+function typeIn(el, delay){
+  if(!el) return;
+  var html = el.innerHTML, txt = el.textContent; if(!txt.trim()) return;
+  var parts = txt.split(/(\s+)/), n = parts.length, per = Math.min(45, Math.max(4, 2200 / Math.max(1, n/2))), ce0 = el.getAttribute('contenteditable');
+  el.textContent = ''; el.classList.add('typing'); if(ce0) el.setAttribute('contenteditable', 'false');
+  var t0 = null;
+  function step(now){
+    if(!el.isConnected) return;
+    if(t0 === null) t0 = now + (delay || 0);
+    var k = Math.max(0, Math.min(n, Math.floor((now - t0) / per) * 2));
+    el.textContent = parts.slice(0, k).join('');
+    if(k < n) requestAnimationFrame(step);
+    else { el.innerHTML = html; el.classList.remove('typing'); if(ce0) el.setAttribute('contenteditable', ce0); }
+  }
+  requestAnimationFrame(step);
+}
+function typeAll(sel){ $$(sel).forEach(function(el, i){ typeIn(el, i*140); }); }
 function improveOwner(key, mode, ids){
   var o = owner(key); if(!o || !o.arr.length) return Promise.resolve();
   var all = !ids, S = SUG[key];
@@ -1581,6 +1736,7 @@ function improveOwner(key, mode, ids){
     var S2 = SUG[key]; if(!S2) return;
     ids.forEach(function(id, i){ S2.sug[id] = r.list[i]; });
     S2.src = r.src; S2.loading = false; renderPaper(); renderSide();
+    typeAll('[data-k="' + key + '"] [data-sb]');
   });
 }
 function improveSummary(sid){
@@ -1589,7 +1745,7 @@ function improveSummary(sid){
   ai({task:'summary', current:s.text || '', resume:docText().slice(0, 8000), target:targetRole(), jd:jobText().slice(0, 3000)})
     .then(function(r){ if(!r || !r.text) throw 'shape'; return {text:String(r.text).trim(), src:'ai'}; })
     .catch(function(){ return wait(450).then(function(){ return {text:localSummary(), src:'local'}; }); })
-    .then(function(r){ if(SUG['sum:' + sid] !== S) return; S.loading = false; S.text = r.text; S.src = r.src; renderPaper(); renderSide(); });
+    .then(function(r){ if(SUG['sum:' + sid] !== S) return; S.loading = false; S.text = r.text; S.src = r.src; renderPaper(); renderSide(); typeAll('.sug[data-k="sum:' + sid + '"] [data-sb]'); });
 }
 function acceptSug(key, bid){
   var S = SUG[key]; if(!S || S.loading) return;
@@ -1657,7 +1813,7 @@ function writeCover(){
   ai({task:'cover', role:DOC.cover.role, company:DOC.cover.company, resume:docText().slice(0, 8000), jd:jobText().slice(0, 4000), name:DOC.name || '', instructions:(lsGet('tp_opt', {}) || {}).ins || ''})
     .then(function(r){ if(!r || !r.text) throw 'shape'; return r.text; })
     .catch(function(){ return wait(500).then(function(){ return localCover(DOC.cover.role, DOC.cover.company); }); })
-    .then(function(t){ COVER_BUSY = false; var w = $('#wpill'); if(w) w.remove(); DOC.cover.text = String(t).trim(); structural(); });
+    .then(function(t){ COVER_BUSY = false; var w = $('#wpill'); if(w) w.remove(); DOC.cover.text = String(t).trim(); structural(); typeIn($('#cpaper .cv-body')); });
 }
 function autoCover(){
   if(!JOB || COVER_BUSY) return;
@@ -1807,6 +1963,7 @@ function showResults(R, targets, sel){
     '<div class="omb">' + h + '</div>' +
     '<div class="omf"><span id="omCount"></span><button class="btn grn" type="button" data-a="r-all" id="rAll">✓ Accept all</button><button class="btn" type="button" data-a="opt-done">Done</button></div></div>');
   countRows();
+  $$('.rr [data-rs]').slice(0, 6).forEach(function(el, i){ typeIn(el, 250 + i*180); });
 }
 function countRows(){
   var p = OPT.rows.filter(function(r){ return r.st === 'p'; }).length, a = OPT.rows.filter(function(r){ return r.st === 'a'; }).length;
@@ -1879,6 +2036,13 @@ function popHTML(kind){
       '<h4>Accent colour</h4><div class="sw">' + ACCENTS.map(function(c){ return '<button type="button" data-a="ac" data-v="' + c + '" class="' + (c === d.accent ? 'on' : '') + '" style="background:' + c + '" aria-label="Accent ' + c + '"></button>'; }).join('') + '</div>' +
       '<p class="fine" style="margin-top:6px">Colour shows in the Modern layout.</p>';
   }
+  if(kind === 'checks'){
+    var A2 = analyse(), sc2 = A2.score;
+    return '<div class="score"><div class="ring" data-sc="1" style="--v:' + sc2 + ';--c:' + scoreCol(sc2) + '"><span>' + sc2 + '</span></div><div><b>Resume score</b><p>' +
+      (DOC.meta.startScore != null && sc2 > DOC.meta.startScore ? 'Started at ' + DOC.meta.startScore + ' · <span class="up">+' + (sc2 - DOC.meta.startScore) + '</span>' : 'Bullets, numbers, sections and length.') + '</p></div></div>' +
+      '<button class="btn ai wide" type="button" data-a="improve-all" style="margin-top:10px">✨ Improve every bullet</button>' +
+      '<h4 style="margin-top:16px">Fix list</h4>' + tipsHTML(tips(A2)) + (JOB ? tailorHTML().replace('<h3>', '<h4 style="margin-top:16px">').replace('</h3>', '</h4>') : '');
+  }
   if(kind === 'addsec'){
     var miss = CATALOG.filter(function(c){ return !DOC.sections.some(function(x){ return x.k === c[0] && !x.hidden; }); });
     return '<h4>Select section</h4><div class="adds">' + miss.map(function(c){ return '<button type="button" class="addb" data-a="add-sec2" data-v="' + c[0] + '">' + (SEC_ICON[c[0]] || SEC_ICON.other) + '<span>' + c[1] + '</span></button>'; }).join('') +
@@ -1911,7 +2075,7 @@ var POP = null;
 function openPop(kind, btn){
   var pop = $('#pop');
   if(POP === kind){ closePop(); return; }
-  POP = kind; pop.innerHTML = popHTML(kind); pop.hidden = false;
+  POP = kind; pop.innerHTML = popHTML(kind); pop.hidden = false; pop.classList.toggle('wide', kind === 'checks');
   $$('#tbi button').forEach(function(b){ b.classList.toggle('on', b === btn); });
   var cr = $('#canvas').getBoundingClientRect(), br = (btn || $('#tbi')).getBoundingClientRect();
   var left = Math.min(Math.max(8, br.right - cr.left - pop.offsetWidth), cr.width - pop.offsetWidth - 8);
@@ -1930,11 +2094,21 @@ function bindOrder(){
     row.addEventListener('drop', function(e){
       e.preventDefault(); var to = row.getAttribute('data-s'); if(!drag || drag === to) return;
       var a = idx(DOC.sections, drag), s = DOC.sections.splice(a, 1)[0], b = idx(DOC.sections, to);
-      DOC.sections.splice(a <= b ? b + 1 : b, 0, s); drag = null; structural(); refreshPop();
+      flipSections(function(){ DOC.sections.splice(a <= b ? b + 1 : b, 0, s); structural(); }); drag = null; refreshPop();
     });
   });
 }
-function moveSec(id, dir){ var a = idx(DOC.sections, id), b = a + dir; if(a < 0 || b < 0 || b >= DOC.sections.length) return; var s = DOC.sections.splice(a, 1)[0]; DOC.sections.splice(b, 0, s); structural(); refreshPop(); }
+function flipSections(fn){
+  var before = {}, p = $('#paper'), z = parseFloat(p.style.zoom) || 1;
+  $$('#paper .ps').forEach(function(el){ before[el.getAttribute('data-s')] = el.getBoundingClientRect().top; });
+  fn();
+  $$('#paper .ps').forEach(function(el){
+    var b = before[el.getAttribute('data-s')]; if(b == null || !el.animate) return;
+    var dy = (b - el.getBoundingClientRect().top) / z;
+    if(Math.abs(dy) > 1) el.animate([{transform:'translateY(' + dy + 'px)'}, {transform:'none'}], {duration:480, easing:'cubic-bezier(.16,1,.3,1)'});
+  });
+}
+function moveSec(id, dir){ var a = idx(DOC.sections, id), b = a + dir; if(a < 0 || b < 0 || b >= DOC.sections.length) return; flipSections(function(){ var s = DOC.sections.splice(a, 1)[0]; DOC.sections.splice(b, 0, s); structural(); }); refreshPop(); }
 
 /* =====================================================================
    10. DOWNLOAD
@@ -2044,6 +2218,12 @@ document.addEventListener('click', function(e){
     case 'jd-clear': JOB = null; DOC.meta.job = null; try{ localStorage.removeItem('tp_ats_job'); }catch(x){} structural(); return;
     case 'cv-write': return writeCover();
     case 'optimize': return openOptimise();
+    case 'iss-ok': return issAct('ok');
+    case 'iss-no': return issAct('no');
+    case 'iss-ai': return issAct('ai');
+    case 'checks':
+      CHECKS = !CHECKS; lsSet('tp_checks', CHECKS); t.classList.toggle('on', CHECKS); hideIss(); renderPaper();
+      toast(CHECKS ? 'Writing checks on — hover an underline for a quick fix' : 'Writing checks off'); return;
     case 'opt-t': return optPick(t, !OPT.sel[v]);
     case 'opt-all': var allOn = $$('.orow').every(function(r){ return OPT.sel[r.getAttribute('data-v')]; });
       $$('.orow').forEach(function(r, n){ setTimeout(function(){ optPick(r, !allOn); }, n*70); }); return;
@@ -2109,19 +2289,66 @@ function bulletTool(a, btn){
     m.style.left = Math.max(0, Math.min(br.right - sr.left - m.offsetWidth, sr.width - m.offsetWidth)) + 'px';
   }
 }
+var ISS = null, ISS_T = null;
+function showIss(m){
+  var host = m.closest('[data-f]'); if(!host || !EDIT) return;
+  var path = host.getAttribute('data-f'), t = getField(path), n = +m.getAttribute('data-n'), x = issuesIn(t)[n]; if(!x) return;
+  ISS = {path:path, n:n, k:x.k, t:t};
+  $$('#paper mark.iss.on').forEach(function(o){ o.classList.remove('on'); }); m.classList.add('on');
+  var nt = fixFor(x, t), box = $('#iss'), sr = $('#stage').getBoundingClientRect(), r = m.getBoundingClientRect();
+  var before = t.slice(Math.max(0, x.s - 18), x.e + 26), cut = function(v){ return v.length > 120 ? v.slice(0, 117) + '…' : v; };
+  box.innerHTML = '<div class="ik k-' + x.k + '"><i></i>' + ISS_TXT[x.k][0] + '</div><p>' + ISS_TXT[x.k][1] + '</p>' +
+    (nt ? '<div class="ifx"><s>' + esc(cut(t.slice(x.s, x.e))) + '</s> → <b>' + esc(cut(nt)) + '</b></div>' : '') +
+    '<div class="ia">' + (nt ? '<button type="button" class="go" data-a="iss-ok">Apply fix</button>' : '<button type="button" class="ai" data-a="iss-ai">✨ Rewrite it</button>') +
+    '<button type="button" class="no" data-a="iss-no">Ignore</button></div>';
+  box.hidden = false;
+  var left = Math.min(Math.max(8, r.left - sr.left - 12), sr.width - box.offsetWidth - 8), top = r.bottom - sr.top + 8;
+  if(r.bottom + box.offsetHeight + 16 > innerHeight) top = r.top - sr.top - box.offsetHeight - 8;
+  box.style.left = left + 'px'; box.style.top = top + 'px';
+}
+function hideIss(){ var b = $('#iss'); if(b) b.hidden = true; $$('#paper mark.iss.on').forEach(function(o){ o.classList.remove('on'); }); ISS = null; }
+function flashField(path){ var el = fieldEl(path); if(!el) return; var li = el.closest('li.b') || el; li.classList.remove('fixed'); void li.offsetWidth; li.classList.add('fixed'); setTimeout(function(){ li.classList.remove('fixed'); }, 1400); }
+function issAct(kind){
+  if(!ISS) return;
+  var path = ISS.path, t = getField(path), x = issuesIn(t)[ISS.n];
+  if(!x || x.k !== ISS.k){ hideIss(); return; }
+  if(kind === 'ok'){ var nt = fixFor(x, t); hideIss(); if(!nt) return; setField(path, nt); structural(); flashField(path); return; }
+  if(kind === 'no'){ DOC.meta.ign = (DOC.meta.ign || []).concat([x.k + ':' + t.slice(x.s, x.e).toLowerCase()]); hideIss(); structural(); toast('Ignored — we won’t flag that again'); return; }
+  if(kind === 'ai'){
+    hideIss(); var a = path.split('|');
+    if(a[2] === 'text') return improveSummary(a[1]);
+    if(a[2] === 'i') return improveOwner(a[1] + ':' + a[3], 'improve', [a[5]]);
+    if(a[2] === 'l') return improveOwner(a[1] + ':_', 'improve', [a[3]]);
+  }
+}
+function refreshChecks(el){
+  var f = el && el.getAttribute('data-f'); if(!f || !checked(f) || !CHECKS || !EDIT) return;
+  var t = getField(f); el.innerHTML = fmt(t, null, true);
+  var li = el.closest('li.b'); if(li && li.hasAttribute('data-q')){ var q = quality(t); if(q) li.setAttribute('data-q', q); }
+}
 function showBtb(li){
   if(!EDIT || TAB !== 'resume') return;
   var b = $('#btb'), sr = $('#stage').getBoundingClientRect(), r = li.getBoundingClientRect();
   BT = {key:li.getAttribute('data-k'), bid:li.getAttribute('data-b')};
+  var bq = $('#bq'), q = li.getAttribute('data-q'), o = owner(BT.key), bt = o && byId(o.arr, BT.bid);
+  if(q && bt && bt.t){ var g = gradeBullet({t:bt.t}); bq.className = 'bq ' + q; bq.innerHTML = '<i></i>' + (g.weak ? 'Weak opener' : !g.metric ? 'No number' : g.wc > 34 ? 'Too long' : q === 'g' ? 'Strong' : 'Could be stronger'); bq.hidden = false; }
+  else bq.hidden = true;
   b.hidden = false;
   b.style.top = Math.max(0, r.top - sr.top - b.offsetHeight - 2) + 'px';
   b.style.left = Math.max(0, Math.min(r.right - sr.left - b.offsetWidth, sr.width - b.offsetWidth)) + 'px';
 }
 var stage = $('#stage');
 stage.addEventListener('mouseover', function(e){
-  if(e.target.closest('#btb,#bmenu')) return;
+  var mk = e.target.closest('mark.iss');
+  if(mk){ clearTimeout(ISS_T); if(!ISS || !mk.classList.contains('on')) showIss(mk); }
+  else if(e.target.closest('#iss')) clearTimeout(ISS_T);
+  if(e.target.closest('#btb,#bmenu,#iss')) return;
   var li = e.target.closest('li.b'); if(li){ if(!BT || BT.bid !== li.getAttribute('data-b') || $('#btb').hidden) showBtb(li); }
 });
+stage.addEventListener('mouseout', function(e){
+  if(e.target.closest('mark.iss,#iss')){ clearTimeout(ISS_T); ISS_T = setTimeout(hideIss, 280); }
+});
+stage.addEventListener('click', function(e){ var mk = e.target.closest('mark.iss'); if(mk) showIss(mk); });
 stage.addEventListener('mouseleave', function(){ if(!$('#bmenu').hidden) return; var f = document.activeElement && document.activeElement.closest && document.activeElement.closest('li.b'); if(!f) $('#btb').hidden = true; });
 document.addEventListener('focusin', function(e){
   var li = e.target.closest && e.target.closest('li.b'); if(li) showBtb(li);
@@ -2142,6 +2369,7 @@ $('#cpaper').addEventListener('input', onEdit);
 document.addEventListener('focusout', function(e){
   var el = e.target.closest && e.target.closest('[data-f]'); if(!el) return;
   var f = el.getAttribute('data-f');
+  if(checked(f)) setTimeout(function(){ if(document.activeElement !== el) refreshChecks(el); }, 0);
   if(/^c\|\d+$/.test(f) && !DOC.contact[+f.split('|')[1]]){ DOC.contact = DOC.contact.filter(Boolean); setTimeout(function(){ if(!document.activeElement || !document.activeElement.closest || !document.activeElement.closest('.ph-h')) structural(); }, 0); }
   if(f === 'headline' && !DOC.headline){ delete DOC._hl; setTimeout(renderPaper, 0); }
 });
@@ -2149,7 +2377,7 @@ document.addEventListener('keydown', function(e){
   var mod = e.ctrlKey || e.metaKey;
   if(mod && !e.altKey && (e.key === 'z' || e.key === 'Z') && DOC && !e.target.closest('textarea,input')){ e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
   if(mod && (e.key === 'y' || e.key === 'Y') && DOC && !e.target.closest('textarea,input')){ e.preventDefault(); redo(); return; }
-  if(e.key === 'Escape'){ closePop(); $('#bmenu').hidden = true; if(!$('#modal').hidden){ if($('#modal .om-res')) finishOptimise(); else if(!$('#modal .om-run')) modalClose(); } }
+  if(e.key === 'Escape'){ hideIss(); closePop(); $('#bmenu').hidden = true; if(!$('#modal').hidden){ if($('#modal .om-res')) finishOptimise(); else if(!$('#modal .om-run')) modalClose(); } }
   if(e.key === 'Enter' && e.target.getAttribute && e.target.getAttribute('data-rs') != null){ e.preventDefault(); return; }
   var el = e.target.closest && e.target.closest('[data-f]'); if(!el) return;
   var f = el.getAttribute('data-f');
@@ -2272,6 +2500,7 @@ function startDoc(D){
   show('wrap'); $('#tabs').hidden = false;
   renderAll(); snap(); persist();
   tell({act:'ready'});
+  if(CHECKS && !lsGet('tp_tip_iss', 0) && $('#paper mark.iss')){ lsSet('tp_tip_iss', 1); setTimeout(function(){ toast('Tip: underlined words have a one-click fix — hover them'); }, 1400); }
   var h = location.hash;
   if(h === '#cover' || h === '#optimize') try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
   if(h === '#cover'){ setTab('cover'); autoCover(); }
