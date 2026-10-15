@@ -700,6 +700,7 @@ var CONFIG = {
 };
 
 var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
+var APP_VERSION = '2026-10-15.3';   // also in /version.txt — lets us check which version the live site is serving
 
 /* =====================================================================
    utils
@@ -815,7 +816,7 @@ function loadScript(src){
 // did we just come back from Google? Supabase's redirect to the app carries ?code= (PKCE);
 // older flows use #access_token=; a denied sign-in comes back with ?error=.
 var cameFromOAuth = /[?&]code=/.test(location.search) || /access_token=/.test(location.hash) || /[?&]error=/.test(location.search);
-var oauthBusy = false;
+var oauthBusy = false, initBusy = false, acctLoaded = false;
 var SIGNING = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY) && /[?&]code=/.test(location.search);
 function cleanUrl(){
   try{
@@ -826,6 +827,14 @@ function cleanUrl(){
   }catch(e){}
 }
 
+/* Supabase normally coordinates sign-in across tabs with the browser's lock API. In some in-app browsers (WhatsApp,
+   LinkedIn) and on some phones that lock is never released and the page waits forever, so we queue within this page instead. */
+var lockQ = Promise.resolve();
+function pageLock(name, timeout, fn){
+  var run = lockQ.then(function(){ return fn(); });
+  lockQ = run.then(function(){}, function(){});
+  return run;
+}
 var store = {
   init: function(){
     if(!LIVE){
@@ -836,14 +845,21 @@ var store = {
     }
     return loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js').then(function(){
       // detectSessionInUrl is OFF so we control the code exchange and never run it twice.
-      sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY, {auth:{flowType:'pkce', persistSession:true, detectSessionInUrl:false}});
+      sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY, {auth:{flowType:'pkce', persistSession:true, detectSessionInUrl:false, lock:pageLock}});
       sb.auth.onAuthStateChange(function(ev, session){
-        if(oauthBusy) return; // the initial sign-in is handled explicitly below
-        if(ev === 'SIGNED_IN' && session && (!state.user || state.user.id !== session.user.id)){ afterSignIn(session.user); }
-        if(ev === 'SIGNED_OUT'){ lsDel('tp_acct'); state.user=null; state.profile=null; state.tracked=[]; state.isAdmin=false; lastView=null; render(); }
+        // Supabase holds a lock while it calls this; making another Supabase call from inside it can deadlock the page.
+        // So we only note what happened here, and act a moment later, outside the lock.
+        var busy = oauthBusy || initBusy;
+        setTimeout(function(){
+          if(busy || oauthBusy || initBusy) return; // the first sign-in / page load is handled explicitly below
+          if(ev === 'SIGNED_IN' && session && (!state.user || state.user.id !== session.user.id || !acctLoaded)){ afterSignIn(session.user, true); }
+          if(ev === 'SIGNED_OUT'){ lsDel('tp_acct'); state.user=null; state.profile=null; state.tracked=[]; state.isAdmin=false; lastView=null; render(); }
+        }, 0);
       });
+      initBusy = true;
       return sb.auth.getSession();
     }).then(function(r){
+      initBusy = false;
       var s = r && r.data && r.data.session;
       if(s){ cleanUrl(); return afterSignIn(s.user, true); } // already signed in (persisted session)
       if(/[?&]code=/.test(location.search)){
@@ -860,7 +876,7 @@ var store = {
       cleanUrl(); // e.g. ?error= from a cancelled sign-in
       if(state.user){ state.user = null; state.profile = null; state.tracked = []; state.isAdmin = false; lsDel('tp_acct'); lastView = null; }
     }).catch(function(){
-      SIGNING = false; lastView = null;
+      initBusy = false; SIGNING = false; lastView = null;
       cleanUrl();
       toast('Sign-in is unavailable right now — browsing still works');
     });
@@ -950,7 +966,7 @@ function afterSignIn(u, silent){
         return isNew;
       });
   return load.then(function(isNew){
-    cameFromOAuth = false;
+    cameFromOAuth = false; acctLoaded = true;
     cacheAccount();
     adoptAtsResume();
     render();
@@ -2661,6 +2677,7 @@ function vSettings(v){
       '<div class="copyrow"><input readonly value="'+esc(ref)+'" aria-label="Your invite link"><button class="btn" type="button" data-copy="'+esc(ref)+'">Copy</button></div></div>'+
     '<div class="card"><h3>Sign out</h3><p>You can sign back in with Google any time.</p><button class="btn" type="button" data-act="signout">Sign out</button></div>'+
     '<div class="card"><h3>Take the tour again</h3><p>A quick walk through search, job details, match scores and tracking.</p><div class="jd-acts"><button class="btn" type="button" data-act="tour">'+I.compass+'Start the tour</button></div></div>'+
+    '<p class="fine" style="text-align:center;margin:0">TrulyPlaced Jobs · version '+APP_VERSION+'</p>'+
     '<div class="card danger"><h3>Delete my account</h3><p>Permanently deletes your profile, resume and tracked jobs. This can’t be undone.</p>'+
       '<div id="delWrap"><button class="btn" type="button" data-act="delask">'+I.trash+'Delete account</button></div></div>'+
   '</div>';
@@ -2918,10 +2935,14 @@ if(LIVE && !cameFromOAuth){
   var SS0 = storedSession();
   if(!SS0) state.ready = true;   // nobody signed in on this browser: show the sign-in card straight away
   else {
-    var A0 = lsGet('tp_acct', null);
-    if(A0 && A0.id === SS0.user.id && A0.user){   // returning member: open their app from the copy on this device, then refresh it
-      state.user = A0.user; state.profile = A0.profile || {}; state.tracked = A0.tracked || []; state.isAdmin = !!A0.isAdmin; state.ready = true;
+    var A0 = lsGet('tp_acct', null), U0 = SS0.user, M0 = U0.user_metadata || {};
+    if(A0 && A0.id === U0.id && A0.user){   // returning member: open their app from the copy on this device, then refresh it
+      state.user = A0.user; state.profile = A0.profile || {}; state.tracked = A0.tracked || []; state.isAdmin = !!A0.isAdmin;
+    } else {                                // signed in, but no saved copy yet: open with what the sign-in itself knows
+      state.user = {id:U0.id, email:U0.email, name:M0.full_name || M0.name || (U0.email || '').split('@')[0], avatar:M0.avatar_url || M0.picture || '', created:Date.parse(U0.created_at) || Date.now()};
+      state.profile = {onboarded:true}; state.tracked = [];
     }
+    state.ready = true;
   }
 }
 if(SIGNING){
@@ -2935,6 +2956,11 @@ var wantSignIn = location.hash === '#signin';
 if(wantSignIn) history.replaceState(null, '', location.pathname + location.search + '#jobs');
 render();
 var INIT = store.init();
+setTimeout(function(){
+  if(state.ready && !SIGNING) return;
+  SIGNING = false; state.ready = true; lastView = null; render();
+  if(!state.user) toast('Sign-in is taking longer than usual — you can keep browsing');
+}, 7000);
 INIT.then(function(){
   state.ready = true; adoptAtsResume(); render();
   if(state.user && !LIVE){ if(!goNext()) maybeTour(); }
