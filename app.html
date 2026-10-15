@@ -135,6 +135,43 @@ img{max-width:100%}
 .drawer{position:fixed;top:0;right:0;bottom:0;width:min(760px,100%);background:#fff;z-index:61;display:flex;flex-direction:column;
   transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);box-shadow:-30px 0 60px -30px rgba(10,16,38,.45)}
 .drawer.on{transform:none}
+.drawer{transition:transform .25s cubic-bezier(.4,0,.2,1),width .35s cubic-bezier(.4,0,.2,1)}
+.drawer.wide{width:min(1640px,100vw);display:grid;grid-template-columns:minmax(380px,520px) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+.drawer.wide .dr-top{grid-column:1;grid-row:1}
+.drawer.wide .dr-body{grid-column:1;grid-row:2;padding:20px 22px 40px}
+#ws{grid-column:2;grid-row:1/span 2;position:relative;display:flex;flex-direction:column;border-left:1px solid var(--line);background:#eef1f8;min-width:0;animation:wsIn .35s ease}
+@keyframes wsIn{from{opacity:0;transform:translateX(24px)}}
+.ws-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border-bottom:1px solid var(--line);min-height:59px}
+.ws-bar b{flex:1;font-family:Poppins;font-size:15px;color:var(--ink);display:flex;align-items:center;gap:8px}
+.ws-bar b svg{width:18px;height:18px;color:#6d28d9}
+.ws-bar .x{width:38px;height:38px;border:0;background:none;border-radius:10px;display:grid;place-items:center;color:var(--body)}
+.ws-bar .x:hover{background:var(--bg)}
+.ws-bar .x svg{width:18px;height:18px}
+.ws-bar a{font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap}
+.ws-bar .back{display:none}
+#ws iframe{flex:1;width:100%;border:0;background:#eef1f8;min-height:0}
+.ws-load{position:absolute;inset:59px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:#fff;z-index:2;transition:opacity .3s}
+.ws-load.gone{opacity:0;pointer-events:none}
+.ws-load b{color:var(--ink);font-size:16px;margin-top:8px}
+.ws-load small{color:var(--muted);font-size:13px}
+.ws-load .wspin{width:38px;height:38px;border-radius:50%;border:3.5px solid var(--blue-soft);border-top-color:var(--blue);animation:wsr .8s linear infinite}
+@keyframes wsr{to{transform:rotate(360deg)}}
+.ws-on #fab{display:none!important}
+.opt-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.opt-row .btn{min-height:46px;font-size:14.5px}
+.opt-row .btn svg{width:18px;height:18px}
+.btn.optimize{background:linear-gradient(135deg,#6d28d9,#0938d5);border:0;color:#fff;box-shadow:0 10px 24px -14px rgba(76,29,149,.8)}
+.btn.optimize:hover{filter:brightness(1.08);background:linear-gradient(135deg,#6d28d9,#0938d5)}
+.btn.coverb{background:#f4efff;border-color:#e2d6ff;color:#5b21b6}
+.btn.coverb:hover{background:#ece3ff;border-color:#cdb8ff}
+.mup{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:700;color:var(--ok);background:var(--ok-soft);border-radius:999px;padding:2px 9px;margin-left:8px;vertical-align:middle;animation:wsIn .4s ease}
+.ring circle:last-child{transition:stroke-dashoffset .8s cubic-bezier(.3,.9,.3,1)}
+@media (max-width:900px){
+  .drawer.wide{grid-template-columns:1fr}
+  #ws{position:absolute;inset:0;grid-column:1;z-index:5;border-left:0}
+  .ws-bar .back{display:inline-flex;align-items:center;gap:4px;border:0;background:none;font-weight:600;color:var(--blue);font-size:14px;padding:6px 4px}
+  .ws-bar .x,.ws-bar a{display:none}
+}
 .dr-top{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line)}
 .dr-top .x{width:42px;height:42px;border:0;background:none;border-radius:10px;display:grid;place-items:center;color:var(--body)}
 .dr-top .x:hover{background:var(--bg)}
@@ -750,7 +787,7 @@ var CONFIG = {
 };
 
 var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
-var APP_VERSION = '2026-10-15.8';   // also in /version.txt — lets us check which version the live site is serving
+var APP_VERSION = '2026-10-15.9';   // also in /version.txt — lets us check which version the live site is serving
 
 /* =====================================================================
    utils
@@ -1960,10 +1997,44 @@ function deckUndo(){
 
 /* ---------- Job drawer ---------- */
 var drawerKey = null, drawerTab = 'desc';
+/* ---- resume editor beside the job (Optimize resume / Cover letter) ---- */
+var WS_BASE = {};
+function openWorkspace(job, mode){
+  var d = $('.drawer'); if(!d) return;
+  var e = ENR[job.key];
+  lsSet('tp_ats_job', {key:job.key, title:job.title, company:job.company, loc:job.location || '', text:e && !e.failed ? String(e.text).slice(0, 12000) : (job.title + ' at ' + job.company), at:Date.now()});
+  var ws = $('#ws');
+  if(ws && ws.getAttribute('data-key') === job.key){
+    var f = ws.querySelector('iframe'); if(f && f.contentWindow) f.contentWindow.postMessage({tp:1, act:mode}, location.origin);
+    return;
+  }
+  if(ws) ws.remove();
+  WS_BASE[job.key] = null;
+  d.classList.add('wide'); document.body.classList.add('ws-on');
+  ws = document.createElement('div'); ws.id = 'ws'; ws.setAttribute('data-key', job.key);
+  ws.innerHTML = '<div class="ws-bar"><button type="button" class="back" data-act="ws-close">‹ Job details</button><b>'+I.spark+'Resume editor</b>'+
+      '<a href="/editor.html" target="_blank" rel="noopener">Open full screen ↗</a><button type="button" class="x" data-act="ws-close" aria-label="Close the editor">'+I.x+'</button></div>'+
+    '<div class="ws-load" id="wsLoad"><span class="wspin"></span><b>Processing your resume…</b><small>Laying it out on the page — a few seconds.</small></div>'+
+    '<iframe title="Resume editor" src="/editor.html?embed=1&job='+encodeURIComponent(job.key)+'#'+(mode === 'cover' ? 'cover' : 'optimize')+'"></iframe>';
+  d.appendChild(ws);
+  var m = $('#matchBox .ring'); if(m) drawMatch(job);
+  setTimeout(function(){ var l = $('#wsLoad'); if(l) l.classList.add('gone'); }, 12000);   // never leave the loader up
+}
+function closeWorkspace(){ document.body.classList.remove('ws-on'); var ws = $('#ws'); if(ws) ws.remove(); var d = $('.drawer'); if(d) d.classList.remove('wide'); }
+window.addEventListener('message', function(e){
+  if(e.origin !== location.origin || !e.data || !e.data.tp) return;
+  if(e.data.act === 'ready'){ var l = $('#wsLoad'); if(l) l.classList.add('gone'); }
+  if(e.data.act === 'resume' && typeof e.data.text === 'string' && e.data.text.length > 40){
+    // the editor saved a change: match scores use it straight away
+    if(state.profile && state.profile.resume_text) state.profile.resume_text = e.data.text;
+    else lsSet('tp_resume_local', {text:e.data.text, name:(resumeName() || 'Resume').replace(/\s*\(edited\)$/, '') + ' (edited)', from:'editor', at:Date.now()});
+    var job = drawerKey && findJob(drawerKey); if(job) drawMatch(job);
+  }
+});
 function closeDrawer(silent){
   var d = $('.drawer'), s = $('.scrim');
   if(!d){ drawerKey = null; updateFab(); return; }
-  d.classList.remove('on'); s.classList.remove('on'); drawerKey = null;
+  d.classList.remove('on'); s.classList.remove('on'); drawerKey = null; document.body.classList.remove('ws-on');
   setTimeout(function(){ $('#drawerRoot').innerHTML = ''; }, silent ? 0 : 250);
   document.body.style.overflow = '';
   updateFab();
@@ -2042,6 +2113,7 @@ function paintJob(job){
     '</div>'+
     '<div id="matchBox"></div>'+
     '<div class="jd-apply"><button class="btn out" type="button" data-apply="'+k+'">'+I.ext+'Apply on '+esc(job.company)+'</button><button class="btn" type="button" data-share="'+k+'" aria-label="Copy link">'+I.link+'<span class="hide-s">Copy link</span></button></div>'+
+    '<div class="opt-row"><button class="btn optimize" type="button" data-act="ws-opt" data-key="'+k+'">'+I.spark+'Optimize resume</button><button class="btn coverb" type="button" data-act="ws-cover" data-key="'+k+'">'+I.doc+'Cover letter</button></div>'+
     '<button type="button" class="navy" data-act="upsell">'+I.monitor+'<span><b>Want a recruiter to tailor your resume and apply for you?</b>We apply to 25–30 matched roles every business day, so you can focus on interviews.</span>'+I.chevr+'</button>';
   drawMatch(job);
   paintPane(job);
@@ -2081,8 +2153,12 @@ function drawMatch(job){
                r.score >= 50 ? 'Worth applying. Adding the missing skills you genuinely have would lift your ranking.' :
                r.score >= 30 ? 'A partial match. Tailoring your resume to this posting — truthfully — would help.' :
                'Your resume has a low match with this job. Consider tailoring your experience and skills to align with the role.';
-  var tailorBtn = r.miss.length ? '<button class="btn tailor-btn" type="button" data-act="tailor" data-key="'+esc(job.key)+'">'+I.spark+'Tailor my resume for this job</button>' : '';
-  box.innerHTML = '<div class="mrow">'+ring(r.score, 112)+'<div class="txt"><div class="lbl2">Resume match score</div><p>'+advice+'</p></div></div>'+
+  var tailorBtn = '';
+  var base = WS_BASE[job.key];
+  if(base == null && $('#ws')) base = WS_BASE[job.key] = r.score;
+  var up = base != null && r.score > base ? '<span class="mup">▲ +'+(r.score - base)+'</span>' : '';
+  var oldRing = box.querySelector('.ring circle:last-child'), oldOff = oldRing && oldRing.getAttribute('stroke-dashoffset');
+  box.innerHTML = '<div class="mrow">'+ring(r.score, 112)+'<div class="txt"><div class="lbl2">Resume match score'+up+'</div><p>'+advice+'</p></div></div>'+
     '<details class="sbd"><summary><span>Score breakdown</span><span class="qm" aria-hidden="true">?</span>'+I.chevd+'</summary>'+
       '<div class="brk">'+r.parts.map(function(p){
         var pc = Math.round(p[1]*100);
@@ -2090,6 +2166,7 @@ function drawMatch(job){
       }).join('')+'</div>'+
       '<p class="fine">How it’s worked out: the skills this posting asks for that also appear on your resume (65%), how closely your role title matches (20%), and your years of experience against what the posting asks for (15%). Anything we can’t measure for this posting is left out, not guessed.</p>'+
     '</details>' + tailorBtn;
+  if(oldOff){ var nr = box.querySelector('.ring circle:last-child'), to = nr.getAttribute('stroke-dashoffset'); nr.setAttribute('stroke-dashoffset', oldOff); requestAnimationFrame(function(){ requestAnimationFrame(function(){ nr.setAttribute('stroke-dashoffset', to); }); }); }
 }
 function secHTML(icon, title, sec, cls){
   if(!sec || !sec.items.length) return '';
@@ -3013,6 +3090,14 @@ document.addEventListener('click', function(e){
     case 'tlsave': return tailorSave();
     case 'tldoc': return tailorDoc();
     case 'tour': return maybeTour(true);
+    case 'ws-opt': case 'ws-cover':
+      e.preventDefault();
+      var wjob = findJob(t.getAttribute('data-key')), wmode = a === 'ws-cover' ? 'cover' : 'optimize';
+      if(!wjob) return;
+      if(!state.user){ requireSignIn('Sign in to tailor your resume to this job', function(){}); return; }
+      if(!resumeText()){ toast('Add your resume first — then we’ll tailor it to this job'); $('#fileIn').click(); return; }
+      return openWorkspace(wjob, wmode);
+    case 'ws-close': e.preventDefault(); return closeWorkspace();
     case 'tledit':
       e.preventDefault();
       if(TAILOR) lsSet('tp_ats_job', {key:TAILOR.job.key, title:TAILOR.job.title, company:TAILOR.job.company, text:String(TAILOR.text || '').slice(0, 12000), at:Date.now()});

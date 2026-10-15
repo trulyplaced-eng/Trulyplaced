@@ -105,9 +105,11 @@ svg{flex:none}
 .paper [contenteditable]:hover{background:rgba(9,56,213,.045)}
 .paper [contenteditable]:focus{background:rgba(9,56,213,.07);box-shadow:0 0 0 1px rgba(9,56,213,.35)}
 .paper [contenteditable]:empty::before{content:attr(data-ph);color:#a1a7bd;font-style:italic}
+.paper .en:not(:hover):not(:focus-within) .er [contenteditable]:empty::before{content:none}
 .paper .ph-h{text-align:center;position:relative}
 .paper .ph-h h1{font-size:2em;line-height:1.15;font-weight:700}
-.paper .ph-h .hl{font-size:1.08em;margin-top:.05em}
+.paper .ph-h .hlt{font-size:1.08em;margin-top:.05em}
+.paper .ph-h .hlt.hlx{background:#fff2b8;box-shadow:0 0 0 2px #fff2b8}
 .paper .ct{margin-top:.2em;font-size:.95em}
 .paper .ct .sep{margin:0 .4em;color:#555}
 .paper .ct .pref{font-style:italic}
@@ -266,6 +268,119 @@ svg{flex:none}
 .modal p{margin-top:6px}
 .modal .acts{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
 
+/* ---------- embedded next to a job (inside the job board) ---------- */
+.tbtabs{display:none}
+body.embed{background:#eef1f8}
+body.embed .top,body.embed .side,body.embed .status{display:none!important}
+body.embed .wrap{grid-template-columns:1fr;min-height:100vh}
+body.embed .canvas{padding:10px 14px 70px}
+body.embed .tb{top:8px;justify-content:space-between;max-width:none;gap:10px}
+body.embed .tbtabs{display:flex;pointer-events:auto;background:#fff;border:1px solid var(--line);box-shadow:0 6px 20px -10px rgba(18,26,51,.25);align-self:flex-start}
+body.embed .banner{max-width:none}
+.tbi .optb{display:flex;gap:6px;padding:0 12px;background:linear-gradient(135deg,#6d28d9,#0938d5);color:#fff;font-weight:600;font-size:13.5px}
+.tbi .optb:hover{color:#fff;filter:brightness(1.1);background:linear-gradient(135deg,#6d28d9,#0938d5)}
+@media (max-width:760px){.tbi .dl span,.tbi .optb span{display:none}.tbi .optb,.tbi .dl{padding:0 10px}}
+/* changed lines stay highlighted until you edit them */
+.paper .hl{background:#fff2b8;box-shadow:0 0 0 2px #fff2b8;border-radius:2px;animation:hlIn .9s ease}
+.paper li.b.hl{box-shadow:-.35em 0 0 #fff2b8,0 0 0 2px #fff2b8}
+@keyframes hlIn{from{background:#ffd84d;box-shadow:0 0 0 2px #ffd84d}}
+/* cover letter bar */
+.cvcol{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
+.cvbar{width:100%;max-width:816px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 10px;box-shadow:0 6px 20px -14px rgba(18,26,51,.3)}
+.cvbar input{height:36px;border:1px solid var(--line);border-radius:9px;padding:0 10px;font-size:13.5px;min-width:0;flex:1 1 140px}
+.cvbar span{font-size:13px;color:var(--muted)}
+.cvbar .btn{flex:none}
+.paper .cv-wait{color:#8a91ad;font-family:Inter,sans-serif;font-size:13px}
+.paper .cv-wait b{display:flex;gap:8px;align-items:center;color:var(--vio);margin-bottom:12px}
+.wpill{position:fixed;right:18px;bottom:18px;z-index:70;display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:13.5px;color:var(--ink);box-shadow:0 14px 34px -14px rgba(18,26,51,.4)}
+.wpill .spin{width:16px;height:16px;border-width:2px}
+/* add-section picker */
+.adds{display:grid;gap:6px}
+.addb{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;background:#fff;padding:9px 11px;font-size:14px;color:var(--ink);text-align:left}
+.addb:hover{border-color:var(--blue);background:#fafbff}
+.addb svg{width:17px;height:17px;color:#d4a017}
+.addb.new svg{color:var(--blue)}
+/* optimise flow */
+.modal{animation:mFade .18s ease}
+.modal>*{animation:mIn .26s cubic-bezier(.2,.9,.3,1.15)}
+@keyframes mFade{from{opacity:0}}
+@keyframes mIn{from{opacity:0;transform:translateY(10px) scale(.97)}}
+.om{position:relative;background:#fff;border-radius:18px;box-shadow:0 30px 80px -20px rgba(10,16,38,.5);width:100%;color:var(--body)}
+.om .mx{position:absolute;right:12px;top:12px;width:34px;height:34px;border:0;background:none;border-radius:9px;color:var(--muted);display:grid;place-items:center}
+.om .mx:hover{background:var(--bg);color:var(--ink)}
+.om .mx svg{width:18px;height:18px}
+.om h2{font:700 22px Poppins,Inter,sans-serif;color:var(--ink);letter-spacing:-.01em}
+.omsub{font-size:13.5px;color:var(--muted);margin-top:4px}
+.omsub b{color:var(--ink)}
+.om-pick{max-width:470px;padding:26px 26px 22px;text-align:center}
+.orows{margin-top:16px;text-align:left;border-top:1px solid var(--line)}
+.orow{display:flex;align-items:center;justify-content:space-between;width:100%;border:0;border-bottom:1px solid var(--line);background:none;padding:12px 2px;font-size:15px;color:var(--ink)}
+.orow .pill{font-size:12.5px;font-weight:600;border-radius:999px;padding:4px 11px;background:var(--bg);color:var(--muted);transition:.15s}
+.orow.on .pill{background:#ddf6e8;color:#0a7f46}
+.orow:hover .pill{box-shadow:0 0 0 1px #bfe8d0}
+.omlbl{display:block;text-align:left;font-weight:600;color:var(--ink);font-size:13.5px;margin:16px 0 6px}
+.omlbl span{color:var(--muted);font-weight:500}
+.om textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13.5px;resize:vertical;min-height:72px}
+.om textarea:focus,.cvbar input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+.omgo{margin-top:16px;background:var(--ink);color:#fff;border-color:var(--ink);border-radius:999px;padding:0 26px;min-height:44px}
+.omgo:hover{background:#000;border-color:#000}
+.om-run{max-width:440px;padding:30px 28px 26px;text-align:center}
+.orbit{width:64px;height:64px;margin:0 auto 14px;border-radius:50%;background:conic-gradient(from 0deg,#6d28d9,#0938d5,#22c1ee,#6d28d9);animation:rot 1.1s linear infinite;display:grid;place-items:center}
+.orbit span{width:52px;height:52px;border-radius:50%;background:#fff}
+.steps{list-style:none;text-align:left;margin:20px auto 0;display:grid;gap:10px;max-width:330px;font-size:14px}
+.steps li{display:flex;gap:10px;align-items:center;color:var(--muted);transition:color .2s}
+.steps li i{width:20px;height:20px;border-radius:50%;border:2px solid #d8dcea;flex:none;position:relative;transition:.25s}
+.steps li.ok{color:var(--ink)}
+.steps li.ok i{background:#0a7f46;border-color:#0a7f46}
+.steps li.ok i::after{content:"";position:absolute;left:5px;top:2px;width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.om-run .fine{margin-top:16px;font-size:12.5px;color:var(--muted)}
+.om-res{max-width:940px;display:flex;flex-direction:column;max-height:min(88vh,900px)}
+.omh{padding:24px 26px 12px}
+.omb{overflow:auto;padding:4px 26px 16px;display:grid;gap:14px}
+.omf{display:flex;gap:10px;align-items:center;justify-content:flex-end;padding:14px 26px;border-top:1px solid var(--line)}
+.omf #omCount{flex:1;font-size:13px;color:var(--muted)}
+.btn.grn{background:#0a7f46;border-color:#0a7f46;color:#fff}
+.btn.grn:hover{background:#086b3b}
+.btn.grn[disabled]{background:#e4f5ec;border-color:#e4f5ec;color:#0a7f46;opacity:1}
+.rc{border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.rc h3{font-size:14px;font-weight:600;color:var(--ink);padding-bottom:10px;border-bottom:1px solid #f0f1f6;margin-bottom:10px}
+.rh{display:grid;grid-template-columns:1fr 1fr;gap:12px;font:700 11px Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.rh .k1{color:#c03535}.rh .k2{color:#0a7f46}
+.rr{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;animation:rIn .35s ease both;animation-delay:var(--d)}
+@keyframes rIn{from{opacity:0;transform:translateY(6px)}}
+.ro,.rn{border-radius:10px;padding:10px 12px 10px 24px;font-size:13.5px;line-height:1.55;position:relative}
+.ro::before,.rn>span::before{content:"•";position:absolute;left:11px;top:9px}
+.ro{background:#fff3f3;border:1px solid #f6caca;color:#9b2c2c}
+.rn{background:#f1fbf5;border:1px solid #bfe6cf;color:#155f37;display:flex;flex-direction:column;gap:6px;transition:.25s}
+.rn>span{outline:none}
+.rn>span:focus{background:#fff;border-radius:4px;box-shadow:0 0 0 2px #bfe6cf}
+.rn small{font-size:11.5px;color:#5f7a6b}
+.rb{display:flex;gap:6px;justify-content:flex-end;margin-top:auto}
+.rb button{width:30px;height:26px;border:0;border-radius:7px;color:#fff;font-weight:700;display:grid;place-items:center;transition:transform .12s}
+.rb button:hover{transform:translateY(-1px)}
+.rb .ok{background:#0a7f46}.rb .no{background:#e04848}
+.rb .st{font-size:12px;font-weight:700;color:#0a7f46;display:flex;align-items:center;gap:5px}
+.rr.acc .rn{background:#e2f6ea;border-color:#86cfa4}
+.rr.rej .rn{opacity:.45}
+.rr.rej .ro{background:#fff;border-color:#e4e6ee;color:var(--ink)}
+.rr.rej .rb .st{color:var(--muted)}
+.rdone{display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 0 10px;text-align:center}
+.rdone span{width:38px;height:38px;border-radius:50%;background:#e2f6ea;display:grid;place-items:center;font-size:17px;margin-bottom:4px}
+.rdone b{color:var(--ink);font-size:14.5px}
+.rdone small{color:var(--muted);font-size:12.5px}
+.rnote{font-size:13px;color:var(--muted);margin-bottom:10px}
+.rsk{display:flex;flex-wrap:wrap;gap:8px}
+.rsk label{display:flex;gap:7px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:6px 12px 6px 9px;font-size:13.5px;font-weight:600;color:var(--ink);cursor:pointer;transition:.15s}
+.rsk input{accent-color:#0a7f46;width:15px;height:15px}
+.rsk label:has(input:checked){background:#e2f6ea;border-color:#86cfa4;color:#0a5c33}
+.omjd{text-align:left;margin-top:14px}
+@media (max-width:640px){
+  .rr,.rh{grid-template-columns:1fr}
+  .rh .k2{display:none}
+  .omh,.omb,.omf{padding-left:16px;padding-right:16px}
+  .om-pick{padding:22px 18px 18px}
+}
+
 @media (max-width:1060px){
   .wrap{grid-template-columns:1fr}
   .side{position:static;height:auto;border-left:0;border-top:1px solid var(--line)}
@@ -293,6 +408,7 @@ svg{flex:none}
   .paper mark{background:none!important;box-shadow:none!important}
   .paper [contenteditable]:empty,.paper .opt{display:none!important}
   .paper [contenteditable]{box-shadow:none!important;background:none!important}
+  .paper .hl,.paper li.b.hl{background:none!important;box-shadow:none!important}
   .paper .en,.paper .bl li{break-inside:avoid}
   .paper .ps>h2{break-after:avoid}
 }
@@ -315,12 +431,15 @@ svg{flex:none}
 <div class="wrap" id="wrap" hidden>
   <main class="canvas" id="canvas">
     <div class="banner" id="banner" hidden></div>
-    <div class="tb"><div class="tbi" id="tbi">
+    <div class="tb"><div class="tabs tbtabs"><button type="button" class="on" data-a="tab" data-v="resume">Resume</button><button type="button" data-a="tab" data-v="cover">Cover letter</button></div><div class="tbi" id="tbi">
       <button type="button" data-a="undo" data-tip="Undo" id="bUndo" aria-label="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
       <button type="button" data-a="redo" data-tip="Redo" id="bRedo" aria-label="Redo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
       <span class="dv"></span>
+      <button type="button" class="optb" data-a="optimize" aria-label="Optimise for a job"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Optimise</span></button>
+      <span class="dv"></span>
       <button type="button" data-a="pop" data-v="design" data-tip="Design" aria-label="Design"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 1 10-10c0 2.8-2.2 4-4 4h-1.5a1.5 1.5 0 0 0-1 2.6c.6.6.5 1.6-.2 2.1-.9.8-2.1 1.3-3.3 1.3z"/><circle cx="7.5" cy="10.5" r="1.2" fill="currentColor"/><circle cx="11" cy="6.5" r="1.2" fill="currentColor"/><circle cx="16" cy="8" r="1.2" fill="currentColor"/></svg></button>
       <button type="button" data-a="pop" data-v="layout" data-tip="Layout" aria-label="Layout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></button>
+      <button type="button" data-a="pop" data-v="addsec" data-tip="Add section" aria-label="Add a section" id="bAdd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/></svg></button>
       <button type="button" data-a="pop" data-v="loc" data-tip="Open to…" aria-label="Location preferences" id="bLoc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></button>
       <button type="button" data-a="edit" data-tip="Preview" aria-label="Preview without editing tools" id="bEdit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
       <span class="dv"></span>
@@ -329,7 +448,7 @@ svg{flex:none}
     <div class="pop" id="pop" hidden></div>
     <div class="stage" id="stage">
       <div class="pane on" id="paneR"><div class="paper" id="paper"></div></div>
-      <div class="pane" id="paneC"><div class="paper" id="cpaper"></div></div>
+      <div class="pane" id="paneC"><div class="cvcol"><div class="cvbar nopr" id="cvbar"></div><div class="paper" id="cpaper"></div></div></div>
       <div id="btb" hidden>
         <button type="button" class="add" data-a="b-add" aria-label="Add a bullet below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
         <button type="button" class="del" data-a="b-del" aria-label="Delete this bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
@@ -398,6 +517,11 @@ function toast(msg, act){
   var t = $('#toast'); t.innerHTML = '<span>' + esc(msg) + '</span>' + (act ? '<button type="button" data-a="' + act.a + '">' + esc(act.label) + '</button>' : '');
   t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(function(){ t.classList.remove('on'); }, act ? 6000 : 3200);
 }
+
+var QS = (function(){ try{ return new URLSearchParams(location.search); }catch(e){ return {get:function(){ return null; }}; } })();
+var EMBED = QS.get('embed') === '1';   // opened beside a job on the job board
+if(EMBED) document.body.classList.add('embed');
+function tell(m){ if(!EMBED || window.parent === window) return; try{ m.tp = 1; window.parent.postMessage(m, location.origin); }catch(e){} }
 
 var BUL = '•●▪◦‣∙·*–—\\-➢➤►✓✔◆■□○';
 var BUL_RX = new RegExp('^\\s*[' + BUL + ']\\s*');
@@ -967,8 +1091,9 @@ function undo(){ if(HI <= 0) return; HI--; DOC = JSON.parse(HIST[HI]); SUG = {};
 function redo(){ if(HI >= HIST.length - 1) return; HI++; DOC = JSON.parse(HIST[HI]); SUG = {}; renderAll(); persist(); undoState(); }
 var snapLater = debounce(snap, 700), sideLater = debounce(function(){ breaks(); renderSide(); }, 450);
 function status(t, busy){ var s = $('#status'); s.hidden = false; s.classList.toggle('busy', !!busy); s.lastChild.textContent = t; }
+var tellResume = debounce(function(){ if(DOC) tell({act:'resume', text:docText()}); }, 500);
 function persist(){
-  DOC.meta.saved = Date.now();
+  DOC.meta.saved = Date.now(); tellResume();
   lsSet(STORE_KEY, DOC) ? status(LIVE ? 'Saving…' : 'Saved on this device', LIVE) : status('Couldn’t save in this browser', true);
   syncLater();
 }
@@ -1116,18 +1241,18 @@ function ce(path, html, ph, tag, cls){
 function headerHTML(){
   var D = DOC, ct = [];
   D.contact.forEach(function(c, i){ if(c || EDIT) ct.push(ce('c|' + i, fmt(c), 'Contact')); });
-  var pt = prefText(); if(pt) ct.push('<span class="pref">' + esc(pt) + '</span>');
+  var pt = prefText(); if(pt) ct.push('<span class="pref' + (HL.loc ? ' hl' : '') + '">' + esc(pt) + '</span>');
   return '<header class="ph-h">' +
     (EDIT ? '<div class="stools nopr" style="top:-1.9em"><button type="button" data-a="ct-add">+ Contact detail</button>' + (D.headline ? '' : '<button type="button" data-a="hl-add">+ Headline</button>') + '</div>' : '') +
     ce('name', esc(D.name), 'Your name', 'h1') +
-    (D.headline || EDIT && D.headline === '' && D._hl ? ce('headline', fmt(D.headline), 'Headline, e.g. Data Analyst', 'div', 'hl') : '') +
+    (D.headline || EDIT && D.headline === '' && D._hl ? ce('headline', fmt(D.headline), 'Headline, e.g. Data Analyst', 'div', 'hlt' + (HL.headline ? ' hlx' : '')) : '') +
     '<div class="ct">' + ct.join('<span class="sep">|</span>') + '</div></header>';
 }
 function liPlain(b){ return '<li class="prt">' + esc(b.t) + '</li>'; }
 function bulletsHTML(sid, iid, arr){
   var key = sid + ':' + (iid || '_'), S = SUG[key];
   if(!arr.length) return '';
-  var li = function(b){ return '<li class="b" data-k="' + key + '" data-b="' + b.id + '">' + ce(bpath(sid, iid, b.id), fmt(b.t), 'What you did, and the result') + '</li>'; };
+  var li = function(b){ return '<li class="b' + (HL[b.id] ? ' hl' : '') + '" data-k="' + key + '" data-b="' + b.id + '">' + ce(bpath(sid, iid, b.id), fmt(b.t), 'What you did, and the result') + '</li>'; };
   if(S && S.all) return '<ul class="bl prt">' + arr.map(liPlain).join('') + '</ul>' + bigSug(key, arr, S);
   return '<ul class="bl">' + arr.map(function(b){ return S && S.ids.indexOf(b.id) > -1 ? liPlain(b) + miniSug(key, b, S) : li(b); }).join('') + '</ul>';
 }
@@ -1166,7 +1291,7 @@ function sectionHTML(s){
     tools = '<button type="button" class="ai" data-a="sum-ai" data-s="' + s.id + '">✨ ' + (s.text ? 'Improve summary' : 'Write it for me') + '</button>';
     body = S ? '<div class="sum prt">' + esc(s.text) + '</div><div class="sug nopr" data-k="sum:' + s.id + '"><div class="o"><b class="k">Original</b>' + (fmt(s.text) || '<i>Empty</i>') + '</div><div class="n"><b class="k">' + (S.src === 'ai' ? 'AI suggestion' : 'Suggestion') + '</b>' +
       (S.loading ? shim(2) : '<div contenteditable="true" data-sb="sum">' + fmt(S.text) + '</div>') + '</div>' + sugActs('sum:' + s.id, S) + '</div>'
-      : ce('s|' + s.id + '|text', fmt(s.text), 'Two or three lines: who you are, your years of experience and your strongest skills.', 'div', 'sum');
+      : ce('s|' + s.id + '|text', fmt(s.text), 'Two or three lines: who you are, your years of experience and your strongest skills.', 'div', 'sum' + (HL['sum:' + s.id] ? ' hl' : ''));
   } else if(s.type === 'entries'){
     tools = '<button type="button" data-a="sec-add" data-s="' + s.id + '">+ Add ' + (s.k === 'education' ? 'school' : s.k === 'projects' ? 'project' : 'role') + '</button>';
     body = s.items.map(function(it){ return entryHTML(s, it); }).join('');
@@ -1196,8 +1321,16 @@ function renderCover(){
   $('#cpaper').innerHTML = '<header class="ph-h"><h1>' + esc(D.name || 'Your name') + '</h1><div class="ct">' + ct.map(esc).join('<span class="sep">|</span>') + '</div></header>' +
     '<div class="cv-date">' + esc(today) + '</div>' +
     '<div class="cv-to">' + ce('cv|to', fmt(c.to || ('Hiring Team' + (c.company ? '\n' + c.company : ''))), 'Hiring Team, Company', 'div') + '</div>' +
-    ce('cv|text', fmt(c.text), 'Press “Write it for me” on the right, or start typing your letter here.', 'div', 'cv-body');
+    (COVER_BUSY ? '<div class="cv-body cv-wait"><b><span class="spin"></span>Writing your cover letter' + (c.company ? ' for ' + esc(c.company) : '') + '…</b>' + shim(6) + '</div>'
+      : ce('cv|text', fmt(c.text), 'Press “Write it for me” above, or start typing your letter here.', 'div', 'cv-body'));
+  renderCoverBar();
   if(TAB === 'cover') breaks();
+}
+function renderCoverBar(){
+  var c = DOC.cover, bar = $('#cvbar'); if(!bar) return;
+  var role = c.role || (JOB && JOB.title) || targetRole(), co = c.company || (JOB && JOB.company) || '';
+  bar.innerHTML = '<input type="text" id="cvRole" value="' + esc(role) + '" placeholder="Role" aria-label="Role"><span>at</span><input type="text" id="cvCo" value="' + esc(co) + '" placeholder="Company" aria-label="Company">' +
+    '<button class="btn ai sm" type="button" data-a="cv-write"' + (COVER_BUSY ? ' disabled' : '') + '>✨ ' + (COVER_BUSY ? 'Writing…' : c.text ? 'Rewrite it' : 'Write it for me') + '</button>';
 }
 function renderAll(){ applyDesign(); renderPaper(); renderCover(); renderSide(); }
 function focusInfo(){
@@ -1298,9 +1431,11 @@ function bookUrl(from){
 
 /* ---- tailoring to a job ---- */
 function loadJob(){
-  if(DOC.meta.job && DOC.meta.job.text) return DOC.meta.job;
   var j = lsGet('tp_ats_job', null);
-  return j && j.text && Date.now() - (j.at || 0) < 21*864e5 ? {title:j.title || '', company:j.company || '', text:j.text, key:j.key} : null;
+  var fresh = j && j.text && Date.now() - (j.at || 0) < 21*864e5 ? {title:j.title || '', company:j.company || '', text:j.text, key:j.key, loc:j.loc || ''} : null;
+  if(EMBED && fresh) return fresh;
+  if(DOC.meta.job && DOC.meta.job.text) return DOC.meta.job;
+  return fresh;
 }
 function jobFit(){
   if(!JOB) return null;
@@ -1317,6 +1452,7 @@ function tailorHTML(){
     (pct != null ? '<div class="jm"><span class="bar"><i style="width:' + pct + '%"></i></span><b>' + pct + '% of its skills</b></div>' : '<p class="fine" style="margin-top:6px">We couldn’t pick out named skills from this posting.</p>') +
     (f.miss.length ? '<p class="fine" style="margin-top:9px">Missing from your resume — tap one you genuinely have to add it to Skills:</p><div class="kws">' + f.miss.map(function(m){ return '<button type="button" class="kw" data-a="kw" data-v="' + esc(m) + '">+ ' + esc(m) + '</button>'; }).join('') + '</div>' : '') +
     (f.have.length ? '<div class="kws">' + f.have.map(function(m){ return '<span class="kw have">✓ ' + esc(m) + '</span>'; }).join('') + '</div>' : '') +
+    '<button class="btn ai wide" type="button" data-a="optimize" style="margin-top:12px">✨ Optimise my resume for this job</button>' +
     '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px"><button class="btn sm" type="button" data-a="tab" data-v="cover">Write a cover letter for it</button>' +
     (JOB.key ? '<a class="btn sm" href="/app.html#job=' + encodeURIComponent(JOB.key) + '">Back to the job</a>' : '') + '</div></div>';
 }
@@ -1395,7 +1531,7 @@ function localRewrite(mode, t){
   }
   return endLike(t, tidy(s));
 }
-function localSummary(){
+function localSummary(cap){
   var A = analyse(), role = DOC.headline || targetRole();
   var firstExp = DOC.sections.filter(function(s){ return s.k === 'experience' && !s.hidden; })[0], firstIt = firstExp && firstExp.items[0];
   if(!role && firstIt) role = firstIt.title.split(/,|\s+at\s+|\s[–—|]\s/)[0];
@@ -1405,6 +1541,7 @@ function localSummary(){
     (sk.length ? (yrs && yrs >= 1 ? ' in ' : ' skilled in ') + (sk.length > 1 ? sk.slice(0, -1).join(', ') + ' and ' + sk[sk.length - 1] : sk[0]) : '') + '.';
   if(best){ var b = localRewrite('improve', best.b.t).replace(/\.$/, ''); s += ' Recently ' + b.charAt(0).toLowerCase() + b.slice(1) + '.'; }
   else s += ' [One line on the result you’re proudest of, with a number.]';
+  if(cap && wordsIn(s) > cap.max){ var one = s.split(/\.\s+/)[0].replace(/\.?$/, '.'); if(wordsIn(one) <= cap.max) s = one; }
   return s;
 }
 function improveOwner(key, mode, ids){
@@ -1474,9 +1611,6 @@ function improveAll(){
 function renderCoverSide(){
   var c = DOC.cover;
   $('#side').innerHTML = '<h3 style="margin-top:0">Cover letter</h3><p class="fine">Written from your resume' + (JOB ? ' and the job you picked' : '') + '. Read it, make it yours, then download it.</p>' +
-    '<label class="f" for="cvRole">Role</label><input type="text" id="cvRole" value="' + esc(c.role || (JOB && JOB.title) || targetRole()) + '" placeholder="e.g. Data Analyst">' +
-    '<label class="f" for="cvCo">Company</label><input type="text" id="cvCo" value="' + esc(c.company || (JOB && JOB.company) || '') + '" placeholder="e.g. Stripe">' +
-    '<button class="btn ai wide" type="button" data-a="cv-write" style="margin-top:14px"' + (COVER_BUSY ? ' disabled' : '') + '>✨ ' + (COVER_BUSY ? 'Writing…' : c.text ? 'Write it again' : 'Write it for me') + '</button>' +
     '<p class="ainote">' + (AI_OFF ? 'Built from your resume with our template. Lines in [ ] are for you to fill in.' : 'Uses only facts from your resume — read it before you send it.') + '</p>' +
     (JOB ? '' : '<p class="fine" style="margin-top:14px">Tip: add the job description under “Tailor it to a job” on the Resume tab and the letter will speak to it.</p>') +
     '<div class="callc"><b>Applying to a lot of roles?</b><p>Our team can tailor your resume and apply for you, every day.</p><a class="btn sm" href="' + esc(bookUrl('cover_letter')) + '" target="_blank" rel="noopener">Book a free call</a></div>';
@@ -1494,13 +1628,195 @@ function localCover(role, co){
   return 'Dear Hiring Team,\n\n' + p1 + '\n\n' + p2 + '\n\n' + p3 + '\n\nI’d welcome the chance to talk about how I can help ' + (co || 'your team') + '. Thank you for your time.\n\nSincerely,\n' + name;
 }
 function writeCover(){
-  var role = ($('#cvRole') || {}).value || '', co = ($('#cvCo') || {}).value || '';
+  var r = $('#cvRole'), c = $('#cvCo');
+  var role = r ? r.value : (DOC.cover.role || (JOB && JOB.title) || ''), co = c ? c.value : (DOC.cover.company || (JOB && JOB.company) || '');
   DOC.cover.role = role.trim(); DOC.cover.company = co.trim(); DOC.cover.to = 'Hiring Team' + (DOC.cover.company ? '\n' + DOC.cover.company : '');
-  COVER_BUSY = true; renderCoverSide();
-  ai({task:'cover', role:DOC.cover.role, company:DOC.cover.company, resume:docText().slice(0, 8000), jd:jobText().slice(0, 4000), name:DOC.name || ''})
+  DOC.cover.jobKey = JOB && JOB.key || null;
+  COVER_BUSY = true; renderCover(); renderSide();
+  var pill = document.createElement('div'); pill.className = 'wpill'; pill.id = 'wpill'; pill.innerHTML = '<span class="spin"></span>Writing your cover letter…'; document.body.appendChild(pill);
+  ai({task:'cover', role:DOC.cover.role, company:DOC.cover.company, resume:docText().slice(0, 8000), jd:jobText().slice(0, 4000), name:DOC.name || '', instructions:(lsGet('tp_opt', {}) || {}).ins || ''})
     .then(function(r){ if(!r || !r.text) throw 'shape'; return r.text; })
     .catch(function(){ return wait(500).then(function(){ return localCover(DOC.cover.role, DOC.cover.company); }); })
-    .then(function(t){ COVER_BUSY = false; DOC.cover.text = String(t).trim(); renderCover(); renderCoverSide(); structural(); });
+    .then(function(t){ COVER_BUSY = false; var w = $('#wpill'); if(w) w.remove(); DOC.cover.text = String(t).trim(); structural(); });
+}
+function autoCover(){
+  if(!JOB || COVER_BUSY) return;
+  if(DOC.cover.text && DOC.cover.jobKey === JOB.key) return;
+  DOC.cover.role = JOB.title || ''; DOC.cover.company = JOB.company || ''; renderCover();
+  writeCover();
+}
+
+/* =====================================================================
+   8b. OPTIMISE FOR A JOB — pick what to tailor, review side by side, accept what you like
+   ===================================================================== */
+var OPT = null, HL = {};
+var XI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+function norm(t){ return String(t || '').toLowerCase().replace(/[^a-z0-9%$]/g, ''); }
+function wordsIn(t){ return String(t || '').trim().split(/\s+/).filter(Boolean).length; }
+function capFrom(ins, what){
+  if(!ins) return null;
+  var rx = what === 'bullet' ? /bullet[^.;\n]*?(\d{1,2})\s*(?:–|-|to)\s*(\d{1,2})\s*words?|(\d{1,2})\s*(?:–|-|to)\s*(\d{1,2})\s*words?[^.;\n]*bullet/i
+                             : /summary[^.;\n]*?(\d{1,3})\s*(?:(?:–|-|to)\s*(\d{1,3}))?\s*words?/i;
+  var m = rx.exec(ins); if(!m) return null;
+  var a = +(m[1] || m[3]), b = +(m[2] || m[4] || a); return {min:Math.min(a, b), max:Math.max(a, b)};
+}
+function clauseCut(t, max){
+  var w = t.replace(/[.;]\s*$/, '').split(/\s+/); if(w.length <= max) return t;
+  var cut = w.slice(0, max + 1).join(' '), i = Math.max(cut.lastIndexOf(','), cut.lastIndexOf(';'), cut.lastIndexOf(' — '));
+  return i > cut.length*0.55 ? cut.slice(0, i) : t;   // never chop mid-thought; leave it long instead
+}
+function localTailor(t, cap){
+  var s = localRewrite('improve', t);
+  if(cap && wordsIn(s) > cap.max){ s = localRewrite('concise', s); if(wordsIn(s) > cap.max + 2) s = endLike(t, clauseCut(s, cap.max)); }
+  return s;
+}
+function optTargets(){
+  var out = [];
+  DOC.sections.forEach(function(s){
+    if(s.hidden || s.type !== 'entries' || s.k === 'education') return;
+    s.items.forEach(function(it){ if(it.bullets.some(function(b){ return b.t.trim(); })) out.push({key:s.id + ':' + it.id, sec:s, it:it}); });
+  });
+  return out;
+}
+function modalOpen(html){ var m = $('#modal'); m.innerHTML = html; m.hidden = false; }
+function modalClose(){ var m = $('#modal'); m.hidden = true; m.innerHTML = ''; }
+function cleanTitle(t){ return String(t || '').replace(/\s*\([^)]*\)\s*/g, ' ').replace(/\s+[-–—|]\s+.*$/, '').replace(/,\s*(remote|hybrid|on-?site).*$/i, '').trim(); }
+function openOptimise(){
+  if(!DOC) return;
+  closePop(); setTab('resume');
+  var pref = lsGet('tp_opt', {}) || {}, was = pref.sel || {};
+  var rows = [['summary', 'Summary'], ['headline', 'Job title'], ['experience', 'Work experience'], ['skills', 'Skills']];
+  if(JOB && JOB.loc && !/remote|anywhere/i.test(JOB.loc)) rows.splice(2, 0, ['location', 'Location']);
+  OPT = {sel:{}};
+  rows.forEach(function(r){ OPT.sel[r[0]] = was[r[0]] !== 0; });
+  modalOpen('<div class="om om-pick" role="dialog" aria-modal="true" aria-labelledby="omT"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
+    '<h2 id="omT">Optimise by</h2>' +
+    (JOB ? '<p class="omsub">Choose what to tailor for <b>' + esc(cleanTitle(JOB.title) || 'this job') + '</b>' + (JOB.company ? ' at <b>' + esc(JOB.company) + '</b>' : '') + '</p>'
+         : '<p class="omsub">Paste the job you’re applying for, then choose what to tailor.</p><div class="omjd"><textarea id="optJd" rows="5" placeholder="Paste the job description here"></textarea></div>') +
+    '<div class="orows">' + rows.map(function(r){ return '<button type="button" class="orow' + (OPT.sel[r[0]] ? ' on' : '') + '" data-a="opt-t" data-v="' + r[0] + '"><span>' + r[1] + '</span><span class="pill">' + (OPT.sel[r[0]] ? 'Selected ✓' : 'Select') + '</span></button>'; }).join('') + '</div>' +
+    '<label class="omlbl" for="optIns">Special instructions <span>(optional)</span></label>' +
+    '<textarea id="optIns" rows="3" maxlength="400" placeholder="e.g. Keep the summary to 36–38 words and each experience bullet between 18–22 words.">' + esc(pref.ins || '') + '</textarea>' +
+    '<button class="btn omgo" type="button" data-a="opt-go">Proceed →</button></div>');
+}
+function runOptimise(){
+  var sel = OPT.sel, ins = (($('#optIns') || {}).value || '').trim();
+  if(!JOB){
+    var jd = (($('#optJd') || {}).value || '').trim();
+    if(jd.length < 80){ toast('Paste the full job description first.'); return; }
+    var first = jd.split(/\n/)[0].trim(), m = /^(.{3,80}?)\s+(?:[—–|@-]|at)\s+(.{2,60})$/.exec(first);
+    JOB = DOC.meta.job = {title:m ? m[1].trim() : first.length <= 90 ? first : '', company:m ? m[2].trim() : '', text:jd.slice(0, 15000)};
+  }
+  if(!Object.keys(sel).some(function(k){ return sel[k]; })){ toast('Pick at least one thing to optimise.'); return; }
+  var keep = {}; Object.keys(sel).forEach(function(k){ keep[k] = sel[k] ? 1 : 0; }); lsSet('tp_opt', {sel:keep, ins:ins});
+  var targets = sel.experience ? optTargets() : [], nb = targets.reduce(function(n, t){ return n + t.it.bullets.filter(function(b){ return b.t.trim(); }).length; }, 0);
+  var steps = [['job', 'Reading the job description']];
+  if(sel.summary) steps.push(['summary', 'Tailoring your summary']);
+  if(sel.headline || sel.location) steps.push(['head', 'Matching your title' + (sel.location ? ' and location' : '')]);
+  if(sel.experience) steps.push(['experience', targets.length ? 'Rewriting ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' across ' + targets.length + ' role' + (targets.length > 1 ? 's' : '') : 'Checking your work experience']);
+  if(sel.skills) steps.push(['skills', 'Matching your skills to the posting']);
+  modalOpen('<div class="om om-run" role="dialog" aria-modal="true" aria-live="polite"><div class="orbit"><span></span></div><h2>Optimising your resume</h2>' +
+    '<p class="omsub">for <b>' + esc(cleanTitle(JOB.title) || 'this job') + '</b>' + (JOB.company ? ' at <b>' + esc(JOB.company) + '</b>' : '') + '</p>' +
+    '<ul class="steps">' + steps.map(function(x){ return '<li data-st="' + x[0] + '"><i></i>' + esc(x[1]) + '</li>'; }).join('') + '</ul>' +
+    '<p class="fine">Using only what’s already on your resume — nothing made up.</p></div>');
+  var done = function(k){ var li = $('.steps [data-st="' + k + '"]'); if(li) li.classList.add('ok'); };
+  var R = {src:'local'}, jobs = [], cap = capFrom(ins, 'bullet'), scap = capFrom(ins, 'summary'), t0 = Date.now();
+  setTimeout(function(){ done('job'); }, 450);
+  if(sel.summary){
+    var sm = DOC.sections.filter(function(x){ return x.k === 'summary' && !x.hidden; })[0];
+    jobs.push(ai({task:'summary', current:sm ? sm.text : '', resume:docText().slice(0, 8000), target:cleanTitle(JOB.title), jd:jobText().slice(0, 4000), instructions:ins})
+      .then(function(r){ if(!r || !r.text) throw 'shape'; return {t:String(r.text).trim(), src:'ai'}; })
+      .catch(function(){ return wait(500).then(function(){ return {t:localSummary(scap), src:'local'}; }); })
+      .then(function(r){ R.summary = {sid:sm && sm.id, orig:sm ? sm.text : '', sug:r.t}; if(r.src === 'ai') R.src = 'ai'; done('summary'); }));
+  }
+  if(sel.headline){ var ht = cleanTitle(JOB.title); if(ht && norm(ht) !== norm(DOC.headline)) R.headline = {orig:DOC.headline || '', sug:ht}; }
+  if(sel.location && JOB.loc && !(DOC.prefs || {}).relocate){ R.loc = {orig:prefText() || '', sug:'Open to relocation', city:JOB.loc.split(',')[0]}; }
+  if(sel.headline || sel.location) setTimeout(function(){ done('head'); }, 800);
+  if(sel.experience){
+    var left = targets.length; if(!left) setTimeout(function(){ done('experience'); }, 900);
+    targets.forEach(function(tg){
+      var bl = tg.it.bullets.filter(function(b){ return b.t.trim(); }), texts = bl.map(function(b){ return b.t; });
+      jobs.push(ai({task:'bullets', mode:'tailor', bullets:texts, role:tg.it.title || '', org:tg.it.sub || '', target:cleanTitle(JOB.title), jd:jobText().slice(0, 4000), instructions:ins})
+        .then(function(r){ if(!r || !Array.isArray(r.bullets) || r.bullets.length !== texts.length) throw 'shape'; return {list:r.bullets.map(function(x, i){ return String(x || '').trim() || texts[i]; }), src:'ai'}; })
+        .catch(function(){ return wait(650).then(function(){ return {list:texts.map(function(t){ return localTailor(t, cap); }), src:'local'}; }); })
+        .then(function(r){ tg.res = bl.map(function(b, i){ return {bid:b.id, orig:b.t, sug:r.list[i]}; }); if(r.src === 'ai') R.src = 'ai'; if(--left === 0) done('experience'); }));
+    });
+  }
+  Promise.all(jobs).then(function(){
+    if(sel.skills){ var f = jobFit(); R.skills = f ? f.miss : []; done('skills'); }
+    var wait2 = Math.max(350, 1400 - (Date.now() - t0));   // long enough to read the steps, never slower than the work
+    setTimeout(function(){ showResults(R, targets, sel); }, wait2);
+  });
+}
+function showResults(R, targets, sel){
+  OPT.rows = []; OPT.skillsDone = false;
+  var lab = R.src === 'ai' ? 'AI suggestion' : 'Suggestion';
+  var row = function(type, data, orig, sug, note){
+    var i = OPT.rows.length; OPT.rows.push(Object.assign({type:type, st:'p', orig:orig, sug:sug}, data));
+    return '<div class="rr" data-r="' + i + '" style="--d:' + Math.min(i*60, 900) + 'ms"><div class="ro">' + (orig ? fmt(orig) : '<i>Not on your resume yet</i>') + '</div>' +
+      '<div class="rn"><span contenteditable="true" data-rs="' + i + '">' + fmt(sug) + '</span>' + (note ? '<small>' + esc(note) + '</small>' : '') +
+      '<div class="rb" id="rb' + i + '"><button type="button" class="ok" data-a="r-ok" data-v="' + i + '" aria-label="Accept">✓</button><button type="button" class="no" data-a="r-no" data-v="' + i + '" aria-label="Reject">✕</button></div></div></div>';
+  };
+  var card = function(title, body, plain){ return '<section class="rc"><h3>' + title + '</h3>' + (plain ? '' : '<div class="rh"><span class="k1">Original</span><span class="k2">' + lab + '</span></div>') + body + '</section>'; };
+  var already = '<div class="rdone"><span>✨</span><b>Already optimised</b><small>This looks great — no changes needed.</small></div>';
+  var h = '';
+  if(R.summary) h += R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig) ? card('Summary', row('summary', {sid:R.summary.sid}, R.summary.orig, R.summary.sug)) : card('Summary', already, true);
+  if(R.headline) h += card('Job title', row('headline', {}, R.headline.orig, R.headline.sug, 'Shown under your name. Keep it only if it describes the work you do.'));
+  if(R.loc) h += card('Location', row('loc', {}, R.loc.orig, R.loc.sug, 'This role is in ' + R.loc.city + '. Accept only if you’d genuinely move.'));
+  targets.forEach(function(tg){
+    var ch = (tg.res || []).filter(function(x){ return norm(x.sug) !== norm(x.orig); });
+    var t = 'Experience at ' + esc(tg.it.sub || (tg.it.title || '').split(/,\s*/).slice(1).join(', ') || tg.it.title || 'this role');
+    h += ch.length ? card(t, ch.map(function(x){ return row('bullet', {key:tg.key, bid:x.bid}, x.orig, x.sug); }).join('')) : card(t, already, true);
+  });
+  if(sel.skills) h += card('Skills', R.skills && R.skills.length
+    ? '<p class="rnote">This job asks for these, and your resume doesn’t mention them. Tick only the ones you genuinely have — they’ll be added to your Skills section.</p><div class="rsk">' +
+      R.skills.map(function(k){ return '<label><input type="checkbox" data-sk="' + esc(k) + '"><span>' + esc(k) + '</span></label>'; }).join('') + '</div>'
+    : '<div class="rdone"><span>✓</span><b>Your skills already line up</b><small>Every skill we found in this posting is on your resume.</small></div>', true);
+  modalOpen('<div class="om om-res" role="dialog" aria-modal="true" aria-labelledby="omR"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
+    '<div class="omh"><h2 id="omR">Optimised resume</h2><p class="omsub">Review the suggestions side by side with your current resume. Accept them one by one, or apply them all at once. You can edit any suggestion before accepting it.' +
+    (R.src !== 'ai' && /\[/.test(h) ? ' Replace anything in [ ] with your real number.' : '') + '</p></div>' +
+    '<div class="omb">' + h + '</div>' +
+    '<div class="omf"><span id="omCount"></span><button class="btn grn" type="button" data-a="r-all" id="rAll">✓ Accept all</button><button class="btn" type="button" data-a="opt-done">Done</button></div></div>');
+  countRows();
+}
+function countRows(){
+  var p = OPT.rows.filter(function(r){ return r.st === 'p'; }).length, a = OPT.rows.filter(function(r){ return r.st === 'a'; }).length;
+  var c = $('#omCount'); if(c) c.textContent = OPT.rows.length ? (p ? p + ' to review' : 'All reviewed') + (a ? ' · ' + a + ' accepted' : '') : '';
+  var b = $('#rAll'); if(b){ var sk = $$('.rsk input:checked').length; b.disabled = !p && !sk; b.textContent = !p && !sk && a ? '✓ Accepted' : '✓ Accept all'; }
+}
+function markRow(i, how){
+  var el = $('.rr[data-r="' + i + '"]'); if(!el) return;
+  el.classList.add(how === 'a' ? 'acc' : 'rej');
+  var rb = $('#rb' + i); if(rb) rb.innerHTML = '<span class="st">' + (how === 'a' ? '✓ Accepted' : 'Kept your original') + '</span>';
+  var sp = $('[data-rs="' + i + '"]', el); if(sp) sp.removeAttribute('contenteditable');
+}
+function applyRow(i){
+  var r = OPT.rows[i]; if(!r || r.st !== 'p') return false;
+  var el = $('[data-rs="' + i + '"]'), v = el ? el.innerText.replace(/\s+/g, ' ').trim() : r.sug;
+  if(!v) return false;
+  if(r.type === 'bullet'){ var o = owner(r.key), b = o && byId(o.arr, r.bid); if(b){ b.t = v; HL[b.id] = 1; } }
+  if(r.type === 'summary'){
+    var s = r.sid && secById(r.sid);
+    if(!s){ s = newSection('summary'); DOC.sections.unshift(s); r.sid = s.id; }
+    s.hidden = false; s.text = v; if(/objective/i.test(s.title)) s.title = /^[A-Z\s]+$/.test(s.title) ? 'SUMMARY' : 'Summary'; HL['sum:' + s.id] = 1;
+  }
+  if(r.type === 'headline'){ DOC.headline = v; HL.headline = 1; }
+  if(r.type === 'loc'){ DOC.prefs = DOC.prefs || {}; DOC.prefs.relocate = true; HL.loc = 1; }
+  r.st = 'a'; markRow(i, 'a'); return true;
+}
+function applySkills(){
+  if(OPT.skillsDone) return 0;
+  var picked = $$('.rsk input:checked').map(function(x){ return x.getAttribute('data-sk'); });
+  picked.forEach(addSkill); if(picked.length){ OPT.skillsDone = true; $$('.rsk input').forEach(function(x){ x.disabled = true; }); }
+  return picked.length;
+}
+function finishOptimise(){
+  var n = applySkills(); if(n) structural();
+  modalClose();
+  var a = OPT ? OPT.rows.filter(function(r){ return r.st === 'a'; }).length + n : 0;
+  if(a){
+    toast(a + ' change' + (a > 1 ? 's' : '') + ' applied — highlighted in yellow');
+    var first = $('#paper .hl, #paper .hlx, #paper mark.add'); if(first) first.scrollIntoView({behavior:'smooth', block:'center'});
+  }
 }
 
 /* =====================================================================
@@ -1533,6 +1849,11 @@ function popHTML(kind){
       '<h4>Accent colour</h4><div class="sw">' + ACCENTS.map(function(c){ return '<button type="button" data-a="ac" data-v="' + c + '" class="' + (c === d.accent ? 'on' : '') + '" style="background:' + c + '" aria-label="Accent ' + c + '"></button>'; }).join('') + '</div>' +
       '<p class="fine" style="margin-top:6px">Colour shows in the Modern layout.</p>';
   }
+  if(kind === 'addsec'){
+    var miss = CATALOG.filter(function(c){ return !DOC.sections.some(function(x){ return x.k === c[0] && !x.hidden; }); });
+    return '<h4>Select section</h4><div class="adds">' + miss.map(function(c){ return '<button type="button" class="addb" data-a="add-sec2" data-v="' + c[0] + '">' + (SEC_ICON[c[0]] || SEC_ICON.other) + '<span>' + c[1] + '</span></button>'; }).join('') +
+      '<button type="button" class="addb new" data-a="add-sec2" data-v="custom">' + SEC_ICON.plus + '<span>New section</span></button></div>';
+  }
   if(kind === 'layout') return '<h4>Resume layout</h4><div class="lays">' + [['compact', 'Compact', 'Centred name, tight spacing. Fits the most on one page.'], ['classic', 'Classic', 'Small-caps headings. The traditional favourite.'], ['modern', 'Modern', 'Left-aligned with an accent colour.']].map(function(l){
       return '<button type="button" class="lay' + (d.layout === l[0] ? ' on' : '') + '" data-a="lay" data-v="' + l[0] + '">' + layoutSVG(l[0]) + '<div><b>' + l[1] + '</b><span>' + l[2] + '</span></div></button>';
     }).join('') + '</div><p class="fine" style="margin-top:10px">All three are single-column, which hiring software reads cleanly.</p>';
@@ -1547,6 +1868,15 @@ function popHTML(kind){
     '<button type="button" class="dlo" data-a="dl-doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="m8.5 12 1.2 5 1.8-4 1.8 4 1.2-5"/></svg><div><b>Word (.doc)</b><span>For sites that ask for Word, or to keep editing in Word or Google Docs.</span></div></button>';
   return '';
 }
+function sic(d){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; }
+var SEC_ICON = {
+  summary:sic('<path d="M4 6h16M4 12h16M4 18h10"/>'), experience:sic('<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>'),
+  education:sic('<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>'), projects:sic('<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'),
+  skills:sic('<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/>'),
+  volunteering:sic('<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>'), awards:sic('<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M16 5h3v2a3 3 0 0 1-3 3M8 5H5v2a3 3 0 0 0 3 3M12 13v4M8 20h8"/>'),
+  certifications:sic('<circle cx="12" cy="9" r="5"/><path d="M9 13.5 8 21l4-2 4 2-1-7.5"/>'), publications:sic('<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/>'),
+  languages:sic('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/>'), other:sic('<path d="M4 6h16M4 12h16M4 18h16"/>'), plus:sic('<path d="M12 5v14M5 12h14"/>')
+};
 var POP = null;
 function openPop(kind, btn){
   var pop = $('#pop');
@@ -1683,6 +2013,23 @@ document.addEventListener('click', function(e){
       JOB = DOC.meta.job = {title:m ? m[1].trim() : first.length <= 90 ? first : '', company:m ? m[2].trim() : '', text:jd.slice(0, 15000)}; structural(); return;
     case 'jd-clear': JOB = null; DOC.meta.job = null; try{ localStorage.removeItem('tp_ats_job'); }catch(x){} structural(); return;
     case 'cv-write': return writeCover();
+    case 'optimize': return openOptimise();
+    case 'opt-t': OPT.sel[v] = !OPT.sel[v]; t.classList.toggle('on', OPT.sel[v]); t.querySelector('.pill').textContent = OPT.sel[v] ? 'Selected ✓' : 'Select'; return;
+    case 'opt-go': return runOptimise();
+    case 'r-ok': if(applyRow(+v)){ structural(); } countRows(); return;
+    case 'r-no': var rr = OPT.rows[+v]; if(rr && rr.st === 'p'){ rr.st = 'r'; markRow(+v, 'r'); } countRows(); return;
+    case 'r-all': var any = false; OPT.rows.forEach(function(r0, i){ if(applyRow(i)) any = true; }); if(applySkills()) any = true; if(any) structural(); countRows(); toast('All suggestions applied'); return;
+    case 'opt-done': case 'm-close': return finishOptimise();
+    case 'add-sec2':
+      closePop();
+      var hid = DOC.sections.filter(function(x){ return x.k === v && x.hidden; })[0];
+      if(hid){ hid.hidden = false; structural(); scrollToSec(hid.id); return; }
+      var ns2 = v === 'custom' ? newSection('other', 'New Section') : newSection(v);
+      if(ns2.type === 'entries'){ var e2 = newEntry(); if(ns2.k !== 'education') e2.bullets.push({id:uid(), t:''}); ns2.items.push(e2); }
+      if(ns2.type === 'skills') ns2.rows.push({id:uid(), label:'Skills', value:''});
+      if(ns2.type === 'list') ns2.list.push({id:uid(), t:''});
+      if(ns2.type === 'summary') DOC.sections.unshift(ns2); else DOC.sections.push(ns2);
+      structural(); scrollToSec(ns2.id); focusPath(v === 'custom' ? 's|' + ns2.id + '|title' : ''); return;
     case 'upload': return $('#fileIn').click();
     case 'reset': return confirmBox('Go back to your original file?', 'All your edits will be replaced with what’s in “' + (SRC && SRC.name) + '”. You can still press Undo afterwards.', 'Start again from my file', function(){ fromSource(SRC, true); });
     case 'blank': SRC = null; startDoc(starterDoc()); return;
@@ -1753,6 +2100,9 @@ function onEdit(e){
   var f = el.getAttribute('data-f'), multi = f === 'cv|text' || f === 'cv|to';
   var v = multi ? el.innerText.replace(/\n{3,}/g, '\n\n').replace(/\s+$/, '') : el.innerText.replace(/\s+/g, ' ').trim();
   setField(f, v);
+  var li = el.closest('li.b'); if(li && HL[li.getAttribute('data-b')]){ delete HL[li.getAttribute('data-b')]; li.classList.remove('hl'); }
+  if(/^s\|[^|]+\|text$/.test(f) && HL['sum:' + f.split('|')[1]]){ delete HL['sum:' + f.split('|')[1]]; el.classList.remove('hl'); }
+  if(f === 'headline' && HL.headline){ delete HL.headline; el.classList.remove('hlx'); }
   changed();
 }
 $('#paper').addEventListener('input', onEdit);
@@ -1767,7 +2117,8 @@ document.addEventListener('keydown', function(e){
   var mod = e.ctrlKey || e.metaKey;
   if(mod && !e.altKey && (e.key === 'z' || e.key === 'Z') && DOC && !e.target.closest('textarea,input')){ e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
   if(mod && (e.key === 'y' || e.key === 'Y') && DOC && !e.target.closest('textarea,input')){ e.preventDefault(); redo(); return; }
-  if(e.key === 'Escape'){ closePop(); $('#bmenu').hidden = true; if(!$('#modal').hidden) $('#modal').hidden = true; }
+  if(e.key === 'Escape'){ closePop(); $('#bmenu').hidden = true; if(!$('#modal').hidden){ if($('#modal .om-res')) finishOptimise(); else if(!$('#modal .om-run')) modalClose(); } }
+  if(e.key === 'Enter' && e.target.getAttribute && e.target.getAttribute('data-rs') != null){ e.preventDefault(); return; }
   var el = e.target.closest && e.target.closest('[data-f]'); if(!el) return;
   var f = el.getAttribute('data-f');
   if(f === 'cv|text' || f === 'cv|to') return;
@@ -1803,13 +2154,14 @@ document.addEventListener('input', function(e){
 });
 document.addEventListener('change', function(e){
   var t = e.target;
+  if(t.hasAttribute && t.hasAttribute('data-sk')){ countRows(); return; }
   if(t.id === 'fileIn'){ if(t.files[0]) readUpload(t.files[0]); t.value = ''; return; }
   if(t.id === 'dFont'){ DOC.design.font = t.value; structural(); refreshPop(); return; }
   if(t.id === 'dPage'){ DOC.design.page = t.value; structural(); return; }
   if(t.id === 'addSec' && t.value){ var ns = newSection(t.value); if(ns.type === 'entries'){ var e1 = newEntry(); if(ns.k !== 'education') e1.bullets.push({id:uid(), t:''}); ns.items.push(e1); } if(ns.type === 'skills') ns.rows.push({id:uid(), label:'Skills', value:''}); if(ns.type === 'list') ns.list.push({id:uid(), t:''});
     DOC.sections.push(ns); structural(); refreshPop(); scrollToSec(ns.id); return; }
   if(t.hasAttribute && t.hasAttribute('data-pref')){ DOC.prefs = DOC.prefs || {}; DOC.prefs[t.getAttribute('data-pref')] = t.checked; structural(); return; }
-  if(t.id === 'cvRole'){ DOC.cover.role = t.value.trim(); persist(); }
+  if(t.id === 'cvRole'){ DOC.cover.role = t.value.trim(); persist(); return; }
   if(t.id === 'cvCo'){ DOC.cover.company = t.value.trim(); persist(); }
 });
 window.addEventListener('resize', debounce(function(){ if(DOC){ fit(); breaks(); } }, 150));
@@ -1817,10 +2169,10 @@ window.addEventListener('beforeprint', function(){ if(DOC) $$('.pbrk').forEach(f
 window.addEventListener('afterprint', function(){ if(DOC) breaks(); });
 function setTab(v){
   TAB = v; closePop();
-  $$('#tabs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === v); });
+  $$('.tabs button[data-a=tab]').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === v); });
   $('#paneR').classList.toggle('on', v === 'resume'); $('#paneC').classList.toggle('on', v === 'cover');
-  $('#btb').hidden = true; $('#bLoc').hidden = v === 'cover';
-  if(v === 'cover'){ renderCover(); if(!DOC.cover.role && JOB) DOC.cover.role = JOB.title; if(!DOC.cover.company && JOB) DOC.cover.company = JOB.company; }
+  $('#btb').hidden = true; $('#bLoc').hidden = $('#bAdd').hidden = v === 'cover'; $('[data-a=optimize]').hidden = v === 'cover';
+  if(v === 'cover'){ if(!DOC.cover.role && JOB) DOC.cover.role = JOB.title; if(!DOC.cover.company && JOB) DOC.cover.company = JOB.company; renderCover(); }
   renderSide(); breaks(); window.scrollTo(0, 0);
 }
 
@@ -1833,7 +2185,7 @@ var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-w
 function showGate(){
   $('#gate').innerHTML = '<div class="card"><h1>Sign in to edit your resume</h1><p>Free with your Google account. You’ll come straight back here.</p><ul>' +
     ['AI suggestions for every bullet — you choose what to keep', 'Tailor it to any job in a few taps', 'Download a clean, ATS-friendly PDF', 'A cover letter written from your resume'].map(function(t){ return '<li>' + CHECK + t + '</li>'; }).join('') + '</ul>' +
-    '<a class="gbtn" href="/app.html?next=%2Feditor.html#signin"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2c-2 1.5-4.5 2.4-7.2 2.4-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 38.2 44 33 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Continue with Google</a>' +
+    '<a class="gbtn" target="_top" href="/app.html?next=%2Feditor.html#signin"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2c-2 1.5-4.5 2.4-7.2 2.4-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 38.2 44 33 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Continue with Google</a>' +
     '<p class="fine" style="font-size:12px;color:var(--muted);margin-top:12px">By continuing you agree to our <a href="/terms.html">Terms</a> and <a href="/privacy.html">Privacy Policy</a>.</p></div>';
   show('gate');
 }
@@ -1881,8 +2233,18 @@ function startDoc(D){
   JOB = loadJob();
   show('wrap'); $('#tabs').hidden = false;
   renderAll(); snap(); persist();
-  if(location.hash === '#cover') setTab('cover');
+  tell({act:'ready'});
+  var h = location.hash;
+  if(h === '#cover' || h === '#optimize') try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
+  if(h === '#cover'){ setTab('cover'); autoCover(); }
+  else if(h === '#optimize') setTimeout(openOptimise, 300);
 }
+window.addEventListener('message', function(e){
+  if(e.origin !== location.origin || !e.data || !e.data.tp || !DOC) return;
+  JOB = loadJob(); renderSide();
+  if(e.data.act === 'optimize'){ modalClose(); openOptimise(); }
+  if(e.data.act === 'cover'){ modalClose(); setTab('cover'); autoCover(); }
+});
 function boot(){
   if(LIVE ? !SESSION0 : !PREVIEW){ showGate(); return; }
   var saved = lsGet(STORE_KEY, null);
