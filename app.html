@@ -352,6 +352,38 @@ img{max-width:100%}
 .mailc .mc-x svg{width:16px;height:16px}
 .mailc.done{border-color:#bfe6cf;background:linear-gradient(120deg,#effaf3,#f7fcf9)}
 .mailc.done .mc-ic{color:var(--ok)}
+.pfacts{display:grid;gap:8px;margin-top:16px}
+.pf{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:12px;padding:10px 12px;font-size:14px;flex-wrap:wrap}
+.pf-ic{color:var(--muted);display:grid;place-items:center}.pf-ic svg{width:17px;height:17px}
+.pf-l{font-weight:600;color:var(--ink);min-width:72px}
+.pf-v{flex:1;min-width:0;color:var(--body);display:flex;align-items:center;gap:8px;flex-wrap:wrap;overflow-wrap:anywhere}
+.pf-v i{color:var(--muted)}
+.pf-v em{font-style:normal;font-size:11.5px;font-weight:600;color:#7a5a00;background:var(--warn-soft);border-radius:999px;padding:1px 8px}
+.pf-v input{height:36px;border:1px solid var(--line);border-radius:9px;padding:0 10px;font-size:14px;width:min(240px,100%)}
+.rdcard .rd-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.rd-k{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
+.rd-sum{color:var(--ink);line-height:1.6}
+.rd-g{display:grid;grid-template-columns:1fr 1fr;gap:6px 24px}
+.rd-i{border-left:3px solid #f5d76e;padding:2px 0 2px 12px;margin-bottom:12px}
+.rd-i b{display:block;color:var(--ink);font-size:14.5px}
+.rd-i span{display:block;font-size:13.5px;color:var(--body)}
+.rd-i small{display:block;font-size:12.5px;color:var(--muted)}
+@media (max-width:640px){.rd-g{grid-template-columns:1fr}}
+.lead .ld-k{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:13px;color:var(--body);margin-top:6px}
+.lead .ld-k>span,.lead .ld-k>a{display:inline-flex;align-items:center;gap:5px}
+.lead .ld-k svg{width:14px;height:14px;flex:none;color:var(--muted)}
+.lead .ld-k a{text-decoration:none}
+.lead .ld-k b{color:var(--ink);font-weight:600}
+.lead details{margin-top:8px;font-size:13px}
+.lead summary{cursor:pointer;color:var(--blue);font-weight:600;list-style:none}
+.lead summary::-webkit-details-marker{display:none}
+.lead .ld-d{margin-top:8px;display:grid;gap:8px;color:var(--body)}
+.lead .ld-d p{line-height:1.5}
+.lead .ld-d .rd-g{gap:4px 18px}
+.tag.res{background:var(--warn-soft);color:#7a5a00}
+.btn.wa.soft{background:#fff;color:#128c4b;border-color:#bfe6cf}
+.lead-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:4px 0 12px}
+.lead-tools input{flex:1 1 220px;height:40px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:14px}
 .callc{display:flex;gap:16px;align-items:center;flex-wrap:wrap;border-radius:16px;padding:18px 20px;background:linear-gradient(135deg,#0a31bd,#0938d5);color:#fff;margin-top:16px}
 .callc .tx{flex:1;min-width:220px}
 .callc b{font-family:Poppins;font-size:16px;display:block;color:#fff;line-height:1.35}
@@ -826,7 +858,7 @@ var CONFIG = {
 };
 
 var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
-var APP_VERSION = '2026-10-15.11';   // also in /version.txt — lets us check which version the live site is serving
+var APP_VERSION = '2026-10-15.12';   // also in /version.txt — lets us check which version the live site is serving
 
 /* =====================================================================
    utils
@@ -1102,7 +1134,7 @@ function afterSignIn(u, silent){
   return load.then(function(isNew){
     cameFromOAuth = false; acctLoaded = true;
     cacheAccount();
-    adoptAtsResume();
+    adoptAtsResume(); freshDetails();
     render();
     if(isNew || !state.profile.onboarded) store.saveProfile({onboarded:true}).catch(function(){});   // no welcome questions: straight to the jobs
     if(goNext()) return;
@@ -2091,6 +2123,7 @@ window.addEventListener('message', function(e){
     if(state.profile && state.profile.resume_text) state.profile.resume_text = e.data.text;
     else lsSet('tp_resume_local', {text:e.data.text, name:(resumeName() || 'Resume').replace(/\s*\(edited\)$/, '') + ' (edited)', from:'editor', at:Date.now()});
     var job = drawerKey && findJob(drawerKey); if(job) drawMatch(job);
+    freshLater();
   }
 });
 function closeDrawer(silent){
@@ -2446,7 +2479,7 @@ function vResume(v){
   $('#keepResume').addEventListener('change', function(e){
     var local = {text:rt, name:resumeName()};
     if(e.target.checked){ store.saveProfile({resume_text:rt, resume_name:local.name}).then(function(){ toast('Saved to your account'); }); }
-    else { lsSet('tp_resume_local', local); store.saveProfile({resume_text:null, resume_name:null}).then(function(){ toast('Removed from your account — kept in this browser'); }); }
+    else { lsSet('tp_resume_local', local); store.saveProfile({resume_text:null, resume_name:null}).then(function(){ saveQuiet({resume_profile:null}); toast('Removed from your account — kept in this browser'); }); }
   });
 }
 function bindDrop(){
@@ -2476,9 +2509,104 @@ function handleResume(f){
     var saving = store.saveProfile({resume_text:text, resume_name:r.name});   // updates this page now; the account copy saves in the background
     MATCHC = {};
     toast('Resume added'); render(); if(drawerKey){ var k = drawerKey; drawerKey = null; openJob(k); }
+    saveResumeDetails(text);
     setTimeout(function(){ askWhatsApp(phoneIn(text)); }, 900);
     return saving;
   }).catch(function(m){ reading = null; render(); toast(typeof m === 'string' ? m : 'Couldn’t read that file'); });
+}
+
+/* ---------- details on the resume → the member's profile (they see and can edit them in Settings; the team sees them in Leads) ---------- */
+var SEC_HEADS = [['top', /^contact( me| details| information| info)?$|^get in touch$/i], ['summary', /^((professional|career|executive) )?(summary|profile)$|^about( me)?$|^(career )?objective$|^overview$/i],
+  ['experience', /^((work|professional|employment|relevant) )?(experience|history)$|^employment( history)?$|^work history$|^career history$/i],
+  ['education', /^education( (&|and) (training|certifications?))?$|^academic (background|qualifications?)$|^academics$|^qualifications$/i],
+  ['skills', /^((technical|core|key|professional) )?skills( (&|and) (tools|technologies))?$|^technologies$|^tech(nical)? stack$|^tools$|^areas of expertise$|^expertise$/i],
+  ['other', /^(projects|certifications?|licen[cs]es|courses|training|awards|honou?rs|achievements|accomplishments|languages|interests|hobbies|volunteer(ing)?|personal (details|information)|declaration|publications|references)$/i]];
+var MON3 = '(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\\.?\\s*';
+var RANGE_RX = new RegExp('((?:' + MON3 + '|\\d{1,2}[\\/.\\-]\\s*)?(?:19|20)\\d{2})\\s*(?:–|—|-|to|until)\\s*((?:' + MON3 + '|\\d{1,2}[\\/.\\-]\\s*)?(?:(?:19|20)\\d{2})|present|current|now|today|date)', 'i');
+var DEG_RX = /\b(ph\.?\s?d|doctorate|master'?s?|m\.?\s?s\.?c?\b|m\.?\s?tech|mba|m\.?\s?a\.?\b|mca|bachelor'?s?|b\.?\s?s\.?c?\b|b\.?\s?tech|b\.?\s?e\.?\b|b\.?\s?a\.?\b|bca|b\.?\s?com|bba|associate'?s? degree|diploma|high school)\b/i;
+var ROLE_RX = /\b(engineer|developer|analyst|manager|designer|scientist|consultant|specialist|associate|intern|lead|architect|administrator|coordinator|officer|executive|director|accountant|recruiter|marketer|strategist|programmer|technician|advisor|representative|assistant|head|founder|owner|researcher|writer|editor|teacher|nurse|tester|qa|sre|devops)\b/i;
+function splitRole(h){
+  h = h.replace(/[|•·]+\s*$/, '').trim();
+  var m = /^(.+?)\s*(?:,|\s\|\s|\s@\s|\sat\s|\s[–—-]\s)\s*(.+)$/.exec(h);
+  if(!m) return {title:h, company:''};
+  var a = m[1].trim(), b = m[2].replace(/\s*[|,]\s*(remote|hybrid|on-?site|[A-Z][a-z]+,\s*[A-Z]{2}|[A-Z][a-z]+)$/,'').trim();
+  return ROLE_RX.test(a) || !ROLE_RX.test(b) ? {title:a, company:b} : {title:b, company:a};
+}
+function extractProfile(text){
+  var lines = String(text || '').split(/\n/).map(function(l){ return l.replace(/\s+/g, ' ').trim(); }).filter(Boolean);
+  var B = {top:[], summary:[], experience:[], education:[], skills:[], other:[]}, sec = 'top';
+  lines.forEach(function(l){
+    var h = l.replace(/[:|•\-–—_]+\s*$/, '').trim(), hit = null;
+    if(h.length <= 40 && h.split(' ').length <= 5) SEC_HEADS.some(function(x){ if(x[1].test(h)){ hit = x[0]; return true; } return false; });
+    if(hit){ sec = hit; return; }
+    B[sec].push(l);
+  });
+  var top = B.top.slice(0, 12).join('  |  '), P = {};
+  P.phone = cleanPhone(phoneIn(text)) || '';
+  var em = /[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,}/i.exec(text); P.email = em ? em[0] : '';
+  var li = /(?:https?:\/\/)?(?:[a-z]{2,3}\.)?linkedin\.com\/in\/[A-Za-z0-9_\-%]+\/?/i.exec(text); P.linkedin = li ? li[0].replace(/^https?:\/\//, '').replace(/\/$/, '') : '';
+  var loc = /\b([A-Z][a-zA-Z.]+(?:[ \-][A-Z][a-zA-Z.]+){0,2}),\s*(A[LKZR]|C[AOT]|D[EC]|FL|GA|HI|I[ADLN]|K[SY]|LA|M[ADEINOST]|N[CDEHJMVY]|O[HKR]|PA|RI|S[CD]|T[NX]|UT|V[AT]|W[AIVY]|ON|BC|QC|AB|India|USA|United States|Canada|UK|United Kingdom|Australia|Ireland|Germany|Singapore|UAE|Telangana|Karnataka|Maharashtra|Tamil Nadu|Andhra Pradesh|Delhi)\b/.exec(top);
+  P.location = loc ? loc[0] : '';
+  // a short job-title line near the name
+  var tl = B.top.slice(1, 6).filter(function(l){ return l.length < 60 && !/[@\d]|linkedin|http/i.test(l) && ROLE_RX.test(l) && l.split(' ').length <= 7; })[0];
+  P.headline = tl ? tl.replace(/[|•·]+/g, ' ').trim() : '';
+  P.summary = B.summary.join(' ').replace(/\s+/g, ' ').trim().slice(0, 900);
+  // experience: every line with a date range is a role
+  P.experience = [];
+  B.experience.forEach(function(l, i){
+    var m = RANGE_RX.exec(l); if(!m || P.experience.length >= 8) return;
+    var head = (l.slice(0, m.index) + ' ' + l.slice(m.index + m[0].length)).replace(/[()|•·,–—-]+\s*$/, '').replace(/^\s*[()|•·,–—-]+/, '').replace(/\s{2,}/g, ' ').trim();
+    if(head.length < 3 && i > 0) head = B.experience[i - 1];
+    var r = splitRole(head);
+    if(!r.company && B.experience[i + 1] && !RANGE_RX.test(B.experience[i + 1]) && B.experience[i + 1].length < 70 && !/^[•\-*▪]/.test(B.experience[i + 1])) r.company = B.experience[i + 1].replace(/\s*[|,]\s*(remote|hybrid).*$/i, '');
+    P.experience.push({title:r.title.slice(0, 90), company:r.company.slice(0, 90), dates:m[0].replace(/\s+/g, ' ').trim()});
+  });
+  // education: lines that name a degree
+  P.education = [];
+  B.education.forEach(function(l, i){
+    if(!DEG_RX.test(l) || P.education.length >= 4) return;
+    var y = RANGE_RX.exec(l) || /\b(19|20)\d{2}\b/.exec(l), dates = y ? y[0] : '';
+    var deg = l.replace(dates, '').replace(/[()|•·,–—-]+\s*$/, '').trim(), school = '';
+    var sp = /^(.+?)\s*(?:,|\s\|\s|\s[–—-]\s|\sfrom\s|\sat\s)\s*(.*(?:university|college|institute|school|iit|nit|academy).*)$/i.exec(deg);
+    if(sp){ deg = sp[1]; school = sp[2]; }
+    else { var nx = B.education[i + 1] || ''; if(nx && !DEG_RX.test(nx) && nx.length < 90) school = nx.replace(/\s*[–—-]\s*.*$/, '').trim(); if(!dates){ var y2 = /\b(19|20)\d{2}\b/.exec(nx); if(y2) dates = (RANGE_RX.exec(nx) || y2)[0]; } }
+    P.education.push({degree:deg.slice(0, 90), school:school.slice(0, 90), dates:dates});
+  });
+  P.skills = skillsIn(text).sort(function(a, b){ return b.n - a.n; }).slice(0, 15).map(function(x){ return x.name; });
+  // years of experience: earliest start to latest end across the roles (education years don't count)
+  var now = new Date().getFullYear(), ys = [], ye = [];
+  P.experience.forEach(function(x){ var y = (x.dates.match(/(19|20)\d{2}/g) || []).map(Number); if(y.length){ ys.push(y[0]); ye.push(/present|current|now|today|date/i.test(x.dates) ? now : y[y.length - 1]); } });
+  P.years = ys.length ? Math.max(0, Math.max.apply(null, ye) - Math.min.apply(null, ys)) || 1 : (yearsIn(B.experience.join('\n')) || 0);
+  P.at = new Date().toISOString();
+  P.sig = textSig(text);
+  return P;
+}
+function textSig(t){ t = String(t || ''); var h = 0; for(var i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0; return t.length + ':' + h; }
+function saveQuiet(patch){
+  state.profile = Object.assign({}, state.profile, patch);
+  if(!LIVE){ store.saveLocal(); return Promise.resolve(true); }
+  cacheAccount();
+  var up = function(row){ return sb.from('profiles').upsert(Object.assign({id:state.user.id}, row), {onConflict:'id'}); };
+  return up(patch).then(function(r){
+    if(r.error && /resume_profile|phone_source/.test(r.error.message || '')){   // supabase-profile-details.sql not run yet: still save the phone
+      var rest = Object.assign({}, patch); delete rest.resume_profile; delete rest.phone_source;
+      return Object.keys(rest).length ? up(rest).then(function(r2){ return !r2.error; }) : false;
+    }
+    return !r.error;
+  }, function(){ return false; });
+}
+function freshDetails(){   // keep the profile details in step with the resume (also after edits in the resume editor)
+  var t = state.user && state.profile && state.profile.resume_text; if(!t || t.length < 80) return;   // only when the resume is kept on their account
+  var R = (state.profile || {}).resume_profile; if(R && R.sig === textSig(t)) return;
+  saveResumeDetails(t);
+}
+var freshLater = (function(){ var tm; return function(){ clearTimeout(tm); tm = setTimeout(freshDetails, 5000); }; })();
+function saveResumeDetails(text){
+  if(!state.user) return;
+  var P = extractProfile(text), cur = state.profile || {}, patch = {resume_profile:P};
+  if(P.phone && !cur.phone){ patch.phone = P.phone; patch.phone_source = 'resume'; }
+  if(!cur.target_role && (P.headline || (P.experience[0] && P.experience[0].title))) patch.target_role = P.headline || P.experience[0].title;
+  return saveQuiet(patch);
 }
 
 /* ---------- WhatsApp: asked once, with the number from their resume pre-filled; nothing is sent unless they say yes ---------- */
@@ -2510,7 +2638,7 @@ function askWhatsApp(found, force){
 function waYes(){
   var v = cleanPhone(($('#waNum') || {}).value);
   if(!v){ toast('Please enter a number with country code, e.g. +1 512 555 0147'); var i = $('#waNum'); if(i) i.focus(); return; }
-  store.saveProfile({phone:v, whatsapp_ok:true, whatsapp_at:new Date().toISOString(), wa_asked:true}).then(function(){ closeModal(); toast('Thanks — we’ll message you on WhatsApp'); if(route.name === 'settings') render(); });
+  store.saveProfile({phone:v, whatsapp_ok:true, whatsapp_at:new Date().toISOString(), wa_asked:true}).then(function(){ saveQuiet({phone_source:'confirmed'}); closeModal(); toast('Thanks — we’ll message you on WhatsApp'); if(route.name === 'settings') render(); });
 }
 function waNo(){ store.saveProfile({wa_asked:true}); closeModal(); }
 
@@ -2560,7 +2688,7 @@ function tailorDoc(){
 }
 
 /* ---------- Leads (team only): who signed up, who said yes to WhatsApp, and where each one is up to ---------- */
-var LEADS = {rows:[], follow:{}, applied:{}, filter:'wa'};
+var LEADS = {rows:[], follow:{}, applied:{}, filter:'phone', q:''};
 var LEAD_STATUS = [['new','New'],['messaged','Messaged'],['replied','Replied'],['webinar','Joined webinar'],['call_booked','Call booked'],['client','Client'],['not_interested','Not interested']];
 function waLink(p){
   var first = String(p.full_name || p.email || '').split(/[ @]/)[0];
@@ -2573,9 +2701,11 @@ function waLink(p){
 function vLeads(v){
   if(!state.ready){ v.innerHTML = '<div class="jlist"><div class="skel"></div></div>'; return; }
   if(!state.isAdmin){ v.innerHTML = '<div class="empty">'+I.team+'<h3>For the TrulyPlaced team</h3><p>This page is only for team members.</p></div>'; return; }
-  v.innerHTML = '<div class="hello">Leads</div><div class="sub">Everyone who signed up. WhatsApp only appears for people who said yes to messages.</div>'+
-    '<div class="lead-filters" id="leadF">'+[['wa','Said yes to WhatsApp'],['new','Not contacted yet'],['resume','Added a resume'],['all','Everyone']].map(function(f){ return '<button type="button" data-lf="'+f[0]+'" class="'+(LEADS.filter===f[0]?'on':'')+'">'+f[1]+'</button>'; }).join('')+'</div>'+
+  v.innerHTML = '<div class="hello">Leads</div><div class="sub">Everyone who signed up, with the details from their resume. “WhatsApp OK” means they said yes to messages.</div>'+
+    '<div class="lead-tools"><input id="leadQ" type="search" placeholder="Search name, role, company, location or phone" value="'+esc(LEADS.q)+'" autocomplete="off"><button class="btn sm" type="button" data-act="leadcsv">'+I.doc+'Download CSV</button></div>'+
+    '<div class="lead-filters" id="leadF">'+[['phone','Has a phone'],['wa','Said yes to WhatsApp'],['new','Not contacted yet'],['resume','Added a resume'],['all','Everyone']].map(function(f){ return '<button type="button" data-lf="'+f[0]+'" class="'+(LEADS.filter===f[0]?'on':'')+'">'+f[1]+'</button>'; }).join('')+'</div>'+
     '<div class="leads" id="leadList"><div class="skel"></div><div class="skel"></div></div>';
+  var lq; $('#leadQ').addEventListener('input', function(e){ clearTimeout(lq); lq = setTimeout(function(){ LEADS.q = e.target.value; drawLeads(); }, 200); });
   $('#leadF').addEventListener('click', function(ev){ var b = ev.target.closest('[data-lf]'); if(!b) return; LEADS.filter = b.getAttribute('data-lf'); vLeads($('#view')); });
   loadLeads().then(drawLeads, function(err){ var l = $('#leadList'); if(l) l.innerHTML = '<p class="fine">'+esc(/42P01|does not exist|schema cache|column/i.test(JSON.stringify(err||'')) ? 'Supabase isn’t set up for leads yet — run supabase-leads.sql once.' : 'Couldn’t load leads — try again.')+'</p>'; });
 }
@@ -2586,7 +2716,8 @@ function loadLeads(){
     LEADS.follow = lsGet('tp_follow_demo', {}); LEADS.applied = {}; return Promise.resolve();
   }
   return Promise.all([
-    sb.from('profiles').select('id,email,full_name,target_role,target_location,created_at,phone,whatsapp_ok,whatsapp_at,resume_name,marketing_consent,referred_by,onboarded').order('created_at', {ascending:false}).limit(1000),
+    sb.from('profiles').select('id,email,full_name,target_role,target_location,created_at,phone,whatsapp_ok,whatsapp_at,resume_name,marketing_consent,referred_by,onboarded,resume_profile,phone_source').order('created_at', {ascending:false}).limit(1000)
+      .then(function(r){ return r.error && /resume_profile|phone_source|column/i.test(r.error.message || '') ? sb.from('profiles').select('id,email,full_name,target_role,target_location,created_at,phone,whatsapp_ok,whatsapp_at,resume_name,marketing_consent,referred_by,onboarded').order('created_at', {ascending:false}).limit(1000) : r; }),
     sb.from('lead_followups').select('*'),
     sb.from('tracked_jobs').select('user_id,status').neq('status', 'saved').limit(5000)
   ]).then(function(rs){
@@ -2598,23 +2729,50 @@ function loadLeads(){
 }
 function drawLeads(){
   var l = $('#leadList'); if(!l) return;
-  var rows = LEADS.rows.filter(function(p){
+  var q = String(LEADS.q || '').toLowerCase().trim();
+  var rows = leadRows().filter(function(p){
     var st = (LEADS.follow[p.id] || {}).status || 'new';
-    return LEADS.filter === 'all' ? true : LEADS.filter === 'wa' ? (p.whatsapp_ok && p.phone) : LEADS.filter === 'resume' ? !!p.resume_name : st === 'new';
+    return LEADS.filter === 'all' ? true : LEADS.filter === 'phone' ? !!p.phone : LEADS.filter === 'wa' ? (p.whatsapp_ok && p.phone) : LEADS.filter === 'resume' ? !!p.resume_name : st === 'new';
+  }).filter(function(p){
+    if(!q) return true;
+    var R = p.resume_profile || {}, x = R.experience && R.experience[0] || {};
+    return [p.full_name, p.email, p.phone, p.target_role, p.target_location, R.location, R.headline, x.title, x.company].join(' ').toLowerCase().indexOf(q) > -1;
   });
-  if(!rows.length){ l.innerHTML = '<p class="fine">No one here yet.</p>'; return; }
+  if(!rows.length){ l.innerHTML = '<p class="fine">'+(q ? 'No one matches “'+esc(LEADS.q)+'”.' : LEADS.filter === 'phone' ? 'No one with a phone number yet — numbers appear here as people add resumes. Try “Everyone”.' : 'No one here yet.')+'</p>'; return; }
   l.innerHTML = rows.map(function(p){
     var f = LEADS.follow[p.id] || {}, st = f.status || 'new', ap = LEADS.applied[p.id] || 0;
-    var wa = p.whatsapp_ok && p.phone;
-    return '<div class="lead"><div><b>'+esc(p.full_name || p.email)+'</b>'+
+    var wa = p.whatsapp_ok && p.phone, R = p.resume_profile || {}, x = (R.experience || [])[0];
+    var facts = '<div class="ld-k">'+
+      (p.phone ? '<span>'+I.phone+' <a href="tel:'+esc(String(p.phone).replace(/[^\d+]/g, ''))+'"><b>'+esc(p.phone)+'</b></a> '+(wa ? '<span class="tag ok">WhatsApp OK</span>' : p.phone_source === 'resume' ? '<span class="tag res">from resume</span>' : '<span class="tag">not opted in</span>')+'</span>' : '')+
+      (x ? '<span><b>'+esc(x.title || '')+'</b>'+(x.company ? ' · '+esc(x.company) : '')+'</span>' : '')+
+      (R.years ? '<span>'+R.years+' yrs experience</span>' : '')+
+      (R.location ? '<span>'+I.pin+' '+esc(R.location)+'</span>' : '')+
+      (R.linkedin ? '<a href="https://'+esc(R.linkedin)+'" target="_blank" rel="noopener">LinkedIn ↗</a>' : '')+'</div>';
+    var more = R.at ? '<details><summary>Resume details</summary><div class="ld-d">'+(R.summary ? '<p>'+esc(R.summary)+'</p>' : '')+
+      '<div class="rd-g"><div>'+(R.experience || []).map(function(e){ return '<div class="rd-i"><b>'+esc(e.title || '—')+'</b><span>'+esc(e.company || '')+'</span><small>'+esc(e.dates || '')+'</small></div>'; }).join('')+'</div>'+
+      '<div>'+(R.education || []).map(function(e){ return '<div class="rd-i"><b>'+esc(e.degree || '—')+'</b><span>'+esc(e.school || '')+'</span><small>'+esc(e.dates || '')+'</small></div>'; }).join('')+'</div></div>'+
+      (R.skills && R.skills.length ? '<div class="chips">'+R.skills.map(function(k){ return '<span class="chip n">'+esc(k)+'</span>'; }).join('')+'</div>' : '')+'</div></details>' : '';
+    return '<div class="lead"><div style="min-width:0;flex:1"><b>'+esc(p.full_name || p.email)+'</b>'+
       '<div class="meta">'+esc([p.target_role, p.target_location].filter(Boolean).join(' · ') || 'No target role yet')+' · joined '+fmtDate(p.created_at)+(p.referred_by ? ' · via '+esc(String(p.referred_by).slice(0, 20)) : '')+'</div>'+
       '<div class="meta">'+(wa ? '<span class="tag ok">WhatsApp OK</span>' : '')+(p.resume_name ? '<span class="tag">Resume added</span>' : '')+(ap ? '<span class="tag">'+ap+' applied</span>' : '')+(p.marketing_consent ? '<span class="tag">Emails OK</span>' : '')+'</div>'+
-      '<div class="meta">'+esc(p.email || '')+(wa ? ' · '+esc(p.phone) : '')+'</div></div>'+
-      '<div class="acts">'+(wa ? '<a class="btn sm wa" href="'+esc(waLink(p))+'" target="_blank" rel="noopener" data-wamsg="'+esc(p.id)+'">'+I.wa+'WhatsApp</a>' : '')+
+      '<div class="meta">'+esc(p.email || '')+'</div>'+facts+more+'</div>'+
+      '<div class="acts">'+(p.phone ? '<a class="btn sm wa'+(wa ? '' : ' soft')+'" href="'+esc(waLink(p))+'" target="_blank" rel="noopener" data-wamsg="'+esc(p.id)+'" title="'+(wa ? 'They said yes to WhatsApp messages' : 'Number from their resume — they haven’t opted in to WhatsApp yet')+'">'+I.wa+'WhatsApp</a>' : '')+
         '<label><span class="sr">Status</span><select data-lead="'+esc(p.id)+'">'+LEAD_STATUS.map(function(o){ return '<option value="'+o[0]+'"'+(o[0]===st?' selected':'')+'>'+o[1]+'</option>'; }).join('')+'</select></label></div></div>';
   }).join('');
   l.onchange = function(ev){ var sEl = ev.target.closest('[data-lead]'); if(sEl) setLeadStatus(sEl.getAttribute('data-lead'), sEl.value); };
   l.onclick = function(ev){ var a = ev.target.closest('[data-wamsg]'); if(a){ var id = a.getAttribute('data-wamsg'); if(((LEADS.follow[id] || {}).status || 'new') === 'new') setLeadStatus(id, 'messaged', true); } };
+}
+function leadRows(){ return LEADS.rows; }
+function leadsCSV(){
+  var head = ['Name','Email','Phone','WhatsApp opt-in','Phone source','Target role','Location','Current title','Company','Years','LinkedIn','Education','Skills','Status','Applied','Joined'];
+  var q = function(v){ v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+  var lines = [head.join(',')].concat(LEADS.rows.map(function(p){
+    var R = p.resume_profile || {}, x = (R.experience || [])[0] || {}, e = (R.education || [])[0] || {};
+    return [p.full_name, p.email, p.phone, p.whatsapp_ok ? 'yes' : '', p.phone_source || '', p.target_role, R.location || p.target_location, x.title, x.company, R.years, R.linkedin,
+      [e.degree, e.school].filter(Boolean).join(', '), (R.skills || []).join('; '), (LEADS.follow[p.id] || {}).status || 'new', LEADS.applied[p.id] || 0, (p.created_at || '').slice(0, 10)].map(q).join(',');
+  }));
+  var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + lines.join('\n')], {type:'text/csv'}));
+  a.download = 'trulyplaced-leads-' + new Date().toISOString().slice(0, 10) + '.csv'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
 }
 function setLeadStatus(id, status, quiet){
   LEADS.follow[id] = Object.assign({}, LEADS.follow[id], {user_id:id, status:status});
@@ -3103,16 +3261,42 @@ function maybeTour(force){
 }
 
 /* ---------- Settings ---------- */
+function profileFacts(p){
+  var R = p.resume_profile || {};
+  var row = function(icon, label, val, edit){ return '<div class="pf"><span class="pf-ic">'+icon+'</span><span class="pf-l">'+label+'</span>'+(edit ? edit : '<span class="pf-v">'+(val ? esc(val) : '<i>Not on your resume</i>')+'</span>')+'</div>'; };
+  return '<div class="pfacts">'+
+    row(I.phone, 'Phone', p.phone, '<span class="pf-v" id="pfPhoneV">'+(p.phone ? esc(p.phone) : '<i>Not on your resume</i>')+(p.phone_source === 'resume' ? '<em>from your resume</em>' : '')+'</span><button class="btn sm" type="button" data-act="phedit">'+(p.phone ? 'Edit' : 'Add')+'</button>')+
+    row(I.pin, 'Location', R.location || p.target_location)+
+    (R.linkedin ? row(I.link, 'LinkedIn', R.linkedin) : '')+
+  '</div>';
+}
+function resumeDetailsCard(p){
+  var R = p.resume_profile;
+  if(!R) return '';
+  var ex = (R.experience || []).map(function(x){ return '<div class="rd-i"><b>'+esc(x.title || '—')+'</b><span>'+esc(x.company || '')+'</span><small>'+esc(x.dates || '')+'</small></div>'; }).join('');
+  var ed = (R.education || []).map(function(x){ return '<div class="rd-i"><b>'+esc(x.degree || '—')+'</b><span>'+esc(x.school || '')+'</span><small>'+esc(x.dates || '')+'</small></div>'; }).join('');
+  return '<div class="card rdcard"><div class="rd-h"><div><h3>Personal and professional details</h3><p>Taken from your resume'+(resumeName() ? ' (“'+esc(resumeName())+'”)' : '')+'. Upload a new resume to refresh them.</p></div>'+
+      '<a class="btn sm" href="/editor.html">'+I.spark+'Edit resume</a></div>'+
+    (R.summary ? '<div class="rd-k">About me</div><p class="rd-sum">'+esc(R.summary)+'</p>' : '')+
+    '<div class="rd-g"><div><div class="rd-k">Experience'+(R.years ? ' · '+R.years+' yrs' : '')+'</div>'+(ex || '<p class="fine">We couldn’t pick out your roles — they may be in a table or image.</p>')+'</div>'+
+      '<div><div class="rd-k">Education</div>'+(ed || '<p class="fine">None found.</p>')+'</div></div>'+
+    (R.skills && R.skills.length ? '<div class="rd-k">Skills we found</div><div class="chips">'+R.skills.map(function(x){ return '<span class="chip n">'+esc(x)+'</span>'; }).join('')+'</div>' : '')+
+  '</div>';
+}
 function vSettings(v){
   if(!state.user){
     v.innerHTML = '<div class="empty">'+I.set+'<h3>You’re not signed in</h3><p>Sign in to manage your profile, email preferences and data.</p><button class="btn pri" type="button" data-act="signin">Sign in</button></div>';
     return;
   }
   var u = state.user, p = state.profile || {};
+  freshDetails();   // resumes added before this feature, or edited since
+  p = state.profile || {};
   var ref = CONFIG.SITE.replace(/\/$/,'') + '/app.html?ref=' + encodeURIComponent(u.id);
   v.innerHTML = '<div class="stack">'+
     '<div class="card"><div class="prof"><span class="av">'+(u.avatar?'<img src="'+esc(u.avatar)+'" alt="" referrerpolicy="no-referrer">':esc((u.name||'?').charAt(0).toUpperCase()))+'</span>'+
-      '<div><b>'+esc(p.full_name || u.name)+'</b><span>'+esc(u.email)+' · member since '+new Date(u.created).toLocaleDateString(undefined,{month:'long',year:'numeric'})+'</span></div></div></div>'+
+      '<div><b>'+esc(p.full_name || u.name)+'</b><span>'+esc(u.email)+' · member since '+new Date(u.created).toLocaleDateString(undefined,{month:'long',year:'numeric'})+'</span></div></div>'+
+      profileFacts(p)+'</div>'+
+      resumeDetailsCard(p)+
     '<div class="card"><h3>What you’re looking for</h3><p>Used to sort jobs by fit and to send you relevant roles.</p>'+
       '<div class="two"><div class="field"><label for="sRole">Target role</label><input id="sRole" value="'+esc(p.target_role||'')+'" placeholder="e.g. Data Analyst"></div>'+
       '<div class="field"><label for="sLoc">Location</label><input id="sLoc" value="'+esc(p.target_location||'')+'" placeholder="e.g. New York or Remote US"></div></div>'+
@@ -3278,6 +3462,15 @@ document.addEventListener('click', function(e){
     case 'rmresume':
       lsDel('tp_resume_local'); RESUME_DB.del().catch(function(){});
       return store.saveProfile({resume_text:null, resume_name:null}).then(function(){ toast('Resume removed'); render(); });
+    case 'leadcsv': return leadsCSV();
+    case 'phedit':
+      var pv = $('#pfPhoneV'); if(!pv) return;
+      pv.outerHTML = '<span class="pf-v"><input id="pfPhone" type="tel" inputmode="tel" value="'+esc((state.profile||{}).phone||'')+'" placeholder="+1 512 555 0147"></span>';
+      t.outerHTML = '<button class="btn sm pri" type="button" data-act="phsave">Save</button>'; $('#pfPhone').focus(); return;
+    case 'phsave':
+      var nv = ($('#pfPhone') || {}).value || '', cp = cleanPhone(nv);
+      if(nv.trim() && !cp){ toast('Please include the country code, e.g. +1 512 555 0147'); return; }
+      return saveQuiet({phone:cp || null, phone_source:cp ? 'confirmed' : null}).then(function(){ toast(cp ? 'Phone saved' : 'Phone removed'); render(); });
     case 'saveprefs':
       return store.saveProfile({target_role:$('#sRole').value.trim(), target_location:$('#sLoc').value.trim()}).then(function(){ toast('Saved'); });
     case 'onbsave':
@@ -3457,7 +3650,7 @@ setTimeout(function(){
   if(!state.user) toast('Sign-in is taking longer than usual — you can keep browsing');
 }, 7000);
 INIT.then(function(){
-  state.ready = true; adoptAtsResume(); render();
+  state.ready = true; adoptAtsResume(); freshDetails(); render();
   if(state.user && !LIVE){ if(!goNext()) maybeTour(); }
   if(state.user) warmReaders();
   // #signin: the sign-in screen is already showing — no pop-up on top of it
