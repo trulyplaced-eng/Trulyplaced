@@ -336,6 +336,22 @@ img{max-width:100%}
 .pre .alt{display:block;text-align:center;margin-top:14px;font-size:13.5px}
 
 /* ---------- resume specialist call ---------- */
+.mailc{position:relative;display:flex;gap:14px;align-items:center;flex-wrap:wrap;border:1px solid #d9e2ff;background:linear-gradient(120deg,#f4f7ff,#fbf9ff);border-radius:16px;padding:16px 46px 16px 16px;margin:4px 0 14px;animation:mcIn .45s cubic-bezier(.16,1,.3,1)}
+@keyframes mcIn{from{opacity:0;transform:translateY(6px)}}
+.mailc .mc-ic{flex:none;width:44px;height:44px;border-radius:12px;background:#fff;color:var(--blue);display:grid;place-items:center;box-shadow:0 4px 14px -6px rgba(9,56,213,.45)}
+.mailc .mc-ic svg{width:22px;height:22px}
+.mailc .mc-tx{flex:1 1 240px;min-width:0}
+.mailc .mc-tx b{display:block;font-family:Poppins;font-size:15.5px;color:var(--ink);line-height:1.3}
+.mailc .mc-tx small{display:block;font-size:13px;color:var(--body);margin-top:2px;line-height:1.45}
+.mailc .mc-f{display:flex;gap:8px;flex:1 1 420px;flex-wrap:wrap}
+.mailc .mc-f input{flex:1 1 150px;min-width:0;height:42px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:14px;background:#fff}
+.mailc .mc-f input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+.mailc .mc-f .btn{flex:none;min-height:42px}
+.mailc .mc-x{position:absolute;right:8px;top:8px;width:32px;height:32px;border:0;background:none;border-radius:8px;color:var(--muted);display:grid;place-items:center}
+.mailc .mc-x:hover{background:#fff;color:var(--ink)}
+.mailc .mc-x svg{width:16px;height:16px}
+.mailc.done{border-color:#bfe6cf;background:linear-gradient(120deg,#effaf3,#f7fcf9)}
+.mailc.done .mc-ic{color:var(--ok)}
 .callc{display:flex;gap:16px;align-items:center;flex-wrap:wrap;border-radius:16px;padding:18px 20px;background:linear-gradient(135deg,#0a31bd,#0938d5);color:#fff;margin-top:16px}
 .callc .tx{flex:1;min-width:220px}
 .callc b{font-family:Poppins;font-size:16px;display:block;color:#fff;line-height:1.35}
@@ -810,7 +826,7 @@ var CONFIG = {
 };
 
 var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
-var APP_VERSION = '2026-10-15.10';   // also in /version.txt — lets us check which version the live site is serving
+var APP_VERSION = '2026-10-15.11';   // also in /version.txt — lets us check which version the live site is serving
 
 /* =====================================================================
    utils
@@ -889,6 +905,7 @@ var I = {
   bmf:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>',
   ext:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>',
   link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>',
+  mail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7.5 8.5 6 8.5-6"/></svg>',
   x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
   check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
   up:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5-5 5 5"/><path d="M12 5v12"/></svg>',
@@ -1808,6 +1825,27 @@ function filtered(){
   return out;
 }
 function opt(v, l, cur){ return '<option value="'+v+'"'+(cur===v?' selected':'')+'>'+l+'</option>'; }
+/* ---- daily email: new matching roles every morning (sent by .github/scripts/daily_email.py through Brevo) ---- */
+function mailCardHTML(){
+  var p = state.profile || {};
+  if(!state.user || !state.ready || p.daily_email) return '';
+  if(Date.now() - (lsGet('tp_mail_x', 0) || 0) < 21*864e5) return '';
+  var role = p.target_role || (F.q && F.q.length < 40 && !/\d/.test(F.q) ? F.q : '');
+  return '<div class="mailc"><span class="mc-ic">'+I.mail+'</span>'+
+    '<div class="mc-tx"><b>Get new roles like these every morning</b><small>Only fresh roles that match what you want. One email a day — none on days with nothing new. Unsubscribe in one click.</small></div>'+
+    '<div class="mc-f"><input id="mcRole" value="'+esc(role)+'" placeholder="Role, e.g. Data Analyst" aria-label="Role you want" autocomplete="off">'+
+      '<input id="mcLoc" value="'+esc(p.target_location || '')+'" placeholder="Where? (optional)" aria-label="Location" autocomplete="off">'+
+      '<button class="btn pri" type="button" data-act="mailon">Email me daily</button></div>'+
+    '<button class="mc-x" type="button" data-act="mailx" aria-label="Not now">'+I.x+'</button></div>';
+}
+function saveDaily(patch){
+  if(!LIVE){ return store.saveProfile(patch).then(function(){ return true; }); }
+  var row = Object.assign({id:state.user.id}, patch);
+  return sb.from('profiles').upsert(row, {onConflict:'id'}).then(function(r){
+    if(r.error){ toast(/daily_email|column/i.test(r.error.message || '') ? 'Daily emails aren’t set up yet — run supabase-daily-email.sql in Supabase' : 'Couldn’t save — try again'); return false; }
+    state.profile = Object.assign({}, state.profile, patch); cacheAccount(); return true;
+  }, function(){ toast('Couldn’t save — check your connection'); return false; });
+}
 function vJobs(v){
   var hasTarget = !!(state.profile && state.profile.target_role);
   v.innerHTML =
@@ -1822,6 +1860,7 @@ function vJobs(v){
       '<div class="seg" role="group" aria-label="View"><button type="button" data-dk="view" data-v="cards" class="'+(VIEW==='cards'?'on':'')+'" aria-pressed="'+(VIEW==='cards')+'">'+I.cards+'<span>Cards</span></button><button type="button" data-dk="view" data-v="list" class="'+(VIEW==='list'?'on':'')+'" aria-pressed="'+(VIEW==='list')+'">'+I.listv+'<span>List</span></button></div>'+
     '</div>'+
     '<div class="meta-row" id="metaRow"></div>'+
+    '<div id="mailCard">'+mailCardHTML()+'</div>'+
     '<div id="jlist"></div>'+
     '<div class="more" id="moreWrap"></div>';
   var deb;
@@ -3079,7 +3118,8 @@ function vSettings(v){
       '<div class="field"><label for="sLoc">Location</label><input id="sLoc" value="'+esc(p.target_location||'')+'" placeholder="e.g. New York or Remote US"></div></div>'+
       '<div class="jd-acts"><button class="btn pri" type="button" data-act="saveprefs">Save</button></div></div>'+
     '<div class="card"><h3>Email</h3><p>We only email you if you switch this on. Every email has a one-click unsubscribe.</p>'+
-      '<label class="toggle"><input type="checkbox" id="sMail"'+(p.marketing_consent?' checked':'')+'><span class="sw"></span><span><b>Weekly fresh roles & job-search tips</b><small>New openings that match your target role, once a week.</small></span></label></div>'+
+      '<label class="toggle"><input type="checkbox" id="sDaily"'+(p.daily_email?' checked':'')+'><span class="sw"></span><span><b>New matching roles, every morning</b><small>'+(p.target_role ? 'Fresh '+esc(p.target_role)+' roles'+(p.target_location ? ' in '+esc(p.target_location) : '')+' — no email on days with nothing new.' : 'Add your target role above first — that’s what we match.')+'</small></span></label>'+
+      '<label class="toggle" style="margin-top:12px"><input type="checkbox" id="sMail"'+(p.marketing_consent?' checked':'')+'><span class="sw"></span><span><b>Job-search tips & news</b><small>Occasional — a couple of times a month at most.</small></span></label></div>'+
     '<div class="card"><h3>WhatsApp</h3><p>Fresh roles, resume tips and free webinar invites — only if you switch this on. Reply STOP any time.</p>'+
       (p.whatsapp_ok && p.phone ? '<label class="toggle"><input type="checkbox" id="sWa" checked><span class="sw"></span><span><b>Message me on WhatsApp</b><small>'+esc(p.phone)+'</small></span></label>'
         : '<button class="btn" type="button" data-act="waask">'+I.wa+'Add my WhatsApp number</button>')+'</div>'+
@@ -3094,8 +3134,14 @@ function vSettings(v){
   var sWa = $('#sWa'); if(sWa) sWa.addEventListener('change', function(e){
     if(!e.target.checked) store.saveProfile({whatsapp_ok:false}).then(function(){ toast('We won’t message you on WhatsApp'); render(); });
   });
+  $('#sDaily').addEventListener('change', function(e){
+    var on = e.target.checked, role = ($('#sRole') || {}).value || (state.profile || {}).target_role || '';
+    if(on && !role.trim()){ e.target.checked = false; toast('Add your target role first, then switch this on'); $('#sRole').focus(); return; }
+    var patch = {daily_email:on}; if(on){ patch.daily_email_at = new Date().toISOString(); patch.target_role = role.trim(); var loc = ($('#sLoc') || {}).value; if(loc != null) patch.target_location = loc.trim(); }
+    saveDaily(patch).then(function(ok){ if(!ok){ e.target.checked = !on; return; } toast(on ? 'Done — new roles every morning' : 'Daily emails switched off'); });
+  });
   $('#sMail').addEventListener('change', function(e){
-    store.saveProfile({marketing_consent:e.target.checked, consent_at:new Date().toISOString()}).then(function(){ toast(e.target.checked ? 'You’ll get weekly roles' : 'Unsubscribed'); });
+    store.saveProfile({marketing_consent:e.target.checked, consent_at:new Date().toISOString()}).then(function(){ toast(e.target.checked ? 'You’ll get occasional tips' : 'Unsubscribed from tips'); });
   });
 }
 
@@ -3175,6 +3221,17 @@ document.addEventListener('click', function(e){
     case 'tlsave': return tailorSave();
     case 'tldoc': return tailorDoc();
     case 'tour': return maybeTour(true);
+    case 'mailx': lsSet('tp_mail_x', Date.now()); var mc = $('#mailCard'); if(mc) mc.innerHTML = ''; toast('No problem — you can switch it on in Settings any time'); return;
+    case 'mailon':
+      var mr = ($('#mcRole') || {}).value || '', ml = ($('#mcLoc') || {}).value || '';
+      if(!mr.trim()){ toast('Type the role you want first'); $('#mcRole').focus(); return; }
+      t.disabled = true; t.textContent = 'Saving…';
+      return saveDaily({daily_email:true, daily_email_at:new Date().toISOString(), target_role:mr.trim(), target_location:ml.trim()}).then(function(ok){
+        if(!ok){ t.disabled = false; t.textContent = 'Email me daily'; return; }
+        var box = $('#mailCard .mailc'); if(!box) return;
+        box.classList.add('done');
+        box.innerHTML = '<span class="mc-ic">'+I.check+'</span><div class="mc-tx"><b>You’re in. Your first email comes tomorrow morning.</b><small>New '+esc(mr.trim())+' roles'+(ml.trim() ? ' in '+esc(ml.trim()) : '')+', straight to '+esc(state.user.email)+'. Change it any time in <a href="#settings">Settings</a>.</small></div>';
+      });
     case 'ws-opt': case 'ws-cover':
       e.preventDefault();
       var wjob = findJob(t.getAttribute('data-key')), wmode = a === 'ws-cover' ? 'cover' : 'optimize';
