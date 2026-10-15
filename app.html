@@ -278,6 +278,38 @@ img{max-width:100%}
 .gcard .gbtn{margin-top:20px}
 @media (max-width:560px){.gcard{padding:24px 20px 20px}.gate{min-height:calc(100vh - 200px)}}
 
+/* ---------- before-you-apply check ---------- */
+.pre h2{padding-right:30px}
+.prerows{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.prer{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.prer .pv{flex:none;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font:700 16px Poppins;color:var(--ink);background:conic-gradient(var(--c,#c9cfe0) calc(var(--v,0)*1%),#eef0f6 0)}
+.prer .pv span{width:44px;height:44px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:14.5px}
+.prer .pv.na span{font-size:18px;color:var(--muted)}
+.prer .pt{min-width:0}
+.prer .pt b{display:block;color:var(--ink);font-size:14.5px}
+.prer .pt span{display:block;font-size:13px;color:var(--muted);line-height:1.45}
+.prev{margin-top:14px;border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.5;display:flex;gap:10px;align-items:flex-start}
+.prev svg{flex:none;width:18px;height:18px;margin-top:2px}
+.prev.warn{background:var(--warn-soft);color:#7a3e00}
+.prev.ok{background:var(--ok-soft);color:#075a33}
+.pre .stack{margin-top:16px}
+.pre .stack .btn{width:100%}
+.pre .alt{display:block;text-align:center;margin-top:14px;font-size:13.5px}
+
+/* ---------- resume specialist call ---------- */
+.callc{display:flex;gap:16px;align-items:center;flex-wrap:wrap;border-radius:16px;padding:18px 20px;background:linear-gradient(135deg,#0a31bd,#0938d5);color:#fff;margin-top:16px}
+.callc .tx{flex:1;min-width:220px}
+.callc b{font-family:Poppins;font-size:16px;display:block;color:#fff;line-height:1.35}
+.callc p{font-size:13.5px;color:rgba(255,255,255,.88);margin-top:4px}
+.callc .btn{background:#fff;color:var(--blue);border-color:#fff;flex:none}
+.callc .btn:hover{background:#eef2ff}
+.callc .x2{flex:none;border:0;background:none;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;padding:8px}
+.callc .x2:hover{color:#fff}
+.preline{display:block;text-align:center;margin-top:10px;font-size:13.5px;font-weight:600}
+.pre button.alt{width:100%;background:none;border:0;color:var(--blue);cursor:pointer;font:inherit;font-size:13.5px;padding:6px}
+.done-ok{display:flex;align-items:center;gap:10px;color:var(--ok);font-weight:600;margin-top:4px}
+.done-ok svg{width:20px;height:20px}
+
 /* ---------- reading a resume ---------- */
 .reading{position:relative;display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--blue-line);border-radius:16px;padding:20px 22px;overflow:hidden}
 .reading b{display:block;color:var(--ink);font-size:15px;word-break:break-word}
@@ -599,6 +631,9 @@ var CONFIG = {
 
   // true = visitors sign in before going to the company's apply page (the lead-capture step).
   REQUIRE_SIGNIN_TO_APPLY: true,
+
+  // Before every "Apply", we suggest a free resume check. At or above this X-ray score the resume counts as ready.
+  ATS_READY: 70,
 
   // Only fill this in if you will actually honour it, e.g.
   // '25 bonus applications on any plan when a friend you invite buys one'
@@ -1490,7 +1525,7 @@ function render(soft){
   if(route.job) openJob(route.job); else closeDrawer(true);
   updateFab();
 }
-window.addEventListener('hashchange', function(){ render(true); });
+window.addEventListener('hashchange', function(){ render(true); if(state.user && !route.job && route.name === 'jobs' && typeof maybeTour === 'function') maybeTour(); });
 
 /* ---------- Jobs ---------- */
 var F = lsGet('tp_filters', {q:'', region:'US', cat:'', lvl:'', age:'30', sort:'new', r2:1});
@@ -2062,11 +2097,21 @@ function vDashboard(v){
     weeks.push(state.tracked.filter(function(t){ var a = Date.parse(t.applied_at); return a && a >= from && a < to; }).length);
   }
   var mx = Math.max.apply(null, weeks.concat([1]));
+  // which specialist-call offer fits where they are (each can be dismissed for two weeks)
+  var call = '', snooze = function(k){ return Date.now() - (lsGet('tp_call_' + k, 0) || 0) < 14*864e5; };
+  var firstApplied = state.tracked.reduce(function(m, t){ var a = Date.parse(t.applied_at); return a && a < m ? a : m; }, Infinity);
+  var x = lsGet('tp_xray', null);
+  if(c.applied >= 10 && !c.interview && !c.offer && now - firstApplied >= 14*864e5 && !snooze('noreply'))
+    call = callCard('dash_no_replies', c.applied + ' applications, no replies yet', 'That usually means the resume, not you. Our specialists rewrite resumes so they get past the software and in front of a person. Book a free call and we’ll show you what to change.', 'noreply');
+  else if(x && x.score != null && x.score < CONFIG.ATS_READY && !snooze('xray'))
+    call = callCard('dash_low_xray', 'Your resume scored ' + x.score + '/100 on the X-ray', 'Our resume specialists rewrite resumes for the roles you’re going after — every fix, done properly. Book a free call and they’ll walk through yours with you.', 'xray');
+  else if(c.applied >= 5 && !c.interview && !c.offer && !snooze('soft'))
+    call = callCard('dash_applying', 'Sending applications? Make each one count', 'We have specialists who rewrite resumes for the exact roles you want. Book a free call — no obligation.', 'soft');
   v.innerHTML =
     '<div class="hello">Hi'+(first?' '+esc(first):'')+'</div><div class="sub">Your job search at a glance.</div>'+
     '<div class="stats">'+
       stat(I.bm, c.saved, 'Saved roles')+stat(I.send, c.applied, 'Applications sent')+stat(I.phone, c.interview, 'Interviews')+stat(I.star, c.offer, 'Offers')+
-    '</div>'+
+    '</div>'+call+
     '<div class="sec card"><div class="sec-h"><h2>Applications per week</h2><span class="sub" style="margin:0">Last 8 weeks</span></div>'+
       (weeks.every(function(n){ return !n; }) ? '<p class="sub" style="padding:28px 0;text-align:center">When you apply to a role from here, it’s counted automatically.</p>' :
       '<div class="chart">'+weeks.map(function(n, i){ return '<div class="b"><div class="bar" style="height:'+(n/mx*100)+'%" title="'+n+' applications"></div><span>'+(i===7?'This wk':'-'+(7-i)+'w')+'</span></div>'; }).join('')+'</div>')+'</div>'+
@@ -2540,8 +2585,9 @@ var TOUR = (function(){
 var APP_TOUR = 'tp_tour_app_v1';
 function maybeTour(force){
   if(!state.user || TOUR.running() || (!force && TOUR.seen(APP_TOUR))) return;
+  if(!force && route.job) return;   // came in on a shared job link: let them see the job first; the tour starts when they close it
   setTimeout(function(){
-    if(!state.user || TOUR.running() || $('#modalRoot').innerHTML) return;   // never on top of the welcome questions
+    if(!state.user || TOUR.running() || $('#modalRoot').innerHTML || (!force && route.job)) return;   // never on top of the welcome questions
     var first = (state.user.name || '').split(' ')[0];
     function toJobs(){ if(route.name !== 'jobs' || route.job){ location.hash = 'jobs'; } }
     TOUR.start([
@@ -2630,11 +2676,11 @@ function openInvite(){
 function openPost(){
   var picks = state.tracked.slice(0, 5);
   var nums = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣'];
-  var base = CONFIG.SITE.replace(/\/$/,'') + '/app.html#job=';
+  var base = CONFIG.SITE.replace(/\/$/,'') + '/app.html?ref=linkedin#job=';
   var role = (state.profile && state.profile.target_role) || 'new';
   var txt = '🚀 Fresh ' + role + ' roles just opened up\n\nThese listings won’t stay up for long. Tag a friend who keeps saying “I’ll apply tomorrow.”\n\n' +
     picks.map(function(t, i){ return nums[i] + ' ' + t.title + ' — ' + t.company + (t.location ? ' (📍 ' + String(t.location).split('·')[0].trim() + ')' : '') + '\n🔗 ' + base + encodeURIComponent(t.job_key); }).join('\n\n') +
-    '\n\n💡 See how your resume matches each one — free at trulyplaced.com\n\n📌 Follow for fresh roles every week.';
+    '\n\n✅ Before you apply: check how hiring software reads your resume — free on TrulyPlaced.\n\n📌 Follow for fresh roles every week.';
   modal('<h2>Share as a LinkedIn post</h2><p>Your first five saved roles, formatted to post. Each link opens the role on TrulyPlaced.</p>'+
     '<textarea class="post" id="postTxt">'+esc(txt)+'</textarea>'+
     '<div class="jd-acts"><button class="btn pri" type="button" data-copypost="1">Copy post</button></div>', true);
@@ -2658,13 +2704,27 @@ document.addEventListener('click', function(e){
   switch(a){
     case 'adcheck': return adminCheck();
     case 'tour': return maybeTour(true);
+    case 'prego':
+      e.preventDefault();
+      if(!APPLYING){ closeModal(); return; }
+      var ap = APPLYING, notReady = !!$('#modalRoot .prev.warn'); APPLYING = null; ap.go();
+      if(!notReady){ closeModal(); return; }
+      modal('<div class="pre"><h2>Good luck with your application</h2><p class="done-ok">'+I.check+'Opened '+esc(ap.job.company)+'’s page and marked it as applied.</p>'+
+        callCard('apply_anyway', 'Want a specialist to look at your resume before the next one?', 'Our resume specialists rewrite resumes for the exact roles you’re going after. Book a free call and they’ll walk through yours with you.')+
+        '<button class="alt" type="button" data-act="mclose">Not now</button></div>');
+      return;
+    case 'calldismiss':
+      e.preventDefault(); lsSet('tp_call_' + t.getAttribute('data-k'), Date.now());
+      var cc = t.closest('.callc'); if(cc) cc.remove(); return;
+    case 'precheck': e.preventDefault(); return preCheck();
+    case 'preupload': e.preventDefault(); closeModal(); return $('#fileIn').click();
     case 'adsave': return adminSave();
     case 'adclear': ADP = []; var ai = $('#adIn'); if(ai) ai.value = ''; return drawAdminPrev();
     case 'signin': pendingSkip = null; return openSignIn();
     case 'google': closeModal(); return store.signIn();
     case 'mclose': if(e.target === t || t.classList.contains('x') || t.classList.contains('skip')) closeModal(); return;
-    case 'close': history.pushState(null, '', '#' + (route.name || 'jobs')); return closeDrawer();
-    case 'upsell': return openUpsell();
+    case 'close': history.pushState(null, '', '#' + (route.name || 'jobs')); closeDrawer(); route = parseRoute(); return maybeTour();
+    case 'upsell': e.preventDefault(); return openUpsell();
     case 'invite': return openInvite();
     case 'post': return openPost();
     case 'more': shown += 30; return drawList();
@@ -2692,7 +2752,7 @@ document.addEventListener('click', function(e){
   }
 });
 document.addEventListener('keydown', function(e){
-  if(e.key === 'Escape'){ if($('#modalRoot').innerHTML) closeModal(); else if(drawerKey){ history.pushState(null,'','#'+route.name); closeDrawer(); } }
+  if(e.key === 'Escape'){ if($('#modalRoot').innerHTML) closeModal(); else if(drawerKey && !TOUR.running()){ history.pushState(null,'','#'+route.name); closeDrawer(); route = parseRoute(); maybeTour(); } }
   if((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.job')){ e.preventDefault(); e.target.click(); }
 });
 document.addEventListener('change', function(e){
@@ -2717,6 +2777,67 @@ function toggleSave(key){
     });
   });
 }
+/* ---- free call with a resume specialist: one link, pre-filled, tagged with where it was clicked ---- */
+function bookUrl(from){
+  var u = state.user || {}, q = [];
+  if(u.name) q.push('name=' + encodeURIComponent(u.name));
+  if(u.email) q.push('email=' + encodeURIComponent(u.email));
+  q.push('utm_source=trulyplaced', 'utm_medium=app', 'utm_campaign=resume_call', 'utm_content=' + encodeURIComponent(from || 'app'));
+  return CONFIG.BOOK_CALL + (CONFIG.BOOK_CALL.indexOf('?') > -1 ? '&' : '?') + q.join('&');
+}
+function callCard(from, title, text, dismissKey){
+  return '<div class="callc" data-call="'+esc(from)+'"><div class="tx"><b>'+title+'</b><p>'+text+'</p></div>'+
+    '<a class="btn" href="'+esc(bookUrl(from))+'" target="_blank" rel="noopener">'+I.phone+'Book a free call</a>'+
+    (dismissKey ? '<button class="x2" type="button" data-act="calldismiss" data-k="'+esc(dismissKey)+'">Not now</button>' : '')+'</div>';
+}
+
+/* ---- before you apply: a nudge to check the resume first (it never blocks applying) ---- */
+var APPLYING = null;
+function xrayInfo(){
+  var x = lsGet('tp_xray', null);
+  if(!x || x.score == null) return null;
+  var rn = resumeName();
+  x.other = !!(rn && x.name && x.name !== rn);   // they X-rayed a different file than the one on the job board
+  return x;
+}
+function ring(v, col, label){
+  return v == null ? '<span class="pv na"><span>—</span></span>' : '<span class="pv" style="--v:'+v+';--c:'+col+'" aria-label="'+esc(label)+'"><span>'+v+'</span></span>';
+}
+function ago(ts){ var d = daysAgo(ts); return d === 0 ? 'today' : d === 1 ? 'yesterday' : d + ' days ago'; }
+function preApply(job, go){
+  APPLYING = {job:job, go:go};
+  var rt = resumeText(), x = xrayInfo(), e = ENR[job.key];
+  var m = rt && e && !e.failed ? match(job, e.text, rt, state.profile && state.profile.target_role) : null;
+  var READY = CONFIG.ATS_READY, xs = x && !x.other ? x.score : null;
+  var ready = rt && xs != null && xs >= READY && (!m || m.score == null || m.score >= 50);
+  var row1 = '<div class="prer">'+ring(m ? m.score : null, m ? scoreCol(m.score) : '', 'Match '+(m?m.score:'')+'%')+'<div class="pt"><b>Match to this role'+(m && m.score != null ? ' · '+m.score+'%' : '')+'</b><span>'+
+    (!rt ? 'Add your resume to see how well you match.' : !e ? 'Reading the posting…' : !m || m.score == null ? 'Not enough detail in this posting to score.' :
+     m.miss.length ? 'Not on your resume: ' + esc(m.miss.slice(0, 4).join(', ')) + (m.miss.length > 4 ? ' +' + (m.miss.length - 4) + ' more' : '') : 'Your resume covers the skills this posting asks for.')+'</span></div></div>';
+  var row2 = '<div class="prer">'+ring(xs, xs == null ? '' : xs >= READY ? '#0a7f46' : xs >= 55 ? '#b45309' : '#be123c', 'X-ray '+xs)+'<div class="pt"><b>Resume X-ray (ATS check)'+(xs != null ? ' · '+xs+'/100' : '')+'</b><span>'+
+    (xs != null ? 'Checked ' + ago(x.at) + (xs >= READY ? ' — hiring software can read it cleanly.' : ' — there are fixes that could stop it coming through clearly.') :
+     x && x.other ? 'Your last check was on a different file. Check the one you’re sending.' : 'Not checked yet. See what hiring software pulls out of your resume.')+'</span></div></div>';
+  var verdict = !rt ? ['warn', 'Most companies run applications through hiring software first. Add your resume and check it — it’s free and takes under a minute.']
+    : ready ? ['ok', 'Looks good — your resume reads cleanly. Go ahead and apply.']
+    : ['warn', 'Most companies screen applications with hiring software first. If it can’t read your resume, or the key skills are missing, you can be passed over before a person sees it — and you rarely get a second try. Check first: free, under a minute.'];
+  var co = esc(job.company);
+  modal('<div class="pre"><h2>Before you apply to '+co+'</h2><p>'+esc(job.title)+'</p>'+
+    '<div class="prerows">'+row1+row2+'</div>'+
+    '<div class="prev '+verdict[0]+'">'+(verdict[0] === 'ok' ? I.check : I.warn)+'<span>'+verdict[1]+'</span></div>'+
+    '<div class="stack">'+
+      (!rt ? '<button class="btn pri" type="button" data-act="preupload">'+I.up+'Add my resume — free check</button><button class="btn" type="button" data-act="prego">'+I.ext+'Apply anyway</button>'
+       : ready ? '<button class="btn pri" type="button" data-act="prego">'+I.ext+'Apply on '+co+'</button><button class="btn" type="button" data-act="precheck">Check it against this job first</button>'
+       : '<button class="btn pri" type="button" data-act="precheck">Check my resume for this job — free</button><button class="btn" type="button" data-act="prego">'+I.ext+'Apply anyway</button>')+
+    '</div>'+
+    (rt && !ready ? '<a class="preline" href="'+esc(bookUrl('before_apply'))+'" target="_blank" rel="noopener">Want a recruiter to look at it before you send it? Book a free call →</a>' : '')+
+    '<a class="alt" href="#" data-act="upsell">No time to tailor it? Let our recruiters apply for you →</a></div>');
+  if(rt && !e) getEnr(job).then(function(){ if(APPLYING && APPLYING.job === job && $('#modalRoot .pre')) preApply(job, go); });
+}
+function preCheck(){
+  if(!APPLYING) return;
+  var job = APPLYING.job, e = ENR[job.key];
+  lsSet('tp_ats_job', {key:job.key, title:job.title, company:job.company, text:e && !e.failed ? String(e.text).slice(0, 12000) : '', at:Date.now()});
+  closeModal(); location.href = '/ats-check.html#mine';
+}
 function applyTo(key, after){
   var job = findJob(key); if(!job) return;
   var url = (DESC[key] && DESC[key].apply) || job.url;
@@ -2726,7 +2847,8 @@ function applyTo(key, after){
     if(!cur || cur.status === 'saved') store.track(job, 'applied').then(function(){ toast('Marked as applied — update it from your dashboard'); });
     if(after) after();
   };
-  if(!CONFIG.REQUIRE_SIGNIN_TO_APPLY || state.user) return go();
+  if(state.user) return preApply(job, go);
+  if(!CONFIG.REQUIRE_SIGNIN_TO_APPLY) return go();
   pendingSkip = url;
   requireSignIn('Sign in to apply and track this role', go);
 }

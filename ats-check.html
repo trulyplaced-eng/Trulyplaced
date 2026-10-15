@@ -422,6 +422,24 @@ footer a:hover{color:#fff}
 .agate .gbtn:hover{border-color:var(--blue);box-shadow:0 8px 20px -12px rgba(9,56,213,.6)}
 .agate .gbtn svg{width:20px;height:20px}
 .agate .fine{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.5}
+.jobctx{display:flex;align-items:center;gap:10px;margin-top:12px;background:var(--blue-soft);border:1px solid var(--blue-line);border-radius:12px;padding:9px 12px;font-size:13.5px;color:var(--ink)}
+.jobctx b{font-weight:600}
+.jobctx span{flex:1;min-width:0}
+.jobctx button{flex:none;border:0;background:none;color:var(--muted);font-size:20px;line-height:1;width:32px;height:32px;border-radius:8px;cursor:pointer}
+.jobctx button:hover{background:#fff;color:var(--ink)}
+.backjob{background:var(--ok)!important;border-color:var(--ok)!important;color:#fff!important}
+.xcall{margin-top:18px;border-radius:18px;padding:22px 24px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.xcall.big{background:linear-gradient(135deg,#0a31bd,#0938d5);color:#fff;box-shadow:0 24px 50px -28px rgba(9,56,213,.8)}
+.xcall.small{background:#fff;border:1px solid var(--line)}
+.xcall .tx{flex:1;min-width:230px}
+.xcall b{display:block;font-family:Poppins;font-size:17px;line-height:1.35}
+.xcall.small b{color:var(--ink);font-size:15.5px}
+.xcall p{margin-top:5px;font-size:14px;line-height:1.55}
+.xcall.big p{color:rgba(255,255,255,.88)}
+.xcall ul{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;font-size:13.5px;color:rgba(255,255,255,.92)}
+.xcall li::before{content:"✓";margin-right:8px;color:#7ee2a8;font-weight:700}
+.xcall.big .btn{background:#fff;color:var(--blue);border-color:#fff}
+.xcall .btn{flex:none}
 .savednote{margin-top:10px;font-size:13px;color:var(--blue,#0938d5);background:var(--blue-soft,#eef2ff);border-radius:10px;padding:8px 12px}
 </style>
 </head>
@@ -1592,7 +1610,7 @@ function go(){
     stepAt(++n); $('slabel').textContent = 'Your X-ray is ready'; return wait(450);
   }).then(function(){
     $('scan').hidden = true; $('report').hidden = false; $('run').disabled = false;
-    renderReport(); shareResume();
+    renderReport(); shareResume(); afterReport();
     setTimeout(function(){ $('report').scrollIntoView({behavior:'smooth'}); }, 60);
   }).catch(function(e){
     if(window.console) console.warn(e);
@@ -1856,6 +1874,57 @@ var TOUR = (function(){
   };
 })();
 
+var JOBCTX = null;
+(function(){
+  var j = lsJSON('tp_ats_job');
+  if(GATED || !j || !j.key || !j.at || Date.now() - j.at > 2*864e5) return;
+  JOBCTX = j;
+  var jd = $('jd'); if(j.text && !jd.value.trim()) jd.value = j.text;
+  var c = document.createElement('div'); c.className = 'jobctx'; c.id = 'jobCtx';
+  c.innerHTML = '<span>Checking against <b>'+esc(j.title)+'</b> at '+esc(j.company)+'</span><button type="button" aria-label="Check without this job">&times;</button>';
+  jd.parentNode.insertBefore(c, jd);
+  c.querySelector('button').addEventListener('click', function(){ JOBCTX = null; jd.value = ''; c.remove(); try{ localStorage.removeItem('tp_ats_job'); }catch(e){} });
+})();
+function whoAmI(){
+  try{
+    var d = lsJSON('tp_app_v1'); if(d && d.user) return {name:d.user.name || '', email:d.user.email || ''};
+    for(var i = 0; i < localStorage.length; i++){ var k = localStorage.key(i); if(/^sb-.*-auth-token$/.test(k)){ var t = lsJSON(k), u = t && t.user; if(u) return {name:(u.user_metadata && (u.user_metadata.full_name || u.user_metadata.name)) || '', email:u.email || ''}; } }
+  }catch(e){}
+  return {};
+}
+function bookUrl(from){
+  var me = whoAmI(), q = [];
+  if(me.name) q.push('name=' + encodeURIComponent(me.name));
+  if(me.email) q.push('email=' + encodeURIComponent(me.email));
+  q.push('utm_source=trulyplaced', 'utm_medium=xray', 'utm_campaign=resume_call', 'utm_content=' + encodeURIComponent(from));
+  return 'https://calendly.com/trulyplaced/30min?' + q.join('&');
+}
+function callOffer(){   // right under the fix list: do it yourself, or have a specialist do it with you
+  var old = $('xcall'); if(old) old.remove();
+  if(!R || S.sample) return;
+  var n = R.issues.length, low = R.score < 70, c = document.createElement('div');
+  c.id = 'xcall'; c.className = 'xcall ' + (low ? 'big' : 'small');
+  c.innerHTML = low
+    ? '<div class="tx"><b>Fix these yourself — or have a specialist fix them with you</b>'+
+      '<p>We have resume specialists who rewrite resumes like yours every day, for the exact roles you’re going after. Book a free call and they’ll walk through your X-ray with you.</p>'+
+      '<ul><li>Go through all '+n+' fixes together</li><li>Advice tailored to the roles you want</li><li>The call is free — no obligation</li></ul></div>'+
+      '<a class="btn" href="'+esc(bookUrl('xray_low'))+'" target="_blank" rel="noopener">Book a free call →</a>'
+    : '<div class="tx"><b>Want a second pair of eyes?</b><p>Our resume specialists can tailor it for the roles you want. Free call, no obligation.</p></div>'+
+      '<a class="btn" href="'+esc(bookUrl('xray'))+'" target="_blank" rel="noopener">Book a free call</a>';
+  var fl = $('fixList'); if(fl && fl.parentNode) fl.parentNode.insertBefore(c, fl.nextSibling);
+}
+function afterReport(){
+  callOffer();
+  if(S.sample) return;
+  try{ localStorage.setItem('tp_xray', JSON.stringify({score:R.score, at:Date.now(), name:S.name || (D && D.name) || '', match:R.match && R.match.score != null ? R.match.score : null, job:JOBCTX ? JOBCTX.key : null})); }catch(e){}
+  var old = $('backJob'); if(old) old.remove();
+  if(JOBCTX){
+    var a = document.createElement('a'); a.className = 'btn backjob'; a.id = 'backJob';
+    a.href = '/app.html#job=' + encodeURIComponent(JOBCTX.key);
+    a.textContent = 'Back to ' + JOBCTX.company + ' — apply →';
+    var acts = document.querySelector('.sumacts'); if(acts) acts.insertBefore(a, acts.firstChild);
+  }
+}
 var fromBoard = location.hash === '#mine';
 if(fromBoard) try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
 function atsTour(){
