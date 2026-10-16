@@ -384,6 +384,107 @@ img{max-width:100%}
 .btn.wa.soft{background:#fff;color:#128c4b;border-color:#bfe6cf}
 .lead-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:4px 0 12px}
 .lead-tools input{flex:1 1 220px;height:40px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font-size:14px}
+/* daily picks: card, form, funnel */
+.mailc .mc-go{flex:none;min-height:44px;padding:0 18px}
+.mailc .mc-free{display:inline-block;vertical-align:2px;margin-right:8px;background:#e6f6ee;color:#0a7f46;font:700 11px/1 Inter,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:4px 8px}
+.mailc.slim{background:linear-gradient(120deg,#fffaf0,#fffdf7);border-color:#f3e2b5}
+.mailc.slim .mc-ic{color:#b45309}
+.mod.pkmod{width:min(640px,100%);padding:26px 28px 24px}
+.pk-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-right:40px}
+.pk-free{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--blue);background:var(--blue-soft);border-radius:999px;padding:5px 11px}
+.pk-free svg{width:15px;height:15px}
+.pk-n{font-size:12.5px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.pk-bar{height:4px;border-radius:99px;background:#edf0f7;margin:14px 0 4px;overflow:hidden}
+.pk-bar i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--blue),#5b7cff);transition:width .5s cubic-bezier(.16,1,.3,1)}
+.pk-body{padding-top:16px;min-height:230px}
+.pk-body h2{font-size:21px;padding-right:0;text-wrap:balance}
+.pk-body .pk-s,.pk-done .pk-s{font-size:14px;color:var(--body);margin-top:6px;line-height:1.55}
+.pk-body.fwd{opacity:0;transform:translateX(22px)}.pk-body.back{opacity:0;transform:translateX(-22px)}
+.pk-body.go{opacity:1;transform:none;transition:opacity .35s ease,transform .45s cubic-bezier(.16,1,.3,1)}
+.pk-in{width:100%;height:50px;border:1.5px solid var(--line);border-radius:12px;padding:0 14px;font-size:15.5px;margin-top:16px;background:#fff;transition:border-color .2s,box-shadow .2s}
+.pk-in:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-soft)}
+.pk-lab{display:block;font-size:13.5px;font-weight:600;color:var(--ink);margin-top:18px}
+.pk-lab span{font-weight:500;color:var(--muted)}
+.pk-lab + .pk-in{margin-top:8px}
+.pk-sug{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.pk-sug > span{font-size:12px;color:var(--muted);width:100%}
+.pk-chip{display:inline-flex;align-items:center;gap:6px;border:1px dashed #c9d3f5;background:#f7f9ff;color:var(--blue);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s,transform .2s}
+.pk-chip svg{width:14px;height:14px}
+.pk-chip:hover{background:var(--blue-soft)}
+.pk-chip.used{border-style:solid;opacity:.6}
+.pk-tiles{display:grid;gap:10px;margin-top:18px}
+.pk-tiles.c2{grid-template-columns:repeat(2,minmax(0,1fr))}.pk-tiles.c3{grid-template-columns:repeat(3,minmax(0,1fr))}.pk-tiles.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.pk-t{position:relative;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:13px 14px 13px 44px;cursor:pointer;min-height:54px;display:flex;flex-direction:column;justify-content:center;
+  transition:border-color .2s,background .2s,box-shadow .25s,transform .25s cubic-bezier(.16,1,.3,1)}
+.pk-t:hover{border-color:#b8c5f0;transform:translateY(-1px);box-shadow:0 8px 20px -14px rgba(9,56,213,.5)}
+.pk-t b{font-size:14.5px;color:var(--ink);line-height:1.3}
+.pk-t small{font-size:12.5px;color:var(--muted);margin-top:2px;line-height:1.35}
+.pk-t em{position:absolute;top:-9px;right:10px;font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.02em;color:#7a5a00;background:var(--warn-soft);border:1px solid #f0dc9f;border-radius:999px;padding:1px 8px}
+.pk-ck{position:absolute;left:14px;top:50%;width:20px;height:20px;margin-top:-10px;border-radius:50%;border:1.5px solid #c8cee0;display:grid;place-items:center;color:#fff;transition:background .2s,border-color .2s}
+.pk-ck svg{width:12px;height:12px;opacity:0;transform:scale(.4);transition:opacity .2s,transform .3s cubic-bezier(.34,1.56,.64,1)}
+.pk-t.on{border-color:var(--blue);background:#f5f8ff;box-shadow:0 0 0 3px var(--blue-soft)}
+.pk-t.on .pk-ck{background:var(--blue);border-color:var(--blue)}
+.pk-t.on .pk-ck svg{opacity:1;transform:none}
+.pk-t.pop{animation:pkPop .42s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pkPop{0%{transform:scale(1)}35%{transform:scale(.97)}100%{transform:scale(1)}}
+.pk-tiles.c4 .pk-t{padding:12px 10px 12px 38px}.pk-tiles.c4 .pk-ck{left:11px}
+.pk-note{display:flex;gap:7px;align-items:center;font-size:12.5px;color:var(--muted);margin-top:14px}
+.pk-note svg{width:14px;height:14px;flex:none}
+.pk-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:22px;padding-top:16px;border-top:1px solid #eef0f6}
+.pk-nav .btn.pri{min-width:170px;min-height:46px}
+.pk-nav .btn.pri:disabled{opacity:.45;cursor:not-allowed}
+.pk-nav .fine{width:100%;text-align:right;margin-top:0}
+.pk-done{text-align:center;padding-top:6px}
+.pk-done h2{padding-right:0;margin-top:12px}
+.pk-done .pk-s{max-width:470px;margin-inline:auto}
+.pk-ok{width:64px;height:64px;margin:0 auto}
+.pk-ok svg{width:64px;height:64px;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.pk-ok circle{stroke:var(--ok);stroke-width:3;stroke-dasharray:151;stroke-dashoffset:151;animation:pkDraw .6s cubic-bezier(.65,0,.35,1) forwards;fill:#e9f8f0}
+.pk-ok path{stroke:var(--ok);stroke-width:4;stroke-dasharray:40;stroke-dashoffset:40;animation:pkDraw .4s .45s cubic-bezier(.65,0,.35,1) forwards}
+@keyframes pkDraw{to{stroke-dashoffset:0}}
+.pk-sum{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:14px}
+.pk-sum span{font-size:12.5px;background:var(--bg);color:var(--body);border-radius:999px;padding:4px 10px}
+.pk-sum button{font-size:12.5px;font-weight:600;color:var(--blue);background:none;border:0;padding:4px 6px;cursor:pointer}
+.pk-k{font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:24px 0 10px}
+.pk-next{display:grid;gap:10px;text-align:left}
+.pk-c{display:flex;align-items:center;gap:14px;border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;text-decoration:none;background:#fff;
+  opacity:0;transform:translateY(8px);animation:pkUp .5s cubic-bezier(.16,1,.3,1) var(--d,0ms) forwards;transition:border-color .2s,box-shadow .25s}
+.pk-c:hover{border-color:#b8c5f0;box-shadow:0 10px 26px -18px rgba(9,56,213,.6)}
+.pk-c.pk-c1{border-color:var(--blue);background:linear-gradient(120deg,#f4f7ff,#fbfaff)}
+@keyframes pkUp{to{opacity:1;transform:none}}
+.pk-ci{flex:none;width:42px;height:42px;border-radius:12px;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center}
+.pk-ci svg{width:20px;height:20px}
+.pk-ct{flex:1;min-width:0}
+.pk-ct b{display:block;font-size:14.5px;color:var(--ink)}
+.pk-ct small{display:block;font-size:13px;color:var(--body);line-height:1.45;margin-top:2px}
+.pk-cg{flex:none;font-size:13px;font-weight:700;color:var(--blue);white-space:nowrap}
+.pk-close{margin-top:18px}
+.mod .pk-close.x{position:static;width:auto;height:auto;display:inline-flex;padding:0 18px;min-height:42px;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.pk-set{margin:10px 0 4px 56px}
+.pk-set .btn svg{width:15px;height:15px}
+@media (max-width:560px){
+  .mod.pkmod{padding:22px 18px 18px}
+  .pk-tiles.c3,.pk-tiles.c2{grid-template-columns:1fr}.pk-tiles.c4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pk-nav .btn.pri{flex:1}.pk-nav .fine{text-align:left}
+  .pk-c{flex-wrap:wrap}.pk-cg{width:100%;padding-left:56px}
+  .pk-set{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){.pk-body.fwd,.pk-body.back{opacity:1;transform:none}.pk-c{opacity:1;transform:none;animation:none}.pk-t.pop{animation:none}.pk-ok circle,.pk-ok path{animation:none;stroke-dashoffset:0}}
+.card.dem{margin-top:14px}
+.dem-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.dem-h p{max-width:620px}
+.dem-t{display:grid;gap:6px;margin-top:12px}
+.dem-r{display:grid;grid-template-columns:minmax(0,220px) 44px minmax(0,1fr);gap:12px;align-items:center;font-size:13.5px;padding:8px 10px;border-radius:10px;background:var(--bg)}
+.dem-r b{color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dem-n{font-weight:700;color:var(--blue);font-variant-numeric:tabular-nums;text-align:right}
+.dem-m{color:var(--body);overflow-wrap:anywhere}
+.tag.sp,.ld-p .sp{background:#fff1e6;color:#9a3d00}
+.ld-p{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.ld-p > span:not(.tag){font-size:12.5px;background:var(--bg);color:var(--body);border-radius:999px;padding:2px 9px}
+.ld-p .tag svg{width:12px;height:12px;vertical-align:-2px;margin-right:4px}
+.ld-p > span.sp{background:#fff1e6;color:#9a3d00;font-weight:600}
+.lead-tools select{height:40px;border:1px solid var(--line);border-radius:10px;padding:0 10px;font-size:14px;background:#fff;max-width:100%}
+@media (max-width:640px){.dem-r{grid-template-columns:minmax(0,1fr) 40px}.dem-m{grid-column:1/-1}}
 .callc{display:flex;gap:16px;align-items:center;flex-wrap:wrap;border-radius:16px;padding:18px 20px;background:linear-gradient(135deg,#0a31bd,#0938d5);color:#fff;margin-top:16px}
 .callc .tx{flex:1;min-width:220px}
 .callc b{font-family:Poppins;font-size:16px;display:block;color:#fff;line-height:1.35}
@@ -858,7 +959,7 @@ var CONFIG = {
 };
 
 var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
-var APP_VERSION = '2026-10-15.12';   // also in /version.txt — lets us check which version the live site is serving
+var APP_VERSION = '2026-10-16.1';   // also in /version.txt — lets us check which version the live site is serving
 
 /* =====================================================================
    utils
@@ -1686,8 +1787,10 @@ var NAV = [
 ];
 function navItems(){ return state.isAdmin ? NAV.concat([{id:'leads', label:'Leads', icon:I.team}, {id:'admin', label:'Add jobs', icon:I.plus}]) : NAV; }
 var route = {name:'jobs', job:null};
+var PICKS_ASK = false;
 function parseRoute(){
   var h = location.hash.replace(/^#/, '');
+  if(h === 'picks'){ PICKS_ASK = true; history.replaceState(null, '', '#jobs'); h = 'jobs'; }
   var m = /^job=(.+)$/.exec(h);
   if(m) return {name:'jobs', job:decodeURIComponent(m[1])};
   var n = navItems().filter(function(x){ return !x.href; }).map(function(x){ return x.id; }).indexOf(h) > -1 ? h : ((h === 'admin' || h === 'leads') && !state.ready ? h : 'jobs');
@@ -1860,15 +1963,185 @@ function opt(v, l, cur){ return '<option value="'+v+'"'+(cur===v?' selected':'')
 /* ---- daily email: new matching roles every morning (sent by .github/scripts/daily_email.py through Brevo) ---- */
 function mailCardHTML(){
   var p = state.profile || {};
-  if(!state.user || !state.ready || p.daily_email) return '';
+  if(!state.user || !state.ready || (p.daily_email && p.job_prefs)) return '';
   if(Date.now() - (lsGet('tp_mail_x', 0) || 0) < 21*864e5) return '';
-  var role = p.target_role || (F.q && F.q.length < 40 && !/\d/.test(F.q) ? F.q : '');
-  return '<div class="mailc"><span class="mc-ic">'+I.mail+'</span>'+
-    '<div class="mc-tx"><b>Get new roles like these every morning</b><small>Only fresh roles that match what you want. One email a day — none on days with nothing new. Unsubscribe in one click.</small></div>'+
-    '<div class="mc-f"><input id="mcRole" value="'+esc(role)+'" placeholder="Role, e.g. Data Analyst" aria-label="Role you want" autocomplete="off">'+
-      '<input id="mcLoc" value="'+esc(p.target_location || '')+'" placeholder="Where? (optional)" aria-label="Location" autocomplete="off">'+
-      '<button class="btn pri" type="button" data-act="mailon">Email me daily</button></div>'+
+  if(p.daily_email) return '<div class="mailc slim"><span class="mc-ic">'+I.spark+'</span>'+   // signed up before the form existed
+    '<div class="mc-tx"><b>Make your daily picks sharper</b><small>Add your experience, visa status and salary — 30 seconds — and we’ll skip roles that don’t fit you.</small></div>'+
+    '<button class="btn pri mc-go" type="button" data-act="picks">Finish my preferences</button>'+
     '<button class="mc-x" type="button" data-act="mailx" aria-label="Not now">'+I.x+'</button></div>';
+  return '<div class="mailc"><span class="mc-ic">'+I.mail+'</span>'+
+    '<div class="mc-tx"><b><span class="mc-free">Free</span>Daily job picks, matched to you</b><small>Tell us your role, experience, visa status and salary. Every morning we send you the best fresh roles from 50+ company job boards, curated by our team. One email a day.</small></div>'+
+    '<button class="btn pri mc-go" type="button" data-act="picks">Get my daily picks</button>'+
+    '<button class="mc-x" type="button" data-act="mailx" aria-label="Not now">'+I.x+'</button></div>';
+}
+
+/* ---------- Daily picks: the free curated email → a short intake form → the funnel (call · ATS check · let us apply) ---------- */
+var PK = {
+  modes:[['remote','Remote','Work from home'],['hybrid','Hybrid','Some days in the office'],['onsite','On-site','In the office every day']],
+  years:[['0-1','Under 1 year'],['1-3','1–3 years'],['3-5','3–5 years'],['5-8','5–8 years'],['8-12','8–12 years'],['12+','12+ years']],
+  level:[['entry','Entry level','New grad, junior, associate'],['mid','Mid level','Your next step up'],['senior','Senior','Senior or staff roles'],['lead','Lead & above','Lead, principal, manager, director']],
+  auth:[['citizen','US citizen or green card','No sponsorship needed'],['ead','Work permit (EAD)','H-4, L-2 or another EAD'],['opt','F-1 OPT or STEM OPT','Will need H-1B sponsorship later'],['h1b','H-1B','Will need a transfer'],['sponsor','Need visa sponsorship','To start working in the US'],['outside','Outside the US','Not yet authorized to work in the US'],['na','Prefer not to say','']],
+  salary:[[0,'Flexible'],[60,'$60K+'],[80,'$80K+'],[100,'$100K+'],[130,'$130K+'],[160,'$160K+'],[200,'$200K+']]
+};
+var PK_SPONSOR = {opt:1, h1b:1, sponsor:1, outside:1};
+var PK_STEPS = [
+  {k:'role', t:'What role are you looking for?', s:'Up to 3 roles, separated by commas. We match on job titles, not just keywords.'},
+  {k:'where', t:'Where do you want to work?', s:'Pick all that suit you.'},
+  {k:'years', t:'How many years of experience do you have?', s:'Count full-time work, including OPT.'},
+  {k:'level', t:'Which level are you aiming for?', s:'We skip roles that are clearly too junior or too senior for you.'},
+  {k:'auth', t:'What’s your US work authorization?', s:'Many companies can’t sponsor visas. We use this to skip roles that say they won’t sponsor, and to flag the ones that do.'},
+  {k:'salary', t:'What’s the lowest salary you’d accept?', s:'Base pay per year. We skip roles that list pay below this; roles that don’t list pay still come through.'}
+];
+var PKS = {i:0, a:null, uid:null, dir:1};
+function pkLabel(list, v){ var x = PK[list].filter(function(o){ return String(o[0]) === String(v); })[0]; return x ? x[1] : ''; }
+function pkSummary(pr){
+  if(!pr) return [];
+  var modes = (pr.modes || []).map(function(m){ return pkLabel('modes', m); }).filter(Boolean).join(' / ');
+  return [pr.role, [modes, pr.where].filter(Boolean).join(' · '), pkLabel('years', pr.years) && pkLabel('years', pr.years) + ' experience', pkLabel('level', pr.level),
+    pr.auth && pr.auth !== 'na' ? pkLabel('auth', pr.auth) : '', pr.salary ? pkLabel('salary', pr.salary) + ' a year' : 'Any salary'].filter(Boolean);
+}
+function pkYearsFrom(n){ n = +n || 0; if(!n) return ''; return n < 1 ? '0-1' : n < 3 ? '1-3' : n < 5 ? '3-5' : n < 8 ? '5-8' : n < 12 ? '8-12' : '12+'; }
+function pkLevelFrom(y){ return {'0-1':'entry', '1-3':'mid', '3-5':'mid', '5-8':'senior', '8-12':'senior', '12+':'lead'}[y] || ''; }
+function pkUniq(list){ var seen = {}; return list.filter(function(x){ x = String(x || '').trim(); var k = x.toLowerCase(); if(!x || x.length > 60 || seen[k]) return false; seen[k] = 1; return true; }).map(function(x){ return String(x).trim(); }).slice(0, 4); }
+function openPicks(){
+  if(!state.user){ requireSignIn('Sign in to get your free daily picks', openPicks); return; }
+  var p = state.profile || {};
+  if(!PKS.a || PKS.uid !== state.user.id || PKS.done){   // reopening mid-way keeps their answers
+    PKS.a = Object.assign({role:p.target_role || '', where:p.target_location && !/^remote$/i.test(p.target_location) ? p.target_location : '', modes:[]}, p.job_prefs || {});
+    PKS.a.modes = (PKS.a.modes || []).slice(); PKS.uid = state.user.id; PKS.i = 0; PKS.done = false;
+  }
+  PKS.dir = 1;
+  modal('<div class="pk" id="pk"><div class="pk-top"><span class="pk-free">'+I.mail+'Free daily picks</span><span class="pk-n" id="pkN"></span></div>'+
+    '<div class="pk-bar"><i id="pkBar"></i></div><div class="pk-body" id="pkBody"></div><div class="pk-nav" id="pkNav"></div></div>', true);
+  var m = $('#modalRoot .mod'); if(m) m.classList.add('pkmod');
+  var box = $('#pk');
+  box.addEventListener('click', pkClick);
+  box.addEventListener('input', function(e){
+    if(e.target.id === 'pkRole') PKS.a.role = e.target.value;
+    if(e.target.id === 'pkWhere') PKS.a.where = e.target.value;
+    pkNavState();
+  });
+  box.addEventListener('keydown', function(e){ if(e.key === 'Enter' && e.target.tagName === 'INPUT'){ e.preventDefault(); if(pkOk()) pkGo(1); } });
+  pkDraw();
+}
+function pkOk(){
+  var a = PKS.a, k = PK_STEPS[PKS.i].k;
+  return k === 'role' ? String(a.role || '').trim().length >= 2 : k === 'where' ? (a.modes || []).length > 0 : k === 'salary' ? a.salary != null && a.salary !== '' : !!a[k];
+}
+function pkTile(k, o, on, badge){
+  return '<button type="button" class="pk-t'+(on ? ' on' : '')+'" data-pk="'+k+'" data-v="'+esc(String(o[0]))+'" aria-pressed="'+(on ? 'true' : 'false')+'">'+
+    '<span class="pk-ck">'+I.check+'</span><b>'+esc(o[1])+'</b>'+(o[2] ? '<small>'+esc(o[2])+'</small>' : '')+(badge ? '<em>'+esc(badge)+'</em>' : '')+'</button>';
+}
+function pkDraw(){
+  var body = $('#pkBody'); if(!body) return;
+  var st = PK_STEPS[PKS.i], a = PKS.a, p = state.profile || {}, R = p.resume_profile || {}, h = '';
+  var ry = pkYearsFrom(R.years);
+  if(st.k === 'role'){
+    var ex = R.experience || [];
+    var sug = pkUniq([p.target_role, R.headline, (ex[0] || {}).title, (ex[1] || {}).title, F.q && F.q.length < 40 && !/\d/.test(F.q) ? F.q : '']);
+    h = '<input class="pk-in" id="pkRole" value="'+esc(a.role || '')+'" placeholder="e.g. Data Analyst, Business Analyst" autocomplete="off" maxlength="120" aria-label="Role you want">'+
+      (sug.length ? '<div class="pk-sug"><span>From your resume and searches</span>'+sug.map(function(x){ return '<button type="button" class="pk-chip" data-pkrole="'+esc(x)+'">'+I.plus+esc(x)+'</button>'; }).join('')+'</div>' : '');
+  } else if(st.k === 'where'){
+    h = '<div class="pk-tiles c3">'+PK.modes.map(function(o){ return pkTile('modes', o, (a.modes || []).indexOf(o[0]) > -1); }).join('')+'</div>'+
+      '<label class="pk-lab" for="pkWhere">City or state <span>optional — leave empty for anywhere in the US</span></label>'+
+      '<input class="pk-in" id="pkWhere" value="'+esc(a.where || '')+'" placeholder="e.g. Austin, TX or New York" autocomplete="off" maxlength="80">';
+  } else if(st.k === 'years'){
+    h = '<div class="pk-tiles c3">'+PK.years.map(function(o){ return pkTile('years', o, a.years === o[0], ry === o[0] ? 'From your resume' : ''); }).join('')+'</div>';
+  } else if(st.k === 'level'){
+    var sl = pkLevelFrom(a.years || ry);
+    h = '<div class="pk-tiles c2">'+PK.level.map(function(o){ return pkTile('level', o, a.level === o[0], sl === o[0] ? 'Suggested' : ''); }).join('')+'</div>';
+  } else if(st.k === 'auth'){
+    h = '<div class="pk-tiles c2">'+PK.auth.map(function(o){ return pkTile('auth', o, a.auth === o[0]); }).join('')+'</div>'+
+      '<p class="pk-note">'+I.lock+'Only you and the TrulyPlaced team see this.</p>';
+  } else {
+    h = '<div class="pk-tiles c4">'+PK.salary.map(function(o){ return pkTile('salary', o, a.salary != null && String(a.salary) === String(o[0])); }).join('')+'</div>';
+  }
+  body.className = 'pk-body ' + (PKS.dir < 0 ? 'back' : 'fwd');
+  body.innerHTML = '<h2>'+esc(st.t)+'</h2><p class="pk-s">'+esc(st.s)+'</p>'+h;
+  void body.offsetWidth; body.classList.add('go');
+  $('#pkN').textContent = 'Step '+(PKS.i + 1)+' of '+PK_STEPS.length;
+  $('#pkBar').style.width = Math.round((PKS.i + 1) / PK_STEPS.length * 100) + '%';
+  var last = PKS.i === PK_STEPS.length - 1;
+  $('#pkNav').innerHTML = (PKS.i ? '<button class="btn" type="button" data-pknav="back">Back</button>' : '<span></span>')+
+    '<button class="btn pri" type="button" data-pknav="next" id="pkNext">'+(last ? 'Start my daily picks' : 'Continue')+'</button>'+
+    (last ? '<p class="fine">One email each morning, only on days with new matches. Unsubscribe in one click.</p>' : '');
+  pkNavState();
+  var inp = body.querySelector('.pk-in'); if(inp && matchMedia('(pointer:fine)').matches) setTimeout(function(){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }, 60);
+}
+function pkNavState(){ var b = $('#pkNext'); if(b) b.disabled = !pkOk(); }
+function pkGo(d){
+  if(d > 0 && !pkOk()) return;
+  if(d > 0 && PKS.i === PK_STEPS.length - 1) return pkSave();
+  PKS.i = Math.max(0, Math.min(PK_STEPS.length - 1, PKS.i + d)); PKS.dir = d; pkDraw();
+}
+function pkClick(e){
+  var t = e.target.closest('[data-pk],[data-pkrole],[data-pknav]'); if(!t) return;
+  var a = PKS.a;
+  if(t.hasAttribute('data-pknav')){ var n = t.getAttribute('data-pknav'); if(n === 'edit'){ PKS.done = false; PKS.i = 0; PKS.dir = -1; return openPicksAgain(); } return pkGo(n === 'back' ? -1 : 1); }
+  if(t.hasAttribute('data-pkrole')){
+    var r = t.getAttribute('data-pkrole'), cur = String(a.role || '').split(/\s*,\s*/).filter(Boolean);
+    if(cur.map(function(x){ return x.toLowerCase(); }).indexOf(r.toLowerCase()) < 0 && cur.length < 3) cur.push(r);
+    a.role = cur.join(', '); var ri = $('#pkRole'); if(ri){ ri.value = a.role; ri.focus(); }
+    t.classList.add('used'); pkNavState(); return;
+  }
+  var k = t.getAttribute('data-pk'), v = t.getAttribute('data-v');
+  if(k === 'modes'){
+    var i = a.modes.indexOf(v); if(i > -1) a.modes.splice(i, 1); else a.modes.push(v);
+    t.classList.toggle('on', i < 0); t.setAttribute('aria-pressed', i < 0 ? 'true' : 'false');
+  } else {
+    a[k] = k === 'salary' ? +v : v;
+    t.parentNode.querySelectorAll('.pk-t').forEach(function(x){ x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); });
+    t.classList.add('on'); t.setAttribute('aria-pressed', 'true');
+    if(PKS.i < PK_STEPS.length - 1){ var at = PKS.i; setTimeout(function(){ if(PKS.i === at && $('#pk')) pkGo(1); }, 420); }   // one tap and on to the next question
+  }
+  t.classList.remove('pop'); void t.offsetWidth; t.classList.add('pop');
+  pkNavState();
+}
+function openPicksAgain(){ var keep = PKS.a; openPicks(); PKS.a = keep; pkDraw(); }
+function savePicks(patch){
+  if(!LIVE) return store.saveProfile(patch).then(function(){ return true; });
+  var up = function(row){ return sb.from('profiles').upsert(Object.assign({id:state.user.id}, row), {onConflict:'id'}); };
+  return up(patch).then(function(r){
+    if(r.error && /job_prefs/.test(r.error.message || '')){ var rest = Object.assign({}, patch); delete rest.job_prefs; return up(rest); }   // supabase-daily-picks.sql not run yet: still sign them up
+    return r;
+  }).then(function(r){
+    if(r.error){ toast(/daily_email|column/i.test(r.error.message || '') ? 'Daily picks aren’t set up yet — run supabase-daily-email.sql in Supabase' : 'Couldn’t save — try again'); return false; }
+    state.profile = Object.assign({}, state.profile, patch); cacheAccount(); return true;
+  }, function(){ toast('Couldn’t save — check your connection'); return false; });
+}
+function pkSave(){
+  var a = PKS.a, b = $('#pkNext');
+  var pr = {v:1, role:String(a.role || '').trim().replace(/\s+/g, ' ').replace(/\s*,\s*/g, ', ').replace(/,\s*$/, ''), where:String(a.where || '').trim(), modes:(a.modes || []).slice(),
+    years:a.years, level:a.level, auth:a.auth, salary:+a.salary || 0, at:new Date().toISOString()};
+  var first = !(state.profile || {}).daily_email;
+  if(b){ b.disabled = true; b.textContent = 'Saving…'; }
+  return savePicks({job_prefs:pr, target_role:pr.role, target_location:pr.where || (pr.modes.length === 1 && pr.modes[0] === 'remote' ? 'Remote' : ''), daily_email:true, daily_email_at:new Date().toISOString()}).then(function(ok){
+    if(!ok){ if(b){ b.disabled = false; b.textContent = 'Start my daily picks'; } return; }
+    PKS.done = true; pkDone(pr, first);
+    var mc = $('#mailCard'); if(mc) mc.innerHTML = mailCardHTML();
+    if(route.name === 'settings') vSettings($('#view'));
+  });
+}
+function pkDone(pr, first){
+  var box = $('#pk'); if(!box) return;
+  var name = String((state.user && state.user.name) || '').split(' ')[0], hasRes = !!resumeText();
+  var utm = '?utm_source=trulyplaced&utm_medium=app&utm_campaign=daily_picks';
+  var cards = {
+    call:{ic:I.send, t:'We’ll apply to 1,000 jobs for you', s:'Your resume tailored to every job description — customized the way you want, for the roles you choose.', go:'Let’s talk', href:CONFIG.BOOK_CALL + utm, ext:1},
+    ats:{ic:I.doc, t:'Free ATS resume check', s:'See your resume the way hiring software reads it, and what to fix first.', go:hasRes ? 'Check my resume' : 'Upload my resume', href:'/ats-check.html?ref=picks'}
+  };
+  var order = hasRes ? ['call', 'ats'] : ['ats', 'call'];
+  box.innerHTML = '<div class="pk-done">'+
+    '<div class="pk-ok"><svg viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16"/></svg></div>'+
+    '<h2>'+(first ? 'You’re in'+(name ? ', '+esc(name) : '')+'!' : 'Your preferences are saved')+'</h2>'+
+    '<p class="pk-s">'+(first ? 'Your first picks arrive within a day' : 'Your next picks use these answers')+' at <b>'+esc(state.user.email)+'</b>. Every morning: fresh '+esc(pr.role)+' roles from 50+ company job boards and the roles our team adds, matched to your answers.</p>'+
+    '<div class="pk-sum">'+pkSummary(pr).map(function(x){ return '<span>'+esc(x)+'</span>'; }).join('')+'<button type="button" data-pknav="edit">Edit</button></div>'+
+    '<div class="pk-k">While you wait — make every application count</div>'+
+    '<div class="pk-next">'+order.map(function(k, i){ var c = cards[k];
+      return '<a class="pk-c'+(i ? '' : ' pk-c1')+'" style="--d:'+(i * 70 + 250)+'ms" '+(c.act ? 'href="#" data-act="'+c.act+'"' : 'href="'+esc(c.href)+'"'+(c.ext ? ' target="_blank" rel="noopener"' : ''))+'>'+
+        '<span class="pk-ci">'+c.ic+'</span><span class="pk-ct"><b>'+esc(c.t)+'</b><small>'+esc(c.s)+'</small></span><span class="pk-cg">'+esc(c.go)+' →</span></a>'; }).join('')+'</div>'+
+    '<button class="btn pk-close" type="button" data-act="mclose">Back to jobs</button></div>';
+  var c = box.querySelector('.pk-close'); if(c) c.classList.add('x');   // the modal closes on any .x button
 }
 function saveDaily(patch){
   if(!LIVE){ return store.saveProfile(patch).then(function(){ return true; }); }
@@ -1879,6 +2152,7 @@ function saveDaily(patch){
   }, function(){ toast('Couldn’t save — check your connection'); return false; });
 }
 function vJobs(v){
+  if(PICKS_ASK && state.ready){ PICKS_ASK = false; setTimeout(openPicks, 250); }
   var hasTarget = !!(state.profile && state.profile.target_role);
   v.innerHTML =
     '<label class="search smart"><span class="sr">Smart search</span>'+I.spark+'<input id="q" type="search" placeholder="Describe the job — e.g. remote data analyst, entry level, New York" value="'+esc(F.q)+'" autocomplete="off" enterkeyhint="search">'+I.search+'</label>'+
@@ -2688,7 +2962,7 @@ function tailorDoc(){
 }
 
 /* ---------- Leads (team only): who signed up, who said yes to WhatsApp, and where each one is up to ---------- */
-var LEADS = {rows:[], follow:{}, applied:{}, filter:'phone', q:''};
+var LEADS = {rows:[], follow:{}, applied:{}, filter:'phone', q:'', auth:''};
 var LEAD_STATUS = [['new','New'],['messaged','Messaged'],['replied','Replied'],['webinar','Joined webinar'],['call_booked','Call booked'],['client','Client'],['not_interested','Not interested']];
 function waLink(p){
   var first = String(p.full_name || p.email || '').split(/[ @]/)[0];
@@ -2702,9 +2976,13 @@ function vLeads(v){
   if(!state.ready){ v.innerHTML = '<div class="jlist"><div class="skel"></div></div>'; return; }
   if(!state.isAdmin){ v.innerHTML = '<div class="empty">'+I.team+'<h3>For the TrulyPlaced team</h3><p>This page is only for team members.</p></div>'; return; }
   v.innerHTML = '<div class="hello">Leads</div><div class="sub">Everyone who signed up, with the details from their resume. “WhatsApp OK” means they said yes to messages.</div>'+
-    '<div class="lead-tools"><input id="leadQ" type="search" placeholder="Search name, role, company, location or phone" value="'+esc(LEADS.q)+'" autocomplete="off"><button class="btn sm" type="button" data-act="leadcsv">'+I.doc+'Download CSV</button></div>'+
-    '<div class="lead-filters" id="leadF">'+[['phone','Has a phone'],['wa','Said yes to WhatsApp'],['new','Not contacted yet'],['resume','Added a resume'],['all','Everyone']].map(function(f){ return '<button type="button" data-lf="'+f[0]+'" class="'+(LEADS.filter===f[0]?'on':'')+'">'+f[1]+'</button>'; }).join('')+'</div>'+
+    '<div id="leadDemand"></div>'+
+    '<div class="lead-tools"><input id="leadQ" type="search" placeholder="Search name, role, company, location or phone" value="'+esc(LEADS.q)+'" autocomplete="off">'+
+      '<select id="leadAuth" aria-label="Work authorization"><option value="">Any visa status</option><option value="needs"'+(LEADS.auth === 'needs' ? ' selected' : '')+'>Needs sponsorship (any)</option>'+PK.auth.map(function(o){ return '<option value="'+o[0]+'"'+(LEADS.auth === o[0] ? ' selected' : '')+'>'+esc(o[1])+'</option>'; }).join('')+'</select>'+
+      '<button class="btn sm" type="button" data-act="leadcsv">'+I.doc+'Download CSV</button></div>'+
+    '<div class="lead-filters" id="leadF">'+[['phone','Has a phone'],['picks','Daily picks'],['wa','Said yes to WhatsApp'],['new','Not contacted yet'],['resume','Added a resume'],['all','Everyone']].map(function(f){ return '<button type="button" data-lf="'+f[0]+'" class="'+(LEADS.filter===f[0]?'on':'')+'">'+f[1]+'</button>'; }).join('')+'</div>'+
     '<div class="leads" id="leadList"><div class="skel"></div><div class="skel"></div></div>';
+  $('#leadAuth').addEventListener('change', function(e){ LEADS.auth = e.target.value; drawLeads(); });
   var lq; $('#leadQ').addEventListener('input', function(e){ clearTimeout(lq); lq = setTimeout(function(){ LEADS.q = e.target.value; drawLeads(); }, 200); });
   $('#leadF').addEventListener('click', function(ev){ var b = ev.target.closest('[data-lf]'); if(!b) return; LEADS.filter = b.getAttribute('data-lf'); vLeads($('#view')); });
   loadLeads().then(drawLeads, function(err){ var l = $('#leadList'); if(l) l.innerHTML = '<p class="fine">'+esc(/42P01|does not exist|schema cache|column/i.test(JSON.stringify(err||'')) ? 'Supabase isn’t set up for leads yet — run supabase-leads.sql once.' : 'Couldn’t load leads — try again.')+'</p>'; });
@@ -2716,8 +2994,7 @@ function loadLeads(){
     LEADS.follow = lsGet('tp_follow_demo', {}); LEADS.applied = {}; return Promise.resolve();
   }
   return Promise.all([
-    sb.from('profiles').select('id,email,full_name,target_role,target_location,created_at,phone,whatsapp_ok,whatsapp_at,resume_name,marketing_consent,referred_by,onboarded,resume_profile,phone_source').order('created_at', {ascending:false}).limit(1000)
-      .then(function(r){ return r.error && /resume_profile|phone_source|column/i.test(r.error.message || '') ? sb.from('profiles').select('id,email,full_name,target_role,target_location,created_at,phone,whatsapp_ok,whatsapp_at,resume_name,marketing_consent,referred_by,onboarded').order('created_at', {ascending:false}).limit(1000) : r; }),
+    leadSelect(['resume_profile,phone_source,job_prefs,daily_email', 'resume_profile,phone_source', '']),
     sb.from('lead_followups').select('*'),
     sb.from('tracked_jobs').select('user_id,status').neq('status', 'saved').limit(5000)
   ]).then(function(rs){
@@ -2730,15 +3007,19 @@ function loadLeads(){
 function drawLeads(){
   var l = $('#leadList'); if(!l) return;
   var q = String(LEADS.q || '').toLowerCase().trim();
+  drawDemand();
   var rows = leadRows().filter(function(p){
     var st = (LEADS.follow[p.id] || {}).status || 'new';
-    return LEADS.filter === 'all' ? true : LEADS.filter === 'phone' ? !!p.phone : LEADS.filter === 'wa' ? (p.whatsapp_ok && p.phone) : LEADS.filter === 'resume' ? !!p.resume_name : st === 'new';
+    return LEADS.filter === 'all' ? true : LEADS.filter === 'phone' ? !!p.phone : LEADS.filter === 'picks' ? !!p.daily_email : LEADS.filter === 'wa' ? (p.whatsapp_ok && p.phone) : LEADS.filter === 'resume' ? !!p.resume_name : st === 'new';
+  }).filter(function(p){
+    if(!LEADS.auth) return true;
+    return LEADS.auth === 'needs' ? needsSponsor(p) : !!(p.job_prefs && p.job_prefs.auth === LEADS.auth);
   }).filter(function(p){
     if(!q) return true;
-    var R = p.resume_profile || {}, x = R.experience && R.experience[0] || {};
-    return [p.full_name, p.email, p.phone, p.target_role, p.target_location, R.location, R.headline, x.title, x.company].join(' ').toLowerCase().indexOf(q) > -1;
+    var R = p.resume_profile || {}, x = R.experience && R.experience[0] || {}, J = p.job_prefs || {};
+    return [p.full_name, p.email, p.phone, p.target_role, p.target_location, R.location, R.headline, x.title, x.company, J.role, J.where, pkLabel('auth', J.auth)].join(' ').toLowerCase().indexOf(q) > -1;
   });
-  if(!rows.length){ l.innerHTML = '<p class="fine">'+(q ? 'No one matches “'+esc(LEADS.q)+'”.' : LEADS.filter === 'phone' ? 'No one with a phone number yet — numbers appear here as people add resumes. Try “Everyone”.' : 'No one here yet.')+'</p>'; return; }
+  if(!rows.length){ l.innerHTML = '<p class="fine">'+(q || LEADS.auth ? 'No one matches that search.' : LEADS.filter === 'picks' ? 'No one has signed up for daily picks yet.' : LEADS.filter === 'phone' ? 'No one with a phone number yet — numbers appear here as people add resumes. Try “Everyone”.' : 'No one here yet.')+'</p>'; return; }
   l.innerHTML = rows.map(function(p){
     var f = LEADS.follow[p.id] || {}, st = f.status || 'new', ap = LEADS.applied[p.id] || 0;
     var wa = p.whatsapp_ok && p.phone, R = p.resume_profile || {}, x = (R.experience || [])[0];
@@ -2748,6 +3029,9 @@ function drawLeads(){
       (R.years ? '<span>'+R.years+' yrs experience</span>' : '')+
       (R.location ? '<span>'+I.pin+' '+esc(R.location)+'</span>' : '')+
       (R.linkedin ? '<a href="https://'+esc(R.linkedin)+'" target="_blank" rel="noopener">LinkedIn ↗</a>' : '')+'</div>';
+    var J = p.job_prefs, picks = J ? '<div class="ld-p">'+(p.daily_email ? '<span class="tag ok">'+I.mail+'Daily picks</span>' : '<span class="tag">Picks off</span>')+
+      pkSummary(J).map(function(x, i){ return '<span class="'+(x === pkLabel('auth', J.auth) && PK_SPONSOR[J.auth] ? 'sp' : '')+'">'+esc(x)+'</span>'; }).join('')+'</div>'
+      : p.daily_email ? '<div class="ld-p"><span class="tag ok">'+I.mail+'Daily picks</span><span>No preferences yet</span></div>' : '';
     var more = R.at ? '<details><summary>Resume details</summary><div class="ld-d">'+(R.summary ? '<p>'+esc(R.summary)+'</p>' : '')+
       '<div class="rd-g"><div>'+(R.experience || []).map(function(e){ return '<div class="rd-i"><b>'+esc(e.title || '—')+'</b><span>'+esc(e.company || '')+'</span><small>'+esc(e.dates || '')+'</small></div>'; }).join('')+'</div>'+
       '<div>'+(R.education || []).map(function(e){ return '<div class="rd-i"><b>'+esc(e.degree || '—')+'</b><span>'+esc(e.school || '')+'</span><small>'+esc(e.dates || '')+'</small></div>'; }).join('')+'</div></div>'+
@@ -2755,7 +3039,7 @@ function drawLeads(){
     return '<div class="lead"><div style="min-width:0;flex:1"><b>'+esc(p.full_name || p.email)+'</b>'+
       '<div class="meta">'+esc([p.target_role, p.target_location].filter(Boolean).join(' · ') || 'No target role yet')+' · joined '+fmtDate(p.created_at)+(p.referred_by ? ' · via '+esc(String(p.referred_by).slice(0, 20)) : '')+'</div>'+
       '<div class="meta">'+(wa ? '<span class="tag ok">WhatsApp OK</span>' : '')+(p.resume_name ? '<span class="tag">Resume added</span>' : '')+(ap ? '<span class="tag">'+ap+' applied</span>' : '')+(p.marketing_consent ? '<span class="tag">Emails OK</span>' : '')+'</div>'+
-      '<div class="meta">'+esc(p.email || '')+'</div>'+facts+more+'</div>'+
+      '<div class="meta">'+esc(p.email || '')+'</div>'+facts+picks+more+'</div>'+
       '<div class="acts">'+(p.phone ? '<a class="btn sm wa'+(wa ? '' : ' soft')+'" href="'+esc(waLink(p))+'" target="_blank" rel="noopener" data-wamsg="'+esc(p.id)+'" title="'+(wa ? 'They said yes to WhatsApp messages' : 'Number from their resume — they haven’t opted in to WhatsApp yet')+'">'+I.wa+'WhatsApp</a>' : '')+
         '<label><span class="sr">Status</span><select data-lead="'+esc(p.id)+'">'+LEAD_STATUS.map(function(o){ return '<option value="'+o[0]+'"'+(o[0]===st?' selected':'')+'>'+o[1]+'</option>'; }).join('')+'</select></label></div></div>';
   }).join('');
@@ -2763,13 +3047,48 @@ function drawLeads(){
   l.onclick = function(ev){ var a = ev.target.closest('[data-wamsg]'); if(a){ var id = a.getAttribute('data-wamsg'); if(((LEADS.follow[id] || {}).status || 'new') === 'new') setLeadStatus(id, 'messaged', true); } };
 }
 function leadRows(){ return LEADS.rows; }
+function leadSelect(extras){   // newest columns first; falls back if a SQL file hasn't been run yet
+  var base = 'id,email,full_name,target_role,target_location,created_at,phone,whatsapp_ok,whatsapp_at,resume_name,marketing_consent,referred_by,onboarded';
+  var cols = base + (extras[0] ? ',' + extras[0] : '');
+  return sb.from('profiles').select(cols).order('created_at', {ascending:false}).limit(1000).then(function(r){
+    return r.error && extras.length > 1 && /column|does not exist|schema cache/i.test(r.error.message || '') ? leadSelect(extras.slice(1)) : r;
+  });
+}
+function needsSponsor(p){ return !!(p.job_prefs && PK_SPONSOR[p.job_prefs.auth]); }
+function drawDemand(){
+  var box = $('#leadDemand'); if(!box) return;
+  var subs = LEADS.rows.filter(function(p){ return p.daily_email && p.job_prefs && p.job_prefs.role; });
+  if(!subs.length){ box.innerHTML = ''; return; }
+  var g = {};
+  subs.forEach(function(p){
+    var pr = p.job_prefs;
+    String(pr.role).split(/\s*,\s*/).filter(Boolean).forEach(function(r){
+      var key = r.toLowerCase().replace(/\b(sr|senior|jr|junior)\b\.?/g, '').replace(/\s+/g, ' ').trim() + '|' + (PK_SPONSOR[pr.auth] ? 1 : 0);
+      var x = g[key] || (g[key] = {role:r.replace(/\b(sr|senior|jr|junior)\b\.?\s*/ig, '').trim() || r, sp:!!PK_SPONSOR[pr.auth], n:0, rem:0, where:{}, sal:[]});
+      x.n++; if((pr.modes || []).indexOf('remote') > -1) x.rem++;
+      if(pr.where) x.where[pr.where] = (x.where[pr.where] || 0) + 1;
+      if(pr.salary) x.sal.push(pr.salary);
+    });
+  });
+  var rows = Object.keys(g).map(function(k){ return g[k]; }).sort(function(a, b){ return b.n - a.n; }).slice(0, 8);
+  box.innerHTML = '<div class="card dem"><div class="dem-h"><div><h3>What your daily-picks members want</h3><p>'+subs.length+(subs.length === 1 ? ' member gets' : ' members get')+' picks every morning. Add jobs for the biggest groups first — they go out in the next email, marked “Picked by our team”.</p></div>'+
+      '<a class="btn sm pri" href="#admin">'+I.plus+'Add jobs</a></div>'+
+    '<div class="dem-t">'+rows.map(function(x){
+      var w = Object.keys(x.where).sort(function(a, b){ return x.where[b] - x.where[a]; })[0];
+      var sal = x.sal.length ? '$' + Math.min.apply(null, x.sal) + 'K+' : '';
+      return '<div class="dem-r"><b>'+esc(x.role)+'</b><span class="dem-n">'+x.n+'</span>'+
+        '<span class="dem-m">'+[x.sp ? '<span class="tag sp">Needs sponsorship</span>' : '', x.rem ? x.rem + ' want remote' : '', w ? esc(w) : '', sal].filter(Boolean).join(' · ')+'</span></div>';
+    }).join('')+'</div></div>';
+}
 function leadsCSV(){
-  var head = ['Name','Email','Phone','WhatsApp opt-in','Phone source','Target role','Location','Current title','Company','Years','LinkedIn','Education','Skills','Status','Applied','Joined'];
+  var head = ['Name','Email','Phone','WhatsApp opt-in','Phone source','Target role','Location','Current title','Company','Years','LinkedIn','Education','Skills','Daily picks','Wants role','Work mode','Wants location','Experience','Level','Work authorization','Needs sponsorship','Min salary','Status','Applied','Joined'];
   var q = function(v){ v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
   var lines = [head.join(',')].concat(LEADS.rows.map(function(p){
-    var R = p.resume_profile || {}, x = (R.experience || [])[0] || {}, e = (R.education || [])[0] || {};
+    var R = p.resume_profile || {}, x = (R.experience || [])[0] || {}, e = (R.education || [])[0] || {}, J = p.job_prefs || {};
     return [p.full_name, p.email, p.phone, p.whatsapp_ok ? 'yes' : '', p.phone_source || '', p.target_role, R.location || p.target_location, x.title, x.company, R.years, R.linkedin,
-      [e.degree, e.school].filter(Boolean).join(', '), (R.skills || []).join('; '), (LEADS.follow[p.id] || {}).status || 'new', LEADS.applied[p.id] || 0, (p.created_at || '').slice(0, 10)].map(q).join(',');
+      [e.degree, e.school].filter(Boolean).join(', '), (R.skills || []).join('; '),
+      p.daily_email ? 'yes' : '', J.role, (J.modes || []).join('/'), J.where, pkLabel('years', J.years), pkLabel('level', J.level), pkLabel('auth', J.auth), J.auth ? (PK_SPONSOR[J.auth] ? 'yes' : 'no') : '', J.salary ? '$' + J.salary + 'K' : '',
+      (LEADS.follow[p.id] || {}).status || 'new', LEADS.applied[p.id] || 0, (p.created_at || '').slice(0, 10)].map(q).join(',');
   }));
   var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + lines.join('\n')], {type:'text/csv'}));
   a.download = 'trulyplaced-leads-' + new Date().toISOString().slice(0, 10) + '.csv'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
@@ -2933,6 +3252,12 @@ function resolveLink(it){
     return done('ok', 'Found on Ashby' + onBoard());
   }, function(){ return done('bad', 'Couldn’t open this job — check the link'); });
 }
+function sponsorGuess(t){
+  t = String(t || '');
+  if(/\b(not|unable to|cannot|can['’]?t|won['’]?t|will not|do not|does not|don['’]?t)\s+(currently\s+)?(be\s+able\s+to\s+)?(offer|provide|sponsor|support)\b[^.]{0,40}\b(sponsor\w*|visas?|h-?1b)|without\s+(the\s+need\s+for\s+)?(current\s+or\s+future\s+)?(visa\s+|employer\s+)?sponsorship|\bno\s+(visa\s+)?sponsorship|sponsorship\s+(is\s+)?not\s+(available|offered|provided)/i.test(t)) return 'no';
+  if(/\b(visa|h-?1b)\s+sponsorship\s+(is\s+)?(available|offered|provided)|\bwill\s+sponsor\b|\b(we|company)\s+(can|do|does|will)\s+sponsor\b|\bsponsorship\s+(is\s+)?available|\bopen\s+to\s+sponsor/i.test(t)) return 'yes';
+  return '';
+}
 function adField(i, k, label, val, ph, cls){
   return '<div class="field'+(cls ? ' '+cls : '')+'"><label for="ad'+k+i+'">'+label+'</label><input id="ad'+k+i+'" data-i="'+i+'" data-k="'+k+'" value="'+esc(val||'')+'" placeholder="'+esc(ph||'')+'" autocomplete="off"></div>';
 }
@@ -2942,6 +3267,7 @@ function adItem(it, i){
   if(can && it.kind === 'board'){
     f = '<div class="grid3">'+adField(i, 'company', 'Company name', it.company, 'e.g. Ramp')+adField(i, 'domain', 'Company website (for the logo)'+(it.domainGuess ? ' <span class="gss">guessed — check it</span>' : ''), it.domain, 'e.g. ramp.com')+'</div>';
   } else if(can){
+    if(it.sponsors == null && it.description){ it.sponsors = sponsorGuess(it.description); it.spAuto = !!it.sponsors; }
     f = '<div class="grid3">'+
       adField(i, 'title', 'Job title', it.title, 'e.g. Data Analyst')+
       adField(i, 'company', 'Company', it.company, 'e.g. Acme')+
@@ -2950,6 +3276,8 @@ function adItem(it, i){
         ['','Remote','Hybrid','On-site'].map(function(m){ return '<option value="'+m+'"'+(it.mode===m?' selected':'')+'>'+(m||'Not stated')+'</option>'; }).join('')+'</select></div>'+
       adField(i, 'domain', 'Company website (for the logo)'+(it.domainGuess ? ' <span class="gss">guessed — check it</span>' : ''), it.domain, 'e.g. acme.com')+
       adField(i, 'salary', 'Salary (if listed)', it.salary, 'e.g. $90K – $120K USD')+
+      '<div class="field"><label for="adsponsors'+i+'">Visa sponsorship'+(it.spAuto ? ' <span class="gss">read from the description</span>' : '')+'</label><select id="adsponsors'+i+'" data-i="'+i+'" data-k="sponsors">'+
+        [['','Not stated'],['yes','Sponsors visas'],['no','No sponsorship']].map(function(m){ return '<option value="'+m[0]+'"'+((it.sponsors || '')===m[0]?' selected':'')+'>'+m[1]+'</option>'; }).join('')+'</select></div>'+
       (it.src === 'custom' || !it.description ? '<div class="field wide"><label for="addescription'+i+'">Job description <span style="font-weight:500;color:var(--muted)">— paste it so members get a match score</span></label><textarea id="addescription'+i+'" data-i="'+i+'" data-k="description" rows="4" placeholder="Optional">'+esc(it.description||'')+'</textarea></div>' : '')+
     '</div>';
   }
@@ -3044,13 +3372,18 @@ function adminSave(){
       title:it.kind === 'job' ? title : null, company:company || slugName(it.board), location:it.kind === 'job' ? loc : null,
       work_mode:it.mode || null, salary:String(it.salary||'').trim() || null, domain:cleanDomain(it.domain) || null,
       description:String(it.description||'').trim() || null,
+      sponsors:it.kind === 'job' ? (it.sponsors || null) : null,
       posted_at:new Date(it.posted || Date.now()).toISOString()});
   });
   if(missing){ toast('Add a job title and company for ' + missing + ' link' + (missing === 1 ? '' : 's')); return; }
   if(!rows.length){ toast('Tick at least one link to add'); return; }
   var b = $('#adSave'); if(b){ b.disabled = true; b.textContent = 'Adding…'; }
   var save = LIVE
-    ? Promise.all(rows.map(function(r){ return sb.from('custom_jobs').insert(r).then(function(x){ return x.error ? (x.error.code === '23505' ? 'dup' : x.error) : 'ok'; }, function(e){ return e; }); }))
+    ? Promise.all(rows.map(function(r){
+        var ins = function(row){ return sb.from('custom_jobs').insert(row); };
+        return ins(r).then(function(x){ if(x.error && /sponsors/.test(x.error.message || '')){ var r2 = Object.assign({}, r); delete r2.sponsors; return ins(r2); } return x; })   // supabase-daily-picks.sql not run yet
+          .then(function(x){ return x.error ? (x.error.code === '23505' ? 'dup' : x.error) : 'ok'; }, function(e){ return e; });
+      }))
     : Promise.resolve(rows.map(function(r){
         var list = lsGet('tp_team_demo', []);
         if(list.some(function(x){ return x.url === r.url; })) return 'dup';
@@ -3242,7 +3575,7 @@ function maybeTour(force){
   if(!state.user || TOUR.running() || (!force && TOUR.seen(APP_TOUR))) return;
   if(!force && route.job) return;   // came in on a shared job link: let them see the job first; the tour starts when they close it
   setTimeout(function(){
-    if(!state.user || TOUR.running() || $('#modalRoot').innerHTML || (!force && route.job)) return;   // never on top of the welcome questions
+    if(!state.user || TOUR.running() || $('#modalRoot').innerHTML || PICKS_ASK || (!force && route.job)) return;   // never on top of a question
     var first = (state.user.name || '').split(' ')[0];
     function toJobs(){ if(route.name !== 'jobs' || route.job){ location.hash = 'jobs'; } }
     TOUR.start([
@@ -3302,7 +3635,8 @@ function vSettings(v){
       '<div class="field"><label for="sLoc">Location</label><input id="sLoc" value="'+esc(p.target_location||'')+'" placeholder="e.g. New York or Remote US"></div></div>'+
       '<div class="jd-acts"><button class="btn pri" type="button" data-act="saveprefs">Save</button></div></div>'+
     '<div class="card"><h3>Email</h3><p>We only email you if you switch this on. Every email has a one-click unsubscribe.</p>'+
-      '<label class="toggle"><input type="checkbox" id="sDaily"'+(p.daily_email?' checked':'')+'><span class="sw"></span><span><b>New matching roles, every morning</b><small>'+(p.target_role ? 'Fresh '+esc(p.target_role)+' roles'+(p.target_location ? ' in '+esc(p.target_location) : '')+' — no email on days with nothing new.' : 'Add your target role above first — that’s what we match.')+'</small></span></label>'+
+      '<label class="toggle"><input type="checkbox" id="sDaily"'+(p.daily_email?' checked':'')+'><span class="sw"></span><span><b>Free daily job picks</b><small>'+(p.job_prefs ? esc(pkSummary(p.job_prefs).join(' · ')) : 'Tell us your role, experience, visa status and salary — we send the best fresh matches every morning.')+'</small></span></label>'+
+      '<div class="pk-set"><button class="btn sm" type="button" data-act="picks">'+I.spark+(p.job_prefs ? 'Edit my preferences' : 'Set up my daily picks')+'</button></div>'+
       '<label class="toggle" style="margin-top:12px"><input type="checkbox" id="sMail"'+(p.marketing_consent?' checked':'')+'><span class="sw"></span><span><b>Job-search tips & news</b><small>Occasional — a couple of times a month at most.</small></span></label></div>'+
     '<div class="card"><h3>WhatsApp</h3><p>Fresh roles, resume tips and free webinar invites — only if you switch this on. Reply STOP any time.</p>'+
       (p.whatsapp_ok && p.phone ? '<label class="toggle"><input type="checkbox" id="sWa" checked><span class="sw"></span><span><b>Message me on WhatsApp</b><small>'+esc(p.phone)+'</small></span></label>'
@@ -3319,10 +3653,10 @@ function vSettings(v){
     if(!e.target.checked) store.saveProfile({whatsapp_ok:false}).then(function(){ toast('We won’t message you on WhatsApp'); render(); });
   });
   $('#sDaily').addEventListener('change', function(e){
-    var on = e.target.checked, role = ($('#sRole') || {}).value || (state.profile || {}).target_role || '';
-    if(on && !role.trim()){ e.target.checked = false; toast('Add your target role first, then switch this on'); $('#sRole').focus(); return; }
-    var patch = {daily_email:on}; if(on){ patch.daily_email_at = new Date().toISOString(); patch.target_role = role.trim(); var loc = ($('#sLoc') || {}).value; if(loc != null) patch.target_location = loc.trim(); }
-    saveDaily(patch).then(function(ok){ if(!ok){ e.target.checked = !on; return; } toast(on ? 'Done — new roles every morning' : 'Daily emails switched off'); });
+    var on = e.target.checked;
+    if(on && !(state.profile || {}).job_prefs){ e.target.checked = false; openPicks(); return; }   // the form switches it on
+    var patch = {daily_email:on}; if(on) patch.daily_email_at = new Date().toISOString();
+    saveDaily(patch).then(function(ok){ if(!ok){ e.target.checked = !on; return; } toast(on ? 'Done — your picks arrive every morning' : 'Daily picks switched off'); });
   });
   $('#sMail').addEventListener('change', function(e){
     store.saveProfile({marketing_consent:e.target.checked, consent_at:new Date().toISOString()}).then(function(){ toast(e.target.checked ? 'You’ll get occasional tips' : 'Unsubscribed from tips'); });
@@ -3406,16 +3740,7 @@ document.addEventListener('click', function(e){
     case 'tldoc': return tailorDoc();
     case 'tour': return maybeTour(true);
     case 'mailx': lsSet('tp_mail_x', Date.now()); var mc = $('#mailCard'); if(mc) mc.innerHTML = ''; toast('No problem — you can switch it on in Settings any time'); return;
-    case 'mailon':
-      var mr = ($('#mcRole') || {}).value || '', ml = ($('#mcLoc') || {}).value || '';
-      if(!mr.trim()){ toast('Type the role you want first'); $('#mcRole').focus(); return; }
-      t.disabled = true; t.textContent = 'Saving…';
-      return saveDaily({daily_email:true, daily_email_at:new Date().toISOString(), target_role:mr.trim(), target_location:ml.trim()}).then(function(ok){
-        if(!ok){ t.disabled = false; t.textContent = 'Email me daily'; return; }
-        var box = $('#mailCard .mailc'); if(!box) return;
-        box.classList.add('done');
-        box.innerHTML = '<span class="mc-ic">'+I.check+'</span><div class="mc-tx"><b>You’re in. Your first email comes tomorrow morning.</b><small>New '+esc(mr.trim())+' roles'+(ml.trim() ? ' in '+esc(ml.trim()) : '')+', straight to '+esc(state.user.email)+'. Change it any time in <a href="#settings">Settings</a>.</small></div>';
-      });
+    case 'picks': return openPicks();
     case 'ws-opt': case 'ws-cover':
       e.preventDefault();
       var wjob = findJob(t.getAttribute('data-key')), wmode = a === 'ws-cover' ? 'cover' : 'optimize';
@@ -3472,7 +3797,9 @@ document.addEventListener('click', function(e){
       if(nv.trim() && !cp){ toast('Please include the country code, e.g. +1 512 555 0147'); return; }
       return saveQuiet({phone:cp || null, phone_source:cp ? 'confirmed' : null}).then(function(){ toast(cp ? 'Phone saved' : 'Phone removed'); render(); });
     case 'saveprefs':
-      return store.saveProfile({target_role:$('#sRole').value.trim(), target_location:$('#sLoc').value.trim()}).then(function(){ toast('Saved'); });
+      var spr = {target_role:$('#sRole').value.trim(), target_location:$('#sLoc').value.trim()}, jp = (state.profile || {}).job_prefs;
+      if(jp && spr.target_role) spr.job_prefs = Object.assign({}, jp, {role:spr.target_role, where:/^remote$/i.test(spr.target_location) ? '' : spr.target_location});   // keep the daily picks in step
+      return (spr.job_prefs ? savePicks(spr) : store.saveProfile(spr)).then(function(){ toast('Saved'); });
     case 'onbsave':
       var patch = {target_role:$('#oRole').value.trim(), target_location:$('#oLoc').value.trim(), marketing_consent:$('#oMail').checked, onboarded:true};
       if(patch.marketing_consent) patch.consent_at = new Date().toISOString();
