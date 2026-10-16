@@ -159,19 +159,24 @@ svg{flex:none}
 .stools button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 10px;font:600 11.5px Inter,sans-serif;color:var(--body);box-shadow:0 2px 8px -3px rgba(18,26,51,.25);white-space:nowrap}
 .stools button:hover{border-color:var(--blue);color:var(--blue)}
 .stools .ai{color:var(--vio);border-color:#ddd0ff;background:#faf7ff}
-/* hovering a role: a soft outline around it, its tools centred on the top edge */
-.paper.ed .en::before{content:'';position:absolute;inset:-.45em -.65em -.35em;border:1px solid transparent;border-radius:8px;pointer-events:none;transition:border-color .2s ease,box-shadow .25s ease}
-.paper.ed .en:hover::before,.paper.ed .en:focus-within::before,.paper.ed .en.busy::before{border-color:#cdd5f3;box-shadow:0 8px 26px -18px rgba(9,56,213,.45)}
+/* the hover outline: one ring that glides to the bullet, summary or role under the cursor */
+#hring{position:absolute;left:0;top:0;width:0;height:0;z-index:3;pointer-events:none;border:1px solid #c3cdf2;border-radius:7px;background:rgba(9,56,213,.018);
+  box-shadow:0 10px 28px -20px rgba(9,56,213,.55);opacity:0;transition:transform .16s cubic-bezier(.2,.8,.2,1),width .16s cubic-bezier(.2,.8,.2,1),height .16s cubic-bezier(.2,.8,.2,1),opacity .14s ease}
+#hring.on{opacity:1}
+#hring.role{border-color:#cbd3ee;background:transparent}
+#hring.inst{transition:opacity .14s ease}
+.paper.ed .en::before{content:'';position:absolute;inset:-.45em -.65em -.35em;border:1px solid transparent;border-radius:8px;pointer-events:none}
 .paper.ed .en.busy::before{border-color:#d8c9ff;animation:enBusy 1.4s ease-in-out infinite}
 @keyframes enBusy{50%{border-color:#b9a2ff}}
-.etools{left:50%;right:auto;top:-.45em;transform:translate(-50%,-50%);gap:1px;padding:2px;background:#fff;border:1px solid #d6dcf0;border-radius:999px;box-shadow:0 6px 16px -8px rgba(18,26,51,.4)}
-.en:hover>.etools,.en:focus-within>.etools{display:flex;animation:etIn .16s ease}
-@keyframes etIn{from{opacity:0;margin-top:4px}}
-.etools button{position:relative;width:28px;height:24px;border:0;background:none;border-radius:999px;display:grid;place-items:center;color:var(--body);padding:0;cursor:pointer}
+.etools{left:auto;right:calc(-.65em - 34px);top:-.45em;transform:none;flex-direction:column;gap:1px;padding:2px;background:#fff;border:1px solid #d6dcf0;border-radius:999px;box-shadow:0 6px 16px -8px rgba(18,26,51,.4)}
+.en.hv>.etools{display:flex;animation:etIn .16s ease}
+@keyframes etIn{from{opacity:0;transform:translateX(-4px)}}
+.etools button{position:relative;width:24px;height:24px;border:0;background:none;border-radius:999px;display:grid;place-items:center;color:var(--body);padding:0;cursor:pointer}
 .etools button svg{width:15px;height:15px}
 .etools button:hover{background:var(--bg)}
 .etools .add{color:var(--ok)}.etools .del{color:var(--bad)}.etools .ai{color:var(--vio)}
 .etools .ai:hover{background:#f4efff}
+.etools [data-tip]:hover::after{bottom:auto!important;top:50%;left:calc(100% + 8px)!important;transform:translateY(-50%)!important}
 .etools [data-tip]:hover::after,#btb [data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%);background:#121a33;color:#fff;font:600 11px/1.2 Inter,sans-serif;padding:5px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;z-index:40}
 .pbrk{position:absolute;left:-14px;right:-14px;border-top:1.5px dashed #c3c9de;pointer-events:none;z-index:2}
 .pbrk span{position:absolute;right:16px;top:-10px;background:var(--bg);font:600 10.5px Inter,sans-serif;color:#7d84a3;padding:1px 7px;border-radius:99px;border:1px solid #d9deec}
@@ -208,9 +213,12 @@ svg{flex:none}
 .shim i:nth-child(2n){width:86%}
 @keyframes sh{to{background-position:-150% 0}}
 /* bullet toolbar */
-#btb{position:absolute;z-index:25;display:flex;gap:1px;background:#fff;border:1px solid #dfe3f0;border-radius:999px;padding:1px;box-shadow:0 4px 12px -6px rgba(18,26,51,.35)}
-#btb button{position:relative;width:22px;height:22px;border:0;background:none;border-radius:999px;display:grid;place-items:center;color:var(--body);padding:0}
-#btb button svg{width:13px!important;height:13px!important}
+#btb{position:absolute;z-index:25;display:flex;flex-direction:column;gap:1px;background:#fff;border:1px solid #d6dcf0;border-radius:999px;padding:2px;box-shadow:0 6px 16px -8px rgba(18,26,51,.4);
+  transition:transform .16s cubic-bezier(.2,.8,.2,1),opacity .12s ease}
+#btb button{position:relative;width:24px;height:24px;border:0;background:none;border-radius:999px;display:grid;place-items:center;color:var(--body);padding:0}
+#btb [data-tip]:hover::after{bottom:auto;top:50%;left:calc(100% + 8px);transform:translateY(-50%)}
+#btb button svg{width:14px!important;height:14px!important}
+#btb.sum .add,#btb.sum .del{display:none}
 #btb .ai.w::before{content:'';position:absolute;top:1px;right:1px;width:6px;height:6px;border-radius:50%;background:#f59e0b;box-shadow:0 0 0 1.5px #fff}
 #btb button:hover{background:var(--bg)}
 #btb .add{color:var(--ok)}#btb .del{color:var(--bad)}#btb .ai{color:var(--vio)}
@@ -516,7 +524,7 @@ body.embed .banner{max-width:none}
 .sc-up{position:absolute;left:60px;top:6px;background:#0a7f46;color:#fff;font:700 12px Inter,sans-serif;border-radius:999px;padding:2px 8px;animation:scUp 1.6s cubic-bezier(.16,1,.3,1) forwards;pointer-events:none}
 @keyframes scUp{0%{opacity:0;transform:translateY(8px) scale(.8)}15%{opacity:1;transform:translateY(0) scale(1.05)}70%{opacity:1;transform:translateY(-6px)}100%{opacity:0;transform:translateY(-14px)}}
 .pop,#bmenu{animation:popIn .2s cubic-bezier(.16,1,.3,1);transform-origin:top right}
-#btb{animation:btbIn .16s ease}
+#btb{animation:none}
 @keyframes popIn{from{opacity:0;transform:translateY(-4px) scale(.97)}}
 @keyframes btbIn{from{opacity:0;transform:translateY(3px)}}
 .sug,.msug{animation:sugIn .4s cubic-bezier(.16,1,.3,1)}
@@ -613,10 +621,12 @@ body.embed .tbi .scorep{display:flex}
     <div class="stage" id="stage">
       <div class="pane on" id="paneR"><div class="paper" id="paper"></div></div>
       <div class="pane" id="paneC"><div class="cvcol"><div class="cvbar nopr" id="cvbar"></div><div class="paper" id="cpaper"></div></div></div>
+      <div id="hring" aria-hidden="true"></div>
       <div id="btb" hidden>
         <span class="bq" id="bq" hidden></span>
-        <button type="button" class="ai" data-a="b-ai" id="btbAi" aria-label="Improve this bullet with AI" data-tip="Improve with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button>
+        <button type="button" class="add" data-a="b-add" aria-label="Add a bullet below" data-tip="Add a bullet below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
         <button type="button" class="del" data-a="b-del" aria-label="Delete this bullet" data-tip="Delete bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        <button type="button" class="ai" data-a="b-ai" id="btbAi" aria-label="Improve this bullet with AI" data-tip="Improve with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button>
       </div>
       <div id="iss" hidden></div>
       <div id="bmenu" hidden></div>
@@ -1571,7 +1581,7 @@ function renderPaper(){
   var p = $('#paper'), keep = focusInfo();
   p.classList.toggle('wchk', CHECKS && EDIT); p.classList.toggle('ed', !!EDIT); var ib = $('#iss'); if(ib) ib.hidden = true;
   p.innerHTML = headerHTML() + DOC.sections.filter(function(s){ return !s.hidden; }).map(sectionHTML).join('');
-  $('#btb').hidden = true; $('#bmenu').hidden = true;
+  $('#btb').hidden = true; $('#bmenu').hidden = true; if(HV){ HV = null; placeRing(null); }
   restoreFocus(keep);
   breaks();
 }
@@ -2686,6 +2696,7 @@ document.addEventListener('submit', function(e){
 });
 function bulletTool(a, btn){
   if(!BT) return;
+  if(BT.kind === 's'){ if(a === 'b-ai') improveSummary(BT.sid); return; }
   var o = owner(BT.key); if(!o) return;
   var i = idx(o.arr, BT.bid); if(i < 0) return;
   if(a === 'b-add'){ var nb = {id:uid(), t:''}; o.arr.splice(i + 1, 0, nb); structural(); focusPath(bpath(o.sec.id, o.item && o.item.id, nb.id)); }
@@ -2729,35 +2740,83 @@ function refreshChecks(el){
   var t = getField(f); el.innerHTML = fmt(t, null, true);
   var li = el.closest('li.b'); if(li && li.hasAttribute('data-q')){ var q = quality(t); if(q) li.setAttribute('data-q', q); }
 }
+var HV = null, HV_T = null;
+function ringBox(el){   // the outline sits a little outside the text
+  var sr = $('#stage').getBoundingClientRect(), r = el.getBoundingClientRect(), fs = parseFloat(getComputedStyle($('#paper')).fontSize) || 14;
+  var px = el.matches('li.b') ? Math.max(5, fs * .45) : Math.max(7, fs * .65), py = el.matches('li.b') ? Math.max(2, fs * .18) : Math.max(5, fs * .4);
+  var lx = el.matches('li.b') ? fs * 1.15 : 0;   // a bullet's outline takes in its dot
+  return {x:r.left - sr.left - px - lx, y:r.top - sr.top - py, w:r.width + px * 2 + lx, h:r.height + py * 2};
+}
+function placeRing(el, instant){
+  var g = $('#hring'); if(!g) return;
+  if(!el){ g.classList.remove('on'); return; }
+  var b = ringBox(el), was = g.classList.contains('on');
+  g.classList.toggle('inst', !!instant || !was);   // first appearance fades in where it is; after that it glides
+  g.classList.toggle('role', el.classList.contains('en'));
+  g.style.transform = 'translate(' + b.x + 'px,' + b.y + 'px)'; g.style.width = b.w + 'px'; g.style.height = b.h + 'px';
+  void g.offsetWidth; g.classList.add('on');
+  return b;
+}
+function hoverTarget(t){
+  if(!t || !t.closest || !EDIT || TAB !== 'resume') return null;
+  if(t.closest('#btb,#bmenu,#iss,.etools,.stools,.sug,.msug')) return 'keep';
+  return t.closest('#paper li.b') || t.closest('#paper .ps>.sum') || t.closest('#paper .en') || null;
+}
+function setHover(el, instant){
+  clearTimeout(HV_T);
+  if(el === HV){ if(el) placeRing(el, true), positionBtb(el); return; }
+  if(HV) HV.classList.remove('hv');
+  HV = el;
+  if(!el){ placeRing(null); $('#btb').hidden = true; return; }
+  el.classList.add('hv');
+  placeRing(el, instant);
+  if(el.matches('li.b') || el.matches('.sum')) showBtb(el); else $('#btb').hidden = true;
+}
+function positionBtb(el){   // a slim column in the page's right margin, level with the top of the outline — never over text
+  var b = $('#btb'); if(b.hidden || !el) return;
+  var bx = ringBox(el), sr = $('#stage').getBoundingClientRect(), pr = $('#paper').getBoundingClientRect();
+  var right = bx.x + bx.w, edge = pr.right - sr.left;
+  b.style.left = Math.min(sr.width - b.offsetWidth - 2, Math.max(right + 4, Math.min(edge - b.offsetWidth - 3, right + 6))) + 'px';
+  b.style.top = Math.max(0, bx.y) + 'px';
+}
 function showBtb(li){
   if(!EDIT || TAB !== 'resume') return;
-  var b = $('#btb'), sr = $('#stage').getBoundingClientRect(), r = li.getBoundingClientRect();
-  BT = {key:li.getAttribute('data-k'), bid:li.getAttribute('data-b')};
-  var q = li.getAttribute('data-q'), o = owner(BT.key), bt = o && byId(o.arr, BT.bid), ab = $('#btbAi'), note = '';
-  if(q && bt && bt.t){ var g = gradeBullet({t:bt.t}); note = g.weak ? 'Weak opener' : !g.metric ? 'No number yet' : g.wc > 34 ? 'A bit long' : q === 'g' ? '' : 'Could be stronger'; }
-  ab.setAttribute('data-tip', note ? note + ' — improve with AI' : 'Improve with AI'); ab.classList.toggle('w', !!note);
-  b.hidden = false;
-  // in the page's right margin, level with the bullet's first line — never on top of the text
-  var pr = $('#paper').getBoundingClientRect(), ul = li.closest('ul') || li, ur = ul.getBoundingClientRect();
-  var lh = parseFloat(getComputedStyle(li).lineHeight) || 16;
-  b.style.top = Math.max(0, r.top - sr.top + (lh - b.offsetHeight) / 2) + 'px';
-  b.style.left = Math.min(sr.width - b.offsetWidth, Math.max(ur.right, Math.min(pr.right - b.offsetWidth - 2, ur.right + 6)) - sr.left) + 'px';
+  var b = $('#btb'), ab = $('#btbAi'), note = '';
+  if(li.matches('.sum')){
+    var sec = li.closest('.ps'), sid = sec && sec.getAttribute('data-s');
+    BT = {kind:'s', sid:sid}; b.classList.add('sum');
+    ab.setAttribute('data-tip', (secById(sid) || {}).text ? 'Improve summary with AI' : 'Write it for me'); ab.classList.remove('w');
+  } else {
+    BT = {key:li.getAttribute('data-k'), bid:li.getAttribute('data-b')}; b.classList.remove('sum');
+    var q = li.getAttribute('data-q'), o = owner(BT.key), bt = o && byId(o.arr, BT.bid);
+    if(q && bt && bt.t){ var g = gradeBullet({t:bt.t}); note = g.weak ? 'Weak opener' : !g.metric ? 'No number yet' : g.wc > 34 ? 'A bit long' : q === 'g' ? '' : 'Could be stronger'; }
+    ab.setAttribute('data-tip', note ? note + ' — improve with AI' : 'Improve with AI'); ab.classList.toggle('w', !!note);
+  }
+  b.hidden = false; positionBtb(li);
 }
 var stage = $('#stage');
 stage.addEventListener('mouseover', function(e){
   var mk = e.target.closest('mark.iss');
   if(mk){ clearTimeout(ISS_T); if(!ISS || !mk.classList.contains('on')) showIss(mk); }
   else if(e.target.closest('#iss')) clearTimeout(ISS_T);
-  if(e.target.closest('#btb,#bmenu,#iss')) return;
-  var li = e.target.closest('li.b'); if(li){ if(!BT || BT.bid !== li.getAttribute('data-b') || $('#btb').hidden) showBtb(li); }
+  var tg = hoverTarget(e.target);
+  if(tg === 'keep') { clearTimeout(HV_T); return; }
+  if(tg) setHover(tg);
+  else if(!$('#bmenu').hidden) return;
+  else { clearTimeout(HV_T); HV_T = setTimeout(function(){ var f = document.activeElement && document.activeElement.closest && document.activeElement.closest('#paper li.b,#paper .ps>.sum'); setHover(f || null); }, 140); }
 });
+// keep the outline glued to its target while the page scrolls or resizes
+var hvRaf = 0;
+function hvFollow(){ if(hvRaf) return; hvRaf = requestAnimationFrame(function(){ hvRaf = 0; if(HV && HV.isConnected){ placeRing(HV, true); positionBtb(HV); } else if(HV){ HV = null; placeRing(null); } }); }
+window.addEventListener('scroll', hvFollow, true);
+window.addEventListener('resize', hvFollow);
 stage.addEventListener('mouseout', function(e){
   if(e.target.closest('mark.iss,#iss')){ clearTimeout(ISS_T); ISS_T = setTimeout(hideIss, 280); }
 });
 stage.addEventListener('click', function(e){ var mk = e.target.closest('mark.iss'); if(mk) showIss(mk); });
-stage.addEventListener('mouseleave', function(){ if(!$('#bmenu').hidden) return; var f = document.activeElement && document.activeElement.closest && document.activeElement.closest('li.b'); if(!f) $('#btb').hidden = true; });
+stage.addEventListener('mouseleave', function(){ if(!$('#bmenu').hidden) return; var f = document.activeElement && document.activeElement.closest && document.activeElement.closest('#paper li.b,#paper .ps>.sum'); setHover(f || null); });
 document.addEventListener('focusin', function(e){
-  var li = e.target.closest && e.target.closest('li.b'); if(li) showBtb(li);
+  var li = e.target.closest && (e.target.closest('#paper li.b') || e.target.closest('#paper .ps>.sum')); if(li) setHover(li);
   if(e.target.id === 'cvRole' || e.target.id === 'cvCo') return;
 });
 function onEdit(e){
@@ -2765,6 +2824,7 @@ function onEdit(e){
   var f = el.getAttribute('data-f'), multi = f === 'cv|text' || f === 'cv|to';
   var v = multi ? el.innerText.replace(/\n{3,}/g, '\n\n').replace(/\s+$/, '') : el.innerText.replace(/\s+/g, ' ').trim();
   setField(f, v);
+  if(HV && HV.contains(el)) hvFollow();
   var li = el.closest('li.b'); if(li && HL[li.getAttribute('data-b')]){ delete HL[li.getAttribute('data-b')]; li.classList.remove('hl'); }
   if(/^s\|[^|]+\|text$/.test(f) && HL['sum:' + f.split('|')[1]]){ delete HL['sum:' + f.split('|')[1]]; el.classList.remove('hl'); }
   if(f === 'headline' && HL.headline){ delete HL.headline; el.classList.remove('hlx'); }
