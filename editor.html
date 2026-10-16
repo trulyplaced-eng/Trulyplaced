@@ -372,6 +372,40 @@ body.embed .banner{max-width:none}
 .om textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13.5px;resize:vertical;min-height:72px}
 .om textarea:focus,.cvbar input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
 .omgo{margin-top:16px;background:var(--ink);color:#fff;border-color:var(--ink);border-radius:999px;padding:0 26px;min-height:44px}
+.omacts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.omacts .omb2{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff;cursor:pointer;transition:border-color .2s,box-shadow .25s,transform .2s,background .2s;min-height:0}
+.omacts .omb2 b{display:flex;align-items:center;gap:7px;font-size:14.5px;color:var(--ink)}
+.omacts .omb2 b svg{width:17px;height:17px}
+.omacts .omb2 small{font-size:12px;color:var(--muted);line-height:1.4;font-weight:500}
+.omacts .omb2:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 24px -16px rgba(9,56,213,.55)}
+.omacts .ats{background:linear-gradient(135deg,#6d4aff,#0938d5);border-color:transparent}
+.omacts .ats b,.omacts .ats small{color:#fff}.omacts .ats small{opacity:.85}
+.omacts .ats:disabled{background:#e8eaf3;cursor:not-allowed}
+.omacts .ats:disabled b,.omacts .ats:disabled small{color:#9aa1bb}
+.omacts .fcb b svg{color:#0a7f46}
+.omacts .fcb:hover{border-color:#a7dbbb;background:#f6fcf8}
+@media (max-width:560px){.omacts{grid-template-columns:1fr}}
+.vrep .vbtn{margin-top:8px;border:1px solid #a7dbbb;background:#fff;color:#0a7f46;border-radius:999px;padding:5px 12px;font:600 12px Inter,sans-serif;cursor:pointer}
+.vrep .vbtn:hover{background:#effaf3}
+.fcl{display:grid;gap:8px}
+.fci{display:flex;gap:11px;align-items:flex-start;border:1px solid #eceef5;border-radius:12px;padding:11px 13px;background:#fff}
+.fci .fi{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-weight:800;font-size:13px}
+.fci.w .fi{background:#fff4dc;color:#9a6200}.fci.i .fi{background:#eef0ff;color:var(--vio)}.fci.g .fi{background:#e9f8ef;color:#0a7f46}
+.fci .ft{flex:1;min-width:0}
+.fci .ft b{display:block;font-size:13.5px;color:var(--ink);line-height:1.35}
+.fci .ft q{display:block;quotes:none;font-family:var(--ff, Georgia, serif);font-size:13px;color:var(--body);margin-top:4px;line-height:1.45;overflow-wrap:anywhere}
+.fci .ft small{display:block;font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}
+.fci .fa{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.fci .fa button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 11px;font:600 12px Inter,sans-serif;color:var(--body);cursor:pointer}
+.fci .fa button:hover{border-color:var(--blue);color:var(--blue)}
+.fci .fa .rs{border-color:#f0c445;color:#8a5a00}
+.fci.done{opacity:.55}
+.fcok{display:flex;flex-direction:column;align-items:center;text-align:center;padding:26px 10px}
+.fcok span{width:52px;height:52px;border-radius:50%;background:#e9f8ef;color:#0a7f46;display:grid;place-items:center;font-size:24px;font-weight:800}
+.fcok b{margin-top:10px;font-size:16px;color:var(--ink)}
+.fcok small{font-size:13px;color:var(--muted);margin-top:3px}
+.paper li.b.flash>span,.paper .flash{animation:flashY 1.6s ease}
+@keyframes flashY{0%,60%{background:#ffe58a;box-shadow:0 0 0 3px #ffe58a}100%{background:transparent;box-shadow:none}}
 .omgo:hover{background:#000;border-color:#000}
 .om-run{max-width:440px;padding:30px 28px 26px;text-align:center}
 .orbit{width:64px;height:64px;margin:0 auto 14px;border-radius:50%;background:conic-gradient(from 0deg,#6d28d9,#0938d5,#22c1ee,#6d28d9);animation:rot 1.1s linear infinite;display:grid;place-items:center}
@@ -417,6 +451,7 @@ body.embed .banner{max-width:none}
 .vrep .vi{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-weight:800;font-size:14px;background:#e9f8ef;color:#0a7f46}
 .vrep .vi.a{background:#eef0ff;color:var(--vio)}
 .vrep .vi.w{background:#fff4dc;color:#9a6200}
+.vrep .vi svg{width:16px;height:16px}
 .vrep b{display:block;font-size:13.5px;color:var(--ink);line-height:1.3}
 .vrep small{display:block;font-size:12px;color:var(--muted);line-height:1.4;margin-top:2px}
 .vrep .up{color:#0a7f46;font-weight:700}
@@ -1867,14 +1902,14 @@ function acceptSug(key, bid){
   var S = SUG[key]; if(!S || S.loading) return;
   if(key.indexOf('sum:') === 0){
     var el = $('.sug[data-k="' + key + '"] [data-sb]'), s = secById(key.slice(4));
-    if(s){ s.text = el ? el.innerText.replace(/\s+/g, ' ').trim() : S.text; if(/objective/i.test(s.title)) s.title = /^[A-Z\s]+$/.test(s.title) ? 'SUMMARY' : 'Summary'; }
+    if(s){ s.text = el && el.getAttribute('data-ed') === '1' && !el.classList.contains('typing') ? el.innerText.replace(/\s+/g, ' ').trim() : S.text; if(/objective/i.test(s.title)) s.title = /^[A-Z\s]+$/.test(s.title) ? 'SUMMARY' : 'Summary'; }
     delete SUG[key]; structural(); return;
   }
   var o = owner(key); if(!o){ delete SUG[key]; return; }
   var ids = bid ? [bid] : S.ids.slice();
   ids.forEach(function(id){
     var b = byId(o.arr, id), el = $('[data-k="' + key + '"] [data-sb="' + id + '"]');
-    var v = el ? el.innerText.replace(/\s+/g, ' ').trim() : S.sug[id];
+    var v = el && el.getAttribute('data-ed') === '1' && !el.classList.contains('typing') ? el.innerText.replace(/\s+/g, ' ').trim() : S.sug[id];
     if(b && v){ if(norm(v) !== norm(b.t)) HL[b.id] = 1; b.t = v; }   // changed lines stay highlighted until you edit them
     S.ids = S.ids.filter(function(x){ return x !== id; }); delete S.sug[id];
   });
@@ -1989,15 +2024,17 @@ function openOptimise(){
     '<div class="orows">' + rows.map(function(r){ return '<button type="button" class="orow" data-a="opt-t" data-v="' + r[0] + '" aria-pressed="false"><span class="ol">' + r[1] + '</span><span class="pill"><i class="ck"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i><em>Select</em></span></button>'; }).join('') + '</div>' +
     '<label class="omlbl" for="optIns">Special instructions <span>(optional)</span></label>' +
     '<textarea id="optIns" rows="3" maxlength="400" placeholder="e.g. Keep the summary to 36–38 words and each experience bullet between 18–22 words.">' + esc(pref.ins || '') + '</textarea>' +
-    '<button class="btn omgo" type="button" data-a="opt-go" id="optGo" disabled>Proceed →</button><p class="omhint" id="optHint">Pick at least one to continue</p></div>');
+    '<div class="omacts"><button class="btn omb2 ats" type="button" data-a="opt-go" id="optGo" disabled><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="optGoT">ATS optimization</span></b><small>Tailor what you picked to this job’s keywords</small></button>' +
+      '<button class="btn omb2 fcb" type="button" data-a="fc-go"><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 9.5 4-1.2 7-5.1 7-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg>Fact check & validation</b><small>Check your resume as it is now — numbers, tools, titles, dates, blanks</small></button></div>' +
+    '<p class="omhint" id="optHint">Pick at least one above for ATS optimization. Fact check works on its own.</p></div>');
 }
 function optPick(row, on){
   var v = row.getAttribute('data-v'); OPT.sel[v] = on;
   row.classList.toggle('on', on); row.setAttribute('aria-pressed', on ? 'true' : 'false');
   row.querySelector('em').textContent = on ? 'Selected' : 'Select';
   var n = Object.keys(OPT.sel).filter(function(k){ return OPT.sel[k]; }).length, go = $('#optGo'), hint = $('#optHint'), all = $('[data-a=opt-all]');
-  if(go){ go.disabled = !n; go.textContent = n ? 'Proceed with ' + n + ' →' : 'Proceed →'; }
-  if(hint) hint.textContent = n ? '' : 'Pick at least one to continue';
+  if(go){ go.disabled = !n; var gt = $('#optGoT'); if(gt) gt.textContent = n ? 'ATS optimization · ' + n : 'ATS optimization'; }
+  if(hint) hint.textContent = n ? '' : 'Pick at least one above for ATS optimization. Fact check works on its own.';
   if(all) all.textContent = n === $$('.orow').length ? 'Clear all' : 'Select all';
 }
 /* ---- ATS terms and fact checks used by Optimise ---- */
@@ -2052,19 +2089,19 @@ function runOptimise(){
   var keep = {}; Object.keys(sel).forEach(function(k){ keep[k] = sel[k] ? 1 : 0; }); lsSet('tp_opt', {sel:keep, ins:ins});
   var targets = sel.experience ? optTargets() : [], nb = targets.reduce(function(n, t){ return n + t.it.bullets.filter(function(b){ return b.t.trim(); }).length; }, 0);
   var terms = atsTerms(), cover0 = atsCover(docText(), terms);
-  var steps = [['g1', '1 · ATS optimization'], ['job', 'Reading the job description']];
+  var steps = [['g1', 'ATS optimization'], ['job', 'Reading the job description']];
   if(sel.summary) steps.push(['summary', 'Tailoring your summary']);
   if(sel.headline || sel.location) steps.push(['head', 'Matching your title' + (sel.location ? ' and location' : '')]);
   if(sel.experience) steps.push(['experience', targets.length ? 'Rewriting ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' across ' + targets.length + ' role' + (targets.length > 1 ? 's' : '') : 'Checking your work experience']);
   if(sel.skills) steps.push(['skills', 'Matching your skills to the posting']);
-  steps.push(['g2', '2 · Fact check & validation'], ['facts', 'Checking every change against your resume'], ['nums', 'No new numbers, tools or employers'], ['score', 'Re-scoring against the job’s keywords']);
+  steps.push(['score', 'Re-scoring against the job’s keywords']);
   modalOpen('<div class="om om-run" role="dialog" aria-modal="true" aria-live="polite"><div class="orbit"><span></span></div><h2>Optimising your resume</h2>' +
     '<p class="omsub">for <b>' + esc(cleanTitle(JOB.title) || 'this job') + '</b>' + (JOB.company ? ' at <b>' + esc(JOB.company) + '</b>' : '') + '</p>' +
     '<ul class="steps">' + steps.map(function(x){ return /^g\d$/.test(x[0]) ? '<li class="grp' + (x[0] === 'g2' ? ' wait' : '') + '" data-st="' + x[0] + '">' + esc(x[1]) + '</li>' : '<li data-st="' + x[0] + '"><i></i>' + esc(x[1]) + '</li>'; }).join('') + '</ul>' +
-    '<p class="fine">Using only what’s already on your resume — nothing made up.</p></div>');
+    '<p class="fine">Tailored from what’s on your resume. Run Fact check & validation on the results to double-check every change.</p></div>');
   var done = function(k, label){ var li = $('.steps [data-st="' + k + '"]'); if(li){ li.classList.remove('run'); li.classList.add('ok'); if(label) li.lastChild.textContent = label; } };
   var running = function(k){ var li = $('.steps [data-st="' + k + '"]'); if(li && !li.classList.contains('ok')) li.classList.add('run'); };
-  $$('.steps li:not(.grp)').forEach(function(li){ if(['facts', 'nums', 'score'].indexOf(li.getAttribute('data-st')) < 0) li.classList.add('run'); });
+  $$('.steps li:not(.grp)').forEach(function(li){ if(li.getAttribute('data-st') !== 'score') li.classList.add('run'); });
   var R = {src:'local'}, jobs = [], cap = capFrom(ins, 'bullet'), scap = capFrom(ins, 'summary'), t0 = Date.now();
   // the job's key terms go to the AI with the posting, so the rewrite targets what an ATS scans for
   var jdx = (terms.length ? 'KEY TERMS an ATS will scan for (use the exact wording where it truthfully fits): ' + terms.join(', ') + '\n\n' : '') + jobText();
@@ -2091,16 +2128,124 @@ function runOptimise(){
   }
   Promise.all(jobs).then(function(){
     if(sel.skills){ var f = jobFit(); R.skills = f ? f.miss : []; done('skills'); }
-    // ---- phase 2: every suggestion is checked against the resume before anyone sees it
-    var g2 = $('.steps [data-st="g2"]'); if(g2) g2.classList.remove('wait');
-    var V = validateAll(R, targets, terms, cover0);
-    var gap = Math.max(380, Math.min(700, (1600 - (Date.now() - t0)) / 3));
-    running('facts');
-    setTimeout(function(){ done('facts', 'Checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + ' against your resume'); running('nums'); }, gap);
-    setTimeout(function(){ done('nums', V.fixed + V.removed ? 'Fixed ' + (V.fixed + V.removed) + ' — nothing made up' : 'No new numbers, tools or employers'); running('score'); }, gap * 2);
-    setTimeout(function(){ done('score', V.after != null ? (V.after > V.before ? 'ATS keyword match ' + V.before + '% → ' + V.after + '%' : 'ATS keyword match ' + V.after + '%') : 'Re-scored'); }, gap * 3);
-    setTimeout(function(){ showResults(R, targets, sel, V); }, gap * 3 + 450);
+    OPT.R = R; OPT.targets = targets; OPT.terms = terms; OPT.cover0 = cover0;
+    var V = atsOnly(R, targets, terms, cover0);
+    running('score');
+    var gap = Math.max(450, 1400 - (Date.now() - t0));
+    setTimeout(function(){ done('score', V.after != null ? (V.after > V.before ? 'ATS keyword match ' + V.before + '% → ' + V.after + '%' : 'ATS keyword match ' + V.after + '%') : 'Re-scored'); }, gap);
+    setTimeout(function(){ showResults(R, targets, sel, V); }, gap + 450);
   });
+}
+function scoreAfter(R, targets, pool){
+  var after = pool;
+  if(R.summary && R.summary.sug) after = after.replace(R.summary.orig || '\u0000', R.summary.sug) + (R.summary.orig ? '' : '\n' + R.summary.sug);
+  targets.forEach(function(tg){ (tg.res || []).forEach(function(x){ if(x.sug !== x.orig) after = after.replace(x.orig, x.sug); }); });
+  if(R.headline) after += '\n' + R.headline.sug;
+  return after;
+}
+function atsOnly(R, targets, terms, cover0){
+  return {ats:true, checked:null, before:cover0.pct, after:terms.length ? Math.max(cover0.pct, atsCover(scoreAfter(R, targets, docText()), terms).pct) : null};
+}
+var MONI = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,sept:8,oct:9,nov:10,dec:11};
+function dateOf(m, y){ if(!y) return null; var mi = m ? MONI[String(m).toLowerCase().replace(/[^a-z]/g, '').slice(0, 4)] : null; if(mi == null && m && /^\d{1,2}/.test(m)) mi = parseInt(m, 10) - 1; return new Date(+y, mi == null ? 0 : mi, 1); }
+function factAudit(){
+  var O = DOC.meta.orig || origSnap(DOC), oText = O.text || '', now = docText(), items = [], checked = 0;
+  var add = function(sev, title, quote, why, acts){ items.push({sev:sev, title:title, quote:quote || '', why:why || '', acts:acts || []}); };
+  var A = analyse(), yrs = A && A.yrs ? [String(Math.floor(A.yrs)), String(Math.round(A.yrs))] : [];
+  var oNums = {}; numsIn(oText).concat(yrs).forEach(function(d){ oNums[d] = 1; });
+  var oTools = {}; skillsIn(oText).forEach(function(k){ oTools[k.toLowerCase()] = 1; });
+  var where = function(s, it){ return it ? (it.sub || it.title || s.title) : s.title; };
+  DOC.sections.forEach(function(s){
+    if(s.hidden) return;
+    var lists = s.type === 'entries' ? s.items.map(function(it){ return {it:it, arr:it.bullets}; }) : s.list ? [{it:null, arr:s.list}] : [];
+    lists.forEach(function(L){
+      L.arr.forEach(function(b){
+        if(!b.t || !b.t.trim()) return; checked++;
+        var was = O.b[b.id], key = s.id + ':' + (L.it ? L.it.id : '_');
+        // 1. numbers that weren't on the resume you uploaded
+        var nn = (String(b.t).replace(/\[[^\]]*\]/g, ' ').replace(RANGE, ' ').match(NUM_RX) || []).filter(function(m){ var d = digitsOf(m); return d && !oNums[d] && !/^(19|20)\d{2}$/.test(d); });
+        if(nn.length) add('w', '“' + nn[0].trim() + '” isn’t on the resume you uploaded', b.t, where(s, L.it) + ' — make sure this number is real before you send it.', [['show', b.id], was != null && was !== b.t ? ['restore', b.id, key] : null]);
+        // 2. tools that weren't there
+        var nt = skillsIn(b.t).filter(function(k){ return !oTools[k.toLowerCase()]; });
+        if(nt.length) add('w', nt[0] + ' wasn’t on the resume you uploaded', b.t, where(s, L.it) + ' — keep it only if you’ve really used it.', [['show', b.id], was != null && was !== b.t ? ['restore', b.id, key] : null]);
+        // 3. a number you wrote that has since disappeared
+        if(was != null && was !== b.t){ var lost = numsIn(was).filter(function(d){ return numsIn(b.t).indexOf(d) < 0; });
+          if(lost.length){ var shown = (String(was).match(NUM_RX) || []).filter(function(m){ return digitsOf(m) === lost[0]; })[0] || lost[0];
+            add('i', '“' + String(shown).trim() + '” was dropped from this bullet', b.t, 'Your original said: ' + was, [['show', b.id], ['restore', b.id, key]]); } }
+        // 4. blanks still to fill in
+        var ph = String(b.t).match(/\[[^\]]{0,40}\]/);
+        if(ph) add('w', 'Fill in ' + ph[0] + ' before you send it', b.t, where(s, L.it) + ' — a blank on a resume reads as unfinished.', [['show', b.id]]);
+      });
+    });
+    if(s.type === 'summary' && s.text){ checked++;
+      var sn = (String(s.text).replace(/\[[^\]]*\]/g, ' ').match(NUM_RX) || []).filter(function(m){ var d = digitsOf(m); return d && !oNums[d] && !/^(19|20)\d{2}$/.test(d); });
+      if(sn.length) add('w', '“' + sn[0].trim() + '” in your summary isn’t on the resume you uploaded', s.text, 'Make sure it’s real.', [['showsum', s.id]]);
+      var st = skillsIn(s.text).filter(function(k){ return !oTools[k.toLowerCase()]; });
+      if(st.length) add('w', st[0] + ' in your summary wasn’t on the resume you uploaded', s.text, 'Keep it only if you’ve really used it.', [['showsum', s.id]]);
+      if(/\[[^\]]{0,40}\]/.test(s.text)) add('w', 'Your summary still has a blank to fill in', s.text, '', [['showsum', s.id]]);
+    }
+    // 5. dates that don't add up
+    if(s.type === 'entries') s.items.forEach(function(it){
+      RANGE.lastIndex = 0; var m = RANGE.exec(it.dates || ''); RANGE.lastIndex = 0;
+      if(!m) return;
+      var a = dateOf(m[1], m[2]), z = m[5] ? new Date() : dateOf(m[3], m[4]);
+      if(a && z && z < a) add('w', 'The end date is before the start date', it.title + ' · ' + it.dates, 'Check the dates for this ' + (s.k === 'education' ? 'school' : 'role') + '.', []);
+      else if(a && a > new Date()) add('w', 'The start date is in the future', it.title + ' · ' + it.dates, '', []);
+    });
+  });
+  // 6. a job title you haven't held
+  if(DOC.headline && DOC.headline !== O.head){
+    var lowo = (O.titles + ' ' + O.head).toLowerCase(), rk = (DOC.headline.toLowerCase().match(/[a-z]+/g) || []).filter(function(w){ return /^(senior|sr|lead|principal|staff|head|manager|director|chief|vp|architect)$/.test(w) && !inText(w, lowo); })[0];
+    if(rk) add('w', '“' + rk.charAt(0).toUpperCase() + rk.slice(1) + '” in your title isn’t in any role on your resume', DOC.headline, 'Keep it only if it’s true.', []);
+  }
+  // 7. can a recruiter reach you?
+  var ct = DOC.contact.join(' ');
+  if(!/[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,}/i.test(ct)) add('w', 'No email address in your contact details', '', 'Recruiters and ATS systems look for it at the top.', []);
+  if(!/\+?\d[\d ().-]{7,}\d/.test(ct)) add('i', 'No phone number in your contact details', '', 'Many recruiters call before they email.', []);
+  // 8. ATS: how much of the job it covers
+  var terms = atsTerms(), cov = terms.length ? atsCover(now, terms) : null;
+  return {items:items.filter(function(x){ return x; }).map(function(x){ x.acts = x.acts.filter(Boolean); return x; }), checked:checked, cov:cov, terms:terms, since:O.at};
+}
+function runFactCheck(){
+  if(!DOC) return;
+  var steps = [['cmp', 'Comparing with the resume you uploaded'], ['nums', 'Checking numbers, tools and titles'], ['gaps', 'Looking for blanks, dates and contact details']];
+  if(JOB) steps.push(['ats', 'Validating against the job’s keywords']);
+  modalOpen('<div class="om om-run" role="dialog" aria-modal="true" aria-live="polite"><div class="orbit"><span></span></div><h2>Fact check & validation</h2>' +
+    '<p class="omsub">Making sure everything on your resume is true, complete and ATS-ready</p>' +
+    '<ul class="steps"><li class="grp">Fact check & validation</li>' + steps.map(function(x){ return '<li data-st="' + x[0] + '" class="run"><i></i>' + esc(x[1]) + '</li>'; }).join('') + '</ul>' +
+    '<p class="fine">Nothing on your resume changes unless you choose to.</p></div>');
+  var R = factAudit();
+  steps.forEach(function(x, i){ setTimeout(function(){ var li = $('.steps [data-st="' + x[0] + '"]'); if(li){ li.classList.remove('run'); li.classList.add('ok');
+    if(x[0] === 'cmp') li.lastChild.textContent = 'Checked ' + R.checked + ' line' + (R.checked === 1 ? '' : 's') + ' against your original';
+    if(x[0] === 'ats' && R.cov) li.lastChild.textContent = 'ATS keyword match: ' + R.cov.pct + '%'; } }, 420 * (i + 1)); });
+  setTimeout(function(){ showFactCheck(R); }, 420 * steps.length + 500);
+}
+function showFactCheck(R){
+  FC = R;
+  var w = R.items.filter(function(x){ return x.sev === 'w'; }).length, since = new Date(R.since || Date.now());
+  var item = function(x, i){
+    return '<div class="fci ' + x.sev + '" data-fi="' + i + '"><span class="fi">' + (x.sev === 'w' ? '!' : 'i') + '</span><span class="ft"><b>' + esc(x.title) + '</b>' +
+      (x.quote ? '<q>' + fmt(x.quote) + '</q>' : '') + (x.why ? '<small>' + esc(x.why) + '</small>' : '') +
+      (x.acts.length ? '<span class="fa">' + x.acts.map(function(a){ return a[0] === 'restore' ? '<button type="button" class="rs" data-a="fc-restore" data-v="' + i + '">Restore my original</button>'
+        : '<button type="button" data-a="fc-show" data-v="' + i + '">Show me</button>'; }).join('') + '</span>' : '') + '</span></div>';
+  };
+  modalOpen('<div class="om om-res" role="dialog" aria-modal="true" aria-labelledby="fcT"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
+    '<div class="omh"><h2 id="fcT">Fact check & validation</h2><p class="omsub">Compared with the resume you uploaded on ' + since.toLocaleDateString(undefined, {day:'numeric', month:'short', year:'numeric'}) + '. Nothing changes unless you choose to.</p></div>' +
+    '<div class="vrep">' +
+      '<div><span class="vi' + (w ? ' w' : '') + '">' + (w ? '!' : '✓') + '</span><span><b>' + (w ? w + ' thing' + (w === 1 ? '' : 's') + ' to check' : 'Everything checks out') + '</b><small>Checked ' + R.checked + ' lines for numbers, tools, titles, dates and blanks.</small></span></div>' +
+      (R.cov ? '<div><span class="vi a">✓</span><span><b>ATS keyword match: <span class="up">' + R.cov.pct + '%</span></b><small>' + (R.cov.miss.length ? 'Missing: ' + esc(R.cov.miss.slice(0, 6).join(', ')) + (R.cov.miss.length > 6 ? '…' : '') + '. Run ATS optimization to work them in.' : 'Your resume covers every keyword we found in this job.') + '</small></span></div>' : '') +
+    '</div>' +
+    '<div class="omb">' + (R.items.length ? '<section class="rc"><h3>What to check</h3><div class="fcl">' + R.items.map(item).join('') + '</div></section>'
+      : '<section class="rc"><div class="fcok"><span>✓</span><b>Everything checks out</b><small>No new numbers, tools or titles, no blanks, and your dates and contact details look right.</small></div></section>') + '</div>' +
+    '<div class="omf"><span></span>' + (JOB ? '<button class="btn" type="button" data-a="optimize">ATS optimization</button>' : '') + '<button class="btn grn" type="button" data-a="m-close">Done</button></div></div>');
+}
+var FC = null;
+function fcShow(x){
+  var a = x.acts.filter(function(y){ return y[0] === 'show' || y[0] === 'showsum'; })[0]; modalClose();
+  if(!a) return;
+  var el = a[0] === 'show' ? $('#paper li.b[data-b="' + a[1] + '"]') : $('#paper [data-f="s|' + a[1] + '|text"]');
+  if(!el) return; el.scrollIntoView({behavior:'smooth', block:'center'});
+  el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); setTimeout(function(){ el.classList.remove('flash'); }, 1800);
 }
 function validateAll(R, targets, terms, cover0){
   var pool = docText(), A = analyse(), yrs = A && A.yrs ? [String(Math.floor(A.yrs)), String(Math.round(A.yrs))] : [];
@@ -2143,7 +2288,7 @@ function showResults(R, targets, sel, V){
   var lab = R.src === 'ai' ? 'AI suggestion' : 'Suggestion';
   var row = function(type, data, orig, sug, note, fc){
     var i = OPT.rows.length; OPT.rows.push(Object.assign({type:type, st:'p', orig:orig, sug:sug}, data));
-    var chk = V ? (fc ? '<span class="fc fx">⚠ ' + esc(fc) + '</span>' : '<span class="fc">✓ Fact-checked against your resume</span>') : '';
+    var chk = V && V.checked != null ? (fc ? '<span class="fc fx">⚠ ' + esc(fc) + '</span>' : '<span class="fc">✓ Fact-checked against your resume</span>') : '';
     return '<div class="rr" data-r="' + i + '" style="--d:' + Math.min(i*60, 900) + 'ms"><div class="ro">' + (orig ? fmt(orig) : '<i>Not on your resume yet</i>') + '</div>' +
       '<div class="rn"><span contenteditable="true" data-rs="' + i + '">' + fmt(sug) + '</span>' + (note ? '<small>' + esc(note) + '</small>' : '') + chk +
       '<div class="rb" id="rb' + i + '"><button type="button" class="ok" data-a="r-ok" data-v="' + i + '" aria-label="Accept">✓</button><button type="button" class="no" data-a="r-no" data-v="' + i + '" aria-label="Reject">✕</button></div></div></div>';
@@ -2170,10 +2315,11 @@ function showResults(R, targets, sel, V){
     (V ? '<div class="vrep">' +
       (V.after != null ? '<div><span class="vi a">✓</span><span><b>ATS keyword match: ' + (V.after > V.before ? V.before + '% → <span class="up">' + V.after + '%</span>' : '<span class="up">' + V.after + '%</span>') + '</b><small>' +
         (V.after > V.before ? 'Of the ' + atsTerms().length + ' keywords in this job description, once you accept these changes.' : 'Your resume already uses most of the ' + atsTerms().length + ' keywords in this job description.') + '</small></span></div>' : '') +
+      (V.checked == null ? '<div><span class="vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 9.5 4-1.2 7-5.1 7-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg></span><span><b>Not fact-checked yet</b><small>Check every suggestion against your resume: no new numbers, tools or employers.</small><button type="button" class="vbtn" data-a="fc-sug">Run fact check & validation</button></span></div>' :
       '<div><span class="vi' + (V.fixed + V.removed ? ' w' : '') + '">' + (V.fixed + V.removed ? '!' : '✓') + '</span><span><b>Fact-checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + '</b><small>' +
         (V.fixed + V.removed ? (V.fixed ? V.fixed + ' had a number that isn’t on your resume — now a [ ] for you to fill in. ' : '') +
           (V.removed ? V.removed + ' suggestion' + (V.removed > 1 ? 's' : '') + ' dropped, so your original stays: ' + V.notes.slice(0, 3).map(function(n){ return esc(n.split(' — ')[1] || 'it changed a fact'); }).join('; ') + '.' : '')
-          : 'Every suggestion uses only facts already on your resume — no new numbers, tools or employers.') + '</small></span></div>' +
+          : 'Every suggestion uses only facts already on your resume — no new numbers, tools or employers.') + '</small></span></div>') +
     '</div>' : '') +
     '<div class="omb">' + h + '</div>' +
     '<div class="omf"><span id="omCount"></span><button class="btn grn" type="button" data-a="r-all" id="rAll">✓ Accept all</button><button class="btn" type="button" data-a="opt-done">Done</button></div></div>');
@@ -2193,7 +2339,7 @@ function markRow(i, how){
 }
 function applyRow(i){
   var r = OPT.rows[i]; if(!r || r.st !== 'p') return false;
-  var el = $('[data-rs="' + i + '"]'), v = el ? el.innerText.replace(/\s+/g, ' ').trim() : r.sug;
+  var el = $('[data-rs="' + i + '"]'), v = el && r.edited && !el.classList.contains('typing') ? el.innerText.replace(/\s+/g, ' ').trim() : r.sug;
   if(!v) return false;
   if(r.type === 'bullet'){ var o = owner(r.key), b = o && byId(o.arr, r.bid); if(b){ b.t = v; HL[b.id] = 1; } }
   if(r.type === 'summary'){
@@ -2443,8 +2589,20 @@ document.addEventListener('click', function(e){
     case 'opt-all': var allOn = $$('.orow').every(function(r){ return OPT.sel[r.getAttribute('data-v')]; });
       $$('.orow').forEach(function(r){ OPT.sel[r.getAttribute('data-v')] = !allOn; });   // takes effect at once; the ticks animate after
       $$('.orow').forEach(function(r, n){ setTimeout(function(){ optPick(r, !allOn); }, n*70); });
-      var og = $('#optGo'); if(og){ og.disabled = allOn; og.textContent = allOn ? 'Proceed →' : 'Proceed with ' + $$('.orow').length + ' →'; } return;
+      var og = $('#optGo'), ogt = $('#optGoT'); if(og){ og.disabled = allOn; if(ogt) ogt.textContent = allOn ? 'ATS optimization' : 'ATS optimization · ' + $$('.orow').length; } return;
     case 'opt-go': return runOptimise();
+    case 'fc-go': return runFactCheck();
+    case 'fc-show': if(FC && FC.items[+v]) fcShow(FC.items[+v]); return;
+    case 'fc-restore':
+      var fx = FC && FC.items[+v], ra = fx && fx.acts.filter(function(y){ return y[0] === 'restore'; })[0]; if(!ra) return;
+      var ro = owner(ra[2]), rb = ro && byId(ro.arr, ra[1]), was = (DOC.meta.orig || {}).b ? DOC.meta.orig.b[ra[1]] : null;
+      if(rb && was != null){ rb.t = was; delete HL[rb.id]; structural(); }
+      var row = $('.fci[data-fi="' + v + '"]'); if(row){ row.classList.add('done'); var fa = row.querySelector('.fa'); if(fa) fa.innerHTML = '<span style="font:600 12px Inter,sans-serif;color:#0a7f46">✓ Restored your original</span>'; }
+      return;
+    case 'fc-sug':
+      if(OPT.rows.some(function(r){ return r.st !== 'p'; })){ toast('You’ve started accepting changes — run Fact check & validation from Optimise to check your resume now.'); return; }
+      var V2 = validateAll(OPT.R, OPT.targets, OPT.terms, OPT.cover0); showResults(OPT.R, OPT.targets, OPT.sel, V2);
+      toast(V2.fixed + V2.removed ? 'Fact check done — ' + (V2.fixed + V2.removed) + ' fixed so nothing is made up' : 'Fact check done — every change checks out'); return;
     case 'r-ok': if(applyRow(+v)){ structural(); } countRows(); return;
     case 'r-no': var rr = OPT.rows[+v]; if(rr && rr.st === 'p'){ rr.st = 'r'; markRow(+v, 'r'); } countRows(); return;
     case 'r-all': var any = false; OPT.rows.forEach(function(r0, i){ if(applyRow(i)) any = true; }); if(applySkills()) any = true; if(any) structural(); countRows(); toast('All suggestions applied'); return;
@@ -2513,6 +2671,11 @@ function openAiMenu(btn, key, bid){
   m.style.top = (br.bottom - sr.top + 6) + 'px';
   m.style.left = Math.max(0, Math.min(br.left + br.width / 2 - sr.left - m.offsetWidth / 2, sr.width - m.offsetWidth)) + 'px';
 }
+document.addEventListener('input', function(e){
+  var t = e.target.closest && e.target.closest('[data-sb],[data-rs]'); if(!t) return;
+  if(t.hasAttribute('data-sb')) t.setAttribute('data-ed', '1');
+  if(t.hasAttribute('data-rs') && OPT && OPT.rows){ var r = OPT.rows[+t.getAttribute('data-rs')]; if(r) r.edited = true; }
+});
 document.addEventListener('submit', function(e){
   if(e.target.id !== 'bmAskF') return;
   e.preventDefault();
@@ -2737,7 +2900,14 @@ function backLink(){
   b.href = fromJob ? '/app.html#job=' + encodeURIComponent(JOB.key) : '/app.html#jobs';
   b.lastChild.textContent = fromJob ? 'Back to the job' : 'Back to jobs';
 }
+function origSnap(D){   // the resume as it was first added — what Fact check compares against
+  var b = {}, heads = [];
+  D.sections.forEach(function(s){ (s.items || []).forEach(function(it){ heads.push(it.title || ''); (it.bullets || []).forEach(function(x){ b[x.id] = x.t; }); }); (s.list || []).forEach(function(x){ b[x.id] = x.t; }); });
+  return {text:docText(D), b:b, head:D.headline || '', titles:heads.join(' | '), at:Date.now()};
+}
 function startDoc(D){
+  D.meta = D.meta || {};
+  if(!D.meta.orig) D.meta.orig = origSnap(D);
   DOC = D; SUG = {}; HIST = []; HI = -1;
   JOB = loadJob(); backLink();
   show('wrap'); $('#tabs').hidden = false;
