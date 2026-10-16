@@ -156,6 +156,28 @@ def level_fit(level, title):
         return 0.2 if (lead or top or senior) else -0.1
     return 0
 
+STATE_CODE = {'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR', 'california': 'CA', 'colorado': 'CO', 'connecticut': 'CT', 'delaware': 'DE', 'district of columbia': 'DC',
+              'florida': 'FL', 'georgia': 'GA', 'hawaii': 'HI', 'idaho': 'ID', 'illinois': 'IL', 'indiana': 'IN', 'iowa': 'IA', 'kansas': 'KS', 'kentucky': 'KY', 'louisiana': 'LA', 'maine': 'ME',
+              'maryland': 'MD', 'massachusetts': 'MA', 'michigan': 'MI', 'minnesota': 'MN', 'mississippi': 'MS', 'missouri': 'MO', 'montana': 'MT', 'nebraska': 'NE', 'nevada': 'NV',
+              'new hampshire': 'NH', 'new jersey': 'NJ', 'new mexico': 'NM', 'new york': 'NY', 'north carolina': 'NC', 'north dakota': 'ND', 'ohio': 'OH', 'oklahoma': 'OK', 'oregon': 'OR',
+              'pennsylvania': 'PA', 'rhode island': 'RI', 'south carolina': 'SC', 'south dakota': 'SD', 'tennessee': 'TN', 'texas': 'TX', 'utah': 'UT', 'vermont': 'VT', 'virginia': 'VA',
+              'washington': 'WA', 'west virginia': 'WV', 'wisconsin': 'WI', 'wyoming': 'WY'}
+
+def place_match(place, job):
+    """One place from the form: 'Austin, TX' (that city) or 'Texas' (anywhere in the state)."""
+    loc = job['location'] or ''
+    m = re.match(r'^\s*(.+?),\s*([A-Za-z]{2})\s*$', place)
+    if m:
+        return bool(re.search(r'(^|[^a-z])' + re.escape(m.group(1).strip().lower()) + r'($|[^a-z])', loc.lower()))
+    code = STATE_CODE.get(place.strip().lower())
+    if code:
+        return bool(re.search(r'(^|[^A-Za-z])' + code + r'($|[^A-Za-z])', loc)) or place.strip().lower() in loc.lower()
+    return place_ok(place, job)   # older free-text answers
+
+def places_ok(where, job):
+    parts = [x for x in re.split(r'\s*;\s*', where or '') if x.strip()]
+    return any(place_match(x, job) for x in parts) if parts else True
+
 def where_ok(pr, job):
     """Remote / hybrid / on-site + city, from their answers. No city = anywhere in the US."""
     modes = [m for m in (pr.get('modes') or []) if m in MODE_LABEL]
@@ -164,12 +186,12 @@ def where_ok(pr, job):
     is_remote = job['remote'] or job['mode'] == 'Remote' or bool(re.search(r'\bremote\b', loc, re.I))
     is_hybrid = job['mode'] == 'Hybrid' or bool(re.search(r'\bhybrid\b', loc, re.I))
     in_us = bool(US_RX.search(loc)) or job.get('country') == 'US'
-    if not modes: return place_ok(where, job) and (in_us or bool(where) or pr.get('auth') == 'outside')
+    if not modes: return places_ok(where, job) and (in_us or bool(where) or pr.get('auth') == 'outside')
     if 'remote' in modes and is_remote and (in_us or re.fullmatch(r'\s*(fully\s+)?remote\s*', loc, re.I) or pr.get('auth') == 'outside'): return True
     if is_remote and not is_hybrid: return False
     office = ('hybrid' in modes) if is_hybrid else ('onsite' in modes) if job['mode'] == 'On-site' else ('hybrid' in modes or 'onsite' in modes)
     if not office: return False
-    return place_ok(where, job) if where else (in_us or pr.get('auth') == 'outside')
+    return places_ok(where, job) if where else (in_us or pr.get('auth') == 'outside')
 
 def words(s):
     return [w for w in re.sub(r'[^a-z0-9+#]+', ' ', (s or '').lower()).split() if len(w) > 1 and w not in STOP]
@@ -201,8 +223,13 @@ def place_ok(where, job):
         if re.search(r'(^|[^a-z])' + re.escape(p) + r'($|[^a-z])', loc.lower()): return True
     return False
 
+def curated(p):
+    """Hand-picked roles (the ones your team adds) go only to members who gave us their WhatsApp."""
+    return bool(p.get('whatsapp_ok') and p.get('phone'))
+
 def pick(profile, jobs, already):
     pr = profile.get('job_prefs') or {}
+    profile['_locked'] = 0
     if pr.get('role'): return pick_prefs(profile, pr, jobs, already)
     roles = [r for r in re.split(r'\s*(?:,|/|;|\bor\b)\s*', profile.get('target_role') or '', flags=re.I) if r.strip()]
     if not roles: return []
@@ -216,6 +243,7 @@ def pick(profile, jobs, already):
         if not s or not place_ok(profile.get('target_location'), j): continue
         if TOO_SENIOR.search(j['title']) and not want_senior: continue
         if SENIOR.search(j['title']) and not want_senior: s -= 0.3 if want_junior else 0.15
+        if j['team'] and not curated(profile): profile['_locked'] += 1; continue
         if j['team']: s += 0.1
         scored.append((s, j['posted'], j))
     scored.sort(key=lambda x: (-x[0], -x[1]))
@@ -247,6 +275,7 @@ def pick_prefs(profile, pr, jobs, already):
         if want_k:
             top = salary_max_k(j['salary'])
             if top is not None and top < want_k * 0.95: continue
+        if j['team'] and not curated(profile): profile['_locked'] = profile.get('_locked', 0) + 1; continue
         if j['team']: s += 0.1
         scored.append((s, j['posted'], j))
     scored.sort(key=lambda x: (-x[0], -x[1]))
@@ -269,8 +298,11 @@ def funnel(p):
     """Every email ends on the same offer — we apply for you, let's talk — plus the free ATS check as a small link."""
     def u(c, base): return base + ('&' if '?' in base else '?') + f'utm_source=trulyplaced&utm_medium=email&utm_campaign=daily_picks&utm_content={c}'
     talk = {'k': 'call', 'cta': 'Let’s talk', 'href': u('call', BOOK_CALL),
-            'title': 'We’ll apply to 1,000 jobs for you',
-            'text': 'Your resume tailored to every job description — customized the way you want, for the roles you choose. Tell us what you’re after and we’ll take it from there.'}
+            'title': 'Want us to do the applying?',
+            'text': 'Our team applies to 1,000 jobs for you — the roles you choose, each with your resume tailored to that job description.',
+            'points': ['A recruiter rebuilds your resume in about 5 business days',
+                       'A dedicated team sends 1,000 applications over about 7–8 weeks',
+                       'Changes to your resume whenever you ask, and top-ups if a week runs short']}
     ats = {'k': 'ats', 'cta': 'Run a free ATS check on your resume', 'href': u('ats', SITE + '/ats-check.html')}
     return talk, [ats]
 
@@ -295,6 +327,11 @@ def build(p, picks):
     pr = p.get('job_prefs') or {}
     needs = pr.get('auth') in SPONSOR_AUTH
     main, others = funnel(p)
+    lk = int(p.get('_locked') or 0)
+    add_wa = f"{SITE}/app.html?ref=email&utm_source=trulyplaced&utm_medium=email&utm_campaign=daily_picks&utm_content=add_whatsapp#picks-wa"
+    locked_html = (f'<div style="margin:6px 0 2px;padding:14px 16px;border:1px dashed #9fdcb7;background:#f4fbf7;border-radius:12px;font:14px/1.5 Arial,Helvetica,sans-serif;color:#1d2b4f">'
+                   f'&#128274; <b>{lk} more role{"s" if lk > 1 else ""} hand-picked by our recruiters matched you</b> in the last few days. '
+                   f'Our team sends hand-picked roles to members on WhatsApp.<br><a href="{e(add_wa)}" style="display:inline-block;margin-top:8px;background:#128c4b;color:#ffffff;font:700 13px Arial,Helvetica,sans-serif;text-decoration:none;border-radius:9px;padding:8px 14px">Add my WhatsApp to get them</a></div>') if lk else ''
     cos = []
     for j in picks:
         if j['company'] not in cos: cos.append(j['company'])
@@ -351,6 +388,7 @@ def build(p, picks):
     <div style="font:14px/1.5 Arial,Helvetica,sans-serif;color:#737b9c">Posted in the last few days{(" · " + e(where)) if where and not matched else ""}. Apply early — fresh roles get the most attention.</div>
     {f'<div style="font:12.5px/1.5 Arial,Helvetica,sans-serif;color:#737b9c;margin-top:8px;padding:8px 10px;background:#f6f7fb;border-radius:10px">Matched to you: {e(matched)} · <a href="{e(settings)}" style="color:#0938d5;text-decoration:none;font-weight:700">Edit</a></div>' if matched else ''}
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px">{rows}</table>
+    {locked_html}
     <div style="padding:14px 0 16px;text-align:center"><a href="{e(SITE + '/app.html?ref=email&utm_source=daily_email#jobs')}" style="font:700 14px Arial,Helvetica,sans-serif;color:#0938d5;text-decoration:none">See all new roles on TrulyPlaced Jobs →</a></div>
   </td></tr>
   <tr><td style="padding-top:14px">
@@ -358,6 +396,7 @@ def build(p, picks):
       <td style="padding:20px 22px">
         <div style="font:700 17px/1.35 Arial,Helvetica,sans-serif;color:#ffffff">{e(main['title'])}</div>
         <div style="font:14px/1.5 Arial,Helvetica,sans-serif;color:#c9d4ff;margin-top:4px">{e(main['text'])}</div>
+        {''.join(f'<div style="font:14px/1.45 Arial,Helvetica,sans-serif;color:#ffffff;margin-top:8px"><span style="display:inline-block;width:18px;height:18px;line-height:18px;border-radius:9px;background:#22c55e;color:#06210f;text-align:center;font-weight:700;font-size:12px;margin-right:8px">✓</span>{e(x)}</div>' for x in main.get('points', []))}
         <a href="{e(main['href'])}" style="display:inline-block;margin-top:12px;background:#ffffff;color:#0938d5;font:700 14px Arial,Helvetica,sans-serif;text-decoration:none;border-radius:10px;padding:10px 16px">{e(main['cta'])}</a>
       </td></tr></table>
     <div style="padding:12px 4px 0;font:13px/1.6 Arial,Helvetica,sans-serif;color:#4b5473;text-align:center">Also free: {' &nbsp;·&nbsp; '.join(f'<a href="{e(o["href"])}" style="color:#0938d5;font-weight:700;text-decoration:none">{e(o["cta"])}</a>' for o in others)}</div>
@@ -368,9 +407,10 @@ def build(p, picks):
     {e(ADDRESS)}
   </td></tr>
 </table></td></tr></table></body></html>'''
+    locked_txt = f"\n\n{lk} more role{'s' if lk > 1 else ''} hand-picked by our recruiters matched you. Add your WhatsApp to get them: {add_wa}" if lk else ''
     text = (f"{'Hi ' + fn + ',' if fn else 'Hi there,'}\n\nYour daily picks: {n} fresh {role} role{'s' if n > 1 else ''}, posted in the last few days." + (f"\nMatched to you: {matched}" if matched else '') + "\n\n" +
-            '\n\n'.join(f"{j['title']} — {j['company']}" + (f", {j['location']}" if j['location'] else '') + (f" ({j['salary']})" if j['salary'] else '') + f"\n{job_link(j, p['id'])}" for j in picks) +
-            f"\n\n{main['title']} {main['cta']}: {main['href']}\n" + ''.join(f"{o['cta']}: {o['href']}\n" for o in others) +
+            '\n\n'.join(f"{j['title']} — {j['company']}" + (f", {j['location']}" if j['location'] else '') + (f" ({j['salary']})" if j['salary'] else '') + f"\n{job_link(j, p['id'])}" for j in picks) + locked_txt +
+            f"\n\n{main['title']} {main['text']}\n" + ''.join(f"- {x}\n" for x in main.get('points', [])) + f"{main['cta']}: {main['href']}\n" + ''.join(f"{o['cta']}: {o['href']}\n" for o in others) +
             f"\nUpdate your preferences: {settings}\nUnsubscribe: {unsub}\n{ADDRESS}\n")
     return subject, body, text, unsub
 
@@ -402,14 +442,18 @@ def main():
     jobs = load_jobs()
     log(f'{len(jobs)} roles loaded; {sum(1 for j in jobs if j["posted"] >= NOW_MS - WINDOW_DAYS*864e5)} posted in the last {WINDOW_DAYS:g} days')
     base = 'profiles?select=id,email,full_name,target_role,target_location,unsub_token{}&daily_email=is.true&order=daily_email_at.asc'
-    try:
-        subs = get_all(base.format(',job_prefs'))
-    except urllib.error.HTTPError:
+    subs = None
+    for extra, note in ((',job_prefs,whatsapp_ok,phone', ''), (',job_prefs', 'Note: run supabase-leads.sql so WhatsApp members get the hand-picked roles.'),
+                        ('', 'Note: run supabase-daily-picks.sql so the emails use each person’s form answers (visa, level, salary).')):
         try:
-            subs = get_all(base.format(''))
-            log('Note: run supabase-daily-picks.sql so the emails use each person’s form answers (visa, level, salary).')
+            subs = get_all(base.format(extra))
+            if note: log(note)
+            break
         except urllib.error.HTTPError as err:
-            sys.exit('Could not read subscribers — did you run supabase-daily-email.sql? ' + err.read().decode(errors='replace')[:200])
+            last = err
+    if subs is None:
+        sys.exit('Could not read subscribers — did you run supabase-daily-email.sql? ' + last.read().decode(errors='replace')[:200])
+    log(f"{sum(1 for p in subs if curated(p))} of them get hand-picked roles (on WhatsApp)")
     log(f'{len(subs)} subscriber(s)')
     if MODE == 'test':
         if not TEST_TO: sys.exit('Test mode needs an email address (TEST_TO)')
