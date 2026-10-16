@@ -1033,7 +1033,7 @@ var CONFIG = {
 };
 
 var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
-var APP_VERSION = '2026-10-16.4';   // also in /version.txt — lets us check which version the live site is serving
+var APP_VERSION = '2026-10-16.6';   // also in /version.txt — lets us check which version the live site is serving
 
 /* =====================================================================
    utils
@@ -2291,7 +2291,7 @@ function pkDraw(){
         '<div class="pk-tier"><b>'+I.mail+'Email</b><small>Fresh roles that match you, from 50+ company job boards.</small><span class="pk-tv">Every morning</span></div>'+
         '<div class="pk-tier hot"><em>Recommended</em><b>'+I.wa+'Email + WhatsApp</b><small>Everything in email, plus roles our recruiters hand-pick for you — and a real person to message about your search.</small><span class="pk-tv">Hand-picked daily</span></div>'+
       '</div>'+
-      '<label class="pk-lab" for="pkWa">Your WhatsApp number'+(p.phone_source === 'resume' && !on ? ' <span>— we filled this in from your resume, check it’s right</span>' : '')+'</label>'+
+      '<label class="pk-lab" for="pkWa">Your WhatsApp number</label>'+
       '<div class="pk-phone"><select id="pkCc" aria-label="Country code">'+PK_CC.map(function(c){ return '<option value="'+c[0]+'"'+(sp[0] === c[0] ? ' selected' : '')+'>'+c[0]+' '+c[1]+'</option>'; }).join('')+'<option value="other"'+(sp[0] === 'other' ? ' selected' : '')+'>Other (type +code)</option></select>'+
         '<input id="pkWa" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="'+(sp[0] === '+91' ? '98765 43210' : sp[0] === 'other' ? '+44 7700 900123' : '512 555 0147')+'" value="'+esc(sp[1])+'"></div>'+
       '<p class="pk-err" id="pkerr_wa" hidden></p>'+
@@ -3053,7 +3053,7 @@ function handleResume(f){
     MATCHC = {};
     toast('Resume added'); render(); if(drawerKey){ var k = drawerKey; drawerKey = null; openJob(k); }
     saveResumeDetails(text);
-    setTimeout(function(){ askWhatsApp(phoneIn(text)); }, 900);
+    // no WhatsApp pop-up here: the number is saved quietly and asked for in the daily picks form
     return saving;
   }).catch(function(m){ reading = null; render(); toast(typeof m === 'string' ? m : 'Couldn’t read that file'); });
 }
@@ -3175,7 +3175,6 @@ function askWhatsApp(found, force){
   modal('<div class="waq"><span class="wa-ic">'+I.wa+'</span><h2>Want help on WhatsApp?</h2>'+
     '<p>We’ll message you fresh '+role+'roles, resume tips and invites to our free live job-search webinars. Only if you say yes — reply STOP any time.</p>'+
     '<div class="field"><label for="waNum">Your WhatsApp number, with country code</label><input id="waNum" type="tel" inputmode="tel" autocomplete="tel" value="'+esc(found || p.phone || '')+'" placeholder="e.g. +1 512 555 0147 or +91 98765 43210"></div>'+
-    (found ? '<p class="fine">We filled this in from your resume — check it’s your WhatsApp number.</p>' : '')+
     '<div class="stack"><button class="btn pri" type="button" data-act="wayes">'+I.wa+'Yes, message me on WhatsApp</button><button class="btn" type="button" data-act="wano">No thanks</button></div></div>');
 }
 function waYes(){
@@ -3868,7 +3867,7 @@ function profileFacts(p){
   var R = p.resume_profile || {};
   var row = function(icon, label, val, edit){ return '<div class="pf"><span class="pf-ic">'+icon+'</span><span class="pf-l">'+label+'</span>'+(edit ? edit : '<span class="pf-v">'+(val ? esc(val) : '<i>Not on your resume</i>')+'</span>')+'</div>'; };
   return '<div class="pfacts">'+
-    row(I.phone, 'Phone', p.phone, '<span class="pf-v" id="pfPhoneV">'+(p.phone ? esc(p.phone) : '<i>Not on your resume</i>')+(p.phone_source === 'resume' ? '<em>from your resume</em>' : '')+'</span><button class="btn sm" type="button" data-act="phedit">'+(p.phone ? 'Edit' : 'Add')+'</button>')+
+    row(I.phone, 'Phone', p.phone, '<span class="pf-v" id="pfPhoneV">'+(p.phone ? esc(p.phone) : '<i>Not added</i>')+'</span><button class="btn sm" type="button" data-act="phedit">'+(p.phone ? 'Edit' : 'Add')+'</button>')+
     row(I.pin, 'Location', R.location || p.target_location)+
     (R.linkedin ? row(I.link, 'LinkedIn', R.linkedin) : '')+
   '</div>';
