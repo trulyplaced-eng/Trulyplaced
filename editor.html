@@ -153,11 +153,26 @@ svg{flex:none}
 /* on-page tools (never printed) */
 .nopr{font-family:Inter,sans-serif;line-height:1.3}
 .etools,.stools{position:absolute;right:0;top:-1.7em;display:none;gap:4px;z-index:4;font-size:12px;text-align:left}
-.stools{top:-.2em;right:0}
-.en:hover>.etools,.en:focus-within>.etools,.ps:hover>.stools,.ps:focus-within>.stools,.ph-h:hover>.stools{display:flex}
-.etools button,.stools button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 10px;font:600 11.5px Inter,sans-serif;color:var(--body);box-shadow:0 2px 8px -3px rgba(18,26,51,.25);white-space:nowrap}
-.etools button:hover,.stools button:hover{border-color:var(--blue);color:var(--blue)}
-.etools .ai,.stools .ai{color:var(--vio);border-color:#ddd0ff;background:#faf7ff}
+.stools{top:-.1em;right:0}
+/* section tools only when the pointer is on the section heading, so they never pile up on the role tools */
+.ps:has(>h2:hover)>.stools,.ps>.stools:hover,.ps:has(>h2:focus)>.stools,.ph-h:hover>.stools{display:flex}
+.stools button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 10px;font:600 11.5px Inter,sans-serif;color:var(--body);box-shadow:0 2px 8px -3px rgba(18,26,51,.25);white-space:nowrap}
+.stools button:hover{border-color:var(--blue);color:var(--blue)}
+.stools .ai{color:var(--vio);border-color:#ddd0ff;background:#faf7ff}
+/* hovering a role: a soft outline around it, its tools centred on the top edge */
+.paper.ed .en::before{content:'';position:absolute;inset:-.45em -.65em -.35em;border:1px solid transparent;border-radius:8px;pointer-events:none;transition:border-color .2s ease,box-shadow .25s ease}
+.paper.ed .en:hover::before,.paper.ed .en:focus-within::before,.paper.ed .en.busy::before{border-color:#cdd5f3;box-shadow:0 8px 26px -18px rgba(9,56,213,.45)}
+.paper.ed .en.busy::before{border-color:#d8c9ff;animation:enBusy 1.4s ease-in-out infinite}
+@keyframes enBusy{50%{border-color:#b9a2ff}}
+.etools{left:50%;right:auto;top:-.45em;transform:translate(-50%,-50%);gap:1px;padding:2px;background:#fff;border:1px solid #d6dcf0;border-radius:999px;box-shadow:0 6px 16px -8px rgba(18,26,51,.4)}
+.en:hover>.etools,.en:focus-within>.etools{display:flex;animation:etIn .16s ease}
+@keyframes etIn{from{opacity:0;margin-top:4px}}
+.etools button{position:relative;width:28px;height:24px;border:0;background:none;border-radius:999px;display:grid;place-items:center;color:var(--body);padding:0;cursor:pointer}
+.etools button svg{width:15px;height:15px}
+.etools button:hover{background:var(--bg)}
+.etools .add{color:var(--ok)}.etools .del{color:var(--bad)}.etools .ai{color:var(--vio)}
+.etools .ai:hover{background:#f4efff}
+.etools [data-tip]:hover::after,#btb [data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%);background:#121a33;color:#fff;font:600 11px/1.2 Inter,sans-serif;padding:5px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;z-index:40}
 .pbrk{position:absolute;left:-14px;right:-14px;border-top:1.5px dashed #c3c9de;pointer-events:none;z-index:2}
 .pbrk span{position:absolute;right:16px;top:-10px;background:var(--bg);font:600 10.5px Inter,sans-serif;color:#7d84a3;padding:1px 7px;border-radius:99px;border:1px solid #d9deec}
 /* suggestions */
@@ -179,18 +194,35 @@ svg{flex:none}
 .sacts .hint{color:#8a6a00;font-size:11.5px}
 .sacts .busy{color:#b77800;font-weight:600}
 .msug{list-style:none;margin:.25em 0 .3em -1.3em;display:grid;gap:.3em}
-.msug .mo{text-decoration:line-through;text-decoration-color:rgba(180,35,24,.45);color:#5b2b2b}
+.msug .mo{color:#5b2b2b}
+.sug del.dw,.msug del.dw{text-decoration:line-through;text-decoration-color:rgba(180,35,24,.6);background:#ffdede;border-radius:2px;color:#8a1c12}
+.sug ins.dw,.msug ins.dw{text-decoration:none;background:#c7efd5;border-radius:2px;box-shadow:0 0 0 1px #c7efd5;color:#064e2b}
+.sug ins.dw.ph,.msug ins.dw.ph{background:#fff0b3;box-shadow:0 0 0 1px #f3d36b;color:inherit}
+.sug .why,.msug .why{display:block;font:600 11px/1.35 Inter,sans-serif;color:#0a7f46;margin:.15em 0 .1em}
+.sug .why.same,.msug .why.same{color:#6b7392}
+.sacts .busy{display:inline-flex;align-items:center;gap:6px}
+.sacts .busy svg{width:14px;height:14px;animation:spk 1.1s ease-in-out infinite}
+@keyframes spk{50%{transform:scale(1.25) rotate(18deg);opacity:.6}}
 .shim{display:grid;gap:.45em;padding:.3em 0}
 .shim i{display:block;height:.75em;border-radius:4px;background:linear-gradient(90deg,#d5eedd 0,#f1fbf4 40%,#d5eedd 80%);background-size:300% 100%;animation:sh 1.2s linear infinite}
 .shim i:nth-child(2n){width:86%}
 @keyframes sh{to{background-position:-150% 0}}
 /* bullet toolbar */
-#btb{position:absolute;z-index:25;display:flex;gap:2px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:2px;box-shadow:0 6px 18px -8px rgba(18,26,51,.35)}
-#btb button{width:30px;height:28px;border:0;background:none;border-radius:6px;display:grid;place-items:center;color:var(--body)}
+#btb{position:absolute;z-index:25;display:flex;gap:1px;background:#fff;border:1px solid #dfe3f0;border-radius:999px;padding:1px;box-shadow:0 4px 12px -6px rgba(18,26,51,.35)}
+#btb button{position:relative;width:22px;height:22px;border:0;background:none;border-radius:999px;display:grid;place-items:center;color:var(--body);padding:0}
+#btb button svg{width:13px!important;height:13px!important}
+#btb .ai.w::before{content:'';position:absolute;top:1px;right:1px;width:6px;height:6px;border-radius:50%;background:#f59e0b;box-shadow:0 0 0 1.5px #fff}
 #btb button:hover{background:var(--bg)}
 #btb .add{color:var(--ok)}#btb .del{color:var(--bad)}#btb .ai{color:var(--vio)}
 #btb svg{width:16px;height:16px}
-#bmenu{position:absolute;z-index:26;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 30px -10px rgba(18,26,51,.35);padding:4px;min-width:210px}
+#bmenu{position:absolute;z-index:26;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 36px -12px rgba(18,26,51,.38);padding:5px;min-width:250px;max-width:300px}
+#bmenu .bm-h{font:700 10.5px Inter,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding:6px 10px 4px}
+#bmenu .bm-ask{display:flex;gap:4px;margin:5px 2px 2px;padding-top:6px;border-top:1px solid var(--line)}
+#bmenu .bm-ask input{flex:1;min-width:0;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 9px;font:13px Inter,sans-serif}
+#bmenu .bm-ask input:focus{outline:none;border-color:var(--vio);box-shadow:0 0 0 3px #efe8ff}
+#bmenu .bm-ask button{width:34px;flex:none;justify-content:center;padding:0;background:var(--vio);color:#fff;border-radius:8px}
+#bmenu .bm-ask button:hover{background:#5b3fd6}
+#bmenu .bm-ask button svg{color:#fff;width:16px;height:16px}
 #bmenu button{display:flex;gap:9px;align-items:center;width:100%;border:0;background:none;padding:8px 10px;border-radius:7px;text-align:left;font-size:13.5px;color:var(--ink)}
 #bmenu button:hover{background:var(--bg)}
 #bmenu svg{width:18px;height:18px;color:var(--vio)}
@@ -348,6 +380,12 @@ body.embed .banner{max-width:none}
 .steps li{display:flex;gap:10px;align-items:center;color:var(--muted);transition:color .2s}
 .steps li i{width:20px;height:20px;border-radius:50%;border:2px solid #d8dcea;flex:none;position:relative;transition:.25s}
 .steps li.ok{color:var(--ink)}
+.steps li.grp{display:block;font:700 11px Inter,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--vio);margin-top:6px}
+.steps li.grp:first-child{margin-top:0}
+.steps li.grp.wait{color:#b7bcd0}
+.steps li.run{color:var(--ink)}
+.steps li.run i{border-color:var(--vio);border-top-color:transparent;animation:stspin .8s linear infinite}
+@keyframes stspin{to{transform:rotate(360deg)}}
 .steps li.ok i{background:#0a7f46;border-color:#0a7f46}
 .steps li.ok i::after{content:"";position:absolute;left:5px;top:2px;width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
 .om-run .fine{margin-top:16px;font-size:12.5px;color:var(--muted)}
@@ -372,6 +410,17 @@ body.embed .banner{max-width:none}
 .rn>span{outline:none}
 .rn>span:focus{background:#fff;border-radius:4px;box-shadow:0 0 0 2px #bfe6cf}
 .rn small{font-size:11.5px;color:#5f7a6b}
+.rn .fc{display:flex;align-items:center;gap:5px;font:600 11px/1.35 Inter,sans-serif;color:#0a7f46;margin-top:5px}
+.rn .fc.fx{color:#9a6200}
+.vrep{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;padding:0 26px 6px}
+.vrep>div{display:flex;gap:10px;align-items:flex-start;border:1px solid #e3e7f3;border-radius:12px;padding:11px 13px;background:#fbfcff}
+.vrep .vi{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-weight:800;font-size:14px;background:#e9f8ef;color:#0a7f46}
+.vrep .vi.a{background:#eef0ff;color:var(--vio)}
+.vrep .vi.w{background:#fff4dc;color:#9a6200}
+.vrep b{display:block;font-size:13.5px;color:var(--ink);line-height:1.3}
+.vrep small{display:block;font-size:12px;color:var(--muted);line-height:1.4;margin-top:2px}
+.vrep .up{color:#0a7f46;font-weight:700}
+@media (max-width:640px){.vrep{padding:0 16px 6px}}
 .rb{display:flex;gap:6px;justify-content:flex-end;margin-top:auto}
 .rb button{width:30px;height:26px;border:0;border-radius:7px;color:#fff;font-weight:700;display:grid;place-items:center;transition:transform .12s}
 .rb button:hover{transform:translateY(-1px)}
@@ -473,6 +522,7 @@ body.embed .tbi .scorep{display:flex}
 @media print{
   html,body{background:#fff!important}
   .top,.side,.tb,.pop,#btb,#bmenu,.nopr,.banner,.toast,.modal,.pbrk,#gate,#start{display:none!important}
+  .paper .en::before{display:none!important}
   .wrap,.canvas,.stage{display:block!important;padding:0!important;margin:0!important;background:#fff!important}
   .pane.on{display:block!important}
   .pane:not(.on){display:none!important}
@@ -529,17 +579,12 @@ body.embed .tbi .scorep{display:flex}
       <div class="pane on" id="paneR"><div class="paper" id="paper"></div></div>
       <div class="pane" id="paneC"><div class="cvcol"><div class="cvbar nopr" id="cvbar"></div><div class="paper" id="cpaper"></div></div></div>
       <div id="btb" hidden>
-        <span class="bq" id="bq"></span>
-        <button type="button" class="add" data-a="b-add" aria-label="Add a bullet below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
-        <button type="button" class="del" data-a="b-del" aria-label="Delete this bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
-        <button type="button" class="ai" data-a="b-ai" aria-label="Improve with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button>
+        <span class="bq" id="bq" hidden></span>
+        <button type="button" class="ai" data-a="b-ai" id="btbAi" aria-label="Improve this bullet with AI" data-tip="Improve with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button>
+        <button type="button" class="del" data-a="b-del" aria-label="Delete this bullet" data-tip="Delete bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
       </div>
       <div id="iss" hidden></div>
-      <div id="bmenu" hidden>
-        <button type="button" data-a="b-mode" data-v="improve"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Improve it<small>Stronger verb, clearer wording</small></span></button>
-        <button type="button" data-a="b-mode" data-v="concise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h6"/></svg><span>Make more concise<small>Same facts, fewer words</small></span></button>
-        <button type="button" data-a="b-mode" data-v="expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 10h16M4 14h16M4 18h11"/></svg><span>Expand with more detail<small>Scope, method and result</small></span></button>
-      </div>
+      <div id="bmenu" hidden></div>
     </div>
   </main>
   <aside class="side" id="side"></aside>
@@ -1392,30 +1437,73 @@ function bulletsHTML(sid, iid, arr){
   if(S && S.all) return '<ul class="bl prt">' + arr.map(liPlain).join('') + '</ul>' + bigSug(key, arr, S);
   return '<ul class="bl">' + arr.map(function(b){ return S && S.ids.indexOf(b.id) > -1 ? liPlain(b) + miniSug(key, b, S) : li(b); }).join('') + '</ul>';
 }
+function toks(t){ return String(t || '').match(/\[[^\]]{0,60}\]|\S+/g) || []; }
+function wdiff(a, b){   // word-level difference, so people can see exactly what the AI changed
+  var A = toks(a), B = toks(b), n = A.length, m = B.length;
+  if(n * m > 9000) return {o:fmt(a), n:fmt(b)};
+  var key = function(w){ return w.toLowerCase().replace(/[^a-z0-9%$+#\[\]]/g, ''); }, L = [];
+  for(var i = 0; i <= n; i++){ L.push(new Array(m + 1).fill(0)); }
+  for(i = n - 1; i >= 0; i--) for(var j = m - 1; j >= 0; j--) L[i][j] = key(A[i]) === key(B[j]) ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  var o = [], nw = [], ph = function(w){ return /^\[/.test(w); };
+  i = 0; j = 0;
+  while(i < n && j < m){
+    if(key(A[i]) === key(B[j])){ o.push(esc(A[i])); nw.push(ph(B[j]) ? '<mark class="ph">' + esc(B[j]) + '</mark>' : esc(B[j])); i++; j++; }
+    else if(L[i + 1][j] >= L[i][j + 1]){ o.push('<del class="dw">' + esc(A[i]) + '</del>'); i++; }
+    else { nw.push('<ins class="dw' + (ph(B[j]) ? ' ph' : '') + '">' + esc(B[j]) + '</ins>'); j++; }
+  }
+  while(i < n){ o.push('<del class="dw">' + esc(A[i]) + '</del>'); i++; }
+  while(j < m){ nw.push('<ins class="dw' + (ph(B[j]) ? ' ph' : '') + '">' + esc(B[j]) + '</ins>'); j++; }
+  return {o:o.join(' ').replace(/<\/del> <del class="dw">/g, ' '), n:nw.join(' ').replace(/<\/ins> <ins class="dw">/g, ' ')};
+}
+var SAME_MANY = {improve:'These bullets are already strong — nothing to change', concise:'These bullets are already tight', expand:'Nothing more to add from what’s here', quantify:'These bullets already show numbers', tailor:'These bullets already match this job'};
+var SAME_MSG = {improve:'Already strong — no change needed', concise:'Already tight — no change needed', expand:'Nothing more to add from what’s here', quantify:'Already shows a number', tailor:'Already matches this job'};
+function whyLocal(a, b, mode){   // a short, honest reason when the AI didn't give one
+  if(norm(a) === norm(b)) return '';
+  var r = [], wa = a.split(/\s+/).length, wb = b.split(/\s+/).length, fa = (a.split(/\s+/)[0] || '').toLowerCase(), fb = (b.split(/\s+/)[0] || '').toLowerCase().replace(/[^a-z]/g, '');
+  if(fa.replace(/[^a-z]/g, '') !== fb && VERBSET[fb]) r.push('Stronger opening verb');
+  if(/\[/.test(b) && !/\[/.test(a)) r.push('Room for your number');
+  else if(hasMetric(b) && !hasMetric(a)) r.push('Shows the result');
+  if(wb <= wa - 3) r.push((wa - wb) + ' words shorter');
+  else if(wb >= wa + 4) r.push('More detail on scope and result');
+  if(mode === 'tailor') r.push('Uses the job’s wording');
+  return r.slice(0, 2).join(' · ') || 'Clearer wording';
+}
+function whyHTML(S, id, orig){
+  var sug = S.sug[id]; if(sug == null) return '';
+  if(norm(sug) === norm(orig)) return '<small class="why same">✓ ' + esc(SAME_MSG[S.mode] || SAME_MSG.improve) + '</small>';
+  var w = (S.why && S.why[id]) || whyLocal(orig, sug, S.mode);
+  return w ? '<small class="why">' + esc(w) + '</small>' : '';
+}
 function shim(n){ var h = ''; for(var i = 0; i < Math.max(2, Math.min(n*2, 7)); i++) h += '<i></i>'; return '<div class="shim">' + h + '</div>'; }
 function sugActs(key, S, bid){
-  if(S.loading) return '<div class="sacts"><span class="busy">Optimizing…</span></div>';
+  if(S.loading) return '<div class="sacts"><span class="busy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>Optimizing…</span></div>';
   return '<div class="sacts"><button type="button" class="ok" data-a="s-ok" data-k="' + key + '"' + (bid ? ' data-b="' + bid + '"' : '') + '>Accept</button>' +
     '<button type="button" class="no" data-a="s-no" data-k="' + key + '"' + (bid ? ' data-b="' + bid + '"' : '') + '>Reject</button>' +
     (S.src !== 'ai' && /\[/.test(JSON.stringify(S.sug || S.text || '')) ? '<span class="hint">Replace each [ ] with your real number before you send it.</span>' : '') + '</div>';
 }
 function bigSug(key, arr, S){
-  return '<div class="sug nopr" data-k="' + key + '"><div class="o"><b class="k">Original</b><ul>' + arr.map(function(b){ return '<li>' + fmt(b.t) + '</li>'; }).join('') + '</ul></div>' +
+  var D = arr.map(function(b){ var v = S.sug[b.id]; return v != null && !S.loading ? wdiff(b.t, v) : {o:fmt(b.t), n:fmt(v != null ? v : b.t)}; });
+  return '<div class="sug nopr" data-k="' + key + '"><div class="o"><b class="k">Original</b><ul>' + arr.map(function(b, i){ return '<li>' + D[i].o + '</li>'; }).join('') + '</ul></div>' +
     '<div class="n"><b class="k">' + (S.src === 'ai' ? 'AI suggestion' : 'Suggestion') + '</b>' +
-    (S.loading ? shim(arr.length) : '<ul>' + arr.map(function(b){ return '<li contenteditable="true" data-sb="' + b.id + '">' + fmt(S.sug[b.id] != null ? S.sug[b.id] : b.t) + '</li>'; }).join('') + '</ul>') +
+    (S.loading ? shim(arr.length) : '<ul>' + arr.map(function(b, i){ return '<li><span contenteditable="true" data-sb="' + b.id + '">' + D[i].n + '</span>' + whyHTML(S, b.id, b.t) + '</li>'; }).join('') + '</ul>') +
     '</div>' + sugActs(key, S) + '</div>';
 }
 function miniSug(key, b, S){
-  return '<li class="msug nopr" data-k="' + key + '" data-b="' + b.id + '"><div class="mo">' + fmt(b.t) + '</div>' +
-    (S.loading && S.sug[b.id] == null ? '<div class="mn">' + shim(1) + '</div>' : '<div class="mn" contenteditable="true" data-sb="' + b.id + '">' + fmt(S.sug[b.id] != null ? S.sug[b.id] : b.t) + '</div>') +
-    sugActs(key, S.sug[b.id] == null ? {loading:true} : S, b.id) + '</li>';
+  var v = S.sug[b.id], d = v != null ? wdiff(b.t, v) : {o:fmt(b.t), n:''};
+  return '<li class="msug nopr" data-k="' + key + '" data-b="' + b.id + '"><div class="mo">' + d.o + '</div>' +
+    (S.loading && v == null ? '<div class="mn">' + shim(1) + '</div>' : '<div class="mn"><span contenteditable="true" data-sb="' + b.id + '">' + d.n + '</span>' + whyHTML(S, b.id, b.t) + '</div>') +
+    sugActs(key, v == null ? {loading:true} : S, b.id) + '</li>';
 }
 function entryHTML(s, it){
   var P = 's|' + s.id + '|i|' + it.id + '|', ed = s.k === 'education';
   var r2 = it.sub || it.loc || EDIT;
-  return '<div class="en" data-s="' + s.id + '" data-i="' + it.id + '">' +
-    (EDIT ? '<div class="etools nopr">' + (!ed && it.bullets.some(function(b){ return b.t; }) ? '<button type="button" class="ai" data-a="e-ai" data-k="' + s.id + ':' + it.id + '">✨ Improve bullets</button>' : '') +
-      '<button type="button" data-a="b-new" data-k="' + s.id + ':' + it.id + '">+ Bullet</button><button type="button" data-a="e-del" data-s="' + s.id + '" data-i="' + it.id + '">Remove</button></div>' : '') +
+  var ek = s.id + ':' + it.id, busy = SUG[ek] && SUG[ek].loading, what = ed ? 'school' : s.k === 'projects' ? 'project' : 'role';
+  return '<div class="en' + (busy ? ' busy' : '') + '" data-s="' + s.id + '" data-i="' + it.id + '">' +
+    (EDIT ? '<div class="etools nopr">' +
+      '<button type="button" class="add" data-a="b-new" data-k="' + ek + '" aria-label="Add a bullet" data-tip="Add a bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>' +
+      '<button type="button" class="del" data-a="e-del" data-s="' + s.id + '" data-i="' + it.id + '" aria-label="Remove this ' + what + '" data-tip="Remove this ' + what + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>' +
+      (!ed && it.bullets.some(function(b){ return b.t; }) ? '<button type="button" class="ai" data-a="e-ai" data-k="' + ek + '" aria-label="Improve this ' + what + ' with AI" data-tip="Improve with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button>' : '') +
+    '</div>' : '') +
     '<div class="er er1"><div class="l">' + ce(P + 'title', fmt(it.title), ed ? 'Degree, subject' : (s.k === 'projects' ? 'Project name' : 'Job title, Company')) + '</div><div class="r">' + ce(P + 'dates', fmt(it.dates), 'Dates') + '</div></div>' +
     (r2 ? '<div class="er er2' + (!it.sub && !it.loc ? ' opt' : '') + '"><div class="l">' + ce(P + 'sub', fmt(it.sub), ed ? 'School' : 'Company or team') + '</div><div class="r">' + ce(P + 'loc', fmt(it.loc), 'Location') + '</div></div>' : '') +
     bulletsHTML(s.id, it.id, it.bullets) + '</div>';
@@ -1446,7 +1534,7 @@ function sectionHTML(s){
 }
 function renderPaper(){
   var p = $('#paper'), keep = focusInfo();
-  p.classList.toggle('wchk', CHECKS && EDIT); var ib = $('#iss'); if(ib) ib.hidden = true;
+  p.classList.toggle('wchk', CHECKS && EDIT); p.classList.toggle('ed', !!EDIT); var ib = $('#iss'); if(ib) ib.hidden = true;
   p.innerHTML = headerHTML() + DOC.sections.filter(function(s){ return !s.hidden; }).map(sectionHTML).join('');
   $('#btb').hidden = true; $('#bmenu').hidden = true;
   restoreFocus(keep);
@@ -1665,20 +1753,36 @@ function strongStart(s){
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 function endLike(orig, s){ s = s.replace(/[.;]+$/, ''); return /\.\s*$/.test(orig) ? s + '.' : s; }
+function fitVerb(s){   // the built-in swap can pick a verb that doesn't fit the object ("Built … tasks")
+  return s.replace(/^Built\s+(?=(?:\S+\s+){0,3}(?:tasks?|requests?|tickets?|issues?|queries|enquiries|duties)\b)/i, 'Handled ')
+          .replace(/^Owned\s+(?=(?:handling|managing|the handling)\b)/i, '').replace(/^Handling\b/, 'Handled');
+}
 function localRewrite(mode, t){
   var s = tidy(t.replace(/[.;]\s*$/, ''));
   if(mode === 'concise'){
     FILLER.forEach(function(f){ s = s.replace(f[0], f[1]); });
     s = s.replace(/\b(the|our|all the)\s+(business|management|leadership|senior)\s+(team|teams|managers)\b/gi, '$2 $3').replace(/\s+by the managers\b/gi, '');
     if(/\bas needed\b/i.test(s)) s = s.replace(/\s+regularly\b/i, '');
-    s = tidy(strongStart(s));
+    s = tidy(fitVerb(strongStart(s)));
     var w = s.split(' ');
     if(w.length > 26){ var cut = s.search(/,?\s+(including|such as|as well as|which|while)\b/i); if(cut > 60) s = s.slice(0, cut); }
     return endLike(t, tidy(s));
   }
   FILLER.slice(0, 12).forEach(function(f){ s = s.replace(f[0], f[1]); });
-  s = tidy(strongStart(s));
+  s = tidy(fitVerb(strongStart(s)));
   BUZZ.forEach(function(z){ s = s.replace(new RegExp('\\b' + z.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b,?\\s*', 'ig'), ''); });
+  if(mode === 'quantify'){
+    if(hasMetric(s)) return endLike(t, tidy(s));
+    var v0 = (s.split(' ')[0] || '').toLowerCase();
+    s = s + (/^(improved|increased|reduced|cut|grew|boosted|lowered|lifted|raised|accelerated|optimi[sz]ed|streamlined|expanded|doubled|halved|minimi[sz]ed|maximi[sz]ed|automated|sped)$/.test(v0) ? ' by [X%]'
+      : /^(sold|negotiated|closed|generated|won|secured|earned|saved)$/.test(v0) ? ' worth [$X]'
+      : /^(led|managed|supervised|mentored|trained|coached|hired|recruited)$/.test(v0) ? ', for a team of [number] people'
+      : /\b(tasks?|requests?|tickets?|issues?|queries|enquiries)\b/i.test(s) ? ', saving [X] hours a week'
+      : /\breports?\b/i.test(s) ? ', used by [number] stakeholders'
+      : /^(built|created|designed|developed|launched|wrote|implemented|delivered|shipped)$/.test(v0) ? ', used by [number] people'
+      : ', [result — e.g. saving [X] hours a week]');
+    return endLike(t, tidy(s));
+  }
   if(mode === 'expand'){
     var v = (s.split(' ')[0] || '').toLowerCase(), add = null;
     if(!hasMetric(s)) add = /^(improved|increased|reduced|cut|grew|boosted|lowered|lifted|raised|accelerated|optimi[sz]ed|streamlined|expanded|doubled|halved|minimi[sz]ed|maximi[sz]ed)$/.test(v) ? ' by [__%]'
@@ -1719,23 +1823,35 @@ function typeIn(el, delay){
   requestAnimationFrame(step);
 }
 function typeAll(sel){ $$(sel).forEach(function(el, i){ typeIn(el, i*140); }); }
-function improveOwner(key, mode, ids){
+function improveOwner(key, mode, ids, asks){
   var o = owner(key); if(!o || !o.arr.length) return Promise.resolve();
   var all = !ids, S = SUG[key];
   ids = (ids || o.arr.map(function(b){ return b.id; })).filter(function(id){ var b = byId(o.arr, id); return b && b.t.trim(); });
   if(!ids.length) return Promise.resolve();
-  if(S && S.all) return Promise.resolve();
-  if(S && !all) ids.forEach(function(id){ if(S.ids.indexOf(id) < 0) S.ids.push(id); delete S.sug[id]; });
-  else S = SUG[key] = {all:all && ids.length === o.arr.length, ids:ids.slice(), sug:{}, src:'local', mode:mode};
+  if(S && (S.all || all || S.mode !== mode)){ delete SUG[key]; S = null; }   // a new request replaces what's showing
+  if(S) ids.forEach(function(id){ if(S.ids.indexOf(id) < 0) S.ids.push(id); delete S.sug[id]; });
+  else S = SUG[key] = {all:all && ids.length === o.arr.length, ids:ids.slice(), sug:{}, why:{}, src:'local', mode:mode};
   S.loading = true; renderPaper(); renderSide();
   var texts = ids.map(function(id){ return byId(o.arr, id).t; });
-  var asked = ai({task:'bullets', mode:mode, bullets:texts, role:o.ctx.title || '', org:o.ctx.sub || '', target:targetRole(), jd:jobText().slice(0, 4000)})
-    .then(function(r){ if(!r || !Array.isArray(r.bullets) || r.bullets.length !== texts.length) throw 'shape'; return {list:r.bullets.map(function(x, i){ return String(x || '').trim() || texts[i]; }), src:'ai'}; })
-    .catch(function(){ return wait(450).then(function(){ return {list:texts.map(function(t){ return localRewrite(mode, t); }), src:'local'}; }); });
+  // the other bullets in the role go along too, so the AI doesn't repeat the same opening verb
+  var others = o.arr.filter(function(b){ return b.t.trim() && ids.indexOf(b.id) < 0; }).map(function(b){ return b.t; }).slice(0, 10);
+  var asked = ai({task:'bullets', mode:mode, bullets:texts, context:others, role:o.ctx.title || '', org:o.ctx.sub || '', target:targetRole(), jd:jobText().slice(0, 4000), instructions:asks || ''})
+    .then(function(r){ if(!r || !Array.isArray(r.bullets) || r.bullets.length !== texts.length) throw 'shape';
+      return {list:r.bullets.map(function(x, i){ return String(x || '').trim() || texts[i]; }), why:Array.isArray(r.why) ? r.why : [], src:'ai'}; })
+    .catch(function(){ return wait(450).then(function(){ return {list:texts.map(function(t){ return localRewrite(mode, t); }), why:[], src:'local'}; }); });
   return asked.then(function(r){
-    var S2 = SUG[key]; if(!S2) return;
-    ids.forEach(function(id, i){ S2.sug[id] = r.list[i]; });
-    S2.src = r.src; S2.loading = false; renderPaper(); renderSide();
+    var S2 = SUG[key]; if(!S2 || S2 !== S) return;
+    ids.forEach(function(id, i){ S2.sug[id] = r.list[i]; if(r.why[i]) S2.why[id] = String(r.why[i]).slice(0, 90); });
+    S2.src = r.src; S2.loading = false;
+    var same = ids.filter(function(id, i){ return norm(r.list[i]) === norm(texts[i]); });
+    if(same.length === ids.length){   // nothing worth changing: say so instead of showing a copy
+      S2.ids = S2.ids.filter(function(id){ return ids.indexOf(id) < 0; });
+      if(!S2.ids.length) delete SUG[key];
+      renderPaper(); renderSide();
+      toast('✓ ' + (ids.length > 1 ? (SAME_MANY[mode] || SAME_MANY.improve) : (SAME_MSG[mode] || SAME_MSG.improve)));
+      return;
+    }
+    renderPaper(); renderSide();
     typeAll('[data-k="' + key + '"] [data-sb]');
   });
 }
@@ -1759,7 +1875,7 @@ function acceptSug(key, bid){
   ids.forEach(function(id){
     var b = byId(o.arr, id), el = $('[data-k="' + key + '"] [data-sb="' + id + '"]');
     var v = el ? el.innerText.replace(/\s+/g, ' ').trim() : S.sug[id];
-    if(b && v) b.t = v;
+    if(b && v){ if(norm(v) !== norm(b.t)) HL[b.id] = 1; b.t = v; }   // changed lines stay highlighted until you edit them
     S.ids = S.ids.filter(function(x){ return x !== id; }); delete S.sug[id];
   });
   if(!S.ids.length || !bid) delete SUG[key];
@@ -1884,6 +2000,46 @@ function optPick(row, on){
   if(hint) hint.textContent = n ? '' : 'Pick at least one to continue';
   if(all) all.textContent = n === $$('.orow').length ? 'Clear all' : 'Select all';
 }
+/* ---- ATS terms and fact checks used by Optimise ---- */
+function atsTerms(){
+  if(!JOB) return [];
+  var t = jobText(); return uniq(skillsIn(t).concat(kwFrom(t))).slice(0, 30);
+}
+function atsCover(text, terms){
+  var low = String(text || '').toLowerCase(), hit = terms.filter(function(k){ return inText(k, low); });
+  return {pct:terms.length ? Math.round(hit.length / terms.length * 100) : null, hit:hit, miss:terms.filter(function(k){ return hit.indexOf(k) < 0; })};
+}
+var NUM_RX = /\$?\d[\d,]*(?:\.\d+)?\s?(?:%|percent\b|k\b|m\b|x\b|\+)?/gi;
+function digitsOf(n){ return String(n).replace(/[^\d.]/g, '').replace(/\.$/, ''); }
+function numsIn(t){ return (String(t || '').replace(/\[[^\]]*\]/g, ' ').replace(RANGE, ' ').replace(/\b(19|20)\d{2}\b/g, ' ').match(NUM_RX) || []).map(digitsOf).filter(Boolean); }
+// checks one suggestion against what the person actually wrote; never trusts the AI
+function factCheck(orig, sug, pool, extraNums){
+  var ok = {}, res = {text:sug, fixed:[], reverted:''};
+  numsIn(orig).concat(numsIn(pool), extraNums || []).forEach(function(d){ ok[d] = 1; });
+  // 1. numbers that aren't on the resume become blanks for the person to fill in
+  res.text = String(sug).split(/(\[[^\]]*\])/).map(function(part){
+    if(/^\[/.test(part)) return part;
+    var keep = [];   // date ranges ("Jan 2021 – Present", "06/2019 – 12/2020") are never treated as claims
+    part = part.replace(RANGE, function(m){ keep.push(m); return '\u0000' + (keep.length - 1) + '\u0001'; });
+    part = part.replace(NUM_RX, function(m, at, whole){
+      if(whole.charAt(at - 1) === '\u0000') return m;
+      var d = digitsOf(m); if(!d || ok[d] || /^(19|20)\d{2}$/.test(d)) return m;
+      res.fixed.push(m.trim()); return (/\$/.test(m) ? '[$X]' : /%|percent/i.test(m) ? '[X%]' : '[X]') + (/\s$/.test(m) ? ' ' : '');
+    });
+    return part.replace(/\u0000(\d+)\u0001/g, function(m, i){ return keep[+i]; });
+  }).join('');
+  // 2. a number the person wrote must not disappear
+  var kept = numsIn(res.text), lost = numsIn(orig).filter(function(d){ return kept.indexOf(d) < 0; });
+  if(lost.length){
+    var shown = (String(orig).match(NUM_RX) || []).filter(function(m){ return digitsOf(m) === lost[0]; })[0] || lost[0];
+    res.text = orig; res.reverted = 'it dropped “' + String(shown).trim() + '” from your original'; return res;
+  }
+  // 3. no tools or skills the resume doesn't mention anywhere
+  var have = {}; skillsIn(pool + '\n' + orig).forEach(function(k){ have[k.toLowerCase()] = 1; });
+  var newTool = skillsIn(res.text).filter(function(k){ return !have[k.toLowerCase()]; })[0];
+  if(newTool){ res.text = orig; res.reverted = 'it added ' + newTool + ', which isn’t on your resume'; return res; }
+  return res;
+}
 function runOptimise(){
   var sel = OPT.sel, ins = (($('#optIns') || {}).value || '').trim();
   if(!JOB){
@@ -1895,21 +2051,27 @@ function runOptimise(){
   if(!Object.keys(sel).some(function(k){ return sel[k]; })){ toast('Pick at least one thing to optimise.'); return; }
   var keep = {}; Object.keys(sel).forEach(function(k){ keep[k] = sel[k] ? 1 : 0; }); lsSet('tp_opt', {sel:keep, ins:ins});
   var targets = sel.experience ? optTargets() : [], nb = targets.reduce(function(n, t){ return n + t.it.bullets.filter(function(b){ return b.t.trim(); }).length; }, 0);
-  var steps = [['job', 'Reading the job description']];
+  var terms = atsTerms(), cover0 = atsCover(docText(), terms);
+  var steps = [['g1', '1 · ATS optimization'], ['job', 'Reading the job description']];
   if(sel.summary) steps.push(['summary', 'Tailoring your summary']);
   if(sel.headline || sel.location) steps.push(['head', 'Matching your title' + (sel.location ? ' and location' : '')]);
   if(sel.experience) steps.push(['experience', targets.length ? 'Rewriting ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' across ' + targets.length + ' role' + (targets.length > 1 ? 's' : '') : 'Checking your work experience']);
   if(sel.skills) steps.push(['skills', 'Matching your skills to the posting']);
+  steps.push(['g2', '2 · Fact check & validation'], ['facts', 'Checking every change against your resume'], ['nums', 'No new numbers, tools or employers'], ['score', 'Re-scoring against the job’s keywords']);
   modalOpen('<div class="om om-run" role="dialog" aria-modal="true" aria-live="polite"><div class="orbit"><span></span></div><h2>Optimising your resume</h2>' +
     '<p class="omsub">for <b>' + esc(cleanTitle(JOB.title) || 'this job') + '</b>' + (JOB.company ? ' at <b>' + esc(JOB.company) + '</b>' : '') + '</p>' +
-    '<ul class="steps">' + steps.map(function(x){ return '<li data-st="' + x[0] + '"><i></i>' + esc(x[1]) + '</li>'; }).join('') + '</ul>' +
+    '<ul class="steps">' + steps.map(function(x){ return /^g\d$/.test(x[0]) ? '<li class="grp' + (x[0] === 'g2' ? ' wait' : '') + '" data-st="' + x[0] + '">' + esc(x[1]) + '</li>' : '<li data-st="' + x[0] + '"><i></i>' + esc(x[1]) + '</li>'; }).join('') + '</ul>' +
     '<p class="fine">Using only what’s already on your resume — nothing made up.</p></div>');
-  var done = function(k){ var li = $('.steps [data-st="' + k + '"]'); if(li) li.classList.add('ok'); };
+  var done = function(k, label){ var li = $('.steps [data-st="' + k + '"]'); if(li){ li.classList.remove('run'); li.classList.add('ok'); if(label) li.lastChild.textContent = label; } };
+  var running = function(k){ var li = $('.steps [data-st="' + k + '"]'); if(li && !li.classList.contains('ok')) li.classList.add('run'); };
+  $$('.steps li:not(.grp)').forEach(function(li){ if(['facts', 'nums', 'score'].indexOf(li.getAttribute('data-st')) < 0) li.classList.add('run'); });
   var R = {src:'local'}, jobs = [], cap = capFrom(ins, 'bullet'), scap = capFrom(ins, 'summary'), t0 = Date.now();
-  setTimeout(function(){ done('job'); }, 450);
+  // the job's key terms go to the AI with the posting, so the rewrite targets what an ATS scans for
+  var jdx = (terms.length ? 'KEY TERMS an ATS will scan for (use the exact wording where it truthfully fits): ' + terms.join(', ') + '\n\n' : '') + jobText();
+  setTimeout(function(){ done('job', terms.length ? 'Found ' + terms.length + ' keywords in the job description' : 'Read the job description'); }, 450);
   if(sel.summary){
     var sm = DOC.sections.filter(function(x){ return x.k === 'summary' && !x.hidden; })[0];
-    jobs.push(ai({task:'summary', current:sm ? sm.text : '', resume:docText().slice(0, 8000), target:cleanTitle(JOB.title), jd:jobText().slice(0, 4000), instructions:ins})
+    jobs.push(ai({task:'summary', current:sm ? sm.text : '', resume:docText().slice(0, 8000), target:cleanTitle(JOB.title), jd:jdx.slice(0, 4000), instructions:ins})
       .then(function(r){ if(!r || !r.text) throw 'shape'; return {t:String(r.text).trim(), src:'ai'}; })
       .catch(function(){ return wait(500).then(function(){ return {t:localSummary(scap), src:'local'}; }); })
       .then(function(r){ R.summary = {sid:sm && sm.id, orig:sm ? sm.text : '', sug:r.t}; if(r.src === 'ai') R.src = 'ai'; done('summary'); }));
@@ -1921,7 +2083,7 @@ function runOptimise(){
     var left = targets.length; if(!left) setTimeout(function(){ done('experience'); }, 900);
     targets.forEach(function(tg){
       var bl = tg.it.bullets.filter(function(b){ return b.t.trim(); }), texts = bl.map(function(b){ return b.t; });
-      jobs.push(ai({task:'bullets', mode:'tailor', bullets:texts, role:tg.it.title || '', org:tg.it.sub || '', target:cleanTitle(JOB.title), jd:jobText().slice(0, 4000), instructions:ins})
+      jobs.push(ai({task:'bullets', mode:'tailor', bullets:texts, role:tg.it.title || '', org:tg.it.sub || '', target:cleanTitle(JOB.title), jd:jdx.slice(0, 4000), instructions:ins})
         .then(function(r){ if(!r || !Array.isArray(r.bullets) || r.bullets.length !== texts.length) throw 'shape'; return {list:r.bullets.map(function(x, i){ return String(x || '').trim() || texts[i]; }), src:'ai'}; })
         .catch(function(){ return wait(650).then(function(){ return {list:texts.map(function(t){ return localTailor(t, cap); }), src:'local'}; }); })
         .then(function(r){ tg.res = bl.map(function(b, i){ return {bid:b.id, orig:b.t, sug:r.list[i]}; }); if(r.src === 'ai') R.src = 'ai'; if(--left === 0) done('experience'); }));
@@ -1929,29 +2091,74 @@ function runOptimise(){
   }
   Promise.all(jobs).then(function(){
     if(sel.skills){ var f = jobFit(); R.skills = f ? f.miss : []; done('skills'); }
-    var wait2 = Math.max(350, 1400 - (Date.now() - t0));   // long enough to read the steps, never slower than the work
-    setTimeout(function(){ showResults(R, targets, sel); }, wait2);
+    // ---- phase 2: every suggestion is checked against the resume before anyone sees it
+    var g2 = $('.steps [data-st="g2"]'); if(g2) g2.classList.remove('wait');
+    var V = validateAll(R, targets, terms, cover0);
+    var gap = Math.max(380, Math.min(700, (1600 - (Date.now() - t0)) / 3));
+    running('facts');
+    setTimeout(function(){ done('facts', 'Checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + ' against your resume'); running('nums'); }, gap);
+    setTimeout(function(){ done('nums', V.fixed + V.removed ? 'Fixed ' + (V.fixed + V.removed) + ' — nothing made up' : 'No new numbers, tools or employers'); running('score'); }, gap * 2);
+    setTimeout(function(){ done('score', V.after != null ? (V.after > V.before ? 'ATS keyword match ' + V.before + '% → ' + V.after + '%' : 'ATS keyword match ' + V.after + '%') : 'Re-scored'); }, gap * 3);
+    setTimeout(function(){ showResults(R, targets, sel, V); }, gap * 3 + 450);
   });
 }
-function showResults(R, targets, sel){
+function validateAll(R, targets, terms, cover0){
+  var pool = docText(), A = analyse(), yrs = A && A.yrs ? [String(Math.floor(A.yrs)), String(Math.round(A.yrs))] : [];
+  var V = {checked:0, fixed:0, removed:0, notes:[], before:cover0.pct, after:null};
+  if(R.summary && R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig)){
+    V.checked++;
+    var c = factCheck(R.summary.orig || '', R.summary.sug, pool, yrs);
+    if(c.reverted && !R.summary.orig){ c = {text:R.summary.sug.replace(NUM_RX, function(m){ var d = digitsOf(m); return numsIn(pool).concat(yrs).indexOf(d) > -1 ? m : '[X]'; }), fixed:[], reverted:''}; }
+    if(c.reverted){ V.removed++; V.notes.push('Summary: kept yours — ' + c.reverted); R.summary.sug = R.summary.orig; R.summary.dropped = c.reverted; }
+    else { if(c.fixed.length){ V.fixed++; R.summary.fc = 'Fixed: “' + c.fixed[0] + '” isn’t on your resume — fill in the [ ]'; } R.summary.sug = c.text; }
+  }
+  targets.forEach(function(tg){
+    var rolePool = pool;   // numbers and tools may come from anywhere on the resume, never from the job post
+    (tg.res || []).forEach(function(x){
+      if(norm(x.sug) === norm(x.orig)) return;
+      V.checked++;
+      var c = factCheck(x.orig, x.sug, rolePool);
+      if(c.reverted){ V.removed++; V.notes.push('A bullet at ' + (tg.it.sub || tg.it.title || 'a role') + ': kept yours — ' + c.reverted); x.sug = x.orig; return; }
+      if(c.fixed.length){ V.fixed++; x.fc = 'Fixed: “' + c.fixed[0] + '” isn’t on your resume — fill in the [ ]'; }
+      x.sug = c.text;
+    });
+  });
+  if(R.headline){
+    var lowp = pool.toLowerCase(), words = R.headline.sug.toLowerCase().match(/[a-z][a-z.+#/-]*/g) || [];
+    var missing = words.filter(function(w){ return !/^(of|and|the|in|for|at|to|a|an|ii|iii|i|&)$/.test(w) && !inText(w, lowp); });
+    var rank = missing.filter(function(w){ return /^(senior|sr\.?|lead|principal|staff|head|manager|director|chief|vp|architect)$/.test(w); })[0];
+    if(rank) R.headline.fc = '“' + rank.charAt(0).toUpperCase() + rank.slice(1) + '” isn’t in any title on your resume — keep it only if it’s true';
+    else if(missing.length) R.headline.fc = 'You haven’t held this exact title — keep it only if it describes your work';
+  }
+  // what an ATS would see if they accept everything
+  var after = pool;
+  if(R.summary && R.summary.sug) after = after.replace(R.summary.orig || '\u0000', R.summary.sug) + (R.summary.orig ? '' : '\n' + R.summary.sug);
+  targets.forEach(function(tg){ (tg.res || []).forEach(function(x){ if(x.sug !== x.orig) after = after.replace(x.orig, x.sug); }); });
+  if(R.headline) after += '\n' + R.headline.sug;
+  if(terms.length) V.after = Math.max(V.before, atsCover(after, terms).pct);
+  return V;
+}
+function showResults(R, targets, sel, V){
   OPT.rows = []; OPT.skillsDone = false;
   var lab = R.src === 'ai' ? 'AI suggestion' : 'Suggestion';
-  var row = function(type, data, orig, sug, note){
+  var row = function(type, data, orig, sug, note, fc){
     var i = OPT.rows.length; OPT.rows.push(Object.assign({type:type, st:'p', orig:orig, sug:sug}, data));
+    var chk = V ? (fc ? '<span class="fc fx">⚠ ' + esc(fc) + '</span>' : '<span class="fc">✓ Fact-checked against your resume</span>') : '';
     return '<div class="rr" data-r="' + i + '" style="--d:' + Math.min(i*60, 900) + 'ms"><div class="ro">' + (orig ? fmt(orig) : '<i>Not on your resume yet</i>') + '</div>' +
-      '<div class="rn"><span contenteditable="true" data-rs="' + i + '">' + fmt(sug) + '</span>' + (note ? '<small>' + esc(note) + '</small>' : '') +
+      '<div class="rn"><span contenteditable="true" data-rs="' + i + '">' + fmt(sug) + '</span>' + (note ? '<small>' + esc(note) + '</small>' : '') + chk +
       '<div class="rb" id="rb' + i + '"><button type="button" class="ok" data-a="r-ok" data-v="' + i + '" aria-label="Accept">✓</button><button type="button" class="no" data-a="r-no" data-v="' + i + '" aria-label="Reject">✕</button></div></div></div>';
   };
   var card = function(title, body, plain){ return '<section class="rc"><h3>' + title + '</h3>' + (plain ? '' : '<div class="rh"><span class="k1">Original</span><span class="k2">' + lab + '</span></div>') + body + '</section>'; };
   var already = '<div class="rdone"><span>✨</span><b>Already optimised</b><small>This looks great — no changes needed.</small></div>';
   var h = '';
-  if(R.summary) h += R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig) ? card('Summary', row('summary', {sid:R.summary.sid}, R.summary.orig, R.summary.sug)) : card('Summary', already, true);
-  if(R.headline) h += card('Job title', row('headline', {}, R.headline.orig, R.headline.sug, 'Shown under your name. Keep it only if it describes the work you do.'));
+  if(R.summary) h += R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig) ? card('Summary', row('summary', {sid:R.summary.sid}, R.summary.orig, R.summary.sug, '', R.summary.fc))
+    : card('Summary', R.summary.dropped ? '<div class="rdone"><span>✓</span><b>Kept your summary</b><small>The suggestion was dropped in the fact check — ' + esc(R.summary.dropped) + '.</small></div>' : already, true);
+  if(R.headline) h += card('Job title', row('headline', {}, R.headline.orig, R.headline.sug, 'Shown under your name.', R.headline.fc));
   if(R.loc) h += card('Location', row('loc', {}, R.loc.orig, R.loc.sug, 'This role is in ' + R.loc.city + '. Accept only if you’d genuinely move.'));
   targets.forEach(function(tg){
     var ch = (tg.res || []).filter(function(x){ return norm(x.sug) !== norm(x.orig); });
     var t = 'Experience at ' + esc(tg.it.sub || (tg.it.title || '').split(/,\s*/).slice(1).join(', ') || tg.it.title || 'this role');
-    h += ch.length ? card(t, ch.map(function(x){ return row('bullet', {key:tg.key, bid:x.bid}, x.orig, x.sug); }).join('')) : card(t, already, true);
+    h += ch.length ? card(t, ch.map(function(x){ return row('bullet', {key:tg.key, bid:x.bid}, x.orig, x.sug, '', x.fc); }).join('')) : card(t, already, true);
   });
   if(sel.skills) h += card('Skills', R.skills && R.skills.length
     ? '<p class="rnote">This job asks for these, and your resume doesn’t mention them. Tick only the ones you genuinely have — they’ll be added to your Skills section.</p><div class="rsk">' +
@@ -1959,7 +2166,15 @@ function showResults(R, targets, sel){
     : '<div class="rdone"><span>✓</span><b>Your skills already line up</b><small>Every skill we found in this posting is on your resume.</small></div>', true);
   modalOpen('<div class="om om-res" role="dialog" aria-modal="true" aria-labelledby="omR"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
     '<div class="omh"><h2 id="omR">Optimised resume</h2><p class="omsub">Review the suggestions side by side with your current resume. Accept them one by one, or apply them all at once. You can edit any suggestion before accepting it.' +
-    (R.src !== 'ai' && /\[/.test(h) ? ' Replace anything in [ ] with your real number.' : '') + '</p></div>' +
+    (/\[/.test(h) ? ' Replace anything in [ ] with your real number.' : '') + '</p></div>' +
+    (V ? '<div class="vrep">' +
+      (V.after != null ? '<div><span class="vi a">✓</span><span><b>ATS keyword match: ' + (V.after > V.before ? V.before + '% → <span class="up">' + V.after + '%</span>' : '<span class="up">' + V.after + '%</span>') + '</b><small>' +
+        (V.after > V.before ? 'Of the ' + atsTerms().length + ' keywords in this job description, once you accept these changes.' : 'Your resume already uses most of the ' + atsTerms().length + ' keywords in this job description.') + '</small></span></div>' : '') +
+      '<div><span class="vi' + (V.fixed + V.removed ? ' w' : '') + '">' + (V.fixed + V.removed ? '!' : '✓') + '</span><span><b>Fact-checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + '</b><small>' +
+        (V.fixed + V.removed ? (V.fixed ? V.fixed + ' had a number that isn’t on your resume — now a [ ] for you to fill in. ' : '') +
+          (V.removed ? V.removed + ' suggestion' + (V.removed > 1 ? 's' : '') + ' dropped, so your original stays: ' + V.notes.slice(0, 3).map(function(n){ return esc(n.split(' — ')[1] || 'it changed a fact'); }).join('; ') + '.' : '')
+          : 'Every suggestion uses only facts already on your resume — no new numbers, tools or employers.') + '</small></span></div>' +
+    '</div>' : '') +
     '<div class="omb">' + h + '</div>' +
     '<div class="omf"><span id="omCount"></span><button class="btn grn" type="button" data-a="r-all" id="rAll">✓ Accept all</button><button class="btn" type="button" data-a="opt-done">Done</button></div></div>');
   countRows();
@@ -2166,7 +2381,7 @@ function goPlaceholder(){
 document.addEventListener('click', function(e){
   var t = e.target.closest('[data-a]');
   if(POP && !e.target.closest('#pop') && !(t && t.getAttribute('data-a') === 'pop')) closePop();
-  if(!$('#bmenu').hidden && !e.target.closest('#bmenu') && !(t && t.getAttribute('data-a') === 'b-ai')) $('#bmenu').hidden = true;
+  if(!$('#bmenu').hidden && !e.target.closest('#bmenu') && !(t && /^(b|e)-ai$/.test(t.getAttribute('data-a') || ''))) $('#bmenu').hidden = true;
   if(!t) return;
   var a = t.getAttribute('data-a'), v = t.getAttribute('data-v'), k = t.getAttribute('data-k'), sid = t.getAttribute('data-s');
   switch(a){
@@ -2184,9 +2399,9 @@ document.addEventListener('click', function(e){
     case 'dl-pdf': return downloadPDF();
     case 'dl-doc': return downloadDoc();
     case 'b-add': case 'b-del': case 'b-ai': return bulletTool(a, t);
-    case 'b-mode': $('#bmenu').hidden = true; if(BT) improveOwner(BT.key, v, [BT.bid]); return;
+    case 'b-mode': $('#bmenu').hidden = true; if(AIM) improveOwner(AIM.key, v, AIM.bid ? [AIM.bid] : null); return;
     case 'b-new': var o = owner(k); if(!o) return; var nb = {id:uid(), t:''}; o.arr.push(nb); structural(); focusPath(bpath(o.sec.id, o.item && o.item.id, nb.id)); return;
-    case 'e-ai': return improveOwner(k, 'improve');
+    case 'e-ai': return openAiMenu(t, k, null);
     case 'e-del':
       var s1 = secById(sid), i1 = idx(s1.items, t.getAttribute('data-i')); s1.items.splice(i1, 1); structural(); toast('Removed', {a:'undo', label:'Undo'}); return;
     case 'sec-add': return secAdd(sid);
@@ -2226,7 +2441,9 @@ document.addEventListener('click', function(e){
       toast(CHECKS ? 'Writing checks on — hover an underline for a quick fix' : 'Writing checks off'); return;
     case 'opt-t': return optPick(t, !OPT.sel[v]);
     case 'opt-all': var allOn = $$('.orow').every(function(r){ return OPT.sel[r.getAttribute('data-v')]; });
-      $$('.orow').forEach(function(r, n){ setTimeout(function(){ optPick(r, !allOn); }, n*70); }); return;
+      $$('.orow').forEach(function(r){ OPT.sel[r.getAttribute('data-v')] = !allOn; });   // takes effect at once; the ticks animate after
+      $$('.orow').forEach(function(r, n){ setTimeout(function(){ optPick(r, !allOn); }, n*70); });
+      var og = $('#optGo'); if(og){ og.disabled = allOn; og.textContent = allOn ? 'Proceed →' : 'Proceed with ' + $$('.orow').length + ' →'; } return;
     case 'opt-go': return runOptimise();
     case 'r-ok': if(applyRow(+v)){ structural(); } countRows(); return;
     case 'r-no': var rr = OPT.rows[+v]; if(rr && rr.st === 'p'){ rr.st = 'r'; markRow(+v, 'r'); } countRows(); return;
@@ -2276,18 +2493,41 @@ function secAdd(sid){
   else if(s.type === 'skills'){ var r = {id:uid(), label:'', value:''}; s.rows.push(r); structural(); focusPath('s|' + s.id + '|r|' + r.id + '|value'); }
   else if(s.type === 'list'){ var b = {id:uid(), t:''}; s.list.push(b); structural(); focusPath(bpath(s.id, null, b.id)); }
 }
+var AIM = null;
+var AI_MODES = [
+  ['improve', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>', 'Improve it', 'Stronger verb, clearer impact'],
+  ['concise', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h6"/></svg>', 'Make more concise', 'Same facts, fewer words'],
+  ['expand', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 10h16M4 14h16M4 18h11"/></svg>', 'Expand with more detail', 'Scope, method and result'],
+  ['quantify', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"/><path d="M7 16v-4M12 16V8M17 16V5"/></svg>', 'Add numbers & impact', 'Show the result as a metric'],
+  ['tailor', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>', 'Tailor to this job', 'Use the job’s wording where it’s true']
+];
+function openAiMenu(btn, key, bid){
+  var o = owner(key); if(!o) return;
+  var n = o.arr.filter(function(b){ return b.t.trim(); }).length, m = $('#bmenu');
+  AIM = {key:key, bid:bid || null};
+  m.innerHTML = '<div class="bm-h">' + (bid ? 'This bullet' : 'All ' + n + ' bullet' + (n === 1 ? '' : 's') + ' in this ' + (o.sec.k === 'projects' ? 'project' : 'role')) + '</div>' +
+    AI_MODES.filter(function(x){ return x[0] !== 'tailor' || JOB; }).map(function(x){ return '<button type="button" data-a="b-mode" data-v="' + x[0] + '">' + x[1] + '<span>' + x[2] + '<small>' + x[3] + '</small></span></button>'; }).join('') +
+    '<form class="bm-ask" id="bmAskF"><input id="bmAsk" placeholder="Or tell the AI what to change…" maxlength="200" autocomplete="off" aria-label="Tell the AI what to change"><button type="submit" aria-label="Rewrite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button></form>';
+  m.hidden = false;
+  var sr = $('#stage').getBoundingClientRect(), br = btn.getBoundingClientRect();
+  m.style.top = (br.bottom - sr.top + 6) + 'px';
+  m.style.left = Math.max(0, Math.min(br.left + br.width / 2 - sr.left - m.offsetWidth / 2, sr.width - m.offsetWidth)) + 'px';
+}
+document.addEventListener('submit', function(e){
+  if(e.target.id !== 'bmAskF') return;
+  e.preventDefault();
+  var q = ($('#bmAsk') || {}).value || ''; q = q.trim(); if(!q || !AIM) return;
+  $('#bmenu').hidden = true;
+  if(AI_OFF) toast('Written instructions need the AI — using our built-in rules for now.');
+  improveOwner(AIM.key, 'improve', AIM.bid ? [AIM.bid] : null, q);
+});
 function bulletTool(a, btn){
   if(!BT) return;
   var o = owner(BT.key); if(!o) return;
   var i = idx(o.arr, BT.bid); if(i < 0) return;
   if(a === 'b-add'){ var nb = {id:uid(), t:''}; o.arr.splice(i + 1, 0, nb); structural(); focusPath(bpath(o.sec.id, o.item && o.item.id, nb.id)); }
   if(a === 'b-del'){ o.arr.splice(i, 1); structural(); toast('Bullet deleted', {a:'undo', label:'Undo'}); }
-  if(a === 'b-ai'){
-    var m = $('#bmenu'), sr = $('#stage').getBoundingClientRect(), br = btn.getBoundingClientRect();
-    m.hidden = false;
-    m.style.top = (br.bottom - sr.top + 4) + 'px';
-    m.style.left = Math.max(0, Math.min(br.right - sr.left - m.offsetWidth, sr.width - m.offsetWidth)) + 'px';
-  }
+  if(a === 'b-ai') openAiMenu(btn, BT.key, BT.bid);
 }
 var ISS = null, ISS_T = null;
 function showIss(m){
@@ -2330,12 +2570,15 @@ function showBtb(li){
   if(!EDIT || TAB !== 'resume') return;
   var b = $('#btb'), sr = $('#stage').getBoundingClientRect(), r = li.getBoundingClientRect();
   BT = {key:li.getAttribute('data-k'), bid:li.getAttribute('data-b')};
-  var bq = $('#bq'), q = li.getAttribute('data-q'), o = owner(BT.key), bt = o && byId(o.arr, BT.bid);
-  if(q && bt && bt.t){ var g = gradeBullet({t:bt.t}); bq.className = 'bq ' + q; bq.innerHTML = '<i></i>' + (g.weak ? 'Weak opener' : !g.metric ? 'No number' : g.wc > 34 ? 'Too long' : q === 'g' ? 'Strong' : 'Could be stronger'); bq.hidden = false; }
-  else bq.hidden = true;
+  var q = li.getAttribute('data-q'), o = owner(BT.key), bt = o && byId(o.arr, BT.bid), ab = $('#btbAi'), note = '';
+  if(q && bt && bt.t){ var g = gradeBullet({t:bt.t}); note = g.weak ? 'Weak opener' : !g.metric ? 'No number yet' : g.wc > 34 ? 'A bit long' : q === 'g' ? '' : 'Could be stronger'; }
+  ab.setAttribute('data-tip', note ? note + ' — improve with AI' : 'Improve with AI'); ab.classList.toggle('w', !!note);
   b.hidden = false;
-  b.style.top = Math.max(0, r.top - sr.top - b.offsetHeight - 2) + 'px';
-  b.style.left = Math.max(0, Math.min(r.right - sr.left - b.offsetWidth, sr.width - b.offsetWidth)) + 'px';
+  // in the page's right margin, level with the bullet's first line — never on top of the text
+  var pr = $('#paper').getBoundingClientRect(), ul = li.closest('ul') || li, ur = ul.getBoundingClientRect();
+  var lh = parseFloat(getComputedStyle(li).lineHeight) || 16;
+  b.style.top = Math.max(0, r.top - sr.top + (lh - b.offsetHeight) / 2) + 'px';
+  b.style.left = Math.min(sr.width - b.offsetWidth, Math.max(ur.right, Math.min(pr.right - b.offsetWidth - 2, ur.right + 6)) - sr.left) + 'px';
 }
 var stage = $('#stage');
 stage.addEventListener('mouseover', function(e){

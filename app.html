@@ -1033,7 +1033,7 @@ var CONFIG = {
 };
 
 var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
-var APP_VERSION = '2026-10-16.6';   // also in /version.txt — lets us check which version the live site is serving
+var APP_VERSION = '2026-10-16.7';   // also in /version.txt — lets us check which version the live site is serving
 
 /* =====================================================================
    utils
@@ -2751,8 +2751,7 @@ function paintJob(job){
     '</div>'+
     '<div id="matchBox"></div>'+
     '<div class="jd-apply"><button class="btn out" type="button" data-apply="'+k+'">'+I.ext+'Apply on '+esc(job.company)+'</button><button class="btn" type="button" data-share="'+k+'" aria-label="Copy link">'+I.link+'<span class="hide-s">Copy link</span></button></div>'+
-    '<div class="opt-row"><button class="btn optimize" type="button" data-act="ws-opt" data-key="'+k+'">'+I.spark+'Optimize resume</button><button class="btn coverb" type="button" data-act="ws-cover" data-key="'+k+'">'+I.doc+'Cover letter</button></div>'+
-    '<button type="button" class="navy" data-act="upsell">'+I.monitor+'<span><b>Want a recruiter to tailor your resume and apply for you?</b>We apply to 25–30 matched roles every business day, so you can focus on interviews.</span>'+I.chevr+'</button>';
+    '<div class="opt-row"><button class="btn optimize" type="button" data-act="ws-opt" data-key="'+k+'">'+I.spark+'Optimize resume</button><button class="btn coverb" type="button" data-act="ws-cover" data-key="'+k+'">'+I.doc+'Cover letter</button></div>';
   drawMatch(job);
   paintPane(job);
 }
