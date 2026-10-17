@@ -1945,7 +1945,8 @@ function improveOwner(key, mode, ids, asks){
   return asked.then(function(r){
     var S2 = SUG[key]; if(!S2 || S2 !== S) return;
     var guardLost = [];   // a rewrite that would remove a skill or job keyword keeps the original
-    r.list = r.list.map(function(x, i){ var l = lostTerms(texts[i], x, false); if(l.length){ guardLost = guardLost.concat(l); return texts[i]; } return x; });
+    var guardWhy = [];
+    r.list = r.list.map(function(x, i){ var pb = bulletProblem(texts[i], x, mode); if(pb){ guardWhy.push(pb); if(pb.k === 'kw') guardLost = guardLost.concat(pb.terms); return texts[i]; } return x; });
     ids.forEach(function(id, i){ S2.sug[id] = r.list[i]; if(r.why[i]) S2.why[id] = String(r.why[i]).slice(0, 90); });
     S2.src = r.src; S2.loading = false;
     var same = ids.filter(function(id, i){ return norm(r.list[i]) === norm(texts[i]); });
@@ -1953,7 +1954,7 @@ function improveOwner(key, mode, ids, asks){
       S2.ids = S2.ids.filter(function(id){ return ids.indexOf(id) < 0; });
       if(!S2.ids.length) delete SUG[key];
       renderPaper(); renderSide();
-      toast(guardLost.length ? 'Kept as is — the rewrite would have removed ' + termList(uniq(guardLost)) + ', which your score counts.' : '✓ ' + (ids.length > 1 ? (SAME_MANY[mode] || SAME_MANY.improve) : (SAME_MSG[mode] || SAME_MSG.improve)));
+      toast(guardWhy.length ? 'Kept as is — the rewrite ' + keptWhy(guardWhy) + '.' : '✓ ' + (ids.length > 1 ? (SAME_MANY[mode] || SAME_MANY.improve) : (SAME_MSG[mode] || SAME_MSG.improve)));
       return;
     }
     renderPaper(); renderSide();
@@ -2149,21 +2150,71 @@ function lostTerms(orig, sug, withTitle){
   if(withTitle) jobTitleWords().forEach(function(w){ if(inText(w, ol) && !inText(w, gl) && out.indexOf(w) < 0) out.push(w); });
   return out;
 }
+// Why a rewrite should be thrown away (empty string = it's fine). Checks one bullet against its own original.
+function bulletProblem(orig, sug, mode){
+  if(!orig || !sug || norm(orig) === norm(sug)) return '';
+  var lost = lostTerms(orig, sug, false);
+  if(lost.length) return {k:'kw', terms:lost};
+  // a number must come from this bullet — not copied from another one, never made up
+  // compare whole figures ("40%" is not "40+ experiments"), and a figure may not appear more often than it did
+  var figs = function(t){ return (String(t || '').replace(/\[[^\]]*\]/g, ' ').replace(RANGE, ' ').replace(/\b(19|20)\d{2}\b/g, ' ').match(NUM_RX) || [])
+    .map(function(m){ var d = digitsOf(m); return d ? d + (/%|percent/i.test(m) ? '%' : /\$/.test(m) ? '$' : '') : ''; }).filter(Boolean); };
+  var own = figs(orig), mine = figs(sug), left = own.slice();
+  if(mine.some(function(f){ var i = left.indexOf(f); if(i < 0) return true; left.splice(i, 1); return false; })) return {k:'num'};
+  // no fill-in blanks unless you asked for numbers
+  var bl = function(t){ return (String(t).match(/\[[^\]\n]{1,40}\]/g) || []).length; };
+  if(bl(sug) > bl(orig) && mode !== 'quantify' && mode !== 'expand') return {k:'blank'};
+  // never a lower grade, never a bullet that's now too long
+  var g0 = gradeBullet({t:orig}), g1 = gradeBullet({t:sug});
+  if(g1.score < g0.score) return {k:'grade'};
+  if(g1.wc > 34 && g1.wc > g0.wc && mode !== 'expand') return {k:'long'};
+  if(BUZZ_RX.test(sug) && !BUZZ_RX.test(orig)) return {k:'buzz'};
+  return '';
+}
+var WHY_KEPT = {num:'used a number from a different bullet', blank:'added a blank you didn’t ask for', grade:'read weaker than yours', long:'ran too long', buzz:'added a cliché'};
+function keptWhy(list){
+  var kw = [], other = [];
+  list.forEach(function(p){ if(p.k === 'kw') kw = kw.concat(p.terms); else if(WHY_KEPT[p.k] && other.indexOf(WHY_KEPT[p.k]) < 0) other.push(WHY_KEPT[p.k]); });
+  var bits = (kw.length ? ['would have removed ' + termList(uniq(kw))] : []).concat(other);
+  return bits.length > 1 ? bits.slice(0, -1).join(', ') + ' or ' + bits[bits.length - 1] : bits[0] || '';
+}
+// Overall resume Score if every suggestion in R were accepted (measured on the real document, then put back).
+function scoreWith(R, targets){
+  var undo = [];
+  targets.forEach(function(tg){ var o = owner(tg.key); (tg.res || []).forEach(function(x){ var b = o && byId(o.arr, x.bid); if(b && x.sug !== x.orig){ undo.push([b, b.t]); b.t = x.sug; } }); });
+  var sm = R.summary && R.summary.sid ? secById(R.summary.sid) : null, smWas = sm ? sm.text : null;
+  if(sm && R.summary.sug) sm.text = R.summary.sug;
+  var sc; try { sc = analyse().score; } finally { undo.forEach(function(u){ u[0].t = u[1]; }); if(sm) sm.text = smWas; }
+  return sc;
+}
 function termList(a){ var q = a.slice(0, 3).map(function(k){ return '“' + k + '”'; }); return q.length > 1 ? q.slice(0, -1).join(', ') + ' and ' + q[q.length - 1] : q[0] || ''; }
 // Applies the guard to a whole Optimise result. Anything that would lose a keyword keeps the original.
 function guardAll(R, targets){
   if(R.summary && R.summary.orig && R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig)){
     var ls = lostTerms(R.summary.orig, R.summary.sug, true);
     if(ls.length){ R.summary.sug = R.summary.orig; R.summary.kept = ls; }
+    else if(BUZZ_RX.test(R.summary.sug) && !BUZZ_RX.test(R.summary.orig)){ R.summary.sug = R.summary.orig; R.summary.kept = []; R.summary.cliche = 1; }
   }
   if(R.headline && R.headline.orig && lostTerms(R.headline.orig, R.headline.sug, true).length) delete R.headline;
   targets.forEach(function(tg){
     (tg.res || []).forEach(function(x){
       if(norm(x.sug) === norm(x.orig)) return;
-      var l = lostTerms(x.orig, x.sug, false);
-      if(l.length){ x.sug = x.orig; tg.kept = (tg.kept || []).concat(l.filter(function(k){ return (tg.kept || []).indexOf(k) < 0; })); tg.keptN = (tg.keptN || 0) + 1; }
+      var pb = bulletProblem(x.orig, x.sug, 'tailor');
+      if(pb){ x.sug = x.orig; (tg.why = tg.why || []).push(pb); tg.keptN = (tg.keptN || 0) + 1; }
     });
   });
+  // the overall Score must not go down either: drop the rewrites that add the most words until it doesn't
+  var sc0 = analyse().score, sc1 = scoreWith(R, targets);
+  if(sc1 < sc0){
+    var all = []; targets.forEach(function(tg){ (tg.res || []).forEach(function(x){ if(x.sug !== x.orig) all.push({tg:tg, x:x, grow:wordsIn(x.sug) - wordsIn(x.orig)}); }); });
+    all.sort(function(a, b){ return b.grow - a.grow; });
+    for(var i = 0; i < all.length && sc1 < sc0; i++){
+      all[i].x.sug = all[i].x.orig; (all[i].tg.why = all[i].tg.why || []).push({k:'long'}); all[i].tg.keptN = (all[i].tg.keptN || 0) + 1;
+      sc1 = scoreWith(R, targets);
+    }
+    if(sc1 < sc0 && R.summary && R.summary.orig && R.summary.sug !== R.summary.orig){ R.summary.sug = R.summary.orig; R.summary.kept = R.summary.kept || []; sc1 = scoreWith(R, targets); }
+  }
+  R.sc0 = sc0; R.sc1 = sc1;
 }
 var NUM_RX = /\$?\d[\d,]*(?:\.\d+)?\s?(?:%|percent\b|k\b|m\b|x\b|\+)?/gi;
 function digitsOf(n){ return String(n).replace(/[^\d.]/g, '').replace(/\.$/, ''); }
@@ -2378,7 +2429,7 @@ function validateAll(R, targets, terms, cover0){
     else { if(c.fixed.length){ V.fixed++; R.summary.fc = 'Fixed: “' + c.fixed[0] + '” isn’t on your resume — fill in the [ ]'; } R.summary.sug = c.text; }
   }
   targets.forEach(function(tg){
-    var rolePool = pool;   // numbers and tools may come from anywhere on the resume, never from the job post
+    var rolePool = '';   // a bullet's numbers may only come from that same bullet — never copied from another one or the job post
     (tg.res || []).forEach(function(x){
       if(norm(x.sug) === norm(x.orig)) return;
       V.checked++;
@@ -2414,14 +2465,14 @@ function showResults(R, targets, sel, V){
   var already = '<div class="rdone"><span>✨</span><b>Already optimised</b><small>This looks great — no changes needed.</small></div>';
   var h = '';
   if(R.summary) h += R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig) ? card('Summary', row('summary', {sid:R.summary.sid}, R.summary.orig, R.summary.sug, '', R.summary.fc))
-    : card('Summary', R.summary.kept ? '<div class="rdone"><span>✓</span><b>Kept your summary</b><small>The rewrite would have removed ' + esc(termList(R.summary.kept)) + ', which ' + (R.summary.kept.length > 1 ? 'this job looks for' : 'this job looks for') + ' — so your original stays.</small></div>'
+    : card('Summary', R.summary.kept ? '<div class="rdone"><span>✓</span><b>Kept your summary</b><small>' + (R.summary.kept.length ? 'The rewrite would have removed ' + esc(termList(R.summary.kept)) + ', which this job looks for' : R.summary.cliche ? 'The rewrite added a cliché' : 'The rewrite would have lowered your resume score') + ' — so your original stays.</small></div>'
       : R.summary.dropped ? '<div class="rdone"><span>✓</span><b>Kept your summary</b><small>The suggestion was dropped in the fact check — ' + esc(R.summary.dropped) + '.</small></div>' : already, true);
   if(R.headline) h += card('Job title', row('headline', {}, R.headline.orig, R.headline.sug, 'Shown under your name.', R.headline.fc));
   if(R.loc) h += card('Location', row('loc', {}, R.loc.orig, R.loc.sug, 'This role is in ' + R.loc.city + '. Accept only if you’d genuinely move.'));
   targets.forEach(function(tg){
     var ch = (tg.res || []).filter(function(x){ return norm(x.sug) !== norm(x.orig); });
     var t = 'Experience at ' + esc(tg.it.sub || (tg.it.title || '').split(/,\s*/).slice(1).join(', ') || tg.it.title || 'this role');
-    var keptNote = tg.keptN ? '<p class="rnote">' + tg.keptN + ' rewrite' + (tg.keptN > 1 ? 's' : '') + ' skipped — ' + (tg.keptN > 1 ? 'they' : 'it') + ' would have removed ' + esc(termList(tg.kept)) + ', so your original' + (tg.keptN > 1 ? 's stay' : ' stays') + '.</p>' : '';
+    var keptNote = tg.keptN ? '<p class="rnote">' + tg.keptN + ' rewrite' + (tg.keptN > 1 ? 's' : '') + ' skipped — ' + (tg.keptN > 1 ? 'they' : 'it') + ' ' + esc(keptWhy(tg.why || [])) + ', so your original' + (tg.keptN > 1 ? 's stay' : ' stays') + '.</p>' : '';
     h += ch.length ? card(t, ch.map(function(x){ return row('bullet', {key:tg.key, bid:x.bid}, x.orig, x.sug, '', x.fc); }).join('') + keptNote) : card(t, (tg.keptN ? keptNote : already), true);
   });
   if(sel.skills) h += card('Skills', R.skills && R.skills.length
@@ -2436,8 +2487,8 @@ function showResults(R, targets, sel, V){
         '<small>The AI couldn’t be reached just now' + (R.nAi ? ' for those parts' : '') + ', so they come from our built-in rules. Try again in a moment for full AI rewrites.</small>' +
         '<button type="button" class="vbtn" data-a="opt-retry">Retry with AI</button></span></div>' : '') +
       (V.after != null ? '<div><span class="vi a">✓</span><span><b>ATS keyword match: ' + (V.after > V.before ? V.before + '% → <span class="up">' + V.after + '%</span>' : '<span class="up">' + V.after + '%</span>') + '</b><small>' +
-        (V.after > V.before ? 'Of the ' + atsTerms().length + ' keywords in this job description, once you accept these changes. Every change keeps the keywords you already had.'
-          : 'Unchanged — every change keeps the keywords you already match. The missing ones don’t truthfully fit your bullets yet' + (OPT.sel && OPT.sel.skills ? '; tick any you genuinely have under Skills below.' : '; add any you genuinely have to your Skills.')) + '</small></span></div>' : '') +
+        (R.sc0 != null ? 'Resume score ' + (R.sc1 > R.sc0 ? R.sc0 + ' → ' + R.sc1 : 'stays ' + R.sc0) + '. ' : '') + (V.after > V.before ? 'Of the ' + atsTerms().length + ' keywords in this job description, once you accept these changes. Every change keeps the keywords you already had.'
+          : 'Keyword match unchanged — every change keeps the keywords you already match. The missing ones don’t truthfully fit your bullets yet' + (OPT.sel && OPT.sel.skills ? '; tick any you genuinely have under Skills below.' : '; add any you genuinely have to your Skills.')) + '</small></span></div>' : '') +
       (V.checked == null ? '<div><span class="vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 9.5 4-1.2 7-5.1 7-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg></span><span><b>Not fact-checked yet</b><small>Check every suggestion against your resume: no new numbers, tools or employers.</small><button type="button" class="vbtn" data-a="fc-sug">Run fact check & validation</button></span></div>' :
       '<div><span class="vi' + (V.fixed + V.removed ? ' w' : '') + '">' + (V.fixed + V.removed ? '!' : '✓') + '</span><span><b>Fact-checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + '</b><small>' +
         (V.fixed + V.removed ? (V.fixed ? V.fixed + ' had a number that isn’t on your resume — now a [ ] for you to fill in. ' : '') +
