@@ -490,6 +490,49 @@ body.embed .banner{max-width:none}
   .om-pick{padding:22px 18px 18px}
 }
 
+/* ---------- Optimise picker v2: scrolls inside, actions always visible ---------- */
+.om-pick{max-width:500px;padding:0;text-align:left;display:flex;flex-direction:column;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px)}
+.om-pick .oph{padding:20px 52px 4px 22px}
+.om-pick h2{font-size:19px}
+.om-pick .omsub{margin-top:3px;font-size:13px}
+.om-pick .opb{flex:1;min-height:0;overflow:auto;padding:2px 22px 12px;overscroll-behavior:contain}
+.om-pick .opf{flex:none;border-top:1px solid var(--line);padding:12px 22px 14px;background:#fff;border-radius:0 0 18px 18px}
+.om-pick .ohd{margin-top:12px}
+.om-pick .orows{border-top:0;display:grid;gap:6px;margin-top:6px}
+.om-pick .orow{display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;margin:0;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:left;cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s}
+.om-pick .orow:hover{border-color:#c4cff5;background:#fafbff}
+.om-pick .orow:focus-visible{outline:none;box-shadow:0 0 0 3px var(--blue-soft)}
+.om-pick .orow.on{border-color:#8299ee;background:#f4f6ff;animation:none}
+.om-pick .orow .ol{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.om-pick .orow .ol b{font:600 14px Inter,sans-serif;color:var(--ink)}
+.om-pick .orow .ol small{font-size:12.5px;color:var(--muted);line-height:1.35}
+.om-pick .orow .cb{order:-1;flex:none;width:20px;height:20px;border-radius:6px;box-shadow:inset 0 0 0 1.5px #c3c9db;display:grid;place-items:center;transition:background .15s,box-shadow .15s}
+.om-pick .orow .cb svg{width:13px;height:13px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:22;stroke-dashoffset:22;transition:stroke-dashoffset .25s ease}
+.om-pick .orow.on .cb{background:var(--blue);box-shadow:none}
+.om-pick .orow.on .cb svg{stroke-dashoffset:0}
+.om-pick .omins-t{display:inline-flex;align-items:center;gap:6px;border:0;background:none;color:var(--blue);font:600 13px Inter,sans-serif;padding:4px 0;margin-top:12px;cursor:pointer}
+.om-pick .omins-t:hover{text-decoration:underline}
+.om-pick .omlbl{margin-top:14px}
+.om-pick .omjd{margin-top:12px}
+.om-pick .opf .omacts{margin-top:0;grid-template-columns:1.2fr 1fr;gap:8px}
+.om-pick .opf .omb2{padding:10px 12px;border-radius:12px}
+.om-pick .opf .omb2 b{font-size:14px}
+.om-pick .opf .omb2 small{font-size:11.5px}
+.om-pick .omhint{margin:8px 0 0;min-height:0;font-size:12px;text-align:center}
+.om-pick .omhint:empty{display:none}
+@media (max-width:640px){
+  .om-pick{padding:0}
+  .om-pick .oph{padding:18px 48px 4px 16px}
+  .om-pick .opb{padding:2px 16px 12px}
+  .om-pick .opf{padding:10px 16px 12px}
+}
+@media (max-width:440px){.om-pick .opf .omacts{grid-template-columns:1fr}}
+/* results: honest note when part of it used built-in suggestions */
+.vrep .vnote{background:#fff8e6;border:1px solid #f3dd9c;border-radius:12px;padding:10px 12px}
+.vrep .vnote .vi{background:#ffefc2;color:#8a5a00}
+.vrep .vnote .vbtn{border-color:#e6c25a;color:#7a4f00}
+.vrep .vnote .vbtn:hover{background:#fff3cf}
+
 /* ---------- live writing checks (underlines with one-click fixes) ---------- */
 .paper mark.iss{background:none;color:inherit;border-radius:0;cursor:pointer;text-decoration-line:underline;text-decoration-style:wavy;text-decoration-thickness:1.4px;text-underline-offset:3px;transition:background .15s}
 .paper mark.iss.k-weak{text-decoration-color:#e04848}
@@ -1760,9 +1803,12 @@ function addSkill(term){
 /* =====================================================================
    7. SUGGESTIONS — AI when our server function is set up, built-in rules otherwise
    ===================================================================== */
-var AI_OFF = !LIVE || ssGet('tp_ai_off') === '1', AI_FAILS = 0, LIMIT_TOLD = false;
+var AI_OFF = !LIVE, AI_FAILS = 0, LIMIT_TOLD = false;
+// When the AI can't be reached we pause it briefly (not for the whole tab), then try again on the next request.
+function aiResting(){ return +(ssGet('tp_ai_rest') || 0) > Date.now(); }
+function aiPause(ms){ ssSet('tp_ai_rest', String(Date.now() + ms)); }
 function ai(payload){
-  if(AI_OFF) return Promise.reject('off');
+  if(AI_OFF || aiResting()) return Promise.reject('off');
   return session().then(function(s){
     if(!s) throw 'auth';
     var ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function(){ if(ctl) ctl.abort(); }, 30000);
@@ -1771,10 +1817,22 @@ function ai(payload){
       .then(function(r){
         clearTimeout(tm);
         if(r.status === 429){ if(!LIMIT_TOLD){ LIMIT_TOLD = true; toast('That’s today’s AI suggestions used up — built-in suggestions until tomorrow.'); } throw 'limit'; }
-        if(r.status === 404){ AI_OFF = true; ssSet('tp_ai_off', '1'); throw 'off'; }
+        if(r.status === 404){ aiPause(10 * 60000); throw 'off'; }
         if(!r.ok) throw 'http';
         AI_FAILS = 0; return r.json();
-      }, function(e){ clearTimeout(tm); if(++AI_FAILS >= 2){ AI_OFF = true; ssSet('tp_ai_off', '1'); } throw e; });
+      }, function(e){ clearTimeout(tm); if(++AI_FAILS >= 2){ AI_FAILS = 0; aiPause(90000); } throw e; });
+  });
+}
+// A role with many bullets goes to the AI in batches of 10, then the answers are joined back up in order.
+function aiBullets(p){
+  var all = p.bullets || [], size = 10;
+  if(all.length <= size) return ai(p);
+  var parts = []; for(var i = 0; i < all.length; i += size) parts.push(all.slice(i, i + size));
+  return Promise.all(parts.map(function(part){
+    return ai(Object.assign({}, p, {bullets:part})).then(function(r){ if(!r || !Array.isArray(r.bullets) || r.bullets.length !== part.length) throw 'shape'; return r; });
+  })).then(function(rs){
+    return {bullets:[].concat.apply([], rs.map(function(r){ return r.bullets; })),
+      why:[].concat.apply([], rs.map(function(r, k){ return Array.isArray(r.why) && r.why.length === parts[k].length ? r.why : parts[k].map(function(){ return ''; }); }))};
   });
 }
 var FILLER = [[/\bsuccessfully\s+/gi, ''], [/\beffectively\s+/gi, ''], [/\bactively\s+/gi, ''], [/\bin order to\b/gi, 'to'], [/\bon a regular basis\b/gi, 'regularly'],
@@ -1880,12 +1938,14 @@ function improveOwner(key, mode, ids, asks){
   var texts = ids.map(function(id){ return byId(o.arr, id).t; });
   // the other bullets in the role go along too, so the AI doesn't repeat the same opening verb
   var others = o.arr.filter(function(b){ return b.t.trim() && ids.indexOf(b.id) < 0; }).map(function(b){ return b.t; }).slice(0, 10);
-  var asked = ai({task:'bullets', mode:mode, bullets:texts, context:others, role:o.ctx.title || '', org:o.ctx.sub || '', target:targetRole(), jd:jobText().slice(0, 4000), instructions:asks || ''})
+  var asked = aiBullets({task:'bullets', mode:mode, bullets:texts, context:others, role:o.ctx.title || '', org:o.ctx.sub || '', target:targetRole(), jd:jobText().slice(0, 4000), instructions:asks || ''})
     .then(function(r){ if(!r || !Array.isArray(r.bullets) || r.bullets.length !== texts.length) throw 'shape';
       return {list:r.bullets.map(function(x, i){ return String(x || '').trim() || texts[i]; }), why:Array.isArray(r.why) ? r.why : [], src:'ai'}; })
     .catch(function(){ return wait(450).then(function(){ return {list:texts.map(function(t){ return localRewrite(mode, t); }), why:[], src:'local'}; }); });
   return asked.then(function(r){
     var S2 = SUG[key]; if(!S2 || S2 !== S) return;
+    var guardLost = [];   // a rewrite that would remove a skill or job keyword keeps the original
+    r.list = r.list.map(function(x, i){ var l = lostTerms(texts[i], x, false); if(l.length){ guardLost = guardLost.concat(l); return texts[i]; } return x; });
     ids.forEach(function(id, i){ S2.sug[id] = r.list[i]; if(r.why[i]) S2.why[id] = String(r.why[i]).slice(0, 90); });
     S2.src = r.src; S2.loading = false;
     var same = ids.filter(function(id, i){ return norm(r.list[i]) === norm(texts[i]); });
@@ -1893,7 +1953,7 @@ function improveOwner(key, mode, ids, asks){
       S2.ids = S2.ids.filter(function(id){ return ids.indexOf(id) < 0; });
       if(!S2.ids.length) delete SUG[key];
       renderPaper(); renderSide();
-      toast('✓ ' + (ids.length > 1 ? (SAME_MANY[mode] || SAME_MANY.improve) : (SAME_MSG[mode] || SAME_MSG.improve)));
+      toast(guardLost.length ? 'Kept as is — the rewrite would have removed ' + termList(uniq(guardLost)) + ', which your score counts.' : '✓ ' + (ids.length > 1 ? (SAME_MANY[mode] || SAME_MANY.improve) : (SAME_MSG[mode] || SAME_MSG.improve)));
       return;
     }
     renderPaper(); renderSide();
@@ -1906,7 +1966,10 @@ function improveSummary(sid){
   ai({task:'summary', current:s.text || '', resume:docText().slice(0, 8000), target:targetRole(), jd:jobText().slice(0, 3000)})
     .then(function(r){ if(!r || !r.text) throw 'shape'; return {text:String(r.text).trim(), src:'ai'}; })
     .catch(function(){ return wait(450).then(function(){ return {text:localSummary(), src:'local'}; }); })
-    .then(function(r){ if(SUG['sum:' + sid] !== S) return; S.loading = false; S.text = r.text; S.src = r.src; renderPaper(); renderSide(); typeAll('.sug[data-k="sum:' + sid + '"] [data-sb]'); });
+    .then(function(r){ if(SUG['sum:' + sid] !== S) return;
+      var lost = s.text ? lostTerms(s.text, r.text, true) : [];
+      if(lost.length){ delete SUG['sum:' + sid]; renderPaper(); renderSide(); toast('Kept your summary — the rewrite would have removed ' + termList(lost) + ', which your score counts.'); return; }
+      S.loading = false; S.text = r.text; S.src = r.src; renderPaper(); renderSide(); typeAll('.sug[data-k="sum:' + sid + '"] [data-sb]'); });
 }
 function acceptSug(key, bid){
   var S = SUG[key]; if(!S || S.loading) return;
@@ -2026,22 +2089,38 @@ function openOptimise(){
   if(JOB && JOB.loc && !/remote|anywhere/i.test(JOB.loc)) rows.splice(2, 0, ['location', 'Location']);
   OPT = {sel:{}};
   rows.forEach(function(r){ OPT.sel[r[0]] = false; });   // you choose — nothing is pre-selected
+  // one line under each option saying exactly what will change
+  var tg = optTargets(), nb = tg.reduce(function(n, t){ return n + t.it.bullets.filter(function(b){ return b.t.trim(); }).length; }, 0);
+  var hasSum = DOC.sections.some(function(x){ return x.k === 'summary' && !x.hidden && String(x.text || '').trim(); });
+  var jt = JOB ? cleanTitle(JOB.title) : '';
+  var what = {
+    summary: hasSum ? 'Rewrite it around this job’s keywords' : 'Write one from your experience — you don’t have one yet',
+    headline: jt ? 'Set the title under your name to “' + jt + '”' : 'Match the title under your name to the job',
+    location: JOB && JOB.loc ? 'Show you’re open to relocating to ' + JOB.loc : 'Show you’re open to relocating',
+    experience: nb ? 'Tailor ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' across ' + tg.length + ' role' + (tg.length > 1 ? 's' : '') + ' to the job' : 'Add bullets to a role first',
+    skills: 'Find skills the job asks for that you haven’t listed'
+  };
+  var insOn = !!(pref.ins || '').trim();
   modalOpen('<div class="om om-pick" role="dialog" aria-modal="true" aria-labelledby="omT"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
-    '<h2 id="omT">Optimise by</h2>' +
-    (JOB ? '<p class="omsub">Choose what to tailor for <b>' + esc(cleanTitle(JOB.title) || 'this job') + '</b>' + (JOB.company ? ' at <b>' + esc(JOB.company) + '</b>' : '') + '</p>'
-         : '<p class="omsub">Paste the job you’re applying for, then choose what to tailor.</p><div class="omjd"><textarea id="optJd" rows="5" placeholder="Paste the job description here"></textarea></div>') +
-    '<div class="ohd"><span>Choose one or more</span><button type="button" data-a="opt-all">Select all</button></div>' +
-    '<div class="orows">' + rows.map(function(r){ return '<button type="button" class="orow" data-a="opt-t" data-v="' + r[0] + '" aria-pressed="false"><span class="ol">' + r[1] + '</span><span class="pill"><i class="ck"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i><em>Select</em></span></button>'; }).join('') + '</div>' +
-    '<label class="omlbl" for="optIns">Special instructions <span>(optional)</span></label>' +
-    '<textarea id="optIns" rows="3" maxlength="400" placeholder="e.g. Keep the summary to 36–38 words and each experience bullet between 18–22 words.">' + esc(pref.ins || '') + '</textarea>' +
-    '<div class="omacts"><button class="btn omb2 ats" type="button" data-a="opt-go" id="optGo" disabled><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="optGoT">ATS optimization</span></b><small>Tailor what you picked to this job’s keywords</small></button>' +
-      '<button class="btn omb2 fcb" type="button" data-a="fc-go"><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 9.5 4-1.2 7-5.1 7-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg>Fact check & validation</b><small>Check your resume as it is now — numbers, tools, titles, dates, blanks</small></button></div>' +
-    '<p class="omhint" id="optHint">Pick at least one above for ATS optimization. Fact check works on its own.</p></div>');
+    '<div class="oph"><h2 id="omT">Optimise for this job</h2>' +
+    (JOB ? '<p class="omsub"><b>' + esc(jt || 'This job') + '</b>' + (JOB.company ? ' at <b>' + esc(JOB.company) + '</b>' : '') + '</p>'
+         : '<p class="omsub">Paste the job you’re applying for, then choose what to tailor.</p>') + '</div>' +
+    '<div class="opb">' +
+    (JOB ? '' : '<div class="omjd"><textarea id="optJd" rows="5" placeholder="Paste the job description here"></textarea></div>') +
+    '<div class="ohd"><span>Choose what to tailor</span><button type="button" data-a="opt-all">Select all</button></div>' +
+    '<div class="orows">' + rows.map(function(r){ return '<button type="button" class="orow" data-a="opt-t" data-v="' + r[0] + '" aria-pressed="false"><span class="ol"><b>' + r[1] + '</b><small>' + esc(what[r[0]] || '') + '</small></span><i class="cb" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i></button>'; }).join('') + '</div>' +
+    '<button type="button" class="omins-t" data-a="opt-ins"' + (insOn ? ' hidden' : '') + '>+ Add special instructions</button>' +
+    '<div id="optInsW"' + (insOn ? '' : ' hidden') + '><label class="omlbl" for="optIns">Special instructions <span>(optional)</span></label>' +
+    '<textarea id="optIns" rows="3" maxlength="400" placeholder="e.g. Keep the summary to 36–38 words and each experience bullet between 18–22 words.">' + esc(pref.ins || '') + '</textarea></div>' +
+    '</div>' +
+    '<div class="opf"><div class="omacts"><button class="btn omb2 ats" type="button" data-a="opt-go" id="optGo" disabled><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="optGoT">ATS optimization</span></b><small>Tailor what you picked to this job</small></button>' +
+      '<button class="btn omb2 fcb" type="button" data-a="fc-go"><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 9.5 4-1.2 7-5.1 7-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg>Fact check & validation</b><small>Check your resume as it is now</small></button></div>' +
+    '<p class="omhint" id="optHint">Pick at least one above for ATS optimization. Fact check works on its own.</p></div></div>');
 }
 function optPick(row, on){
   var v = row.getAttribute('data-v'); OPT.sel[v] = on;
   row.classList.toggle('on', on); row.setAttribute('aria-pressed', on ? 'true' : 'false');
-  row.querySelector('em').textContent = on ? 'Selected' : 'Select';
+  var em = row.querySelector('em'); if(em) em.textContent = on ? 'Selected' : 'Select';
   var n = Object.keys(OPT.sel).filter(function(k){ return OPT.sel[k]; }).length, go = $('#optGo'), hint = $('#optHint'), all = $('[data-a=opt-all]');
   if(go){ go.disabled = !n; var gt = $('#optGoT'); if(gt) gt.textContent = n ? 'ATS optimization · ' + n : 'ATS optimization'; }
   if(hint) hint.textContent = n ? '' : 'Pick at least one above for ATS optimization. Fact check works on its own.';
@@ -2055,6 +2134,36 @@ function atsTerms(){
 function atsCover(text, terms){
   var low = String(text || '').toLowerCase(), hit = terms.filter(function(k){ return inText(k, low); });
   return {pct:terms.length ? Math.round(hit.length / terms.length * 100) : null, hit:hit, miss:terms.filter(function(k){ return hit.indexOf(k) < 0; })};
+}
+/* ---- Score guard ----
+   A suggestion may never take away a skill, tool or job keyword that the original had.
+   Every change is checked on its own, so whichever ones you accept, your ATS keyword match and
+   your Resume match score can only stay the same or go up. Nothing is inflated: scores are
+   always measured on the real text. */
+var TITLE_SKIP = /^(senior|sr|junior|jr|staff|principal|lead|head|of|and|the|ii|iii|iv|i|new|grad|associate|intern|manager|remote|us|usa)$/;
+function jobTitleWords(){ return JOB ? (cleanTitle(JOB.title).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(function(w){ return w.length > 1 && !TITLE_SKIP.test(w); })) : []; }
+function lostTerms(orig, sug, withTitle){
+  var o = String(orig || ''), g = String(sug || ''), ol = o.toLowerCase(), gl = g.toLowerCase(), have = skillsIn(g), out = [];
+  skillsIn(o).forEach(function(k){ if(have.indexOf(k) < 0) out.push(k); });
+  atsTerms().forEach(function(k){ if(!out.some(function(x){ return x.toLowerCase() === k.toLowerCase(); }) && inText(k, ol) && !inText(k, gl)) out.push(k); });
+  if(withTitle) jobTitleWords().forEach(function(w){ if(inText(w, ol) && !inText(w, gl) && out.indexOf(w) < 0) out.push(w); });
+  return out;
+}
+function termList(a){ var q = a.slice(0, 3).map(function(k){ return '“' + k + '”'; }); return q.length > 1 ? q.slice(0, -1).join(', ') + ' and ' + q[q.length - 1] : q[0] || ''; }
+// Applies the guard to a whole Optimise result. Anything that would lose a keyword keeps the original.
+function guardAll(R, targets){
+  if(R.summary && R.summary.orig && R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig)){
+    var ls = lostTerms(R.summary.orig, R.summary.sug, true);
+    if(ls.length){ R.summary.sug = R.summary.orig; R.summary.kept = ls; }
+  }
+  if(R.headline && R.headline.orig && lostTerms(R.headline.orig, R.headline.sug, true).length) delete R.headline;
+  targets.forEach(function(tg){
+    (tg.res || []).forEach(function(x){
+      if(norm(x.sug) === norm(x.orig)) return;
+      var l = lostTerms(x.orig, x.sug, false);
+      if(l.length){ x.sug = x.orig; tg.kept = (tg.kept || []).concat(l.filter(function(k){ return (tg.kept || []).indexOf(k) < 0; })); tg.keptN = (tg.keptN || 0) + 1; }
+    });
+  });
 }
 var NUM_RX = /\$?\d[\d,]*(?:\.\d+)?\s?(?:%|percent\b|k\b|m\b|x\b|\+)?/gi;
 function digitsOf(n){ return String(n).replace(/[^\d.]/g, '').replace(/\.$/, ''); }
@@ -2088,7 +2197,7 @@ function factCheck(orig, sug, pool, extraNums){
   return res;
 }
 function runOptimise(){
-  var sel = OPT.sel, ins = (($('#optIns') || {}).value || '').trim();
+  var sel = OPT.sel, insEl = $('#optIns'), ins = (insEl ? insEl.value : (OPT.ins || '')).trim(); OPT.ins = ins;
   if(!JOB){
     var jd = (($('#optJd') || {}).value || '').trim();
     if(jd.length < 80){ toast('Paste the full job description first.'); return; }
@@ -2112,7 +2221,7 @@ function runOptimise(){
   var done = function(k, label){ var li = $('.steps [data-st="' + k + '"]'); if(li){ li.classList.remove('run'); li.classList.add('ok'); if(label) li.lastChild.textContent = label; } };
   var running = function(k){ var li = $('.steps [data-st="' + k + '"]'); if(li && !li.classList.contains('ok')) li.classList.add('run'); };
   $$('.steps li:not(.grp)').forEach(function(li){ if(li.getAttribute('data-st') !== 'score') li.classList.add('run'); });
-  var R = {src:'local'}, jobs = [], cap = capFrom(ins, 'bullet'), scap = capFrom(ins, 'summary'), t0 = Date.now();
+  var R = {src:'local', nAi:0, nLoc:0}, jobs = [], cap = capFrom(ins, 'bullet'), scap = capFrom(ins, 'summary'), t0 = Date.now();
   // the job's key terms go to the AI with the posting, so the rewrite targets what an ATS scans for
   var jdx = (terms.length ? 'KEY TERMS an ATS will scan for (use the exact wording where it truthfully fits): ' + terms.join(', ') + '\n\n' : '') + jobText();
   setTimeout(function(){ done('job', terms.length ? 'Found ' + terms.length + ' keywords in the job description' : 'Read the job description'); }, 450);
@@ -2121,7 +2230,7 @@ function runOptimise(){
     jobs.push(ai({task:'summary', current:sm ? sm.text : '', resume:docText().slice(0, 8000), target:cleanTitle(JOB.title), jd:jdx.slice(0, 4000), instructions:ins})
       .then(function(r){ if(!r || !r.text) throw 'shape'; return {t:String(r.text).trim(), src:'ai'}; })
       .catch(function(){ return wait(500).then(function(){ return {t:localSummary(scap), src:'local'}; }); })
-      .then(function(r){ R.summary = {sid:sm && sm.id, orig:sm ? sm.text : '', sug:r.t}; if(r.src === 'ai') R.src = 'ai'; done('summary'); }));
+      .then(function(r){ R.summary = {sid:sm && sm.id, orig:sm ? sm.text : '', sug:r.t}; if(r.src === 'ai') R.src = 'ai'; R[r.src === 'ai' ? 'nAi' : 'nLoc']++; done('summary'); }));
   }
   if(sel.headline){ var ht = cleanTitle(JOB.title); if(ht && norm(ht) !== norm(DOC.headline)) R.headline = {orig:DOC.headline || '', sug:ht}; }
   if(sel.location && JOB.loc && !(DOC.prefs || {}).relocate){ R.loc = {orig:prefText() || '', sug:'Open to relocation', city:JOB.loc.split(',')[0]}; }
@@ -2130,14 +2239,15 @@ function runOptimise(){
     var left = targets.length; if(!left) setTimeout(function(){ done('experience'); }, 900);
     targets.forEach(function(tg){
       var bl = tg.it.bullets.filter(function(b){ return b.t.trim(); }), texts = bl.map(function(b){ return b.t; });
-      jobs.push(ai({task:'bullets', mode:'tailor', bullets:texts, role:tg.it.title || '', org:tg.it.sub || '', target:cleanTitle(JOB.title), jd:jdx.slice(0, 4000), instructions:ins})
+      jobs.push(aiBullets({task:'bullets', mode:'tailor', bullets:texts, role:tg.it.title || '', org:tg.it.sub || '', target:cleanTitle(JOB.title), jd:jdx.slice(0, 4000), instructions:ins})
         .then(function(r){ if(!r || !Array.isArray(r.bullets) || r.bullets.length !== texts.length) throw 'shape'; return {list:r.bullets.map(function(x, i){ return String(x || '').trim() || texts[i]; }), src:'ai'}; })
         .catch(function(){ return wait(650).then(function(){ return {list:texts.map(function(t){ return localTailor(t, cap); }), src:'local'}; }); })
-        .then(function(r){ tg.res = bl.map(function(b, i){ return {bid:b.id, orig:b.t, sug:r.list[i]}; }); if(r.src === 'ai') R.src = 'ai'; if(--left === 0) done('experience'); }));
+        .then(function(r){ tg.res = bl.map(function(b, i){ return {bid:b.id, orig:b.t, sug:r.list[i]}; }); if(r.src === 'ai') R.src = 'ai'; R[r.src === 'ai' ? 'nAi' : 'nLoc']++; if(--left === 0) done('experience'); }));
     });
   }
   Promise.all(jobs).then(function(){
     if(sel.skills){ var f = jobFit(); R.skills = f ? f.miss : []; done('skills'); }
+    guardAll(R, targets);   // nothing that would lower the score gets offered
     OPT.R = R; OPT.targets = targets; OPT.terms = terms; OPT.cover0 = cover0;
     var V = atsOnly(R, targets, terms, cover0);
     running('score');
@@ -2150,11 +2260,11 @@ function scoreAfter(R, targets, pool){
   var after = pool;
   if(R.summary && R.summary.sug) after = after.replace(R.summary.orig || '\u0000', R.summary.sug) + (R.summary.orig ? '' : '\n' + R.summary.sug);
   targets.forEach(function(tg){ (tg.res || []).forEach(function(x){ if(x.sug !== x.orig) after = after.replace(x.orig, x.sug); }); });
-  if(R.headline) after += '\n' + R.headline.sug;
+  if(R.headline) after = R.headline.orig && after.indexOf(R.headline.orig) > -1 ? after.replace(R.headline.orig, R.headline.sug) : after + '\n' + R.headline.sug;
   return after;
 }
 function atsOnly(R, targets, terms, cover0){
-  return {ats:true, checked:null, before:cover0.pct, after:terms.length ? Math.max(cover0.pct, atsCover(scoreAfter(R, targets, docText()), terms).pct) : null};
+  return {ats:true, checked:null, before:cover0.pct, after:terms.length ? atsCover(scoreAfter(R, targets, docText()), terms).pct : null};
 }
 var MONI = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,sept:8,oct:9,nov:10,dec:11};
 function dateOf(m, y){ if(!y) return null; var mi = m ? MONI[String(m).toLowerCase().replace(/[^a-z]/g, '').slice(0, 4)] : null; if(mi == null && m && /^\d{1,2}/.test(m)) mi = parseInt(m, 10) - 1; return new Date(+y, mi == null ? 0 : mi, 1); }
@@ -2285,12 +2395,9 @@ function validateAll(R, targets, terms, cover0){
     if(rank) R.headline.fc = '“' + rank.charAt(0).toUpperCase() + rank.slice(1) + '” isn’t in any title on your resume — keep it only if it’s true';
     else if(missing.length) R.headline.fc = 'You haven’t held this exact title — keep it only if it describes your work';
   }
-  // what an ATS would see if they accept everything
-  var after = pool;
-  if(R.summary && R.summary.sug) after = after.replace(R.summary.orig || '\u0000', R.summary.sug) + (R.summary.orig ? '' : '\n' + R.summary.sug);
-  targets.forEach(function(tg){ (tg.res || []).forEach(function(x){ if(x.sug !== x.orig) after = after.replace(x.orig, x.sug); }); });
-  if(R.headline) after += '\n' + R.headline.sug;
-  if(terms.length) V.after = Math.max(V.before, atsCover(after, terms).pct);
+  // what an ATS would see if they accept everything — measured on the real text, never rounded up
+  guardAll(R, targets);
+  if(terms.length) V.after = atsCover(scoreAfter(R, targets, pool), terms).pct;
   return V;
 }
 function showResults(R, targets, sel, V){
@@ -2307,13 +2414,15 @@ function showResults(R, targets, sel, V){
   var already = '<div class="rdone"><span>✨</span><b>Already optimised</b><small>This looks great — no changes needed.</small></div>';
   var h = '';
   if(R.summary) h += R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig) ? card('Summary', row('summary', {sid:R.summary.sid}, R.summary.orig, R.summary.sug, '', R.summary.fc))
-    : card('Summary', R.summary.dropped ? '<div class="rdone"><span>✓</span><b>Kept your summary</b><small>The suggestion was dropped in the fact check — ' + esc(R.summary.dropped) + '.</small></div>' : already, true);
+    : card('Summary', R.summary.kept ? '<div class="rdone"><span>✓</span><b>Kept your summary</b><small>The rewrite would have removed ' + esc(termList(R.summary.kept)) + ', which ' + (R.summary.kept.length > 1 ? 'this job looks for' : 'this job looks for') + ' — so your original stays.</small></div>'
+      : R.summary.dropped ? '<div class="rdone"><span>✓</span><b>Kept your summary</b><small>The suggestion was dropped in the fact check — ' + esc(R.summary.dropped) + '.</small></div>' : already, true);
   if(R.headline) h += card('Job title', row('headline', {}, R.headline.orig, R.headline.sug, 'Shown under your name.', R.headline.fc));
   if(R.loc) h += card('Location', row('loc', {}, R.loc.orig, R.loc.sug, 'This role is in ' + R.loc.city + '. Accept only if you’d genuinely move.'));
   targets.forEach(function(tg){
     var ch = (tg.res || []).filter(function(x){ return norm(x.sug) !== norm(x.orig); });
     var t = 'Experience at ' + esc(tg.it.sub || (tg.it.title || '').split(/,\s*/).slice(1).join(', ') || tg.it.title || 'this role');
-    h += ch.length ? card(t, ch.map(function(x){ return row('bullet', {key:tg.key, bid:x.bid}, x.orig, x.sug, '', x.fc); }).join('')) : card(t, already, true);
+    var keptNote = tg.keptN ? '<p class="rnote">' + tg.keptN + ' rewrite' + (tg.keptN > 1 ? 's' : '') + ' skipped — ' + (tg.keptN > 1 ? 'they' : 'it') + ' would have removed ' + esc(termList(tg.kept)) + ', so your original' + (tg.keptN > 1 ? 's stay' : ' stays') + '.</p>' : '';
+    h += ch.length ? card(t, ch.map(function(x){ return row('bullet', {key:tg.key, bid:x.bid}, x.orig, x.sug, '', x.fc); }).join('') + keptNote) : card(t, (tg.keptN ? keptNote : already), true);
   });
   if(sel.skills) h += card('Skills', R.skills && R.skills.length
     ? '<p class="rnote">This job asks for these, and your resume doesn’t mention them. Tick only the ones you genuinely have — they’ll be added to your Skills section.</p><div class="rsk">' +
@@ -2323,8 +2432,12 @@ function showResults(R, targets, sel, V){
     '<div class="omh"><h2 id="omR">Optimised resume</h2><p class="omsub">Review the suggestions side by side with your current resume. Accept them one by one, or apply them all at once. You can edit any suggestion before accepting it.' +
     (/\[/.test(h) ? ' Replace anything in [ ] with your real number.' : '') + '</p></div>' +
     (V ? '<div class="vrep">' +
+      (R.nLoc ? '<div class="vnote"><span class="vi">!</span><span><b>' + (R.nAi ? R.nLoc + ' of ' + (R.nAi + R.nLoc) + ' parts used basic suggestions' : 'Basic suggestions only') + '</b>' +
+        '<small>The AI couldn’t be reached just now' + (R.nAi ? ' for those parts' : '') + ', so they come from our built-in rules. Try again in a moment for full AI rewrites.</small>' +
+        '<button type="button" class="vbtn" data-a="opt-retry">Retry with AI</button></span></div>' : '') +
       (V.after != null ? '<div><span class="vi a">✓</span><span><b>ATS keyword match: ' + (V.after > V.before ? V.before + '% → <span class="up">' + V.after + '%</span>' : '<span class="up">' + V.after + '%</span>') + '</b><small>' +
-        (V.after > V.before ? 'Of the ' + atsTerms().length + ' keywords in this job description, once you accept these changes.' : 'Your resume already uses most of the ' + atsTerms().length + ' keywords in this job description.') + '</small></span></div>' : '') +
+        (V.after > V.before ? 'Of the ' + atsTerms().length + ' keywords in this job description, once you accept these changes. Every change keeps the keywords you already had.'
+          : 'Unchanged — every change keeps the keywords you already match. The missing ones don’t truthfully fit your bullets yet' + (OPT.sel && OPT.sel.skills ? '; tick any you genuinely have under Skills below.' : '; add any you genuinely have to your Skills.')) + '</small></span></div>' : '') +
       (V.checked == null ? '<div><span class="vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 9.5 4-1.2 7-5.1 7-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg></span><span><b>Not fact-checked yet</b><small>Check every suggestion against your resume: no new numbers, tools or employers.</small><button type="button" class="vbtn" data-a="fc-sug">Run fact check & validation</button></span></div>' :
       '<div><span class="vi' + (V.fixed + V.removed ? ' w' : '') + '">' + (V.fixed + V.removed ? '!' : '✓') + '</span><span><b>Fact-checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + '</b><small>' +
         (V.fixed + V.removed ? (V.fixed ? V.fixed + ' had a number that isn’t on your resume — now a [ ] for you to fill in. ' : '') +
@@ -2601,6 +2714,8 @@ document.addEventListener('click', function(e){
       $$('.orow').forEach(function(r, n){ setTimeout(function(){ optPick(r, !allOn); }, n*70); });
       var og = $('#optGo'), ogt = $('#optGoT'); if(og){ og.disabled = allOn; if(ogt) ogt.textContent = allOn ? 'ATS optimization' : 'ATS optimization · ' + $$('.orow').length; } return;
     case 'opt-go': return runOptimise();
+    case 'opt-ins': t.hidden = true; var iw = $('#optInsW'); if(iw){ iw.hidden = false; var ia = $('#optIns'); if(ia) ia.focus(); } return;
+    case 'opt-retry': ssSet('tp_ai_rest', '0'); AI_FAILS = 0; return runOptimise();
     case 'fc-go': return runFactCheck();
     case 'fc-show': if(FC && FC.items[+v]) fcShow(FC.items[+v]); return;
     case 'fc-restore':
