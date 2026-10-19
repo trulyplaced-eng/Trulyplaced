@@ -1033,7 +1033,7 @@ var CONFIG = {
 };
 
 var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
-var APP_VERSION = '2026-10-16.7';   // also in /version.txt — lets us check which version the live site is serving
+var APP_VERSION = '2026-10-19.1';   // also in /version.txt — lets us check which version the live site is serving
 
 /* =====================================================================
    utils
@@ -1231,6 +1231,18 @@ var store = {
     return (sb ? Promise.resolve() : INIT).then(function(){
       if(!sb){ toast('Sign-in is unavailable right now — check your connection and try again'); $$('[data-act=google]').forEach(function(b){ b.disabled = false; }); return; }
       return sb.auth.signInWithOAuth({provider:'google', options:{redirectTo: location.origin + '/app.html#dashboard'}});
+    });
+  },
+  signInWithPassword: function(email, password){
+    if(!LIVE) return store.signIn();
+    var h = location.hash; ssSet('tp_after', !h || h === '#' || h === '#dashboard' || h === '#signin' ? '#jobs' : h);
+    return (sb ? Promise.resolve() : INIT).then(function(){
+      if(!sb) throw new Error('Sign-in is unavailable right now — check your connection and try again');
+      return sb.auth.signInWithPassword({email:email, password:password});
+    }).then(function(r){
+      if(r && r.error) throw new Error('That email and password don’t match');
+      var u = r && r.data && r.data.user;
+      if(u && signingId !== u.id) return afterSignIn(u, true); // unless the sign-in listener already did
     });
   },
   signOut: function(){
@@ -3944,6 +3956,13 @@ function openSignIn(why){
   modal('<h2>'+esc(why || 'Sign in to TrulyPlaced Jobs')+'</h2><p>Free. Takes five seconds.</p>'+
     '<ul class="bul"><li>'+I.check+'See how your resume matches every role</li><li>'+I.check+'Save jobs and track every application</li><li>'+I.check+'Fresh roles from top US companies, updated live</li></ul>'+
     '<button class="gbtn" type="button" data-act="google">'+I.g+(LIVE?'Continue with Google':'Continue (preview mode)')+'</button>'+
+    // Accounts we create by hand (e.g. for a payment provider's review) sign in with a password; members use Google.
+    '<details class="pwbox" style="margin-top:12px"><summary style="cursor:pointer;font-size:13px">Have a password? Sign in with email</summary>'+
+      '<form class="stack" data-pwform="1" style="margin-top:10px">'+
+        '<div class="field"><label for="pwEmail">Email</label><input id="pwEmail" type="email" autocomplete="username" required></div>'+
+        '<div class="field"><label for="pwPass">Password</label><input id="pwPass" type="password" autocomplete="current-password" required></div>'+
+        '<button class="btn pri" type="submit" id="pwGo" style="width:100%">Sign in</button>'+
+      '</form></details>'+
     '<p class="fine">By continuing you agree to our <a href="/terms.html">Terms</a> and <a href="/privacy.html">Privacy Policy</a>. We never post to your accounts or read your email.</p>'+
     (pendingSkip ? '<a class="skip" href="'+esc(pendingSkip)+'" target="_blank" rel="noopener" data-act="mclose">Continue to the company site without signing in</a>' : ''));
 }
@@ -4086,6 +4105,13 @@ document.addEventListener('click', function(e){
 document.addEventListener('keydown', function(e){
   if(e.key === 'Escape'){ if($('#modalRoot').innerHTML) closeModal(); else if(drawerKey && !TOUR.running()){ history.pushState(null,'','#'+route.name); closeDrawer(); route = parseRoute(); maybeTour(); } }
   if((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.job')){ e.preventDefault(); e.target.click(); }
+});
+document.addEventListener('submit', function(e){
+  if(!e.target.matches('[data-pwform]')) return;
+  e.preventDefault();
+  var go = $('#pwGo'); go.disabled = true; go.textContent = 'Signing in…';
+  store.signInWithPassword($('#pwEmail').value.trim(), $('#pwPass').value).then(function(){ closeModal(); })
+    .catch(function(err){ go.disabled = false; go.textContent = 'Sign in'; toast(err && err.message || 'Couldn’t sign in — try again'); });
 });
 document.addEventListener('change', function(e){
   var k = e.target.getAttribute && e.target.getAttribute('data-status');
