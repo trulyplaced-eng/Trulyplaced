@@ -1033,7 +1033,7 @@ var CONFIG = {
 };
 
 var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
-var APP_VERSION = '2026-10-19.1';   // also in /version.txt — lets us check which version the live site is serving
+var APP_VERSION = '2026-10-19.3';   // also in /version.txt — lets us check which version the live site is serving
 
 /* =====================================================================
    utils
@@ -1910,6 +1910,7 @@ function gateHTML(){
     (n ? '<span class="gnum"><i></i>'+n.toLocaleString()+' fresh US roles right now</span>' : '')+
     '<ul class="bul"><li>'+I.check+'Live roles from '+CONFIG.COMPANIES.length+'+ top companies, updated every few hours</li><li>'+I.check+'Your match score on every job</li><li>'+I.check+'The full resume X-ray (ATS check)</li><li>'+I.check+'Save jobs and track every application</li></ul>'+
     '<button class="gbtn" type="button" data-act="google">'+I.g+(LIVE ? 'Continue with Google' : 'Continue (preview mode)')+'</button>'+
+    pwBox()+
     inAppHelp()+
     '<p class="fine">By continuing you agree to our <a href="/terms.html">Terms</a> and <a href="/privacy.html">Privacy Policy</a>. We never post to your accounts or read your email.</p></div></div>';
 }
@@ -3952,17 +3953,23 @@ function modal(html, wide){
   var f = $('#modalRoot .mod input, #modalRoot .mod button:not(.x)'); if(f) f.focus();
 }
 function closeModal(){ $('#modalRoot').innerHTML = ''; }
+// Accounts we create by hand (e.g. for a payment provider's review) sign in with a password; members use Google.
+var pwN = 0;
+function pwBox(){
+  var n = ++pwN;
+  return '<div class="pwbox" style="margin-top:12px;text-align:left">'+
+    '<p style="display:flex;align-items:center;gap:10px;margin:0 0 8px;font-size:13px;color:#667085"><span style="flex:1;height:1px;background:#e4e7ec"></span>or sign in with email and password<span style="flex:1;height:1px;background:#e4e7ec"></span></p>'+
+    '<form data-pwform="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px">'+
+      '<div class="field" style="margin:0"><input id="pwE'+n+'" name="email" type="email" autocomplete="username" placeholder="Email" aria-label="Email" required></div>'+
+      '<div class="field" style="margin:0"><input id="pwP'+n+'" name="password" type="password" autocomplete="current-password" placeholder="Password" aria-label="Password" required></div>'+
+      '<button class="btn pri" type="submit" style="grid-column:1/-1;width:100%">Sign in</button>'+
+    '</form></div>';
+}
 function openSignIn(why){
   modal('<h2>'+esc(why || 'Sign in to TrulyPlaced Jobs')+'</h2><p>Free. Takes five seconds.</p>'+
     '<ul class="bul"><li>'+I.check+'See how your resume matches every role</li><li>'+I.check+'Save jobs and track every application</li><li>'+I.check+'Fresh roles from top US companies, updated live</li></ul>'+
     '<button class="gbtn" type="button" data-act="google">'+I.g+(LIVE?'Continue with Google':'Continue (preview mode)')+'</button>'+
-    // Accounts we create by hand (e.g. for a payment provider's review) sign in with a password; members use Google.
-    '<details class="pwbox" style="margin-top:12px"><summary style="cursor:pointer;font-size:13px">Have a password? Sign in with email</summary>'+
-      '<form class="stack" data-pwform="1" style="margin-top:10px">'+
-        '<div class="field"><label for="pwEmail">Email</label><input id="pwEmail" type="email" autocomplete="username" required></div>'+
-        '<div class="field"><label for="pwPass">Password</label><input id="pwPass" type="password" autocomplete="current-password" required></div>'+
-        '<button class="btn pri" type="submit" id="pwGo" style="width:100%">Sign in</button>'+
-      '</form></details>'+
+    pwBox()+
     '<p class="fine">By continuing you agree to our <a href="/terms.html">Terms</a> and <a href="/privacy.html">Privacy Policy</a>. We never post to your accounts or read your email.</p>'+
     (pendingSkip ? '<a class="skip" href="'+esc(pendingSkip)+'" target="_blank" rel="noopener" data-act="mclose">Continue to the company site without signing in</a>' : ''));
 }
@@ -4109,8 +4116,8 @@ document.addEventListener('keydown', function(e){
 document.addEventListener('submit', function(e){
   if(!e.target.matches('[data-pwform]')) return;
   e.preventDefault();
-  var go = $('#pwGo'); go.disabled = true; go.textContent = 'Signing in…';
-  store.signInWithPassword($('#pwEmail').value.trim(), $('#pwPass').value).then(function(){ closeModal(); })
+  var f = e.target, go = f.querySelector('button[type=submit]'); go.disabled = true; go.textContent = 'Signing in…';
+  store.signInWithPassword(f.elements.email.value.trim(), f.elements.password.value).then(function(){ closeModal(); })
     .catch(function(err){ go.disabled = false; go.textContent = 'Sign in'; toast(err && err.message || 'Couldn’t sign in — try again'); });
 });
 document.addEventListener('change', function(e){
