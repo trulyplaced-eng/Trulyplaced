@@ -912,7 +912,7 @@ textarea.post{width:100%;min-height:260px;border:1px solid var(--line);border-ra
     <div class="grow"></div>
     <div class="tired">
       <b>Tired of applying?</b>
-      <p>A real recruiter tailors your resume and applies to 25–30 matched roles every business day.</p>
+      <p>A real application specialist tailors your resume and applies to 25–30 matched roles every business day.</p>
       <button type="button" data-act="upsell">Let us apply for you</button>
     </div>
     <div class="side-foot">
@@ -1033,7 +1033,7 @@ var CONFIG = {
 };
 
 var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
-var APP_VERSION = '2026-10-19.3';   // also in /version.txt — lets us check which version the live site is serving
+var APP_VERSION = '2026-10-21.1';   // also in /version.txt — lets us check which version the live site is serving
 
 /* =====================================================================
    utils
@@ -2056,7 +2056,7 @@ function mailCardHTML(){
   if(!state.user || !state.ready || (p.daily_email && p.job_prefs && p.whatsapp_ok && p.phone)) return '';
   if(Date.now() - (lsGet('tp_mail_x', 0) || 0) < 21*864e5) return '';
   if(p.daily_email && p.job_prefs) return '<div class="mailc slim wa"><span class="mc-ic">'+I.wa+'</span>'+   // email only: offer the curated tier
-    '<div class="mc-tx"><b>Get the roles our recruiters hand-pick</b><small>You’re getting fresh roles by email. Add your WhatsApp and we’ll also send roles our team picks for you every day.</small></div>'+
+    '<div class="mc-tx"><b>Get the roles our specialists hand-pick</b><small>You’re getting fresh roles by email. Add your WhatsApp and we’ll also send roles our team picks for you every day.</small></div>'+
     '<button class="btn pri mc-go" type="button" data-act="picks" data-wa="1">'+I.wa+'Add WhatsApp</button>'+
     '<button class="mc-x" type="button" data-act="mailx" aria-label="Not now">'+I.x+'</button></div>';
   if(p.daily_email) return '<div class="mailc slim"><span class="mc-ic">'+I.spark+'</span>'+   // signed up before the form existed
@@ -2064,7 +2064,7 @@ function mailCardHTML(){
     '<button class="btn pri mc-go" type="button" data-act="picks">Finish my preferences</button>'+
     '<button class="mc-x" type="button" data-act="mailx" aria-label="Not now">'+I.x+'</button></div>';
   return '<div class="mailc"><span class="mc-ic">'+I.mail+'</span>'+
-    '<div class="mc-tx"><b><span class="mc-free">Free</span>Daily job picks, matched to you</b><small>Tell us your role, experience, visa status and salary — fresh matching roles land in your inbox every morning. Add WhatsApp and our recruiters hand-pick roles for you too.</small></div>'+
+    '<div class="mc-tx"><b><span class="mc-free">Free</span>Daily job picks, matched to you</b><small>Tell us your role, experience, visa status and salary — fresh matching roles land in your inbox every morning. Add WhatsApp and our specialists hand-pick roles for you too.</small></div>'+
     '<button class="btn pri mc-go" type="button" data-act="picks">Get my daily picks</button>'+
     '<button class="mc-x" type="button" data-act="mailx" aria-label="Not now">'+I.x+'</button></div>';
 }
@@ -2081,7 +2081,7 @@ var PK_SPONSOR = {opt:1, h1b:1, sponsor:1, outside:1};
 var PK_STEPS = [
   {k:'role', t:'What role are you looking for?', s:'Start typing and pick from the list — up to 3 roles. Can’t find yours? Just add it.'},
   {k:'where', t:'Where do you want to work?', s:'Pick all that suit you, then add up to 3 cities or states if you have a preference.'},
-  {k:'wa', t:'Want hand‑picked roles too?', s:'Every morning you get fresh matching roles by email. Add your WhatsApp and our recruiters also hand-pick roles for you — the ones we track ourselves, every day.'},
+  {k:'wa', t:'Want hand‑picked roles too?', s:'Every morning you get fresh matching roles by email. Add your WhatsApp and our specialists also hand-pick roles for you — the ones we track ourselves, every day.'},
   {k:'years', t:'How many years of experience do you have?', s:'Count full-time work, including OPT.'},
   {k:'level', t:'Which level are you aiming for?', s:'We skip roles that are clearly too junior or too senior for you.'},
   {k:'auth', t:'What’s your US work authorization?', s:'Many companies can’t sponsor visas. We use this to skip roles that say they won’t sponsor, and to flag the ones that do.'},
@@ -2302,7 +2302,7 @@ function pkDraw(){
     var on = !!(p.whatsapp_ok && p.phone), sp = pkWaSplit(a.wa || a.waNum || p.phone || '');
     h = '<div class="pk-tiers">'+
         '<div class="pk-tier"><b>'+I.mail+'Email</b><small>Fresh roles that match you, from 50+ company job boards.</small><span class="pk-tv">Every morning</span></div>'+
-        '<div class="pk-tier hot"><em>Recommended</em><b>'+I.wa+'Email + WhatsApp</b><small>Everything in email, plus roles our recruiters hand-pick for you — and a real person to message about your search.</small><span class="pk-tv">Hand-picked daily</span></div>'+
+        '<div class="pk-tier hot"><em>Recommended</em><b>'+I.wa+'Email + WhatsApp</b><small>Everything in email, plus roles our specialists hand-pick for you — and a real person to message about your search.</small><span class="pk-tv">Hand-picked daily</span></div>'+
       '</div>'+
       '<label class="pk-lab" for="pkWa">Your WhatsApp number</label>'+
       '<div class="pk-phone"><select id="pkCc" aria-label="Country code">'+PK_CC.map(function(c){ return '<option value="'+c[0]+'"'+(sp[0] === c[0] ? ' selected' : '')+'>'+c[0]+' '+c[1]+'</option>'; }).join('')+'<option value="other"'+(sp[0] === 'other' ? ' selected' : '')+'>Other (type +code)</option></select>'+
@@ -2312,7 +2312,7 @@ function pkDraw(){
   }
   body.className = 'pk-body ' + (PKS.dir < 0 ? 'back' : 'fwd');
   var sub = st.s, r1 = pkList('role')[0];
-  if(st.k === 'wa' && r1) sub = 'Every morning you get fresh '+r1+' roles by email. Add your WhatsApp and our recruiters also hand-pick '+r1+' roles for you — the ones we track ourselves, every day.';
+  if(st.k === 'wa' && r1) sub = 'Every morning you get fresh '+r1+' roles by email. Add your WhatsApp and our specialists also hand-pick '+r1+' roles for you — the ones we track ourselves, every day.';
   body.innerHTML = '<h2>'+esc(st.t)+'</h2><p class="pk-s">'+esc(sub)+'</p>'+h;
   void body.offsetWidth; body.classList.add('go');
   $('#pkN').textContent = 'Step '+(PKS.i + 1)+' of '+PK_STEPS.length;
@@ -2403,7 +2403,7 @@ function pkDone(pr, first){
   var name = String((state.user && state.user.name) || '').split(' ')[0], hasRes = !!resumeText();
   var utm = '?utm_source=trulyplaced&utm_medium=app&utm_campaign=daily_picks';
   var pts = [
-    ['Your resume, rebuilt by a recruiter', 'Ready in about 5 business days, then tailored to each job description.'],
+    ['Your resume, rebuilt by a career specialist', 'Ready in about 5 business days, then tailored to each job description.'],
     ['1,000 applications in about 7–8 weeks', 'A dedicated application team applies to the roles and companies you choose.'],
     ['Done the way you want it', 'Not happy with your resume? We change it based on your feedback.'],
     ['No slow weeks', 'If a week runs short, we top up your applications.']
@@ -2412,9 +2412,9 @@ function pkDone(pr, first){
     '<div class="pk-ok"><svg viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16"/></svg></div>'+
     '<h2>'+(first ? 'You’re in'+(name ? ', '+esc(name) : '')+'!' : 'Your preferences are saved')+'</h2>'+
     '<p class="pk-s">'+(first ? 'Your first picks arrive within a day' : 'Your next picks use these answers')+'. Every morning: fresh matching roles by email at <b>'+esc(state.user.email)+'</b>'+
-      (curated ? ', plus roles our recruiters hand-pick for you — we’ll message you on WhatsApp at <b>'+esc(p.phone)+'</b>.' : '.')+'</p>'+
+      (curated ? ', plus roles our specialists hand-pick for you — we’ll message you on WhatsApp at <b>'+esc(p.phone)+'</b>.' : '.')+'</p>'+
     '<div class="pk-sum">'+pkSummary(pr).map(function(x){ return '<span>'+esc(x)+'</span>'; }).join('')+'<button type="button" data-pknav="edit">Edit</button></div>'+
-    (curated ? '' : '<div class="pk-lock"><span class="pk-li">'+I.lock+'</span><span class="pk-lt"><b>You’re getting fresh roles only</b><small>Our recruiters hand-pick roles every day — those go to members on WhatsApp.</small></span><button class="btn sm" type="button" data-pknav="addwa">'+I.wa+'Add WhatsApp</button></div>')+
+    (curated ? '' : '<div class="pk-lock"><span class="pk-li">'+I.lock+'</span><span class="pk-lt"><b>You’re getting fresh roles only</b><small>Our specialists hand-pick roles every day — those go to members on WhatsApp.</small></span><button class="btn sm" type="button" data-pknav="addwa">'+I.wa+'Add WhatsApp</button></div>')+
     '<div class="pk-offer">'+
       '<span class="pk-ob">'+I.send+'Done-for-you applications</span>'+
       '<h3>Want us to do the applying?</h3>'+
@@ -3030,7 +3030,7 @@ function vResume(v){
     '<a class="edcta sec" href="/editor.html"><span class="ic">'+I.spark+'</span><span class="tx"><b>Edit &amp; improve it with AI</b><small>Suggestions for every bullet, tailor it to a job, download a clean PDF.</small></span><span class="go">Open editor →</span></a>'+
     '<div class="jd-acts"><button class="btn" type="button" data-act="upload">'+I.up+'Replace resume</button><a class="btn" href="/ats-check.html#mine">Full ATS check</a>'+
     '<button class="btn" type="button" data-act="rmresume">'+I.trash+'Remove</button></div>'+
-    '<div class="upsell"><div class="tx"><b>Want a recruiter to rewrite it?</b><p>We rebuild it properly, then tailor it for every role we apply to on your behalf.</p></div><button class="btn" type="button" data-act="upsell">Learn more</button></div>';
+    '<div class="upsell"><div class="tx"><b>Want a career specialist to rewrite it?</b><p>We rebuild it properly, then tailor it for every role we apply to on your behalf.</p></div><button class="btn" type="button" data-act="upsell">Learn more</button></div>';
   $('#keepResume').addEventListener('change', function(e){
     var local = {text:rt, name:resumeName()};
     if(e.target.checked){ store.saveProfile({resume_text:rt, resume_name:local.name}).then(function(){ toast('Saved to your account'); }); }
@@ -3868,7 +3868,7 @@ function maybeTour(force){
       {sel:['#jlist .job .bm', '.dacts .save'], title:'Save it for later', text:'Saved roles land on your Dashboard, where you can mark them applied, interviewing or offer.', before:toJobs, optional:true},
       {sel:['#nav a[href="#resume"]', '#tabbar a[href="#resume"]'], title:'Add your resume once', text:'Every job then shows how well you match. The full ATS check uses the same file — no second upload.'},
       {sel:['#nav a[href="#dashboard"]', '#tabbar a[href="#dashboard"]'], title:'Track your search', text:'Your saved and applied jobs, all in one place.'},
-      {sel:['.side-foot a[href*="wa.me"]', '.tired'], title:'Need a hand?', text:'Message us on WhatsApp any time. Or let a recruiter tailor your resume and apply for you every business day.', optional:true},
+      {sel:['.side-foot a[href*="wa.me"]', '.tired'], title:'Need a hand?', text:'Message us on WhatsApp any time. Or let a specialist tailor your resume and apply for you every business day.', optional:true},
       {icon:I.check, title:'You’re all set', text:'Start with a search, or add your resume to see your match on every role.', cta:'Start exploring', before:toJobs}
     ], {key:APP_TOUR});
   }, force ? 50 : 700);
@@ -3919,7 +3919,7 @@ function vSettings(v){
       '<label class="toggle"><input type="checkbox" id="sDaily"'+(p.daily_email?' checked':'')+'><span class="sw"></span><span><b>Free daily job picks</b><small>'+(p.job_prefs ? esc(pkSummary(p.job_prefs).join(' · ')) + (p.whatsapp_ok && p.phone ? ' · <b class="pk-tagok">Hand-picked roles on WhatsApp</b>' : ' · Fresh roles only — add WhatsApp for hand-picked roles') : 'Tell us your role, experience, visa status and salary — we send the best fresh matches every morning.')+'</small></span></label>'+
       '<div class="pk-set"><button class="btn sm" type="button" data-act="picks">'+I.spark+(p.job_prefs ? 'Edit my preferences' : 'Set up my daily picks')+'</button></div>'+
       '<label class="toggle" style="margin-top:12px"><input type="checkbox" id="sMail"'+(p.marketing_consent?' checked':'')+'><span class="sw"></span><span><b>Job-search tips & news</b><small>Occasional — a couple of times a month at most.</small></span></label></div>'+
-    '<div class="card"><h3>WhatsApp</h3><p>Roles our recruiters hand-pick for you, resume tips and free webinar invites — only if you switch this on. Reply STOP any time.</p>'+
+    '<div class="card"><h3>WhatsApp</h3><p>Roles our specialists hand-pick for you, resume tips and free webinar invites — only if you switch this on. Reply STOP any time.</p>'+
       (p.whatsapp_ok && p.phone ? '<label class="toggle"><input type="checkbox" id="sWa" checked><span class="sw"></span><span><b>Message me on WhatsApp</b><small>'+esc(p.phone)+'</small></span></label>'
         : '<button class="btn" type="button" data-act="waask">'+I.wa+'Add my WhatsApp number</button>')+'</div>'+
     '<div class="card"><h3>Invite a friend</h3><p>'+(CONFIG.REFERRAL_REWARD ? esc(CONFIG.REFERRAL_REWARD) : 'Know someone job hunting? Send them your link.')+'</p>'+
@@ -3985,8 +3985,8 @@ function openOnboarding(){
     '</div>');
 }
 function openUpsell(){
-  modal('<h2>Tired of applying?</h2><p>Hand the job hunt to a recruiter. You focus on interviews.</p>'+
-    '<ul class="bul"><li>'+I.check+'Your resume rebuilt by a recruiter, then tailored to every role</li><li>'+I.check+'25–30 matched applications submitted every business day</li><li>'+I.check+'Roles found within 1–4 days of posting</li><li>'+I.check+'Proof of every application, tracked live</li></ul>'+
+  modal('<h2>Tired of applying?</h2><p>Hand the job hunt to a specialist. You focus on interviews.</p>'+
+    '<ul class="bul"><li>'+I.check+'Your resume rebuilt by a career specialist, then tailored to every role</li><li>'+I.check+'25–30 matched applications submitted every business day</li><li>'+I.check+'Roles found within 1–4 days of posting</li><li>'+I.check+'Proof of every application, tracked live</li></ul>'+
     '<div class="stack" style="margin-top:20px"><a class="btn pri" href="'+esc(CONFIG.PRICING)+'">See plans — from $299</a><a class="btn" href="'+esc(CONFIG.BOOK_CALL)+'" target="_blank" rel="noopener">Book a free 30-min call</a></div>'+
     '<p class="fine">No guarantees of interviews or offers — we commit to the work, not outcomes we don’t control. <a href="/refunds.html">Refund policy</a>.</p>');
 }
@@ -4195,8 +4195,8 @@ function preApply(job, go){
        : '<button class="btn pri" type="button" data-act="precheck">Check my resume for this job — free</button><button class="btn" type="button" data-act="prego">'+I.ext+'Apply anyway</button>')+
     '</div>'+
     '<div class="human"><div class="hu-h"><span>Prefer a human?</span></div><div class="hu-g">'+
-      '<a class="hu call" href="'+esc(bookUrl('before_apply'))+'" target="_blank" rel="noopener"><span class="hu-ic">'+I.phone+'</span><span class="hu-t"><b>Talk to a recruiter</b><small>Free 15-minute call — they’ll review your resume before you send it.</small></span><span class="hu-go">Book a call →</span></a>'+
-      '<a class="hu done4u" href="#" data-act="upsell"><span class="hu-ic">'+I.send+'</span><span class="hu-t"><b>Let us apply for you</b><small>A recruiter tailors your resume and applies to 25–30 matched roles every business day.</small></span><span class="hu-go">See how it works →</span></a>'+
+      '<a class="hu call" href="'+esc(bookUrl('before_apply'))+'" target="_blank" rel="noopener"><span class="hu-ic">'+I.phone+'</span><span class="hu-t"><b>Talk to a career specialist</b><small>Free 15-minute call — they’ll review your resume before you send it.</small></span><span class="hu-go">Book a call →</span></a>'+
+      '<a class="hu done4u" href="#" data-act="upsell"><span class="hu-ic">'+I.send+'</span><span class="hu-t"><b>Let us apply for you</b><small>A specialist tailors your resume and applies to 25–30 matched roles every business day.</small></span><span class="hu-go">See how it works →</span></a>'+
     '</div></div></div>');
   if(rt && !e) getEnr(job).then(function(){ if(APPLYING && APPLYING.job === job && $('#modalRoot .pre')) preApply(job, go); });
 }
