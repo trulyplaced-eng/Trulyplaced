@@ -1105,7 +1105,8 @@ function lkRow(x){
    It runs in this browser tab, so other tabs and other clients' pages are fine; closing the tab stops it, so the page asks
    first. The suggestions wait on each draft until someone reviews them in the editor. */
 var OPT_LANES = 4, OQ = {jobs:[], run:0};
-var OPT_ROWS = [['summary', 'Summary', 'Rewritten around each job’s keywords'], ['experience', 'Work experience', 'Bullets tailored to each job'],
+var OPT_ROWS = [['sync', 'Sync to the job', 'Everything below, more deeply: each posting’s words, priorities and title, and each role’s bullets in that job’s order. Written by Claude Sonnet.'],
+  ['summary', 'Summary', 'Rewritten around each job’s keywords'], ['experience', 'Work experience', 'Bullets tailored to each job'],
   ['skills', 'Skills', 'Suggestions only — added when you tick them in the review'], ['headline', 'Job title', 'The title under the name, matched to each job'],
   ['location', 'Location', 'Open to relocating, for jobs in another city']];
 function lkCanOpt(x){ return !!x.app && (x.st || 'draft') === 'draft' && (!x.opt || x.opt.st === 'fail'); }
@@ -1118,6 +1119,11 @@ function lkOptimise(){
       (c.row.optimise_rules ? '<p class="fine">' + esc((c.row.full_name || '').split(' ')[0] || 'The client') + '’s optimisation rules from the Profile are followed too.</p>' : '') +
       '<p class="fine">Runs ' + OPT_LANES + ' at a time in this browser tab — keep it open. You can work in other tabs meanwhile.</p></div>' +
     '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="button" id="boGo">Optimise ' + n + '</button></div>');
+  m.addEventListener('change', function(e){   // Sync means all of them
+    var i = e.target.closest && e.target.closest('[data-bo]'), sy = $('[data-bo=sync]', m); if(!i) return;
+    if(i === sy){ if(sy.checked) $$('[data-bo]', m).forEach(function(x){ x.checked = true; }); }
+    else if(!i.checked) sy.checked = false;
+  });
   $('#boGo', m).onclick = function(){
     var sel = {}; $$('[data-bo]', m).forEach(function(i){ sel[i.getAttribute('data-bo')] = i.checked ? 1 : 0; });
     if(!Object.keys(sel).some(function(k){ return sel[k]; })) return TP.toast('Pick at least one thing to optimise');
@@ -1153,7 +1159,7 @@ function optOne(job){
     else if(d.act === 'fail') end({st:'fail', why:String(d.why || 'Something went wrong'), at:Date.now()});
   }
   window.addEventListener('message', hear);
-  tm = setTimeout(function(){ end({st:'fail', why:'It took too long', at:Date.now()}); }, 180000);
+  tm = setTimeout(function(){ end({st:'fail', why:'It took too long', at:Date.now()}); }, 240000);   // Sync can take up to 150s on its own
   f.src = '/editor.html?client=' + encodeURIComponent(job.cid) + '&app=' + encodeURIComponent(job.app) + '&batch=' + encodeURIComponent(job.sel) + (job.ins ? '&ins=' + encodeURIComponent(job.ins) : '');
   f.title = 'Optimising'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
   f.style.cssText = 'position:fixed;left:-12000px;top:0;width:1280px;height:900px;border:0;visibility:hidden';   // laid out like a real page, never seen
