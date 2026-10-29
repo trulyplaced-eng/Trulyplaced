@@ -244,10 +244,26 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .vi svg,.fi svg,.fact i svg,.rdone>span svg,.fcok span svg{width:13px;height:13px}
 .rb button svg{width:15px;height:15px}
 .fc svg{width:12px;height:12px;vertical-align:-2px;margin-right:2px}
-.rdone>span{width:28px;height:28px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;flex:none}
+.rdone>span:first-child{width:28px;height:28px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;flex:none}
 .fcok span{width:28px;height:28px;border-radius:50%;background:#fff;color:var(--ok);display:grid;place-items:center;flex:none;font-size:inherit}
 .btn.pri svg,.btn.ai svg{color:#fff}
 #rAll svg{width:14px;height:14px;margin-right:4px}
+
+/* requirements card (Optimise results and the Check tab) and Show changes marks */
+.reqs{margin:0 26px;border:1px solid var(--line);border-radius:12px;background:#fbfbfe}
+.reqh{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;text-align:left}
+.reqh>span{flex:1;min-width:0}.reqh b{display:block;font-size:14px;color:var(--ink)}.reqh small{display:block;font-size:12px;color:var(--muted)}
+.reqh svg{transition:transform .2s;color:var(--muted)}.reqh.open svg{transform:rotate(180deg)}
+.reql{list-style:none;padding:0 14px 12px;display:grid;gap:8px}
+.reql li{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink)}
+.reql li b{font-weight:600}.reql li em{font-style:normal;font-size:11px;color:var(--muted)}.reql q{display:block;font-size:12px;color:var(--muted);font-style:italic;quotes:"“" "”"}.reql small{display:block;font-size:12px;color:var(--muted)}
+.reql.small{padding:0;margin-top:8px;gap:6px}.reql.small li{font-size:12.5px}
+.rs{flex:none;font:700 10px Inter,sans-serif;text-transform:uppercase;letter-spacing:.05em;padding:3px 7px;border-radius:999px;margin-top:1px;white-space:nowrap}
+.rs.ok{background:var(--ok-soft);color:var(--ok)}.rs.blue{background:var(--blue-soft);color:var(--blue)}.rs.mute{background:#eef0f6;color:var(--muted)}
+.showchg{display:inline-flex;align-items:center;gap:6px;margin-left:auto;font-size:12.5px;color:var(--body);cursor:pointer}.showchg input{accent-color:var(--ok)}
+.showchg+.pages{margin-left:12px}
+.sheet ins{background:#dcfce7;text-decoration:none;border-radius:2px;box-shadow:0 0 0 1px #bbf7d0 inset}
+.sheet mark.ph{background:#fff2b8}
 
 /* ---------- diff ---------- */
 .diff{font-size:13px;line-height:1.55;color:var(--ink)}
@@ -257,7 +273,7 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .diff mark.ph{background:#fff2b8}
 
 /* ---------- selection bar ---------- */
-.selbar{position:absolute;z-index:45;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 40px -12px rgba(18,26,51,.4);padding:6px;max-width:min(440px,calc(100vw - 24px))}
+.selbar{animation:pop .16s ease-out;position:absolute;z-index:45;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 40px -12px rgba(18,26,51,.4);padding:6px;max-width:min(440px,calc(100vw - 24px))}
 .selbar .ops{display:flex;flex-wrap:wrap;gap:3px}
 .selbar .ops button{height:30px;padding:0 10px;border-radius:7px;font-size:12.5px;font-weight:600;color:var(--ink)}
 .selbar .ops button:hover{background:var(--vio-soft);color:var(--vio)}
@@ -270,8 +286,10 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .selbar .busy{display:flex;align-items:center;gap:8px;padding:10px 8px;font-size:13px;color:var(--body)}
 
 /* ---------- modal (Optimise, fact check, confirm) ---------- */
-.modal{position:fixed;inset:0;z-index:80;background:rgba(18,26,51,.5);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px)}
+.modal{animation:fadeIn .18s ease-out;position:fixed;inset:0;z-index:80;background:rgba(18,26,51,.5);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px)}
 .modal .card{width:min(560px,100%);max-height:calc(100vh - 40px);overflow:auto}
+.modal.closing{opacity:0;transition:opacity .14s}
+.om,.modal .card{animation:pop .22s cubic-bezier(.2,.8,.2,1)}
 .om{position:relative;width:min(960px,100%);max-height:calc(100vh - 40px);background:#fff;border-radius:16px;display:flex;flex-direction:column;overflow:hidden}
 .om.sm{width:min(620px,100%)}
 .om .mx{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--muted);z-index:2}
@@ -283,25 +301,37 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .omf{display:flex;align-items:center;gap:8px;padding:12px 26px;border-top:1px solid var(--line);background:#fbfbfe}
 .omf span{flex:1;font-size:12.5px;color:var(--muted)}
 .orows{display:grid;gap:8px}
-.orow{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;text-align:left}
+.orow{transition:border-color .15s,background .15s,transform .15s,box-shadow .15s;display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;text-align:left}
 .orow:hover{border-color:var(--blue-line)}.orow.on{border-color:var(--blue);background:var(--blue-soft)}
 .orow .ol{flex:1}.orow b{display:block;color:var(--ink);font-size:14px}.orow small{display:block;color:var(--muted);font-size:12.5px}
 .orow .cb{width:22px;height:22px;border-radius:6px;border:2px solid #c9cee0;display:grid;place-items:center;flex:none}
-.orow .cb svg{width:14px;height:14px;stroke:#fff;stroke-width:3;fill:none;opacity:0}
+.orow .cb{transition:background .15s,border-color .15s}.orow .cb svg{width:14px;height:14px;stroke:#fff;stroke-width:3;fill:none;opacity:0;transform:scale(.5);transition:opacity .15s,transform .15s}.orow.on .cb svg{transform:scale(1)}
+.rb button:hover{transform:scale(1.08)}.rr.acc .rn,.rr.rej .rn{transition:background .25s,opacity .25s}.rdone{animation:rise .3s both}
+.omh h2{text-transform:none;letter-spacing:0;border:0}
 .orow.on .cb{background:var(--blue);border-color:var(--blue)}.orow.on .cb svg{opacity:1}
 .ohd{display:flex;justify-content:space-between;align-items:center;margin:14px 0 8px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .ohd button{color:var(--blue);font-weight:600;text-transform:none;letter-spacing:0;font-size:12.5px}
 .omjd textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:13.5px;resize:vertical;min-height:110px}
 .omjd textarea:focus{outline:none;border-color:var(--blue)}
-.steps{list-style:none;margin:18px auto 0;display:grid;gap:10px;max-width:360px;text-align:left}
-.steps li{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14px}
-.steps li i{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center;font-style:normal;font-size:11px}
+/* the Optimise progress screen: a bar that advances per step, ticks that draw in */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes tick{from{transform:rotate(45deg) scale(0)}to{transform:rotate(45deg) scale(1)}}
+@keyframes glide{from{background-position:200% 0}to{background-position:-200% 0}}
+.om.run{text-align:left;padding:26px 30px 28px}
+.om.run h2{font:700 18px Poppins,Inter,sans-serif;color:var(--ink);text-transform:none;letter-spacing:0;border:0;margin:0 0 2px;line-height:1.3}
+.om.run .omsub{margin:0 0 18px}
+.runbar{height:5px;border-radius:3px;background:var(--line);overflow:hidden;margin-bottom:20px}
+.runbar i{display:block;height:100%;width:4%;border-radius:3px;background:linear-gradient(90deg,var(--blue),#7c3aed,var(--blue));background-size:200% 100%;animation:glide 1.6s linear infinite;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.steps{list-style:none;margin:0;display:block;max-width:none;text-align:left}
+.steps li{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13.5px;padding:9px 0;border-top:1px solid var(--line);transition:color .3s}
+.steps li:first-child{border-top:0}
+.steps li i{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center;font-style:normal;transition:background .25s,border-color .25s}
 .steps li.run{color:var(--ink)}.steps li.run i{border-color:var(--blue);border-top-color:transparent;animation:spin .8s linear infinite}
-.steps li.ok{color:var(--ink)}.steps li.ok i{border-color:var(--ok);background:var(--ok);color:#fff}.steps li.ok i::before{content:"✓"}
-.om.run{text-align:center;padding:40px 30px}
-.om.run h2{font:700 20px Poppins,Inter,sans-serif;color:var(--ink);margin-top:14px}
-.orbit{width:56px;height:56px;margin:0 auto;border-radius:50%;background:conic-gradient(var(--blue),#7c3aed,var(--blue));animation:spin 1.4s linear infinite;display:grid;place-items:center}
-.orbit span{width:44px;height:44px;border-radius:50%;background:#fff}
+.steps li.ok{color:var(--ink)}.steps li.ok i{border-color:var(--ok);background:var(--ok)}
+.steps li.ok i::before{content:"";width:5px;height:9px;border-right:2px solid #fff;border-bottom:2px solid #fff;margin-top:-3px;transform:rotate(45deg);animation:tick .28s cubic-bezier(.2,.8,.2,1) both}
+.om.run .fine{margin-top:16px}
 .vrep{display:grid;gap:8px;padding:14px 26px;border-bottom:1px solid var(--line);background:#fbfbfe}
 .vrep>div{display:flex;gap:10px;align-items:flex-start;font-size:13px}
 .vrep b{color:var(--ink);display:block}.vrep small{color:var(--muted);display:block;line-height:1.4}
@@ -312,7 +342,7 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .rc{margin-bottom:18px}
 .rc h3{font:700 13px Inter,sans-serif;text-transform:uppercase;letter-spacing:.05em;color:var(--ink);margin-bottom:8px}
 .rh{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
-.rr{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.5}
+.rr{animation:rise .35s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*45ms);display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.5}
 .rr .ro{color:var(--muted)}
 .rr .rn{position:relative;color:var(--ink)}
 .rr .rn [contenteditable]{display:block;outline:none;border-radius:6px;padding:2px 4px;margin:-2px -4px}
@@ -320,7 +350,7 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .rr small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
 .rr .fc{display:block;font-size:11.5px;color:var(--ok);margin-top:4px}.rr .fc.fx{color:var(--warn)}
 .rb{display:flex;gap:6px;margin-top:8px}
-.rb button{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);font-weight:700}
+.rb button{transition:transform .12s,background .15s,border-color .15s;width:30px;height:30px;border-radius:8px;border:1px solid var(--line);font-weight:700}
 .rb .ok{color:var(--ok)}.rb .ok:hover{background:var(--ok-soft);border-color:#b7e4c7}.rb .no{color:var(--bad)}.rb .no:hover{background:var(--bad-soft)}
 .rb .st{font-size:12px;font-weight:600;color:var(--ok)}
 .rr.acc .rn{background:var(--ok-soft);border-radius:8px;padding:6px 8px}.rr.rej .rn{opacity:.45;text-decoration:line-through}
@@ -395,7 +425,7 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
   .frame{max-width:none}
   .sheetwrap{transform:none!important}
   .sheet{box-shadow:none;width:auto!important;min-height:0!important}
-  .sheet [data-path]:hover,.sheet .sel,.sheet .hl{background:none!important;outline:none!important}
+  .sheet [data-path]:hover,.sheet .sel,.sheet .hl,.sheet ins{background:none!important;outline:none!important;box-shadow:none!important}
 }
 
 </style>
@@ -428,7 +458,7 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 <div class="wrap" id="wrap" hidden>
   <div class="mswitch" id="mswitch"><button type="button" class="on" data-a="mob" data-v="edit">Edit</button><button type="button" data-a="mob" data-v="preview">Preview</button></div>
   <main class="stage" id="stage">
-    <div class="doctabs" id="doctabs"><button type="button" class="on" data-a="doc" data-v="resume">Resume</button><button type="button" data-a="doc" data-v="cover">Cover letter</button><span class="pages" id="pagesN"></span></div>
+    <div class="doctabs" id="doctabs"><button type="button" class="on" data-a="doc" data-v="resume">Resume</button><button type="button" data-a="doc" data-v="cover">Cover letter</button><label class="showchg" id="showChg" hidden><input type="checkbox" id="chgOn" data-a="chg"> Show changes</label><span class="pages" id="pagesN"></span></div>
     <div class="frame" id="frame"><div class="sheetwrap" id="sheetwrap"><div class="sheet" id="sheet"></div><div class="breaks" id="breaks"></div></div></div>
   </main>
   <aside class="panel" id="panel">
@@ -1421,10 +1451,12 @@ function contactHTML(D, f) {
   const pt = prefText(D); if (pt) items.push('<span class="pref">' + esc(pt) + '</span>');
   return items.join('<span class="sep">' + (f.template === 'traditional' || f.oneLine ? '|' : '·') + '</span>');
 }
-const P = (path, t, cls, tag) => '<' + (tag || 'span') + ' data-path="' + path + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + (t ? esc(t) : '<span class="empty">&nbsp;</span>') + '</' + (tag || 'span') + '>';
+let SHOWCHG = false;   // Show changes: the words Optimise changed, marked on the page (never printed or exported)
+const marked = (path, t) => { const pre = SHOWCHG && DOC && DOC.meta.pre ? DOC.meta.pre[path] : undefined; return pre !== undefined && pre !== t && t ? wdiff(pre, t).n : esc(t); };
+const P = (path, t, cls, tag) => '<' + (tag || 'span') + ' data-path="' + path + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + (t ? marked(path, t) : '<span class="empty">&nbsp;</span>') + '</' + (tag || 'span') + '>';
 function entryHTML(s, it, f) {
   const B = 'sec.' + s.id + '.item.' + it.id + '.', dates = it.dates ? '<span class="r" data-path="' + B + 'dates">' + esc(styleDates(it.dates, f.dates)) + '</span>' : '';
-  const bullets = it.bullets.some((b) => b.t) ? '<ul class="bl">' + it.bullets.filter((b) => b.t).map((b) => '<li' + (HL[b.id] ? ' class="hl"' : '') + '>' + P(B + 'b.' + b.id, b.t) + '</li>').join('') + '</ul>' : '';
+  const bullets = it.bullets.some((b) => b.t) ? '<ul class="bl">' + it.bullets.filter((b) => b.t).map((b) => '<li' + (HL[b.id] && !SHOWCHG ? ' class="hl"' : '') + '>' + P(B + 'b.' + b.id, b.t) + '</li>').join('') + '</ul>' : '';
   if (f.oneLine) {   // Interview format: "Title, Company | Location" on one bold line; a school as "School - Degree"
     const ed = s.k === 'education';
     const head = ed ? (it.sub ? P(B + 'sub', it.sub, 'b1') + (it.title ? '<span class="dash"> - </span>' + P(B + 'title', it.title, 'deg') : '') : P(B + 'title', it.title, 'b1'))
@@ -1439,7 +1471,7 @@ function entryHTML(s, it, f) {
 const certHTML = (path, t) => { const m = /^([^,]{2,80}),\s*(.{1,80})$/.exec(t); return m ? '<span data-path="' + path + '"><b>' + esc(m[1]) + '</b>, <span class="issuer">' + esc(m[2]) + '</span></span>' : P(path, t); };
 function sectionHTML(s, f) {
   let body = '';
-  if (s.type === 'summary') body = P('sec.' + s.id + '.text', s.text, 'sum' + (HL['sum:' + s.id] ? ' hl' : ''), 'p');
+  if (s.type === 'summary') body = P('sec.' + s.id + '.text', s.text, 'sum' + (HL['sum:' + s.id] && !SHOWCHG ? ' hl' : ''), 'p');
   else if (s.type === 'entries') body = s.items.map((it) => entryHTML(s, it, f)).join('');
   else if (s.type === 'skills') body = '<div class="sk">' + s.rows.filter((r) => r.value || r.label).map((r) => '<div>' + (r.label ? '<b data-path="sec.' + s.id + '.row.' + r.id + '.label">' + esc(r.label) + (f.oneLine ? ' :' : ':') + '</b> ' : '') + P('sec.' + s.id + '.row.' + r.id + '.value', r.value) + '</div>').join('') + '</div>';
   else if (f.oneLine && s.k === 'certifications') body = '<div class="certs">' + s.list.filter((b) => b.t).map((b) => '<div>' + certHTML('sec.' + s.id + '.list.' + b.id, b.t) + '</div>').join('') + '</div>';
@@ -1459,25 +1491,28 @@ function coverHTML(D) {
 }
 // CSS for the page itself; the same string styles the preview, the PDF and the Word file
 function sheetCSS(f, forWord) {
+  // On the page every rule is scoped to .sheet; in the Word file (its own document) the same rules apply to the body.
   const font = FONTS.find((x) => x[0] === f.font) || FONTS[1], ff = font[1] || '"Times New Roman", serif';
   const pg = PAPERS[f.paper], pad = f.margin + 'in', hdr = f.headerAlign === 'center' ? 'center' : 'left', t = f.template;
   const hcol = t === 'modern' ? f.accent : '#111', rule = f.rules ? (t === 'interview' ? '0.8px' : '1px') + ' solid ' + (t === 'modern' ? f.accent : t === 'classic' ? '#2a4bd8' : '#111') : '0';
-  return (forWord ? 'body' : '.sheet') + '{font-family:' + ff + ';font-size:' + f.size + 'pt;line-height:' + f.lineHeight + ';color:#111;text-align:' + f.align + ';' +
-      (forWord ? '' : 'width:' + pg.w + 'px;min-height:' + pg.h + 'px;padding:' + pad + ';') + '}' +
-    '.sheet .empty{color:#bbb}.sheet .ph-h,.ph-h{text-align:' + hdr + ';margin-bottom:' + (f.gap * 0.6) + 'em}' +
-    '.sheet h1,h1{font-size:' + f.nameSize + 'pt;line-height:1.15;font-weight:700;margin:0;color:' + (t === 'modern' ? f.accent : '#111') + ';' + (t === 'classic' ? 'letter-spacing:.01em;' : '') + '}' +
-    '.sheet .hlt,.hlt{font-size:' + (f.size * 1.08) + 'pt;font-weight:600;margin-top:.1em;color:#333}' +
-    '.sheet .ct,.ct{font-size:' + (f.size * 0.95) + 'pt;margin-top:.25em;color:#222}.sheet .ct a,.ct a{color:inherit;text-decoration:none}.sep{margin:0 .4em;color:#777}' +
-    '.sheet h2,h2{font-size:' + f.headingSize + 'pt;font-weight:700;letter-spacing:' + (f.caps ? '.06em' : '0') + ';text-transform:' + (f.caps ? 'uppercase' : 'none') + ';color:' + hcol + ';border-bottom:' + rule + ';padding-bottom:.12em;margin:' + f.gap + 'em 0 .3em;text-align:left}' +
-    '.sheet .sum,.sum{margin:0}' +
-    '.sheet .en,.en{margin-top:.35em;break-inside:avoid}.sheet .er,.er{display:flex;justify-content:space-between;gap:1em;align-items:baseline;text-align:left}' +
-    '.sheet .er1,.er1{font-weight:700}.sheet .er2,.er2{font-style:italic;font-size:' + (f.size * 0.97) + 'pt}.sheet .er .r,.er .r{white-space:nowrap;font-weight:' + (t === 'traditional' ? '400' : '600') + ';font-style:normal;color:#333}' +
-    '.sheet .bl,.bl{margin:.15em 0 0;padding-left:1.25em;list-style-type:' + BULLETS[f.bullet][1] + '}.sheet .bl li,.bl li{margin:' + f.bulletGap + 'px 0;padding-left:.1em;break-inside:avoid}' +
-    '.sheet .sk,.sk{display:grid;gap:.1em}.sheet .sk b,.sk b{font-weight:700}' +
-    '.sheet .cv-date,.cv-date{margin:' + (f.gap * 1.2) + 'em 0 .8em}.sheet .cv-to,.cv-to{white-space:pre-line;margin-bottom:.9em}.sheet .cv-body,.cv-body{white-space:pre-line}' +
-    '.sheet .pref,.pref{color:#444}' +
-    (f.oneLine ? '.sheet .ct a,.ct a{color:#1a56c8}.sheet .er1 .l,.er1 .l{font-weight:700;text-align:left}.sheet .bl li,.bl li{padding-left:0}.sheet .deg,.deg{font-style:italic;font-weight:400}.sheet .dash,.dash{font-weight:400}' +
-      '.sheet .certs,.certs{display:grid;gap:.2em}.sheet .issuer,.issuer{color:#4a5568}.sheet .bar,.bar{color:#555;font-weight:400}.sheet h2,h2{margin:' + f.gap + 'em 0 .1em;padding-bottom:.02em}.sheet .en,.en{margin-top:.15em}.sheet .ps>.sum,.ps>.sum{margin-top:.05em}.sheet .ph-h,.ph-h{margin-bottom:.15em}.sheet .ct,.ct{margin-top:.15em}' : '');
+  const S = (sel) => forWord ? sel : sel.split(',').map((x) => '.sheet' + (x.startsWith(':') || x === '' ? x : ' ' + x.trim())).join(',');
+  const R = (sel, body) => S(sel) + '{' + body + '}';
+  return (forWord ? 'body' : '.sheet') + '{font-family:' + ff + ';font-size:' + f.size + 'pt;line-height:' + f.lineHeight + ';color:#111;text-align:' + f.align + ';' + (forWord ? '' : 'width:' + pg.w + 'px;min-height:' + pg.h + 'px;padding:' + pad + ';') + '}' +
+    R('.empty', 'color:#bbb') +
+    R('.ph-h', 'text-align:' + hdr + ';margin-bottom:' + (f.gap * 0.6) + 'em') +
+    R('h1', 'font-size:' + f.nameSize + 'pt;line-height:1.15;font-weight:700;margin:0;color:' + (t === 'modern' ? f.accent : '#111') + (t === 'classic' ? ';letter-spacing:.01em' : '')) +
+    R('.hlt', 'font-size:' + (f.size * 1.08) + 'pt;font-weight:600;margin-top:.1em;color:#333') +
+    R('.ct', 'font-size:' + (f.size * 0.95) + 'pt;margin-top:.25em;color:#222') + R('.ct a', 'color:inherit;text-decoration:none') + R('.sep', 'margin:0 .4em;color:#777') +
+    R('h2', 'font-size:' + f.headingSize + 'pt;font-weight:700;letter-spacing:' + (f.caps ? '.06em' : '0') + ';text-transform:' + (f.caps ? 'uppercase' : 'none') + ';color:' + hcol + ';border-bottom:' + rule + ';padding-bottom:.12em;margin:' + f.gap + 'em 0 .3em;text-align:left') +
+    R('.sum', 'margin:0') +
+    R('.en', 'margin-top:.35em;break-inside:avoid') + R('.er', 'display:flex;justify-content:space-between;gap:1em;align-items:baseline;text-align:left') +
+    R('.er1', 'font-weight:700') + R('.er2', 'font-style:italic;font-size:' + (f.size * 0.97) + 'pt') + R('.er .r', 'white-space:nowrap;font-weight:' + (t === 'traditional' ? '400' : '600') + ';font-style:normal;color:#333') +
+    R('.bl', 'margin:.15em 0 0;padding-left:1.25em;list-style-type:' + BULLETS[f.bullet][1]) + R('.bl li', 'margin:' + f.bulletGap + 'px 0;padding-left:.1em;break-inside:avoid') +
+    R('.sk', 'display:grid;gap:.1em') + R('.sk b', 'font-weight:700') +
+    R('.cv-date', 'margin:' + (f.gap * 1.2) + 'em 0 .8em') + R('.cv-to', 'white-space:pre-line;margin-bottom:.9em') + R('.cv-body', 'white-space:pre-line') +
+    R('.pref', 'color:#444') +
+    (f.oneLine ? R('.ct a', 'color:#1a56c8') + R('.er1 .l', 'font-weight:700;text-align:left') + R('.bl li', 'padding-left:0') + R('.deg', 'font-style:italic;font-weight:400') + R('.dash', 'font-weight:400') +
+      R('.certs', 'display:grid;gap:.2em') + R('.issuer', 'color:#4a5568') + R('.bar', 'color:#555;font-weight:400') + R('h2', 'margin:' + f.gap + 'em 0 .1em;padding-bottom:.02em') + R('.en', 'margin-top:.15em') + R('.ps>.sum', 'margin-top:.05em') + R('.ph-h', 'margin-bottom:.15em') + R('.ct', 'margin-top:.15em') : '');
 }
 function applyFormat() {
   const f = fmtOf(DOC), font = FONTS.find((x) => x[0] === f.font); if (font && font[2]) loadFont(font[2]);
@@ -1487,7 +1522,7 @@ function applyFormat() {
   fitFrame();
 }
 function renderSheet() {
-  const keep = FOCUS;
+  const keep = FOCUS, chg = $('#showChg'); if (chg) chg.hidden = !(DOC && DOC.meta.pre && TAB === 'resume');
   $('#sheet').innerHTML = TAB === 'cover' ? coverHTML(DOC) : resumeHTML(DOC);
   if (keep) { const el = $('#sheet [data-path="' + keep + '"]'); if (el) el.classList.add('sel'); }
   countPages();
@@ -1517,6 +1552,9 @@ function longResume() {   // two pages are fine with 8+ years of experience or m
   return yrs >= 8 || n > 6;
 }
 window.addEventListener('resize', () => { if (DOC) fitFrame(); });
+let CHG_WAS = false;
+window.addEventListener('beforeprint', () => { CHG_WAS = SHOWCHG; if (SHOWCHG) { SHOWCHG = false; renderSheet(); } });
+window.addEventListener('afterprint', () => { if (CHG_WAS) { SHOWCHG = true; renderSheet(); } });
 function renderAll() { applyFormat(); renderSheet(); renderPanel(); }
 function setDocTab(v) {
   TAB = v; $$('#doctabs button').forEach((b) => b.classList.toggle('on', b.getAttribute('data-v') === v));
@@ -1540,9 +1578,9 @@ function downloadPDF() {
 }
 function downloadDoc() {
   checkThen(() => {
-    const f = fmtOf(DOC), src = document.createElement('div'); src.innerHTML = TAB === 'cover' ? coverHTML(DOC) : resumeHTML(DOC);
+    const f = fmtOf(DOC), src = document.createElement('div'), was = SHOWCHG; SHOWCHG = false; src.innerHTML = TAB === 'cover' ? coverHTML(DOC) : resumeHTML(DOC); SHOWCHG = was;
     $$('[data-path]', src).forEach((x) => x.removeAttribute('data-path')); $$('.empty', src).forEach((x) => x.remove());
-    const css = sheetCSS(f, true).replace(/\.sheet /g, '') + '.er{overflow:hidden;display:block}.er .r{float:right}ul{margin:2pt 0 0 14pt;padding:0}li{margin:0}';
+    const css = sheetCSS(f, true) + '.er{overflow:hidden;display:block}.er .r{float:right}ul{margin:2pt 0 0 14pt;padding:0}li{margin:0}';
     const html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>' + esc(fileBase()) + '</title><style>@page{size:' + PAPERS[f.paper].css + ';margin:' + f.margin + 'in}' + css + '</style></head><body>' + src.innerHTML + '</body></html>';
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + html], { type: 'application/msword' })); a.download = fileBase() + '.doc';
     document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
@@ -1551,8 +1589,11 @@ function downloadDoc() {
 }
 
 /* ---------- small dialogs ---------- */
-function modalOpen(html) { const m = $('#modal'); m.innerHTML = html; m.hidden = false; }
-function modalClose() { const m = $('#modal'); m.hidden = true; m.innerHTML = ''; }
+function modalOpen(html) { const m = $('#modal'); m.classList.remove('closing'); m.innerHTML = html; m.hidden = false; }
+function modalClose() {   // a short fade out; a dialog opened in the meantime cancels it
+  const m = $('#modal'); if (m.hidden) return; m.classList.add('closing');
+  setTimeout(() => { if (m.classList.contains('closing')) { m.hidden = true; m.innerHTML = ''; m.classList.remove('closing'); } }, 140);
+}
 function confirmBox(title, text, okLabel, then, cancelLabel) {
   modalOpen('<div class="card" role="dialog" aria-modal="true"><h2>' + esc(title) + '</h2><p>' + esc(text) + '</p><div class="acts"><button class="btn pri" type="button" id="mOk">' + esc(okLabel) + '</button><button class="btn" type="button" id="mNo">' + esc(cancelLabel || 'Cancel') + '</button></div></div>');
   $('#mOk').onclick = () => { modalClose(); then(); };
@@ -2073,7 +2114,12 @@ function checkHTML() {
   // the job it's being tailored to
   const terms = atsTerms();
   h += '<div class="pc"><div class="pch"><h3>Tailor it to a job</h3></div>';
-  if (JOB && terms.length) { const c = atsCover(docText(), terms);
+  const RQ0 = DOC.meta.job && DOC.meta.job.reqs && DOC.meta.job.reqs.length ? DOC.meta.job.reqs : null;
+  if (RQ0) { const met = RQ0.filter((q) => q.status !== 'missing'), basics = RQ0.filter((q) => q.kind === 'basic');
+    h += '<p style="font-size:13px;color:var(--ink)"><b>' + esc(cleanTitle(JOB && JOB.title) || 'This job') + '</b>' + (JOB && JOB.company ? ' at ' + esc(JOB.company) : '') + '</p><div class="pbar"><i style="width:' + Math.round(met.length / RQ0.length * 100) + '%"></i></div><p class="hint">Meets ' + met.length + ' of ' + RQ0.length + ' requirements · ' + basics.filter((q) => q.status !== 'missing').length + ' of ' + basics.length + ' must-haves.</p>' +
+      '<ul class="reql small">' + RQ0.map((q) => '<li><span class="rs ' + (q.status === 'shown' ? 'ok' : q.status === 'buried' ? 'blue' : 'mute') + '">' + (q.status === 'shown' ? 'Shown' : q.status === 'buried' ? 'Surfaced' : 'Not on the resume') + '</span><span>' + esc(q.text) + '</span></li>').join('') + '</ul>' +
+      '<div class="acts"><button type="button" class="btn ai" data-a="optimize">' + I_SPARK + '<span>Optimise again</span></button><button type="button" class="btn sm" data-a="fact">Fact check</button></div>';
+  } else if (JOB && terms.length) { const c = atsCover(docText(), terms);
     h += '<p style="font-size:13px;color:var(--ink)"><b>' + esc(cleanTitle(JOB.title) || 'This job') + '</b>' + (JOB.company ? ' at ' + esc(JOB.company) : '') + '</p><div class="pbar"><i style="width:' + c.pct + '%"></i></div><p class="hint">' + c.pct + '% of the job’s ' + terms.length + ' keywords are on the resume.</p>' +
       '<div class="kw">' + c.hit.slice(0, 12).map((k) => '<span>' + esc(k) + '</span>').join('') + c.miss.slice(0, 12).map((k) => '<span class="miss">' + esc(k) + '</span>').join('') + '</div>' +
       '<div class="acts"><button type="button" class="btn ai" data-a="optimize">' + I_SPARK + '<span>Optimise for this job</span></button><button type="button" class="btn sm" data-a="fact">Fact check</button></div>';
@@ -2136,6 +2182,7 @@ function autoCover() { if (!JOB || COVER_BUSY) return; if (DOC.cover.text && DOC
 
 /* ---------- Optimise for a job: pick what to tailor, review side by side, accept what you like ---------- */
 let OPT = null;
+const clientRules = () => (TEAM && CLIENT && CLIENT.optimise_rules) ? String(CLIENT.optimise_rules).trim() : '';
 const XI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 function optTargets() { const out = []; DOC.sections.forEach((s) => { if (s.hidden || s.type !== 'entries' || s.k === 'education') return; s.items.forEach((it) => { if (it.bullets.some((b) => b.t.trim())) out.push({ key: s.id + ':' + it.id, sec: s, it }); }); }); return out; }
 function jobFit() { if (!JOB) return null; const low = docText().toLowerCase(), terms = skillsIn(jobText()); const have = terms.filter((k) => inText(k, low)); return { have, miss: terms.filter((k) => !have.includes(k)) }; }
@@ -2178,43 +2225,36 @@ function runOptimise() {
   const keep = {}; Object.keys(sel).forEach((k) => { keep[k] = sel[k] ? 1 : 0; }); lsSet(OPT_KEY, { sel: keep, ins });
   const targets = sel.experience ? optTargets() : [], nb = targets.reduce((n, t) => n + t.it.bullets.filter((b) => b.t.trim()).length, 0);
   const terms = atsTerms(), cover0 = atsCover(docText(), terms);
-  const steps = [['job', 'Reading the job description']];
-  if (sel.summary) steps.push(['summary', 'Tailoring the summary']);
-  if (sel.headline || sel.location) steps.push(['head', 'Matching the title' + (sel.location ? ' and location' : '')]);
-  if (sel.experience) steps.push(['experience', targets.length ? 'Rewriting ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' across ' + targets.length + ' role' + (targets.length > 1 ? 's' : '') : 'Checking the work experience']);
-  if (sel.skills) steps.push(['skills', 'Matching the skills to the posting']);
-  steps.push(['score', 'Checking every change against the facts']);
-  modalOpen('<div class="om sm run" role="dialog" aria-modal="true" aria-live="polite"><div class="orbit"><span></span></div><h2>Optimising for ' + esc(cleanTitle(JOB.title) || 'this job') + '</h2>' + (JOB.company ? '<p class="omsub">at ' + esc(JOB.company) + '</p>' : '') +
-    '<ul class="steps">' + steps.map((x) => '<li data-st="' + x[0] + '" class="run"><i></i>' + esc(x[1]) + '</li>').join('') + '</ul><p class="fine" style="margin-top:16px">Only Claude writes here, from facts on the resume. Every change is checked before you see it.</p></div>');
-  const done = (k, label) => { const li = $('.steps [data-st="' + k + '"]'); if (li) { li.classList.remove('run'); li.classList.add('ok'); if (label) li.lastChild.textContent = label; } };
-  const R = { failed: [] }, jobs = [];
-  const jdx = (terms.length ? 'KEY TERMS an ATS will scan for (use the exact wording where it truthfully fits): ' + terms.join(', ') + '\n\n' : '') + jobText();
-  setTimeout(() => done('job', terms.length ? 'Found ' + terms.length + ' keywords in the job description' : 'Read the job description'), 450);
-  if (sel.summary) {
-    const sm = DOC.sections.find((x) => x.k === 'summary' && !x.hidden);
-    jobs.push(ai({ task: 'summary', current: sm ? sm.text : '', resume: docText().slice(0, 8000), target: cleanTitle(JOB.title), jd: jdx.slice(0, 4000), instructions: ins })
-      .then((r) => { if (!r || !r.text) throw 'shape'; R.summary = { sid: sm && sm.id, orig: sm ? sm.text : '', sug: String(r.text).trim() }; }).catch((e) => { R.failed.push('summary'); R.err = e; }).then(() => done('summary')));
-  }
-  if (sel.headline) { const ht = cleanTitle(JOB.title); if (ht && norm(ht) !== norm(DOC.headline)) R.headline = { orig: DOC.headline || '', sug: ht }; }
-  if (sel.location && JOB.loc && !(DOC.prefs || {}).relocate) R.loc = { orig: prefText() || '', sug: 'Open to relocation', city: JOB.loc.split(',')[0] };
-  if (sel.headline || sel.location) setTimeout(() => done('head'), 800);
-  if (sel.experience) {
-    let left = targets.length; if (!left) setTimeout(() => done('experience'), 900);
-    targets.forEach((tg) => {
-      const bl = tg.it.bullets.filter((b) => b.t.trim()), texts = bl.map((b) => b.t);
-      jobs.push(aiBullets({ task: 'bullets', mode: 'tailor', bullets: texts, role: tg.it.title || '', org: tg.it.sub || '', target: cleanTitle(JOB.title), jd: jdx.slice(0, 4000), instructions: ins })
-        .then((r) => { if (!r || !Array.isArray(r.bullets) || r.bullets.length !== texts.length) throw 'shape'; tg.res = bl.map((b, i) => ({ bid: b.id, orig: b.t, sug: String(r.bullets[i] || '').trim() || b.t })); })
-        .catch((e) => { R.failed.push('a role'); R.err = e; }).then(() => { if (--left === 0) done('experience'); }));
-    });
-  }
-  Promise.all(jobs).then(() => {
-    if (sel.skills) { const f = jobFit(); R.skills = f ? f.miss : []; done('skills'); }
-    if (R.failed.length && !R.summary && !targets.some((t) => t.res) && !R.headline && !R.loc && !(R.skills && R.skills.length)) { modalClose(); toast(aiMsg(R.err)); return; }
+  const sm = DOC.sections.find((x) => x.k === 'summary' && !x.hidden), sk = DOC.sections.find((x) => x.k === 'skills' && !x.hidden);
+  const skills = sk ? [].concat(...sk.rows.map((r) => r.value.split(/,\s*/).map((x) => x.trim()).filter(Boolean))) : [];
+  const steps = [['job', 'Reading the job description and its requirements'], ['write', nb ? 'Rewording ' + nb + ' bullet' + (nb > 1 ? 's' : '') + (sel.summary ? ' and the summary' : '') + ' for the job' : 'Tailoring for the job'], ['check', 'Checking every change against the facts']];
+  modalOpen('<div class="om sm run" role="dialog" aria-modal="true" aria-live="polite"><div class="runbar"><i id="runbar"></i></div><h2>Optimising for ' + esc(cleanTitle(JOB.title) || 'this job') + '</h2>' + (JOB.company ? '<p class="omsub">at ' + esc(JOB.company) + '</p>' : '') +
+    '<ul class="steps">' + steps.map((x) => '<li data-st="' + x[0] + '" class="run"><i></i>' + esc(x[1]) + '</li>').join('') + '</ul><p class="fine" style="margin-top:16px">Only wording changes, never facts: nothing is added for a requirement the resume doesn’t prove. Projects, education and certifications are never touched.</p></div>');
+  const done = (k, label) => { const li = $('.steps [data-st="' + k + '"]'); if (li) { li.classList.remove('run'); li.classList.add('ok'); if (label) li.lastChild.textContent = label; }
+    const bar = $('#runbar'), all = $$('.steps li').length; if (bar && all) bar.style.width = Math.max(4, Math.round($$('.steps li.ok').length / all * 100)) + '%'; };
+  const R = { reqs: [], mode: '' };
+  ai({ task: 'tailor', jd: jobText().slice(0, 6000), target: cleanTitle(JOB.title), rules: clientRules(), instructions: ins,
+    summary: sm ? sm.text : '', headline: DOC.headline || '', skills,
+    roles: targets.map((tg) => ({ id: tg.key, title: tg.it.title || '', org: tg.it.sub || '', bullets: tg.it.bullets.filter((b) => b.t.trim()).map((b) => b.t) })),
+    touch: { summary: !!sel.summary, headline: !!sel.headline, experience: !!sel.experience, skills: !!sel.skills } }, 95000)
+  .then((r) => {
+    if (!r || !Array.isArray(r.roles)) throw 'shape';
+    R.reqs = r.requirements || []; R.mode = r.mode || '';
+    done('job', R.reqs.length ? 'Found ' + R.reqs.length + ' requirements (' + R.reqs.filter((q) => q.kind === 'basic').length + ' must-haves)' : 'Read the job description');
+    if (sel.summary) R.summary = { sid: sm && sm.id, orig: sm ? sm.text : '', sug: String(r.summary || (sm ? sm.text : '')).trim() };
+    if (sel.headline) { const ht = String(r.headline || '').trim(); if (ht && norm(ht) !== norm(DOC.headline)) R.headline = { orig: DOC.headline || '', sug: ht }; }
+    if (sel.location && JOB.loc && !(DOC.prefs || {}).relocate) R.loc = { orig: prefText() || '', sug: 'Open to relocation', city: JOB.loc.split(',')[0] };
+    const byId = {}; r.roles.forEach((x) => { byId[x.id] = x.bullets || []; });
+    targets.forEach((tg) => { const bl = tg.it.bullets.filter((b) => b.t.trim()), got = byId[tg.key]; tg.res = bl.map((b, i) => ({ bid: b.id, orig: b.t, sug: got && got.length === bl.length ? String(got[i] || '').trim() || b.t : b.t })); });
+    if (sel.skills) R.skills = (r.skillsFromExperience || []).filter((k) => inText(k, docText().toLowerCase()) && !skills.some((x) => x.toLowerCase() === k.toLowerCase()));
+    done('write', R.mode === 'light' ? 'Light touch — the resume already shows the must-haves' : 'Reworded where the facts support a requirement');
+    DOC.meta.pre = Object.assign({}, DOC.meta.pre || {}); allFields().forEach((f) => { if (DOC.meta.pre[f.path] === undefined) DOC.meta.pre[f.path] = f.t; });   // what the text was before any Optimise, for Show changes
     const V = validateAll(R, targets, terms, cover0);
+    DOC.meta.job = Object.assign({}, DOC.meta.job || JOB, { reqs: R.reqs, mode: R.mode });
     OPT.R = R; OPT.targets = targets; OPT.terms = terms; OPT.cover0 = cover0;
-    done('score', V.after != null && V.after > V.before ? 'ATS keyword match ' + V.before + '% → ' + V.after + '%' : 'Every change checked');
+    done('check', V.removed ? V.removed + ' suggestion' + (V.removed > 1 ? 's' : '') + ' dropped for changing a fact' : 'Every change checked');
     setTimeout(() => showResults(R, targets, sel, V), 500);
-  });
+  }).catch((e) => { modalClose(); toast(e === 'shape' ? AI_ERR.http : aiMsg(e)); });
 }
 function scoreAfter(R, targets, pool) {
   let after = pool;
@@ -2262,7 +2302,7 @@ function showResults(R, targets, sel, V) {
   OPT.rows = []; OPT.skillsDone = false;
   const row = (type, data, orig, sug, note, fc) => {
     const i = OPT.rows.length; OPT.rows.push(Object.assign({ type, st: 'p', orig, sug }, data));
-    return '<div class="rr" data-r="' + i + '"><div class="ro">' + (orig ? esc(orig) : '<i>Not on the resume yet</i>') + '</div><div class="rn"><span contenteditable="true" data-rs="' + i + '">' + esc(sug) + '</span>' + (note ? '<small>' + esc(note) + '</small>' : '') +
+    return '<div class="rr" data-r="' + i + '" style="--i:' + i + '"><div class="ro">' + (orig ? esc(orig) : '<i>Not on the resume yet</i>') + '</div><div class="rn"><span contenteditable="true" data-rs="' + i + '">' + esc(sug) + '</span>' + (note ? '<small>' + esc(note) + '</small>' : '') +
       (fc ? '<span class="fc fx">' + IC_WARN + ' ' + esc(fc) + '</span>' : '<span class="fc">' + IC_OK + ' Fact-checked against the resume</span>') +
       '<div class="rb" id="rb' + i + '"><button type="button" class="ok" data-a="r-ok" data-v="' + i + '" aria-label="Accept">' + IC_OK + '</button><button type="button" class="no" data-a="r-no" data-v="' + i + '" aria-label="Reject">' + IC_X + '</button></div></div></div>';
   };
@@ -2279,13 +2319,19 @@ function showResults(R, targets, sel, V) {
     const keptNote = tg.keptN ? '<p class="rnote">' + tg.keptN + ' rewrite' + (tg.keptN > 1 ? 's' : '') + ' skipped — ' + (tg.keptN > 1 ? 'they' : 'it') + ' ' + esc(keptWhy(tg.why || [])) + ', so the original' + (tg.keptN > 1 ? 's stay' : ' stays') + '.</p>' : '';
     h += ch.length ? card(t, ch.map((x) => row('bullet', { bid: x.bid }, x.orig, x.sug, '', x.fc)).join('') + keptNote) : card(t, tg.res ? (tg.keptN ? keptNote : already) : '<div class="rdone"><span>!</span><span><b>Couldn’t rewrite this role</b><small>' + esc(aiMsg(R.err)) + '</small></span></div>', true);
   });
-  if (sel.skills) h += card('Skills', R.skills && R.skills.length ? '<p class="rnote">This job asks for these and the resume doesn’t mention them. Tick only the ones that are genuinely there — they’ll be added to Skills.</p><div class="rsk">' + R.skills.map((k) => '<label><input type="checkbox" data-sk="' + esc(k) + '"><span>' + esc(k) + '</span></label>').join('') + '</div>'
-    : '<div class="rdone"><span>' + IC_OK + '</span><span><b>The skills already line up</b><small>Every skill we found in this posting is on the resume.</small></span></div>', true);
+  if (sel.skills) h += card('Skills', R.skills && R.skills.length ? '<p class="rnote">The job asks for these and the resume’s own bullets or summary already state them, but the Skills list doesn’t. Tick the ones to add — nothing is added without a tick.</p><div class="rsk">' + R.skills.map((k) => '<label><input type="checkbox" data-sk="' + esc(k) + '"><span>' + esc(k) + '</span></label>').join('') + '</div>'
+    : '<div class="rdone"><span>' + IC_OK + '</span><span><b>Nothing to add to Skills</b><small>Every job skill the resume proves is already listed. Nothing is ever added just because the job asks for it.</small></span></div>', true);
+  const reqs = R.reqs || [], met = reqs.filter((q) => q.status !== 'missing'), basics = reqs.filter((q) => q.kind === 'basic'), basicsMet = basics.filter((q) => q.status !== 'missing');
+  const reworded = targets.reduce((n, tg) => n + (tg.res || []).filter((x) => norm(x.sug) !== norm(x.orig)).length, 0) + (R.summary && R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig) ? 1 : 0);
+  const RQ = { shown: ['Shown', 'ok', 'The resume states it plainly.'], buried: ['Surfaced', 'blue', 'The facts prove it; a line was reworded to say it in the posting’s words.'], missing: ['Not on the resume', 'mute', 'Nothing was added — say so honestly if asked.'] };
+  const reqCard = reqs.length ? '<div class="reqs"><button type="button" class="reqh" data-a="reqs-toggle" aria-expanded="false"><span><b>Meets ' + met.length + ' of ' + reqs.length + ' requirements</b><small>' + basicsMet.length + ' of ' + basics.length + ' must-haves · ' + reworded + ' line' + (reworded === 1 ? '' : 's') + ' reworded, facts unchanged' + (R.mode === 'light' ? ' · light touch' : '') + '</small></span>' + I_DN + '</button>' +
+    '<ul class="reql" id="reqList" hidden>' + reqs.map((q) => '<li><span class="rs ' + RQ[q.status][1] + '">' + RQ[q.status][0] + '</span><span><b>' + esc(q.text) + '</b>' + (q.kind === 'preferred' ? ' <em>nice to have</em>' : '') + (q.evidence ? '<q>' + esc(q.evidence) + '</q>' : '<small>' + RQ[q.status][2] + '</small>') + '</span></li>').join('') + '</ul></div>' : '';
   modalOpen('<div class="om" role="dialog" aria-modal="true" aria-labelledby="omR"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
     '<div class="omh"><h2 id="omR">Optimised for ' + esc(cleanTitle(JOB.title) || 'this job') + '</h2><p class="omsub">Review each suggestion beside the current line. Accept them one by one or all at once; edit a suggestion before accepting if you like.' + (/\[/.test(h) ? ' Replace anything in [ ] with the real number.' : '') + '</p></div>' +
+    reqCard +
     '<div class="vrep">' + (V.after != null ? '<div><span class="vi a">' + IC_OK + '</span><span><b>ATS keyword match: ' + (V.after > V.before ? V.before + '% → <span class="up">' + V.after + '%</span>' : '<span class="up">' + V.after + '%</span>') + '</b><small>Of the ' + atsTerms().length + ' keywords in this job description, once these changes are accepted. Every change keeps the keywords already there.</small></span></div>' : '') +
       '<div><span class="vi' + (V.fixed + V.removed ? ' w' : ' a') + '">' + (V.fixed + V.removed ? IC_WARN : IC_OK) + '</span><span><b>Fact-checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + '</b><small>' +
-      (V.fixed + V.removed ? (V.fixed ? V.fixed + ' had a number that isn’t on the resume — now a [ ] to fill in. ' : '') + (V.removed ? V.removed + ' suggestion' + (V.removed > 1 ? 's' : '') + ' dropped, so the original stays: ' + V.notes.slice(0, 3).map((n) => esc(n.split(' — ')[1] || 'it changed a fact')).join('; ') + '.' : '')
+      (V.fixed + V.removed ? (V.fixed ? V.fixed + ' had a number that isn’t on the resume — now a [ ] to fill in. ' : '') + (V.removed ? V.removed + ' suggestion' + (V.removed > 1 ? 's' : '') + ' dropped, so the original stays: ' + uniq(V.notes.map((n) => n.split(' — ')[1] || 'it changed a fact')).slice(0, 3).map(esc).join('; ') + '.' : '')
         : 'Every suggestion uses only facts already on the resume — no new numbers, tools or employers.') + '</small></span></div></div>' +
     '<div class="omb">' + h + '</div><div class="omf"><span id="omCount"></span><button class="btn pri" type="button" data-a="r-all" id="rAll">✓ Accept all</button><button class="btn" type="button" data-a="opt-done">Done</button></div></div>');
   countRows();
@@ -2319,7 +2365,7 @@ function addSkill(term) {
 function applySkills() { if (OPT.skillsDone) return 0; const picked = $$('.rsk input:checked').map((x) => x.getAttribute('data-sk')); picked.forEach(addSkill); if (picked.length) { OPT.skillsDone = true; $$('.rsk input').forEach((x) => { x.disabled = true; }); } return picked.length; }
 function finishOptimise() {
   const n = applySkills(), a = OPT ? OPT.rows.filter((r) => r.st === 'a').length + n : 0;
-  modalClose(); if (a) { structural(); toast(a + ' change' + (a > 1 ? 's' : '') + ' applied — highlighted on the page', { a: 'undo', label: 'Undo' }); const first = $('#sheet .hl'); if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' }); if (PTAB === 'check') renderPanel(); }
+  modalClose(); if (a) { SHOWCHG = true; const c = $('#chgOn'); if (c) c.checked = true; structural(); toast(a + ' change' + (a > 1 ? 's' : '') + ' applied — the changed words are marked on the page', { a: 'undo', label: 'Undo' }); const first = $('#sheet .hl'); if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' }); if (PTAB === 'check') renderPanel(); }
 }
 function optAction(a, v, t) {
   switch (a) {
@@ -2332,6 +2378,8 @@ function optAction(a, v, t) {
     case 'r-no': { const r = OPT.rows[+v]; if (r && r.st === 'p') { r.st = 'r'; markRow(+v, 'r'); countRows(); } return true; }
     case 'r-all': { let n = 0; OPT.rows.forEach((r, i) => { if (applyRow(i)) n++; }); n += applySkills(); countRows(); if (n) structural(); return true; }
     case 'opt-done': finishOptimise(); return true;
+    case 'reqs-toggle': { const l = $('#reqList'); if (l) { l.hidden = !l.hidden; t.setAttribute('aria-expanded', l.hidden ? 'false' : 'true'); t.classList.toggle('open', !l.hidden); } return true; }
+    case 'chg': SHOWCHG = !!t.checked; renderSheet(); return true;
     case 'fact': runFactCheck(); return true;
     case 'fc-show': { const x = FC && FC.items[+v]; modalClose(); if (x && x.path) showMe(x.path); return true; }
     case 'fc-restore': { const x = FC && FC.items[+v]; if (x && x.path && x.was != null) { setField(x.path, x.was); modalClose(); structural(); showMe(x.path); toast('Restored the original line', { a: 'undo', label: 'Undo' }); } return true; }
@@ -2420,7 +2468,7 @@ function teamBoot() {
   sbReady().then(() => session()).then((s) => {
     if (!s) return teamCard('Sign in to the team portal', 'Your sign-in has expired.', signIn);
     USER = { id: s.user.id, email: s.user.email || '', name: '' };
-    const cq = sb.from('clients').select('id,email,full_name,phone,location,target_roles').eq('id', TEAM.client).maybeSingle();
+    const cq = sb.from('clients').select('id,email,full_name,phone,location,target_roles,optimise_rules').eq('id', TEAM.client).maybeSingle();
     const rq = TEAM.app ? sb.from('applications').select('id,client_id,status,title,company,location,job_key,jd_text,base_resume_id,resume_doc,resume_text,cover_letter,applied_at').eq('id', TEAM.app).maybeSingle()
                         : sb.from('client_resumes').select('id,client_id,name,doc,text').eq('id', TEAM.resume).maybeSingle();
     return Promise.all([cq, rq]).then((rs) => {
