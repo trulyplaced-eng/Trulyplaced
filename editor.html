@@ -860,6 +860,9 @@ const TEAM = (() => {                                   // the team portal opene
   const c = QS.get('client'), app = QS.get('app'), resume = QS.get('resume');
   return c && (app || resume) ? { client: c, app: app || null, resume: resume || null } : null;
 })();
+// the team portal's batch Optimise opens a draft in a hidden frame; what to tailor comes in the address (batch=summary.experience.skills)
+const BATCH = TEAM && TEAM.app && QS.get('batch') ? { sel: QS.get('batch').split('.').filter((k) => /^(summary|headline|location|experience|skills)$/.test(k)).reduce((o, k) => { o[k] = true; return o; }, {}),
+  ins: String(QS.get('ins') || '').slice(0, 400) } : null;
 let CLIENT = null, TEAM_JOB = null, READONLY = false, TEAM_DIRTY = false;
 const OPT_KEY = TEAM ? 'tp_opt_c_' + TEAM.client : 'tp_opt';   // Optimise choices: one set per client, never shared
 if (EMBED) document.documentElement.classList.add('embed');
@@ -1314,6 +1317,8 @@ function startDoc(D) {
   if (h === '#cover' || h === '#optimize') try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
   if (h === '#cover') { setDocTab('cover'); autoCover(); }
   else if (h === '#optimize') setTimeout(openOptimise, 300);
+  if (BATCH) setTimeout(batchRun, 300);
+  else if (TEAM && !READONLY && DOC.meta.optPending) setTimeout(openPending, 400);   // the batch's suggestions, waiting for review
 }
 function loadJob() {
   if (TEAM) return TEAM.app ? TEAM_JOB : (DOC.meta.job && DOC.meta.job.text ? DOC.meta.job : null);   // never the team member's own job-board job
@@ -2191,7 +2196,7 @@ function autoCover() { if (!JOB || COVER_BUSY) return; if (DOC.cover.text && DOC
 let OPT = null;
 const clientRules = () => (TEAM && CLIENT && CLIENT.optimise_rules) ? String(CLIENT.optimise_rules).trim() : '';
 const XI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
-function optTargets() { const out = []; DOC.sections.forEach((s) => { if (s.hidden || s.type !== 'entries' || s.k === 'education') return; s.items.forEach((it) => { if (it.bullets.some((b) => b.t.trim())) out.push({ key: s.id + ':' + it.id, sec: s, it }); }); }); return out; }
+function optTargets() { const out = []; DOC.sections.forEach((s) => { if (s.hidden || s.type !== 'entries' || s.k === 'education' || s.k === 'projects') return; s.items.forEach((it) => { if (it.bullets.some((b) => b.t.trim())) out.push({ key: s.id + ':' + it.id, sec: s, it }); }); }); return out; }   // never projects, education or certifications
 function jobFit() { if (!JOB) return null; const low = docText().toLowerCase(), terms = skillsIn(jobText()); const have = terms.filter((k) => inText(k, low)); return { have, miss: terms.filter((k) => !have.includes(k)) }; }
 function openOptimise() {
   if (!DOC || READONLY) return;
@@ -2230,17 +2235,29 @@ function runOptimise() {
   if (!Object.keys(sel).some((k) => sel[k])) { toast('Pick at least one thing to optimise.'); return; }
   if (TEAM) saveVersion('Before Optimise');   // one click of Restore undoes the whole Optimise
   const keep = {}; Object.keys(sel).forEach((k) => { keep[k] = sel[k] ? 1 : 0; }); lsSet(OPT_KEY, { sel: keep, ins });
-  const targets = sel.experience ? optTargets() : [], nb = targets.reduce((n, t) => n + t.it.bullets.filter((b) => b.t.trim()).length, 0);
-  const terms = atsTerms(), cover0 = atsCover(docText(), terms);
-  const sm = DOC.sections.find((x) => x.k === 'summary' && !x.hidden), sk = DOC.sections.find((x) => x.k === 'skills' && !x.hidden);
-  const skills = sk ? [].concat(...sk.rows.map((r) => r.value.split(/,\s*/).map((x) => x.trim()).filter(Boolean))) : [];
+  const P = optPlan(sel), nb = P.nb;
   const steps = [['job', 'Reading the job description and its requirements'], ['write', nb ? 'Rewording ' + nb + ' bullet' + (nb > 1 ? 's' : '') + (sel.summary ? ' and the summary' : '') + ' for the job' : 'Tailoring for the job'], ['check', 'Checking every change against the facts']];
   modalOpen('<div class="om sm run" role="dialog" aria-modal="true" aria-live="polite"><div class="runbar"><i id="runbar"></i></div><h2>Optimising for ' + esc(cleanTitle(JOB.title) || 'this job') + '</h2>' + (JOB.company ? '<p class="omsub">at ' + esc(JOB.company) + '</p>' : '') +
     '<ul class="steps">' + steps.map((x) => '<li data-st="' + x[0] + '" class="run"><i></i>' + esc(x[1]) + '</li>').join('') + '</ul><p class="fine" style="margin-top:16px">Only wording changes, never facts: nothing is added for a requirement the resume doesn’t prove. Projects, education and certifications are never touched.</p></div>');
   const done = (k, label) => { const li = $('.steps [data-st="' + k + '"]'); if (li) { li.classList.remove('run'); li.classList.add('ok'); if (label) li.lastChild.textContent = label; }
     const bar = $('#runbar'), all = $$('.steps li').length; if (bar && all) bar.style.width = Math.max(4, Math.round($$('.steps li.ok').length / all * 100)) + '%'; };
-  const R = { reqs: [], mode: '' };
-  ai({ task: 'tailor', jd: jobText().slice(0, 6000), target: cleanTitle(JOB.title), rules: clientRules(), instructions: ins,
+  optCompute(sel, ins, P, done).then((o) => {
+    OPT.R = o.R; OPT.targets = o.targets; OPT.terms = P.terms; OPT.cover0 = P.cover0;
+    setTimeout(() => showResults(o.R, o.targets, sel, o.V), 500);
+  }).catch((e) => { modalClose(); toast(e === 'shape' ? AI_ERR.http : aiMsg(e)); });
+}
+// what Optimise tailors: the roles and their bullets, the job's keywords, and the summary and skills as they are now
+function optPlan(sel) {
+  const targets = sel.experience ? optTargets() : [], terms = atsTerms();
+  const sm = DOC.sections.find((x) => x.k === 'summary' && !x.hidden), sk = DOC.sections.find((x) => x.k === 'skills' && !x.hidden);
+  return { targets, terms, cover0: atsCover(docText(), terms), sm, nb: targets.reduce((n, t) => n + t.it.bullets.filter((b) => b.t.trim()).length, 0),
+    skills: sk ? [].concat(...sk.rows.map((r) => r.value.split(/,\s*/).map((x) => x.trim()).filter(Boolean))) : [] };
+}
+// the tailoring itself, for Optimise here and for the team portal's batch: one resume-ai call, then every suggestion goes
+// through the same fact checks (validateAll). Nothing on the resume changes; step(k, label) reports progress.
+function optCompute(sel, ins, P, step) {
+  const { targets, terms, cover0, sm, skills } = P, R = { reqs: [], mode: '' }, done = step || (() => {});
+  return ai({ task: 'tailor', jd: jobText().slice(0, 6000), target: cleanTitle(JOB.title), rules: clientRules(), instructions: ins,
     summary: sm ? sm.text : '', headline: DOC.headline || '', skills,
     roles: targets.map((tg) => ({ id: tg.key, title: tg.it.title || '', org: tg.it.sub || '', bullets: tg.it.bullets.filter((b) => b.t.trim()).map((b) => b.t) })),
     touch: { summary: !!sel.summary, headline: !!sel.headline, experience: !!sel.experience, skills: !!sel.skills } }, 95000)
@@ -2258,10 +2275,9 @@ function runOptimise() {
     DOC.meta.pre = Object.assign({}, DOC.meta.pre || {}); allFields().forEach((f) => { if (DOC.meta.pre[f.path] === undefined) DOC.meta.pre[f.path] = f.t; });   // what the text was before any Optimise, for Show changes
     const V = validateAll(R, targets, terms, cover0);
     DOC.meta.job = Object.assign({}, DOC.meta.job || JOB, { reqs: R.reqs, mode: R.mode });
-    OPT.R = R; OPT.targets = targets; OPT.terms = terms; OPT.cover0 = cover0;
     done('check', V.removed ? V.removed + ' suggestion' + (V.removed > 1 ? 's' : '') + ' dropped for changing a fact' : 'Every change checked');
-    setTimeout(() => showResults(R, targets, sel, V), 500);
-  }).catch((e) => { modalClose(); toast(e === 'shape' ? AI_ERR.http : aiMsg(e)); });
+    return { R, targets, V };
+  });
 }
 function scoreAfter(R, targets, pool) {
   let after = pool;
@@ -2334,7 +2350,7 @@ function showResults(R, targets, sel, V) {
   const reqCard = reqs.length ? '<div class="reqs"><button type="button" class="reqh" data-a="reqs-toggle" aria-expanded="false"><span><b>Meets ' + met.length + ' of ' + reqs.length + ' requirements</b><small>' + basicsMet.length + ' of ' + basics.length + ' must-haves · ' + reworded + ' line' + (reworded === 1 ? '' : 's') + ' reworded, facts unchanged' + (R.mode === 'light' ? ' · light touch' : '') + '</small></span>' + I_DN + '</button>' +
     '<ul class="reql" id="reqList" hidden>' + reqs.map((q) => '<li><span class="rs ' + RQ[q.status][1] + '">' + RQ[q.status][0] + '</span><span><b>' + esc(q.text) + '</b>' + (q.kind === 'preferred' ? ' <em>nice to have</em>' : '') + (q.evidence ? '<q>' + esc(q.evidence) + '</q>' : '<small>' + RQ[q.status][2] + '</small>') + '</span></li>').join('') + '</ul></div>' : '';
   modalOpen('<div class="om" role="dialog" aria-modal="true" aria-labelledby="omR"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
-    '<div class="omh"><h2 id="omR">Optimised for ' + esc(cleanTitle(JOB.title) || 'this job') + '</h2><p class="omsub">Review each suggestion beside the current line. Accept them one by one or all at once; edit a suggestion before accepting if you like.' + (/\[/.test(h) ? ' Replace anything in [ ] with the real number.' : '') + '</p></div>' +
+    '<div class="omh"><h2 id="omR">Optimised for ' + esc(cleanTitle(JOB.title) || 'this job') + '</h2><p class="omsub">' + (OPT.pending ? 'Made in the background from the team portal — nothing on the resume has changed yet. ' : '') + 'Review each suggestion beside the current line. Accept them one by one or all at once; edit a suggestion before accepting if you like.' + (/\[/.test(h) ? ' Replace anything in [ ] with the real number.' : '') + '</p></div>' +
     reqCard +
     '<div class="vrep">' + (V.after != null ? '<div><span class="vi a">' + IC_OK + '</span><span><b>ATS keyword match: ' + (V.after > V.before ? V.before + '% → <span class="up">' + V.after + '%</span>' : '<span class="up">' + V.after + '%</span>') + '</b><small>Of the ' + atsTerms().length + ' keywords in this job description, once these changes are accepted. Every change keeps the keywords already there.</small></span></div>' : '') +
       '<div><span class="vi' + (V.fixed + V.removed ? ' w' : ' a') + '">' + (V.fixed + V.removed ? IC_WARN : IC_OK) + '</span><span><b>Fact-checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + '</b><small>' +
@@ -2372,12 +2388,35 @@ function addSkill(term) {
 function applySkills() { if (OPT.skillsDone) return 0; const picked = $$('.rsk input:checked').map((x) => x.getAttribute('data-sk')); picked.forEach(addSkill); if (picked.length) { OPT.skillsDone = true; $$('.rsk input').forEach((x) => { x.disabled = true; }); } return picked.length; }
 function finishOptimise() {
   const n = applySkills(), a = OPT ? OPT.rows.filter((r) => r.st === 'a').length + n : 0;
-  modalClose(); if (a) { SHOWCHG = true; const c = $('#chgOn'); if (c) c.checked = true; structural(); toast(a + ' change' + (a > 1 ? 's' : '') + ' applied — the changed words are marked on the page', { a: 'undo', label: 'Undo' }); const first = $('#sheet .hl'); if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' }); if (PTAB === 'check') renderPanel(); }
+  endPending(); modalClose(); if (a) { SHOWCHG = true; const c = $('#chgOn'); if (c) c.checked = true; structural(); toast(a + ' change' + (a > 1 ? 's' : '') + ' applied — the changed words are marked on the page', { a: 'undo', label: 'Undo' }); const first = $('#sheet .hl'); if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' }); if (PTAB === 'check') renderPanel(); }
+}
+/* ---------- the team portal's batch Optimise leaves its suggestions on the draft until someone reviews them ---------- */
+const pendingOf = (o, sel, ins) => ({ at: Date.now(), sel, ins, V: o.V, R: { summary: o.R.summary, headline: o.R.headline, loc: o.R.loc, skills: o.R.skills, reqs: o.R.reqs, mode: o.R.mode },
+  roles: o.targets.map((t) => ({ key: t.key, res: t.res || [], keptN: t.keptN || 0, why: t.why || [] })) });
+const pendingCount = (P) => (P.roles || []).reduce((n, t) => n + t.res.filter((x) => norm(x.sug) !== norm(x.orig)).length, 0) +
+  (P.R.summary && P.R.summary.sug && norm(P.R.summary.sug) !== norm(P.R.summary.orig) ? 1 : 0) + (P.R.headline ? 1 : 0) + (P.R.loc ? 1 : 0);
+function openPending() {
+  const P = DOC && DOC.meta.optPending; if (!P || !JOB || READONLY || !$('#modal').hidden) return;
+  const R = P.R || {}, targets = [];
+  (P.roles || []).forEach((p) => {   // only lines still exactly as they were when the suggestion was made
+    const ids = String(p.key).split(':'), sec = secById(ids[0]), it = sec && byId(sec.items, ids[1]); if (!it) return;
+    targets.push({ key: p.key, sec, it, keptN: p.keptN, why: p.why, res: (p.res || []).filter((x) => { const b = byId(it.bullets, x.bid); return b && b.t === x.orig; }) });
+  });
+  if (R.summary && R.summary.sid && (secById(R.summary.sid) || {}).text !== R.summary.orig) delete R.summary;
+  if (R.headline && (DOC.headline || '') !== (R.headline.orig || '')) delete R.headline;
+  OPT = { sel: P.sel || {}, ins: P.ins || '', R, targets, pending: true };
+  showResults(R, targets, OPT.sel, P.V || { checked: 0, fixed: 0, removed: 0, notes: [], before: null, after: null });
+}
+function endPending() {   // reviewed (or closed): the suggestions are done with; the portal's list hears about it
+  if (!OPT || !OPT.pending) return;
+  OPT.pending = false; if (!DOC || !DOC.meta.optPending) return;
+  delete DOC.meta.optPending; persist();
+  if (TEAM_BC) try { TEAM_BC.postMessage({ client: TEAM.client, app: TEAM.app, reviewed: 1 }); } catch (e) {}
 }
 function optAction(a, v, t) {
   switch (a) {
     case 'optimize': openOptimise(); return true;
-    case 'm-close': modalClose(); return true;
+    case 'm-close': endPending(); modalClose(); return true;
     case 'opt-t': optPick(t, t.getAttribute('aria-pressed') !== 'true'); return true;
     case 'opt-all': { const rows = $$('.orow'), all = rows.every((r) => r.classList.contains('on')); rows.forEach((r) => optPick(r, !all)); return true; }
     case 'opt-go': runOptimise(); return true;
@@ -2447,7 +2486,20 @@ function runFactCheck() {
 const TEAM_BC = TEAM && window.BroadcastChannel ? new BroadcastChannel('tp-portal') : null;
 let TEAM_SENT = null;
 const teamBack = () => '/team.html?client=' + encodeURIComponent(TEAM.client) + (TEAM.app ? '#app=' + encodeURIComponent(TEAM.app) : '#resumes');
-function teamCard(title, text, btn) { $('#gate').innerHTML = '<div class="card"><h1>' + esc(title) + '</h1><p>' + esc(text) + '</p><div class="acts">' + (btn || '') + '</div></div>'; show('gate'); }
+function teamCard(title, text, btn) { batchTell('fail', { why: text }); $('#gate').innerHTML = '<div class="card"><h1>' + esc(title) + '</h1><p>' + esc(text) + '</p><div class="acts">' + (btn || '') + '</div></div>'; show('gate'); }
+// batch mode: the team portal's list hears how this draft went (ready to review, or why not)
+function batchTell(act, extra) { if (!BATCH || window.parent === window) return; try { window.parent.postMessage(Object.assign({ tp: 1, batch: 1, act, app: TEAM.app }, extra || {}), location.origin); } catch (e) {} }
+function batchRun() {   // tailor this draft to its job with Optimise's own checks; the suggestions wait on the draft for review
+  if (READONLY) return batchTell('fail', { why: 'Already sent' });
+  if (!JOB || String(JOB.text || '').trim().length < 80) return batchTell('fail', { why: 'No job description — paste it in the draft, then Retry' });
+  if (DOC.meta.optPending) return batchTell('done', { n: pendingCount(DOC.meta.optPending), sk: (DOC.meta.optPending.R.skills || []).length });
+  saveVersion('Before Optimise').then(() => optCompute(BATCH.sel, BATCH.ins, optPlan(BATCH.sel))).then((o) => {
+    const P = pendingOf(o, BATCH.sel, BATCH.ins), n = pendingCount(P), sk = (P.R.skills || []).length;
+    if (n || sk) DOC.meta.optPending = P;   // nothing to change: no review to wait for
+    TEAM_DIRTY = true;
+    return teamSync().then(() => { if (READONLY) throw { msg: 'Already sent' }; if (TEAM_DIRTY) throw { msg: 'Couldn’t save — check the connection' }; batchTell('done', { n, sk }); });
+  }).catch((e) => batchTell('fail', { why: e === 'limit' ? 'limit' : aiMsg(e) }));
+}
 function teamPill() {
   const name = (CLIENT && CLIENT.full_name) || 'Client', ini = name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase(), hue = [...name].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
   const p = $('#wkon'); p.hidden = false; p.innerHTML = '<i style="background:hsl(' + hue + ' 60% 45%)">' + esc(ini) + '</i><small>Working on</small>' + esc(name);
@@ -2489,6 +2541,7 @@ function teamBoot() {
         if (READONLY) TEAM_SENT = { at: row.applied_at, company: row.company };
       }
       teamPill(); $('#ptVersions').hidden = READONLY;
+      if (BATCH && READONLY) return batchTell('fail', { why: 'Already sent' });
       if (TEAM.app && row.resume_doc && row.resume_doc.sections) return startDoc(row.resume_doc);
       if (TEAM.app && READONLY) {
         if (row.resume_text) return fromSource({ kind: 'text', name: 'Resume as sent', text: row.resume_text, at: Date.now() });
@@ -2502,7 +2555,9 @@ function teamBoot() {
       const bq = row.base_resume_id ? sb.from('client_resumes').select('name,doc,text').eq('id', row.base_resume_id).maybeSingle() : Promise.resolve({ data: null });
       return bq.then((b) => {   // a new draft starts from the base resume; from now on the application has its own copy
         const base = b && b.data;
-        if (base && base.doc && base.doc.sections) { const D = JSON.parse(JSON.stringify(base.doc)); D.meta = D.meta || {}; D.meta.job = null; D.meta.owner = null; delete D.meta.review; return startDoc(D); }
+        if (base && base.doc && base.doc.sections) { const D = JSON.parse(JSON.stringify(base.doc)); D.meta = D.meta || {}; D.meta.job = null; D.meta.owner = null; delete D.meta.review; delete D.meta.optPending; return startDoc(D); }
+        // a batch can't stop to have a resume read and checked, or one uploaded
+        if (BATCH) return batchTell('fail', { why: base ? 'Open ' + (base.name || 'the base resume') + ' in the editor once (Resumes tab), then Retry' : 'No resume yet — add one on the Resumes tab, then Retry' });
         if (base && base.text) return fromSource({ kind: 'text', name: base.name || 'resume', text: base.text, at: Date.now() });
         showStart();
       });

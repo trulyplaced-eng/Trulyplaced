@@ -14,40 +14,66 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <link rel="stylesheet" href="/portal.css?v=2026-10-28.1">
 <style>
-/* the top bar scrolls away here, so the "Working on" bar below stays on top */
-.ptop{position:relative}
+/* The shell, laid out like the job board app (app.trulyplaced.com): a left sidebar with the sections, the clients open in
+   this browser tab, the client you're working on with their progress, and you. Phones get a top bar and a tab bar. */
+:root{--side:248px}
 .ph{display:none}
-/* open clients, like browser tabs */
-.otabs{max-width:1240px;margin:0 auto;padding:0 20px 8px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
-.otabs::-webkit-scrollbar{display:none}
-.otab{display:inline-flex;align-items:center;gap:7px;flex:none;height:32px;padding:0 4px 0 10px;border-radius:9px;border:1px solid var(--line);background:#fff;
-  font-size:13px;font-weight:600;color:var(--body);text-decoration:none;max-width:220px}
-.otab i{width:9px;height:9px;border-radius:50%;flex:none}
-.otab span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.otab.on{border-color:var(--ink);color:var(--ink);box-shadow:0 1px 0 var(--ink)}
-.otab button{width:24px;height:24px;border:0;background:none;border-radius:6px;display:grid;place-items:center;color:var(--muted)}
-.otab button:hover{background:var(--bg);color:var(--ink)}
-.otab button svg{width:13px;height:13px}
-.otab.add{padding:0 10px;color:var(--blue);border-style:dashed}
-
-/* the "Working on" bar */
-.cbar{position:sticky;top:0;z-index:25;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 8px 20px -18px rgba(18,26,51,.5)}
-.cbar-in{max-width:1240px;margin:0 auto;padding:10px 20px 0;border-left:5px solid var(--client)}
-.cb1{display:flex;align-items:center;gap:12px;min-width:0}
-.cb1 .who{flex:1;min-width:0}
-.cb1 .lab{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--client)}
-.cb1 .nm{font-family:Poppins;font-weight:700;font-size:19px;color:var(--ink);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cb1 .nm small{font-family:Inter;font-weight:500;font-size:13px;color:var(--muted);margin-left:8px}
-.cb1 .pg{flex:none;width:190px}
-.cb1 .pg b{font-size:13.5px;color:var(--ink)}
-.cb1 .pg span{font-size:12px;color:var(--muted)}
-.ctabs{display:flex;gap:2px;margin-top:8px;overflow-x:auto;scrollbar-width:none}
-.ctabs::-webkit-scrollbar{display:none}
-.ctabs a{flex:none;display:inline-flex;align-items:center;gap:7px;padding:10px 12px 11px;font-size:14px;font-weight:600;color:var(--muted);text-decoration:none;border-bottom:2.5px solid transparent}
-.ctabs a:hover{color:var(--ink)}
-.ctabs a.on{color:var(--ink);border-bottom-color:var(--client)}
-.ctabs a b{font-size:11.5px;background:var(--bg);color:var(--body);border-radius:99px;padding:1px 7px}
-.ctabs svg{width:17px;height:17px}
+.ws{display:grid;grid-template-columns:var(--side) minmax(0,1fr);min-height:100vh}
+.sb{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;background:#fafafa;border-right:1px solid rgba(0,0,0,.06);overflow-y:auto;scrollbar-width:thin}
+.sb .brand{height:64px;padding:0 20px}
+.nav{display:flex;flex-direction:column;gap:2px;padding:0 12px}
+.nav a{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:8px;color:#525252;text-decoration:none;font-size:15px;line-height:1.35;min-width:0}
+.nav a svg{width:18px;height:18px;flex:none}
+.nav a span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav a:hover{background:rgba(0,0,0,.03);color:#171717}
+.nav a.on{background:rgba(0,0,0,.06);color:#171717;font-weight:500}
+.nav a.on svg{color:var(--blue)}
+.nav a em{font-style:normal;font-size:12px;font-weight:500;line-height:20px;min-width:20px;text-align:center;color:#fff;background:#171717;border-radius:999px;padding:0 6px}
+/* the clients open in this browser tab, under Clients */
+.otabs{display:flex;flex-direction:column;gap:1px;margin:2px 0 6px 21px;padding-left:9px;border-left:1px solid rgba(0,0,0,.08)}
+.otab{display:flex;align-items:center;gap:8px;min-height:32px;padding:0 4px 0 10px;border-radius:8px;font-size:13.5px;color:#525252;text-decoration:none;min-width:0}
+.otab:hover{background:rgba(0,0,0,.03);color:#171717}
+.otab.on{background:rgba(0,0,0,.06);color:#171717;font-weight:500}
+.otab i{width:8px;height:8px;border-radius:50%;flex:none}
+.otab span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.otab button{width:24px;height:24px;flex:none;border:0;background:none;border-radius:6px;display:grid;place-items:center;color:var(--muted);opacity:0}
+.otab:hover button,.otab.on button,.otab button:focus-visible{opacity:1}
+.otab button:hover{background:rgba(0,0,0,.06);color:var(--ink)}
+.otab button svg{width:12px;height:12px}
+.otab.add{gap:6px;color:var(--blue);font-weight:500}
+/* the client you're working on: who, their sections and, at the bottom, their progress */
+#cbar{flex:1;display:flex;flex-direction:column;min-height:0}
+.cbar{flex:1;display:flex;flex-direction:column;margin-top:12px;padding-top:14px;border-top:1px solid rgba(0,0,0,.06)}
+.cb1{padding:0 14px 10px 20px}
+.cb1 .lab{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--client)}
+.cbw{display:flex;align-items:center;gap:10px;margin-top:6px;min-width:0}
+.cbw .av{width:34px;height:34px;font-size:12.5px}
+.cbw .who{flex:1;min-width:0;line-height:1.3}
+.cbw .nm{font-weight:600;font-size:14.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cbw .nm .st{margin-left:4px;font-size:10.5px;padding:1px 7px}
+.cbw small{display:block;font-size:12px;color:#737373;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cbw .icb{width:32px;height:32px}
+.cbar .grow{flex:1;min-height:12px}
+.pgcard{border-top:1px solid rgba(0,0,0,.06);padding:14px 20px 16px}
+.pgcard .lab{display:block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#737373}
+.pgcard .pg{margin-top:2px;font-size:12px;color:#737373}
+.pgcard .pg b{font-size:24px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.pgcard .prog{height:4px;margin-top:8px;background:rgba(0,0,0,.06)}
+/* you */
+.me{flex:none;display:flex;align-items:center;gap:10px;padding:12px 12px 12px 16px;border-top:1px solid rgba(0,0,0,.06);min-width:0}
+.me .mw{flex:1;min-width:0;line-height:1.3}
+.me .mw b{display:block;font-size:14px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.me .mw small{display:block;font-size:12px;color:#737373;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.me .icb{width:32px;height:32px}
+/* the page, with a title line saying whose page it is */
+.content{min-width:0}
+.content .wrap{padding-top:28px}
+.phead{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 14px;margin-bottom:16px}
+.phead h1{font-size:24px}
+.pfor{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--muted)}
+.pfor i{width:9px;height:9px;border-radius:50%;flex:none}
+.pfor b{color:var(--ink);font-weight:600}
+.top,.tabbar{display:none}
 
 /* client list */
 .crow .pgc{flex:none;width:170px}
@@ -133,17 +159,27 @@
   .crow .pgc{width:120px}
   .crow .td{display:none}
   .stats{grid-template-columns:repeat(2,1fr)}
+  /* phones and small tablets: no sidebar; a top bar with the client, and their sections along the bottom */
+  .ws{display:block}
+  .sb{display:none}
+  .top{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:30;height:56px;padding:0 10px 0 14px;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top .brand svg{width:28px;height:28px}
+  .top .tcl{flex:1;min-width:0;display:flex;align-items:center;gap:8px;font-size:14.5px}
+  .top .tcl b{color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .top .grow{flex:1}
+  .top .icb{width:36px;height:36px}
+  .content .wrap{padding-top:16px;padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  .phead h1{font-size:20px}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.97);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+  .tabbar a{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;font-size:11px;font-weight:600;color:var(--muted);text-decoration:none;border-radius:10px}
+  .tabbar a span{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tabbar a.on{color:var(--ink)}
+  .tabbar a.on svg{color:var(--blue)}
+  .tabbar svg{width:22px;height:22px}
+  .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  .sticky-save{bottom:calc(64px + env(safe-area-inset-bottom,0px))}
 }
 @media (max-width:760px){
-  .otabs{padding:0 16px 8px}
-  .cbar-in{padding:8px 12px 0 12px;border-left-width:4px}
-  .cb1 .nm{font-size:16.5px}
-  .cb1 .nm small{display:none}
-  .cb1 .pg{width:96px}
-  .cb1 .pg span{display:none}
-  .cb1 .sw .lbl2{display:none}
-  .ctabs a{padding:9px 10px 10px;font-size:13.5px}
-  .ctabs a svg{display:none}
   .crow .pgc{width:92px}
   .crow .pgc .m{display:none}
   .qa{grid-template-columns:1fr}
@@ -153,24 +189,25 @@
   .ahead h2{font-size:18px}
   .ph{display:block}
   .pc{display:none!important}
-  .pnav a span{display:none}
   .lkneed{grid-template-columns:1fr}
   .lkrow .side .st{display:none}
 }
 </style>
 </head>
 <body>
-<header class="ptop">
-  <div class="ptop-in">
+<div class="ws">
+  <aside class="sb" aria-label="Team portal">
     <a class="brand" href="/team.html" data-go><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="#0938d5"/><path d="M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z" fill="#fff"/><path d="M205 200l37 36 76-88" fill="none" stroke="#0938d5" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg><span>TrulyPlaced<small>Team</small></span></a>
-    <nav class="pnav" id="pnav"></nav>
-    <div class="grow"></div>
+    <nav class="nav" id="pnav" aria-label="Main"></nav>
+    <div id="cbar"></div>
     <div class="me" id="me"></div>
+  </aside>
+  <div class="content">
+    <header class="top" id="top"></header>
+    <main class="wrap"><div id="phead"></div><div id="view"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div></main>
   </div>
-  <div class="otabs" id="otabs" hidden></div>
-</header>
-<div id="cbar"></div>
-<main class="wrap" id="view"><div class="skel"></div><div class="skel"></div><div class="skel"></div></main>
+</div>
+<nav class="tabbar" id="tabbar" aria-label="Sections"></nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="modalRoot"></div>
 <input type="file" id="fileIn" hidden>
@@ -206,7 +243,7 @@ TP.client().then(function(c){ SB = c; return TP.session(); }).then(function(s){
   return TP.whoami().then(function(w){
     if(!w || !w.team) return notTeam(w || {});
     ME.owner = !!w.owner;
-    loadTeamNames();
+    loadTeamNames().then(function(){ $('#me').innerHTML = meHTML(); });   // your name in the sidebar
     render();
   });
 }).catch(function(e){ V.innerHTML = errBox(e, true); });
@@ -218,7 +255,11 @@ function notTeam(w){
     (w.client ? '<a class="btn pri" href="/portal.html">Go to my dashboard</a>' : '<a class="btn" href="/app.html">Job board</a>') +
     '<button class="btn" type="button" data-act="out">Sign out</button></div></div>';
 }
-function meHTML(){ return '<span title="' + esc(ME.email) + '">' + esc(ME.email) + (ME.owner ? ' · owner' : '') + '</span><button class="btn sm" type="button" data-act="out">' + I.out + '<span class="sr">Sign out</span></button>'; }
+function meHTML(){   // you, at the bottom of the sidebar
+  var t = TEAMROWS.filter(function(x){ return x.email === ME.email; })[0] || {};
+  return '<span class="av sm" style="background:' + TP.hue(ME.email) + '">' + esc(TP.initials(t.full_name, ME.email)) + '</span><span class="mw" title="' + esc(ME.email) + '"><b>' + esc(t.full_name || ME.email.split('@')[0]) + '</b>' +
+    '<small>' + (ME.owner ? 'Owner' : 'Team member') + ' · ' + esc(ME.email) + '</small></span><button class="icb" type="button" data-act="out" title="Sign out">' + I.out + '<span class="sr">Sign out</span></button>';
+}
 function errBox(e, top){
   return '<div class="note bad">' + esc(TP.errText(e)) + (top ? ' <a href="/login.html">Sign in again</a>' : ' <button class="btn sm" type="button" data-act="retry">Try again</button>') + '</div>';
 }
@@ -254,12 +295,23 @@ function render(){
   if(!ME) return;
   R = route();
   $('#me').innerHTML = meHTML();
-  $('#pnav').innerHTML = '<a href="/team.html" data-go class="' + (R.page !== 'team' ? 'on' : '') + '">' + I.users + '<span>Clients</span></a>' +
-    '<a href="/team.html#team" data-go class="' + (R.page === 'team' ? 'on' : '') + '">' + I.team + '<span>Team</span></a>';
+  var cl = R.page === 'clients', tm = R.page === 'team';
+  $('#pnav').innerHTML = '<a href="/team.html" data-go class="' + (cl ? 'on' : '') + '"' + (cl ? ' aria-current="page"' : '') + '>' + I.users + '<span>Clients</span></a><div class="otabs" id="otabs" hidden></div>' +
+    '<a href="/team.html#team" data-go class="' + (tm ? 'on' : '') + '"' + (tm ? ' aria-current="page"' : '') + '>' + I.team + '<span>Team</span></a>';
   drawOpenTabs();
-  if(R.page === 'team'){ $('#cbar').innerHTML = ''; return vTeam(); }
-  if(!R.client){ $('#cbar').innerHTML = ''; return vClients(); }
+  if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : vClients(); }
   vClient();
+}
+// phones: a top bar with the client and Switch, and the sections along the bottom
+function drawPhone(c){
+  var logo = $('.sb .brand svg').outerHTML;
+  $('#top').innerHTML = '<a class="brand" href="/team.html" data-go aria-label="All clients">' + logo + '</a>' +
+    (c ? '<div class="tcl"><span class="av sm" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span><b>' + esc(c.full_name || c.email) + '</b></div>' +
+      '<button class="icb" type="button" data-act="switch" title="Switch client">' + J.swap + '<span class="sr">Switch client</span></button>' : '<span class="grow"></span>') +
+    '<button class="icb" type="button" data-act="out" title="Sign out">' + I.out + '<span class="sr">Sign out</span></button>';
+  var items = c ? TABS.map(function(t){ return [cUrl(c.id, t[0]), t[1], t[2], R.tab === t[0]]; })
+    : [['/team.html', 'Clients', I.users, R.page === 'clients'], ['/team.html#team', 'Team', I.team, R.page === 'team']];
+  $('#tabbar').innerHTML = items.map(function(n){ return '<a href="' + esc(n[0]) + '" data-go class="' + (n[3] ? 'on' : '') + '"' + (n[3] ? ' aria-current="page"' : '') + '>' + n[2] + '<span>' + n[1] + '</span></a>'; }).join('');
 }
 function setTitle(t, c){
   document.title = t + ' · TrulyPlaced Team';
@@ -279,14 +331,14 @@ function rememberOpen(c){
   TP.ssSet('tp_open_clients', l.slice(-8));
 }
 function drawOpenTabs(){
-  var l = openList(), box = $('#otabs');
+  var l = openList(), box = $('#otabs'); if(!box) return;
   if(!l.length || (l.length === 1 && R.client === l[0].id)){ box.hidden = true; box.innerHTML = ''; return; }
   var last = TP.ssGet('tp_last_tab', {});
   box.hidden = false;
   box.innerHTML = l.map(function(x){
     return '<a class="otab' + (R.client === x.id ? ' on' : '') + '" href="' + esc(cUrl(x.id, last[x.id] || '')) + '" data-go title="' + esc(x.name) + ' — Ctrl+click to open in a new browser tab"><i style="background:' + TP.hue(x.id) + '"></i><span>' + esc(x.name) + '</span>' +
       '<button type="button" data-act="closetab" data-id="' + esc(x.id) + '" aria-label="Close ' + esc(x.name) + '">' + I.x + '</button></a>';
-  }).join('') + '<a class="otab add" href="/team.html" data-go>' + I.plus.replace('<svg', '<svg width="14" height="14"') + 'Client</a>';
+  }).join('') + '<a class="otab add" href="/team.html" data-go>' + I.plus.replace('<svg', '<svg width="14" height="14"') + 'Another client</a>';
 }
 
 /* =====================================================================
@@ -379,11 +431,11 @@ function newClient(){
 }
 
 /* =====================================================================
-   One client: the "Working on" bar and its tabs
+   One client: "Working on" and their sections in the sidebar
    ===================================================================== */
 function vClient(){
   var id = R.client;
-  if(!C || C.id !== id){ C = {id:id, gen:++GEN, row:null}; V.innerHTML = '<div class="skel"></div><div class="skel"></div>'; $('#cbar').innerHTML = ''; }
+  if(!C || C.id !== id){ C = {id:id, gen:++GEN, row:null}; V.innerHTML = '<div class="skel"></div><div class="skel"></div>'; $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); }
   var c = C;
   var ready = c.row ? Promise.resolve() : Promise.all([
     q(SB.from('clients').select('*').eq('id', id).maybeSingle()),
@@ -404,17 +456,22 @@ function drawBar(){
   var c = C.row, p = C.prog || {}, done = p.done || 0, tot = c.plan_total || 0, pct = tot ? Math.min(100, Math.round(done / tot * 100)) : 0;
   document.documentElement.style.setProperty('--client', TP.hue(c.id));
   setTitle(c.full_name || c.email, c);
-  var counts = {applications:(p.done || 0) + (p.drafts || 0) ? (p.done || 0) : '', resumes:C.resumes ? C.resumes.length : ''};
-  $('#cbar').innerHTML = '<div class="cbar"><div class="cbar-in"><div class="cb1">' +
+  var counts = {applications:(p.done || 0) + (p.drafts || 0) ? (p.done || 0) : '', resumes:C.resumes ? C.resumes.length : ''}, name = c.full_name || c.email;
+  $('#cbar').innerHTML = '<div class="cbar"><div class="cb1"><div class="lab">Working on</div><div class="cbw">' +
       '<span class="av" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span>' +
-      '<div class="who"><div class="lab">Working on</div><div class="nm" id="cbName">' + esc(c.full_name || c.email) + '<small>' + esc(c.email) + '</small>' +
-        (c.status !== 'active' ? ' <span class="st ' + esc(c.status) + '">' + (c.status === 'paused' ? 'Paused' : 'Done') + '</span>' : '') + '</div></div>' +
-      '<div class="pg" title="Applications sent / plan"><b>' + done + (tot ? ' / ' + tot : '') + '</b> <span>' + (tot ? 'sent · ' + (p.today || 0) + ' today' : 'sent · no plan set') + '</span><div class="prog' + (tot && done >= tot ? ' full' : '') + '" style="margin-top:4px"><i style="width:' + pct + '%"></i></div></div>' +
-      '<button class="btn sm sw" type="button" data-act="switch" title="Switch client">' + J.swap + '<span class="lbl2">Switch</span></button></div>' +
-    '<nav class="ctabs" aria-label="' + esc(c.full_name) + '">' + TABS.map(function(t){
-      var on = R.tab === t[0];
-      return '<a href="' + esc(cUrl(C.id, t[0])) + '" data-go class="' + (on ? 'on' : '') + '">' + t[2] + t[1] + (counts[t[0]] !== '' && counts[t[0]] != null ? ' <b>' + counts[t[0]] + '</b>' : '') + '</a>';
-    }).join('') + '</nav></div></div>';
+      '<div class="who"><div class="nm" id="cbName" title="' + esc(name) + '">' + esc(name) + (c.status !== 'active' ? ' <span class="st ' + esc(c.status) + '">' + (c.status === 'paused' ? 'Paused' : 'Done') + '</span>' : '') + '</div>' +
+        '<small title="' + esc(c.email) + '">' + esc(c.email) + '</small></div>' +
+      '<button class="icb" type="button" data-act="switch" title="Switch client">' + J.swap + '<span class="sr">Switch client</span></button></div></div>' +
+    '<nav class="nav ctabs" aria-label="' + esc(name) + '">' + TABS.map(function(t){
+      var on = R.tab === t[0], n = counts[t[0]];
+      return '<a href="' + esc(cUrl(C.id, t[0])) + '" data-go class="' + (on ? 'on' : '') + '"' + (on ? ' aria-current="page"' : '') + '>' + t[2] + '<span>' + t[1] + '</span>' + (n !== '' && n != null ? '<em>' + n + '</em>' : '') + '</a>';
+    }).join('') + '</nav><div class="grow"></div>' +
+    '<div class="pgcard" title="Applications sent / plan"><span class="lab">Applications sent</span><div class="pg"><b>' + done.toLocaleString() + '</b>' + (tot ? ' / ' + tot.toLocaleString() + ' · ' + (p.today || 0) + ' today' : ' sent · no plan set') + '</div>' +
+      '<div class="prog' + (tot && done >= tot ? ' full' : '') + '"><i style="width:' + pct + '%"></i></div></div></div>';
+  // the page's title line: the section, and whose page this is
+  var sec = R.app ? null : TABS.filter(function(t){ return t[0] === R.tab; })[0];
+  $('#phead').innerHTML = sec ? '<div class="phead"><h1>' + esc(sec[1]) + '</h1><span class="pfor"><i style="background:' + TP.hue(c.id) + '"></i>for <b>' + esc(name) + '</b></span></div>' : '';
+  drawPhone(c);
 }
 function showTab(){
   if(R.app) return tApp(R.app);
@@ -511,7 +568,7 @@ function defaultResume(c){ var r = (c || C).resumes || []; return r.filter(funct
 function edUrl(kind, id){ return '/editor.html?client=' + encodeURIComponent(C.id) + '&' + kind + '=' + encodeURIComponent(id); }
 function tResumes(){
   var c = C;
-  V.innerHTML = '<div class="row"><div class="grow"><div class="hello" style="font-size:19px">Resumes</div><div class="sub">Base resumes for ' + esc(c.row.full_name) + '. Each application gets its own tailored copy, so editing these never changes what was already sent.</div></div>' +
+  V.innerHTML = '<div class="row"><div class="grow"><div class="sub">Base resumes for ' + esc(c.row.full_name) + '. Each application gets its own tailored copy, so editing these never changes what was already sent.</div></div>' +
     '<button class="btn pri" type="button" data-act="newresume">' + I.plus + 'New resume</button></div><div id="rl" style="margin-top:14px"><div class="skel"></div></div>';
   loadResumes(true).then(function(rs){
     if(C !== c) return;
@@ -660,7 +717,7 @@ function drawBoard(){
   if(!rows.length){ box.innerHTML = '<p class="fine">No roles match. Try fewer words, another place, or “Any time”.</p>'; return; }
   box.innerHTML = '<p class="fine" style="margin-bottom:8px">' + rows.length.toLocaleString() + ' role' + (rows.length === 1 ? '' : 's') + '</p><div class="list">' + rows.slice(0, JB.n).map(function(j){
     var a = already(j);
-    return '<div class="li jbrow">' + TP.logo(j.company, j.dom) + '<div class="main"><div class="t">' + esc(j.title) + '</div>' +
+    return '<div class="li jbrow">' + coLogo(j.company, j.url, j.dom) + '<div class="main"><div class="t">' + esc(j.title) + '</div>' +
       '<div class="m">' + esc([j.company, j.location, j.mode, j.salary].filter(Boolean).join(' · ')) + '</div><div class="m">' + (j.posted ? 'Posted ' + esc(TP.ago(j.posted)) : '') + (j.team ? ' · added by the team' : '') + '</div></div>' +
       '<div class="side"><a class="icb" href="' + esc(TP.safeHref(j.url)) + '" target="_blank" rel="noopener" title="Open the posting">' + I.ext + '</a>' +
       (a ? dupNote(a) : '<button class="btn sm pri" type="button" data-act="jbstart" data-key="' + esc(j.key) + '">Start</button>') + '</div></div>';
@@ -713,11 +770,60 @@ function parseLink(raw){
   return Object.assign(it, {src:'custom'});
 }
 function slugName(s){ return String(s || '').replace(/[-_]+/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); }).trim(); }
+
+/* company names and logos from a job's address */
+// job boards and hiring systems: their address is never the company's own site
+var ATS_HOST = /(greenhouse|lever\.co|ashbyhq|myworkday|workday|bamboohr|smartrecruiters|workable|recruitee|icims|taleo|jobvite|breezy|teamtailor|personio|rippling|paylocity|ultipro|dayforce|oraclecloud|successfactors|adp\.com|linkedin|indeed|glassdoor|ziprecruiter|wellfound|builtin|naukri|monster|dice|simplyhired|careerbuilder)/i;
+// big employers whose careers site doesn't carry their name
+var EMPLOYERS = [[/(^|\.)google\.com$/, 'Google', 'google.com'], [/(^|\.)metacareers\.com$/, 'Meta', 'meta.com'], [/(^|\.)amazon\.jobs$/, 'Amazon', 'amazon.com'],
+  [/(^|\.)careers\.microsoft\.com$/, 'Microsoft', 'microsoft.com'], [/(^|\.)jobs\.apple\.com$/, 'Apple', 'apple.com'], [/(^|\.)netflix\.(com|net)$/, 'Netflix', 'netflix.com'],
+  [/(^|\.)lifeattiktok\.com$/, 'TikTok', 'tiktok.com'], [/(^|\.)joinbytedance\.com$/, 'ByteDance', 'bytedance.com'], [/(^|\.)jpmorgan(chase)?\.com$/, 'JPMorgan Chase', 'jpmorganchase.com'],
+  [/(^|\.)higher\.gs\.com$/, 'Goldman Sachs', 'goldmansachs.com'], [/(^|\.)careers\.ibm\.com$/, 'IBM', 'ibm.com']];
+function employerOf(host){ for(var i = 0; i < EMPLOYERS.length; i++) if(EMPLOYERS[i][0].test(host)) return {name:EMPLOYERS[i][1], dom:EMPLOYERS[i][2]}; return null; }
+function hostOf(u){ try{ return new URL(u).hostname.toLowerCase().replace(/^www\./, ''); }catch(e){ return ''; } }
+// the company's own site, when the job is on it: careers.t-mobile.com → t-mobile.com
+function ownSite(host){
+  if(!host || ATS_HOST.test(host)) return '';
+  var p = host.split('.'), n = p.length > 2 && /^(co|com|org|net|ac|gov|edu)$/.test(p[p.length - 2]) && p[p.length - 1].length === 2 ? 3 : 2;
+  return p.slice(-n).join('.');
+}
+// the company's name from that address: T-Mobile from careers.t-mobile.com, Meta from metacareers.com
+function siteName(host){
+  var e = employerOf(host), s = ownSite(host);
+  return e ? e.name : s ? s.split('.')[0].split('-').map(function(w){ return w.charAt(0).toUpperCase() + w.slice(1); }).join('-') : '';
+}
+// the company's website from our job board, where it's known
+var BOARDDOM = null;
+function coKey(s){ return String(s || '').toLowerCase().replace(/\b(inc|llc|ltd|corp|corporation|co|plc|gmbh)\b\.?/g, '').replace(/[^a-z0-9]/g, ''); }
+function boardDom(company){
+  if(!BOARD) return '';
+  if(!BOARDDOM){ BOARDDOM = {}; BOARD.forEach(function(j){ var k = coKey(j.company); if(k && j.dom && !BOARDDOM[k]) BOARDDOM[k] = j.dom; }); }
+  return BOARDDOM[coKey(company)] || '';
+}
+// likely websites for a company: its own careers site, its name (T-Mobile USA, Inc. → t-mobileusa.com, t-mobile.com),
+// and its name in a hiring system's address (tmobile.wd1.myworkdayjobs.com, jobs.lever.co/trulioo)
+function siteGuesses(company, url){
+  var s = String(company || '').toLowerCase().replace(/&/g, '').replace(/\([^)]*\)/g, ' ').replace(/\b(inc|incorporated|llc|ltd|limited|corp|corporation|co|plc|gmbh|ag|pvt|pte|the)\b\.?/g, ' ');
+  var t = s.replace(/\b(usa|us|america|global|international|group|holdings?|companies|company|technologies|technology|labs|systems|solutions|services)\b/g, ' ');
+  var host = hostOf(url), it = parseLink(url), m = /^([a-z0-9-]+)\.(?:wd\d+\.myworkday(?:jobs|site)\.com|bamboohr\.com|recruitee\.com|breezy\.hr|teamtailor\.com)$/.exec(host) || /^careers-([a-z0-9-]+)\.icims\.com$/.exec(host);
+  return [ownSite(host)].concat([s, t].map(function(x){ x = x.replace(/[^a-z0-9-]+/g, '').replace(/^-+|-+$/g, ''); return x.length > 1 ? x + '.com' : ''; }),
+    it && it.board ? String(it.board).toLowerCase().replace(/[^a-z0-9-]/g, '') + '.com' : '', m ? m[1] + '.com' : '');
+}
+// a company's logo: from its website when we know it; else the first guess Google has a real icon for (a site it doesn't
+// know comes back as a 16px globe, so that guess is passed over); else the company's first letter
+function coLogo(company, url, dom){
+  var e = employerOf(hostOf(url));
+  dom = dom || boardDom(company) || (e && e.dom);
+  if(dom) return TP.logo(company, dom);
+  var g = siteGuesses(company, url).filter(function(d, i, a){ return d && a.indexOf(d) === i; }).slice(0, 4);
+  if(!g.length) return TP.logo(company);
+  return TP.logo(company).replace(/<\/span>$/, '<img src="https://www.google.com/s2/favicons?domain=' + encodeURIComponent(g[0]) + '&amp;sz=128" data-alt="' + esc(g.slice(1).join(' ')) + '" alt="" loading="lazy" referrerpolicy="no-referrer"' +
+    ' onload="if(this.naturalWidth&lt;17)this.onerror()" onerror="var a=(this.getAttribute(\'data-alt\')||\'\').split(\' \').filter(Boolean);if(a.length){this.setAttribute(\'data-alt\',a.slice(1).join(\' \'));this.src=\'https://www.google.com/s2/favicons?domain=\'+encodeURIComponent(a[0])+\'&amp;sz=128\'}else this.remove()"></span>');
+}
 function guessLink(it){
   var u = new URL(it.raw), seg = u.pathname.split('/').filter(Boolean), g = {title:'', company:''};
   var wd = /^([a-z0-9-]+)\.wd\d+\.myworkday(jobs|site)\.com$/.exec(it.host);
-  if(wd) g.company = slugName(wd[1]);
-  else if(!/linkedin|indeed|glassdoor|ziprecruiter|greenhouse|lever|ashby|workday|icims|taleo|smartrecruiters|workable/.test(it.host)){ var p = it.host.split('.'); g.company = slugName(p.length > 2 ? p[p.length - 2] : p[0]); }
+  g.company = wd ? slugName(wd[1]) : siteName(it.host);
   for(var i = seg.length - 1; i >= 0; i--){
     var w = decodeURIComponent(seg[i]).replace(/\.(html?|aspx?|php)$/i, '');
     if(!/[a-z]{3,}-[a-z]{2,}/i.test(w)) continue;
@@ -743,6 +849,7 @@ function readJob(it){
     : TP.fn('job-info', {url:it.canon ? it.url : it.raw}, 25000).then(function(d){ if(!d || !d.title) throw 0; return {title:d.title, company:d.company || '', location:[d.location, d.mode].filter(Boolean).join(' · '), jd:d.description || '', url:d.url || it.url, dom:d.domain || ''}; });
   return read.catch(function(){ var g = guessLink(it); return {title:g.title, company:g.company, location:'', jd:'', url:it.url, guessed:true}; }).then(function(j){
     j.key = j.key || (known && known.key) || null; j.url = j.url || it.url; j.dom = j.dom || (known && known.dom) || '';
+    if(!j.company) j.company = siteName(it.host);   // e.g. Google's careers pages name the job, not the company
     return j;
   });
 }
@@ -804,6 +911,7 @@ function lkList(cid){
   if(!LKS[cid]){
     var s = TP.lsGet('tp_links_' + cid, null);
     LKS[cid] = {cid:cid, items:s && Array.isArray(s.items) && s.at > Date.now() - 30 * 864e5 ? s.items : [], skip:[], more:0};
+    LKS[cid].items.forEach(function(x){ if(x.opt && (x.opt.st === 'wait' || x.opt.st === 'run')) x.opt = {st:'fail', why:'Stopped when the page was closed'}; });   // an Optimise runs in the tab that started it
   }
   return LKS[cid];
 }
@@ -944,18 +1052,24 @@ function lkDraw(){
   if(keep){ var g = box.querySelector('[data-id="' + keep[0] + '"][data-lk="' + keep[1] + '"]'); if(g){ g.focus(); try{ g.setSelectionRange(keep[2], keep[3]); }catch(e2){} } }
 }
 function lkHead(L){
-  var sent = 0, drafts = 0, can = 0, need = 0, reading = 0, gone = 0;
+  var sent = 0, drafts = 0, can = 0, need = 0, reading = 0, gone = 0, opt = 0, busy = 0, ready = 0;
   L.items.forEach(function(x){
-    if(x.app){ if(x.st === 'gone') gone++; else if(x.st && x.st !== 'draft') sent++; else drafts++; }
+    if(x.app){
+      if(x.st === 'gone') gone++; else if(x.st && x.st !== 'draft') sent++;
+      else { drafts++; var os = x.opt && x.opt.st; if(os === 'wait' || os === 'run') busy++; if(os === 'ready') ready++; if(lkCanOpt(x)) opt++; }
+    }
     else if(x.state === 'queued' || x.state === 'reading') reading++;
     else if(lkCanStart(x)) can++; else need++;
   });
   var n = L.items.length - gone, pct = n ? Math.round(sent / n * 100) : 0;
   return '<div class="lkbar"><div class="grow"><b>Your list · ' + n + ' job' + (n === 1 ? '' : 's') + '</b><div class="fine">' +
-      [sent + ' of ' + n + ' sent', drafts ? drafts + ' draft' + (drafts === 1 ? '' : 's') : '', can + need ? (can + need) + ' to start' : '', reading ? 'reading ' + reading + '…' : ''].filter(Boolean).join(' · ') + '</div>' +
+      [sent + ' of ' + n + ' sent', drafts ? drafts + ' draft' + (drafts === 1 ? '' : 's') : '', busy ? 'optimising ' + busy + '…' : '', ready ? ready + ' ready to review' : '',
+        can + need ? (can + need) + ' to start' : '', reading ? 'reading ' + reading + '…' : ''].filter(Boolean).join(' · ') + '</div>' +
       (sent ? '<div class="prog' + (sent === n ? ' full' : '') + '"><i style="width:' + pct + '%"></i></div>' : '') + '</div>' +
     (can ? '<button class="btn pri" type="button" data-act="lkstart">' + (can === 1 ? 'Start 1 application' : 'Start all ' + can) + '</button>' : '') +
+    (opt ? '<button class="btn' + (can ? '' : ' pri') + '" type="button" data-act="lkopt">' + I.spark + 'Optimise ' + opt + (opt === 1 ? ' resume' : ' resumes') + '</button>' : '') +
     '<button class="btn sm" type="button" data-act="lkclear">Clear list</button></div>' +
+    (busy ? '<p class="fine" style="margin:-4px 0 10px">Optimising in this browser tab — keep it open. You can work in other tabs and on other clients meanwhile.</p>' : '') +
     (need ? '<p class="fine" style="margin:-4px 0 10px;color:var(--warn)">' + need + (need === 1 ? ' needs' : ' need') + ' a job title and company before ' + (need === 1 ? 'it' : 'they') + ' can start.</p>' : '');
 }
 function lkRow(x){
@@ -964,21 +1078,89 @@ function lkRow(x){
     return '<div class="li lkrow" data-state="reading"><span class="logo wait"></span><div class="main"><div class="t muted">Reading…</div><div class="m">' + esc(shortLink(x.from)) + '</div></div><div class="side"><span class="spin" role="status" aria-label="Reading"></span>' + del + '</div></div>';
   var who = esc([x.company, x.location].filter(Boolean).join(' · '));
   if(x.app){
-    var st = x.st || 'draft', s = st === 'gone' ? 'gone' : st === 'draft' ? 'draft' : 'sent';
-    return '<div class="li lkrow" data-state="' + s + '">' + TP.logo(x.company, x.dom) + '<div class="main"><div class="t">' + esc(x.title) + '</div><div class="m">' + who + '</div>' +
-        '<div class="m' + (s === 'sent' ? ' ok' : '') + '">' + (s === 'gone' ? 'The draft was deleted' : s === 'sent' ? 'Sent ' + esc(TP.ago(x.at)) : 'Draft started — open it to tailor the resume and apply') + '</div></div>' +
-      '<div class="side">' + (s === 'gone' ? '<span class="st closed">Deleted</span>' : TP.statusChip(st) + '<a class="btn sm' + (s === 'draft' ? ' pri' : '') + '" href="' + esc(cUrl(C.id, 'app=' + x.app)) + '" data-go>' + (s === 'draft' ? 'Open' : 'View') + '</a>') + del + '</div></div>';
+    var st = x.st || 'draft', s = st === 'gone' ? 'gone' : st === 'draft' ? 'draft' : 'sent', o = s === 'draft' && x.opt ? x.opt : null, os = o ? o.st : '';
+    var line = s === 'gone' ? 'The draft was deleted' : s === 'sent' ? 'Sent ' + esc(TP.ago(x.at))
+      : os === 'wait' ? 'Waiting to optimise' : os === 'run' ? '<span class="spin" style="width:12px;height:12px;vertical-align:-1px;margin-right:6px"></span>Optimising…'
+      : os === 'ready' ? (o.n ? o.n + ' suggested change' + (o.n === 1 ? '' : 's') : 'No wording changes') + (o.sk ? ' · ' + o.sk + ' skill' + (o.sk === 1 ? '' : 's') + ' to tick' : '') + ' — ready to review'
+      : os === 'done' ? (o.same ? 'Already a good match — nothing to change' : 'Reviewed — the tailored resume is saved')
+      : os === 'fail' ? 'Couldn’t optimise: ' + esc(o.why) : 'Draft started — open it to tailor the resume and apply';
+    return '<div class="li lkrow" data-state="' + s + '" data-opt="' + os + '">' + coLogo(x.company, x.url, x.dom) + '<div class="main"><div class="t">' + esc(x.title) + '</div><div class="m">' + who + '</div>' +
+        '<div class="m' + (s === 'sent' || os === 'ready' || os === 'done' ? ' ok' : os === 'fail' ? ' err' : '') + '">' + line + '</div></div>' +
+      '<div class="side">' + (s === 'gone' ? '<span class="st closed">Deleted</span>' : TP.statusChip(st) +
+        (os === 'ready' ? '<a class="btn sm pri" href="' + esc(edUrl('app', x.app)) + '" target="tp-ed-' + esc(x.app) + '">Review</a>' : os === 'fail' ? '<button class="btn sm pri" type="button" data-act="lkretry" data-id="' + esc(x.id) + '">Retry</button>' : '') +
+        '<a class="btn sm' + (s === 'draft' && os !== 'ready' && os !== 'fail' ? ' pri' : '') + '" href="' + esc(cUrl(C.id, 'app=' + x.app)) + '" data-go>' + (s === 'draft' ? 'Open' : 'View') + '</a>') + del + '</div></div>';
   }
   var ext = '<a class="icb" href="' + esc(TP.safeHref(x.url)) + '" target="_blank" rel="noopener" title="Open the posting">' + I.ext + '</a>';
   var err = x.err ? '<div class="m err">Couldn’t start: ' + esc(x.err) + '</div>' : '';
   if(x.state === 'need')
-    return '<div class="li lkrow" data-state="need">' + TP.logo(x.company || '?', x.dom) + '<div class="main"><div class="m warn">' + (x.guessed ? 'Couldn’t read this page — check the title and company' : 'Add the job title and company') + '</div>' +
+    return '<div class="li lkrow" data-state="need">' + coLogo(x.company, x.url, x.dom) + '<div class="main"><div class="m warn">' +
+        (x.guessed ? 'Couldn’t read this page — ' + (x.title ? 'check the title and company' : 'type the job title' + (x.company ? '' : ' and company')) : 'Add the ' + (x.title ? 'company' : x.company ? 'job title' : 'job title and company')) + '</div>' +
         '<div class="lkneed"><input class="inp" data-lk="title" data-id="' + esc(x.id) + '" value="' + esc(x.title || '') + '" placeholder="Job title" aria-label="Job title" autocomplete="off">' +
           '<input class="inp" data-lk="company" data-id="' + esc(x.id) + '" value="' + esc(x.company || '') + '" placeholder="Company" aria-label="Company" autocomplete="off"></div>' +
         '<div class="m">' + esc(shortLink(x.url)) + '</div>' + err + '</div><div class="side">' + ext + del + '</div></div>';
-  return '<div class="li lkrow" data-state="ready">' + TP.logo(x.company, x.dom) + '<div class="main"><div class="t">' + esc(x.title) + '</div><div class="m">' + who + '</div>' +
+  return '<div class="li lkrow" data-state="ready">' + coLogo(x.company, x.url, x.dom) + '<div class="main"><div class="t">' + esc(x.title) + '</div><div class="m">' + who + '</div>' +
       '<div class="m ' + (x.jd ? 'ok">Job description read' : 'warn">No job description yet — paste it in the draft') + '</div>' + err + '</div><div class="side">' + ext + del + '</div></div>';
 }
+/* ---------- Optimise the list: the editor's own Optimise, run for each draft in a hidden editor, a few at a time ----------
+   It runs in this browser tab, so other tabs and other clients' pages are fine; closing the tab stops it, so the page asks
+   first. The suggestions wait on each draft until someone reviews them in the editor. */
+var OPT_LANES = 4, OQ = {jobs:[], run:0};
+var OPT_ROWS = [['summary', 'Summary', 'Rewritten around each job’s keywords'], ['experience', 'Work experience', 'Bullets tailored to each job'],
+  ['skills', 'Skills', 'Suggestions only — added when you tick them in the review'], ['headline', 'Job title', 'The title under the name, matched to each job'],
+  ['location', 'Location', 'Open to relocating, for jobs in another city']];
+function lkCanOpt(x){ return !!x.app && (x.st || 'draft') === 'draft' && (!x.opt || x.opt.st === 'fail'); }
+function optChoices(cid){ var p = TP.lsGet('tp_opt_c_' + cid, null) || {}; return {sel:p.sel || {summary:1, experience:1, skills:1}, ins:p.ins || ''}; }   // shared with the editor's own Optimise
+function lkOptimise(){
+  var c = C, L = lkList(c.id), n = L.items.filter(lkCanOpt).length, pref = optChoices(c.id); if(!n) return;
+  var m = TP.modal('<h2>Optimise ' + n + ' resume' + (n === 1 ? '' : 's') + '</h2><p>Each draft is tailored to its own job by the editor’s Optimise, with the same fact checks: no new numbers or tools, no lost keywords, and projects, education and certifications are never touched. Nothing on a resume changes until you review it in the editor.</p>' +
+    '<div class="stack" style="margin-top:14px;gap:10px">' + OPT_ROWS.map(function(r){ return '<label class="check"><input type="checkbox" data-bo="' + r[0] + '"' + (pref.sel[r[0]] ? ' checked' : '') + '><span><b>' + r[1] + '</b><br><span class="fine">' + r[2] + '</span></span></label>'; }).join('') +
+      '<div class="field"><label for="boIns">Special instructions <span class="muted">(optional, for all of them)</span></label><textarea id="boIns" rows="2" maxlength="400" placeholder="e.g. Keep each bullet under 22 words">' + esc(pref.ins) + '</textarea></div>' +
+      (c.row.optimise_rules ? '<p class="fine">' + esc((c.row.full_name || '').split(' ')[0] || 'The client') + '’s optimisation rules from the Profile are followed too.</p>' : '') +
+      '<p class="fine">Runs ' + OPT_LANES + ' at a time in this browser tab — keep it open. You can work in other tabs meanwhile.</p></div>' +
+    '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="button" id="boGo">Optimise ' + n + '</button></div>');
+  $('#boGo', m).onclick = function(){
+    var sel = {}; $$('[data-bo]', m).forEach(function(i){ sel[i.getAttribute('data-bo')] = i.checked ? 1 : 0; });
+    if(!Object.keys(sel).some(function(k){ return sel[k]; })) return TP.toast('Pick at least one thing to optimise');
+    var ins = $('#boIns', m).value.trim();
+    TP.lsSet('tp_opt_c_' + c.id, {sel:sel, ins:ins});
+    TP.closeModal(); optQueue(c, L, sel, ins);
+  };
+}
+function optQueue(c, L, sel, ins, only){
+  var keys = Object.keys(sel).filter(function(k){ return sel[k]; }).join('.');
+  L.items.filter(only ? function(x){ return x === only; } : lkCanOpt).forEach(function(x){ x.opt = {st:'wait'}; OQ.jobs.push({cid:c.id, id:x.id, app:x.app, sel:keys, ins:ins}); });
+  lkSave(L); if(lkShown(L)) lkDraw(); optPump();
+}
+function optPump(){ while(OQ.run < OPT_LANES && OQ.jobs.length) optOne(OQ.jobs.shift()); }
+function optOne(job){
+  var L = lkList(job.cid), x = L.items.filter(function(y){ return y.id === job.id; })[0];
+  if(!x || x.app !== job.app || !x.opt || x.opt.st !== 'wait') return;   // taken off the list meanwhile
+  OQ.run++; x.opt = {st:'run', at:Date.now()}; lkSave(L); if(lkShown(L)) lkDraw();
+  var f = document.createElement('iframe'), over = false, tm;
+  function end(o){
+    if(over) return; over = true; clearTimeout(tm); window.removeEventListener('message', hear); f.remove(); OQ.run--;
+    if(o.why === 'limit'){   // today's AI allowance is used up: the rest would only fail too
+      o.why = 'Today’s AI allowance is used up';
+      OQ.jobs.splice(0).forEach(function(j){ var M = lkList(j.cid), y = M.items.filter(function(z){ return z.id === j.id; })[0]; if(y){ y.opt = {st:'fail', why:o.why}; lkSave(M); } });
+    }
+    x.opt = o; lkSave(L);
+    if(C && lkShown(lkList(C.id))) lkDraw();
+    optPump();
+  }
+  function hear(e){
+    var d = e.data || {}; if(e.origin !== location.origin || !d.tp || !d.batch || d.app !== job.app) return;
+    if(d.act === 'done') end(d.n || d.sk ? {st:'ready', n:d.n || 0, sk:d.sk || 0, at:Date.now()} : {st:'done', same:1, at:Date.now()});
+    else if(d.act === 'fail') end({st:'fail', why:String(d.why || 'Something went wrong'), at:Date.now()});
+  }
+  window.addEventListener('message', hear);
+  tm = setTimeout(function(){ end({st:'fail', why:'It took too long', at:Date.now()}); }, 180000);
+  f.src = '/editor.html?client=' + encodeURIComponent(job.cid) + '&app=' + encodeURIComponent(job.app) + '&batch=' + encodeURIComponent(job.sel) + (job.ins ? '&ins=' + encodeURIComponent(job.ins) : '');
+  f.title = 'Optimising'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
+  f.style.cssText = 'position:fixed;left:-12000px;top:0;width:1280px;height:900px;border:0;visibility:hidden';   // laid out like a real page, never seen
+  document.body.appendChild(f);
+}
+function lkRetry(id){ var c = C, L = lkList(c.id), x = L.items.filter(function(y){ return y.id === id; })[0], p = optChoices(c.id); if(x) optQueue(c, L, p.sel, p.ins, x); }
+window.addEventListener('beforeunload', function(e){ if(OQ.run || OQ.jobs.length){ e.preventDefault(); e.returnValue = ''; } });   // closing the tab would stop the Optimise
 function lkSkipRow(s){
   return '<div class="li lkrow skip" data-why="' + s.why + '"><div class="main"><div class="t">' + esc(s.title ? s.title + (s.company ? ' · ' + s.company : '') : shortLink(s.url)) + '</div><div class="m">' + LK_WHY[s.why] + '</div></div>' +
     (s.app ? '<div class="side">' + dupNote(s.app) + '</div>' : '') + '</div>';
@@ -1037,7 +1219,7 @@ function loadApps(){
     }
     box.innerHTML = '<div class="list">' + rows.map(function(a){
       var by = c.who[a.id], when = (a.applied_at ? esc(TP.fmtDateTime(a.applied_at)) : 'started ' + esc(TP.ago(a.created_at))) + (by ? ' · by ' + esc(who(by)) : '');
-      return '<a class="li" href="' + esc(cUrl(c.id, 'app=' + a.id)) + '" data-go>' + TP.logo(a.company) +
+      return '<a class="li" href="' + esc(cUrl(c.id, 'app=' + a.id)) + '" data-go>' + coLogo(a.company, a.job_url) +
         '<div class="main"><div class="t">' + esc(a.title || 'Role') + '</div><div class="m">' + esc([a.company, a.location].filter(Boolean).join(' · ')) + '</div><div class="m ph">' + when + '</div></div>' +
         '<div class="side"><span class="m pc" style="font-size:12.5px;color:var(--muted);text-align:right">' + when.replace(' · by ', '<br>by ') + '</span>' + TP.statusChip(a.status) + '</div></a>';
     }).join('') + '</div>' + (more ? '<div class="row" style="justify-content:center;margin-top:12px"><button class="btn" type="button" data-act="apmore">Show more</button></div>' : '');
@@ -1068,22 +1250,23 @@ function tApp(id){
 function appHead(){
   var by = C.who && C.who[A.id];
   return '<a class="btn sm ghost" href="' + esc(cUrl(C.id, 'applications')) + '" data-go>' + I.back + 'Applications</a>' +
-    '<div class="ahead" style="margin-top:10px">' + TP.logo(A.company) + '<div style="flex:1;min-width:0"><h2>' + esc(A.title || 'Role') + '</h2>' +
+    '<div class="ahead" style="margin-top:10px">' + coLogo(A.company, A.job_url) + '<div style="flex:1;min-width:0"><h2>' + esc(A.title || 'Role') + '</h2>' +
     '<div class="m">' + esc([A.company, A.location].filter(Boolean).join(' · ')) + '</div>' +
     '<div class="m">' + (A.applied_at ? 'Applied ' + esc(TP.fmtDateTime(A.applied_at)) : 'Started ' + esc(TP.ago(A.created_at))) + (by ? ' by ' + esc(who(by)) : '') + ' · for <b style="color:var(--client)">' + esc(C.row.full_name) + '</b></div></div>' +
     '<div class="row">' + (A.status === 'draft' ? TP.statusChip('draft') : '') + '<a class="btn sm" href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Job posting</a></div></div>';
 }
 function resumeCard(){
   var rs = C.resumes || [], base = rs.filter(function(r){ return r.id === A.base_resume_id; })[0];
-  var tailored = !!(A.resume_doc || A.resume_text);
+  var tailored = !!(A.resume_doc || A.resume_text), pend = !!(A.resume_doc && A.resume_doc.meta && A.resume_doc.meta.optPending);   // pend: the list's Optimise left suggestions to review
   var preview = A.resume_text || (base && base.text) || '';
-  return '<div class="step"><span class="n' + (tailored ? ' ok' : '') + '">2</span><div class="bd"><h3>Resume for this job</h3>' +
+  return '<div class="step"><span class="n' + (tailored && !pend ? ' ok' : '') + '">2</span><div class="bd"><h3>Resume for this job</h3>' +
     (rs.length ? '<div class="row" style="margin:8px 0 10px"><label class="lbl" for="apBase">Start from</label><select class="inp" id="apBase" style="width:auto;flex:1;max-width:320px"' + (tailored ? ' disabled title="Already tailored — this copy is used"' : '') + '>' +
       rs.map(function(r){ return '<option value="' + esc(r.id) + '"' + (r.id === A.base_resume_id ? ' selected' : '') + '>' + esc(r.name) + '</option>'; }).join('') + '</select></div>'
       : '<div class="note warn" style="margin:8px 0 10px">' + esc(C.row.full_name) + ' has no resume yet. <a href="' + esc(cUrl(C.id, 'resumes')) + '" data-go>Add one on the Resumes tab</a>, or open the editor and upload their file there.</div>') +
-    '<div class="row"><a class="btn pri" href="' + esc(edUrl('app', A.id)) + '" target="tp-ed-' + esc(A.id) + '" data-act="toeditor">' + I.spark + (tailored ? 'Keep editing in the editor' : 'Tailor in the editor') + '</a>' +
+    '<div class="row"><a class="btn pri" href="' + esc(edUrl('app', A.id)) + '" target="tp-ed-' + esc(A.id) + '" data-act="toeditor">' + I.spark + (pend ? 'Review the suggestions in the editor' : tailored ? 'Keep editing in the editor' : 'Tailor in the editor') + '</a>' +
       (preview ? '<button class="btn" type="button" data-act="cpresume">' + I.copy + 'Copy resume text</button>' : '') + '</div>' +
-    '<p class="fine" style="margin-top:8px">' + (tailored ? '<span class="lock" style="color:var(--ok)">' + I.check + 'Tailored for this job</span> — saved ' + esc(TP.ago(A.updated_at)) + '. In the editor: <b>Optimise for this job</b>, then <b>Download → PDF</b>.'
+    '<p class="fine" style="margin-top:8px">' + (pend ? '<b>Optimised in the background</b> — the editor shows Claude’s suggestions to accept. Nothing on the resume has changed yet.'
+      : tailored ? '<span class="lock" style="color:var(--ok)">' + I.check + 'Tailored for this job</span> — saved ' + esc(TP.ago(A.updated_at)) + '. In the editor: <b>Optimise for this job</b>, then <b>Download → PDF</b>.'
       : 'Opens the editor with this job’s description, so <b>Optimise for this job</b> tailors it. It saves a copy for this application only.') + '</p>' +
     (preview ? '<details style="margin-top:8px"><summary class="fine" style="cursor:pointer">See the text that will be sent</summary><pre class="txt" style="margin-top:8px">' + esc(preview) + '</pre></details>' : '') + '</div></div>';
 }
@@ -1250,7 +1433,12 @@ function refreshApp(){
 }
 var BC = window.BroadcastChannel ? new BroadcastChannel('tp-portal') : null;
 if(BC) BC.onmessage = function(e){
-  var m = e.data || {}; if(!C || m.client !== C.id) return;
+  var m = e.data || {};
+  if(m.reviewed && m.client && m.app){   // the batch's suggestions for a draft in a list were reviewed in the editor
+    var L = lkList(m.client), x = L.items.filter(function(y){ return y.app === m.app; })[0];
+    if(x){ x.opt = {st:'done', at:Date.now()}; lkSave(L); if(lkShown(L)) lkDraw(); }
+  }
+  if(!C || m.client !== C.id) return;
   if(m.app && R.app === m.app) refreshApp();
   if(m.resume){ C.resumes = null; if(R.tab === 'resumes' && !R.app) tResumes(); }
 };
@@ -1359,6 +1547,8 @@ document.addEventListener('click', function(e){
     case 'lkstart': return lkStart(b);
     case 'lkclear': return lkClear();
     case 'lkdel': return lkDel(b.getAttribute('data-id'));
+    case 'lkopt': return lkOptimise();
+    case 'lkretry': return lkRetry(b.getAttribute('data-id'));
     case 'apmore': AP.n += 50; return loadApps();
     case 'acmore': return loadActivity(C, +b.getAttribute('data-n'));
     case 'cpresume': return TP.copy(A.resume_text || (((C.resumes || []).filter(function(r){ return r.id === A.base_resume_id; })[0] || {}).text) || '', 'Resume text');
