@@ -1783,12 +1783,12 @@ function ai(payload, ms) {
         clearTimeout(tm);
         if (r.status === 429) { if (!LIMIT_TOLD) { LIMIT_TOLD = true; toast(AI_ERR.limit); } throw 'limit'; }
         if (r.status === 404) { aiPause(10 * 60000); throw 'off'; }
-        if (!r.ok) throw 'http';
-        AI_FAILS = 0; return r.json();
-      }, () => { clearTimeout(tm); if (++AI_FAILS >= 2) { AI_FAILS = 0; aiPause(60000); } throw 'net'; });
+        if (!r.ok) return r.text().then((t) => { let j = {}; try { j = JSON.parse(t); } catch (e) {} throw { msg: 'The AI server answered ' + r.status + (j.error || j.message ? ': ' + String(j.error || j.message).slice(0, 160) : t ? ': ' + t.slice(0, 120) : '') }; });
+        AI_FAILS = 0; return r.json().catch(() => { throw { msg: 'The AI server sent an answer the page couldn’t read.' }; });
+      }, (e) => { clearTimeout(tm); if (++AI_FAILS >= 2) { AI_FAILS = 0; aiPause(60000); } throw e && e.name === 'AbortError' ? { msg: 'The AI took too long to answer. Try again.' } : 'net'; });
   });
 }
-const aiMsg = (e) => AI_ERR[e] || AI_ERR.http;
+const aiMsg = (e) => e && e.msg ? e.msg : AI_ERR[e] || (e === 'shape' ? 'The AI sent an answer in the wrong shape. Try again.' : AI_ERR.http);
 function aiBullets(p) {   // a role with many bullets goes in batches of 10, then the answers are joined back up in order
   const all = p.bullets || [], size = 10;
   if (all.length <= size) return ai(p);
