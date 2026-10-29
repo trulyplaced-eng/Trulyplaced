@@ -404,6 +404,7 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .omins{margin-top:12px}
 .omins textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px;font-size:13px;resize:vertical;min-height:60px}
 .omb2{display:flex;flex-direction:column;align-items:flex-start;gap:2px;height:auto;padding:10px 14px;text-align:left}
+.osyn{font-size:13.5px;color:var(--body);line-height:1.55;margin:2px 0 4px}   /* an application's Sync: what it does, in a line */
 .omb2 b{display:flex;align-items:center;gap:6px;font-size:14px}.omb2 small{font-weight:500;color:var(--muted);font-size:12px}
 .omb2.ats{background:var(--blue);border-color:var(--blue);color:#fff}.omb2.ats small{color:#dbe2ff}.omb2.ats:hover{background:var(--blue-d)}
 
@@ -1354,14 +1355,21 @@ function startDoc(D) {
   if (TEAM) initVersions();
   tell({ act: 'ready' });
   const h = location.hash;
-  if (h === '#cover' || h === '#optimize') try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  if (h === '#cover' || h === '#optimize' || h === '#sync') try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
   if (h === '#cover') { setDocTab('cover'); autoCover(); }
-  else if (h === '#optimize') setTimeout(() => openOptimise(!!(TEAM && TEAM.app)), 300);
+  else if (h === '#optimize') setTimeout(() => openOptimise(!!TEAM), 300);
+  else if (h === '#sync') setTimeout(syncNow, 300);   // the team portal's "Sync to this job": it runs straight away
   if (BATCH) setTimeout(batchRun, 300);
   else if (TEAM && !READONLY && DOC.meta.optPending) setTimeout(openPending, 400);   // the batch's suggestions, waiting for review
 }
+// a client's main resume has no job: its Optimise tailors it to the target roles on their profile
+function rolesJob() {
+  const r = String((CLIENT && CLIENT.target_roles) || '').split(',').map((x) => x.trim()).filter(Boolean); if (!r.length) return null;
+  return { title: r[0], company: '', loc: '', key: 'roles:' + r.join('|'), roles: r,
+    text: 'Target roles: ' + r.join('; ') + '.\n\nThis is the candidate’s main resume, used for every application to these roles; there is no single job posting. Tailor it to these roles in general: the experience, skills, tools, methods and results that employers hiring for them look for, in the words their job postings use.' };
+}
 function loadJob() {
-  if (TEAM) return TEAM.app ? TEAM_JOB : (DOC.meta.job && DOC.meta.job.text ? DOC.meta.job : null);   // never the team member's own job-board job
+  if (TEAM) return TEAM.app ? TEAM_JOB : (rolesJob() || (DOC.meta.job && DOC.meta.job.text ? DOC.meta.job : null));   // never the team member's own job-board job
   const j = lsGet('tp_ats_job', null);
   const fresh = j && j.text && Date.now() - (j.at || 0) < 21 * 864e5 ? { title: j.title || '', company: j.company || '', text: j.text, key: j.key, loc: j.loc || '' } : null;
   if (EMBED && fresh) return fresh;
@@ -2445,28 +2453,47 @@ const clientRules = () => (TEAM && CLIENT && CLIENT.optimise_rules) ? String(CLI
 const XI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 function optTargets() { const out = []; DOC.sections.forEach((s) => { if (s.hidden || s.type !== 'entries' || s.k === 'education' || s.k === 'projects') return; s.items.forEach((it) => { if (it.bullets.some((b) => b.t.trim())) out.push({ key: s.id + ':' + it.id, sec: s, it }); }); }); return out; }   // never projects, education or certifications
 function jobFit() { if (!JOB) return null; const low = docText().toLowerCase(), terms = skillsIn(jobText()); const have = terms.filter((k) => inText(k, low)); return { have, miss: terms.filter((k) => !have.includes(k)) }; }
-function openOptimise(preset) {   // preset: the team portal's "Optimise for this job" - the client's usual choices come ticked
-  if (!DOC || READONLY) return;
-  hideSel(); setDocTab('resume');
-  const pref = lsGet(OPT_KEY, {}) || {};
+// what Optimise can tailor: the summary, the title under the name, location (for a job in another city), the bullets and the skills
+function optRows() {
   const rows = [['summary', 'Summary'], ['headline', 'Job title'], ['experience', 'Work experience'], ['skills', 'Skills']];
   if (JOB && JOB.loc && !/remote|anywhere/i.test(JOB.loc)) rows.splice(2, 0, ['location', 'Location']);
+  return rows;
+}
+const jobOk = () => !!(JOB && String(JOB.text || '').trim().length >= 80);   // a job description long enough to tailor to
+// Three shapes. An application (team portal) gets Sync only: the main resume was optimised already, this copy just moves toward
+// the job. A client's main resume gets the tick list, tailored to their target roles. The job board's own editor keeps both.
+function openOptimise(preset) {   // preset: the team portal opened it - the client's usual choices come ticked
+  if (!DOC || READONLY) return;
+  hideSel(); setDocTab('resume');
+  const pref = lsGet(OPT_KEY, {}) || {}, app = !!(TEAM && TEAM.app), roles = !app && JOB && JOB.roles, rows = optRows();
   OPT = { sel: {}, sync: false }; rows.forEach((r) => { OPT.sel[r[0]] = false; });
-  const tg = optTargets(), nb = tg.reduce((n, t) => n + t.it.bullets.filter((b) => b.t.trim()).length, 0);
+  const tg = optTargets(), nb = tg.reduce((n, t) => n + t.it.bullets.filter((b) => b.t.trim()).length, 0), to = roles ? ' to these roles' : ' to the job';
   const hasSum = DOC.sections.some((x) => x.k === 'summary' && !x.hidden && String(x.text || '').trim()), jt = JOB ? cleanTitle(JOB.title) : '';
-  const what = { summary: hasSum ? 'Rewrite it around this job’s keywords' : 'Write one from the experience — there isn’t one yet', headline: jt ? 'Set the title under the name to “' + jt + '”' : 'Match the title under the name to the job',
-    location: JOB && JOB.loc ? 'Show you’re open to relocating to ' + JOB.loc : 'Show you’re open to relocating', experience: nb ? 'Tailor ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' across ' + tg.length + ' role' + (tg.length > 1 ? 's' : '') + ' to the job' : 'Add bullets to a role first', skills: 'Find skills the job asks for that aren’t listed' };
+  const what = { summary: hasSum ? (roles ? 'Rewrite it for these roles' : 'Rewrite it around this job’s keywords') : 'Write one from the experience — there isn’t one yet', headline: jt ? 'Set the title under the name to “' + jt + '”' : 'Match the title under the name to the job',
+    location: JOB && JOB.loc ? 'Show you’re open to relocating to ' + JOB.loc : 'Show you’re open to relocating', experience: nb ? 'Tailor ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' across ' + tg.length + ' role' + (tg.length > 1 ? 's' : '') + to : 'Add bullets to a role first',
+    skills: roles ? 'Find skills these roles ask for that aren’t listed' : 'Find skills the job asks for that aren’t listed' };
+  const sub = roles ? '<p class="omsub"><b>' + esc(roles.join(' · ')) + '</b> — the main resume, used for every job</p>'
+    : JOB && JOB.title ? '<p class="omsub"><b>' + esc(jt || 'This job') + '</b>' + (JOB.company ? ' at <b>' + esc(JOB.company) + '</b>' : '') + '</p>' : '<p class="omsub">Paste the job description, then choose what to tailor.</p>';
+  // Sync: one click, every part at once and more deeply - the posting's words, priorities and title, and each role's bullets in this job's order
+  const syncB = '<button class="btn omb2 ' + (app ? 'ats' : 'osyncb') + '" type="button" data-a="opt-sync" id="optSync" title="Everything at once, more deeply: the posting’s words, priorities and title, and each role’s bullets in the order this job cares about. The facts stay as they are."><b>' + I_SPARK + '<span>Sync to this job</span></b><small>Everything, in the job’s words and order</small></button>';
   modalOpen('<div class="om sm opt" role="dialog" aria-modal="true" aria-labelledby="omT"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
-    '<div class="omh"><h2 id="omT">Optimise for a job</h2>' + (JOB ? '<p class="omsub"><b>' + esc(jt || 'This job') + '</b>' + (JOB.company ? ' at <b>' + esc(JOB.company) + '</b>' : '') + '</p>' : '<p class="omsub">Paste the job description, then choose what to tailor.</p>') + '</div>' +
-    '<div class="omb">' + (JOB ? '' : '<div class="omjd"><textarea id="optJd" placeholder="Paste the whole job description here"></textarea></div>') +
-    '<div class="ohd"><span>Choose what to tailor</span><button type="button" data-a="opt-all">Select all</button></div>' +
-    '<div class="orows">' + rows.map((r) => '<button type="button" class="orow" data-a="opt-t" data-v="' + r[0] + '" aria-pressed="false"><span class="ol"><b>' + r[1] + '</b><small>' + esc(what[r[0]] || '') + '</small></span><i class="cb" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i></button>').join('') + '</div>' +
+    '<div class="omh"><h2 id="omT">' + (app ? 'Sync to this job' : roles ? 'Optimise for their target roles' : 'Optimise for a job') + '</h2>' + sub + '</div>' +
+    '<div class="omb">' + (jobOk() ? '' : '<div class="omjd"><textarea id="optJd" placeholder="Paste the whole job description here"></textarea></div>') +
+    (app ? '<p class="osyn">The summary, the title under the name, every bullet and the skills move toward this posting: its words, its priorities, its order. The facts stay as they are, and nothing changes until you accept.</p>'
+      : '<div class="ohd"><span>Choose what to tailor</span><button type="button" data-a="opt-all">Select all</button></div>' +
+        '<div class="orows">' + rows.map((r) => '<button type="button" class="orow" data-a="opt-t" data-v="' + r[0] + '" aria-pressed="false"><span class="ol"><b>' + r[1] + '</b><small>' + esc(what[r[0]] || '') + '</small></span><i class="cb" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i></button>').join('') + '</div>') +
     '<div class="omins"><label class="lbl" for="optIns">Special instructions (optional)</label><textarea id="optIns" maxlength="400" placeholder="e.g. Keep each bullet under 22 words; don’t touch the first role.">' + esc(pref.ins || '') + '</textarea></div></div>' +
-    // Sync is its own button: one click, every part at once and more deeply - the posting's words, priorities and title, and each role's bullets in this job's order
-    '<div class="omf"><button class="btn" type="button" data-a="fact">Fact check only</button><span id="optHint"></span>' +
-      '<button class="btn omb2 osyncb" type="button" data-a="opt-sync" id="optSync" title="Everything at once, more deeply: the posting’s words, priorities and title, and each role’s bullets in the order this job cares about. The facts stay as they are."><b>' + I_SPARK + '<span>Sync to this job</span></b><small>Everything, in the job’s words and order</small></button>' +
-      '<button class="btn omb2 ats" type="button" data-a="opt-go" id="optGo" disabled><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="optGoT">Optimise</span></b><small>Tailor what you picked to this job</small></button></div></div>');
-  if (preset) optPreset();
+    '<div class="omf"><button class="btn" type="button" data-a="fact">Fact check only</button><span id="optHint"></span>' + (roles ? '' : syncB) +
+      (app ? '' : '<button class="btn omb2 ats" type="button" data-a="opt-go" id="optGo" disabled><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="optGoT">Optimise</span></b><small>Tailor what you picked' + (roles ? ' to these roles' : ' to this job') + '</small></button>') + '</div></div>');
+  if (preset && !app) optPreset();
+}
+// an application's one action: Sync to this job, straight away - the team portal's card opens the editor with #sync
+function syncNow() {
+  if (!DOC || READONLY) return;
+  if (!jobOk()) { openOptimise(); return; }   // no job description yet: the dialog asks for it
+  hideSel(); setDocTab('resume');
+  OPT = { sel: {}, sync: false, ins: (lsGet(OPT_KEY, {}) || {}).ins || '' }; optRows().forEach((r) => { OPT.sel[r[0]] = false; });
+  runOptimise(true);
 }
 function optPreset() {   // the choices last used for this client (the same ones the portal's list uses), else summary, experience and skills
   const s = (lsGet(OPT_KEY, {}) || {}).sel || { summary: 1, experience: 1, skills: 1 };
@@ -2480,24 +2507,25 @@ function optPick(row, on) {
 }
 function runOptimise(sync) {   // sync: "Sync to this job" - every part at once; the ticks stay as they were, for next time
   const ins = (($('#optIns') || {}).value || (OPT.ins || '')).trim(); OPT.ins = ins;
-  if (!JOB) {
+  if (!jobOk()) {
     const jd = (($('#optJd') || {}).value || '').trim();
     if (jd.length < 80) { toast('Paste the full job description first.'); return; }
     const first = jd.split(/\n/)[0].trim(), m = /^(.{3,80}?)\s+(?:[—–|@-]|at)\s+(.{2,60})$/.exec(first);
-    JOB = DOC.meta.job = { title: m ? m[1].trim() : first.length <= 90 ? first : '', company: m ? m[2].trim() : '', text: jd.slice(0, 15000) };
+    JOB = DOC.meta.job = JOB && JOB.title ? Object.assign({}, JOB, { text: jd.slice(0, 15000) })   // an application knows its title and company already
+      : { title: m ? m[1].trim() : first.length <= 90 ? first : '', company: m ? m[2].trim() : '', text: jd.slice(0, 15000) };
   }
   if (sync) OPT.sel = Object.keys(OPT.sel).reduce((o, k) => { o[k] = true; return o; }, {});
   OPT.sync = !!sync;
   const sel = OPT.sel;
   if (!Object.keys(sel).some((k) => sel[k])) { toast('Pick at least one thing to optimise.'); return; }
   sel.sync = !!OPT.sync;
-  if (TEAM) saveVersion('Before Optimise');   // one click of Restore undoes the whole Optimise
+  if (TEAM) saveVersion(sync ? 'Before Sync' : 'Before Optimise');   // one click of Restore undoes the whole run
   const keep = {}; if (sync) Object.assign(keep, (lsGet(OPT_KEY, {}) || {}).sel || {}); else Object.keys(sel).forEach((k) => { if (k !== 'sync') keep[k] = sel[k] ? 1 : 0; });
   delete keep.sync; lsSet(OPT_KEY, { sel: keep, ins });   // the ticks to remember: a Sync leaves them as they were
   const P = optPlan(sel), nb = P.nb;
-  const steps = [['job', 'Reading the job description and its requirements'], ['write', sel.sync ? 'Syncing the summary, title' + (nb ? ', ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' and their order' : '') + ' and skills to the job'
+  const steps = [['job', JOB.roles ? 'Working out what these roles ask for' : 'Reading the job description and its requirements'], ['write', sel.sync ? 'Syncing the summary, title' + (nb ? ', ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' and their order' : '') + ' and skills to the job'
     : nb ? 'Rewording ' + nb + ' bullet' + (nb > 1 ? 's' : '') + (sel.summary ? ' and the summary' : '') + ' for the job' : 'Tailoring for the job'], ['check', 'Checking every change against the facts']];
-  modalOpen('<div class="om sm run" role="dialog" aria-modal="true" aria-live="polite"><div class="runbar"><i id="runbar"></i></div><h2>' + (sel.sync ? 'Syncing to ' : 'Optimising for ') + esc(cleanTitle(JOB.title) || 'this job') + '</h2>' + (JOB.company ? '<p class="omsub">at ' + esc(JOB.company) + '</p>' : '') +
+  modalOpen('<div class="om sm run" role="dialog" aria-modal="true" aria-live="polite"><div class="runbar"><i id="runbar"></i></div><h2>' + (sel.sync ? 'Syncing to ' : 'Optimising for ') + esc(JOB.roles ? JOB.roles.join(' · ') : cleanTitle(JOB.title) || 'this job') + '</h2>' + (JOB.company ? '<p class="omsub">at ' + esc(JOB.company) + '</p>' : '') +
     '<ul class="steps">' + steps.map((x) => '<li data-st="' + x[0] + '" class="run"><i></i>' + esc(x[1]) + '</li>').join('') + '</ul><p class="fine" style="margin-top:16px">Only wording changes, never facts: nothing is added for a requirement the resume doesn’t prove. Projects, education and certifications are never touched.</p></div>');
   const done = (k, label) => { const li = $('.steps [data-st="' + k + '"]'); if (li) { li.classList.remove('run'); li.classList.add('ok'); if (label) li.lastChild.textContent = label; }
     const bar = $('#runbar'), all = $$('.steps li').length; if (bar && all) bar.style.width = Math.max(4, Math.round($$('.steps li.ok').length / all * 100)) + '%'; };
@@ -2637,7 +2665,7 @@ function showResults(R, targets, sel, V) {
   const reqCard = reqs.length ? '<div class="reqs"><button type="button" class="reqh" data-a="reqs-toggle" aria-expanded="false"><span><b>Meets ' + met.length + ' of ' + reqs.length + ' requirements</b><small>' + basicsMet.length + ' of ' + basics.length + ' must-haves · ' + reworded + ' line' + (reworded === 1 ? '' : 's') + ' reworded, facts unchanged' + (R.mode === 'light' ? ' · light touch' : '') + '</small></span>' + I_DN + '</button>' +
     '<ul class="reql" id="reqList" hidden>' + reqs.map((q) => '<li><span class="rs ' + RQ[q.status][1] + '">' + RQ[q.status][0] + '</span><span><b>' + esc(q.text) + '</b>' + (q.kind === 'preferred' ? ' <em>nice to have</em>' : '') + (q.evidence ? '<q>' + esc(q.evidence) + '</q>' : '<small>' + RQ[q.status][2] + '</small>') + '</span></li>').join('') + '</ul></div>' : '';
   modalOpen('<div class="om" role="dialog" aria-modal="true" aria-labelledby="omR"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
-    '<div class="omh"><h2 id="omR">' + (sel.sync ? 'Synced to ' : 'Optimised for ') + esc(cleanTitle(JOB.title) || 'this job') + '</h2><p class="omsub">' + (OPT.pending ? 'Made in the background from the team portal — nothing on the resume has changed yet. ' : '') + 'Review each suggestion beside the current line. Accept them one by one or all at once; edit a suggestion before accepting if you like.' + (/\[/.test(h) ? ' Replace anything in [ ] with the real number.' : '') + '</p></div>' +
+    '<div class="omh"><h2 id="omR">' + (sel.sync ? 'Synced to ' : 'Optimised for ') + esc(JOB.roles ? JOB.roles.join(' · ') : cleanTitle(JOB.title) || 'this job') + '</h2><p class="omsub">' + (OPT.pending ? 'Made in the background from the team portal — nothing on the resume has changed yet. ' : '') + 'Review each suggestion beside the current line. Accept them one by one or all at once; edit a suggestion before accepting if you like.' + (/\[/.test(h) ? ' Replace anything in [ ] with the real number.' : '') + '</p></div>' +
     reqCard +
     '<div class="vrep">' + (V.after != null ? '<div><span class="vi a">' + IC_OK + '</span><span><b>ATS keyword match: ' + (V.after > V.before ? V.before + '% → <span class="up">' + V.after + '%</span>' : '<span class="up">' + V.after + '%</span>') + '</b><small>Of the ' + atsTerms().length + ' keywords in this job description, once these changes are accepted. Every change keeps the keywords already there.</small></span></div>' : '') +
       '<div><span class="vi' + (V.fixed + V.removed ? ' w' : ' a') + '">' + (V.fixed + V.removed ? IC_WARN : IC_OK) + '</span><span><b>Fact-checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + '</b><small>' +
@@ -2671,7 +2699,7 @@ function applyRow(i) {
   r.st = 'a'; markRow(i, 'a'); markOptimised(); return true;
 }
 // an Optimise suggestion was accepted: this copy is now tailored to the job (the team portal's card says so only from here on)
-function markOptimised() { DOC.meta.optimised = { at: Date.now(), job: JOB ? [cleanTitle(JOB.title), JOB.company].filter(Boolean).join(' at ') : '' }; }
+function markOptimised() { DOC.meta.optimised = { at: Date.now(), sync: !!(OPT && OPT.sync), job: !JOB ? '' : JOB.roles ? JOB.roles.join(', ') : [cleanTitle(JOB.title), JOB.company].filter(Boolean).join(' at ') }; }
 function addSkill(term) {
   let s = DOC.sections.find((x) => x.k === 'skills');
   if (!s) { s = newSection('skills'); s.rows.push({ id: uid(), label: 'Skills', value: '' }); const at = DOC.sections.findIndex((x) => x.k === 'education'); DOC.sections.splice(at > -1 ? at + 1 : DOC.sections.length, 0, s); }
@@ -2802,6 +2830,8 @@ function teamPill() {
   const p = $('#wkon'); p.hidden = false; p.innerHTML = '<i style="background:hsl(' + hue + ' 60% 45%)">' + esc(ini) + '</i><small>Working on</small>' + esc(name);
   document.title = name + ' · resume — TrulyPlaced';
   const bl = $('#backB'); if (bl) { bl.href = teamBack(); bl.lastChild.textContent = 'Back to ' + esc(name.split(' ')[0]); }
+  // an application is only ever synced to its job; a main resume is optimised for the client's target roles
+  const ob = $('#bOpt'); if (ob) ob.lastChild.textContent = TEAM.app ? 'Sync to this job' : rolesJob() ? 'Optimise for target roles' : 'Optimise for a job';
 }
 function teamSync() {   // save to the draft application (only while it's a draft) or to the base resume
   if (!DOC || READONLY || !sb) return Promise.resolve();
@@ -3049,8 +3079,12 @@ window.addEventListener('scroll', (e) => { if (PGB && !DRAG && (e.target === doc
 document.addEventListener('dragstart', pgDragStart); $('#sheet').addEventListener('dragover', pgDragOver); $('#sheet').addEventListener('drop', pgDrop); document.addEventListener('dragend', pgDragEnd);
 $('#fileIn').addEventListener('change', (e) => { if (e.target.files[0]) readUpload(e.target.files[0]); e.target.value = ''; });
 document.addEventListener('visibilitychange', () => { if (document.hidden && DOC && TEAM && TEAM_DIRTY) teamSync(); });
-// the portal's "Optimise for this job" on a tab that's already open only changes the address's #
-window.addEventListener('hashchange', () => { if (location.hash !== '#optimize' || !DOC) return; try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} if ($('#modal').hidden) openOptimise(!!(TEAM && TEAM.app)); });
+// the portal's "Sync to this job" or "Optimise for target roles" on a tab that's already open only changes the address's #
+window.addEventListener('hashchange', () => {
+  const h = location.hash; if ((h !== '#optimize' && h !== '#sync') || !DOC) return;
+  try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  if ($('#modal').hidden) { if (h === '#sync') syncNow(); else openOptimise(!!TEAM); }
+});
 boot();
 
 </script>

@@ -487,7 +487,8 @@ function switcher(){
   var m = TP.modal('<h2>Switch client</h2><p>Ctrl+click (or middle-click) a name to open them in a new browser tab.</p>' +
     '<input class="inp" id="swQ" type="search" placeholder="Find a client" style="margin-top:14px" autocomplete="off"><div id="swL" class="list" style="margin-top:10px;max-height:52vh;overflow:auto"></div>');
   function draw(){
-    var qq = $('#swQ').value.toLowerCase().trim(), open = openList().map(function(x){ return x.id; });
+    var box = $('#swQ'); if(!box) return;   // the list can arrive after the dialog was closed
+    var qq = box.value.toLowerCase().trim(), open = openList().map(function(x){ return x.id; });
     var rows = all.length ? all : openList().map(function(x){ return {id:x.id, full_name:x.name, email:''}; });
     rows = rows.filter(function(c){ return !qq || [c.full_name, c.email].join(' ').toLowerCase().indexOf(qq) > -1; })
       .sort(function(a, b){ return (open.indexOf(b.id) > -1) - (open.indexOf(a.id) > -1); }).slice(0, 60);
@@ -561,24 +562,27 @@ function saveProfile(){
 function loadResumes(force){
   var c = C;
   if(c.resumes && !force) return Promise.resolve(c.resumes);
-  return q(SB.from('client_resumes').select('id,name,is_default,updated_at,created_at,text,file_path').eq('client_id', c.id).order('is_default', {ascending:false}).order('updated_at', {ascending:false}))
+  return q(SB.from('client_resumes').select('id,name,is_default,updated_at,created_at,text,file_path,doc').eq('client_id', c.id).order('is_default', {ascending:false}).order('updated_at', {ascending:false}))
     .then(function(r){ c.resumes = r || []; return c.resumes; });
 }
 function defaultResume(c){ var r = (c || C).resumes || []; return r.filter(function(x){ return x.is_default; })[0] || r[0] || null; }
 function edUrl(kind, id){ return '/editor.html?client=' + encodeURIComponent(C.id) + '&' + kind + '=' + encodeURIComponent(id); }
 function tResumes(){
   var c = C;
-  V.innerHTML = '<div class="row"><div class="grow"><div class="sub">Base resumes for ' + esc(c.row.full_name) + '. Each application gets its own tailored copy, so editing these never changes what was already sent.</div></div>' +
+  var roles = String(c.row.target_roles || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+  V.innerHTML = '<div class="row"><div class="grow"><div class="sub">Base resumes for ' + esc(c.row.full_name) + '. Optimise each one once' + (roles.length ? ' for ' + esc(roles.join(', ')) + ' roles' : '') + '; every application then gets its own copy, synced to that job, so editing these never changes what was already sent.</div></div>' +
     '<button class="btn pri" type="button" data-act="newresume">' + I.plus + 'New resume</button></div><div id="rl" style="margin-top:14px"><div class="skel"></div></div>';
   loadResumes(true).then(function(rs){
     if(C !== c) return;
     drawBar();
     $('#rl').innerHTML = rs.length ? '<div class="list">' + rs.map(function(r){
-      var first = String(r.text || '').split('\n').map(function(s){ return s.trim(); }).filter(Boolean).slice(0, 3).join(' · ');
+      var first = String(r.text || '').split('\n').map(function(s){ return s.trim(); }).filter(Boolean).slice(0, 3).join(' · '), om = r.doc && r.doc.meta && r.doc.meta.optimised;
       return '<div class="li"><span class="logo" style="background:' + TP.hue(r.id) + '">' + J.resume.replace('<svg', '<svg width="18" height="18" style="color:#fff"') + '</span>' +
         '<div class="main"><div class="t">' + esc(r.name) + (r.is_default ? ' <span class="tag" style="color:var(--warn)">' + J.star.replace('<svg', '<svg width="11" height="11"') + ' default</span>' : '') + '</div>' +
-        '<div class="m">' + (first ? esc(first) : '<i>Empty — open it to upload or paste the resume</i>') + '</div><div class="m">Edited ' + esc(TP.ago(r.updated_at)) + '</div></div>' +
-        '<div class="side"><a class="btn sm pri" href="' + esc(edUrl('resume', r.id)) + '" target="tp-er-' + esc(r.id) + '">' + I.spark + 'Open in editor</a>' +
+        '<div class="m">' + (first ? esc(first) : '<i>Empty — open it to upload or paste the resume</i>') + '</div><div class="m">Edited ' + esc(TP.ago(r.updated_at)) + '</div>' +
+        (om ? '<div class="m" style="color:var(--ok)">✓ Optimised for ' + esc(om.job || 'their target roles') + ' · ' + esc(TP.ago(om.at)) + '</div>' : '') + '</div>' +
+        '<div class="side"><a class="btn sm' + (om ? '' : ' pri') + '" href="' + esc(edUrl('resume', r.id) + '#optimize') + '" target="tp-er-' + esc(r.id) + '" data-opt>' + I.spark + (roles.length ? 'Optimise for target roles' : 'Optimise') + '</a>' +
+          '<a class="btn sm' + (om ? ' pri' : '') + '" href="' + esc(edUrl('resume', r.id)) + '" target="tp-er-' + esc(r.id) + '">' + I.doc + 'Open in editor</a>' +
           '<button class="icb" type="button" data-act="resmenu" data-id="' + esc(r.id) + '" title="More">⋯</button></div></div>';
     }).join('') + '</div>'
       : '<div class="empty">' + J.resume + '<h3>No resume yet</h3><p>Add ' + esc(c.row.full_name.split(' ')[0] || 'their') + '’s resume: create one, then upload their file (PDF or Word) in the editor.</p><button class="btn pri" type="button" data-act="newresume">' + I.plus + 'New resume</button></div>';
@@ -1063,13 +1067,13 @@ function lkHead(L){
   });
   var n = L.items.length - gone, pct = n ? Math.round(sent / n * 100) : 0;
   return '<div class="lkbar"><div class="grow"><b>Your list · ' + n + ' job' + (n === 1 ? '' : 's') + '</b><div class="fine">' +
-      [sent + ' of ' + n + ' sent', drafts ? drafts + ' draft' + (drafts === 1 ? '' : 's') : '', busy ? 'optimising ' + busy + '…' : '', ready ? ready + ' ready to review' : '',
+      [sent + ' of ' + n + ' sent', drafts ? drafts + ' draft' + (drafts === 1 ? '' : 's') : '', busy ? 'syncing ' + busy + '…' : '', ready ? ready + ' ready to review' : '',
         can + need ? (can + need) + ' to start' : '', reading ? 'reading ' + reading + '…' : ''].filter(Boolean).join(' · ') + '</div>' +
       (sent ? '<div class="prog' + (sent === n ? ' full' : '') + '"><i style="width:' + pct + '%"></i></div>' : '') + '</div>' +
     (can ? '<button class="btn pri" type="button" data-act="lkstart">' + (can === 1 ? 'Start 1 application' : 'Start all ' + can) + '</button>' : '') +
-    (opt ? '<button class="btn' + (can ? '' : ' pri') + '" type="button" data-act="lkopt">' + I.spark + 'Optimise ' + opt + (opt === 1 ? ' resume' : ' resumes') + '</button>' : '') +
+    (opt ? '<button class="btn' + (can ? '' : ' pri') + '" type="button" data-act="lkopt">' + I.spark + 'Sync ' + opt + (opt === 1 ? ' to its job' : ' to their jobs') + '</button>' : '') +
     '<button class="btn sm" type="button" data-act="lkclear">Clear list</button></div>' +
-    (busy ? '<p class="fine" style="margin:-4px 0 10px">Optimising in this browser tab — keep it open. You can work in other tabs and on other clients meanwhile.</p>' : '') +
+    (busy ? '<p class="fine" style="margin:-4px 0 10px">Syncing in this browser tab — keep it open. You can work in other tabs and on other clients meanwhile.</p>' : '') +
     (need ? '<p class="fine" style="margin:-4px 0 10px;color:var(--warn)">' + need + (need === 1 ? ' needs' : ' need') + ' a job title and company before ' + (need === 1 ? 'it' : 'they') + ' can start.</p>' : '');
 }
 function lkRow(x){
@@ -1080,7 +1084,7 @@ function lkRow(x){
   if(x.app){
     var st = x.st || 'draft', s = st === 'gone' ? 'gone' : st === 'draft' ? 'draft' : 'sent', o = s === 'draft' && x.opt ? x.opt : null, os = o ? o.st : '';
     var line = s === 'gone' ? 'The draft was deleted' : s === 'sent' ? 'Sent ' + esc(TP.ago(x.at))
-      : os === 'wait' ? 'Waiting to optimise' : os === 'run' ? '<span class="spin" style="width:12px;height:12px;vertical-align:-1px;margin-right:6px"></span>Optimising…'
+      : os === 'wait' ? 'Waiting to sync' : os === 'run' ? '<span class="spin" style="width:12px;height:12px;vertical-align:-1px;margin-right:6px"></span>Syncing…'
       : os === 'ready' ? (o.n ? o.n + ' suggested change' + (o.n === 1 ? '' : 's') : 'No wording changes') + (o.sk ? ' · ' + o.sk + ' skill' + (o.sk === 1 ? '' : 's') + ' to tick' : '') + ' — ready to review'
       : os === 'done' ? (o.same ? 'Already a good match — nothing to change' : 'Reviewed — the tailored resume is saved')
       : os === 'fail' ? 'Couldn’t optimise: ' + esc(o.why) : 'Draft started — open it to tailor the resume and apply';
@@ -1105,31 +1109,21 @@ function lkRow(x){
    It runs in this browser tab, so other tabs and other clients' pages are fine; closing the tab stops it, so the page asks
    first. The suggestions wait on each draft until someone reviews them in the editor. */
 var OPT_LANES = 4, OQ = {jobs:[], run:0};
-var OPT_ROWS = [['sync', 'Sync to the job', 'Everything below, more deeply: each posting’s words, priorities and title, and each role’s bullets in that job’s order. Written by Claude Sonnet.'],
-  ['summary', 'Summary', 'Rewritten around each job’s keywords'], ['experience', 'Work experience', 'Bullets tailored to each job'],
-  ['skills', 'Skills', 'Suggestions only — added when you tick them in the review'], ['headline', 'Job title', 'The title under the name, matched to each job'],
-  ['location', 'Location', 'Open to relocating, for jobs in another city']];
+// a draft is only ever synced to its own job - every part, in one go - since the main resume was optimised already
+var SYNC_SEL = {summary:1, headline:1, location:1, experience:1, skills:1, sync:1};
 function lkCanOpt(x){ return !!x.app && (x.st || 'draft') === 'draft' && (!x.opt || x.opt.st === 'fail'); }
 function optChoices(cid){ var p = TP.lsGet('tp_opt_c_' + cid, null) || {}; return {sel:p.sel || {summary:1, experience:1, skills:1}, ins:p.ins || ''}; }   // shared with the editor's own Optimise
 function lkOptimise(){
   var c = C, L = lkList(c.id), n = L.items.filter(lkCanOpt).length, pref = optChoices(c.id); if(!n) return;
-  var m = TP.modal('<h2>Optimise ' + n + ' resume' + (n === 1 ? '' : 's') + '</h2><p>Each draft is tailored to its own job by the editor’s Optimise, with the same fact checks: no new numbers or tools, no lost keywords, and projects, education and certifications are never touched. Nothing on a resume changes until you review it in the editor.</p>' +
-    '<div class="stack" style="margin-top:14px;gap:10px">' + OPT_ROWS.map(function(r){ return '<label class="check"><input type="checkbox" data-bo="' + r[0] + '"' + (pref.sel[r[0]] ? ' checked' : '') + '><span><b>' + r[1] + '</b><br><span class="fine">' + r[2] + '</span></span></label>'; }).join('') +
-      '<div class="field"><label for="boIns">Special instructions <span class="muted">(optional, for all of them)</span></label><textarea id="boIns" rows="2" maxlength="400" placeholder="e.g. Keep each bullet under 22 words">' + esc(pref.ins) + '</textarea></div>' +
+  var m = TP.modal('<h2>Sync ' + n + (n === 1 ? ' resume to its job' : ' resumes to their jobs') + '</h2><p>Each draft moves toward its own job in one go: the summary, the title under the name, every bullet in the posting’s words and order, and the skills. The same fact checks as the editor: no new numbers or tools, no lost keywords, and projects, education and certifications are never touched. Nothing on a resume changes until you review it in the editor.</p>' +
+    '<div class="stack" style="margin-top:14px;gap:10px"><div class="field"><label for="boIns">Special instructions <span class="muted">(optional, for all of them)</span></label><textarea id="boIns" rows="2" maxlength="400" placeholder="e.g. Keep each bullet under 22 words">' + esc(pref.ins) + '</textarea></div>' +
       (c.row.optimise_rules ? '<p class="fine">' + esc((c.row.full_name || '').split(' ')[0] || 'The client') + '’s optimisation rules from the Profile are followed too.</p>' : '') +
       '<p class="fine">Runs ' + OPT_LANES + ' at a time in this browser tab — keep it open. You can work in other tabs meanwhile.</p></div>' +
-    '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="button" id="boGo">Optimise ' + n + '</button></div>');
-  m.addEventListener('change', function(e){   // Sync means all of them
-    var i = e.target.closest && e.target.closest('[data-bo]'), sy = $('[data-bo=sync]', m); if(!i) return;
-    if(i === sy){ if(sy.checked) $$('[data-bo]', m).forEach(function(x){ x.checked = true; }); }
-    else if(!i.checked) sy.checked = false;
-  });
+    '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="button" id="boGo">' + I.spark + 'Sync ' + n + '</button></div>');
   $('#boGo', m).onclick = function(){
-    var sel = {}; $$('[data-bo]', m).forEach(function(i){ sel[i.getAttribute('data-bo')] = i.checked ? 1 : 0; });
-    if(!Object.keys(sel).some(function(k){ return sel[k]; })) return TP.toast('Pick at least one thing to optimise');
     var ins = $('#boIns', m).value.trim();
-    TP.lsSet('tp_opt_c_' + c.id, {sel:sel, ins:ins});
-    TP.closeModal(); optQueue(c, L, sel, ins);
+    TP.lsSet('tp_opt_c_' + c.id, {sel:pref.sel, ins:ins});   // the editor's remembered ticks stay as they were
+    TP.closeModal(); optQueue(c, L, SYNC_SEL, ins);
   };
 }
 function optQueue(c, L, sel, ins, only){
@@ -1161,11 +1155,11 @@ function optOne(job){
   window.addEventListener('message', hear);
   tm = setTimeout(function(){ end({st:'fail', why:'It took too long', at:Date.now()}); }, 240000);   // Sync can take up to 150s on its own
   f.src = '/editor.html?client=' + encodeURIComponent(job.cid) + '&app=' + encodeURIComponent(job.app) + '&batch=' + encodeURIComponent(job.sel) + (job.ins ? '&ins=' + encodeURIComponent(job.ins) : '');
-  f.title = 'Optimising'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
+  f.title = 'Syncing'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
   f.style.cssText = 'position:fixed;left:-12000px;top:0;width:1280px;height:900px;border:0;visibility:hidden';   // laid out like a real page, never seen
   document.body.appendChild(f);
 }
-function lkRetry(id){ var c = C, L = lkList(c.id), x = L.items.filter(function(y){ return y.id === id; })[0], p = optChoices(c.id); if(x) optQueue(c, L, p.sel, p.ins, x); }
+function lkRetry(id){ var c = C, L = lkList(c.id), x = L.items.filter(function(y){ return y.id === id; })[0], p = optChoices(c.id); if(x) optQueue(c, L, SYNC_SEL, p.ins, x); }
 window.addEventListener('beforeunload', function(e){ if(OQ.run || OQ.jobs.length){ e.preventDefault(); e.returnValue = ''; } });   // closing the tab would stop the Optimise
 function lkSkipRow(s){
   return '<div class="li lkrow skip" data-why="' + s.why + '"><div class="main"><div class="t">' + esc(s.title ? s.title + (s.company ? ' · ' + s.company : '') : shortLink(s.url)) + '</div><div class="m">' + LK_WHY[s.why] + '</div></div>' +
@@ -1282,17 +1276,17 @@ function resumeCard(){
   var d = A.resume_doc, m = (d && d.meta) || {}, saved = !!(d || A.resume_text), pend = !!m.optPending, opt = !pend && optimisedDoc(d);   // pend: the list's Optimise left suggestions to review
   var preview = A.resume_text || (base && base.text) || '', url = edUrl('app', A.id), tgt = ' target="tp-ed-' + esc(A.id) + '" data-act="toeditor"';
   return '<div class="step"><span class="n' + (opt ? ' ok' : '') + '">2</span><div class="bd"><h3>Resume for this job</h3>' +
-    '<p class="fine" style="margin-top:2px">The copy that gets sent, tailored to this job’s description. The main resume (Resumes tab) stays as it is.</p>' +
+    '<p class="fine" style="margin-top:2px">The copy that gets sent. The main resume is optimised once on the Resumes tab; here it’s only synced to this job.</p>' +
     (rs.length ? '<div class="row" style="margin:8px 0 10px"><label class="lbl" for="apBase">Start from</label><select class="inp" id="apBase" style="width:auto;flex:1;max-width:320px"' + (saved ? ' disabled title="This job’s copy is already made from it"' : '') + '>' +
       rs.map(function(r){ return '<option value="' + esc(r.id) + '"' + (r.id === A.base_resume_id ? ' selected' : '') + '>' + esc(r.name) + '</option>'; }).join('') + '</select></div>'
       : '<div class="note warn" style="margin:8px 0 10px">' + esc(C.row.full_name) + ' has no resume yet. <a href="' + esc(cUrl(C.id, 'resumes')) + '" data-go>Add one on the Resumes tab</a>, or open the editor and upload their file there.</div>') +
     '<div class="row">' + (pend ? '<a class="btn pri" href="' + esc(url) + '"' + tgt + '>' + I.spark + 'Review the suggestions</a>'
-        : opt ? '<a class="btn" href="' + esc(url) + '"' + tgt + '>' + I.doc + 'Open the tailored resume</a><a class="btn" href="' + esc(url + '#optimize') + '"' + tgt + ' data-opt>' + I.spark + 'Optimise again</a>'
-        : '<a class="btn pri" href="' + esc(url + '#optimize') + '"' + tgt + ' data-opt>' + I.spark + 'Optimise for this job</a>') +
+        : opt ? '<a class="btn" href="' + esc(url) + '"' + tgt + '>' + I.doc + 'Open the tailored resume</a>'
+        : '<a class="btn pri" href="' + esc(url + '#sync') + '"' + tgt + ' data-sync>' + I.spark + 'Sync to this job</a>') +
       (preview ? '<button class="btn" type="button" data-act="cpresume">' + I.copy + 'Copy resume text</button>' : '') + '</div>' +
-    '<p class="fine" style="margin-top:8px">' + (pend ? '<b>Optimised in the background</b> — the editor shows Claude’s suggestions to accept. Nothing on the resume has changed yet.'
-      : opt ? '<span class="lock" style="color:var(--ok)">' + I.check + 'Optimised for this job</span> — ' + esc(TP.ago((m.optimised && m.optimised.at) || A.updated_at)) + '. Open it to check it and download the PDF to send.'
-      : (saved ? 'A copy of <b>' + bname + '</b>, not tailored to this job yet. ' : 'Starts from <b>' + bname + '</b>. ') + '<b>Optimise for this job</b> rewrites it around the job description, and nothing changes until you accept.' +
+    '<p class="fine" style="margin-top:8px">' + (pend ? '<b>Synced in the background</b> — the editor shows Claude’s suggestions to accept. Nothing on the resume has changed yet.'
+      : opt ? '<span class="lock" style="color:var(--ok)">' + I.check + 'Synced to this job</span> — ' + esc(TP.ago((m.optimised && m.optimised.at) || A.updated_at)) + '. Open it to check it and download the PDF to send.'
+      : (saved ? 'A copy of <b>' + bname + '</b>, not synced to this job yet. ' : 'Starts from <b>' + bname + '</b>. ') + '<b>Sync to this job</b> moves it toward the job description in one go: its words, its priorities, its order. Nothing changes until you accept.' +
         (A.jd_text ? '' : ' <span style="color:var(--warn)">Paste the job description in step 1 first.</span>')) + '</p>' +
     (preview ? '<details style="margin-top:8px"><summary class="fine" style="cursor:pointer">See the text that will be sent</summary><pre class="txt" style="margin-top:8px">' + esc(preview) + '</pre></details>' : '') + '</div></div>';
 }
