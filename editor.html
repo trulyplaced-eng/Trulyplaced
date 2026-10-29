@@ -117,7 +117,7 @@ svg{flex:none;width:18px;height:18px}
 .doctabs .pages.warn{color:var(--warn);font-weight:600}
 .frame{position:relative;width:100%;max-width:880px;min-height:400px;overflow:hidden;overflow:clip;overflow-clip-margin:36px}   /* the page is laid out at paper size and scaled down: never let it widen the screen */
 .sheetwrap{position:relative;transform-origin:top left}
-.sheet{background:#fff;box-shadow:0 12px 40px -16px rgba(18,26,51,.35),0 0 0 1px var(--line);position:relative;overflow:visible;min-height:1056px;contain:layout paint}
+.sheet{background:#fff;box-shadow:0 12px 40px -16px rgba(18,26,51,.35),0 0 0 1px var(--line);position:relative;overflow:visible;min-height:1056px}
 .breaks{position:absolute;inset:0;pointer-events:none}
 .brk{position:absolute;left:-12px;right:-12px;border-top:2px dashed #e11d48;opacity:.6}
 .brk::after{content:attr(data-n);position:absolute;right:0;top:3px;font:600 10px Inter,sans-serif;color:#e11d48;background:#fff;padding:1px 5px;border-radius:4px}
@@ -157,10 +157,10 @@ svg{flex:none;width:18px;height:18px}
 .eh{display:flex;align-items:center;gap:6px;margin-bottom:2px}
 .eh b{flex:1;min-width:0;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dwarn{display:inline-block;font:700 10.5px Inter,sans-serif;color:var(--bad);background:var(--bad-soft);border-radius:5px;padding:1px 6px;margin-top:4px}
-.bl{list-style:none;margin-top:6px;display:grid;gap:4px}
-.bl li{display:flex;gap:4px;align-items:flex-start}
-.bl li .ta{min-height:34px;padding:6px 8px;font-size:13px}
-.bl li .mini{display:flex;flex-direction:column;gap:0;padding-top:2px}
+#pbody .bl{list-style:none;margin-top:6px;display:grid;gap:4px}
+#pbody .bl li{display:flex;gap:4px;align-items:flex-start}
+#pbody .bl li .ta{min-height:34px;padding:6px 8px;font-size:13px}
+#pbody .bl li .mini{display:flex;flex-direction:column;gap:0;padding-top:2px}
 .addl{display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-size:12.5px;font-weight:600;color:var(--blue);padding:4px 6px;border-radius:6px}
 .addl:hover{background:var(--blue-soft)}
 .addl svg{width:14px;height:14px}
@@ -896,7 +896,7 @@ function source() {   // the resume file the person added on the job board
    {v:1, name, headline, contact:[], prefs:{}, sections:[{id,k,type,title, text | items[{id,title,sub,dates,loc,bullets[{id,t}]}] | rows[{id,label,value}] | list[{id,t}]}],
     design:{...format}, cover:{company,role,text,to}, meta:{created, srcName, srcAt, orig, job, review, added, saved}} */
 const ENTRY_K = { experience: 1, education: 1, projects: 1, volunteering: 1 };
-const CATALOG = [['summary', 'Summary'], ['experience', 'Experience'], ['education', 'Education'], ['projects', 'Projects'], ['skills', 'Skills'],
+const CATALOG = [['summary', 'Summary'], ['experience', 'Professional Experience'], ['education', 'Education'], ['projects', 'Projects'], ['skills', 'Skills'],
   ['certifications', 'Certifications'], ['awards', 'Awards'], ['volunteering', 'Volunteering'], ['publications', 'Publications'], ['languages', 'Languages'], ['interests', 'Interests']];
 const catName = (k) => (CATALOG.find((c) => c[0] === k) || [0, 'Section'])[1];
 const typeOf = (k) => k === 'summary' ? 'summary' : ENTRY_K[k] ? 'entries' : k === 'skills' ? 'skills' : 'list';
@@ -911,7 +911,7 @@ function newSection(k, title) {
 const newEntry = () => ({ id: uid(), title: '', sub: '', dates: '', loc: '', bullets: [] });
 function blankDoc() {
   return { v: 1, name: '', headline: '', contact: [], prefs: {}, sections: [],
-    design: { template: 'traditional' }, cover: { company: '', role: '', text: '' }, meta: { created: Date.now(), added: [] } };
+    design: { template: 'interview' }, cover: { company: '', role: '', text: '' }, meta: { created: Date.now(), added: [] } };
 }
 function starterDoc() {
   const D = blankDoc();
@@ -1038,7 +1038,7 @@ const hasRange = (t) => { RANGE.lastIndex = 0; const r = RANGE.test(t); RANGE.la
 function headerish(t) {
   const w = t.split(/\s+/), dated = hasRange(t) || /\b(19|20)\d{2}\b/.test(t);
   if (/[.!?]$/.test(t) || verbStart(t)) return false;
-  return (w.length <= 8 && (dated || /\s{3,}/.test(t) || w.length <= 5)) || (w.length <= 14 && dated && /\s{3,}/.test(t));
+  return (w.length <= 8 && (dated || /\s{3,}/.test(t) || w.length <= 5)) || (w.length <= 22 && dated && /\s{3,}/.test(t));
 }
 function isCont(t, prev) { return !!prev && /^[a-z(]/.test(t) && !/[.:;!?]$/.test(prev) && t.split(/\s+/).length <= 14 && !hasRange(t); }
 function addHead(e, t) {
@@ -1056,17 +1056,29 @@ function addHead(e, t) {
 // "Led and coached…", "Managing a team…": a line that opens with an action verb is a bullet, never a company line
 const verbStart = (t) => { const w = String(t || '').split(/\s+/)[0].toLowerCase().replace(/[^a-z]/g, ''); return !!(VERBSET[w] || GERUND[w]); };
 function parseEntries(body) {
+  // a header that wrapped onto the next line ("… Bachelor of Engineering,  /  Electrical Engineering   Aug 2016 - Jun 2020") is joined back up first
+  const joined = []; body.forEach((L) => {
+    const p = joined[joined.length - 1], dated = hasRange(L.t) || /\b(19|20)\d{2}\s*$/.test(L.t);
+    if (p && !p.bullet && !L.bullet && /[,\-–]\s*$/.test(p.t) && dated) { p.t += ' ' + L.t; return; }
+    // "… Bachelor's in Electrical and Electronics Engineering,   Aug 2016 - Jun 2020" + a short undated line = the rest of the degree
+    const m = p && !p.bullet && !L.bullet && !dated && L.t.split(/\s+/).length <= 8 ? /^(.*?,)\s{3,}(.+)$/.exec(p.t) : null;
+    if (m) { p.t = m[1] + ' ' + L.t + '   ' + m[2]; return; }
+    joined.push(Object.assign({}, L));
+  });
+  body = joined;
   const marks = body.some((l) => l.bullet), items = []; let cur = null, lastB = null;
   const fresh = () => { cur = newEntry(); cur._h = 0; items.push(cur); lastB = null; };
   body.forEach((L) => {
     const t = L.t;
-    if (lastB && !L.bullet && isCont(t, lastB.t)) { lastB.t += ' ' + t; return; }
+    // the rest of a wrapped bullet: in a file with bullet marks, any unmarked line that isn't a header; otherwise a line carrying on an unfinished sentence
+    if (lastB && !L.bullet && (marks ? !headerish(t) && !hasRange(t) : isCont(t, lastB.t) || (!headerish(t) && !/[.:;!?]$/.test(lastB.t) && !verbStart(t)))) { lastB.t += ' ' + t; return; }
     const wc = t.split(/\s+/).length;
     if (L.bullet || (!marks && cur && !headerish(t) && wc >= 7 && !(cur._h === 1 && !cur.bullets.length && wc < 16 && !/[.]$/.test(t) && !verbStart(t))) || (!L.bullet && cur && wc >= 6 && verbStart(t) && !hasRange(t))) {
       if (!cur) fresh();
       lastB = { id: uid(), t }; cur.bullets.push(lastB); return;
     }
-    if (!cur || cur.bullets.length || cur._h >= 2) fresh();
+    const datedLine = hasRange(t) || /\b(19|20)\d{2}\s*$/.test(t);
+    if (!cur || cur.bullets.length || cur._h >= 2 || (datedLine && cur.dates)) fresh();   // a second dated line is a second role or school
     addHead(cur, t);
   });
   items.forEach((it) => { delete it._h; });
@@ -1078,11 +1090,11 @@ function parseList(body) {
   return out;
 }
 function parseSkills(body) {
-  const rows = [];
+  const rows = []; let labelled = false;
   body.forEach((L) => {
-    const t = L.t, m = /^([^:]{2,42}):\s*(.+)$/.exec(t), p = rows[rows.length - 1];
-    if (m) rows.push({ id: uid(), label: m[1].trim(), value: m[2].trim() });
-    else if (p && isCont(t, p.value)) p.value += ' ' + t;
+    const t = L.t, m = /^([^:]{2,42})\s*:\s*(.+)$/.exec(t), p = rows[rows.length - 1];
+    if (m) { rows.push({ id: uid(), label: m[1].trim(), value: m[2].trim() }); labelled = true; }
+    else if (p && (labelled || isCont(t, p.value))) p.value += (/[,;]\s*$/.test(p.value) ? ' ' : ', ') + t;   // "Group : a, b,  /  c, d" wrapped onto a second line
     else rows.push({ id: uid(), label: '', value: t });
   });
   const out = [];
@@ -1097,6 +1109,9 @@ function tidyEntries(D) {
   D.sections.forEach((s) => (s.items || []).forEach((it) => {
     if (it.sub && (verbStart(it.sub) || it.sub.split(/\s+/).length >= 9)) { it.bullets.unshift({ id: uid(), t: it.sub }); it.sub = ''; }
     if (it.loc && (verbStart(it.loc) || it.loc.split(/\s+/).length >= 9)) { it.bullets.unshift({ id: uid(), t: it.loc }); it.loc = ''; }
+    if (s.k === 'education' && !it.sub && it.title) {   // "University of X - Master of Science, Computer Science" → school / degree
+      const e = /^(.{3,90}?)\s+[-–]\s+(.{3,120})$/.exec(it.title); if (e) { it.sub = e[1].trim(); it.title = e[2].trim(); }
+    }
     if (!it.sub && it.title) {
       const m = /^(.{2,80}?)\s*[·|]\s*(.{2,60})$/.exec(it.title);   // "… · India" / "… | Hyderabad"
       let head = it.title; if (m) { head = m[1]; if (!it.loc) it.loc = m[2].trim(); }
@@ -1261,6 +1276,8 @@ function startDoc(D) {
   document.body.classList.toggle('ro', READONLY);
   if (window.innerWidth <= 840 && !document.body.classList.contains('m-preview')) setMobile('edit');
   renderAll(); snap(); persist();
+  // a resume just read from a file is fitted to one page the first time, like the ones that got interviews (two pages stay two for long careers)
+  if (DOC.meta.read && !DOC.meta.fitted && fmtOf(DOC).oneLine) { DOC.meta.fitted = true; setTimeout(() => { if (PAGES_N === 2 && !longResume()) fitOnePage(true); }, 80); }
   if (TEAM) initVersions();
   tell({ act: 'ready' });
   const h = location.hash;
@@ -1323,6 +1340,8 @@ window.addEventListener('message', (e) => {   // the job board's side panel asks
    One renderer draws the live page, the printed PDF and the Word file.
    ===================================================================== */
 const TEMPLATES = [
+  // The format of the resumes that got our clients the most interviews: serif, tight, one line per role, bold dates.
+  { id: 'interview', name: 'Interview', blurb: 'Our proven format: serif, one line per role, grouped skills', d: { size: 10, lineHeight: 1.15, gap: 0.45, margin: 0.35, nameSize: 16, headingSize: 10, bulletGap: 0, headerAlign: 'center', rules: true, caps: true, align: 'justify', font: 'Times New Roman', dates: 'hyphen', linksAsLabels: true, oneLine: true } },
   { id: 'traditional', name: 'Traditional', blurb: 'Serif, centred header, ruled sections', d: { size: 11, lineHeight: 1.35, gap: 0.75, margin: 0.5, nameSize: 19, headingSize: 11, bulletGap: 1, headerAlign: 'center', rules: true, caps: true, align: 'justify', font: 'Times New Roman' } },
   { id: 'classic', name: 'Classic', blurb: 'Clean sans-serif with blue rules', d: { size: 10.5, lineHeight: 1.4, gap: 1, margin: 0.6, nameSize: 20, headingSize: 10, bulletGap: 1.5, headerAlign: 'left', rules: true, caps: true, align: 'left', font: 'Inter' } },
   { id: 'modern', name: 'Modern', blurb: 'Bold name, accent colour headings', d: { size: 10.5, lineHeight: 1.45, gap: 1, margin: 0.6, nameSize: 22, headingSize: 9.5, bulletGap: 1.5, headerAlign: 'left', rules: false, caps: true, align: 'left', font: 'Lato' } },
@@ -1335,9 +1354,9 @@ const FONTS = [
   ['EB Garamond', '"EB Garamond", Georgia, serif', 'EB+Garamond:wght@400;600;700'], ['Georgia', 'Georgia, "Times New Roman", serif', null], ['Times New Roman', '"Times New Roman", Times, serif', null]
 ];
 const BULLETS = { disc: ['Round', 'disc', '•'], square: ['Square', 'square', '▪'], dash: ['Dash', '"–  "', '–'], arrow: ['Arrow', '"›  "', '›'] };
-const DATE_STYLES = [['short', 'Apr 2025'], ['long', 'April 2025'], ['numeric', '04/2025'], ['year', '2025']];
+const DATE_STYLES = [['hyphen', 'Apr 2025 - Jun 2025'], ['short', 'Apr 2025 – Jun 2025'], ['long', 'April 2025 – June 2025'], ['numeric', '04/2025 – 06/2025'], ['year', '2025 – 2025']];
 const PAPERS = { letter: { w: 816, h: 1056, css: 'letter', label: 'US Letter' }, a4: { w: 794, h: 1123, css: 'A4', label: 'A4' }, legal: { w: 816, h: 1344, css: 'legal', label: 'US Legal' } };
-const LIMITS = { size: [8.5, 12, 0.25], lineHeight: [1.1, 1.8, 0.05], gap: [0.4, 2, 0.05], margin: [0.3, 1.2, 0.05], nameSize: [14, 30, 0.5], headingSize: [8, 14, 0.25], bulletGap: [0, 6, 0.5] };
+const LIMITS = { size: [8, 12, 0.25], lineHeight: [1, 1.8, 0.05], gap: [0.3, 2, 0.05], margin: [0.25, 1.2, 0.05], nameSize: [14, 30, 0.5], headingSize: [8, 14, 0.25], bulletGap: [0, 6, 0.5] };
 const ACCENTS = ['#0938d5', '#111827', '#0f766e', '#7c3aed', '#b91c1c', '#9a3412'];
 const tplOf = (id) => TEMPLATES.find((t) => t.id === id) || TEMPLATES[0];
 // every setting with a value: what was chosen, else the template's default
@@ -1356,12 +1375,13 @@ const MSHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
       MLONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const DATE_TOK = /\b(?:(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?,?\s+'?((?:19|20)\d{2})|(0?[1-9]|1[0-2])\s*[\/.\-]\s*((?:19|20)\d{2}))\b/gi;
 function styleDates(t, st) {
-  if (st === 'short' || !st) st = 'short';
-  return String(t || '').replace(DATE_TOK, (m, mn, y1, mm, y2) => {
+  if (!st) st = 'short';
+  const out = String(t || '').replace(DATE_TOK, (m, mn, y1, mm, y2) => {
     const mi = mn ? MSHORT.findIndex((x) => x.toLowerCase() === mn.toLowerCase().slice(0, 3)) : parseInt(mm, 10) - 1, y = y1 || y2;
     if (mi < 0 || mi > 11) return m;
     return st === 'long' ? MLONG[mi] + ' ' + y : st === 'numeric' ? (mi < 9 ? '0' : '') + (mi + 1) + '/' + y : st === 'year' ? y : MSHORT[mi] + ' ' + y;
   });
+  return st === 'hyphen' ? out.replace(/\s*[–—-]\s*/g, ' - ') : out.replace(/\s*[–—]\s*|(?<=\d)\s*-\s*(?=[A-Za-z0-9])/g, ' – ');   // one dash style per template
 }
 // "Jun 2024 – Mar 2023" or a start in the future → a short warning; '' when the dates make sense
 function dateProblem(t) {
@@ -1399,20 +1419,30 @@ function contactHTML(D, f) {
     items.push('<span data-path="contact.' + i + '">' + (href && lab ? '<a href="' + esc(href) + '">' + esc(lab) + '</a>' : esc(c)) + '</span>');
   });
   const pt = prefText(D); if (pt) items.push('<span class="pref">' + esc(pt) + '</span>');
-  return items.join('<span class="sep">' + (f.template === 'traditional' ? '|' : '·') + '</span>');
+  return items.join('<span class="sep">' + (f.template === 'traditional' || f.oneLine ? '|' : '·') + '</span>');
 }
 const P = (path, t, cls, tag) => '<' + (tag || 'span') + ' data-path="' + path + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + (t ? esc(t) : '<span class="empty">&nbsp;</span>') + '</' + (tag || 'span') + '>';
 function entryHTML(s, it, f) {
-  const B = 'sec.' + s.id + '.item.' + it.id + '.';
-  return '<div class="en" data-item="' + it.id + '"><div class="er er1">' + P(B + 'title', it.title, 'l') + (it.dates ? '<span class="r" data-path="' + B + 'dates">' + esc(styleDates(it.dates, f.dates)) + '</span>' : '') + '</div>' +
-    (it.sub || it.loc ? '<div class="er er2">' + (it.sub ? P(B + 'sub', it.sub, 'l') : '<span class="l"></span>') + (it.loc ? P(B + 'loc', it.loc, 'r') : '') + '</div>' : '') +
-    (it.bullets.some((b) => b.t) ? '<ul class="bl">' + it.bullets.filter((b) => b.t).map((b) => '<li' + (HL[b.id] ? ' class="hl"' : '') + '>' + P(B + 'b.' + b.id, b.t) + '</li>').join('') + '</ul>' : '') + '</div>';
+  const B = 'sec.' + s.id + '.item.' + it.id + '.', dates = it.dates ? '<span class="r" data-path="' + B + 'dates">' + esc(styleDates(it.dates, f.dates)) + '</span>' : '';
+  const bullets = it.bullets.some((b) => b.t) ? '<ul class="bl">' + it.bullets.filter((b) => b.t).map((b) => '<li' + (HL[b.id] ? ' class="hl"' : '') + '>' + P(B + 'b.' + b.id, b.t) + '</li>').join('') + '</ul>' : '';
+  if (f.oneLine) {   // Interview format: "Title, Company | Location" on one bold line; a school as "School - Degree"
+    const ed = s.k === 'education';
+    const head = ed ? (it.sub ? P(B + 'sub', it.sub, 'b1') + (it.title ? '<span class="dash"> - </span>' + P(B + 'title', it.title, 'deg') : '') : P(B + 'title', it.title, 'b1'))
+                    : P(B + 'title', it.title, 'b1') + (it.sub ? ', ' + P(B + 'sub', it.sub, 'b1') : '');
+    const loc = it.loc ? ' <span class="bar">|</span> ' + P(B + 'loc', it.loc, 'b1') : '';
+    return '<div class="en" data-item="' + it.id + '"><div class="er er1"><span class="l">' + head + loc + '</span>' + dates + '</div>' + bullets + '</div>';
+  }
+  return '<div class="en" data-item="' + it.id + '"><div class="er er1">' + P(B + 'title', it.title, 'l') + dates + '</div>' +
+    (it.sub || it.loc ? '<div class="er er2">' + (it.sub ? P(B + 'sub', it.sub, 'l') : '<span class="l"></span>') + (it.loc ? P(B + 'loc', it.loc, 'r') : '') + '</div>' : '') + bullets + '</div>';
 }
+// a certification line "AWS Solutions Architect, AWS": the name bold, the issuer lighter
+const certHTML = (path, t) => { const m = /^([^,]{2,80}),\s*(.{1,80})$/.exec(t); return m ? '<span data-path="' + path + '"><b>' + esc(m[1]) + '</b>, <span class="issuer">' + esc(m[2]) + '</span></span>' : P(path, t); };
 function sectionHTML(s, f) {
   let body = '';
   if (s.type === 'summary') body = P('sec.' + s.id + '.text', s.text, 'sum' + (HL['sum:' + s.id] ? ' hl' : ''), 'p');
   else if (s.type === 'entries') body = s.items.map((it) => entryHTML(s, it, f)).join('');
-  else if (s.type === 'skills') body = '<div class="sk">' + s.rows.filter((r) => r.value || r.label).map((r) => '<div>' + (r.label ? '<b data-path="sec.' + s.id + '.row.' + r.id + '.label">' + esc(r.label) + ':</b> ' : '') + P('sec.' + s.id + '.row.' + r.id + '.value', r.value) + '</div>').join('') + '</div>';
+  else if (s.type === 'skills') body = '<div class="sk">' + s.rows.filter((r) => r.value || r.label).map((r) => '<div>' + (r.label ? '<b data-path="sec.' + s.id + '.row.' + r.id + '.label">' + esc(r.label) + (f.oneLine ? ' :' : ':') + '</b> ' : '') + P('sec.' + s.id + '.row.' + r.id + '.value', r.value) + '</div>').join('') + '</div>';
+  else if (f.oneLine && s.k === 'certifications') body = '<div class="certs">' + s.list.filter((b) => b.t).map((b) => '<div>' + certHTML('sec.' + s.id + '.list.' + b.id, b.t) + '</div>').join('') + '</div>';
   else body = '<ul class="bl">' + s.list.filter((b) => b.t).map((b) => '<li>' + P('sec.' + s.id + '.list.' + b.id, b.t) + '</li>').join('') + '</ul>';
   return '<section class="ps" data-sec="' + s.id + '">' + P('sec.' + s.id + '.title', s.title, null, 'h2') + body + '</section>';
 }
@@ -1431,7 +1461,7 @@ function coverHTML(D) {
 function sheetCSS(f, forWord) {
   const font = FONTS.find((x) => x[0] === f.font) || FONTS[1], ff = font[1] || '"Times New Roman", serif';
   const pg = PAPERS[f.paper], pad = f.margin + 'in', hdr = f.headerAlign === 'center' ? 'center' : 'left', t = f.template;
-  const hcol = t === 'modern' ? f.accent : '#111', rule = f.rules ? '1px solid ' + (t === 'modern' ? f.accent : t === 'classic' ? '#2a4bd8' : '#111') : '0';
+  const hcol = t === 'modern' ? f.accent : '#111', rule = f.rules ? (t === 'interview' ? '0.8px' : '1px') + ' solid ' + (t === 'modern' ? f.accent : t === 'classic' ? '#2a4bd8' : '#111') : '0';
   return (forWord ? 'body' : '.sheet') + '{font-family:' + ff + ';font-size:' + f.size + 'pt;line-height:' + f.lineHeight + ';color:#111;text-align:' + f.align + ';' +
       (forWord ? '' : 'width:' + pg.w + 'px;min-height:' + pg.h + 'px;padding:' + pad + ';') + '}' +
     '.sheet .empty{color:#bbb}.sheet .ph-h,.ph-h{text-align:' + hdr + ';margin-bottom:' + (f.gap * 0.6) + 'em}' +
@@ -1445,7 +1475,9 @@ function sheetCSS(f, forWord) {
     '.sheet .bl,.bl{margin:.15em 0 0;padding-left:1.25em;list-style-type:' + BULLETS[f.bullet][1] + '}.sheet .bl li,.bl li{margin:' + f.bulletGap + 'px 0;padding-left:.1em;break-inside:avoid}' +
     '.sheet .sk,.sk{display:grid;gap:.1em}.sheet .sk b,.sk b{font-weight:700}' +
     '.sheet .cv-date,.cv-date{margin:' + (f.gap * 1.2) + 'em 0 .8em}.sheet .cv-to,.cv-to{white-space:pre-line;margin-bottom:.9em}.sheet .cv-body,.cv-body{white-space:pre-line}' +
-    '.sheet .pref,.pref{color:#444}';
+    '.sheet .pref,.pref{color:#444}' +
+    (f.oneLine ? '.sheet .ct a,.ct a{color:#1a56c8}.sheet .er1 .l,.er1 .l{font-weight:700;text-align:left}.sheet .bl li,.bl li{padding-left:0}.sheet .deg,.deg{font-style:italic;font-weight:400}.sheet .dash,.dash{font-weight:400}' +
+      '.sheet .certs,.certs{display:grid;gap:.2em}.sheet .issuer,.issuer{color:#4a5568}.sheet .bar,.bar{color:#555;font-weight:400}.sheet h2,h2{margin:' + f.gap + 'em 0 .1em;padding-bottom:.02em}.sheet .en,.en{margin-top:.15em}.sheet .ps>.sum,.ps>.sum{margin-top:.05em}.sheet .ph-h,.ph-h{margin-bottom:.15em}.sheet .ct,.ct{margin-top:.15em}' : '');
 }
 function applyFormat() {
   const f = fmtOf(DOC), font = FONTS.find((x) => x[0] === f.font); if (font && font[2]) loadFont(font[2]);
@@ -1729,7 +1761,7 @@ function editAction(a, v, t) {
    one undo step and shows on the page at once.
    ===================================================================== */
 function tplSVG(id) {
-  const c = id === 'modern' ? '#0938d5' : '#333', head = id === 'traditional' ? '<rect x="12" y="6" width="14" height="3" fill="' + c + '"/><rect x="10" y="11" width="18" height="1.2" fill="#999"/>' : '<rect x="5" y="6" width="16" height="3.5" fill="' + c + '"/><rect x="5" y="11" width="20" height="1.2" fill="#999"/>';
+  const c = id === 'modern' ? '#0938d5' : '#333', head = id === 'traditional' || id === 'interview' ? '<rect x="12" y="6" width="14" height="3" fill="' + c + '"/><rect x="10" y="11" width="18" height="1.2" fill="#999"/>' : '<rect x="5" y="6" width="16" height="3.5" fill="' + c + '"/><rect x="5" y="11" width="20" height="1.2" fill="#999"/>';
   const rule = id === 'modern' ? '' : '<rect x="5" y="19.5" width="28" height=".6" fill="' + (id === 'classic' ? '#2a4bd8' : '#333') + '"/>';
   const lines = (y) => '<rect x="5" y="' + y + '" width="28" height="1" fill="#bbb"/><rect x="5" y="' + (y + 2.5) + '" width="24" height="1" fill="#bbb"/><rect x="5" y="' + (y + 5) + '" width="26" height="1" fill="#bbb"/>';
   return '<svg viewBox="0 0 38 50">' + head + '<rect x="5" y="16" width="9" height="2" fill="' + c + '"/>' + rule + lines(23) + '<rect x="5" y="32" width="9" height="2" fill="' + c + '"/>' + rule.replace('19.5', '35.5') + lines(39) + '</svg>';
@@ -1781,9 +1813,9 @@ function formatAction(a, v, t) {
   return false;
 }
 // Tightens the page in small steps, measuring after each one, until it fits on one page (or nothing more can give).
-function fitOnePage() {
-  if (PAGES_N <= 1) { toast('Already on one page'); return; }
-  const f0 = JSON.stringify(DOC.design || {}), order = [['gap', -0.1, 0.5], ['lineHeight', -0.05, 1.15], ['margin', -0.05, 0.4], ['size', -0.25, 9], ['bulletGap', -0.5, 0]];
+function fitOnePage(silent) {
+  if (PAGES_N <= 1) { if (!silent) toast('Already on one page'); return; }
+  const f0 = JSON.stringify(DOC.design || {}), order = [['gap', -0.1, 0.3], ['lineHeight', -0.05, 1], ['margin', -0.05, 0.3], ['size', -0.25, 8], ['bulletGap', -0.5, 0]];
   let steps = 0;
   while (PAGES_N > 1 && steps < 28) {
     let moved = false;
@@ -1795,8 +1827,8 @@ function fitOnePage() {
     }
     if (!moved) break;
   }
-  if (PAGES_N > 1) { DOC.design = JSON.parse(f0); applyFormat(); renderSheet(); renderPanel(); toast('It won’t fit on one page without cutting text — shorten a few bullets first.'); return; }
-  snap(); persist(); renderPanel(); toast('Fits on one page now', { a: 'undo', label: 'Undo' });
+  if (PAGES_N > 1) { DOC.design = JSON.parse(f0); applyFormat(); renderSheet(); renderPanel(); if (!silent) toast('It won’t fit on one page without cutting text — shorten a few bullets first.'); return; }
+  snap(); persist(); renderPanel(); if (!silent) toast('Fits on one page now', { a: 'undo', label: 'Undo' });
 }
 function onRangeInput(e) {   // sliders update the page live and show their value; the undo step is taken when the drag ends
   const el = e.target; if (!el.matches || !el.matches('input[type=range][data-k]') || !DOC) return;
