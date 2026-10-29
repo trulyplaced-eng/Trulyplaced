@@ -1033,7 +1033,7 @@ var CONFIG = {
 };
 
 var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
-var APP_VERSION = '2026-10-21.1';   // also in /version.txt — lets us check which version the live site is serving
+var APP_VERSION = '2026-10-28.1';   // also in /version.txt — lets us check which version the live site is serving
 
 /* =====================================================================
    utils
@@ -1301,9 +1301,11 @@ function afterSignIn(u, silent){
     ? Promise.all([
         sb.from('profiles').select('*').eq('id', u.id).maybeSingle(),
         sb.from('tracked_jobs').select('*').eq('user_id', u.id).order('updated_at', {ascending:false}),
-        sb.rpc('is_admin').then(function(r){ return r; }, function(){ return {data:false}; })
+        sb.rpc('is_admin').then(function(r){ return r; }, function(){ return {data:false}; }),
+        sb.rpc('portal_whoami').then(function(r){ return r; }, function(){ return {data:null}; })   // team portal / client dashboard links
       ]).then(function(rs){
         state.isAdmin = !!(rs[2] && rs[2].data === true);
+        state.portal = (rs[3] && !rs[3].error && rs[3].data) || null;
         var p = rs[0].data, isNew = !p;
         state.tracked = rs[1].data || [];
         if(isNew){
@@ -1359,7 +1361,7 @@ function goNext(){
 }
 function cacheAccount(){
   if(!LIVE || !state.user) return;
-  lsSet('tp_acct', {id:state.user.id, user:state.user, profile:state.profile, tracked:(state.tracked || []).slice(0, 300), isAdmin:!!state.isAdmin, at:Date.now()});
+  lsSet('tp_acct', {id:state.user.id, user:state.user, profile:state.profile, tracked:(state.tracked || []).slice(0, 300), isAdmin:!!state.isAdmin, portal:state.portal || null, at:Date.now()});
 }
 var pendingAction = null;
 function requireSignIn(why, then){
@@ -1871,7 +1873,13 @@ var NAV = [
   {id:'editor', label:'Editor', icon:I.spark, href:'/editor.html'},
   {id:'settings', label:'Settings', icon:I.set}
 ];
-function navItems(){ return state.isAdmin ? NAV.concat([{id:'leads', label:'Leads', icon:I.team}, {id:'admin', label:'Add jobs', icon:I.plus}]) : NAV; }
+function navItems(){
+  var n = state.isAdmin ? NAV.concat([{id:'leads', label:'Leads', icon:I.team}, {id:'admin', label:'Add jobs', icon:I.plus}]) : NAV;
+  var p = state.user && state.portal;   // the done-for-you service: each client's dashboard and the team portal (sidebar only)
+  if(p && p.client) n = n.concat([{id:'myapps', label:'My applications', icon:I.tick, href:'/portal.html', side:true}]);
+  if(p && p.team) n = n.concat([{id:'teamportal', label:'Team portal', icon:I.comm, href:'/team.html', side:true}]);
+  return n;
+}
 var route = {name:'jobs', job:null};
 var PICKS_ASK = false;
 function parseRoute(){
@@ -1886,8 +1894,8 @@ function parseRoute(){
   return {name:n, job:null};
 }
 function renderNav(){
-  var h = navItems().map(function(n){ return '<a href="'+(n.href || '#'+n.id)+'" class="'+(route.name===n.id?'on':'')+'">'+n.icon+'<span>'+n.label+'</span></a>'; }).join('');
-  $('#nav').innerHTML = h; $('#tabbar').innerHTML = h;
+  var a = function(n){ return '<a href="'+(n.href || '#'+n.id)+'" class="'+(route.name===n.id?'on':'')+'">'+n.icon+'<span>'+n.label+'</span></a>'; };
+  $('#nav').innerHTML = navItems().map(a).join(''); $('#tabbar').innerHTML = navItems().filter(function(n){ return !n.side; }).map(a).join('');
   $('#pageTitle').textContent = {dashboard:'Dashboard', jobs:'Job Board', resume:'My Resume', settings:'Settings', admin:'Add jobs', leads:'Leads'}[route.name];
   var w = $('#who');
   if(state.user){
@@ -3963,6 +3971,7 @@ function pwBox(){
       '<div class="field" style="margin:0"><input id="pwE'+n+'" name="email" type="email" autocomplete="username" placeholder="Email" aria-label="Email" required></div>'+
       '<div class="field" style="margin:0"><input id="pwP'+n+'" name="password" type="password" autocomplete="current-password" placeholder="Password" aria-label="Password" required></div>'+
       '<button class="btn pri" type="submit" style="grid-column:1/-1;width:100%">Sign in</button>'+
+      '<a href="/login.html?forgot=1" style="grid-column:1/-1;font-size:13px;text-align:center">Forgot password?</a>'+
     '</form></div>';
 }
 function openSignIn(why){
@@ -4253,7 +4262,7 @@ if(LIVE && !cameFromOAuth){
   else {
     var A0 = lsGet('tp_acct', null), U0 = SS0.user, M0 = U0.user_metadata || {};
     if(A0 && A0.id === U0.id && A0.user){   // returning member: open their app from the copy on this device, then refresh it
-      state.user = A0.user; state.profile = A0.profile || {}; state.tracked = A0.tracked || []; state.isAdmin = !!A0.isAdmin;
+      state.user = A0.user; state.profile = A0.profile || {}; state.tracked = A0.tracked || []; state.isAdmin = !!A0.isAdmin; state.portal = A0.portal || null;
     } else {                                // signed in, but no saved copy yet: open with what the sign-in itself knows
       state.user = {id:U0.id, email:U0.email, name:M0.full_name || M0.name || (U0.email || '').split('@')[0], avatar:M0.avatar_url || M0.picture || '', created:Date.parse(U0.created_at) || Date.now()};
       state.profile = {onboarded:true}; state.tracked = [];

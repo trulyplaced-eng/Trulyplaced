@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sign in | TrulyPlaced</title>
+<meta name="description" content="Sign in to see every application TrulyPlaced has sent for you.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0938d5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='116' fill='%230938d5'/%3E%3Cpath d='M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z' fill='%23fff'/%3E%3Cpath d='M205 200l37 36 76-88' fill='none' stroke='%230938d5' stroke-width='30' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://yubgrhxdhofnynfocpef.supabase.co" crossorigin>
+<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="/portal.css?v=2026-10-28.1">
+<style>
+.lwrap{min-height:100vh;display:grid;place-items:center;padding:28px 16px}
+.lcard{width:min(440px,100%);background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px 26px 22px;box-shadow:0 30px 70px -30px rgba(18,26,51,.45)}
+.lcard .brand{margin-bottom:22px}
+.lcard h1{font-size:clamp(21px,3vw,24px)}
+.lcard .lead{margin-top:6px;font-size:14px}
+.lcard form{display:grid;gap:12px;margin-top:20px}
+.or{display:flex;align-items:center;gap:10px;margin:16px 0;font-size:12.5px;color:var(--muted)}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.lk{background:none;border:0;color:var(--blue);font-weight:600;font-size:13.5px;padding:4px 0;text-decoration:underline;text-underline-offset:2px}
+.lfoot{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12.5px}
+.lfoot a{color:var(--muted)}
+.msg{margin-top:14px}
+.spinrow{display:flex;align-items:center;gap:12px;margin-top:18px;font-size:14px}
+.spin{width:20px;height:20px;border-radius:50%;border:2.5px solid var(--blue-line);border-top-color:var(--blue);animation:spin .8s linear infinite;flex:none}
+.rules{font-size:12.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main class="lwrap">
+  <div class="lcard" id="card" aria-live="polite">
+    <a class="brand" href="/"><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="#0938d5"/><path d="M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z" fill="#fff"/><path d="M205 200l37 36 76-88" fill="none" stroke="#0938d5" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg><span>TrulyPlaced</span></a>
+    <div id="view"><div class="spinrow"><span class="spin"></span>Loading…</div></div>
+    <div class="lfoot"><a href="/">trulyplaced.com</a><a href="/app.html">Free job board</a><a href="mailto:hello@trulyplaced.com">Help: hello@trulyplaced.com</a></div>
+  </div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="/portal.js?v=2026-10-28.1"></script>
+<script>
+(function(){
+"use strict";
+var $ = TP.$, esc = TP.esc, I = TP.I;
+var qs = new URLSearchParams(location.search), hs = new URLSearchParams(location.hash.replace(/^#/, ''));
+var NEXT = TP.safeNext(qs.get('next')) || TP.safeNext(TP.lsGet('tp_login_next', ''));
+var view = $('#view');
+function busy(t){ view.innerHTML = '<div class="spinrow"><span class="spin"></span>' + esc(t) + '</div>'; }
+function pwField(id, label, auto){
+  return '<div class="field"><label for="' + id + '">' + label + '</label><div class="pw"><input id="' + id + '" type="password" autocomplete="' + auto + '" required minlength="' + (auto === 'new-password' ? 8 : 1) + '">' +
+    '<button type="button" data-show="' + id + '" aria-label="Show password">Show</button></div></div>';
+}
+view.addEventListener('click', function(e){
+  var s = e.target.closest('[data-show]'); if(!s) return;
+  var i = $('#' + s.getAttribute('data-show')); i.type = i.type === 'password' ? 'text' : 'password'; s.textContent = i.type === 'password' ? 'Show' : 'Hide';
+});
+
+/* ---------- sign in ---------- */
+function showSignIn(msg, email){
+  document.title = 'Sign in | TrulyPlaced';
+  view.innerHTML = '<h1>Sign in</h1><p class="lead">Clients: see every application we’ve sent for you. Team: open the team portal.</p>' +
+    (msg ? '<div class="msg">' + msg + '</div>' : '') +
+    '<form id="fIn" novalidate>' +
+      '<div class="field"><label for="em">Email</label><input id="em" type="email" autocomplete="username" required value="' + esc(email || TP.lsGet('tp_login_email', '')) + '"></div>' +
+      pwField('pw', 'Password', 'current-password') +
+      '<p class="err" id="inErr" hidden></p>' +
+      '<button class="btn pri lg wide" type="submit" id="inGo">Sign in</button>' +
+      '<div><button class="lk" type="button" id="toForgot">Forgot password?</button></div>' +
+    '</form>' +
+    '<div class="or">or</div>' +
+    '<button class="gbtn" type="button" id="gIn">' + I.g + 'Continue with Google</button>' +
+    '<p class="fine" style="margin-top:12px">New client? We’ll email you a link to set your password. Didn’t get it? Use “Forgot password?” with the email you gave us.</p>';
+  var em = $('#em'); (em.value ? $('#pw') : em).focus();
+  $('#toForgot').onclick = function(){ showForgot($('#em').value.trim()); };
+  $('#gIn').onclick = google;
+  $('#fIn').onsubmit = function(e){
+    e.preventDefault();
+    var email = $('#em').value.trim().toLowerCase(), pw = $('#pw').value, err = $('#inErr'), go = $('#inGo');
+    if(!/^\S+@\S+\.\S+$/.test(email)){ err.hidden = false; err.textContent = 'Enter the email you use with TrulyPlaced.'; return; }
+    if(!pw){ err.hidden = false; err.textContent = 'Enter your password.'; return; }
+    err.hidden = true; go.disabled = true; go.classList.add('busy');
+    TP.client().then(function(c){ return c.auth.signInWithPassword({email:email, password:pw}); }).then(function(r){
+      if(r.error) throw r.error;
+      TP.lsSet('tp_login_email', email);
+      route();
+    }).catch(function(e2){
+      go.disabled = false; go.classList.remove('busy'); err.hidden = false;
+      var m = (e2 && e2.message) || '';
+      err.innerHTML = /confirm/i.test(m) ? 'Please open the email we sent you first (check spam), or <button class="lk" type="button" data-forgot="1">get a new link</button>.'
+        : /invalid|credentials/i.test(m) ? 'That email and password don’t match. <button class="lk" type="button" data-forgot="1">Forgot password?</button>'
+        : /rate|too many/i.test(m) ? 'Too many tries — wait a minute and try again.'
+        : esc(TP.errText(e2));
+    });
+  };
+  view.onclick = function(e){ if(e.target.closest('[data-forgot]')) showForgot($('#em') ? $('#em').value.trim() : ''); };
+}
+function google(){
+  var b = $('#gIn'); b.disabled = true;
+  if(NEXT) TP.lsSet('tp_login_next', NEXT);
+  TP.client().then(function(c){
+    return c.auth.signInWithOAuth({provider:'google', options:{redirectTo:location.origin + '/login.html'}});
+  }).then(function(r){ if(r && r.error) throw r.error; }).catch(function(e){ b.disabled = false; TP.toast(TP.errText(e)); });
+}
+
+/* ---------- forgot password ---------- */
+function showForgot(email){
+  document.title = 'Reset your password | TrulyPlaced';
+  view.innerHTML = '<h1>Forgot your password?</h1><p class="lead">Enter your email and we’ll send you a link to set a new one.</p>' +
+    '<form id="fFg" novalidate><div class="field"><label for="fem">Email</label><input id="fem" type="email" autocomplete="username" required value="' + esc(email || '') + '"></div>' +
+    '<p class="err" id="fgErr" hidden></p>' +
+    '<button class="btn pri lg wide" type="submit" id="fgGo">Send me a link</button>' +
+    '<div><button class="lk" type="button" id="toIn">Back to sign in</button></div></form>';
+  $('#fem').focus();
+  $('#toIn').onclick = function(){ showSignIn('', $('#fem').value.trim()); };
+  $('#fFg').onsubmit = function(e){
+    e.preventDefault();
+    var em = $('#fem').value.trim().toLowerCase(), err = $('#fgErr'), go = $('#fgGo');
+    if(!/^\S+@\S+\.\S+$/.test(em)){ err.hidden = false; err.textContent = 'Enter the email you use with TrulyPlaced.'; return; }
+    err.hidden = true; go.disabled = true; go.classList.add('busy');
+    TP.lsSet('tp_pw_reset', {email:em, at:Date.now()});
+    TP.client().then(function(c){ return c.auth.resetPasswordForEmail(em, {redirectTo:location.origin + '/login.html'}); }).then(function(r){
+      if(r.error && !/rate|seconds/i.test(r.error.message || '')) throw r.error;
+      view.innerHTML = '<h1>Check your email</h1><p class="lead">If there’s a TrulyPlaced account for <b>' + esc(em) + '</b>, a link to set your password is on its way. It can take a minute — check spam or promotions too.</p>' +
+        '<div class="note" style="margin-top:16px">Open the link on this device if you can. The link works once and expires after an hour.</div>' +
+        '<p style="margin-top:16px"><button class="lk" type="button" id="toIn2">Back to sign in</button></p>';
+      $('#toIn2').onclick = function(){ showSignIn('', em); };
+    }).catch(function(e2){ go.disabled = false; go.classList.remove('busy'); err.hidden = false; err.textContent = TP.errText(e2); });
+  };
+}
+
+/* ---------- set a password (from the invite or reset email) ---------- */
+function showSetPassword(kind, email){
+  document.title = 'Set your password | TrulyPlaced';
+  view.innerHTML = '<h1>' + (kind === 'invite' ? 'Welcome to TrulyPlaced' : 'Set a new password') + '</h1>' +
+    '<p class="lead">' + (kind === 'invite' ? 'Choose a password for ' : 'Choose a new password for ') + '<b>' + esc(email || 'your account') + '</b>. You’ll use it with your email to sign in.</p>' +
+    '<form id="fSet" novalidate>' + pwField('np', 'New password', 'new-password') + pwField('np2', 'Type it again', 'new-password') +
+    '<p class="rules">At least 8 characters. A short phrase is easiest to remember.</p>' +
+    '<p class="err" id="setErr" hidden></p><button class="btn pri lg wide" type="submit" id="setGo">Save password</button></form>';
+  $('#np').focus();
+  $('#fSet').onsubmit = function(e){
+    e.preventDefault();
+    var a = $('#np').value, b = $('#np2').value, err = $('#setErr'), go = $('#setGo');
+    err.hidden = false;
+    if(a.length < 8){ err.textContent = 'Use at least 8 characters.'; return; }
+    if(a !== b){ err.textContent = 'The two passwords don’t match.'; return; }
+    err.hidden = true; go.disabled = true; go.classList.add('busy');
+    TP.client().then(function(c){ return c.auth.updateUser({password:a}); }).then(function(r){
+      if(r.error) throw r.error;
+      try{ localStorage.removeItem('tp_pw_reset'); }catch(x){}
+      TP.toast('Password saved');
+      route();
+    }).catch(function(e2){
+      go.disabled = false; go.classList.remove('busy'); err.hidden = false;
+      var m = (e2 && e2.message) || '';
+      err.textContent = /different from the old|same/i.test(m) ? 'That’s your current password — choose a new one.' : /weak|short|characters/i.test(m) ? 'Choose a longer password.' : TP.errText(e2);
+    });
+  };
+}
+
+/* ---------- where to go after signing in ---------- */
+function route(){
+  busy('Signing you in…');
+  try{ localStorage.removeItem('tp_login_next'); }catch(x){}
+  TP.whoami().catch(function(){ return {}; }).then(function(w){
+    var to = NEXT || (w.team ? '/team.html' : w.client ? '/portal.html' : '/app.html#jobs');
+    if(NEXT === '/portal.html' && w.team && !w.client) to = '/team.html';
+    location.replace(to);
+  });
+}
+
+/* ---------- start: links from emails, the return from Google, or a normal visit ---------- */
+function linkError(msg){
+  showSignIn('<div class="note warn">' + esc(msg) + ' <button class="lk" type="button" data-forgot="1">Send me a new link</button></div>');
+}
+function start(){
+  if(qs.get('out')) TP.toast('You’re signed out');
+  if(qs.get('forgot')){ history.replaceState(null, '', location.pathname); return showForgot(TP.lsGet('tp_login_email', '')); }
+  var errDesc = qs.get('error_description') || hs.get('error_description');
+  if(errDesc){
+    history.replaceState(null, '', location.pathname);
+    return linkError(/expired|invalid/i.test(errDesc) ? 'That link has expired or was already used.' : 'That sign-in didn’t work: ' + errDesc + '.');
+  }
+  var th = qs.get('token_hash'), type = qs.get('type');
+  if(th && type){   // our email templates: works on any device
+    busy('Checking your link…');
+    return TP.client().then(function(c){ return c.auth.verifyOtp({token_hash:th, type:type}); }).then(function(r){
+      history.replaceState(null, '', location.pathname);
+      if(r.error) throw r.error;
+      if(type === 'invite' || type === 'recovery') return showSetPassword(type, r.data.user && r.data.user.email);
+      route();
+    }).catch(function(){ linkError('That link has expired or was already used.'); });
+  }
+  if(hs.get('access_token') && hs.get('refresh_token')){   // Supabase's standard email links
+    busy('Checking your link…');
+    var kind = hs.get('type');
+    return TP.client().then(function(c){ return c.auth.setSession({access_token:hs.get('access_token'), refresh_token:hs.get('refresh_token')}); }).then(function(r){
+      history.replaceState(null, '', location.pathname + location.search);
+      if(r.error) throw r.error;
+      if(kind === 'invite' || kind === 'recovery') return showSetPassword(kind, r.data.user && r.data.user.email);
+      route();
+    }).catch(function(){ linkError('That link has expired or was already used.'); });
+  }
+  var code = qs.get('code');
+  if(code){   // back from Google, or a reset link opened in the same browser
+    busy('Signing you in…');
+    var reset = TP.lsGet('tp_pw_reset', null), wasReset = !!(reset && Date.now() - reset.at < 3600e3);
+    return TP.client().then(function(c){
+      // supabase-js swaps the code for a session by itself as it starts (when this browser began the sign-in),
+      // so look for that session first and only swap the code here if it didn't
+      return c.auth.getSession().then(function(r){
+        var s = r && r.data && r.data.session;
+        if(s) return {user:s.user};
+        return c.auth.exchangeCodeForSession(code).then(function(x){ if(x.error) throw x.error; return x.data; });
+      });
+    }).then(function(d){
+      history.replaceState(null, '', location.pathname);
+      if(d.redirectType === 'PASSWORD_RECOVERY' || wasReset) return showSetPassword('recovery', d.user && d.user.email);
+      route();
+    }).catch(function(){
+      history.replaceState(null, '', location.pathname);
+      linkError(wasReset ? 'That link has expired, or it was opened in a different browser.' : 'Sign-in didn’t complete — please try again.');
+    });
+  }
+  return TP.session().then(function(s){
+    if(s && !qs.get('out')) return route();   // already signed in
+    showSignIn();
+  }).catch(function(){ showSignIn('<div class="note bad">Sign-in is unavailable right now — check your connection and refresh.</div>'); });
+}
+start();
+})();
+</script>
+</body>
+</html>

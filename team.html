@@ -1,0 +1,1101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Team | TrulyPlaced</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0938d5">
+<link rel="icon" id="fav" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='116' fill='%230938d5'/%3E%3Cpath d='M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z' fill='%23fff'/%3E%3Cpath d='M205 200l37 36 76-88' fill='none' stroke='%230938d5' stroke-width='30' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://yubgrhxdhofnynfocpef.supabase.co" crossorigin>
+<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="/portal.css?v=2026-10-28.1">
+<style>
+/* the top bar scrolls away here, so the "Working on" bar below stays on top */
+.ptop{position:relative}
+.ph{display:none}
+/* open clients, like browser tabs */
+.otabs{max-width:1240px;margin:0 auto;padding:0 20px 8px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.otabs::-webkit-scrollbar{display:none}
+.otab{display:inline-flex;align-items:center;gap:7px;flex:none;height:32px;padding:0 4px 0 10px;border-radius:9px;border:1px solid var(--line);background:#fff;
+  font-size:13px;font-weight:600;color:var(--body);text-decoration:none;max-width:220px}
+.otab i{width:9px;height:9px;border-radius:50%;flex:none}
+.otab span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.otab.on{border-color:var(--ink);color:var(--ink);box-shadow:0 1px 0 var(--ink)}
+.otab button{width:24px;height:24px;border:0;background:none;border-radius:6px;display:grid;place-items:center;color:var(--muted)}
+.otab button:hover{background:var(--bg);color:var(--ink)}
+.otab button svg{width:13px;height:13px}
+.otab.add{padding:0 10px;color:var(--blue);border-style:dashed}
+
+/* the "Working on" bar */
+.cbar{position:sticky;top:0;z-index:25;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 8px 20px -18px rgba(18,26,51,.5)}
+.cbar-in{max-width:1240px;margin:0 auto;padding:10px 20px 0;border-left:5px solid var(--client)}
+.cb1{display:flex;align-items:center;gap:12px;min-width:0}
+.cb1 .who{flex:1;min-width:0}
+.cb1 .lab{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--client)}
+.cb1 .nm{font-family:Poppins;font-weight:700;font-size:19px;color:var(--ink);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cb1 .nm small{font-family:Inter;font-weight:500;font-size:13px;color:var(--muted);margin-left:8px}
+.cb1 .pg{flex:none;width:190px}
+.cb1 .pg b{font-size:13.5px;color:var(--ink)}
+.cb1 .pg span{font-size:12px;color:var(--muted)}
+.ctabs{display:flex;gap:2px;margin-top:8px;overflow-x:auto;scrollbar-width:none}
+.ctabs::-webkit-scrollbar{display:none}
+.ctabs a{flex:none;display:inline-flex;align-items:center;gap:7px;padding:10px 12px 11px;font-size:14px;font-weight:600;color:var(--muted);text-decoration:none;border-bottom:2.5px solid transparent}
+.ctabs a:hover{color:var(--ink)}
+.ctabs a.on{color:var(--ink);border-bottom-color:var(--client)}
+.ctabs a b{font-size:11.5px;background:var(--bg);color:var(--body);border-radius:99px;padding:1px 7px}
+.ctabs svg{width:17px;height:17px}
+
+/* client list */
+.crow .pgc{flex:none;width:170px}
+.crow .pgc b{font-size:13px;color:var(--ink)}
+.crow .pgc .m{font-size:12px}
+.crow .td{flex:none;width:88px;text-align:right;font-size:12.5px;color:var(--muted)}
+.crow .td b{display:block;color:var(--ink);font-size:14px}
+.crow .td.zero b{color:var(--warn)}
+.chev{width:18px;height:18px;color:#b3b9cf;flex:none}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.stat b{display:block;font-family:Poppins;font-size:21px;color:var(--ink);line-height:1.2}
+.stat span{font-size:12.5px;color:var(--muted)}
+
+/* application page */
+.ahead{display:flex;gap:14px;align-items:flex-start}
+.ahead h2{font-size:21px}
+.ahead .m{font-size:13.5px;color:var(--muted);margin-top:3px}
+.step{display:flex;gap:12px;align-items:flex-start}
+.step .n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--blue-soft);color:var(--blue);font-weight:700;font-size:13px;display:grid;place-items:center;margin-top:1px}
+.step .n.ok{background:var(--ok-soft);color:var(--ok)}
+.step .bd{flex:1;min-width:0}
+.qa{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px;align-items:start;padding:8px 0;border-top:1px solid var(--line)}
+.qa:first-child{border-top:0}
+.qa textarea.inp{min-height:44px;padding:10px 12px}
+.qa .ic{display:flex;gap:4px}
+.icb{width:36px;height:36px;border:1px solid var(--line);border-radius:9px;background:#fff;display:grid;place-items:center;color:var(--muted);flex:none}
+.icb:hover{color:var(--ink);border-color:#cdd3e6}
+.icb svg{width:16px;height:16px}
+.qa-ro{padding:10px 0;border-top:1px solid var(--line)}
+.qa-ro:first-child{border-top:0}
+.qa-ro b{display:block;font-size:13px;color:var(--ink)}
+.qa-ro div{font-size:14px;white-space:pre-wrap}
+.drop{border:2px dashed #cfd6ea;border-radius:14px;padding:18px;text-align:center;background:#fbfcff;cursor:pointer;font-size:13.5px}
+.drop.over{border-color:var(--blue);background:var(--blue-soft)}
+.drop svg{width:26px;height:26px;color:var(--blue)}
+.drop b{display:block;color:var(--ink);margin-top:4px}
+.drop img{max-height:220px;border-radius:10px;border:1px solid var(--line);margin-top:8px}
+.saved{font-size:12px;color:var(--muted)}
+.hist{display:grid;gap:0}
+.hi{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:13.5px}
+.hi:first-child{border-top:0}
+.hi .dot{flex:none;width:10px;height:10px;border-radius:50%;margin-top:6px;background:var(--blue-line)}
+.hi .dot.app_applied{background:var(--blue)}
+.hi .dot.app_status{background:var(--violet)}
+.hi .dot.note{background:var(--warn)}
+.hi .dot.client_created,.hi .dot.invite_sent{background:var(--ok)}
+.hi .dot.app_deleted,.hi .dot.resume_deleted{background:var(--bad)}
+.hi .tx{flex:1;min-width:0}
+.hi .tx b{color:var(--ink);font-weight:600}
+.hi .tx small{display:block;color:var(--muted);font-size:12px}
+.jbrow .side .btn{min-width:84px}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--bg);color:var(--body);margin-left:6px}
+.sticky-save{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(246,247,252,0),var(--bg) 30%);padding:16px 0 4px;display:flex;gap:10px;justify-content:flex-end;align-items:center}
+.lock{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ok);font-weight:600}
+.lock svg{width:14px;height:14px}
+.kbd{font-size:11.5px;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px;background:#fff}
+
+@media (max-width:900px){
+  .crow .pgc{width:120px}
+  .crow .td{display:none}
+  .stats{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:760px){
+  .otabs{padding:0 16px 8px}
+  .cbar-in{padding:8px 12px 0 12px;border-left-width:4px}
+  .cb1 .nm{font-size:16.5px}
+  .cb1 .nm small{display:none}
+  .cb1 .pg{width:96px}
+  .cb1 .pg span{display:none}
+  .cb1 .sw .lbl2{display:none}
+  .ctabs a{padding:9px 10px 10px;font-size:13.5px}
+  .ctabs a svg{display:none}
+  .crow .pgc{width:92px}
+  .crow .pgc .m{display:none}
+  .qa{grid-template-columns:1fr}
+  .qa .ic{justify-content:flex-end}
+  .ahead{flex-wrap:wrap}
+  .ahead > .row{width:100%}
+  .ahead h2{font-size:18px}
+  .ph{display:block}
+  .pc{display:none!important}
+  .pnav a span{display:none}
+}
+</style>
+</head>
+<body>
+<header class="ptop">
+  <div class="ptop-in">
+    <a class="brand" href="/team.html" data-go><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="#0938d5"/><path d="M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z" fill="#fff"/><path d="M205 200l37 36 76-88" fill="none" stroke="#0938d5" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg><span>TrulyPlaced<small>Team</small></span></a>
+    <nav class="pnav" id="pnav"></nav>
+    <div class="grow"></div>
+    <div class="me" id="me"></div>
+  </div>
+  <div class="otabs" id="otabs" hidden></div>
+</header>
+<div id="cbar"></div>
+<main class="wrap" id="view"><div class="skel"></div><div class="skel"></div><div class="skel"></div></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="modalRoot"></div>
+<input type="file" id="fileIn" hidden>
+<script src="/portal.js?v=2026-10-28.1"></script>
+<script>
+(function(){
+"use strict";
+var $ = TP.$, $$ = TP.$$, esc = TP.esc, I = TP.I, q = TP.q;
+var J = {
+  profile:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
+  resume:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>',
+  jobs:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  apps:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>',
+  act:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>',
+  link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>',
+  star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>',
+  swap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 3 8l4 4"/><path d="M3 8h13a4 4 0 0 1 4 4"/><path d="m17 20 4-4-4-4"/><path d="M21 16H8a4 4 0 0 1-4-4"/></svg>'
+};
+var SB = null, ME = null, TEAMROWS = [], LIST = null, C = null, R = {}, GEN = 0, BOARD = null, BOARDP = null;
+var V = $('#view');
+var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+var TABS = [['profile', 'Profile', J.profile], ['resumes', 'Resumes', J.resume], ['jobs', 'Jobs', J.jobs], ['applications', 'Applications', J.apps], ['activity', 'Activity', J.act]];
+var COMMON_Q = ['Are you legally authorized to work in the United States?', 'Will you now or in the future require visa sponsorship (e.g. H-1B)?',
+  'Are you willing to relocate?', 'What are your salary expectations?', 'When can you start?', 'LinkedIn profile', 'How did you hear about this job?',
+  'Gender (voluntary)', 'Race / ethnicity (voluntary)', 'Veteran status (voluntary)', 'Disability status (voluntary)'];
+
+/* =====================================================================
+   start: signed in? on the team?
+   ===================================================================== */
+TP.client().then(function(c){ SB = c; return TP.session(); }).then(function(s){
+  if(!s){ TP.toLogin(); return null; }
+  ME = {id:s.user.id, email:String(s.user.email || '').toLowerCase()};
+  return TP.whoami().then(function(w){
+    if(!w || !w.team) return notTeam(w || {});
+    ME.owner = !!w.owner;
+    loadTeamNames();
+    render();
+  });
+}).catch(function(e){ V.innerHTML = errBox(e, true); });
+
+function notTeam(w){
+  $('#me').innerHTML = meHTML();
+  V.innerHTML = '<div class="empty">' + I.lock + '<h3>For the TrulyPlaced team</h3><p>You’re signed in as <b>' + esc(ME.email) + '</b>, which isn’t on the team list. ' +
+    'Ask the owner to add you, then sign in again.</p><div class="row" style="justify-content:center">' +
+    (w.client ? '<a class="btn pri" href="/portal.html">Go to my dashboard</a>' : '<a class="btn" href="/app.html">Job board</a>') +
+    '<button class="btn" type="button" data-act="out">Sign out</button></div></div>';
+}
+function meHTML(){ return '<span title="' + esc(ME.email) + '">' + esc(ME.email) + (ME.owner ? ' · owner' : '') + '</span><button class="btn sm" type="button" data-act="out">' + I.out + '<span class="sr">Sign out</span></button>'; }
+function errBox(e, top){
+  return '<div class="note bad">' + esc(TP.errText(e)) + (top ? ' <a href="/login.html">Sign in again</a>' : ' <button class="btn sm" type="button" data-act="retry">Try again</button>') + '</div>';
+}
+function loadTeamNames(){ return q(SB.from('team_members').select('email,full_name,role,active')).then(function(r){ TEAMROWS = r || []; }, function(){}); }
+function who(email){
+  if(!email || email === 'system') return 'TrulyPlaced';
+  var t = TEAMROWS.filter(function(x){ return x.email === email; })[0];
+  return (t && t.full_name) || email.split('@')[0];
+}
+
+/* =====================================================================
+   pages and links. The client is in the address (?client=…), so each browser tab keeps its own client.
+   ===================================================================== */
+function route(){
+  var p = new URLSearchParams(location.search), h = location.hash.replace(/^#/, ''), r = {client:null, tab:'applications', app:null, page:null};
+  var c = p.get('client');
+  if(c && UUID.test(c)) r.client = c.toLowerCase();
+  if(!r.client){ r.page = h === 'team' ? 'team' : 'clients'; return r; }
+  var m = /^app=([0-9a-f-]{36})$/i.exec(h);
+  if(m) r.app = m[1].toLowerCase();
+  else if(TABS.some(function(t){ return t[0] === h; })) r.tab = h;
+  return r;
+}
+function cUrl(id, hash){ return '/team.html?client=' + encodeURIComponent(id) + (hash ? '#' + hash : ''); }
+function go(url, replace){ history[replace ? 'replaceState' : 'pushState'](null, '', url); render(); window.scrollTo(0, 0); }
+window.addEventListener('popstate', render);
+document.addEventListener('click', function(e){
+  var a = e.target.closest && e.target.closest('a[data-go]');
+  if(!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;   // Ctrl/middle click: a new browser tab
+  e.preventDefault(); go(a.getAttribute('href'));
+});
+function render(){
+  if(!ME) return;
+  R = route();
+  $('#me').innerHTML = meHTML();
+  $('#pnav').innerHTML = '<a href="/team.html" data-go class="' + (R.page !== 'team' ? 'on' : '') + '">' + I.users + '<span>Clients</span></a>' +
+    '<a href="/team.html#team" data-go class="' + (R.page === 'team' ? 'on' : '') + '">' + I.team + '<span>Team</span></a>';
+  drawOpenTabs();
+  if(R.page === 'team'){ $('#cbar').innerHTML = ''; return vTeam(); }
+  if(!R.client){ $('#cbar').innerHTML = ''; return vClients(); }
+  vClient();
+}
+function setTitle(t, c){
+  document.title = t + ' · TrulyPlaced Team';
+  var f = $('#fav');
+  if(c){
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="' + TP.hue(c.id) + '"/><text x="32" y="43" font-family="Arial,sans-serif" font-size="29" font-weight="700" fill="#fff" text-anchor="middle">' + esc(TP.initials(c.full_name, c.email)) + '</text></svg>';
+    f.href = 'data:image/svg+xml,' + encodeURIComponent(svg);
+  } else if(f.getAttribute('data-def')) f.href = f.getAttribute('data-def');
+}
+$('#fav').setAttribute('data-def', $('#fav').href);
+
+/* the clients open in this browser tab (sessionStorage: every browser tab has its own) */
+function openList(){ return TP.ssGet('tp_open_clients', []); }
+function rememberOpen(c){
+  var l = openList().filter(function(x){ return x.id !== c.id; });
+  l.push({id:c.id, name:c.full_name || c.email});
+  TP.ssSet('tp_open_clients', l.slice(-8));
+}
+function drawOpenTabs(){
+  var l = openList(), box = $('#otabs');
+  if(!l.length || (l.length === 1 && R.client === l[0].id)){ box.hidden = true; box.innerHTML = ''; return; }
+  var last = TP.ssGet('tp_last_tab', {});
+  box.hidden = false;
+  box.innerHTML = l.map(function(x){
+    return '<a class="otab' + (R.client === x.id ? ' on' : '') + '" href="' + esc(cUrl(x.id, last[x.id] || '')) + '" data-go title="' + esc(x.name) + ' — Ctrl+click to open in a new browser tab"><i style="background:' + TP.hue(x.id) + '"></i><span>' + esc(x.name) + '</span>' +
+      '<button type="button" data-act="closetab" data-id="' + esc(x.id) + '" aria-label="Close ' + esc(x.name) + '">' + I.x + '</button></a>';
+  }).join('') + '<a class="otab add" href="/team.html" data-go>' + I.plus.replace('<svg', '<svg width="14" height="14"') + 'Client</a>';
+}
+
+/* =====================================================================
+   Clients list
+   ===================================================================== */
+var CL = {q:'', f:'active', sort:'need'};
+function loadList(force){
+  if(LIST && !force && Date.now() - LIST.at < 60000) return Promise.resolve(LIST);
+  return Promise.all([
+    q(SB.from('clients').select('id,email,full_name,plan_total,status,target_roles,created_at').order('created_at', {ascending:false}).limit(3000)),
+    q(SB.from('client_progress').select('*').limit(3000))
+  ]).then(function(rs){
+    var prog = {}; (rs[1] || []).forEach(function(p){ prog[p.client_id] = p; });
+    LIST = {rows:rs[0] || [], prog:prog, at:Date.now()};
+    return LIST;
+  });
+}
+function vClients(){
+  setTitle('Clients', null);
+  var first = (TEAMROWS.filter(function(t){ return t.email === ME.email; })[0] || {}).full_name;
+  V.innerHTML = '<div class="row"><div class="grow"><div class="hello">' + (first ? 'Hi ' + esc(first.split(' ')[0]) : 'Clients') + '</div><div class="sub" id="cSub">Loading clients…</div></div>' +
+      '<button class="btn pri" type="button" data-act="newclient">' + I.plus + 'New client</button></div>' +
+    '<div class="tools"><input class="inp" id="cq" type="search" placeholder="Search name, email or target role" value="' + esc(CL.q) + '" autocomplete="off">' +
+      '<div class="seg" id="cf">' + [['active','Active'],['paused','Paused'],['done','Done'],['all','All']].map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (CL.f === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div>' +
+      '<select class="inp" id="cs" style="flex:0 0 auto;width:auto" aria-label="Sort"><option value="need">Fewest today first</option><option value="name">Name A–Z</option><option value="new">Newest clients</option><option value="left">Most left to do</option></select></div>' +
+    '<div id="cl"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>';
+  $('#cs').value = CL.sort;
+  var t; $('#cq').addEventListener('input', function(e){ clearTimeout(t); t = setTimeout(function(){ CL.q = e.target.value; drawClients(); }, 150); });
+  $('#cf').addEventListener('click', function(e){ var b = e.target.closest('[data-f]'); if(!b) return; CL.f = b.getAttribute('data-f'); $$('#cf button').forEach(function(x){ x.classList.toggle('on', x === b); }); drawClients(); });
+  $('#cs').addEventListener('change', function(e){ CL.sort = e.target.value; drawClients(); });
+  loadList(true).then(drawClients, function(e){ $('#cl').innerHTML = errBox(e); $('#cSub').textContent = ''; });
+}
+function drawClients(){
+  var box = $('#cl'); if(!box || !LIST) return;
+  var qq = CL.q.toLowerCase().trim(), P = LIST.prog;
+  var all = LIST.rows, act = all.filter(function(c){ return c.status === 'active'; }).length;
+  var todayAll = all.reduce(function(s, c){ return s + ((P[c.id] || {}).today || 0); }, 0);
+  $('#cSub').textContent = all.length ? act + ' active client' + (act === 1 ? '' : 's') + ' · ' + todayAll + ' application' + (todayAll === 1 ? '' : 's') + ' sent today' : '';
+  var rows = all.filter(function(c){ return CL.f === 'all' || c.status === CL.f; }).filter(function(c){
+    return !qq || [c.full_name, c.email, c.target_roles].join(' ').toLowerCase().indexOf(qq) > -1;
+  });
+  var left = function(c){ var p = P[c.id] || {}; return (c.plan_total || 0) - (p.done || 0); };
+  rows.sort(CL.sort === 'name' ? function(a, b){ return String(a.full_name).localeCompare(String(b.full_name)); }
+    : CL.sort === 'new' ? function(a, b){ return a.created_at < b.created_at ? 1 : -1; }
+    : CL.sort === 'left' ? function(a, b){ return left(b) - left(a); }
+    : function(a, b){ var pa = P[a.id] || {}, pb = P[b.id] || {}; return (pa.today || 0) - (pb.today || 0) || String(pa.last_applied_at || '').localeCompare(String(pb.last_applied_at || '')); });
+  if(!all.length){ box.innerHTML = '<div class="empty">' + I.users + '<h3>No clients yet</h3><p>Add your first client. They get an email to set their password and can then see every application you send.</p><button class="btn pri" type="button" data-act="newclient">' + I.plus + 'New client</button></div>'; return; }
+  if(!rows.length){ box.innerHTML = '<div class="empty"><h3>No one matches</h3><p>Try another search or filter.</p></div>'; return; }
+  box.innerHTML = '<div class="list">' + rows.map(function(c){
+    var p = P[c.id] || {}, done = p.done || 0, tot = c.plan_total || 0, pct = tot ? Math.min(100, Math.round(done / tot * 100)) : 0;
+    return '<a class="li crow" href="' + esc(cUrl(c.id)) + '" data-go>' +
+      '<span class="av" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span>' +
+      '<div class="main"><div class="t">' + esc(c.full_name || c.email) + (c.status !== 'active' ? ' <span class="st ' + esc(c.status) + '">' + (c.status === 'paused' ? 'Paused' : 'Done') + '</span>' : '') + '</div>' +
+        '<div class="m">' + esc([c.target_roles, c.email].filter(Boolean).join(' · ')) + '</div></div>' +
+      '<div class="pgc"><b>' + done + (tot ? ' / ' + tot : '') + '</b> <span class="m">' + (tot ? pct + '%' : 'no plan set') + '</span><div class="prog' + (tot && done >= tot ? ' full' : '') + '" style="margin-top:4px"><i style="width:' + pct + '%"></i></div></div>' +
+      '<div class="td' + (c.status === 'active' && !p.today ? ' zero' : '') + '"><b>' + (p.today || 0) + '</b>today</div>' +
+      '<div class="td"><b>' + (p.drafts || 0) + '</b>drafts</div>' +
+      '<div class="td" title="' + esc(TP.fmtDateTime(p.last_applied_at)) + '">' + (p.last_applied_at ? 'last ' + esc(TP.ago(p.last_applied_at)) : 'none yet') + '</div>' +
+      I.chev.replace('<svg', '<svg class="chev"') + '</a>';
+  }).join('') + '</div>';
+}
+
+function newClient(){
+  var planSel = ME.owner ? '<div class="field"><label for="ncP">Plan</label><select id="ncP"><option value="">Not set yet</option>' + TP.CONFIG.PLANS.map(function(n){ return '<option value="' + n + '">' + n + ' applications</option>'; }).join('') + '<option value="custom">Other number…</option></select></div>' +
+      '<div class="field" id="ncPCw" hidden><label for="ncPC">Number of applications</label><input id="ncPC" type="number" min="1" max="100000" inputmode="numeric"></div>'
+    : '<p class="fine">The owner sets the plan (250, 500 or 1000 applications) on the client’s Profile tab.</p>';
+  var m = TP.modal('<h2>New client</h2><p>We’ll create their login and email them a link to set a password. Nothing else is sent.</p>' +
+    '<form id="ncF" class="stack" style="margin-top:16px" novalidate>' +
+      '<div class="field"><label for="ncN">Full name</label><input id="ncN" required autocomplete="off" placeholder="e.g. Priya Sharma"></div>' +
+      '<div class="field"><label for="ncE">Email</label><input id="ncE" type="email" required autocomplete="off" placeholder="the email they’ll sign in with"></div>' +
+      '<div class="field"><label for="ncPh">Phone / WhatsApp <span class="muted">(optional)</span></label><input id="ncPh" type="tel" autocomplete="off"></div>' +
+      planSel + '<p class="err" id="ncErr" hidden></p>' +
+      '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="ncGo">Create client and send email</button></div></form>');
+  if(ME.owner) $('#ncP').addEventListener('change', function(e){ $('#ncPCw').hidden = e.target.value !== 'custom'; });
+  $('#ncF', m).addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = $('#ncN').value.trim(), email = $('#ncE').value.trim().toLowerCase(), err = $('#ncErr'), go2 = $('#ncGo');
+    var plan = ME.owner ? ($('#ncP').value === 'custom' ? +$('#ncPC').value : +$('#ncP').value) : 0;
+    err.hidden = false;
+    if(!name){ err.textContent = 'Add their name.'; return; }
+    if(!/^\S+@\S+\.\S+$/.test(email)){ err.textContent = 'Check the email address.'; return; }
+    err.hidden = true; go2.disabled = true; go2.classList.add('busy');
+    TP.fn('client-accounts', {action:'create_client', full_name:name, email:email, phone:$('#ncPh').value.trim(), plan_total:plan || null}).then(function(r){
+      TP.closeModal(); LIST = null;
+      TP.toast(r.already_client ? 'They’re already a client — opening them' : 'Client added. Set-password email sent to ' + email);
+      go(cUrl(r.client_id, 'profile'));
+    }).catch(function(e2){ go2.disabled = false; go2.classList.remove('busy'); err.hidden = false;
+      err.textContent = e2 && e2.code === 'bad_email' ? 'Check the email address.' : TP.errText(e2); });
+  });
+}
+
+/* =====================================================================
+   One client: the "Working on" bar and its tabs
+   ===================================================================== */
+function vClient(){
+  var id = R.client;
+  if(!C || C.id !== id){ C = {id:id, gen:++GEN, row:null}; V.innerHTML = '<div class="skel"></div><div class="skel"></div>'; $('#cbar').innerHTML = ''; }
+  var c = C;
+  var ready = c.row ? Promise.resolve() : Promise.all([
+    q(SB.from('clients').select('*').eq('id', id).maybeSingle()),
+    q(SB.from('client_progress').select('*').eq('client_id', id).maybeSingle())
+  ]).then(function(rs){ if(!rs[0]) throw {message:'not_found'}; c.row = rs[0]; c.prog = rs[1] || {}; });
+  ready.then(function(){
+    if(C !== c) return;   // switched to another client meanwhile
+    rememberOpen(c.row); drawOpenTabs();
+    var last = TP.ssGet('tp_last_tab', {}); last[c.id] = location.hash.replace(/^#/, ''); TP.ssSet('tp_last_tab', last);
+    drawBar(); showTab();
+  }, function(e){
+    if(C !== c) return;
+    C = null;
+    V.innerHTML = e && e.message === 'not_found' ? '<div class="empty"><h3>Client not found</h3><p>They may have been removed, or the link is wrong.</p><a class="btn" href="/team.html" data-go>All clients</a></div>' : errBox(e);
+  });
+}
+function drawBar(){
+  var c = C.row, p = C.prog || {}, done = p.done || 0, tot = c.plan_total || 0, pct = tot ? Math.min(100, Math.round(done / tot * 100)) : 0;
+  document.documentElement.style.setProperty('--client', TP.hue(c.id));
+  setTitle(c.full_name || c.email, c);
+  var counts = {applications:(p.done || 0) + (p.drafts || 0) ? (p.done || 0) : '', resumes:C.resumes ? C.resumes.length : ''};
+  $('#cbar').innerHTML = '<div class="cbar"><div class="cbar-in"><div class="cb1">' +
+      '<span class="av" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span>' +
+      '<div class="who"><div class="lab">Working on</div><div class="nm" id="cbName">' + esc(c.full_name || c.email) + '<small>' + esc(c.email) + '</small>' +
+        (c.status !== 'active' ? ' <span class="st ' + esc(c.status) + '">' + (c.status === 'paused' ? 'Paused' : 'Done') + '</span>' : '') + '</div></div>' +
+      '<div class="pg" title="Applications sent / plan"><b>' + done + (tot ? ' / ' + tot : '') + '</b> <span>' + (tot ? 'sent · ' + (p.today || 0) + ' today' : 'sent · no plan set') + '</span><div class="prog' + (tot && done >= tot ? ' full' : '') + '" style="margin-top:4px"><i style="width:' + pct + '%"></i></div></div>' +
+      '<button class="btn sm sw" type="button" data-act="switch" title="Switch client">' + J.swap + '<span class="lbl2">Switch</span></button></div>' +
+    '<nav class="ctabs" aria-label="' + esc(c.full_name) + '">' + TABS.map(function(t){
+      var on = R.tab === t[0];
+      return '<a href="' + esc(cUrl(C.id, t[0])) + '" data-go class="' + (on ? 'on' : '') + '">' + t[2] + t[1] + (counts[t[0]] !== '' && counts[t[0]] != null ? ' <b>' + counts[t[0]] + '</b>' : '') + '</a>';
+    }).join('') + '</nav></div></div>';
+}
+function showTab(){
+  if(R.app) return tApp(R.app);
+  ({profile:tProfile, resumes:tResumes, jobs:tJobs, applications:tApps, activity:tActivity}[R.tab])();
+}
+function refreshProgress(){
+  var c = C; if(!c) return Promise.resolve();
+  LIST = null;
+  return q(SB.from('client_progress').select('*').eq('client_id', c.id).maybeSingle()).then(function(p){ if(C === c){ c.prog = p || {}; drawBar(); } }, function(){});
+}
+function switcher(){
+  var all = (LIST && LIST.rows) || [];
+  var m = TP.modal('<h2>Switch client</h2><p>Ctrl+click (or middle-click) a name to open them in a new browser tab.</p>' +
+    '<input class="inp" id="swQ" type="search" placeholder="Find a client" style="margin-top:14px" autocomplete="off"><div id="swL" class="list" style="margin-top:10px;max-height:52vh;overflow:auto"></div>');
+  function draw(){
+    var qq = $('#swQ').value.toLowerCase().trim(), open = openList().map(function(x){ return x.id; });
+    var rows = all.length ? all : openList().map(function(x){ return {id:x.id, full_name:x.name, email:''}; });
+    rows = rows.filter(function(c){ return !qq || [c.full_name, c.email].join(' ').toLowerCase().indexOf(qq) > -1; })
+      .sort(function(a, b){ return (open.indexOf(b.id) > -1) - (open.indexOf(a.id) > -1); }).slice(0, 60);
+    $('#swL').innerHTML = rows.map(function(c){ return '<a class="li" href="' + esc(cUrl(c.id)) + '" data-go data-mclose="0"><span class="av sm" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span><div class="main"><div class="t">' + esc(c.full_name || c.email) + '</div><div class="m">' + esc(c.email || 'open in this tab') + '</div></div>' + (c.id === (C && C.id) ? '<span class="tag">now</span>' : '') + '</a>'; }).join('') || '<p class="fine" style="padding:14px">No one matches.</p>';
+  }
+  $('#swQ').addEventListener('input', draw);
+  $('#swQ').addEventListener('keydown', function(e){ if(e.key === 'Enter'){ var a = $('#swL a'); if(a){ TP.closeModal(); go(a.getAttribute('href')); } } });
+  m.addEventListener('click', function(e){ var a = e.target.closest('a[data-go]'); if(a && !(e.ctrlKey || e.metaKey || e.button === 1)) TP.closeModal(); });
+  draw();
+  if(!all.length) loadList().then(function(){ all = LIST.rows; draw(); }, function(){});
+}
+
+/* ---------- Profile ---------- */
+var PF = ['full_name', 'phone', 'linkedin', 'location', 'target_roles', 'target_locations', 'work_auth', 'salary', 'notice', 'apply_notes'];
+function tProfile(){
+  var c = C.row, ans = Array.isArray(c.answers) ? c.answers : [];
+  function f(k, label, ph, wide){ return '<div class="field"' + (wide ? ' style="grid-column:1/-1"' : '') + '><label for="pf_' + k + '">' + label + '</label>' +
+    (k === 'apply_notes' ? '<textarea id="pf_' + k + '" rows="3" placeholder="' + esc(ph || '') + '">' + esc(c[k] || '') + '</textarea>' : '<input id="pf_' + k + '" value="' + esc(c[k] || '') + '" placeholder="' + esc(ph || '') + '" autocomplete="off">') + '</div>'; }
+  var plan = c.plan_total || '';
+  V.innerHTML = '<div class="narrow" style="margin:0 auto">' +
+    '<div class="card"><h3>Contact and targets</h3><p class="hint">What the team needs to apply well. The client can see these on their dashboard.</p><div class="grid2">' +
+      f('full_name', 'Full name') + '<div class="field"><label>Login email</label><input value="' + esc(c.email) + '" readonly title="The email they sign in with"></div>' +
+      f('phone', 'Phone / WhatsApp', '+1 …') + f('linkedin', 'LinkedIn', 'linkedin.com/in/…') +
+      f('location', 'Lives in', 'e.g. Jersey City, NJ') + f('work_auth', 'Work authorization', 'e.g. F-1 OPT (STEM) — needs H-1B later') +
+      f('target_roles', 'Target roles', 'e.g. Data Analyst, BI Analyst') + f('target_locations', 'Target locations', 'e.g. US remote, New York, Toronto') +
+      f('salary', 'Salary expectation', 'e.g. $95K–$110K') + f('notice', 'Can start', 'e.g. 2 weeks’ notice') +
+      f('apply_notes', 'How to apply for them', 'e.g. No relocation outside the US East Coast. Skip contract roles.', true) + '</div></div>' +
+    '<div class="card"><h3>Standard answers</h3><p class="hint">Used to pre-fill every new application’s form answers. Tap a common question to add it.</p>' +
+      '<div id="pfQA">' + ans.map(qaRow).join('') + '</div>' +
+      '<div class="row" style="margin-top:10px"><button class="btn sm" type="button" data-act="qaadd">' + I.plus + 'Add a question</button></div>' +
+      '<div class="row" style="margin-top:10px;gap:6px" id="pfCommon">' + COMMON_Q.filter(function(x){ return !ans.some(function(a){ return a.q === x; }); }).map(function(x){ return '<button class="btn sm ghost" type="button" data-act="qacommon" data-q="' + esc(x) + '" style="border:1px dashed var(--line)">+ ' + esc(x) + '</button>'; }).join('') + '</div></div>' +
+    '<div class="card"><h3>Plan</h3>' + (ME.owner
+      ? '<p class="hint">Only the owner can change this.</p><div class="grid2"><div class="field"><label for="pf_plan">Applications in their plan</label><select id="pf_plan"><option value="">Not set</option>' +
+          TP.CONFIG.PLANS.map(function(n){ return '<option value="' + n + '"' + (plan === n ? ' selected' : '') + '>' + n + '</option>'; }).join('') +
+          (plan && TP.CONFIG.PLANS.indexOf(plan) < 0 ? '<option value="' + plan + '" selected>' + plan + '</option>' : '') + '<option value="custom">Other number…</option></select></div>' +
+          '<div class="field" id="pfPCw" hidden><label for="pf_planc">Number</label><input id="pf_planc" type="number" min="1" max="100000"></div></div>'
+      : '<p class="hint">' + (plan ? '<b>' + plan + ' applications</b>. ' : 'Not set yet. ') + 'Only the owner can change the plan.</p>') +
+      '<div class="field" style="margin-top:12px;max-width:260px"><label for="pf_status">Status</label><select id="pf_status"><option value="active">Active — we’re applying</option><option value="paused">Paused</option><option value="done">Done</option></select></div></div>' +
+    '<div class="card"><h3>Their login</h3><p class="hint">They sign in at <b>trulyplaced.com/login.html</b> with <b>' + esc(c.email) + '</b> and a password (or Google, if it’s a Gmail address).</p>' +
+      '<button class="btn sm" type="button" data-act="resend">' + I.mail + 'Email them the set-password link again</button></div>' +
+    '<div class="sticky-save"><span class="saved" id="pfMsg"></span><button class="btn pri" type="button" data-act="pfsave">Save changes</button></div></div>';
+  $('#pf_status').value = c.status;
+  if(ME.owner) $('#pf_plan').addEventListener('change', function(e){ $('#pfPCw').hidden = e.target.value !== 'custom'; });
+}
+function qaRow(a){
+  return '<div class="qa"><input class="inp" data-qa="q" value="' + esc(a.q || '') + '" placeholder="Question" aria-label="Question"><textarea class="inp" data-qa="a" rows="1" placeholder="Answer" aria-label="Answer">' + esc(a.a || '') + '</textarea>' +
+    '<div class="ic"><button class="icb" type="button" data-act="qacopy" title="Copy the answer">' + I.copy + '</button><button class="icb" type="button" data-act="qadel" title="Remove">' + I.trash + '</button></div></div>';
+}
+function readQA(box){
+  return $$('.qa', box).map(function(r){ return {q:$('[data-qa=q]', r).value.trim(), a:$('[data-qa=a]', r).value.trim()}; }).filter(function(x){ return x.q || x.a; });
+}
+function saveProfile(){
+  var c = C.row, patch = {}, btn = $('[data-act=pfsave]');
+  PF.forEach(function(k){ var v = $('#pf_' + k).value.trim(); if(v !== (c[k] || '')) patch[k] = v || (k === 'full_name' ? '' : null); });
+  var ans = readQA($('#pfQA')); if(JSON.stringify(ans) !== JSON.stringify(c.answers || [])) patch.answers = ans;
+  var st = $('#pf_status').value; if(st !== c.status) patch.status = st;
+  if(ME.owner){ var pv = $('#pf_plan').value, pn = pv === 'custom' ? +$('#pf_planc').value : (pv ? +pv : null); if(pv === 'custom' && !(pn > 0)) return TP.toast('Type the number of applications'); if((pn || null) !== (c.plan_total || null)) patch.plan_total = pn || null; }
+  if(!Object.keys(patch).length){ $('#pfMsg').textContent = 'No changes'; return; }
+  btn.disabled = true; btn.classList.add('busy');
+  q(SB.from('clients').update(patch).eq('id', c.id).select('*').maybeSingle()).then(function(row){
+    btn.disabled = false; btn.classList.remove('busy');
+    if(!row) throw {message:'You don’t have access to that.'};
+    C.row = row; LIST = null; drawBar(); rememberOpen(row); drawOpenTabs();
+    $('#pfMsg').textContent = 'Saved ' + new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+    TP.toast('Profile saved');
+  }).catch(function(e){ btn.disabled = false; btn.classList.remove('busy'); TP.toast(TP.errText(e)); });
+}
+
+/* ---------- Resumes ---------- */
+function loadResumes(force){
+  var c = C;
+  if(c.resumes && !force) return Promise.resolve(c.resumes);
+  return q(SB.from('client_resumes').select('id,name,is_default,updated_at,created_at,text,file_path').eq('client_id', c.id).order('is_default', {ascending:false}).order('updated_at', {ascending:false}))
+    .then(function(r){ c.resumes = r || []; return c.resumes; });
+}
+function defaultResume(){ var r = C.resumes || []; return r.filter(function(x){ return x.is_default; })[0] || r[0] || null; }
+function edUrl(kind, id){ return '/editor.html?client=' + encodeURIComponent(C.id) + '&' + kind + '=' + encodeURIComponent(id); }
+function tResumes(){
+  var c = C;
+  V.innerHTML = '<div class="row"><div class="grow"><div class="hello" style="font-size:19px">Resumes</div><div class="sub">Base resumes for ' + esc(c.row.full_name) + '. Each application gets its own tailored copy, so editing these never changes what was already sent.</div></div>' +
+    '<button class="btn pri" type="button" data-act="newresume">' + I.plus + 'New resume</button></div><div id="rl" style="margin-top:14px"><div class="skel"></div></div>';
+  loadResumes(true).then(function(rs){
+    if(C !== c) return;
+    drawBar();
+    $('#rl').innerHTML = rs.length ? '<div class="list">' + rs.map(function(r){
+      var first = String(r.text || '').split('\n').map(function(s){ return s.trim(); }).filter(Boolean).slice(0, 3).join(' · ');
+      return '<div class="li"><span class="logo" style="background:' + TP.hue(r.id) + '">' + J.resume.replace('<svg', '<svg width="18" height="18" style="color:#fff"') + '</span>' +
+        '<div class="main"><div class="t">' + esc(r.name) + (r.is_default ? ' <span class="tag" style="color:var(--warn)">' + J.star.replace('<svg', '<svg width="11" height="11"') + ' default</span>' : '') + '</div>' +
+        '<div class="m">' + (first ? esc(first) : '<i>Empty — open it to upload or paste the resume</i>') + '</div><div class="m">Edited ' + esc(TP.ago(r.updated_at)) + '</div></div>' +
+        '<div class="side"><a class="btn sm pri" href="' + esc(edUrl('resume', r.id)) + '" target="tp-er-' + esc(r.id) + '">' + I.spark + 'Open in editor</a>' +
+          '<button class="icb" type="button" data-act="resmenu" data-id="' + esc(r.id) + '" title="More">⋯</button></div></div>';
+    }).join('') + '</div>'
+      : '<div class="empty">' + J.resume + '<h3>No resume yet</h3><p>Add ' + esc(c.row.full_name.split(' ')[0] || 'their') + '’s resume: create one, then upload their file (PDF or Word) in the editor.</p><button class="btn pri" type="button" data-act="newresume">' + I.plus + 'New resume</button></div>';
+  }, function(e){ $('#rl').innerHTML = errBox(e); });
+}
+function newResume(){
+  var m = TP.modal('<h2>New resume</h2><p>Give it a name you’ll recognise when choosing it for a job.</p><form id="nrF" class="stack" style="margin-top:14px">' +
+    '<div class="field"><label for="nrN">Name</label><input id="nrN" required placeholder="e.g. Data Analyst" value="' + esc((C.row.target_roles || '').split(',')[0].trim() || 'Main resume') + '"></div>' +
+    '<div class="field"><label for="nrT">Paste the resume text <span class="muted">(optional — or upload their file in the editor)</span></label><textarea id="nrT" rows="6"></textarea></div>' +
+    '<label class="check"><input type="checkbox" id="nrD"' + ((C.resumes || []).length ? '' : ' checked') + '> Use it by default for new applications</label>' +
+    '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="nrGo">Create and open the editor</button></div></form>');
+  $('#nrF', m).addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = $('#nrN').value.trim() || 'Main resume', text = $('#nrT').value.trim(), def = $('#nrD').checked, b = $('#nrGo');
+    // open the editor tab now, while we still have the click (pop-up blockers)
+    var w = window.open('about:blank', '_blank');
+    b.disabled = true; b.classList.add('busy');
+    var c = C;
+    (def ? q(SB.from('client_resumes').update({is_default:false}).eq('client_id', c.id).eq('is_default', true)) : Promise.resolve())
+      .then(function(){ return q(SB.from('client_resumes').insert({client_id:c.id, name:name, text:text || null, is_default:def}).select('id').single()); })
+      .then(function(r){ TP.closeModal(); c.resumes = null; if(w) w.location.href = edUrl('resume', r.id); else window.open(edUrl('resume', r.id), 'tp-er-' + r.id); tResumes(); })
+      .catch(function(e2){ if(w) w.close(); b.disabled = false; b.classList.remove('busy'); TP.toast(TP.errText(e2)); });
+  });
+}
+function resumeMenu(id){
+  var r = (C.resumes || []).filter(function(x){ return x.id === id; })[0]; if(!r) return;
+  var m = TP.modal('<h2>' + esc(r.name) + '</h2><div class="stack" style="margin-top:14px">' +
+    '<div class="field"><label for="rmN">Rename</label><div class="row"><input class="inp grow" id="rmN" value="' + esc(r.name) + '"><button class="btn" type="button" id="rmSave">Save</button></div></div>' +
+    (r.is_default ? '' : '<button class="btn" type="button" id="rmDef">' + J.star + 'Use by default for new applications</button>') +
+    (r.text ? '<button class="btn" type="button" id="rmCopy">' + I.copy + 'Copy the resume text</button>' : '') +
+    '<button class="btn bad" type="button" id="rmDel">' + I.trash + 'Delete this resume</button>' +
+    '<p class="fine">Deleting it doesn’t change any application already sent — each one keeps its own copy.</p></div>');
+  var c = C, done = function(msg){ TP.closeModal(); c.resumes = null; TP.toast(msg); tResumes(); };
+  $('#rmSave', m).onclick = function(){ var n = $('#rmN').value.trim(); if(!n) return; q(SB.from('client_resumes').update({name:n}).eq('id', id)).then(function(){ done('Renamed'); }, function(e){ TP.toast(TP.errText(e)); }); };
+  if($('#rmDef', m)) $('#rmDef', m).onclick = function(){ q(SB.from('client_resumes').update({is_default:false}).eq('client_id', c.id).eq('is_default', true)).then(function(){ return q(SB.from('client_resumes').update({is_default:true}).eq('id', id)); }).then(function(){ done('Now the default resume'); }, function(e){ TP.toast(TP.errText(e)); }); };
+  if($('#rmCopy', m)) $('#rmCopy', m).onclick = function(){ TP.copy(r.text, 'Resume text'); };
+  $('#rmDel', m).onclick = function(){ TP.confirmBox('Delete “' + r.name + '”?', 'Applications already sent keep their own copy of the resume.', 'Delete', true).then(function(ok){ if(ok) q(SB.from('client_resumes').delete().eq('id', id)).then(function(){ done('Resume deleted'); }, function(e){ TP.toast(TP.errText(e)); }); }); };
+}
+
+/* ---------- Jobs: the job board, or any pasted link ---------- */
+// the client's applications, for spotting a job that was already started or sent
+function loadAppIndex(force){
+  var c = C;
+  if(c.idx && !force) return Promise.resolve(c.idx);
+  return q(SB.from('applications').select('id,job_key,job_url,status,applied_at,created_at').eq('client_id', c.id).order('created_at', {ascending:false}).limit(5000)).then(function(rows){
+    var idx = {key:{}, url:{}}; (rows || []).forEach(function(a){ if(a.job_key) idx.key[a.job_key] = a; idx.url[TP.cleanUrl(a.job_url)] = a; });
+    c.idx = idx; return idx;
+  });
+}
+function already(job){ var x = C.idx; return x ? (job.key && x.key[job.key]) || x.url[TP.cleanUrl(job.url)] || null : null; }
+function dupNote(a){
+  return '<a class="tag" href="' + esc(cUrl(C.id, 'app=' + a.id)) + '" data-go style="background:' + (a.status === 'draft' ? 'var(--warn-soft);color:var(--warn)' : 'var(--ok-soft);color:var(--ok)') + '">' +
+    (a.status === 'draft' ? 'Draft started' : 'Applied ' + esc(TP.ago(a.applied_at))) + '</a>';
+}
+var JB = {q:null, reg:'US', age:'30', n:40};
+function loadBoard(){
+  if(BOARD) return Promise.resolve(BOARD);
+  if(BOARDP) return BOARDP;
+  var rows = fetch('/jobs.json?v=' + Math.floor(Date.now() / 9e5)).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(d){
+    return (d.rows || []).map(function(r){ return {key:r[0] + ':' + r[1] + ':' + r[2], src:r[0], board:r[1], id:String(r[2]), title:r[3], company:r[4], location:r[5] || '', posted:r[6] || 0, url:r[7], dept:r[8] || '', remote:!!r[9], mode:r[11] || '', salary:r[12] || '', dom:r[13] || '', xl:r[14] || '', cc:r[15] || ''}; });
+  }).catch(function(){ return []; });
+  var team = q(SB.from('custom_jobs').select('id,kind,url,src,board,ext_id,title,company,location,work_mode,salary,domain,description,posted_at').eq('active', true).eq('kind', 'job').order('created_at', {ascending:false}).limit(1000)).then(function(rs){
+    return (rs || []).map(function(r){ var src = /^(gh|ashby|lever)$/.test(r.src) ? r.src : 'custom', id = src === 'custom' ? r.id : r.ext_id;
+      return {key:src + ':' + (src === 'custom' ? 'team' : r.board) + ':' + id, src:src, board:src === 'custom' ? 'team' : r.board, id:String(id), title:r.title || 'Role', company:r.company || '', location:r.location || '', posted:Date.parse(r.posted_at) || 0, url:r.url, mode:r.work_mode || '', salary:r.salary || '', dom:r.domain || '', desc:r.description || '', team:true}; });
+  }).catch(function(){ return []; });
+  BOARDP = Promise.all([rows, team]).then(function(rs){
+    var seen = {}, all = rs[1].concat(rs[0]).filter(function(j){ if(seen[j.key]) return false; seen[j.key] = 1; return j.url; });
+    all.sort(function(a, b){ return b.posted - a.posted; });
+    BOARD = all; BOARDP = null; return all;
+  });
+  return BOARDP;
+}
+var RX = {US:/,\s*(A[KLRZ]|C[AOT]|D[CE]|FL|GA|HI|I[ADLN]|K[SY]|LA|M[ADEINOST]|N[CDEHJMVY]|O[HKR]|PA|RI|S[CD]|T[NX]|UT|V[AT]|W[AIVY])\b|united states|\busa?\b|\bu\.s\.|remote[^a-z]{0,4}(us|usa|united states|north america|americas)\b|new york|san francisco|seattle|austin|boston|chicago|los angeles|denver|atlanta/i,
+  UK:/united kingdom|\buk\b|london|manchester|edinburgh|glasgow|bristol|england|scotland|wales/i, CA:/canada|toronto|vancouver|montr[eé]al|ottawa|calgary|waterloo|,\s*(ON|BC|QC|AB)\b/i,
+  AU:/australia|sydney|melbourne|brisbane|perth|adelaide|canberra/i};
+function inRegion(j, reg){
+  if(!reg) return true;
+  var t = j.location + ' ' + j.xl;
+  if(reg === 'Remote') return j.remote || /remote/i.test(t);
+  return RX[reg].test(t) || (j.cc && ({US:'US', UK:'GB', CA:'CA', AU:'AU'})[reg] === j.cc);
+}
+function tJobs(){
+  var c = C;
+  if(JB.q === null || JB.c !== c.id){ JB.q = (c.row.target_roles || '').split(',')[0].trim(); JB.c = c.id; JB.n = 40; }
+  V.innerHTML = '<div class="card"><h3>' + J.link.replace('<svg', '<svg width="17" height="17" style="vertical-align:-3px;margin-right:6px;color:var(--blue)"') + 'Apply from a link</h3>' +
+      '<p class="hint">Paste any job link — LinkedIn, Workday, Greenhouse, Lever, a company’s careers page.</p>' +
+      '<form id="lkF" class="row" novalidate><input class="inp grow" id="lkIn" type="url" inputmode="url" placeholder="https://…" autocomplete="off" style="min-width:220px"><button class="btn pri" type="submit" id="lkGo">Read link</button></form><div id="lkOut"></div></div>' +
+    '<div class="card"><h3>From the TrulyPlaced job board</h3><p class="hint">Fresh roles from the companies on our board and the jobs the team added.</p>' +
+      '<div class="tools" style="margin-top:4px"><input class="inp" id="jbQ" type="search" placeholder="Role, skill or company" value="' + esc(JB.q) + '" autocomplete="off">' +
+      '<select class="inp" id="jbR" style="flex:0 0 auto;width:auto" aria-label="Where"><option value="US">United States</option><option value="CA">Canada</option><option value="UK">United Kingdom</option><option value="AU">Australia</option><option value="Remote">Remote</option><option value="">Anywhere</option></select>' +
+      '<select class="inp" id="jbA" style="flex:0 0 auto;width:auto" aria-label="Posted"><option value="3">Last 3 days</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="">Any time</option></select></div>' +
+      '<div id="jbL"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div></div>';
+  $('#jbR').value = JB.reg; $('#jbA').value = JB.age;
+  var t; $('#jbQ').addEventListener('input', function(e){ clearTimeout(t); t = setTimeout(function(){ JB.q = e.target.value; JB.n = 40; drawBoard(); }, 200); });
+  $('#jbR').addEventListener('change', function(e){ JB.reg = e.target.value; JB.n = 40; drawBoard(); });
+  $('#jbA').addEventListener('change', function(e){ JB.age = e.target.value; JB.n = 40; drawBoard(); });
+  $('#lkF').addEventListener('submit', function(e){ e.preventDefault(); readLink($('#lkIn').value); });
+  Promise.all([loadBoard(), loadAppIndex(true)]).then(function(){ if(C === c && R.tab === 'jobs' && !R.app) drawBoard(); }, function(e){ $('#jbL').innerHTML = errBox(e); });
+}
+function drawBoard(){
+  var box = $('#jbL'); if(!box || !BOARD) return;
+  var words = String(JB.q || '').toLowerCase().split(/[\s,]+/).filter(function(w){ return w.length > 1; });
+  var min = JB.age ? Date.now() - (+JB.age) * 864e5 : 0;
+  var rows = BOARD.filter(function(j){
+    if(min && j.posted < min) return false;
+    if(!inRegion(j, JB.reg)) return false;
+    var hay = (j.title + ' ' + j.company + ' ' + j.dept + ' ' + j.location).toLowerCase();
+    return words.every(function(w){ return hay.indexOf(w) > -1; });
+  });
+  if(!BOARD.length){ box.innerHTML = '<p class="fine">The job board list couldn’t load right now. Paste a link above instead.</p>'; return; }
+  if(!rows.length){ box.innerHTML = '<p class="fine">No roles match. Try fewer words, another place, or “Any time”.</p>'; return; }
+  box.innerHTML = '<p class="fine" style="margin-bottom:8px">' + rows.length.toLocaleString() + ' role' + (rows.length === 1 ? '' : 's') + '</p><div class="list">' + rows.slice(0, JB.n).map(function(j){
+    var a = already(j);
+    return '<div class="li jbrow">' + TP.logo(j.company, j.dom) + '<div class="main"><div class="t">' + esc(j.title) + '</div>' +
+      '<div class="m">' + esc([j.company, j.location, j.mode, j.salary].filter(Boolean).join(' · ')) + '</div><div class="m">' + (j.posted ? 'Posted ' + esc(TP.ago(j.posted)) : '') + (j.team ? ' · added by the team' : '') + '</div></div>' +
+      '<div class="side"><a class="icb" href="' + esc(TP.safeHref(j.url)) + '" target="_blank" rel="noopener" title="Open the posting">' + I.ext + '</a>' +
+      (a ? dupNote(a) : '<button class="btn sm pri" type="button" data-act="jbstart" data-key="' + esc(j.key) + '">Start</button>') + '</div></div>';
+  }).join('') + '</div>' + (rows.length > JB.n ? '<div class="row" style="justify-content:center;margin-top:12px"><button class="btn" type="button" data-act="jbmore">Show more</button></div>' : '');
+}
+function htmlText(h){
+  var t = document.createElement('textarea'); t.innerHTML = String(h || ''); var d = document.createElement('div');
+  d.innerHTML = t.value.replace(/<(br|\/p|\/li|\/h\d|\/div)\s*\/?>/gi, '\n').replace(/<li[^>]*>/gi, '• ');
+  return (d.textContent || '').replace(/[ \t]+/g, ' ').replace(/\n\s*\n\s*\n+/g, '\n\n').trim();
+}
+function fetchJson(url, ms){
+  var ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function(){ if(ctl) ctl.abort(); }, ms || 15000);
+  return fetch(url, ctl ? {signal:ctl.signal} : {}).then(function(r){ clearTimeout(tm); if(!r.ok) throw r.status; return r.json(); }, function(e){ clearTimeout(tm); throw e; });
+}
+// the job description, from the company's public job board
+function boardDesc(j){
+  if(j.desc) return Promise.resolve(j.desc);
+  if(j.src === 'gh') return fetchJson('https://boards-api.greenhouse.io/v1/boards/' + encodeURIComponent(j.board) + '/jobs/' + encodeURIComponent(j.id)).then(function(d){ return htmlText(d.content); });
+  if(j.src === 'lever') return fetchJson('https://api.lever.co/v0/postings/' + encodeURIComponent(j.board) + '/' + encodeURIComponent(j.id)).then(function(d){
+    return [d.descriptionPlain].concat((d.lists || []).map(function(l){ return l.text + '\n' + htmlText(l.content); }), [d.additionalPlain]).filter(Boolean).join('\n\n'); });
+  if(j.src === 'ashby') return fetchJson('https://api.ashbyhq.com/posting-api/job-board/' + encodeURIComponent(j.board) + '?includeCompensation=true', 20000).then(function(d){
+    var x = (d.jobs || []).filter(function(y){ return String(y.id) === String(j.id); })[0]; if(!x) throw 0; return x.descriptionPlain || htmlText(x.descriptionHtml); });
+  return Promise.reject(0);
+}
+function startFromBoard(key, btn){
+  var j = (BOARD || []).filter(function(x){ return x.key === key; })[0]; if(!j) return;
+  btn.disabled = true; btn.classList.add('busy');
+  boardDesc(j).catch(function(){ return ''; }).then(function(jd){
+    return createDraft({job_key:j.key, job_url:j.url, title:j.title, company:j.company, location:j.location, jd_text:jd || null});
+  }).catch(function(e){ btn.disabled = false; btn.classList.remove('busy'); TP.toast(TP.errText(e)); });
+}
+
+/* a pasted link: the big job boards are read here; any other page by our job-info server function */
+function parseLink(raw){
+  var u; try{ u = new URL(String(raw).trim()); }catch(e){ return null; }
+  if(!/^https?:$/.test(u.protocol)) return null;
+  var h = u.hostname.toLowerCase().replace(/^www\./, ''), seg = u.pathname.split('/').filter(Boolean);
+  var it = {raw:String(raw).trim(), url:TP.cleanUrl(raw), host:h};
+  if(h === 'boards.greenhouse.io' || h === 'job-boards.greenhouse.io'){
+    var gb = u.searchParams.get('for'), gt = u.searchParams.get('token') || u.searchParams.get('gh_jid');
+    if(seg[0] === 'embed' && gb && gt) return Object.assign(it, {src:'gh', board:gb, id:gt});
+    var gid = seg[1] === 'jobs' && /^\d+$/.test(seg[2] || '') ? seg[2] : u.searchParams.get('gh_jid');
+    if(seg[0] && seg[0] !== 'embed' && gid) return Object.assign(it, {src:'gh', board:seg[0], id:gid});
+  }
+  var UU = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if(h === 'jobs.lever.co' && seg[0] && UU.test(seg[1] || '')) return Object.assign(it, {src:'lever', board:seg[0], id:seg[1]});
+  if(h === 'jobs.ashbyhq.com' && seg[0] && UU.test(seg[1] || '')) return Object.assign(it, {src:'ashby', board:seg[0], id:seg[1]});
+  return Object.assign(it, {src:'custom'});
+}
+function slugName(s){ return String(s || '').replace(/[-_]+/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); }).trim(); }
+function guessLink(it){
+  var u = new URL(it.raw), seg = u.pathname.split('/').filter(Boolean), g = {title:'', company:''};
+  var wd = /^([a-z0-9-]+)\.wd\d+\.myworkday(jobs|site)\.com$/.exec(it.host);
+  if(wd) g.company = slugName(wd[1]);
+  else if(!/linkedin|indeed|glassdoor|ziprecruiter|greenhouse|lever|ashby|workday|icims|taleo|smartrecruiters|workable/.test(it.host)){ var p = it.host.split('.'); g.company = slugName(p.length > 2 ? p[p.length - 2] : p[0]); }
+  for(var i = seg.length - 1; i >= 0; i--){
+    var w = decodeURIComponent(seg[i]).replace(/\.(html?|aspx?|php)$/i, '');
+    if(!/[a-z]{3,}-[a-z]{2,}/i.test(w)) continue;
+    w = w.replace(/(-[a-z]{0,4}\d[\w]*)+$/i, '');
+    var at = /^(.+?)-at-(.+)$/i.exec(w);
+    if(at){ g.title = slugName(at[1]); if(!g.company) g.company = slugName(at[2]); } else g.title = slugName(w);
+    break;
+  }
+  return g;
+}
+function readLink(raw){
+  var it = parseLink(raw), out = $('#lkOut'), b = $('#lkGo');
+  if(!it){ out.innerHTML = '<p class="err" style="margin-top:10px">That doesn’t look like a web link. Copy the whole address from the browser (it starts with https://).</p>'; return; }
+  b.disabled = true; b.classList.add('busy'); out.innerHTML = '';
+  var known = (BOARD || []).filter(function(j){ return (it.id && j.src === it.src && j.board === it.board && j.id === String(it.id)) || TP.cleanUrl(j.url) === it.url; })[0];
+  var read = it.src === 'gh' ? fetchJson('https://boards-api.greenhouse.io/v1/boards/' + encodeURIComponent(it.board) + '/jobs/' + encodeURIComponent(it.id)).then(function(d){
+        return {title:d.title, company:(known && known.company) || d.company_name || slugName(it.board), location:(d.location && d.location.name) || '', jd:htmlText(d.content), key:'gh:' + it.board + ':' + it.id, url:d.absolute_url || it.url}; })
+    : it.src === 'lever' ? fetchJson('https://api.lever.co/v0/postings/' + encodeURIComponent(it.board) + '/' + encodeURIComponent(it.id)).then(function(d){
+        var cat = d.categories || {};
+        return {title:d.text, company:(known && known.company) || slugName(it.board), location:cat.location || (cat.allLocations || []).join(' · '), key:'lever:' + it.board + ':' + it.id, url:d.hostedUrl || it.url,
+          jd:[d.descriptionPlain].concat((d.lists || []).map(function(l){ return l.text + '\n' + htmlText(l.content); }), [d.additionalPlain]).filter(Boolean).join('\n\n')}; })
+    : it.src === 'ashby' ? fetchJson('https://api.ashbyhq.com/posting-api/job-board/' + encodeURIComponent(it.board) + '?includeCompensation=true', 20000).then(function(d){
+        var x = (d.jobs || []).filter(function(y){ return String(y.id) === String(it.id); })[0]; if(!x) throw 0;
+        return {title:x.title, company:(known && known.company) || slugName(it.board), location:x.location || '', jd:x.descriptionPlain || htmlText(x.descriptionHtml), key:'ashby:' + it.board + ':' + it.id, url:x.jobUrl || it.url}; })
+    : TP.fn('job-info', {url:it.raw}, 25000).then(function(d){ if(!d || !d.title) throw 0; return {title:d.title, company:d.company || '', location:[d.location, d.mode].filter(Boolean).join(' · '), jd:d.description || '', url:d.url || it.url}; });
+  read.catch(function(){ var g = guessLink(it); return {title:g.title, company:g.company, location:'', jd:'', url:it.url, guessed:true}; }).then(function(j){
+    b.disabled = false; b.classList.remove('busy');
+    j.key = j.key || (known && known.key) || null; j.url = j.url || it.url;
+    var dup = already({key:j.key, url:j.url}) || already({url:it.url});
+    out.innerHTML = '<div class="stack" style="margin-top:14px">' + (j.guessed ? '<div class="note warn">We couldn’t read that page (LinkedIn and some sites block it). Check the title and company, and paste the job description below.</div>' : '<div class="note ok">Read it. Check the details, then start the application.</div>') +
+      (dup ? '<div class="note warn">' + esc(C.row.full_name) + ' already has this job: ' + dupNote(dup) + '</div>' : '') +
+      '<div class="grid3"><div class="field"><label for="lkT">Job title</label><input id="lkT" value="' + esc(j.title || '') + '"></div><div class="field"><label for="lkC">Company</label><input id="lkC" value="' + esc(j.company || '') + '"></div><div class="field"><label for="lkL">Location</label><input id="lkL" value="' + esc(j.location || '') + '"></div></div>' +
+      '<div class="field"><label for="lkU">Link</label><input id="lkU" value="' + esc(j.url) + '"></div>' +
+      '<div class="field"><label for="lkJ">Job description</label><textarea id="lkJ" rows="8" placeholder="Paste the whole job description — the editor tailors the resume to it">' + esc(j.jd || '') + '</textarea></div>' +
+      '<div class="row end"><button class="btn pri" type="button" id="lkStart">Start application for ' + esc(C.row.full_name.split(' ')[0] || 'this client') + '</button></div></div>';
+    $('#lkStart').onclick = function(){
+      var t = $('#lkT').value.trim(), co = $('#lkC').value.trim(), url = $('#lkU').value.trim();
+      if(!t || !co){ TP.toast('Add the job title and company'); return; }
+      if(!/^https?:\/\//i.test(url)){ TP.toast('Check the link'); return; }
+      this.disabled = true; this.classList.add('busy');
+      var me = this;
+      createDraft({job_key:j.key, job_url:TP.cleanUrl(url), title:t, company:co, location:$('#lkL').value.trim() || null, jd_text:$('#lkJ').value.trim() || null})
+        .catch(function(e){ me.disabled = false; me.classList.remove('busy'); TP.toast(TP.errText(e)); });
+    };
+  });
+}
+function createDraft(job){
+  var c = C;
+  return loadResumes().then(function(){
+    var base = defaultResume();
+    var row = Object.assign({client_id:c.id, base_resume_id:base ? base.id : null, answers:(Array.isArray(c.row.answers) ? c.row.answers : []).map(function(a){ return {q:a.q, a:a.a}; })}, job);
+    return q(SB.from('applications').insert(row).select('id').single());
+  }).then(function(r){
+    c.idx = null; refreshProgress();
+    TP.toast('Application started');
+    go(cUrl(c.id, 'app=' + r.id));
+  });
+}
+
+/* ---------- Applications ---------- */
+var AP = {f:'all', q:'', n:50};
+function tApps(){
+  var c = C, p = c.prog || {};
+  if(AP.c !== c.id){ AP = {f:'all', q:'', n:50, c:c.id}; }
+  V.innerHTML = '<div class="stats"><div class="stat"><b>' + (p.done || 0) + (c.row.plan_total ? ' <span style="font-size:14px;color:var(--muted)">/ ' + c.row.plan_total + '</span>' : '') + '</b><span>applications sent</span></div>' +
+      '<div class="stat"><b>' + (p.today || 0) + '</b><span>sent today</span></div><div class="stat"><b>' + (p.drafts || 0) + '</b><span>drafts in progress</span></div><div class="stat"><b>' + (p.interviews || 0) + '</b><span>interviews and offers</span></div></div>' +
+    '<div class="tools" style="margin-top:0"><input class="inp" id="apQ" type="search" placeholder="Search role or company" value="' + esc(AP.q) + '" autocomplete="off">' +
+      '<div class="seg" id="apF">' + [['all','All'],['draft','Drafts'],['applied','Applied'],['interview','Interview'],['offer','Offer'],['rejected','Not selected'],['closed','Closed']].map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (AP.f === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div>' +
+      '<a class="btn pri" href="' + esc(cUrl(c.id, 'jobs')) + '" data-go>' + I.plus + 'New application</a></div><div id="apL"><div class="skel"></div><div class="skel"></div></div>';
+  var t; $('#apQ').addEventListener('input', function(e){ clearTimeout(t); t = setTimeout(function(){ AP.q = e.target.value; AP.n = 50; loadApps(); }, 250); });
+  $('#apF').addEventListener('click', function(e){ var b = e.target.closest('[data-f]'); if(!b) return; AP.f = b.getAttribute('data-f'); AP.n = 50; $$('#apF button').forEach(function(x){ x.classList.toggle('on', x === b); }); loadApps(); });
+  loadApps();
+}
+function loadApps(){
+  var c = C, box = $('#apL');
+  var sq = SB.from('applications').select('id,status,title,company,location,job_url,applied_at,created_at,status_at').eq('client_id', c.id);
+  if(AP.f !== 'all') sq = sq.eq('status', AP.f);
+  var qq = AP.q.trim().replace(/[,()*%\\]/g, ' ').trim();
+  if(qq) sq = sq.or('title.ilike.*' + qq + '*,company.ilike.*' + qq + '*');
+  sq = sq.order('applied_at', {ascending:false, nullsFirst:true}).order('created_at', {ascending:false}).range(0, AP.n);   // drafts first, then newest sent
+  Promise.all([q(sq), loadWho(c)]).then(function(rs){
+    if(C !== c || !$('#apL')) return;
+    var rows = rs[0] || [], more = rows.length > AP.n; rows = rows.slice(0, AP.n);
+    if(!rows.length){
+      box.innerHTML = AP.f === 'all' && !qq ? '<div class="empty">' + J.apps + '<h3>No applications yet</h3><p>Find a job on the Jobs tab — from the job board or any link — and start the first one.</p><a class="btn pri" href="' + esc(cUrl(c.id, 'jobs')) + '" data-go>Find a job</a></div>' : '<div class="empty"><h3>Nothing here</h3><p>Try another filter or search.</p></div>';
+      return;
+    }
+    box.innerHTML = '<div class="list">' + rows.map(function(a){
+      var by = c.who[a.id], when = (a.applied_at ? esc(TP.fmtDateTime(a.applied_at)) : 'started ' + esc(TP.ago(a.created_at))) + (by ? ' · by ' + esc(who(by)) : '');
+      return '<a class="li" href="' + esc(cUrl(c.id, 'app=' + a.id)) + '" data-go>' + TP.logo(a.company) +
+        '<div class="main"><div class="t">' + esc(a.title || 'Role') + '</div><div class="m">' + esc([a.company, a.location].filter(Boolean).join(' · ')) + '</div><div class="m ph">' + when + '</div></div>' +
+        '<div class="side"><span class="m pc" style="font-size:12.5px;color:var(--muted);text-align:right">' + when.replace(' · by ', '<br>by ') + '</span>' + TP.statusChip(a.status) + '</div></a>';
+    }).join('') + '</div>' + (more ? '<div class="row" style="justify-content:center;margin-top:12px"><button class="btn" type="button" data-act="apmore">Show more</button></div>' : '');
+  }, function(e){ if($('#apL')) box.innerHTML = errBox(e); });
+}
+// who started / sent each application (from the history; never shown to clients)
+function loadWho(c, force){
+  if(c.who && !force) return Promise.resolve(c.who);
+  return q(SB.from('client_activity').select('application_id,kind,by_email').eq('client_id', c.id).in('kind', ['app_started', 'app_applied']).order('at', {ascending:true}).limit(10000)).then(function(rows){
+    var w = {}; (rows || []).forEach(function(r){ if(r.application_id && (r.kind === 'app_applied' || !w[r.application_id])) w[r.application_id] = r.by_email; });
+    c.who = w; return w;
+  }, function(){ c.who = {}; return c.who; });
+}
+
+/* ---------- one application ---------- */
+var A = null;   // the application on screen
+function tApp(id){
+  var c = C;
+  V.innerHTML = '<div class="skel"></div><div class="skel"></div>';
+  Promise.all([q(SB.from('applications').select('*').eq('id', id).eq('client_id', c.id).maybeSingle()), loadResumes(), loadWho(c, true)]).then(function(rs){
+    if(C !== c || R.app !== id) return;
+    if(!rs[0]){ V.innerHTML = '<div class="empty"><h3>Not found for ' + esc(c.row.full_name) + '</h3><p>This application doesn’t belong to this client, or it was deleted.</p><a class="btn" href="' + esc(cUrl(c.id, 'applications')) + '" data-go>All applications</a></div>'; return; }
+    A = rs[0]; A._c = c.id;
+    setTitle((A.company || 'Application') + ' · ' + (c.row.full_name || ''), c.row);
+    if(A.status === 'draft') drawDraft(); else drawSent();
+  }, function(e){ V.innerHTML = errBox(e); });
+}
+function appHead(){
+  var by = C.who && C.who[A.id];
+  return '<a class="btn sm ghost" href="' + esc(cUrl(C.id, 'applications')) + '" data-go>' + I.back + 'Applications</a>' +
+    '<div class="ahead" style="margin-top:10px">' + TP.logo(A.company) + '<div style="flex:1;min-width:0"><h2>' + esc(A.title || 'Role') + '</h2>' +
+    '<div class="m">' + esc([A.company, A.location].filter(Boolean).join(' · ')) + '</div>' +
+    '<div class="m">' + (A.applied_at ? 'Applied ' + esc(TP.fmtDateTime(A.applied_at)) : 'Started ' + esc(TP.ago(A.created_at))) + (by ? ' by ' + esc(who(by)) : '') + ' · for <b style="color:var(--client)">' + esc(C.row.full_name) + '</b></div></div>' +
+    '<div class="row">' + (A.status === 'draft' ? TP.statusChip('draft') : '') + '<a class="btn sm" href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Job posting</a></div></div>';
+}
+function resumeCard(){
+  var rs = C.resumes || [], base = rs.filter(function(r){ return r.id === A.base_resume_id; })[0];
+  var tailored = !!(A.resume_doc || A.resume_text);
+  var preview = A.resume_text || (base && base.text) || '';
+  return '<div class="step"><span class="n' + (tailored ? ' ok' : '') + '">2</span><div class="bd"><h3>Resume for this job</h3>' +
+    (rs.length ? '<div class="row" style="margin:8px 0 10px"><label class="lbl" for="apBase">Start from</label><select class="inp" id="apBase" style="width:auto;flex:1;max-width:320px"' + (tailored ? ' disabled title="Already tailored — this copy is used"' : '') + '>' +
+      rs.map(function(r){ return '<option value="' + esc(r.id) + '"' + (r.id === A.base_resume_id ? ' selected' : '') + '>' + esc(r.name) + '</option>'; }).join('') + '</select></div>'
+      : '<div class="note warn" style="margin:8px 0 10px">' + esc(C.row.full_name) + ' has no resume yet. <a href="' + esc(cUrl(C.id, 'resumes')) + '" data-go>Add one on the Resumes tab</a>, or open the editor and upload their file there.</div>') +
+    '<div class="row"><a class="btn pri" href="' + esc(edUrl('app', A.id)) + '" target="tp-ed-' + esc(A.id) + '" data-act="toeditor">' + I.spark + (tailored ? 'Keep editing in the editor' : 'Tailor in the editor') + '</a>' +
+      (preview ? '<button class="btn" type="button" data-act="cpresume">' + I.copy + 'Copy resume text</button>' : '') + '</div>' +
+    '<p class="fine" style="margin-top:8px">' + (tailored ? '<span class="lock" style="color:var(--ok)">' + I.check + 'Tailored for this job</span> — saved ' + esc(TP.ago(A.updated_at)) + '. In the editor: <b>Optimise for this job</b>, then <b>Download → PDF</b>.'
+      : 'Opens the editor with this job’s description, so <b>Optimise for this job</b> tailors it. It saves a copy for this application only.') + '</p>' +
+    (preview ? '<details style="margin-top:8px"><summary class="fine" style="cursor:pointer">See the text that will be sent</summary><pre class="txt" style="margin-top:8px">' + esc(preview) + '</pre></details>' : '') + '</div></div>';
+}
+function drawDraft(){
+  var first = esc(C.row.full_name.split(' ')[0] || 'them');
+  V.innerHTML = '<div class="narrow" style="margin:0 auto">' + appHead() +
+    '<div class="card" style="margin-top:16px"><div class="step"><span class="n' + (A.jd_text ? ' ok' : '') + '">1</span><div class="bd"><h3>The job</h3>' +
+      '<div class="grid3" style="margin-top:8px"><div class="field"><label for="apT">Title</label><input id="apT" value="' + esc(A.title) + '"></div><div class="field"><label for="apC">Company</label><input id="apC" value="' + esc(A.company) + '"></div><div class="field"><label for="apL2">Location</label><input id="apL2" value="' + esc(A.location || '') + '"></div></div>' +
+      '<div class="field" style="margin-top:10px"><label for="apJD">Job description</label><textarea id="apJD" rows="6" placeholder="Paste the job description — the editor tailors the resume to it">' + esc(A.jd_text || '') + '</textarea></div></div></div></div>' +
+    '<div class="card" id="resCard">' + resumeCard() + '</div>' +
+    '<div class="card"><div class="step"><span class="n' + (A.cover_letter ? ' ok' : '') + '">3</span><div class="bd"><h3>Cover letter <span class="muted" style="font-weight:500;font-size:13px">(if the form asks)</span></h3>' +
+      '<p class="hint">Write it in the editor’s <b>Cover letter</b> tab, or paste it here.</p><textarea class="inp" id="apCL" rows="5">' + esc(A.cover_letter || '') + '</textarea>' +
+      '<div class="row" style="margin-top:8px"><button class="btn sm" type="button" data-act="cpcover">' + I.copy + 'Copy cover letter</button></div></div></div></div>' +
+    '<div class="card"><div class="step"><span class="n">4</span><div class="bd"><h3>Answers for the form</h3><p class="hint">From ' + first + '’s standard answers. Add anything this form asks — it’s all kept with the application.</p>' +
+      '<div id="apQA">' + (A.answers || []).map(qaRow).join('') + '</div><div class="row" style="margin-top:8px"><button class="btn sm" type="button" data-act="qaadd2">' + I.plus + 'Add a question</button></div></div></div></div>' +
+    '<div class="card"><div class="step"><span class="n">5</span><div class="bd"><h3>Apply on the company’s site</h3>' +
+      '<ol class="fine" style="margin:6px 0 12px 18px;font-size:13.5px;color:var(--body)"><li>Download the PDF in the editor (<b>Download → PDF</b>).</li><li>Fill in the form — copy the answers above.</li><li>Submit, then take a screenshot of the “application received” screen.</li></ol>' +
+      '<a class="btn" href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Open the application page</a></div></div></div>' +
+    '<div class="card" style="border-color:var(--blue-line)"><div class="step"><span class="n">6</span><div class="bd"><h3>Mark as applied</h3>' +
+      '<p class="hint">Once it’s sent. This keeps a permanent record of exactly what went to ' + esc(A.company || 'the company') + '.</p>' +
+      '<div class="grid2"><div><div class="lbl" style="margin-bottom:6px">Confirmation screenshot</div><div class="drop" id="dShot" tabindex="0" role="button">' + I.img + '<b>Paste (<span class="kbd">Ctrl</span>+<span class="kbd">V</span>), drop, or choose</b><span class="fine">PNG or JPG</span></div></div>' +
+        '<div><div class="lbl" style="margin-bottom:6px">Resume file you uploaded <span class="muted" style="font-weight:500">(recommended)</span></div><div class="drop" id="dRes" tabindex="0" role="button">' + I.doc + '<b>Drop or choose the PDF</b><span class="fine">PDF or Word</span></div></div></div>' +
+      '<label class="check" style="margin-top:12px"><input type="checkbox" id="noShot"> There was no confirmation screen</label>' +
+      '<p class="err" id="mkErr" hidden></p>' +
+      '<div class="row" style="margin-top:14px"><button class="btn ok lg" type="button" data-act="markapplied">' + I.check + 'Mark as applied for ' + first + '</button><span class="grow"></span><span class="saved" id="apSaved"></span>' +
+        '<button class="btn sm bad" type="button" data-act="deldraft">' + I.trash + 'Delete draft</button></div></div></div></div></div>';
+  ['apT', 'apC', 'apL2', 'apJD', 'apCL'].forEach(function(k){ $('#' + k).addEventListener('input', draftChanged); });
+  $('#apQA').addEventListener('input', draftChanged);
+  if($('#apBase')) $('#apBase').addEventListener('change', function(e){ A.base_resume_id = e.target.value; draftChanged(); $('#resCard').innerHTML = resumeCard(); });
+  setupDrop($('#dShot'), 'shot', 'image/png,image/jpeg,image/webp');
+  setupDrop($('#dRes'), 'res', '.pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+}
+var draftDirty = false;
+function draftChanged(){ draftDirty = true; var s = $('#apSaved'); if(s) s.textContent = 'Saving…'; saveDraftLater(); }
+var saveDraftLater = TP.debounce(function(){ saveDraft(); }, 900);
+function draftPatch(){
+  return {title:$('#apT').value.trim(), company:$('#apC').value.trim(), location:$('#apL2').value.trim() || null, jd_text:$('#apJD').value.trim() || null,
+    cover_letter:$('#apCL').value.trim() || null, answers:readQA($('#apQA')), base_resume_id:A.base_resume_id || null};
+}
+function saveDraft(){
+  if(!A || A.status !== 'draft' || !$('#apT') || !draftDirty) return Promise.resolve();
+  var a = A, patch = draftPatch(); draftDirty = false;
+  return q(SB.from('applications').update(patch).eq('id', a.id).eq('status', 'draft').select('id,updated_at').maybeSingle()).then(function(r){
+    if(A !== a) return;
+    if(!r){ TP.toast('This application was already marked as applied elsewhere'); return tApp(a.id); }
+    Object.assign(a, patch, {updated_at:r.updated_at});
+    var s = $('#apSaved'); if(s) s.textContent = 'All changes saved';
+  }, function(e){ draftDirty = true; var s = $('#apSaved'); if(s) s.textContent = 'Not saved — ' + TP.errText(e); });
+}
+var FILES = {};
+function setupDrop(el, kind, accept){
+  function take(f){
+    if(!f) return;
+    if(kind === 'shot' && !/^image\//.test(f.type)) return TP.toast('The screenshot must be an image (PNG or JPG)');
+    if(kind === 'res' && !/\.(pdf|docx)$/i.test(f.name || '')) return TP.toast('Choose the PDF or Word file you uploaded');
+    if(f.size > 10 * 1048576) return TP.toast('That file is over 10 MB');
+    FILES[kind] = f;
+    if(kind === 'shot'){ var u = URL.createObjectURL(f); el.innerHTML = '<b>Screenshot ready</b><img src="' + u + '" alt="Confirmation screenshot"><span class="fine">Click to change</span>'; }
+    else el.innerHTML = I.doc + '<b>' + esc(f.name) + '</b><span class="fine">' + Math.round(f.size / 1024) + ' KB · click to change</span>';
+    el.classList.add('has');
+  }
+  el._take = take;
+  el.addEventListener('click', function(){ var fi = $('#fileIn'); fi.accept = accept; fi.onchange = function(){ take(fi.files[0]); fi.value = ''; }; fi.click(); });
+  el.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); el.click(); } });
+  ['dragenter', 'dragover'].forEach(function(ev){ el.addEventListener(ev, function(e){ e.preventDefault(); el.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function(ev){ el.addEventListener(ev, function(e){ e.preventDefault(); el.classList.remove('over'); }); });
+  el.addEventListener('drop', function(e){ take(e.dataTransfer.files[0]); });
+}
+// Ctrl+V anywhere on a draft pastes the confirmation screenshot
+document.addEventListener('paste', function(e){
+  var d = $('#dShot'); if(!d || !A || A.status !== 'draft') return;
+  var items = (e.clipboardData && e.clipboardData.items) || [];
+  for(var i = 0; i < items.length; i++) if(items[i].type && items[i].type.indexOf('image/') === 0){
+    var f = items[i].getAsFile(); if(f){ e.preventDefault(); d._take(new File([f], 'screenshot-' + Date.now() + '.' + (f.type.split('/')[1] || 'png'), {type:f.type})); TP.toast('Screenshot added'); }
+    return;
+  }
+});
+function ext(f){ var m = /\.(\w{2,5})$/.exec(f.name || ''); return (m ? m[1] : (f.type.split('/')[1] || 'bin')).toLowerCase().replace('jpeg', 'jpg'); }
+function markApplied(btn){
+  var a = A, err = $('#mkErr'), noShot = $('#noShot').checked;
+  err.hidden = true;
+  if(!FILES.shot && !noShot){ err.hidden = false; err.textContent = 'Add the confirmation screenshot (paste it with Ctrl+V), or tick “There was no confirmation screen”.'; return; }
+  var patch = draftPatch();
+  if(!patch.title || !patch.company){ err.hidden = false; err.textContent = 'Add the job title and company in step 1.'; return; }
+  btn.disabled = true; btn.classList.add('busy');
+  var base = (C.resumes || []).filter(function(r){ return r.id === patch.base_resume_id; })[0];
+  var stamp = Date.now(), dir = C.id + '/applications/' + a.id + '/';
+  // what goes on the record: the tailored copy, or the base resume exactly as it is today
+  var resume = (a.resume_doc || a.resume_text) ? Promise.resolve({}) : base ? q(SB.from('client_resumes').select('doc,text').eq('id', base.id).maybeSingle()).then(function(r){ return r ? {resume_doc:r.doc, resume_text:r.text} : {}; }) : Promise.resolve({});
+  var shot = FILES.shot ? TP.shrinkImage(FILES.shot).then(function(f){ return TP.upload(dir + 'confirmation-' + stamp + '.' + ext(f), f); }) : Promise.resolve(null);
+  var res = FILES.res ? TP.upload(dir + 'resume-' + stamp + '.' + ext(FILES.res), FILES.res) : Promise.resolve(null);
+  Promise.all([resume, shot, res]).then(function(rs){
+    if(!rs[0].resume_text && !a.resume_text && !rs[2]){ throw {message:'There’s no resume on this application yet — tailor it in the editor, or attach the file you uploaded.'}; }
+    var up = Object.assign(patch, rs[0], {status:'applied', screenshot:rs[1], resume_file:rs[2]});
+    return q(SB.from('applications').update(up).eq('id', a.id).eq('status', 'draft').select('*').maybeSingle());
+  }).then(function(row){
+    if(!row) throw {message:'Couldn’t mark it — it may already be marked as applied. Refresh the page.'};
+    FILES = {}; draftDirty = false; C.idx = null; C.who = null;
+    TP.toast('Marked as applied for ' + C.row.full_name);
+    refreshProgress().then(function(){ var p = C.prog || {}; if(C.row.plan_total) TP.toast('Marked as applied — ' + (p.done || 0) + ' / ' + C.row.plan_total + ' for ' + C.row.full_name); });
+    tApp(a.id);
+  }).catch(function(e){ btn.disabled = false; btn.classList.remove('busy'); err.hidden = false; err.textContent = TP.errText(e); });
+}
+function drawSent(){
+  var miss = !A.screenshot || !A.resume_file;
+  V.innerHTML = '<div class="narrow" style="margin:0 auto">' + appHead() +
+    '<div class="card" style="margin-top:16px"><div class="row"><div class="grow"><span class="lock">' + I.lock + 'Sent ' + esc(TP.fmtDateTime(A.applied_at)) + ' — this record can’t be changed</span></div>' +
+      '<label class="lbl" for="apSt">Status</label><select class="inp" id="apSt" style="width:auto">' + TP.STATUS.filter(function(s){ return s[0] !== 'draft'; }).map(function(s){ return '<option value="' + s[0] + '"' + (s[0] === A.status ? ' selected' : '') + '>' + s[1] + '</option>'; }).join('') + '</select></div></div>' +
+    '<div class="card"><h3>Confirmation screenshot</h3>' + (A.screenshot ? '<a class="shot" data-file="' + esc(A.screenshot) + '" target="_blank" rel="noopener"><img data-file="' + esc(A.screenshot) + '" alt="Confirmation screenshot"></a>' : '<p class="hint">None was saved.</p>') + '</div>' +
+    '<div class="card"><h3>Resume sent</h3><div class="row" style="margin:6px 0 10px">' +
+      (A.resume_file ? '<a class="file" data-file="' + esc(A.resume_file) + '" target="_blank" rel="noopener">' + I.doc + '<span>The exact file uploaded</span></a>' : '') +
+      (A.resume_doc ? '<a class="btn sm" href="' + esc(edUrl('app', A.id)) + '" target="tp-ed-' + esc(A.id) + '">' + I.doc + 'View it as sent (and download the PDF again)</a>' : '') +
+      (A.resume_text ? '<button class="btn sm" type="button" data-act="cpresume">' + I.copy + 'Copy text</button>' : '') + '</div>' +
+      (A.resume_text ? '<pre class="txt">' + esc(A.resume_text) + '</pre>' : '') + '</div>' +
+    (A.cover_letter ? '<div class="card"><h3>Cover letter</h3><pre class="txt">' + esc(A.cover_letter) + '</pre></div>' : '') +
+    ((A.answers || []).length ? '<div class="card"><h3>Answers given</h3>' + A.answers.map(function(x){ return '<div class="qa-ro"><b>' + esc(x.q) + '</b><div>' + esc(x.a) + '</div></div>'; }).join('') + '</div>' : '') +
+    (A.jd_text ? '<div class="card"><details><summary style="cursor:pointer"><h3 style="display:inline">Job description</h3> <span class="fine">as it was when we applied</span></summary><pre class="txt" style="margin-top:10px">' + esc(A.jd_text) + '</pre></details></div>' : '') +
+    (miss ? '<div class="card"><h3>Add a missing file</h3><p class="hint">A file that wasn’t added at the time can be added once. Files already saved can’t be replaced.</p><div class="grid2">' +
+      (A.screenshot ? '' : '<div class="drop" id="dShot2" tabindex="0" role="button">' + I.img + '<b>Add the confirmation screenshot</b></div>') +
+      (A.resume_file ? '' : '<div class="drop" id="dRes2" tabindex="0" role="button">' + I.doc + '<b>Add the resume file that was uploaded</b></div>') + '</div>' +
+      '<div class="row end" style="margin-top:10px"><button class="btn" type="button" data-act="addmissing">Save file</button></div></div>' : '') +
+    '<div class="card"><h3>History</h3><div class="hist" id="apHist"><div class="skel"></div></div></div>' +
+    (ME.owner ? '<div class="row end" style="margin-top:14px"><button class="btn sm bad" type="button" data-act="delsent">' + I.trash + 'Delete this application (owner)</button></div>' : '') + '</div>';
+  TP.fillFiles(V);
+  $('#apSt').addEventListener('change', function(e){ setStatus(e.target.value); });
+  if($('#dShot2')) setupDrop($('#dShot2'), 'shot', 'image/png,image/jpeg,image/webp');
+  if($('#dRes2')) setupDrop($('#dRes2'), 'res', '.pdf,.docx');
+  var a = A;
+  q(SB.from('client_activity').select('*').eq('application_id', a.id).order('at', {ascending:true})).then(function(rows){ if(A === a && $('#apHist')) $('#apHist').innerHTML = (rows || []).map(histRow).join('') || '<p class="fine">No history yet.</p>'; }, function(){});
+}
+function setStatus(s){
+  var a = A;
+  q(SB.from('applications').update({status:s}).eq('id', a.id).select('*').maybeSingle()).then(function(row){
+    if(!row) throw {message:'You don’t have access to that.'};
+    TP.toast('Status: ' + TP.statusLabel(s)); refreshProgress(); A = row; drawSent();
+  }, function(e){ TP.toast(TP.errText(e)); tApp(a.id); });
+}
+function addMissing(btn){
+  var a = A, dir = C.id + '/applications/' + a.id + '/', stamp = Date.now(), patch = {};
+  if(!FILES.shot && !FILES.res) return TP.toast('Choose a file first');
+  btn.disabled = true; btn.classList.add('busy');
+  Promise.all([FILES.shot && !a.screenshot ? TP.shrinkImage(FILES.shot).then(function(f){ return TP.upload(dir + 'confirmation-' + stamp + '.' + ext(f), f); }) : null,
+               FILES.res && !a.resume_file ? TP.upload(dir + 'resume-' + stamp + '.' + ext(FILES.res), FILES.res) : null]).then(function(rs){
+    if(rs[0]) patch.screenshot = rs[0]; if(rs[1]) patch.resume_file = rs[1];
+    return q(SB.from('applications').update(patch).eq('id', a.id).select('*').maybeSingle());
+  }).then(function(row){ FILES = {}; TP.toast('File added'); A = row; drawSent(); }, function(e){ btn.disabled = false; btn.classList.remove('busy'); TP.toast(TP.errText(e)); });
+}
+function histRow(h){
+  return '<div class="hi"><span class="dot ' + esc(h.kind) + '"></span><div class="tx"><b>' + esc(h.summary) + '</b><small>' + esc(who(h.by_email)) + (h.by_email && h.by_email !== 'system' ? ' (' + esc(h.by_email) + ')' : '') + ' · <span title="' + esc(TP.fmtDateTime(h.at)) + '">' + esc(TP.ago(h.at)) + '</span></small></div></div>';
+}
+// coming back from the editor tab: show its latest save
+function refreshApp(){
+  var a = A; if(!a || !C || a._c !== C.id || R.app !== a.id) return;
+  q(SB.from('applications').select('*').eq('id', a.id).maybeSingle()).then(function(row){
+    if(!row || A !== a) return;
+    if(row.status !== a.status){ A = row; return row.status === 'draft' ? drawDraft() : drawSent(); }
+    if(row.status !== 'draft') return;
+    a.resume_doc = row.resume_doc; a.resume_text = row.resume_text; a.updated_at = row.updated_at;
+    var cl = $('#apCL'); if(cl && row.cover_letter && document.activeElement !== cl && !draftDirty){ cl.value = row.cover_letter; a.cover_letter = row.cover_letter; }
+    if($('#resCard')) $('#resCard').innerHTML = resumeCard();
+  }, function(){});
+}
+var BC = window.BroadcastChannel ? new BroadcastChannel('tp-portal') : null;
+if(BC) BC.onmessage = function(e){
+  var m = e.data || {}; if(!C || m.client !== C.id) return;
+  if(m.app && R.app === m.app) refreshApp();
+  if(m.resume){ C.resumes = null; if(R.tab === 'resumes' && !R.app) tResumes(); }
+};
+document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'visible' && R.app) refreshApp(); });
+window.addEventListener('beforeunload', function(){ if(draftDirty) saveDraft(); });
+
+/* ---------- Activity ---------- */
+function tActivity(){
+  var c = C;
+  V.innerHTML = '<div class="narrow" style="margin:0 auto"><div class="card"><h3>Add a note</h3><p class="hint">Calls, messages, anything the team should know. Only the team sees this page.</p>' +
+    '<textarea class="inp" id="nt" rows="3" placeholder="e.g. Priya asked us to focus on remote roles this week"></textarea><div class="row end" style="margin-top:8px"><button class="btn pri" type="button" data-act="note">Save note</button></div></div>' +
+    '<div class="card"><h3>Everything done for ' + esc(c.row.full_name) + '</h3><div class="hist" id="acL"><div class="skel"></div></div><div id="acMore"></div></div></div>';
+  loadActivity(c, 100);
+}
+function loadActivity(c, n){
+  q(SB.from('client_activity').select('*').eq('client_id', c.id).order('at', {ascending:false}).limit(n + 1)).then(function(rows){
+    if(C !== c || !$('#acL')) return;
+    var more = rows.length > n; rows = rows.slice(0, n);
+    $('#acL').innerHTML = rows.map(histRow).join('') || '<p class="fine">Nothing yet.</p>';
+    $('#acMore').innerHTML = more ? '<div class="row" style="justify-content:center;margin-top:10px"><button class="btn sm" type="button" data-act="acmore" data-n="' + (n + 200) + '">Show more</button></div>' : '';
+  }, function(e){ if($('#acL')) $('#acL').innerHTML = errBox(e); });
+}
+
+/* =====================================================================
+   Team page: who's on the team (the owner manages it)
+   ===================================================================== */
+function vTeam(){
+  setTitle('Team', null);
+  V.innerHTML = '<div class="narrow" style="margin:0 auto"><div class="hello">Team</div><div class="sub">Everyone here can open every client, apply for them and see the history. ' + (ME.owner ? 'You’re the owner, so you can add and remove people.' : 'Only the owner can change this list.') + '</div>' +
+    (ME.owner ? '<div class="card" style="margin-top:16px"><h3>Add someone</h3><p class="hint">They sign in at trulyplaced.com/login.html with this email — with Google, or a password.</p><form id="tmF" class="stack" novalidate><div class="grid3">' +
+      '<div class="field"><label for="tmE">Email</label><input id="tmE" type="email" required autocomplete="off"></div><div class="field"><label for="tmN">Name</label><input id="tmN" autocomplete="off"></div>' +
+      '<div class="field"><label for="tmR">Role</label><select id="tmR"><option value="member">Member</option><option value="owner">Owner</option></select></div></div>' +
+      '<label class="check"><input type="checkbox" id="tmI" checked> If they don’t have a TrulyPlaced login yet, email them a link to set a password</label>' +
+      '<div class="row end"><button class="btn pri" type="submit" id="tmGo">Add to the team</button></div></form></div>' : '') +
+    '<div class="list" id="tmL" style="margin-top:16px"><div class="skel"></div></div></div>';
+  if(ME.owner) $('#tmF').addEventListener('submit', function(e){
+    e.preventDefault();
+    var email = $('#tmE').value.trim().toLowerCase(), name = $('#tmN').value.trim(), role = $('#tmR').value, b = $('#tmGo');
+    if(!/^\S+@\S+\.\S+$/.test(email)) return TP.toast('Check the email address');
+    b.disabled = true; b.classList.add('busy');
+    var p = $('#tmI').checked ? TP.fn('client-accounts', {action:'invite_member', email:email, full_name:name, role:role})
+      : q(SB.from('team_members').upsert({email:email, full_name:name || null, role:role, active:true}, {onConflict:'email'}));
+    p.then(function(r){ TP.toast(r && r.emailed ? 'Added. We emailed ' + email + ' a link to set a password' : 'Added to the team'); loadTeamNames().then(vTeam); })
+     .catch(function(e2){ b.disabled = false; b.classList.remove('busy'); TP.toast(TP.errText(e2)); });
+  });
+  loadTeamNames().then(drawTeam);
+}
+function drawTeam(){
+  var rows = TEAMROWS.slice().sort(function(a, b){ return (b.active - a.active) || (a.role === 'owner' ? -1 : b.role === 'owner' ? 1 : 0) || a.email.localeCompare(b.email); });
+  $('#tmL').innerHTML = rows.map(function(t){
+    return '<div class="li"><span class="av sm" style="background:' + TP.hue(t.email) + '">' + esc(TP.initials(t.full_name, t.email)) + '</span><div class="main"><div class="t">' + esc(t.full_name || t.email.split('@')[0]) + (t.email === ME.email ? ' <span class="tag">you</span>' : '') + '</div><div class="m">' + esc(t.email) + '</div></div>' +
+      '<div class="side">' + (t.active ? '' : '<span class="st paused">Off</span>') + (t.role === 'owner' ? '<span class="st applied">Owner</span>' : '<span class="st">Member</span>') +
+      (ME.owner ? '<button class="icb" type="button" data-act="tmmenu" data-email="' + esc(t.email) + '" title="Change">⋯</button>' : '') + '</div></div>';
+  }).join('') || '<p class="fine" style="padding:14px">No one yet.</p>';
+}
+function teamMenu(email){
+  var t = TEAMROWS.filter(function(x){ return x.email === email; })[0]; if(!t) return;
+  var m = TP.modal('<h2>' + esc(t.full_name || t.email) + '</h2><p>' + esc(t.email) + '</p><div class="stack" style="margin-top:14px">' +
+    '<button class="btn" type="button" data-v="role">' + (t.role === 'owner' ? 'Make them a member' : 'Make them an owner') + '</button>' +
+    '<button class="btn" type="button" data-v="active">' + (t.active ? 'Turn off their access (keeps their history)' : 'Turn their access back on') + '</button>' +
+    '<button class="btn bad" type="button" data-v="del">Remove from the team</button><p class="fine">There must always be at least one owner.</p></div>');
+  m.addEventListener('click', function(e){
+    var b = e.target.closest('[data-v]'); if(!b) return;
+    var v = b.getAttribute('data-v');
+    var p = v === 'role' ? q(SB.from('team_members').update({role:t.role === 'owner' ? 'member' : 'owner'}).eq('email', email))
+      : v === 'active' ? q(SB.from('team_members').update({active:!t.active}).eq('email', email))
+      : q(SB.from('team_members').delete().eq('email', email));
+    p.then(function(){ TP.closeModal(); TP.toast('Updated'); loadTeamNames().then(drawTeam); }, function(e2){ TP.toast(TP.errText(e2)); });
+  });
+}
+
+/* =====================================================================
+   buttons
+   ===================================================================== */
+document.addEventListener('click', function(e){
+  var b = e.target.closest && e.target.closest('[data-act]'); if(!b) return;
+  var act = b.getAttribute('data-act');
+  switch(act){
+    case 'out': return TP.signOut();
+    case 'retry': return location.reload();
+    case 'newclient': return newClient();
+    case 'switch': return switcher();
+    case 'closetab':
+      e.preventDefault(); e.stopPropagation();
+      var id = b.getAttribute('data-id'); TP.ssSet('tp_open_clients', openList().filter(function(x){ return x.id !== id; }));
+      if(R.client === id) go('/team.html'); else drawOpenTabs();
+      return;
+    case 'pfsave': return saveProfile();
+    case 'qaadd': $('#pfQA').insertAdjacentHTML('beforeend', qaRow({})); $$('#pfQA [data-qa=q]').pop().focus(); return;
+    case 'qacommon': $('#pfQA').insertAdjacentHTML('beforeend', qaRow({q:b.getAttribute('data-q')})); b.remove(); $$('#pfQA [data-qa=a]').pop().focus(); return;
+    case 'qaadd2': $('#apQA').insertAdjacentHTML('beforeend', qaRow({})); $$('#apQA [data-qa=q]').pop().focus(); return;
+    case 'qacopy': var row = b.closest('.qa'); return TP.copy($('[data-qa=a]', row).value, 'Answer');
+    case 'qadel': var r2 = b.closest('.qa'), inApp = !!r2.closest('#apQA'); r2.remove(); if(inApp) draftChanged(); return;
+    case 'resend':
+      b.disabled = true; b.classList.add('busy');
+      return TP.fn('client-accounts', {action:'resend', client_id:C.id}).then(function(){ b.classList.remove('busy'); TP.toast('Set-password email sent to ' + C.row.email); },
+        function(e2){ b.disabled = false; b.classList.remove('busy'); TP.toast(TP.errText(e2)); });
+    case 'newresume': return newResume();
+    case 'resmenu': return resumeMenu(b.getAttribute('data-id'));
+    case 'jbstart': return startFromBoard(b.getAttribute('data-key'), b);
+    case 'jbmore': JB.n += 40; return drawBoard();
+    case 'apmore': AP.n += 50; return loadApps();
+    case 'acmore': return loadActivity(C, +b.getAttribute('data-n'));
+    case 'cpresume': return TP.copy(A.resume_text || (((C.resumes || []).filter(function(r){ return r.id === A.base_resume_id; })[0] || {}).text) || '', 'Resume text');
+    case 'cpcover': return TP.copy($('#apCL').value, 'Cover letter');
+    case 'toeditor': saveDraft(); return;   // the link opens the editor in its own tab
+    case 'markapplied': return saveDraft().then(function(){ markApplied(b); });
+    case 'deldraft':
+      return TP.confirmBox('Delete this draft?', 'Nothing was sent, so nothing else changes. The deletion is kept in the history.', 'Delete draft', true).then(function(ok){
+        if(!ok) return;
+        draftDirty = false;
+        q(SB.from('applications').delete().eq('id', A.id).eq('status', 'draft')).then(function(){ C.idx = null; refreshProgress(); TP.toast('Draft deleted'); go(cUrl(C.id, 'applications'), true); }, function(e2){ TP.toast(TP.errText(e2)); });
+      });
+    case 'delsent':
+      return TP.confirmBox('Delete this sent application?', 'Only for one marked by mistake. It comes off ' + C.row.full_name + '’s count and dashboard. The history keeps a note that it was deleted.', 'Delete it', true).then(function(ok){
+        if(!ok) return;
+        q(SB.from('applications').delete().eq('id', A.id).select('id')).then(function(r){ if(!r || !r.length) throw {message:'Only the owner can delete a sent application.'}; C.idx = null; refreshProgress(); TP.toast('Deleted'); go(cUrl(C.id, 'applications'), true); }, function(e2){ TP.toast(TP.errText(e2)); });
+      });
+    case 'addmissing': return addMissing(b);
+    case 'note':
+      var t = $('#nt').value.trim(); if(!t) return;
+      b.disabled = true;
+      return q(SB.from('client_activity').insert({client_id:C.id, kind:'note', summary:t})).then(function(){ b.disabled = false; $('#nt').value = ''; TP.toast('Note saved'); loadActivity(C, 100); },
+        function(e2){ b.disabled = false; TP.toast(TP.errText(e2)); });
+    case 'tmmenu': return teamMenu(b.getAttribute('data-email'));
+  }
+});
+})();
+</script>
+</body>
+</html>

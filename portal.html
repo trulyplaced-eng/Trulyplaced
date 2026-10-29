@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Your applications | TrulyPlaced</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0938d5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='116' fill='%230938d5'/%3E%3Cpath d='M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z' fill='%23fff'/%3E%3Cpath d='M205 200l37 36 76-88' fill='none' stroke='%230938d5' stroke-width='30' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://yubgrhxdhofnynfocpef.supabase.co" crossorigin>
+<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="/portal.css?v=2026-10-28.1">
+<style>
+.hero{background:linear-gradient(150deg,#0b2fb7,#0938d5 55%,#2a5bff);color:#fff;border-radius:20px;padding:24px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.08)}
+.hero .hi{font-size:14px;opacity:.9}
+.hero .big{font-family:Poppins;font-weight:700;font-size:clamp(28px,5vw,40px);line-height:1.1;margin-top:6px;letter-spacing:-.02em}
+.hero .big span{font-size:.5em;font-weight:600;opacity:.85}
+.hero .prog{background:rgba(255,255,255,.22);height:12px;margin-top:14px}
+.hero .prog i{background:#fff}
+.hero .left{font-size:13.5px;margin-top:8px;opacity:.92}
+.hstats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.hstat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.hstat b{display:block;font-family:Poppins;font-size:20px;color:var(--ink);line-height:1.2}
+.hstat span{font-size:12.5px;color:var(--muted)}
+.sec{display:flex;align-items:flex-end;gap:10px;margin:26px 0 0}
+.sec h2{font-size:18px;flex:1}
+.ahead{display:flex;gap:14px;align-items:flex-start}
+.ahead h1{font-size:21px}
+.ahead .m{font-size:13.5px;color:var(--muted);margin-top:3px}
+.qa-ro{padding:10px 0;border-top:1px solid var(--line)}
+.qa-ro:first-child{border-top:0}
+.qa-ro b{display:block;font-size:13px;color:var(--ink)}
+.qa-ro div{font-size:14px;white-space:pre-wrap}
+.kv{display:grid;grid-template-columns:180px 1fr;gap:8px 14px;font-size:14px}
+.kv dt{color:var(--muted)}
+.kv dd{color:var(--ink);white-space:pre-wrap}
+.sent{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--ok);font-weight:600}
+.sent svg{width:15px;height:15px}
+@media (max-width:760px){
+  .hero{padding:20px;border-radius:16px}
+  .hstats{grid-template-columns:repeat(3,1fr);gap:8px}
+  .hstat{padding:10px}
+  .hstat b{font-size:17px}
+  .kv{grid-template-columns:1fr;gap:2px}
+  .kv dd{margin-bottom:8px}
+  .li .side .when{display:none}
+}
+</style>
+</head>
+<body>
+<header class="ptop">
+  <div class="ptop-in">
+    <a class="brand" href="/portal.html" data-go><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="#0938d5"/><path d="M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z" fill="#fff"/><path d="M205 200l37 36 76-88" fill="none" stroke="#0938d5" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg><span>TrulyPlaced<small>Your applications</small></span></a>
+    <div class="grow"></div>
+    <div class="me" id="me"></div>
+  </div>
+</header>
+<main class="wrap narrow" id="view" style="margin:0 auto"><div class="skel" style="height:170px"></div><div class="skel"></div><div class="skel"></div></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="modalRoot"></div>
+<script src="/portal.js?v=2026-10-28.1"></script>
+<script>
+(function(){
+"use strict";
+var $ = TP.$, $$ = TP.$$, esc = TP.esc, I = TP.I, q = TP.q;
+var SB = null, ME = null, CL = null, PROG = null, V = $('#view'), A = null;
+var F = {f:'all', q:'', n:50};
+var TEAM = 'the TrulyPlaced team';
+
+TP.client().then(function(c){ SB = c; return TP.session(); }).then(function(s){
+  if(!s){ TP.toLogin(); return; }
+  ME = {id:s.user.id, email:String(s.user.email || '').toLowerCase()};
+  $('#me').innerHTML = '<span>' + esc(ME.email) + '</span><button class="btn sm" type="button" data-act="out">' + I.out + 'Sign out</button>';
+  return Promise.all([q(SB.from('clients').select('*').eq('id', ME.id).maybeSingle()), q(SB.from('client_progress').select('*').eq('client_id', ME.id).maybeSingle())]).then(function(rs){
+    CL = rs[0]; PROG = rs[1] || {};
+    if(!CL) return notClient();
+    render();
+  });
+}).catch(function(e){ V.innerHTML = '<div class="note bad">' + esc(TP.errText(e)) + ' <a href="/login.html">Sign in again</a></div>'; });
+
+function notClient(){
+  TP.whoami().catch(function(){ return {}; }).then(function(w){
+    V.innerHTML = '<div class="empty">' + I.lock + '<h3>This page is for TrulyPlaced clients</h3><p>You’re signed in as <b>' + esc(ME.email) + '</b>, which isn’t a client account yet. ' +
+      'If you’ve just joined, use the email you gave us — or message us and we’ll sort it out.</p><div class="row" style="justify-content:center">' +
+      (w.team ? '<a class="btn pri" href="/team.html">Open the team portal</a>' : '<a class="btn pri" href="/#pricing">See plans</a><a class="btn" href="/app.html">Free job board</a>') +
+      '<button class="btn" type="button" data-act="out">Sign out</button></div></div>';
+  });
+}
+function route(){ var m = /^#app=([0-9a-f-]{36})$/i.exec(location.hash); return m ? m[1].toLowerCase() : null; }
+function go(h){ history.pushState(null, '', location.pathname + h); render(); window.scrollTo(0, 0); }
+window.addEventListener('popstate', function(){ if(CL) render(); });
+document.addEventListener('click', function(e){
+  var a = e.target.closest && e.target.closest('a[data-go]');
+  if(!a || !CL || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  e.preventDefault(); var h = a.getAttribute('href'); go(h.indexOf('#') > -1 ? h.slice(h.indexOf('#')) : '');
+});
+function render(){ var id = route(); if(id) return vApp(id); vHome(); }
+
+/* ---------- home: progress and the list ---------- */
+function vHome(){
+  document.title = 'Your applications | TrulyPlaced';
+  var done = PROG.done || 0, tot = CL.plan_total || 0, pct = tot ? Math.min(100, Math.round(done / tot * 100)) : 0, first = String(CL.full_name || '').split(' ')[0];
+  V.innerHTML = '<section class="hero" aria-label="Your progress"><div class="hi">' + (first ? 'Hi ' + esc(first) : 'Welcome') + '</div>' +
+      '<div class="big">' + done.toLocaleString() + (tot ? ' <span>of ' + tot.toLocaleString() + ' applications sent</span>' : ' <span>applications sent</span>') + '</div>' +
+      (tot ? '<div class="prog big"><i style="width:' + pct + '%"></i></div><div class="left">' + (done >= tot ? 'Your plan is complete — thank you for trusting us.' : (tot - done).toLocaleString() + ' to go · ' + pct + '% done') + '</div>' : '<div class="left">Your plan details will appear here soon.</div>') + '</section>' +
+    '<div class="hstats"><div class="hstat"><b>' + (PROG.week || 0) + '</b><span>this week</span></div><div class="hstat"><b>' + (PROG.interviews || 0) + '</b><span>interviews &amp; offers</span></div>' +
+      '<div class="hstat"><b>' + (PROG.last_applied_at ? esc(TP.ago(PROG.last_applied_at)) : '—') + '</b><span>last application</span></div></div>' +
+    '<div class="sec"><h2>Every application we’ve sent</h2></div>' +
+    '<div class="tools"><input class="inp" id="aq" type="search" placeholder="Search role or company" value="' + esc(F.q) + '" autocomplete="off">' +
+      '<div class="seg" id="af">' + [['all','All'],['applied','Applied'],['interview','Interview'],['offer','Offer'],['rejected','Not selected']].map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (F.f === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div></div>' +
+    '<div id="al"><div class="skel"></div><div class="skel"></div></div>' +
+    '<div class="sec"><h2>Your details</h2></div><div class="card" style="margin-top:12px">' + details() + '</div>' +
+    '<p class="fine" style="margin-top:16px">Questions, or something to change? <a href="' + esc(TP.CONFIG.WHATSAPP) + '" target="_blank" rel="noopener">WhatsApp us</a> or email <a href="mailto:' + esc(TP.CONFIG.SUPPORT_EMAIL) + '">' + esc(TP.CONFIG.SUPPORT_EMAIL) + '</a>.</p>';
+  var t; $('#aq').addEventListener('input', function(e){ clearTimeout(t); t = setTimeout(function(){ F.q = e.target.value; F.n = 50; loadList(); }, 250); });
+  $('#af').addEventListener('click', function(e){ var b = e.target.closest('[data-f]'); if(!b) return; F.f = b.getAttribute('data-f'); F.n = 50; $$('#af button').forEach(function(x){ x.classList.toggle('on', x === b); }); loadList(); });
+  loadList();
+}
+function details(){
+  var rows = [['Target roles', CL.target_roles], ['Target locations', CL.target_locations], ['Work authorization', CL.work_auth], ['Salary expectation', CL.salary], ['Can start', CL.notice], ['Phone', CL.phone], ['LinkedIn', CL.linkedin], ['Email', CL.email]]
+    .filter(function(r){ return r[1]; });
+  return rows.length ? '<dl class="kv">' + rows.map(function(r){ return '<dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd>'; }).join('') + '</dl>' : '<p class="hint" style="margin:0">We’ll fill these in with you on your onboarding call.</p>';
+}
+function loadList(){
+  var box = $('#al');
+  var sq = SB.from('applications').select('id,status,title,company,location,applied_at,status_at').eq('client_id', ME.id).neq('status', 'draft');
+  if(F.f !== 'all') sq = sq.eq('status', F.f);
+  var qq = F.q.trim().replace(/[,()*%\\]/g, ' ').trim();
+  if(qq) sq = sq.or('title.ilike.*' + qq + '*,company.ilike.*' + qq + '*');
+  q(sq.order('applied_at', {ascending:false}).range(0, F.n)).then(function(rows){
+    if(!$('#al')) return;
+    var more = rows.length > F.n; rows = rows.slice(0, F.n);
+    if(!rows.length){
+      box.innerHTML = F.f === 'all' && !qq ? '<div class="empty">' + I.clock + '<h3>Your first applications are on the way</h3><p>Our team is tailoring your resume to each role. Every application appears here the moment it’s sent, with exactly what we sent.</p></div>'
+        : '<div class="empty"><h3>Nothing here</h3><p>Try another filter or search.</p></div>';
+      return;
+    }
+    box.innerHTML = '<div class="list">' + rows.map(function(a){
+      return '<a class="li" href="#app=' + esc(a.id) + '" data-go>' + TP.logo(a.company) + '<div class="main"><div class="t">' + esc(a.title || 'Role') + '</div><div class="m">' + esc([a.company, a.location].filter(Boolean).join(' · ')) + '</div></div>' +
+        '<div class="side"><span class="m when" style="font-size:12.5px;color:var(--muted)">' + esc(TP.fmtDate(a.applied_at)) + '</span>' + TP.statusChip(a.status) + '</div></a>';
+    }).join('') + '</div>' + (more ? '<div class="row" style="justify-content:center;margin-top:12px"><button class="btn" type="button" data-act="more">Show more</button></div>' : '');
+  }, function(e){ if($('#al')) box.innerHTML = '<div class="note bad">' + esc(TP.errText(e)) + '</div>'; });
+}
+
+/* ---------- one application: exactly what was sent ---------- */
+function vApp(id){
+  V.innerHTML = '<div class="skel"></div><div class="skel"></div>';
+  q(SB.from('applications').select('id,status,title,company,location,job_url,jd_text,resume_text,resume_file,cover_letter,answers,screenshot,applied_at,status_at').eq('id', id).maybeSingle()).then(function(a){
+    if(route() !== id) return;
+    if(!a){ V.innerHTML = '<div class="empty"><h3>Not found</h3><p>This application isn’t on your account.</p><a class="btn" href="#" data-go>All applications</a></div>'; return; }
+    A = a; document.title = (a.company || 'Application') + ' | TrulyPlaced';
+    V.innerHTML = '<a class="btn sm ghost" href="#" data-go>' + I.back + 'All applications</a>' +
+      '<div class="card" style="margin-top:10px"><div class="ahead">' + TP.logo(a.company) + '<div style="flex:1;min-width:0"><h1>' + esc(a.title || 'Role') + '</h1><div class="m">' + esc([a.company, a.location].filter(Boolean).join(' · ')) + '</div>' +
+        '<div class="sent" style="margin-top:8px">' + I.check + 'Sent ' + esc(TP.fmtDateTime(a.applied_at)) + ' by ' + TEAM + '</div></div>' + TP.statusChip(a.status) + '</div>' +
+        '<div class="row" style="margin-top:14px"><a class="btn sm" href="' + esc(TP.safeHref(a.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'View the job posting</a></div></div>' +
+      (a.screenshot ? '<div class="card"><h3>Proof it was sent</h3><p class="hint">The company’s confirmation screen, saved when we applied.</p><a class="shot" data-file="' + esc(a.screenshot) + '" target="_blank" rel="noopener"><img data-file="' + esc(a.screenshot) + '" alt="Confirmation screenshot"></a></div>' : '') +
+      '<div class="card"><h3>Your resume, as sent</h3><p class="hint">Tailored for this role by ' + TEAM + '.</p>' +
+        (a.resume_file ? '<a class="file" data-file="' + esc(a.resume_file) + '" target="_blank" rel="noopener" style="margin-bottom:10px">' + I.doc + '<span>Open the file we uploaded</span></a>' : '') +
+        (a.resume_text ? '<pre class="txt">' + esc(a.resume_text) + '</pre>' : (a.resume_file ? '' : '<p class="fine">Not available for this one.</p>')) + '</div>' +
+      (a.cover_letter ? '<div class="card"><h3>Cover letter</h3><pre class="txt">' + esc(a.cover_letter) + '</pre></div>' : '') +
+      ((a.answers || []).length ? '<div class="card"><h3>Answers on the application</h3>' + a.answers.map(function(x){ return '<div class="qa-ro"><b>' + esc(x.q) + '</b><div>' + esc(x.a) + '</div></div>'; }).join('') + '</div>' : '') +
+      (a.jd_text ? '<div class="card"><details><summary style="cursor:pointer"><h3 style="display:inline">The job description</h3> <span class="fine">as it was when we applied</span></summary><pre class="txt" style="margin-top:10px">' + esc(a.jd_text) + '</pre></details></div>' : '');
+    TP.fillFiles(V);
+  }, function(e){ V.innerHTML = '<div class="note bad">' + esc(TP.errText(e)) + '</div>'; });
+}
+
+document.addEventListener('click', function(e){
+  var b = e.target.closest && e.target.closest('[data-act]'); if(!b) return;
+  var act = b.getAttribute('data-act');
+  if(act === 'out') return TP.signOut();
+  if(act === 'more'){ F.n += 50; loadList(); }
+});
+})();
+</script>
+</body>
+</html>

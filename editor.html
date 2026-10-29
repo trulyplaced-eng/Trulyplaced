@@ -624,6 +624,18 @@ body.embed .tbi .scorep{display:flex}
   .paper .en,.paper .bl li{break-inside:avoid}
   .paper .ps>h2{break-after:avoid}
 }
+/* team mode (opened from team.html for one client): who we're working on, always in view */
+.team .toplink{display:none}
+.wkon{display:inline-flex;align-items:center;gap:8px;min-width:0;max-width:46vw;height:36px;padding:0 12px 0 6px;border-radius:999px;
+  background:#f4f6ff;border:1.5px solid var(--wk, #0938d5);font-size:13px;color:var(--ink);white-space:nowrap}
+.wkon i{width:24px;height:24px;border-radius:50%;background:var(--wk, #0938d5);color:#fff;font:700 10.5px Inter,sans-serif;font-style:normal;display:grid;place-items:center;flex:none}
+.wkon span{overflow:hidden;text-overflow:ellipsis}
+.wkon small{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--wk, #0938d5)}
+.ro .tbi > button:not(.dl), .ro .tbi .dv, .ro .tbi .scorep, .ro #btb{display:none!important}
+.rocard{border:1px solid #bfe6d2;background:#e6f6ee;color:#05543a;border-radius:14px;padding:14px 16px;font-size:13.5px}
+.rocard b{display:block;font:600 15px Poppins,Inter,sans-serif;color:#05543a;margin-bottom:4px}
+@media (max-width:760px){.wkon{max-width:60vw}.wkon small{display:none}}
+@media print{.wkon{display:none!important}}
 </style>
 </head>
 <body>
@@ -735,6 +747,19 @@ function toast(msg, act){
 var QS = (function(){ try{ return new URLSearchParams(location.search); }catch(e){ return {get:function(){ return null; }}; } })();
 var EMBED = QS.get('embed') === '1';   // opened beside a job on the job board
 if(EMBED) document.body.classList.add('embed');
+/* Team mode: a TrulyPlaced team member tailoring a client's resume from team.html.
+   ?client=<id>&app=<id> is one application (its own copy of the resume); ?client=<id>&resume=<id> is a base resume.
+   Everything saves to that application or resume only — never to the team member's own account or this browser. */
+var TEAM = (function(){
+  var U = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, c = QS.get('client'), a = QS.get('app'), r = QS.get('resume');
+  if(!c || !U.test(c)) return null;
+  if(a && U.test(a)) return {client:c.toLowerCase(), app:a.toLowerCase(), resume:null};
+  if(r && U.test(r)) return {client:c.toLowerCase(), app:null, resume:r.toLowerCase()};
+  return null;
+})();
+var CLIENT = null, TEAM_JOB = null, READONLY = false, TEAM_DIRTY = false;
+var OPT_KEY = TEAM ? 'tp_opt_c_' + TEAM.client : 'tp_opt';   // Optimise choices and special instructions: one set per client, never shared
+if(TEAM) document.body.classList.add('team');
 function tell(m){ if(!EMBED || window.parent === window) return; try{ m.tp = 1; window.parent.postMessage(m, location.origin); }catch(e){} }
 
 var BUL = '•●▪◦‣∙·*–—\\-➢➤►✓✔◆■□○';
@@ -1273,15 +1298,16 @@ function parseDoc(raw, srcName){
     D.sections = D.sections.map(function(s, i){ return [s, i]; }).sort(function(a, b){ return ((RANK[a[0].k] != null ? RANK[a[0].k] : 8) - (RANK[b[0].k] != null ? RANK[b[0].k] : 8)) || a[1] - b[1]; }).map(function(x){ return x[0]; });
   }
   D.contact = uniq(bits.map(function(b){ return b.replace(/^(e-?mail|phone|mobile|tel|linkedin|address|location)\s*[:\-]\s*/i, '').trim(); }).filter(Boolean)).slice(0, 7);
-  if(!D.name && USER && USER.name) D.name = USER.name;
+  if(!D.name && TEAM && CLIENT) D.name = CLIENT.full_name || '';
+  else if(!D.name && USER && USER.name) D.name = USER.name;
   D.meta.srcName = srcName || '';
   return D;
 }
 function starterDoc(){
   var D = blankDoc();
-  D.name = (USER && USER.name) || '';
+  D.name = TEAM && CLIENT ? CLIENT.full_name || '' : (USER && USER.name) || '';
   D.headline = (PROFILE && PROFILE.target_role) || '';
-  D.contact = [USER && USER.email].filter(Boolean);
+  D.contact = TEAM && CLIENT ? [CLIENT.email, CLIENT.phone, CLIENT.location].filter(Boolean) : [USER && USER.email].filter(Boolean);
   var sm = newSection('summary'); D.sections.push(sm);
   var ex = newSection('experience'); var e = newEntry(); e.bullets.push({id:uid(), t:''}); ex.items.push(e); D.sections.push(ex);
   var ed = newSection('education'); ed.items.push(newEntry()); D.sections.push(ed);
@@ -1309,12 +1335,13 @@ function status(t, busy){ var s = $('#status'); s.hidden = false; s.classList.to
 var tellResume = debounce(function(){ if(DOC) tell({act:'resume', text:docText()}); }, 500);
 function persist(){
   DOC.meta.saved = Date.now(); tellResume();
+  if(TEAM){ if(!READONLY){ TEAM_DIRTY = true; status('Saving…', true); syncLater(); } return; }   // team mode keeps nothing in this browser
   lsSet(STORE_KEY, DOC) ? status(LIVE ? 'Saving…' : 'Saved on this device', LIVE) : status('Couldn’t save in this browser', true);
   syncLater();
 }
 function changed(){ snapLater(); persist(); sideLater(); }
 function structural(){ snap(); persist(); renderAll(); }
-var syncLater = debounce(sync, 3500);
+var syncLater = debounce(sync, TEAM ? 1500 : 3500);
 function docText(D){
   D = D || DOC; var out = [];
   if(D.name) out.push(D.name); if(D.headline) out.push(D.headline);
@@ -1335,6 +1362,7 @@ function docText(D){
 }
 function sync(){
   if(!DOC) return;
+  if(TEAM) return teamSync();
   var text = docText(), name = (DOC.meta.srcName || 'Resume').replace(/\s*\(edited\)$/, '') + ' (edited)';
   // the job board and X-ray read this copy, so match scores use the edited resume
   var local = lsGet('tp_resume_local', null), localOnly = !!(local && local.text && local.from !== 'editor' && PROFILE && !PROFILE.resume_text && PROFILE.id);   // they chose “keep my resume only in this browser” on the job board
@@ -1356,6 +1384,27 @@ function sync(){
     });
   }).catch(function(){ status('Saved on this device', true); });
 }
+// team mode: save to the client's application (only while it's a draft) or to their base resume
+var TEAM_BC = TEAM && window.BroadcastChannel ? new BroadcastChannel('tp-portal') : null;
+function teamSync(){
+  if(!DOC || READONLY || !sb) return Promise.resolve();
+  var text = docText(), cover = String((DOC.cover && DOC.cover.text) || '').trim(), saving = DOC.meta.saved;
+  var p = TEAM.app
+    ? sb.from('applications').update(Object.assign({resume_doc:DOC, resume_text:text}, cover ? {cover_letter:cover} : {})).eq('id', TEAM.app).eq('status', 'draft').select('id')
+    : sb.from('client_resumes').update({doc:DOC, text:text}).eq('id', TEAM.resume).select('id');
+  return p.then(function(r){
+    if(r.error) throw r.error;
+    if(!r.data || !r.data.length){
+      READONLY = true; TEAM_DIRTY = false; status('Not saved — already sent', true);
+      toast('This application was marked as applied, so its resume can’t change any more. Reload to see exactly what was sent.');
+      return;
+    }
+    if(DOC.meta.saved === saving) TEAM_DIRTY = false;
+    status(TEAM.app ? 'Saved for this application' : 'Saved to ' + ((CLIENT && CLIENT.full_name) || 'the client') + '’s resumes');
+    if(TEAM_BC) try{ TEAM_BC.postMessage({client:TEAM.client, app:TEAM.app, resume:TEAM.resume}); }catch(e){}
+  }).catch(function(){ status('Couldn’t save — check your connection', true); });
+}
+window.addEventListener('beforeunload', function(e){ if(TEAM && TEAM_DIRTY && !READONLY){ teamSync(); e.preventDefault(); e.returnValue = ''; } });
 
 /* =====================================================================
    4. FINDING THINGS IN THE DOCUMENT
@@ -1737,6 +1786,7 @@ function tipsHTML(T){
   }).join('') + '</div>' : '<div class="alldone">✓ Nothing left on the fix list. Download it and apply.</div>';
 }
 function renderSide(){
+  if(TEAM && READONLY){ $('#side').innerHTML = teamSentCard(); return; }
   if(TAB === 'cover') return renderCoverSide();
   var A = analyse(), sc = A.score, prev = LAST_SC; LAST_SC = sc;
   if(EMBED){ scoreBits(sc, prev); if(POP === 'checks') refreshPop(); return; }   // beside a job: the score lives in the toolbar
@@ -1750,7 +1800,7 @@ function renderSide(){
     '<p class="ainote">' + (AI_OFF ? 'Using our built-in writing rules. Anything we can’t know — like your numbers — is marked [ ] for you to fill in.' : 'AI suggests a rewrite for each bullet. You choose what to keep — nothing changes until you press Accept.') + '</p></div>';
   h += '<h3>Fix list</h3>' + tipsHTML(T);
   h += tailorHTML();
-  h += '<div class="callc"><b>Want a specialist to rewrite it?</b><p>Our resume specialists rewrite resumes for the exact roles you’re going after. The first call is free.</p><a class="btn sm" href="' + esc(bookUrl('editor')) + '" target="_blank" rel="noopener">Book a free call</a></div>';
+  if(!TEAM) h += '<div class="callc"><b>Want a specialist to rewrite it?</b><p>Our resume specialists rewrite resumes for the exact roles you’re going after. The first call is free.</p><a class="btn sm" href="' + esc(bookUrl('editor')) + '" target="_blank" rel="noopener">Book a free call</a></div>';
   h += '<div class="sidefoot"><button type="button" data-a="upload">Start from a different file</button>' + (SRC ? '<button type="button" data-a="reset">Undo all edits (back to my file)</button>' : '') + '</div>';
   $('#side').innerHTML = h;
   scoreBits(sc, prev);
@@ -1765,6 +1815,7 @@ function bookUrl(from){
 
 /* ---- tailoring to a job ---- */
 function loadJob(){
+  if(TEAM) return TEAM.app ? TEAM_JOB : (DOC.meta.job && DOC.meta.job.text ? DOC.meta.job : null);   // never the team member's own job-board job
   var j = lsGet('tp_ats_job', null);
   var fresh = j && j.text && Date.now() - (j.at || 0) < 21*864e5 ? {title:j.title || '', company:j.company || '', text:j.text, key:j.key, loc:j.loc || ''} : null;
   if(EMBED && fresh) return fresh;
@@ -1782,13 +1833,13 @@ function tailorHTML(){
   if(!JOB) return h + '<p class="fine">Paste the job description. We’ll show the skills it asks for that your resume doesn’t mention.</p>' +
     '<textarea id="jdIn" placeholder="Paste the job description here"></textarea><button class="btn sm" type="button" data-a="jd-use" style="margin-top:8px">Check this job</button>';
   var f = jobFit(), pct = f.want.length ? Math.round(f.have.length / f.want.length * 100) : null;
-  return h + '<div class="job"><div class="jt"><b>' + esc(JOB.title || 'This job') + (JOB.company ? ' · ' + esc(JOB.company) : '') + '</b><button type="button" data-a="jd-clear" aria-label="Remove this job">×</button></div>' +
+  return h + '<div class="job"><div class="jt"><b>' + esc(JOB.title || 'This job') + (JOB.company ? ' · ' + esc(JOB.company) : '') + '</b>' + (TEAM && TEAM.app ? '' : '<button type="button" data-a="jd-clear" aria-label="Remove this job">×</button>') + '</div>' +
     (pct != null ? '<div class="jm"><span class="bar"><i style="width:' + pct + '%"></i></span><b>' + pct + '% of its skills</b></div>' : '<p class="fine" style="margin-top:6px">We couldn’t pick out named skills from this posting.</p>') +
     (f.miss.length ? '<p class="fine" style="margin-top:9px">Missing from your resume — tap one you genuinely have to add it to Skills:</p><div class="kws">' + f.miss.map(function(m){ return '<button type="button" class="kw" data-a="kw" data-v="' + esc(m) + '">+ ' + esc(m) + '</button>'; }).join('') + '</div>' : '') +
     (f.have.length ? '<div class="kws">' + f.have.map(function(m){ return '<span class="kw have">✓ ' + esc(m) + '</span>'; }).join('') + '</div>' : '') +
     '<button class="btn ai wide" type="button" data-a="optimize" style="margin-top:12px">✨ Optimise my resume for this job</button>' +
     '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px"><button class="btn sm" type="button" data-a="tab" data-v="cover">Write a cover letter for it</button>' +
-    (JOB.key ? '<a class="btn sm" href="/app.html#job=' + encodeURIComponent(JOB.key) + '">Back to the job</a>' : '') + '</div></div>';
+    (JOB.key && !TEAM ? '<a class="btn sm" href="/app.html#job=' + encodeURIComponent(JOB.key) + '">Back to the job</a>' : '') + '</div></div>';
 }
 function addSkill(term){
   var s = DOC.sections.filter(function(x){ return x.k === 'skills'; })[0];
@@ -2035,7 +2086,7 @@ function writeCover(){
   DOC.cover.jobKey = JOB && JOB.key || null;
   COVER_BUSY = true; renderCover(); renderSide();
   var pill = document.createElement('div'); pill.className = 'wpill'; pill.id = 'wpill'; pill.innerHTML = '<span class="spin"></span>Writing your cover letter…'; document.body.appendChild(pill);
-  ai({task:'cover', role:DOC.cover.role, company:DOC.cover.company, resume:docText().slice(0, 8000), jd:jobText().slice(0, 4000), name:DOC.name || '', instructions:(lsGet('tp_opt', {}) || {}).ins || ''})
+  ai({task:'cover', role:DOC.cover.role, company:DOC.cover.company, resume:docText().slice(0, 8000), jd:jobText().slice(0, 4000), name:DOC.name || '', instructions:(lsGet(OPT_KEY, {}) || {}).ins || ''})
     .then(function(r){ if(!r || !r.text) throw 'shape'; return r.text; })
     .catch(function(){ return wait(500).then(function(){ return localCover(DOC.cover.role, DOC.cover.company); }); })
     .then(function(t){ COVER_BUSY = false; var w = $('#wpill'); if(w) w.remove(); DOC.cover.text = String(t).trim(); structural(); typeIn($('#cpaper .cv-body')); });
@@ -2085,7 +2136,7 @@ function cleanTitle(t){ return String(t || '').replace(/\s*\([^)]*\)\s*/g, ' ').
 function openOptimise(){
   if(!DOC) return;
   closePop(); setTab('resume');
-  var pref = lsGet('tp_opt', {}) || {}, was = pref.sel || {};
+  var pref = lsGet(OPT_KEY, {}) || {}, was = pref.sel || {};
   var rows = [['summary', 'Summary'], ['headline', 'Job title'], ['experience', 'Work experience'], ['skills', 'Skills']];
   if(JOB && JOB.loc && !/remote|anywhere/i.test(JOB.loc)) rows.splice(2, 0, ['location', 'Location']);
   OPT = {sel:{}};
@@ -2256,7 +2307,7 @@ function runOptimise(){
     JOB = DOC.meta.job = {title:m ? m[1].trim() : first.length <= 90 ? first : '', company:m ? m[2].trim() : '', text:jd.slice(0, 15000)};
   }
   if(!Object.keys(sel).some(function(k){ return sel[k]; })){ toast('Pick at least one thing to optimise.'); return; }
-  var keep = {}; Object.keys(sel).forEach(function(k){ keep[k] = sel[k] ? 1 : 0; }); lsSet('tp_opt', {sel:keep, ins:ins});
+  var keep = {}; Object.keys(sel).forEach(function(k){ keep[k] = sel[k] ? 1 : 0; }); lsSet(OPT_KEY, {sel:keep, ins:ins});
   var targets = sel.experience ? optTargets() : [], nb = targets.reduce(function(n, t){ return n + t.it.bullets.filter(function(b){ return b.t.trim(); }).length; }, 0);
   var terms = atsTerms(), cover0 = atsCover(docText(), terms);
   var steps = [['g1', 'ATS optimization'], ['job', 'Reading the job description']];
@@ -2750,7 +2801,7 @@ document.addEventListener('click', function(e){
     case 'jd-use': var jd = ($('#jdIn') || {}).value || ''; if(jd.trim().length < 80){ toast('Paste the full job description — a few lines at least.'); return; }
       var first = jd.trim().split(/\n/)[0].trim(), m = /^(.{3,80}?)\s+(?:[—–|@-]|at)\s+(.{2,60})$/.exec(first);
       JOB = DOC.meta.job = {title:m ? m[1].trim() : first.length <= 90 ? first : '', company:m ? m[2].trim() : '', text:jd.slice(0, 15000)}; structural(); return;
-    case 'jd-clear': JOB = null; DOC.meta.job = null; try{ localStorage.removeItem('tp_ats_job'); }catch(x){} structural(); return;
+    case 'jd-clear': if(TEAM && TEAM.app) return; JOB = null; DOC.meta.job = null; if(!TEAM) try{ localStorage.removeItem('tp_ats_job'); }catch(x){} structural(); return;
     case 'cv-write': return writeCover();
     case 'optimize': return openOptimise();
     case 'iss-ok': return issAct('ok');
@@ -3082,7 +3133,8 @@ function showGate(){
   show('gate');
 }
 function showStart(){
-  $('#start').innerHTML = '<div class="card"><h1>Let’s make your resume stronger</h1><p>Add your resume and we’ll lay it out on the page, ready to edit — with suggestions for every bullet.</p>' +
+  $('#start').innerHTML = (TEAM && CLIENT ? '<div class="card"><h1>Add ' + esc((CLIENT.full_name || 'the client').split(' ')[0]) + '’s resume</h1><p>Upload their resume file and we’ll lay it out on the page, ready to tailor. It’s saved to their account, not yours.</p>'
+      : '<div class="card"><h1>Let’s make your resume stronger</h1><p>Add your resume and we’ll lay it out on the page, ready to edit — with suggestions for every bullet.</p>') +
     '<div class="drop" id="drop" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V5"/><path d="m7 10 5-5 5 5"/><path d="M5 20h14"/></svg><b>Upload your resume</b><span>PDF or Word · read on your device</span></div>' +
     '<div class="or">or</div><button class="btn wide" type="button" data-a="blank" style="margin-top:12px">Start from a blank template</button></div>';
   show('start');
@@ -3104,7 +3156,7 @@ function readUpload(f){
       var text = lines.map(function(l){ return l.t; }).join('\n');
       if(text.replace(/\s/g, '').length < 120){ toast('We couldn’t read text from that file — it may be a scanned image. Try the Word version.'); DOC ? show('wrap') : showStart(); return; }
       src.text = text;
-      RESUME_DB.set({buf:buf.slice(0), kind:src.kind, name:src.name, size:f.size, text:text, at:src.at}).catch(function(){});
+      if(!TEAM) RESUME_DB.set({buf:buf.slice(0), kind:src.kind, name:src.name, size:f.size, text:text, at:src.at}).catch(function(){});   // a client's file never becomes the team member's own resume
       fromSource(src, true);
     });
   }).catch(function(){ toast('We couldn’t read that file. Try again, or use the Word version.'); DOC ? show('wrap') : showStart(); });
@@ -3122,6 +3174,7 @@ function fromSource(src, fresh){
 }
 function backLink(){
   var b = $('#backB'); if(!b) return;
+  if(TEAM){ b.href = teamBack(); b.lastChild.textContent = 'Back to ' + (((CLIENT && CLIENT.full_name) || 'client').split(' ')[0]); return; }
   var fromJob = JOB && JOB.key && /app\.html/.test(document.referrer || '');
   b.href = fromJob ? '/app.html#job=' + encodeURIComponent(JOB.key) : '/app.html#jobs';
   b.lastChild.textContent = fromJob ? 'Back to the job' : 'Back to jobs';
@@ -3151,7 +3204,75 @@ window.addEventListener('message', function(e){
   if(e.data.act === 'optimize'){ modalClose(); openOptimise(); }
   if(e.data.act === 'cover'){ modalClose(); setTab('cover'); autoCover(); }
 });
+/* ---- team mode: open a client's application or base resume from the database ---- */
+var TEAM_SENT = null;
+function teamBack(){ return '/team.html?client=' + encodeURIComponent(TEAM.client) + (TEAM.app ? '#app=' + encodeURIComponent(TEAM.app) : '#resumes'); }
+function teamSentCard(){
+  var d = TEAM_SENT && TEAM_SENT.at ? new Date(TEAM_SENT.at) : null;
+  return '<div class="rocard"><b>Sent' + (d ? ' ' + esc(d.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'}) + ', ' + d.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'})) : '') + '</b>' +
+    'This is exactly the resume that was sent to ' + esc((TEAM_SENT && TEAM_SENT.company) || 'the company') + '. It can’t be changed, so later edits to the client’s resumes never touch it.</div>' +
+    '<p class="fine" style="margin-top:12px">Need the PDF again? Use <b>Download</b> at the top.</p>' +
+    '<div class="sidefoot"><a href="' + esc(teamBack()) + '">Back to the application</a></div>';
+}
+function teamCard(title, text, btn){
+  $('#gate').innerHTML = '<div class="card"><h1>' + esc(title) + '</h1><p>' + esc(text) + '</p>' + (btn || '') + '</div>'; show('gate');
+}
+function teamPill(){
+  var c = CLIENT, col = ['#0938d5','#0a7f46','#7c3aed','#c2410c','#0e7490','#be185d','#4338ca','#15803d','#b45309','#1d4ed8'], h = 0, id = String(c.id || '');
+  for(var i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  var ini = String(c.full_name || c.email || '?').trim().split(/\s+/).map(function(w){ return w.charAt(0); }).join('').slice(0, 2).toUpperCase();
+  var p = document.createElement('span'); p.className = 'wkon'; p.style.setProperty('--wk', col[h % col.length]);
+  p.title = 'You’re working on ' + (c.full_name || c.email) + '’s ' + (TEAM.app ? 'application' : 'resume');
+  p.innerHTML = '<i>' + esc(ini) + '</i><small>Working on</small><span><b>' + esc(c.full_name || c.email) + '</b>' + (TEAM_JOB && TEAM_JOB.company ? ' · ' + esc(TEAM_JOB.company) : '') + '</span>';
+  var sp = $('.top .sp'); sp.parentNode.insertBefore(p, sp);
+  var br = $('.top .brand'); if(br) br.href = '/team.html';
+  document.title = (c.full_name || 'Client') + ' · ' + (TEAM_JOB && TEAM_JOB.company ? TEAM_JOB.company + ' resume' : 'resume') + ' — TrulyPlaced Team';
+}
+function teamBoot(){
+  var signIn = '<a class="btn pri" href="/login.html?next=' + encodeURIComponent(location.pathname + location.search) + '">Sign in</a>';
+  if(!LIVE || !SESSION0) return teamCard('Sign in to the team portal', 'This page opens a client’s resume for the TrulyPlaced team.', signIn);
+  show('boot'); $('#boot').lastChild.textContent = 'Opening the client’s resume…';
+  sbReady().then(function(){ return session(); }).then(function(s){
+    if(!s) return teamCard('Sign in to the team portal', 'Your sign-in has expired.', signIn);
+    USER = {id:s.user.id, email:s.user.email || '', name:''};
+    var cq = sb.from('clients').select('id,email,full_name,phone,location,target_roles').eq('id', TEAM.client).maybeSingle();
+    var rq = TEAM.app ? sb.from('applications').select('id,client_id,status,title,company,location,job_key,jd_text,base_resume_id,resume_doc,resume_text,cover_letter,applied_at').eq('id', TEAM.app).maybeSingle()
+                      : sb.from('client_resumes').select('id,client_id,name,doc,text').eq('id', TEAM.resume).maybeSingle();
+    return Promise.all([cq, rq]).then(function(rs){
+      if(rs[0].error || rs[1].error) throw rs[0].error || rs[1].error;
+      var c = rs[0].data, row = rs[1].data;
+      if(!c || !row || row.client_id !== TEAM.client) return teamCard('Not found', 'This link doesn’t match a client you can open. Go back to the team portal and open it from there.', '<a class="btn" href="/team.html">Team portal</a>');
+      CLIENT = c;
+      PROFILE = {target_role:String(c.target_roles || '').split(',')[0].trim()};   // what the AI tailors toward when there's no job
+      if(TEAM.app){
+        READONLY = row.status !== 'draft';
+        TEAM_JOB = {title:row.title || '', company:row.company || '', text:row.jd_text || '', key:'app:' + row.id, loc:row.location || ''};
+        if(READONLY){ TEAM_SENT = {at:row.applied_at, company:row.company}; EDIT = false; document.body.classList.add('ro'); }
+      }
+      teamPill();
+      if(TEAM.app && row.resume_doc && row.resume_doc.sections) return startDoc(row.resume_doc);
+      if(TEAM.app && READONLY){
+        if(row.resume_text) return fromSource({kind:'text', name:'Resume as sent', text:row.resume_text, at:Date.now()});
+        return teamCard('No resume was saved', 'This application was sent without a resume copy on record. Its file (if one was uploaded) is on the application page.', '<a class="btn" href="' + esc(teamBack()) + '">Back to the application</a>');
+      }
+      if(!TEAM.app){
+        if(row.doc && row.doc.sections) return startDoc(row.doc);
+        if(row.text) return fromSource({kind:'text', name:row.name || 'resume', text:row.text, at:Date.now()});
+        return showStart();
+      }
+      // a new draft: start from the base resume chosen on the team page; from now on this application has its own copy
+      var bq = row.base_resume_id ? sb.from('client_resumes').select('name,doc,text').eq('id', row.base_resume_id).maybeSingle() : Promise.resolve({data:null});
+      return bq.then(function(b){
+        var base = b && b.data;
+        if(base && base.doc && base.doc.sections){ var D = JSON.parse(JSON.stringify(base.doc)); D.meta = D.meta || {}; D.meta.job = null; D.meta.owner = null; return startDoc(D); }
+        if(base && base.text) return fromSource({kind:'text', name:base.name || 'resume', text:base.text, at:Date.now()});
+        showStart();
+      });
+    });
+  }).catch(function(){ teamCard('Couldn’t open this resume', 'Check your connection and reload the page.', '<a class="btn" href="' + esc(teamBack()) + '">Back</a>'); });
+}
 function boot(){
+  if(TEAM) return teamBoot();
   if(LIVE ? !SESSION0 : !PREVIEW){ showGate(); return; }
   var saved = lsGet(STORE_KEY, null);
   var other = !!(saved && saved.meta && saved.meta.owner && USER && saved.meta.owner !== USER.id);
@@ -3179,7 +3300,7 @@ function boot(){
 }
 // whose resume this is, so a shared computer doesn't mix accounts
 var _persist = persist;
-persist = function(){ if(DOC && USER) DOC.meta.owner = USER.id; _persist(); };
+persist = function(){ if(DOC && USER && !TEAM) DOC.meta.owner = USER.id; _persist(); };   // a client's resume never carries a team member's id
 boot();
 </script>
 </body>
