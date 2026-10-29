@@ -1637,9 +1637,12 @@ function jumpTo(path) {
   FOCUS = path; focusField(path, -1);
   const el = $('#pbody [data-path="' + path + '"]'); if (el) { const card = el.closest('.entry') || el.closest('.pc'); $$('#pbody .on').forEach((x) => x.classList.remove('on')); if (card) card.classList.add('on'); }
 }
-function lightOnPage(path) {   // outline the line on the page without leaving the current tab
+function lightOnPage(path) {   // outline the line on the page and bring it into view, without leaving the current tab
   $$('#sheet .sel').forEach((x) => x.classList.remove('sel'));
-  const on = $('#sheet [data-path="' + path + '"]'); if (on) { on.classList.add('sel'); if (window.innerWidth > 840) on.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+  const on = $('#sheet [data-path="' + path + '"]'); if (!on) return;
+  on.classList.add('sel');
+  const r = on.getBoundingClientRect(), top = window.innerHeight * 0.25, bottom = window.innerHeight * 0.75;
+  if (r.top < top || r.bottom > bottom) window.scrollBy({ top: r.top - window.innerHeight / 2 + r.height / 2, behavior: 'smooth' });
 }
 function showMe(path) {   // from the Check panel: light the line on the page and open its field
   jumpTo(path); lightOnPage(path);
@@ -1927,7 +1930,7 @@ function selRun(mode) {
 function selAccept() {
   if (!SEL || !SEL.out) return;
   const v = getField(SEL.path), nv = v.slice(0, SEL.start) + SEL.out + v.slice(SEL.end);
-  setField(SEL.path, nv); HL[SEL.path.split('.').pop()] = 1; const path = SEL.path; hideSel(); structural(); focusField(path, -1); toast('Changed — Undo if you change your mind', { a: 'undo', label: 'Undo' });
+  setField(SEL.path, nv); HL[SEL.path.split('.').pop()] = 1; const path = SEL.path; hideSel(); structural(); focusField(path, -1); lightOnPage(path); toast('Changed — Undo if you change your mind', { a: 'undo', label: 'Undo' });
 }
 
 /* ---------- the Check tab: Claude grades a written rubric ---------- */
@@ -1943,7 +1946,8 @@ const RUBRIC = [
   ['length', 'Length fits the experience (one page; two with 8+ years) and dates are consistent', 9],
   ['wording', 'Wording: no buzzwords, no spelling or grammar errors, consistent tense', 10]
 ];
-const REVIEW_OK = () => DOC.meta.review && DOC.meta.review.hash === hashOf(docText()) ? DOC.meta.review : null;
+// the last review stays on screen while you work through its list; it's "stale" once the text changes, until Check it again
+const REVIEW_OK = () => { const R = DOC.meta.review; if (!R || !R.data) return null; R.skipped = R.skipped || []; R.done = R.done || []; R.stale = R.hash !== hashOf(docText()); return R; };
 let REVIEW_BUSY = false;
 function localFacts() {   // always-true checks done here, no AI
   const out = [];
@@ -1958,23 +1962,26 @@ function localFacts() {   // always-true checks done here, no AI
   return out;
 }
 function checkHTML() {
-  const R = REVIEW_OK(), stale = DOC.meta.review && !R, facts = localFacts();
+  const R = REVIEW_OK(), stale = false, facts = localFacts();
   const col = (sc) => sc >= 85 ? 'var(--ok)' : sc >= 70 ? '#2563eb' : sc >= 50 ? 'var(--warn)' : 'var(--bad)';
   let h = '<div class="pc">';
   if (REVIEW_BUSY) h += '<div class="loading" style="padding:20px 0"><span class="spin"></span>Claude is reading the whole resume…</div>';
   else if (R) {
-    const d = R.data, skipped = R.skipped || [], open = R.issues || [];
-    h += '<div class="score"><div class="ring" style="--v:' + d.score + ';--c:' + col(d.score) + '"><span>' + d.score + '</span></div><div><b>Resume score · ' + (d.score >= 85 ? 'strong' : d.score >= 70 ? 'good' : d.score >= 50 ? 'needs work' : 'weak') + '</b><p>' + esc(d.verdict || '') + '</p></div></div>' +
-      '<div class="acts" style="margin-top:4px"><button type="button" class="btn sm" data-a="review">Check it again</button><button type="button" class="btn sm ghost" data-a="rubric">How the score works</button></div>' +
+    const d = R.data, skipped = R.skipped, done = R.done;
+    h += '<div class="score"><div class="ring" style="--v:' + d.score + ';--c:' + col(d.score) + '"><span>' + d.score + '</span></div><div><b>Resume score · ' + (d.score >= 85 ? 'strong' : d.score >= 70 ? 'good' : d.score >= 50 ? 'needs work' : 'weak') + '</b><p>' + esc(d.verdict || '') + '</p>' +
+      (R.stale ? '<p class="hint warn" style="margin-top:4px">From before your latest edits — check again for a fresh score.</p>' : '') + '</div></div>' +
+      '<div class="acts" style="margin-top:4px"><button type="button" class="btn sm' + (R.stale ? ' pri' : '') + '" data-a="review">Check it again</button><button type="button" class="btn sm ghost" data-a="rubric">How the score works</button></div>' +
       '<div id="rubric" hidden><ol class="rub">' + RUBRIC.map((r) => '<li>' + esc(r[1]) + ' — <b>' + r[2] + '</b></li>').join('') + '</ol><p class="hint">Claude grades each line against these exact rules and gives a reason. Any AI following the same rules lands within a few points.</p></div>' +
       '<div style="margin-top:10px">' + (d.checks || []).map((c) => '<div class="ck"><span class="pt ' + (c.points >= c.max ? 'full' : c.points === 0 ? 'zero' : '') + '">' + c.points + '/' + c.max + '</span><span><b>' + esc((RUBRIC.find((r) => r[0] === c.id) || [0, c.id])[1].split(':')[0]) + '</b><small>' + esc(c.reason || '') + '</small></span></div>').join('') + '</div>' +
       ((d.strengths || []).length ? '<div class="lbl" style="margin-top:12px">What’s working</div><ul class="strengths">' + d.strengths.map((s) => '<li>' + esc(s) + '</li>').join('') + '</ul>' : '') + '</div>';
-    const list = (d.issues || []).map((x, i) => Object.assign({ i }, x)).filter((x) => !skipped.includes(x.i));
-    h += '<div class="pc"><div class="pch"><h3>Fix list' + (list.length ? ' · ' + list.length : '') + '</h3></div>' +
-      (list.length ? list.map((x) => '<div class="iss" data-i="' + x.i + '"><span class="sev ' + x.severity + '">' + ({ high: 'Fix first', medium: 'Worth fixing', low: 'Nice to have' }[x.severity] || x.severity) + '</span>' +
-        '<p>' + esc(x.problem) + '</p>' + (x.quote ? '<q>' + esc(x.quote) + '</q>' : '') + (x.fix ? '<div class="fix"><b>New line</b>' + esc(x.fix) + '</div>' : x.advice ? '<p class="hint">' + esc(x.advice) + '</p>' : '') +
-        '<div class="acts">' + (x.fix && x.quote ? '<button type="button" class="btn sm pri" data-a="iss-fix" data-v="' + x.i + '">Replace the line</button>' : '') + (x.quote ? '<button type="button" class="btn sm" data-a="iss-show" data-v="' + x.i + '">Show me</button>' : '') + '<button type="button" class="btn sm ghost" data-a="iss-skip" data-v="' + x.i + '">Skip</button></div></div>').join('')
-        : '<p class="hint">Nothing left on the list' + (skipped.length ? ' (' + skipped.length + ' skipped)' : '') + '.</p>') + '</div>';
+    const all = (d.issues || []).map((x, i) => Object.assign({ i }, x)), open = all.filter((x) => !skipped.includes(x.i) && !done.includes(x.i)), handled = all.length - open.length;
+    h += '<div class="pc"><div class="pch"><h3>Fix list' + (open.length ? ' · ' + open.length : '') + '</h3>' + (handled ? '<span class="hint">' + handled + ' handled</span>' : '') + '</div>' +
+      (open.length ? open.map((x) => {
+        const gone = x.quote && !findQuote(x.quote);   // the line this was about has been edited since the check
+        return '<div class="iss' + (gone ? ' done' : '') + '" data-i="' + x.i + '"><span class="sev ' + x.severity + '">' + ({ high: 'Fix first', medium: 'Worth fixing', low: 'Nice to have' }[x.severity] || x.severity) + '</span>' + (gone ? '<span class="sev low">Line changed</span>' : '') +
+          '<p>' + esc(x.problem) + '</p>' + (x.quote ? '<q>' + esc(x.quote) + '</q>' : '') + (x.fix ? '<div class="fix"><b>New line</b>' + esc(x.fix) + '</div>' : x.advice ? '<p class="hint">' + esc(x.advice) + '</p>' : '') +
+          '<div class="acts">' + (x.fix && x.quote && !gone ? '<button type="button" class="btn sm pri" data-a="iss-fix" data-v="' + x.i + '">Replace the line</button>' : '') + (x.quote && !gone ? '<button type="button" class="btn sm" data-a="iss-show" data-v="' + x.i + '">Show me</button>' : '') + '<button type="button" class="btn sm ghost" data-a="iss-skip" data-v="' + x.i + '">' + (gone ? 'Dismiss' : 'Skip') + '</button></div></div>';
+      }).join('') : '<p class="hint">Nothing left on the list' + (handled ? ' — ' + handled + ' handled. Check it again for a fresh score.' : '.') + '</p>') + '</div>';
   } else {
     h += '<div class="score"><div class="ring" style="--v:0"><span>–</span></div><div><b>Resume score</b><p>' + (stale ? 'The resume changed since the last check.' : 'Claude grades the resume against ten written rules and lists exactly what to fix.') + '</p></div></div>' +
       '<div class="acts" style="margin-top:4px"><button type="button" class="btn pri" data-a="review"' + (LIVE ? '' : ' disabled') + '>' + I_SPARK + '<span>Check it now</span></button><button type="button" class="btn sm ghost" data-a="rubric">How the score works</button></div>' +
@@ -1996,7 +2003,7 @@ function runReview() {
   if (REVIEW_BUSY) return; REVIEW_BUSY = true; renderPanel();
   ai({ task: 'review', resume: docText().slice(0, 14000), target: targetRole(), jd: jobText().slice(0, 3000) }, 90000).then((r) => {
     if (!r || typeof r.score !== 'number') throw 'shape';
-    DOC.meta.review = { hash: hashOf(docText()), at: Date.now(), data: r, skipped: [] }; persist();
+    DOC.meta.review = { hash: hashOf(docText()), at: Date.now(), data: r, skipped: [], done: [] }; persist();
   }).catch((e) => toast(aiMsg(e))).then(() => { REVIEW_BUSY = false; renderPanel(); });
 }
 // finds the field holding a quote: exact, then the field that contains it, then the one it mostly overlaps
@@ -2016,7 +2023,7 @@ function issueFix(i) {
   modalOpen('<div class="card" role="dialog" aria-modal="true"><h2>Replace this line?</h2>' + diffHTML(v, c.text) + (c.fixed.length ? '<p class="hint" style="margin-top:8px">“' + esc(c.fixed[0]) + '” isn’t on the resume, so it became a [ ] to fill in.</p>' : '') +
     '<div class="acts"><button class="btn pri" type="button" id="mOk">Replace</button><button class="btn" type="button" id="mNo">Keep mine</button></div></div>');
   $('#mNo').onclick = modalClose;
-  $('#mOk').onclick = () => { modalClose(); setField(f.path, c.text); HL[f.path.split('.').pop()] = 1; R.skipped.push(i); DOC.meta.review = R; structural(); lightOnPage(f.path); toast('Replaced', { a: 'undo', label: 'Undo' }); };
+  $('#mOk').onclick = () => { modalClose(); setField(f.path, c.text); HL[f.path.split('.').pop()] = 1; R.done.push(i); DOC.meta.review = R; structural(); lightOnPage(f.path); toast('Replaced', { a: 'undo', label: 'Undo' }); };
 }
 function issueShow(i) { const R = REVIEW_OK(); if (!R) return; const f = findQuote(R.data.issues[i].quote); if (f) showMe(f.path); else toast('That line isn’t on the resume any more.'); }
 function issueSkip(i) { const R = REVIEW_OK(); if (!R) return; R.skipped.push(i); persist(); renderPanel(); }
@@ -2030,7 +2037,7 @@ function improveSummary(sid) {
     const lost = s.text ? lostTerms(s.text, c.text, true) : []; if (lost.length) throw { msg: 'Kept your summary — the rewrite would have removed ' + termList(lost) + '.' };
     modalOpen('<div class="card" role="dialog" aria-modal="true"><h2>' + (s.text ? 'A stronger summary' : 'A summary from your resume') + '</h2>' + (s.text ? diffHTML(s.text, c.text) : '<p style="color:var(--ink)">' + esc(c.text) + '</p>') +
       '<div class="acts"><button class="btn pri" type="button" id="mOk">Use it</button><button class="btn" type="button" id="mNo">' + (s.text ? 'Keep mine' : 'Cancel') + '</button></div></div>');
-    $('#mNo').onclick = modalClose; $('#mOk').onclick = () => { modalClose(); s.text = c.text; HL['sum:' + s.id] = 1; FOCUS = 'sec.' + s.id + '.text'; structural(); focusField(FOCUS, -1); };
+    $('#mNo').onclick = modalClose; $('#mOk').onclick = () => { modalClose(); s.text = c.text; HL['sum:' + s.id] = 1; FOCUS = 'sec.' + s.id + '.text'; structural(); focusField(FOCUS, -1); lightOnPage(FOCUS); };
   }).catch((e) => toast(e && e.msg ? e.msg : aiMsg(e))).then(() => renderPanel());
 }
 
