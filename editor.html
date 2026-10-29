@@ -12,78 +12,102 @@
 <link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 <style id="pageCss">@page{size:letter;margin:0}</style>
 <style id="sheetCss"></style>
 <style>
-:root{--blue:#0938d5;--blue-d:#072ca8;--blue-soft:#eef2ff;--blue-line:#cfd9ff;--ink:#121a33;--body:#4b5473;--muted:#737b9c;
-  --line:#e7e9f2;--bg:#f2f4fa;--ok:#0a7f46;--ok-soft:#e6f6ee;--warn:#b45309;--warn-soft:#fff4e0;--bad:#be123c;--bad-soft:#ffe9ee;
-  --vio:#6d28d9;--vio-soft:#f3eeff;--panel:420px;--top:56px;color-scheme:light}
+:root{--ui:Geist,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --blue:#0938d5;--blue-d:#072ca8;--blue-soft:#eef1fd;--blue-line:#d2dbfa;--ink:#0d0f14;--body:#3b3f4b;--muted:#6c7080;--faint:#a3a7b3;
+  --line:#e6e8ec;--line-2:#d5d8df;--bg:#f5f6f8;--canvas:#eef0f3;--dot:#d3d6dd;--field:#f3f4f6;--field-h:#eceef1;--hover:#f2f3f5;--track:#eceef1;
+  --ring:rgba(9,56,213,.16);--fill:rgba(9,56,213,.1);--edge:rgba(9,56,213,.6);
+  --ok:#0a7f46;--ok-soft:#e8f6ee;--warn:#b45309;--warn-soft:#fff5e5;--bad:#be123c;--bad-soft:#fff0f2;--vio:#6d4dff;--vio-soft:#f4f1ff;
+  --sh-1:0 1px 2px rgba(13,15,20,.06);--sh-2:0 1px 2px rgba(13,15,20,.05),0 8px 24px -12px rgba(13,15,20,.22);--sh-3:0 2px 8px rgba(13,15,20,.06),0 28px 64px -24px rgba(13,15,20,.36);
+  --panel:424px;--top:52px;color-scheme:light}
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
-body{background:var(--bg);color:var(--body);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
+body{background:var(--canvas);color:var(--body);font-family:var(--ui);font-size:13.5px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
 button,input,textarea,select{font:inherit;color:inherit}
 button{cursor:pointer;background:none;border:0}
 a{color:var(--blue)}
 [hidden]{display:none!important}
 svg{flex:none;width:18px;height:18px}
-::selection{background:#c7d2fe}
+svg.defs{position:absolute;width:0;height:0}
+::selection{background:#d4ddfd}
+:focus-visible{outline:2px solid rgba(9,56,213,.45);outline-offset:2px}
 
-/* ---------- top bar ---------- */
-.top{position:sticky;top:0;z-index:40;height:var(--top);background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 14px}
-.backb{display:inline-flex;align-items:center;gap:4px;height:34px;padding:0 12px 0 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink);font-weight:600;font-size:13px;text-decoration:none;white-space:nowrap}
-.backb:hover{border-color:var(--blue-line);background:var(--blue-soft)}
-.brand{display:inline-flex;align-items:center;gap:7px;color:var(--ink);font:700 15px Poppins,Inter,sans-serif;text-decoration:none}
-.brand img{width:24px;height:24px;border-radius:6px}
-.wkon{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px 0 4px;border-radius:999px;background:var(--vio-soft);color:var(--vio);font-size:12.5px;font-weight:600;white-space:nowrap}
-.wkon i{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:700 10.5px Inter,sans-serif;color:#fff;font-style:normal}
-.wkon small{font-weight:500;opacity:.75;text-transform:uppercase;letter-spacing:.06em;font-size:10px}
-.rname{height:34px;min-width:120px;max-width:280px;padding:0 10px;border:1px solid transparent;border-radius:8px;font-weight:600;color:var(--ink);background:transparent}
-.rname:hover{border-color:var(--line)}.rname:focus{outline:none;border-color:var(--blue);background:#fff}
+/* ---------- top bar: back, where you are (client / job · Draft), save state, undo and redo, Optimise, Download ---------- */
+.top{position:sticky;top:0;z-index:40;height:var(--top);background:rgba(255,255,255,.92);-webkit-backdrop-filter:saturate(1.6) blur(14px);backdrop-filter:saturate(1.6) blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 12px 0 10px}
+.backb{display:inline-flex;align-items:center;justify-content:center;flex:none;width:32px;height:32px;border-radius:8px;color:var(--muted);text-decoration:none;transition:background .15s,color .15s}
+.backb span{display:none}
+.backb:hover{background:var(--hover);color:var(--ink)}
+.backb[data-tip]:hover::after{left:0;transform:none}
+.brand{display:inline-flex;align-items:center;gap:7px;flex:none;color:var(--ink);font:600 15px var(--ui);text-decoration:none}
+.brand img{width:22px;height:22px;border-radius:6px}
+.brand span{display:none}
+.crumbs{display:flex;align-items:center;gap:9px;min-width:0;font-size:13px;color:var(--muted)}
+.crumbs::before,.cjob::before{content:"/";color:var(--faint);font-size:15px;font-weight:300}
+.wkon{display:inline-flex;align-items:center;gap:8px;flex:none;color:var(--ink);font-weight:500;white-space:nowrap}
+.wkon i{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:600 10px var(--ui);font-style:normal}
+.wkon small{display:none}
+.cjob{display:inline-flex;align-items:center;gap:9px;min-width:0;white-space:nowrap}
+.cjob .t{overflow:hidden;text-overflow:ellipsis}
+.chip{flex:none;font-style:normal;font-size:11.5px;font-weight:500;color:var(--muted);background:var(--field);border-radius:6px;padding:2px 8px}
+.chip.sent{color:var(--ok);background:var(--ok-soft)}
+.crumbs:has(.cjob:not([hidden])) .rname{display:none}
+.rname{height:30px;min-width:120px;max-width:280px;padding:0 8px;border:1px solid transparent;border-radius:7px;font-weight:500;color:var(--ink);background:transparent;transition:background .15s}
+.rname:hover{background:var(--hover)}.rname:focus{outline:none;border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px var(--ring)}
 .sp{flex:1}
-.status{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);white-space:nowrap}
-.status i{width:7px;height:7px;border-radius:50%;background:var(--ok)}
-.status.busy i{background:var(--warn);animation:pulse 1s infinite}
-@keyframes pulse{50%{opacity:.3}}
-.tbtns{display:flex;align-items:center;gap:6px}
-.ib{width:34px;height:34px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;color:var(--body);position:relative}
-.ib:hover{background:var(--bg);color:var(--ink)}.ib:disabled{opacity:.35;cursor:default}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:34px;padding:0 13px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:600;font-size:13px;text-decoration:none;white-space:nowrap;transition:.15s}
-.btn:hover{border-color:#c9cee0;background:#fafbff}
-.btn.pri{background:var(--blue);border-color:var(--blue);color:#fff}.btn.pri:hover{background:var(--blue-d)}
-.btn.ai{background:linear-gradient(90deg,#4f46e5,#7c3aed);border-color:transparent;color:#fff}.btn.ai:hover{filter:brightness(1.08)}
-.btn.sm{height:30px;padding:0 10px;font-size:12.5px}
+.status{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);white-space:nowrap;margin-right:4px}
+.status i{width:6px;height:6px;border-radius:50%;background:#22a06b;box-shadow:0 0 0 3px rgba(34,160,107,.15)}
+.status.busy i{background:#e0a100;box-shadow:0 0 0 3px rgba(224,161,0,.16);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.4}}
+.tbtns{display:flex;align-items:center;gap:8px}
+.hist{display:inline-flex;border:1px solid var(--line);border-radius:9px;background:#fff;box-shadow:var(--sh-1)}
+.hist .ib{width:34px;height:30px;border-radius:0}.hist .ib:first-child{border-radius:8px 0 0 8px}.hist .ib:last-child{border-radius:0 8px 8px 0;border-left:1px solid var(--line)}
+.vr{width:1px;height:20px;background:var(--line);flex:none}
+.ib{width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);position:relative;transition:background .15s,color .15s}
+.ib:hover{background:var(--hover);color:var(--ink)}.ib:disabled{color:#c4c7cf;cursor:default}.ib:disabled:hover{background:none;color:#c4c7cf}
+.ib svg{width:17px;height:17px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:32px;padding:0 13px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:500;font-size:13px;text-decoration:none;white-space:nowrap;box-shadow:var(--sh-1);transition:background .15s,border-color .15s,box-shadow .15s,color .15s}
+.btn:hover{border-color:var(--line-2);background:#fff;box-shadow:0 1px 2px rgba(13,15,20,.07),0 3px 10px -5px rgba(13,15,20,.16)}
+.btn.pri{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 1px 2px rgba(13,15,20,.22),inset 0 1px 0 rgba(255,255,255,.1)}.btn.pri:hover{background:#262a33;border-color:#262a33}
+.btn.ai{border:1px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(120deg,#5b7cff,#a78bfa 55%,#f0abfc) border-box;color:var(--ink)}
+.btn.ai:hover{background:linear-gradient(#fbfaff,#fbfaff) padding-box,linear-gradient(120deg,#3f63ff,#8b6cf6 55%,#e879f9) border-box}
+.btn.ai svg{stroke:url(#tpAi)}
+.btn.sm{height:28px;padding:0 10px;font-size:12.5px}
 .btn.wide{width:100%}
-.btn.ghost{border-color:transparent;background:transparent}.btn.ghost:hover{background:var(--bg)}
+.btn.ghost{border-color:transparent;background:transparent;box-shadow:none}.btn.ghost:hover{background:var(--hover);box-shadow:none}
 .btn.danger{color:var(--bad)}.btn.danger:hover{background:var(--bad-soft);border-color:#f3c3cf}
-.btn:disabled{opacity:.5;cursor:default}
+.btn:disabled{opacity:.5;cursor:default;box-shadow:none}
 .btn svg{width:16px;height:16px}
+.btn .dv{width:1px;height:16px;background:currentColor;opacity:.22;margin-left:4px}
+#bDl{padding-right:9px}#bDl svg:last-child{width:14px;height:14px;opacity:.75}
 .dd{position:relative}
-.menu{position:absolute;right:0;top:40px;z-index:50;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 50px -14px rgba(18,26,51,.35);padding:6px;width:320px}
-.menu button{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;padding:10px;border-radius:9px}
-.menu button:hover{background:var(--bg)}
-.menu button b{display:block;color:var(--ink);font-size:13.5px}.menu button small{display:block;color:var(--muted);font-size:12px;line-height:1.4}
-.menu svg{width:20px;height:20px;color:var(--blue);margin-top:2px}
+.menu{position:absolute;right:0;top:40px;z-index:50;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh-3);padding:6px;width:320px;animation:pop .14s ease-out}
+.menu button{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;padding:10px;border-radius:9px;transition:background .12s}
+.menu button:hover{background:var(--hover)}
+.menu button b{display:block;color:var(--ink);font-size:13.5px;font-weight:500}.menu button small{display:block;color:var(--muted);font-size:12px;line-height:1.4}
+.menu svg{width:18px;height:18px;color:var(--muted);margin-top:2px}
 [data-tip]{position:relative}
-[data-tip]:hover::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:11.5px;font-weight:500;padding:4px 8px;border-radius:6px;white-space:nowrap;z-index:60;pointer-events:none}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:11.5px;font-weight:500;padding:4px 8px;border-radius:6px;white-space:nowrap;z-index:60;pointer-events:none;box-shadow:var(--sh-2)}
 
 /* ---------- screens ---------- */
 .center{max-width:560px;margin:48px auto;padding:0 16px}
 .center.wide{max-width:1180px;margin-top:24px}
-.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;box-shadow:0 10px 40px -20px rgba(18,26,51,.25)}
-.card h1{font:700 22px Poppins,Inter,sans-serif;color:var(--ink);line-height:1.25;margin-bottom:8px}
-.card h2{font:700 17px Poppins,Inter,sans-serif;color:var(--ink);margin-bottom:6px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;box-shadow:var(--sh-2)}
+.card h1{font:600 22px var(--ui);letter-spacing:-.02em;color:var(--ink);line-height:1.25;margin-bottom:8px}
+.card h2{font:600 17px var(--ui);letter-spacing:-.015em;color:var(--ink);margin-bottom:6px}
 .card p{color:var(--body)}
 .card ul{list-style:none;margin-top:16px;display:grid;gap:8px;font-size:14px}
 .card li{display:flex;gap:10px;align-items:flex-start;color:var(--ink)}
 .card li svg{color:var(--ok);margin-top:2px}
-.gbtn{display:flex;align-items:center;justify-content:center;gap:10px;height:46px;margin-top:18px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:600;text-decoration:none}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:10px;height:46px;margin-top:18px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:500;text-decoration:none;box-shadow:var(--sh-1)}
 .gbtn svg{width:20px;height:20px}
-.drop{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:18px;padding:30px 20px;border:2px dashed var(--blue-line);border-radius:14px;background:var(--blue-soft);cursor:pointer;text-align:center;color:var(--body)}
-.drop:hover,.drop.over{border-color:var(--blue);background:#e4eaff}
+.drop{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:18px;padding:30px 20px;border:1.5px dashed var(--line-2);border-radius:14px;background:#fafbfc;cursor:pointer;text-align:center;color:var(--body);transition:border-color .15s,background .15s}
+.drop:hover,.drop.over{border-color:var(--blue);background:var(--blue-soft)}
 .drop svg{width:28px;height:28px;color:var(--blue)}
-.drop b{color:var(--ink);font-size:15px}.drop span{font-size:12.5px;color:var(--muted)}
-.or{display:flex;align-items:center;gap:10px;margin:14px 0 0;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.drop b{color:var(--ink);font-size:15px;font-weight:600}.drop span{font-size:12.5px;color:var(--muted)}
+.or{display:flex;align-items:center;gap:10px;margin:14px 0 0;font-size:12px;color:var(--muted)}
 .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
 .loading{display:flex;align-items:center;justify-content:center;gap:12px;padding:80px 20px;color:var(--muted)}
 .spin{width:18px;height:18px;border:2.5px solid var(--blue-line);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;display:inline-block;flex:none}
@@ -96,34 +120,38 @@ svg{flex:none;width:18px;height:18px}
 /* ---------- scan check screen ---------- */
 .sv{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
 .sv-c{border:1px solid var(--line);border-radius:12px;padding:12px 14px;max-height:62vh;overflow:auto;background:#fff;text-align:left}
-.sv-c h4{font:700 12px Inter,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px;position:sticky;top:-12px;background:#fff;padding:4px 0}
-.sv-c pre{white-space:pre-wrap;font:12.5px/1.55 Inter,sans-serif;color:var(--body);margin:0}
+.sv-c h4{font:600 12.5px var(--ui);color:var(--ink);margin-bottom:8px;position:sticky;top:-12px;background:#fff;padding:4px 0}
+.sv-c pre{white-space:pre-wrap;font:12.5px/1.55 var(--ui);color:var(--body);margin:0}
 .sv-h{display:flex;flex-direction:column;gap:2px;margin-bottom:10px;font-size:13px;color:var(--body)}.sv-h b{font-size:16px;color:var(--ink)}
 .sv-s{margin-bottom:10px;font-size:12.5px;line-height:1.5;color:var(--ink)}
-.sv-s h5{font:700 11.5px Inter,sans-serif;text-transform:uppercase;letter-spacing:.05em;color:var(--blue);border-bottom:1px solid var(--line);padding-bottom:3px;margin-bottom:5px}
+.sv-s h5{font:700 11.5px var(--ui);text-transform:uppercase;letter-spacing:.05em;color:var(--blue);border-bottom:1px solid var(--line);padding-bottom:3px;margin-bottom:5px}
 .sv-e{margin-bottom:7px}.sv-e>div:first-child{display:flex;justify-content:space-between;gap:10px}.sv-e i{font-style:normal;color:var(--muted);white-space:nowrap}
 .sv-s ul{margin:3px 0 0 16px}.sv-s p{margin:0 0 3px}
 .snf{font-style:normal;font-size:10.5px;font-weight:700;background:var(--warn-soft);color:var(--warn);border-radius:5px;padding:0 5px;margin-left:3px;cursor:help}
 .snw{color:var(--warn)}
 .sv-a{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 
-/* ---------- layout ---------- */
+/* ---------- layout: the page on a dotted canvas, a floating bar above it ---------- */
 .wrap{display:grid;grid-template-columns:minmax(0,1fr) var(--panel);min-height:calc(100vh - var(--top))}
-.stage{padding:16px 24px 40px;min-width:0;display:flex;flex-direction:column;align-items:center}
-.doctabs{display:flex;align-items:center;gap:4px;margin-bottom:12px;width:100%;max-width:880px}
-.doctabs button{height:32px;padding:0 14px;border-radius:999px;font-weight:600;font-size:13px;color:var(--body)}
-.doctabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(18,26,51,.15)}
-.doctabs .pages{margin-left:auto;font-size:12.5px;color:var(--muted)}
+.stage{padding:14px 28px 56px;min-width:0;display:flex;flex-direction:column;align-items:center;background:var(--canvas) radial-gradient(var(--dot) 1px,transparent 1.3px) 0 0/22px 22px}
+.doctabs{position:sticky;top:calc(var(--top) + 12px);z-index:20;display:flex;align-items:center;gap:12px;margin:0 auto 18px;height:42px;padding:4px 14px 4px 4px;border-radius:12px;background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 0 0 1px rgba(13,15,20,.06),0 10px 30px -14px rgba(13,15,20,.32);font-size:12.5px;color:var(--muted);white-space:nowrap}
+.dseg{display:inline-flex;gap:2px;background:var(--field);border-radius:9px;padding:2px}
+.doctabs button{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 11px;border-radius:7px;font-weight:500;font-size:13px;color:var(--muted);transition:background .15s,color .15s,box-shadow .15s}
+.doctabs button:hover{color:var(--ink)}
+.doctabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(13,15,20,.08),0 0 0 1px rgba(13,15,20,.05)}
+.doctabs button svg{width:15px;height:15px}
+.doctabs .pages,.doctabs .showchg{display:inline-flex;align-items:center;gap:8px}
+.doctabs .pages::before,.doctabs .showchg::before{content:"";width:1px;height:16px;background:var(--line);margin-right:4px}
 .doctabs .pages.warn{color:var(--warn);font-weight:600}
 .frame{position:relative;width:100%;max-width:880px;min-height:400px;overflow:hidden;overflow:clip;overflow-clip-margin:36px}   /* the page is laid out at paper size and scaled down: never let it widen the screen */
 .sheetwrap{position:relative;transform-origin:top left}
-.sheet{background:#fff;box-shadow:0 12px 40px -16px rgba(18,26,51,.35),0 0 0 1px var(--line);position:relative;overflow:visible;min-height:1056px}
+.sheet{background:#fff;box-shadow:0 0 0 1px rgba(13,15,20,.05),0 2px 4px rgba(13,15,20,.05),0 30px 70px -30px rgba(13,15,20,.4);position:relative;overflow:visible;min-height:1056px}
 .breaks{position:absolute;inset:0;pointer-events:none}
-.brk{position:absolute;left:-12px;right:-12px;border-top:2px dashed #e11d48;opacity:.6}
-.brk::after{content:attr(data-n);position:absolute;right:0;top:3px;font:600 10px Inter,sans-serif;color:#e11d48;background:#fff;padding:1px 5px;border-radius:4px}
-.sheet [data-path]{cursor:text;border-radius:2px;transition:background .15s}
-.sheet [data-path]:hover{background:#fff6cc}
-.sheet .sel{outline:2px solid var(--blue);outline-offset:1px;background:#e8edff!important}
+.brk{position:absolute;left:-16px;right:-16px;border-top:1px dashed #b4b9c6}
+.brk::after{content:attr(data-n);position:absolute;right:0;top:5px;font:500 10.5px var(--ui);color:var(--muted);background:#fff;padding:1px 8px;border-radius:999px;box-shadow:0 0 0 1px var(--line)}
+.sheet [data-path]{cursor:text;border-radius:3px;transition:background .15s}
+.sheet [data-path]:hover{background:rgba(9,56,213,.05)}
+.sheet .sel{outline:1.5px solid rgba(9,56,213,.45);outline-offset:2px;background:rgba(9,56,213,.06)!important}
 /* editing on the page itself: the controls show on hover (never in the PDF, never in the Word file) */
 .sheet .pgx{display:none}
 .sheet .skr{position:relative}
@@ -131,128 +159,159 @@ svg{flex:none;width:18px;height:18px}
 .sheet :is(.ps:hover,.ps.pgon) .skadd,.sheet :is(.ps:hover,.ps.pgon) .skrm{display:inline}
 .sheet :is(.ps:hover,.ps.pgon) .skdrag{display:grid}
 .sheet :is(.ps:hover,.ps.pgon) .sk,.sheet .sk:has(.adding){padding-right:8.2em}   /* room for "Remove category" on the right */
-.sheet .skx{place-items:center;width:.95em;height:1.05em;margin:0 0 0 .12em;vertical-align:-.14em;color:#dc2626;cursor:pointer;border-radius:3px}
-.sheet .skx:hover{background:#fee2e2}
-.sheet .skx svg{width:.78em;height:.78em}
-.sheet .skadd{margin-left:.45em;color:var(--blue);font-style:normal;font-weight:600;font-size:.92em;cursor:pointer;white-space:nowrap}
-.sheet .skrm{position:absolute;top:0;right:-8.2em;color:#dc2626;font-style:normal;font-size:.88em;cursor:pointer;white-space:nowrap}
-.sheet .skadd:hover,.sheet .skrm:hover{text-decoration:underline}
-.sheet .skdrag{position:absolute;left:-1.35em;top:.12em;width:1.1em;height:1.1em;place-items:center;color:#9aa1b5;cursor:grab}
+.sheet .skx{place-items:center;width:.95em;height:1.05em;margin:0 0 0 .12em;vertical-align:-.14em;color:var(--faint);cursor:pointer;border-radius:3px;transition:color .12s,background .12s}
+.sheet .skx:hover{background:var(--bad-soft);color:var(--bad)}
+.sheet .skx svg{width:.72em;height:.72em}
+.sheet .skadd{margin-left:.45em;color:var(--blue);font-style:normal;font-weight:500;font-size:.9em;cursor:pointer;white-space:nowrap}
+.sheet .skrm{position:absolute;top:0;right:-8.2em;color:var(--faint);font-style:normal;font-size:.88em;cursor:pointer;white-space:nowrap;transition:color .12s}
+.sheet .skadd:hover{text-decoration:underline;text-underline-offset:2px}.sheet .skrm:hover{color:var(--bad)}
+.sheet .skdrag{position:absolute;left:-1.35em;top:.12em;width:1.1em;height:1.1em;place-items:center;color:#c3c6ce;cursor:grab}.sheet .skdrag:hover{color:var(--muted)}
 .sheet .skdrag svg{width:1em;height:1em}
-.sheet .pgin{font:inherit;font-size:.95em;width:9em;margin-left:.4em;padding:0 .35em;border:1px solid var(--blue);border-radius:4px;outline:none;background:#fff}
-.sheet li.pghov{outline:1px solid #c9cee0;outline-offset:2px;border-radius:3px}
-.sheet .pged{outline:2px solid var(--blue);outline-offset:2px;border-radius:2px;background:#fff!important;cursor:text}
+.sheet .pgin{font:inherit;font-size:.95em;width:9em;margin-left:.4em;padding:0 .35em;border:1px solid var(--blue-line);border-radius:5px;outline:none;background:#fff;box-shadow:0 0 0 3px var(--ring)}
+.sheet li.pghov{outline:1px solid #dfe2e8;outline-offset:3px;border-radius:4px}
+.sheet .pged{outline:1.5px solid var(--blue);outline-offset:3px;border-radius:3px;background:#fff!important;cursor:text}
 .sheet li.pgempty{display:none}.sheet li.pgempty:has(.pged){display:list-item}   /* a new, empty bullet shows only while it's typed into */
-.sheet .pged:empty::before{content:'Type here…';color:#9aa1b5}.sheet li .pged:empty::before{content:'Type the new bullet…'}
+.sheet .pged:empty::before{content:'Type here…';color:var(--faint)}.sheet li .pged:empty::before{content:'Type the new bullet…'}
 .sheet .pg-dropb{box-shadow:0 -2px 0 var(--blue)}.sheet .pg-dropa{box-shadow:0 2px 0 var(--blue)}
-.pgbar{position:absolute;z-index:45;display:flex;align-items:center;gap:2px;padding:3px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 22px -10px rgba(18,26,51,.35)}
+.pgbar{position:absolute;z-index:45;display:flex;align-items:center;gap:1px;padding:3px;background:#111318;border:1px solid rgba(255,255,255,.07);border-radius:10px;box-shadow:0 2px 6px rgba(13,15,20,.18),0 14px 30px -12px rgba(13,15,20,.6);animation:pgin .12s ease-out}
+@keyframes pgin{from{opacity:0}to{opacity:1}}   /* a fade only: the toolbar sits exactly where it belongs from the first frame */
 .pgbar[hidden]{display:none}
-.pgbar button,.pgbar .pgdrag{width:30px;height:30px;display:grid;place-items:center;border-radius:7px}
-.pgbar button:hover,.pgbar .pgdrag:hover{background:var(--bg)}
+.pgbar button,.pgbar .pgdrag{width:28px;height:28px;display:grid;place-items:center;border-radius:7px;color:#b8bfd3;transition:background .12s,color .12s}
+.pgbar button:hover,.pgbar .pgdrag:hover{background:rgba(255,255,255,.1);color:#fff}
 .pgbar svg{width:16px;height:16px}
-.pgbar .pgadd{color:var(--ok)}.pgbar .pgdel{color:#dc2626}.pgbar .pgdrag{color:#9aa1b5;cursor:grab}.pgbar .pgai{color:#d97706}
+.pgbar .pgdel:hover{color:#ffb3bf}.pgbar .pgdrag{cursor:grab;color:#7f88a6}
+.pgbar .pgai{color:#c4b8ff;margin-left:4px;position:relative}.pgbar .pgai:hover{color:#e2dcff}.pgbar .pgai::before{content:"";position:absolute;left:-3px;top:6px;bottom:6px;width:1px;background:rgba(255,255,255,.14)}
 .ro .sheet .pgx,.ro .pgbar{display:none!important}
-.sheet .hl{background:#fff2b8}
+.sheet .hl{background:rgba(109,77,255,.08);border-radius:3px}
 
-/* ---------- panel ---------- */
-.panel{background:#fff;border-left:1px solid var(--line);position:sticky;top:var(--top);height:calc(100vh - var(--top));display:flex;flex-direction:column;min-width:0}
-.ptabs{display:flex;gap:2px;padding:10px 12px 0;border-bottom:1px solid var(--line);background:#fff}
-.ptabs button{flex:1;height:36px;border-radius:8px 8px 0 0;font-weight:600;font-size:13px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
-.ptabs button:hover{color:var(--ink);background:var(--bg)}
-.ptabs button.on{color:var(--blue);border-bottom-color:var(--blue)}
-.pbody{flex:1;overflow:auto;padding:14px 14px 60px;scroll-behavior:smooth}
-.pc{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px 14px;margin-bottom:10px}
-.pc.on{border-color:var(--blue-line);box-shadow:0 0 0 3px var(--blue-soft)}
-.pch{display:flex;align-items:center;gap:6px;margin-bottom:8px}
-.pch h3{font:700 13px Inter,sans-serif;color:var(--ink);flex:1;min-width:0;text-transform:uppercase;letter-spacing:.05em}
-.pch input.ttl{flex:1;min-width:0;height:28px;border:1px solid transparent;border-radius:6px;padding:0 6px;font-weight:700;color:var(--ink);background:transparent;text-transform:uppercase;letter-spacing:.05em;font-size:13px}
-.pch input.ttl:hover{border-color:var(--line)}.pch input.ttl:focus{outline:none;border-color:var(--blue);background:#fff;text-transform:none;letter-spacing:0}
+/* ---------- the side panel: what's open on the left, the tool rail on the right ---------- */
+.panel{background:#fff;border-left:1px solid var(--line);position:sticky;top:var(--top);height:calc(100vh - var(--top));display:grid;grid-template-columns:minmax(0,1fr) 64px;min-width:0}
+.ptabs{grid-column:2;grid-row:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 0;border-left:1px solid var(--line);background:#fafafb}
+.ptabs button{width:52px;display:flex;flex-direction:column;align-items:center;gap:5px;padding:9px 0 8px;border-radius:10px;color:var(--muted);font-size:11px;font-weight:500;transition:background .15s,color .15s}
+.ptabs button svg{width:19px;height:19px}
+.ptabs button:hover{background:var(--hover);color:var(--ink)}
+.ptabs button.on{background:var(--blue-soft);color:var(--blue)}
+.pbody{grid-column:1;grid-row:1;min-width:0;overflow:auto;padding:18px 20px 60px;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:#d5d8df transparent}
+.ihead{margin-bottom:4px}
+.ihead h2{font:600 16px/1.3 var(--ui);color:var(--ink);letter-spacing:-.01em}
+.ihead p{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.45}
+.pc{background:#fff;border-top:1px solid var(--line);padding:16px 20px 18px;margin:0 -20px}
+.ihead+.pc{border-top:0;padding-top:12px}
+.pc.on{background:linear-gradient(90deg,rgba(9,56,213,.04),rgba(9,56,213,0) 70%);box-shadow:inset 2px 0 0 var(--blue)}
+.pch{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.pch h3{font:600 13.5px var(--ui);color:var(--ink);flex:1;min-width:0;letter-spacing:-.005em}
+.pch input.ttl{flex:1;min-width:0;height:28px;border:1px solid transparent;border-radius:6px;padding:0 6px;margin-left:-7px;font:600 13.5px var(--ui);color:var(--ink);background:transparent;letter-spacing:-.005em}
+.pch input.ttl:hover{background:var(--hover)}.pch input.ttl:focus{outline:none;border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px var(--ring)}
 .pch .mini{display:flex;gap:2px}
-.mb{width:26px;height:26px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;color:var(--muted)}
-.mb:hover{background:var(--bg);color:var(--ink)}.mb.del:hover{background:var(--bad-soft);color:var(--bad)}
+.mb{width:26px;height:26px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;color:var(--faint);transition:background .12s,color .12s,opacity .12s}
+.mb:hover{background:var(--hover);color:var(--ink)}.mb.del:hover{background:var(--bad-soft);color:var(--bad)}
 .mb svg{width:15px;height:15px}
 .mb:disabled{opacity:.3;cursor:default}
-.lbl{display:block;font-size:11.5px;font-weight:600;color:var(--muted);margin:8px 0 3px;text-transform:uppercase;letter-spacing:.04em}
-.in,.ta{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:#fff;color:var(--ink);font-size:13.5px;line-height:1.4}
+@media (hover:hover){   /* the move and remove buttons show where the pointer is, so the panel reads calmly */
+  .pch .mini,.eh .mini,#pbody .bl li .mini,#pbody .row>.mb{opacity:0;transition:opacity .12s}
+  .pc:hover>.pch .mini,.pc:focus-within>.pch .mini,.entry:hover .eh .mini,.entry:focus-within .eh .mini,#pbody .bl li:hover .mini,#pbody .bl li:focus-within .mini,#pbody .row:hover>.mb,#pbody .row:focus-within>.mb{opacity:1}
+}
+.lbl{display:block;font-size:12px;font-weight:500;color:var(--muted);margin:12px 0 5px}
+.in,.ta{width:100%;border:1px solid transparent;border-radius:8px;padding:7px 10px;background:var(--field);color:var(--ink);font-size:13.5px;line-height:1.45;transition:background .15s,border-color .15s,box-shadow .15s}
 .in{height:34px}
 .ta{resize:vertical;min-height:60px;display:block}
-.in:focus,.ta:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
-.in::placeholder,.ta::placeholder{color:#a4abc4}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.g2 .lbl{margin-top:8px}
-.entry{border:1px solid var(--line);border-radius:10px;padding:10px 12px 12px;margin-top:10px;background:#fbfbfe}
-.entry.on{border-color:var(--blue-line);background:#fff}
+.in:hover,.ta:hover{background:var(--field-h)}
+.in:focus,.ta:focus{outline:none;background:#fff;border-color:var(--blue);box-shadow:0 0 0 3px var(--ring)}
+.in::placeholder,.ta::placeholder{color:#a8acb8}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.g2 .lbl{margin-top:10px}
+.entry{border:1px solid var(--line);border-radius:12px;padding:12px 14px 14px;margin-top:12px;background:#fff;transition:border-color .15s,box-shadow .15s}
+.entry.on{border-color:var(--line-2);box-shadow:var(--sh-2)}
 .eh{display:flex;align-items:center;gap:6px;margin-bottom:2px}
-.eh b{flex:1;min-width:0;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dwarn{display:inline-block;font:700 10.5px Inter,sans-serif;color:var(--bad);background:var(--bad-soft);border-radius:5px;padding:1px 6px;margin-top:4px}
-#pbody .bl{list-style:none;margin-top:6px;display:grid;gap:4px}
+.eh b{flex:1;min-width:0;font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dwarn{display:inline-block;font:600 11px var(--ui);color:var(--bad);background:var(--bad-soft);border-radius:6px;padding:2px 7px;margin-top:5px}
+#pbody .bl{list-style:none;margin-top:6px;display:grid;gap:6px}
 #pbody .bl li{display:flex;gap:4px;align-items:flex-start}
-#pbody .bl li .ta{min-height:34px;padding:6px 8px;font-size:13px}
+#pbody .bl li .ta{min-height:34px;padding:7px 10px;font-size:13px}
 #pbody .bl li .mini{display:flex;flex-direction:column;gap:0;padding-top:2px}
-.addl{display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-size:12.5px;font-weight:600;color:var(--blue);padding:4px 6px;border-radius:6px}
-.addl:hover{background:var(--blue-soft)}
+.addl{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:12.5px;font-weight:500;color:var(--muted);padding:5px 8px 5px 6px;border-radius:7px;transition:background .15s,color .15s}
+.addl:hover{background:var(--blue-soft);color:var(--blue)}
 .addl svg{width:14px;height:14px}
 .row{display:flex;gap:6px;align-items:center;margin-top:6px}
 .row .in{flex:1;min-width:0}
 .row .in.lab{flex:0 0 110px}
-.addsec{display:block;width:100%;padding:12px;border:2px dashed var(--line);border-radius:12px;color:var(--blue);font-weight:600;text-align:center;margin-top:4px}
-.addsec:hover{border-color:var(--blue-line);background:var(--blue-soft)}
+.addsec{display:block;width:100%;padding:12px;border:1px dashed var(--line-2);border-radius:12px;color:var(--muted);font-weight:500;text-align:center;margin-top:14px;transition:background .15s,border-color .15s,color .15s}
+.addsec:hover{border-color:var(--blue-line);background:var(--blue-soft);color:var(--blue)}
 .secmenu{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
-.secmenu button{padding:9px 10px;border:1px solid var(--line);border-radius:9px;text-align:left;font-weight:600;font-size:13px;color:var(--ink)}
+.secmenu button{padding:9px 10px;border:1px solid var(--line);border-radius:9px;text-align:left;font-weight:500;font-size:13px;color:var(--ink);background:#fff;transition:background .15s,border-color .15s}
 .secmenu button:hover{border-color:var(--blue-line);background:var(--blue-soft)}
-.hint{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}
+.hint{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.45}
 .hint.warn{color:var(--warn)}
 .chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);padding:5px 0}
 .chk input{width:16px;height:16px;accent-color:var(--blue)}
 
 /* ---------- format panel ---------- */
-.fh{font:700 11px Inter,sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:16px 0 6px}
-.fh:first-child{margin-top:4px}
-.fr{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;font-size:13.5px;color:var(--ink)}
+.fh{font:600 12.5px var(--ui);color:var(--ink);letter-spacing:-.005em;margin:18px -20px 8px;padding:16px 20px 0;border-top:1px solid var(--line)}
+.ihead+.fh{border-top:0;margin-top:8px;padding-top:4px}
+.fr{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:36px;padding:2px 0;font-size:13px;color:var(--ink)}
 .fr>span:first-child{color:var(--body)}
-.fr select{height:32px;border:1px solid var(--line);border-radius:8px;padding:0 8px;background:#fff;max-width:180px;font-size:13px}
-.fr .val{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12.5px;min-width:44px;text-align:right}
-.seg{display:inline-flex;background:var(--bg);border-radius:8px;padding:2px}
-.seg button{height:28px;min-width:34px;padding:0 10px;border-radius:6px;font-weight:600;font-size:12.5px;color:var(--body)}
-.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(18,26,51,.15)}
+.fr select{height:32px;border:1px solid transparent;border-radius:8px;padding:0 28px 0 10px;max-width:180px;font-size:13px;color:var(--ink);cursor:pointer;-webkit-appearance:none;appearance:none;transition:background-color .15s,border-color .15s,box-shadow .15s;
+  background:var(--field) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236c7080' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 9px center}
+.fr select:hover{background-color:var(--field-h)}.fr select:focus{outline:none;background-color:#fff;border-color:var(--blue);box-shadow:0 0 0 3px var(--ring)}
+.seg{display:inline-flex;gap:2px;background:var(--track);border-radius:9px;padding:2px}
+.seg button{height:28px;min-width:34px;padding:0 10px;border-radius:7px;font-weight:500;font-size:12.5px;color:var(--muted);transition:background .15s,color .15s,box-shadow .15s}
+.seg button:hover{color:var(--ink)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(13,15,20,.08),0 0 0 1px rgba(13,15,20,.05)}
 .seg button svg{width:15px;height:15px}
-.sl{display:block;padding:2px 0 8px}
-.sl .fr{padding:4px 0 2px}
-input[type=range]{width:100%;accent-color:var(--blue);height:22px}
-.sw{position:relative;width:36px;height:20px;border-radius:999px;background:#cfd3e2;transition:.15s;flex:none}
-.sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.15s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
-.sw.on{background:var(--blue)}.sw.on::after{left:18px}
-.tpl{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
-.tpl button{border:1px solid var(--line);border-radius:10px;padding:8px;text-align:left;display:flex;gap:10px;align-items:center}
-.tpl button.on{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
-.tpl button svg{width:38px;height:50px;border:1px solid var(--line);border-radius:3px;background:#fff}
-.tpl b{display:block;font-size:12.5px;color:var(--ink)}.tpl small{display:block;font-size:11px;color:var(--muted);line-height:1.3}
-.dots{display:flex;gap:6px}
-.dots button{width:24px;height:24px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
-.dots button.on{box-shadow:0 0 0 2px var(--blue)}
+/* sliders: a filled field you drag across - its name and value inside, the fill shows how far along it is */
+.sfg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 6px}.sfg.one{grid-template-columns:1fr}
+.sf{position:relative;display:block;height:34px;border-radius:8px;background:var(--field);overflow:hidden;cursor:ew-resize;transition:background .15s,box-shadow .15s}
+.sf:hover{background:var(--field-h)}
+.sf:focus-within{box-shadow:0 0 0 2px var(--ring)}
+.sf input{position:absolute;inset:0;width:100%;height:100%;margin:0;-webkit-appearance:none;appearance:none;background:linear-gradient(var(--fill),var(--fill)) 0 0/var(--p,50%) 100% no-repeat;cursor:ew-resize}
+.sf input:focus-visible{outline:none}
+.sf input::-webkit-slider-runnable-track{height:34px;background:transparent}
+.sf input::-webkit-slider-thumb{-webkit-appearance:none;width:2px;height:34px;background:var(--edge);opacity:0;transition:opacity .15s}
+.sf:hover input::-webkit-slider-thumb,.sf input:focus-visible::-webkit-slider-thumb,.sf input:active::-webkit-slider-thumb{opacity:1}
+.sf input::-moz-range-track{height:34px;background:transparent}
+.sf input::-moz-range-thumb{width:2px;height:34px;border:0;border-radius:0;background:var(--edge)}
+.sf .sfl,.sf .val{position:absolute;top:0;line-height:34px;font-size:12.5px;pointer-events:none}
+.sf .sfl{left:11px;color:var(--muted)}
+.sf .val{right:11px;color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+.sw{position:relative;width:30px;height:18px;border-radius:999px;background:#d5d8df;transition:background .15s;flex:none}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.sw.on{background:var(--blue)}.sw.on::after{left:14px}
+/* templates: this resume in each one, drawn live */
+.tpl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 10px;margin-top:4px}
+.tpl button{position:relative;display:flex;flex-direction:column;gap:7px;padding:0;text-align:center}
+.tpl .tth{position:relative;display:block;aspect-ratio:8.5/11;border-radius:7px;background:#fff;overflow:hidden;box-shadow:0 0 0 1px var(--line),0 1px 3px rgba(13,15,20,.06);transition:box-shadow .15s,transform .15s}
+.tpl button:hover .tth{box-shadow:0 0 0 1px var(--line-2),0 8px 18px -10px rgba(13,15,20,.35);transform:translateY(-1px)}
+.tpl button.on .tth{box-shadow:0 0 0 2px var(--blue),0 8px 18px -8px rgba(9,56,213,.45)}
+.tpl button.on::after{content:"";position:absolute;top:7px;right:7px;width:18px;height:18px;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.25);
+  background:var(--blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/11px no-repeat}
+.tpl b{display:block;font-size:12px;font-weight:500;color:var(--muted)}
+.tpl button.on b{color:var(--ink)}
+.dots{display:flex;gap:8px}
+.dots button{width:20px;height:20px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1);transition:box-shadow .15s}
+.dots button.on{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--blue)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips button{padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px;color:var(--ink);background:#fff;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.chips button.off{text-decoration:line-through;color:var(--muted);background:var(--bg)}
-.fitbox{margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fbfbfe}
-.fitbox p{font-size:12px;color:var(--muted);margin-top:4px}
+.chips button.off{text-decoration:line-through;color:var(--muted);background:var(--field);border-color:transparent}
+.fitbox{margin-top:12px;padding:12px;border-radius:12px;background:var(--bg)}
+.fitbox p{font-size:12px;color:var(--muted);margin-top:6px}
 
 /* ---------- check panel ---------- */
-.score{display:flex;align-items:center;gap:14px;padding:4px 0 10px}
-.ring{--v:0;--c:var(--blue);width:70px;height:70px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--v)*1%),#e9ebf3 0);display:grid;place-items:center;flex:none}
-.ring span{width:54px;height:54px;border-radius:50%;background:#fff;display:grid;place-items:center;font:700 20px Poppins,Inter,sans-serif;color:var(--ink)}
-.score b{display:block;font-size:14px;color:var(--ink)}.score p{font-size:12.5px;color:var(--body);line-height:1.45;margin-top:2px}
-.ck{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--line);font-size:12.5px}
-.ck .pt{flex:none;min-width:40px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.score{display:flex;align-items:center;gap:16px;padding:2px 0 12px}
+.ring{--v:0;--c:var(--blue);width:76px;height:76px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--v)*1%),#eceef1 0);display:grid;place-items:center;flex:none}
+.ring span{width:64px;height:64px;border-radius:50%;background:#fff;display:grid;place-items:center;font:600 22px var(--ui);letter-spacing:-.02em;color:var(--ink)}
+.score b{display:block;font-size:14px;font-weight:600;color:var(--ink)}.score p{font-size:12.5px;color:var(--body);line-height:1.45;margin-top:2px}
+.ck{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line);font-size:12.5px}
+.ck .pt{flex:none;min-width:44px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
 .ck .pt.full{color:var(--ok)}.ck .pt.zero{color:var(--bad)}
-.ck b{display:block;color:var(--ink);font-size:12.5px}.ck small{color:var(--muted);display:block;line-height:1.4}
-.iss{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px;background:#fff}
+.ck b{display:block;color:var(--ink);font-size:12.5px;font-weight:500}.ck small{color:var(--muted);display:block;line-height:1.4}
+.iss{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px;background:#fff}
 .iss.done{opacity:.6}
-.sev{display:inline-block;font:700 10px Inter,sans-serif;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:999px;margin-bottom:4px}
+.sev{display:inline-block;font:600 11px var(--ui);padding:2px 8px;border-radius:999px;margin-bottom:6px}
 .sev.high{background:var(--bad-soft);color:var(--bad)}.sev.medium{background:var(--warn-soft);color:var(--warn)}.sev.low{background:var(--blue-soft);color:var(--blue)}
 .iss p{font-size:13px;color:var(--ink);line-height:1.45}
 .iss q{display:block;font-style:italic;color:var(--muted);font-size:12.5px;margin:4px 0;quotes:"“" "”"}
 .iss .fix{font-size:12.5px;color:var(--ink);background:var(--ok-soft);border-radius:8px;padding:7px 9px;margin:6px 0;line-height:1.45}
-.iss .fix b{color:var(--ok);font-size:11px;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:2px}
+.iss .fix b{color:var(--ok);font-size:11.5px;font-weight:600;display:block;margin-bottom:2px}
 .iss .acts{margin-top:8px;gap:6px}
 .strengths{margin:6px 0 0;padding-left:18px;font-size:12.5px;color:var(--body)}
 .strengths li{margin:2px 0}
@@ -265,7 +324,7 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .kw{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
 .kw span{font-size:11.5px;padding:2px 8px;border-radius:999px;background:var(--ok-soft);color:var(--ok)}
 .kw span.miss{background:var(--bad-soft);color:var(--bad)}
-.pbar{height:6px;border-radius:3px;background:#e9ebf3;overflow:hidden;margin-top:6px}
+.pbar{height:6px;border-radius:3px;background:#eceef1;overflow:hidden;margin-top:6px}
 .pbar i{display:block;height:100%;background:var(--blue)}
 
 /* icons inside badges, rows and buttons: one size, one weight */
@@ -274,11 +333,11 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .fc svg{width:12px;height:12px;vertical-align:-2px;margin-right:2px}
 .rdone>span:first-child{width:28px;height:28px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;flex:none}
 .fcok span{width:28px;height:28px;border-radius:50%;background:#fff;color:var(--ok);display:grid;place-items:center;flex:none;font-size:inherit}
-.btn.pri svg,.btn.ai svg{color:#fff}
+.btn.pri svg{color:#fff}
 #rAll svg{width:14px;height:14px;margin-right:4px}
 
 /* requirements card (Optimise results and the Check tab) and Show changes marks */
-.reqs{margin:0 26px;border:1px solid var(--line);border-radius:12px;background:#fbfbfe}
+.reqs{margin:0 26px;border:1px solid var(--line);border-radius:12px;background:#fafbfc}
 .reqh{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;text-align:left}
 .reqh>span{flex:1;min-width:0}.reqh b{display:block;font-size:14px;color:var(--ink)}.reqh small{display:block;font-size:12px;color:var(--muted)}
 .reqh svg{transition:transform .2s;color:var(--muted)}.reqh.open svg{transform:rotate(180deg)}
@@ -286,11 +345,13 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .reql li{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink)}
 .reql li b{font-weight:600}.reql li em{font-style:normal;font-size:11px;color:var(--muted)}.reql q{display:block;font-size:12px;color:var(--muted);font-style:italic;quotes:"“" "”"}.reql small{display:block;font-size:12px;color:var(--muted)}
 .reql.small{padding:0;margin-top:8px;gap:6px}.reql.small li{font-size:12.5px}
-.rs{flex:none;font:700 10px Inter,sans-serif;text-transform:uppercase;letter-spacing:.05em;padding:3px 7px;border-radius:999px;margin-top:1px;white-space:nowrap}
-.rs.ok{background:var(--ok-soft);color:var(--ok)}.rs.blue{background:var(--blue-soft);color:var(--blue)}.rs.mute{background:#eef0f6;color:var(--muted)}
-.showchg{display:inline-flex;align-items:center;gap:6px;margin-left:auto;font-size:12.5px;color:var(--body);cursor:pointer}.showchg input{accent-color:var(--ok)}
-.showchg+.pages{margin-left:12px}
-.sheet ins{background:#dcfce7;text-decoration:none;border-radius:2px;box-shadow:0 0 0 1px #bbf7d0 inset}
+.rs{flex:none;font:600 11px var(--ui);padding:2px 8px;border-radius:999px;margin-top:1px;white-space:nowrap}
+.rs.ok{background:var(--ok-soft);color:var(--ok)}.rs.blue{background:var(--blue-soft);color:var(--blue)}.rs.mute{background:var(--field);color:var(--muted)}
+.showchg{cursor:pointer;color:var(--muted)}
+.showchg input{-webkit-appearance:none;appearance:none;position:relative;flex:none;width:28px;height:16px;margin:0;border-radius:999px;background:var(--line-2);cursor:pointer;transition:background .15s}
+.showchg input::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:left .15s}
+.showchg input:checked{background:var(--blue)}.showchg input:checked::after{left:14px}
+.sheet ins{background:#dff5e7;text-decoration:none;border-radius:2px}
 .sheet mark.ph{background:#fff2b8}
 
 /* ---------- diff ---------- */
@@ -301,51 +362,51 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .diff mark.ph{background:#fff2b8}
 
 /* ---------- selection bar ---------- */
-.selbar{animation:pop .16s ease-out;position:absolute;z-index:45;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 40px -12px rgba(18,26,51,.4);padding:6px;max-width:min(440px,calc(100vw - 24px))}
+.selbar{animation:pop .16s ease-out;position:absolute;z-index:45;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh-3);padding:6px;max-width:min(440px,calc(100vw - 24px))}
 .selbar .ops{display:flex;flex-wrap:wrap;gap:3px}
-.selbar .ops button{height:30px;padding:0 10px;border-radius:7px;font-size:12.5px;font-weight:600;color:var(--ink)}
+.selbar .ops button{height:30px;padding:0 10px;border-radius:7px;font-size:12.5px;font-weight:500;color:var(--ink)}
 .selbar .ops button:hover{background:var(--vio-soft);color:var(--vio)}
 .selbar .ops button.ai{color:var(--vio)}
 .selbar .ask{display:flex;gap:4px;margin-top:4px;border-top:1px solid var(--line);padding-top:6px}
-.selbar .ask input{flex:1;height:30px;border:1px solid var(--line);border-radius:7px;padding:0 8px;font-size:12.5px}
+.selbar .ask input{flex:1;height:30px;border:1px solid transparent;border-radius:7px;padding:0 9px;font-size:12.5px;background:var(--field)}.selbar .ask input:focus{outline:none;background:#fff;border-color:var(--blue);box-shadow:0 0 0 3px var(--ring)}
 .selbar .res{padding:8px 6px 4px;min-width:300px}
 .selbar .res .why{font-size:11.5px;color:var(--muted);margin-top:4px}
 .selbar .res .acts{margin-top:8px;gap:6px}
 .selbar .busy{display:flex;align-items:center;gap:8px;padding:10px 8px;font-size:13px;color:var(--body)}
 
 /* ---------- modal (Optimise, fact check, confirm) ---------- */
-.modal{animation:fadeIn .18s ease-out;position:fixed;inset:0;z-index:80;background:rgba(18,26,51,.5);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(2px)}
+.modal{animation:fadeIn .18s ease-out;position:fixed;inset:0;z-index:80;background:rgba(13,15,20,.34);display:flex;align-items:center;justify-content:center;padding:20px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .modal .card{width:min(560px,100%);max-height:calc(100vh - 40px);overflow:auto}
 .modal.closing{opacity:0;transition:opacity .14s}
 .om,.modal .card{animation:pop .22s cubic-bezier(.2,.8,.2,1)}
-.om{position:relative;width:min(960px,100%);max-height:calc(100vh - 40px);background:#fff;border-radius:16px;display:flex;flex-direction:column;overflow:hidden}
+.om{position:relative;width:min(960px,100%);max-height:calc(100vh - 40px);background:#fff;border-radius:18px;display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--sh-3)}
 .om.sm{width:min(620px,100%)}
 .om .mx{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--muted);z-index:2}
 .om .mx:hover{background:var(--bg);color:var(--ink)}
 .omh{padding:22px 26px 14px;border-bottom:1px solid var(--line)}
-.omh h2{font:700 20px Poppins,Inter,sans-serif;color:var(--ink)}
+.omh h2{font:600 19px var(--ui);letter-spacing:-.015em;color:var(--ink)}
 .omsub{color:var(--body);font-size:13.5px;margin-top:4px}
 .omb{flex:1;overflow:auto;padding:16px 26px}
-.omf{display:flex;align-items:center;gap:8px;padding:12px 26px;border-top:1px solid var(--line);background:#fbfbfe}
+.omf{display:flex;align-items:center;gap:8px;padding:12px 26px;border-top:1px solid var(--line);background:#fafbfc}
 .omf>span{flex:1;font-size:12.5px;color:var(--muted)}   /* the footer's note only, not the text inside its buttons */
 .orows{display:grid;gap:8px}
 .orow{transition:border-color .15s,background .15s,transform .15s,box-shadow .15s;display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;text-align:left}
 .orow:hover{border-color:var(--blue-line)}.orow.on{border-color:var(--blue);background:var(--blue-soft)}
 .orow .ol{flex:1}.orow b{display:block;color:var(--ink);font-size:14px}.orow small{display:block;color:var(--muted);font-size:12.5px}
-.orow .cb{width:22px;height:22px;border-radius:6px;border:2px solid #c9cee0;display:grid;place-items:center;flex:none}
+.orow .cb{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--line-2);display:grid;place-items:center;flex:none}
 .orow .cb{transition:background .15s,border-color .15s}.orow .cb svg{width:14px;height:14px;stroke:#fff;stroke-width:3;fill:none;opacity:0;transform:scale(.5);transition:opacity .15s,transform .15s}.orow.on .cb svg{transform:scale(1)}
 .rb button:hover{transform:scale(1.08)}.rr.acc .rn,.rr.rej .rn{transition:background .25s,opacity .25s}.rdone{animation:rise .3s both}
 .omh h2{text-transform:none;letter-spacing:0;border:0}
 .orow.on .cb{background:var(--blue);border-color:var(--blue)}.orow.on .cb svg{opacity:1}
 /* Sync to this job: its own button beside Optimise - every part at once, more deeply */
 .om.opt{width:min(700px,100%)}.om.opt .omf{flex-wrap:wrap}
-.omb2.osyncb{border-color:var(--blue-line);background:linear-gradient(135deg,#f5f7ff,#fff 70%)}.omb2.osyncb:hover{border-color:var(--blue)}
-.omb2.osyncb b svg{width:15px;height:15px;flex:none;color:var(--blue)}
+.omb2.osyncb{border:1px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(120deg,#5b7cff,#a78bfa 55%,#f0abfc) border-box}.omb2.osyncb:hover{background:linear-gradient(#fbfaff,#fbfaff) padding-box,linear-gradient(120deg,#3f63ff,#8b6cf6 55%,#e879f9) border-box}
+.omb2.osyncb b svg{width:15px;height:15px;flex:none;stroke:url(#tpAi)}
 .rr.ord .ro,.rr.ord .rn span{white-space:pre-line}
-.ohd{display:flex;justify-content:space-between;align-items:center;margin:14px 0 8px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-.ohd button{color:var(--blue);font-weight:600;text-transform:none;letter-spacing:0;font-size:12.5px}
-.omjd textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:13.5px;resize:vertical;min-height:110px}
-.omjd textarea:focus{outline:none;border-color:var(--blue)}
+.ohd{display:flex;justify-content:space-between;align-items:center;margin:16px 0 8px;font-size:12.5px;font-weight:600;color:var(--ink)}
+.ohd button{color:var(--blue);font-weight:500;text-transform:none;letter-spacing:0;font-size:12.5px}
+.omjd textarea{width:100%;border:1px solid transparent;background:var(--field);border-radius:10px;padding:10px;font-size:13.5px;resize:vertical;min-height:110px}
+.omjd textarea:focus{outline:none;background:#fff;border-color:var(--blue);box-shadow:0 0 0 3px var(--ring)}
 /* the Optimise progress screen: a bar that advances per step, ticks that draw in */
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes pop{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
@@ -353,7 +414,7 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 @keyframes tick{from{transform:rotate(45deg) scale(0)}to{transform:rotate(45deg) scale(1)}}
 @keyframes glide{from{background-position:200% 0}to{background-position:-200% 0}}
 .om.run{text-align:left;padding:26px 30px 28px}
-.om.run h2{font:700 18px Poppins,Inter,sans-serif;color:var(--ink);text-transform:none;letter-spacing:0;border:0;margin:0 0 2px;line-height:1.3}
+.om.run h2{font:600 18px var(--ui);color:var(--ink);text-transform:none;letter-spacing:-.01em;border:0;margin:0 0 2px;line-height:1.3}
 .om.run .omsub{margin:0 0 18px}
 .runbar{height:5px;border-radius:3px;background:var(--line);overflow:hidden;margin-bottom:20px}
 .runbar i{display:block;height:100%;width:4%;border-radius:3px;background:linear-gradient(90deg,var(--blue),#7c3aed,var(--blue));background-size:200% 100%;animation:glide 1.6s linear infinite;transition:width .5s cubic-bezier(.2,.8,.2,1)}
@@ -365,16 +426,16 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .steps li.ok{color:var(--ink)}.steps li.ok i{border-color:var(--ok);background:var(--ok)}
 .steps li.ok i::before{content:"";width:5px;height:9px;border-right:2px solid #fff;border-bottom:2px solid #fff;margin-top:-3px;transform:rotate(45deg);animation:tick .28s cubic-bezier(.2,.8,.2,1) both}
 .om.run .fine{margin-top:16px}
-.vrep{display:grid;gap:8px;padding:14px 26px;border-bottom:1px solid var(--line);background:#fbfbfe}
+.vrep{display:grid;gap:8px;padding:14px 26px;border-bottom:1px solid var(--line);background:#fafbfc}
 .vrep>div{display:flex;gap:10px;align-items:flex-start;font-size:13px}
 .vrep b{color:var(--ink);display:block}.vrep small{color:var(--muted);display:block;line-height:1.4}
 .vi{width:22px;height:22px;border-radius:50%;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center;font-weight:700;font-size:12px;flex:none}
 .vi.a{background:var(--ok-soft);color:var(--ok)}.vi.w{background:var(--warn-soft);color:var(--warn)}
 .vbtn{margin-top:6px;font-size:12.5px;font-weight:600;color:var(--blue)}
-.up{color:var(--ok)}
+.vrep .up{color:var(--ok)}
 .rc{margin-bottom:18px}
-.rc h3{font:700 13px Inter,sans-serif;text-transform:uppercase;letter-spacing:.05em;color:var(--ink);margin-bottom:8px}
-.rh{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
+.rc h3{font:600 14px var(--ui);letter-spacing:-.005em;color:var(--ink);margin-bottom:8px}
+.rh{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:4px}
 .rr{animation:rise .35s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*45ms);display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.5}
 .rr .ro{color:var(--muted)}
 .rr .rn{position:relative;color:var(--ink)}
@@ -383,8 +444,8 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .rr small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
 .rr .fc{display:block;font-size:11.5px;color:var(--ok);margin-top:4px}.rr .fc.fx{color:var(--warn)}
 .rb{display:flex;gap:6px;margin-top:8px}
-.rb button{transition:transform .12s,background .15s,border-color .15s;width:30px;height:30px;border-radius:8px;border:1px solid var(--line);font-weight:700}
-.rb .ok{color:var(--ok)}.rb .ok:hover{background:var(--ok-soft);border-color:#b7e4c7}.rb .no{color:var(--bad)}.rb .no:hover{background:var(--bad-soft)}
+.rb button{transition:transform .12s,background .15s,border-color .15s;width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:#fff;font-weight:700}
+.rb .ok,.rb .no{color:var(--muted)}.rb .ok:hover{color:var(--ok);background:var(--ok-soft);border-color:#bfe5cf}.rb .no:hover{color:var(--bad);background:var(--bad-soft);border-color:#f5c9d2}
 .rb .st{font-size:12px;font-weight:600;color:var(--ok)}
 .rr.acc .rn{background:var(--ok-soft);border-radius:8px;padding:6px 8px}.rr.rej .rn{opacity:.45;text-decoration:line-through}
 .rdone{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:13px}
@@ -393,6 +454,46 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .rsk{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .rsk label{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--line);border-radius:999px;font-size:13px;color:var(--ink);cursor:pointer}
 .rsk label:has(input:checked){border-color:var(--blue);background:var(--blue-soft)}
+
+/* ---------- the job's skills: chips in the panel (missing, click to include or leave out; matching) ---------- */
+.pc.rec,.ihead+.pc.rec{margin:4px 0 14px;border:1px solid var(--line);border-radius:12px;padding:14px 14px 12px;background:#fff}
+.mkt{display:flex;align-items:baseline;justify-content:space-between;gap:12px}.rec h3{font:600 13.5px var(--ui);color:var(--ink);letter-spacing:-.005em}
+.rec .kwm{font-size:12px;color:var(--muted);white-space:nowrap}.rec .kwm b{color:var(--ok);font-weight:600}
+.rec .cl{font-size:12px;font-weight:600;color:var(--ink);margin:12px 0 6px}.rec .cl span{font-weight:400;color:var(--muted)}
+.rec .rnote{margin:12px 0 0;font-size:12px;line-height:1.5}.rec .addl{margin-top:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;border-radius:999px;border:1px solid transparent;font:500 12.5px var(--ui);line-height:1}.chip svg{width:12px;height:12px;flex:none}
+.chip.miss{cursor:pointer;background:#fff;color:var(--muted);border-color:var(--line)}.chip.miss:hover{border-color:var(--line-2);color:var(--ink)}
+.chip.miss.on{background:var(--bad-soft);color:var(--bad);border-color:#fecdd3}.chip.miss.on:hover{border-color:#fda4af}
+.chip.hit{background:var(--ok-soft);color:var(--ok);border-color:#bfe3cc}
+
+/* ---------- on the page, under Skills: the job's missing skills waiting to be accepted (never printed or exported) ---------- */
+.sheet .pgadd{margin:10px 0 4px;padding:12px 14px;border:1px solid #bfe3cc;border-radius:10px;background:#f1faf4;font:13px/1.5 var(--ui);color:var(--ink);text-align:left;text-transform:none;letter-spacing:0;white-space:normal}
+.pga-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.pga-h b{display:inline-flex;align-items:center;gap:6px;font:600 13px var(--ui);color:#0a6b3c}.pga-h svg{width:14px;height:14px}.pga-h span{font:600 12px var(--ui);color:var(--ok);white-space:nowrap}
+.pga-r{margin:5px 0;font:13px/1.9 var(--ui)}.pga-r b{font-weight:600}
+.pga-r em{font-style:normal;font-size:11px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:999px;padding:1px 7px}
+.pga-c{display:inline-flex;align-items:center;gap:3px;background:#fff;border:1px solid #bfe3cc;border-radius:999px;padding:0 3px 0 9px;line-height:22px;margin-right:2px}
+.pga-c i{display:inline-flex;padding:3px;border-radius:50%;color:var(--muted);cursor:pointer}.pga-c i:hover{background:var(--bad-soft);color:var(--bad)}.pga-c svg{width:11px;height:11px}
+.pga-f{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pga-f button{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 12px;border-radius:8px;border:1px solid var(--line-2);background:#fff;font:600 12.5px var(--ui);color:var(--ink);cursor:pointer}
+.pga-f button.ok{background:var(--ok);border-color:var(--ok);color:#fff}.pga-f button.ok:hover{background:#086a3a}.pga-f button svg{width:13px;height:13px}
+.pga-f small{font:11.5px var(--ui);color:var(--muted)}
+.pga-c small{font:500 10.5px var(--ui);color:var(--muted);margin-left:2px}
+.pga-o{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:3px 9px;border-radius:999px;border:1px solid #bfe3cc;background:#fff;font:500 12px var(--ui);color:var(--ink);cursor:pointer}
+.pga-o[aria-pressed=false]{color:var(--muted);border-color:var(--line)}.pga-o svg{width:12px;height:12px}
+
+/* ---------- on the page: Optimise's title, location and summary suggestions, with Accept or Reject (never printed or exported) ---------- */
+.sheet .pgsug{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin:6px 0 4px;font:12px/1.4 var(--ui);color:var(--ink);text-transform:none;letter-spacing:0;white-space:normal;text-align:center}
+.pgsug .o,.pgsug .n{display:inline-flex;align-items:center;gap:6px;border-radius:6px;padding:3px 9px}
+.pgsug .o{background:var(--bad-soft);color:#9f1239}.pgsug .n{background:var(--ok-soft);color:#0a6b3c}
+.pgsug b{font:600 10.5px var(--ui);text-transform:uppercase;letter-spacing:.04em;opacity:.8}
+.pgsug small{flex-basis:100%;font:11.5px var(--ui);color:var(--muted)}.pgsug small.w{color:var(--warn)}
+.pgb{display:inline-flex;gap:6px}
+.pgb button{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 11px;border-radius:7px;border:1px solid var(--line-2);background:#fff;font:600 12px var(--ui);color:var(--ink);cursor:pointer}
+.pgb button.ok{background:var(--ok);border-color:var(--ok);color:#fff}.pgb button.ok:hover{background:#086a3a}.pgb button svg{width:12px;height:12px}
+.sheet .pgcmp{margin:8px 0 4px;padding:12px 14px;border:1px solid #bfe3cc;border-radius:10px;background:#f1faf4;font:13px/1.55 var(--ui);color:var(--ink);text-align:left;text-transform:none;letter-spacing:0;white-space:normal}
+.pgcmp p{margin:4px 0 0;font:13px/1.55 var(--ui)}.pgcmp p ins{background:#c9eed7;text-decoration:none;border-radius:3px;padding:0 1px}
 .fcl{display:grid;gap:8px}
 .fci{display:flex;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:13px}
 .fci .fi{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:11px;flex:none;background:var(--blue-soft);color:var(--blue)}
@@ -402,23 +503,23 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .fcok{display:flex;gap:10px;align-items:center;padding:14px;border-radius:12px;background:var(--ok-soft);color:var(--ink)}
 .fcok span{font-size:20px;color:var(--ok)}.fcok b{display:block}.fcok small{color:var(--body)}
 .omins{margin-top:12px}
-.omins textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px;font-size:13px;resize:vertical;min-height:60px}
+.omins textarea{width:100%;border:1px solid transparent;background:var(--field);border-radius:10px;padding:9px 10px;font-size:13px;resize:vertical;min-height:60px}
 .omb2{display:flex;flex-direction:column;align-items:flex-start;gap:2px;height:auto;padding:10px 14px;text-align:left}
 .osyn{font-size:13.5px;color:var(--body);line-height:1.55;margin:2px 0 4px}   /* an application's Sync: what it does, in a line */
 .omb2 b{display:flex;align-items:center;gap:6px;font-size:14px}.omb2 small{font-weight:500;color:var(--muted);font-size:12px}
-.omb2.ats{background:var(--blue);border-color:var(--blue);color:#fff}.omb2.ats small{color:#dbe2ff}.omb2.ats:hover{background:var(--blue-d)}
+.omb2.ats{background:var(--ink);border-color:var(--ink);color:#fff}.omb2.ats small{color:#b9bdc8}.omb2.ats:hover{background:#262a33}
 
 /* ---------- versions ---------- */
 .vh{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;margin-top:6px}
 .vh>div{min-width:0}.vh b{display:block;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vh span{font-size:11.5px;color:var(--muted)}.vh em{font-style:normal;font-size:11px;font-weight:700;color:var(--ok);background:var(--ok-soft);border-radius:999px;padding:2px 8px;margin-right:6px}
-.vh button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 11px;font:600 12px Inter,sans-serif;color:var(--ink)}
+.vh button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 11px;font:600 12px var(--ui);color:var(--ink)}
 .vh button:hover{border-color:var(--blue);color:var(--blue)}
 
 /* ---------- toast ---------- */
-.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);opacity:0;z-index:90;background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:13.5px;display:flex;gap:14px;align-items:center;pointer-events:none;transition:.2s;max-width:calc(100vw - 32px)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);opacity:0;z-index:90;background:var(--ink);color:#fff;padding:9px 10px 9px 16px;border-radius:12px;font-size:13px;font-weight:500;box-shadow:0 2px 6px rgba(13,15,20,.18),0 16px 36px -14px rgba(13,15,20,.55);display:flex;gap:10px;align-items:center;pointer-events:none;transition:.2s;max-width:calc(100vw - 32px)}
 .toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
-.toast button{color:#c7d2fe;font-weight:700}
+.toast button{color:#b9c6ff;font-weight:600;padding:3px 8px;border-radius:7px}.toast button:hover{background:rgba(255,255,255,.1);color:#fff}
 
 /* ---------- read-only (sent application) ---------- */
 .ro .rocard{margin:0 0 12px;padding:12px 14px;border-radius:12px;background:var(--ok-soft);color:var(--ink);font-size:13px;line-height:1.5}
@@ -430,23 +531,32 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .embed .top .backb,.embed .top .brand{display:none}
 .mswitch{display:none}
 @media (max-width:980px){
-  :root{--panel:360px}
+  :root{--panel:384px}
 }
 @media (max-width:840px){
   .wrap{display:block}
-  .mswitch{display:flex;gap:4px;background:#fff;padding:8px 12px;border-bottom:1px solid var(--line);position:sticky;top:var(--top);z-index:30}
-  .mswitch button{flex:1;height:34px;border-radius:8px;font-weight:600;color:var(--body)}
-  .mswitch button.on{background:var(--blue-soft);color:var(--blue)}
-  .panel{position:static;height:auto;border-left:0}
+  .mswitch{display:flex;gap:2px;margin:8px 12px;padding:2px;background:var(--track);border-radius:10px;position:sticky;top:calc(var(--top) + 8px);z-index:30}
+  .mswitch button{flex:1;height:32px;border-radius:8px;font-weight:500;color:var(--muted)}
+  .mswitch button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(13,15,20,.08),0 0 0 1px rgba(13,15,20,.05)}
+  .panel{position:static;height:auto;border-left:0;display:block}
+  .ptabs{flex-direction:row;gap:2px;padding:6px 10px;border-left:0;border-bottom:1px solid var(--line);background:#fff}
+  .ptabs button{width:auto;flex:1;flex-direction:row;justify-content:center;gap:6px;padding:8px 0;font-size:12.5px}
+  .ptabs button svg{width:16px;height:16px}
+  .pbody{padding:14px 16px 60px}
+  .pc{margin:0 -16px;padding:16px}
+  .fh{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}
   .stage{padding:12px}
+  .doctabs{position:static;margin:0 auto 12px}
   body.m-edit .stage{display:none}
   body.m-preview .panel{display:none}
-  .top{padding:0 10px;gap:6px}
-  .top .backb span,.top .brand span,.rname,.status span,.wkon small{display:none}
-  .top .backb{padding:0 8px}
-  .btn span{display:none}
-  .btn.pri span,.btn.ai span{display:none}
-  .btn{padding:0 10px}
+  .top{padding:0 8px;gap:6px}
+  .top:has(.wkon:not([hidden])) .brand{display:none}   /* team mode: the client chip says where you are, and the bar fits a phone */
+  .crumbs{gap:7px}.crumbs .cjob,.rname,.status span{display:none}
+  .wkon span{max-width:34vw;overflow:hidden;text-overflow:ellipsis}
+  .tbtns{gap:6px}.vr{display:none}
+  .hist .ib{width:30px}
+  .top .btn span,.top .btn .dv,#bDl svg:last-child{display:none}
+  .top .btn{padding:0 10px}
   .sv{grid-template-columns:1fr}.sv-c{max-height:none}
 }
 
@@ -455,12 +565,12 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
   body{background:#fff}
   .top,.panel,.doctabs,.breaks,.mswitch,.banner,.toast,.selbar,.modal,#boot{display:none!important}
   .wrap{display:block;min-height:0}
-  .stage{padding:0}
+  .stage{padding:0;background:none!important}
   .frame{max-width:none}
   .sheetwrap{transform:none!important}
   .sheet{box-shadow:none;width:auto!important;min-height:0!important}
   .sheet [data-path]:hover,.sheet .sel,.sheet .hl,.sheet ins{background:none!important;outline:none!important;box-shadow:none!important}
-  .sheet .pgx,.pgbar,.sheet li.pgempty,.sheet .pgin{display:none!important}
+  .sheet .pgx,.pgbar,.sheet li.pgempty,.sheet .pgin,.sheet .pgui{display:none!important}
   .sheet .sk{padding-right:0!important}
   .sheet li.pghov,.sheet .pged{outline:none!important}
 }
@@ -468,21 +578,21 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 </style>
 </head>
 <body>
+<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><linearGradient id="tpAi" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f6bff"/><stop offset=".6" stop-color="#9b6cff"/><stop offset="1" stop-color="#e879f9"/></linearGradient></defs></svg>
 <header class="top" id="top">
-  <a class="backb" id="backB" href="/app.html#jobs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg><span>Back to jobs</span></a>
+  <a class="backb" id="backB" href="/app.html#jobs" data-tip="Back to jobs" aria-label="Back to jobs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg><span>Back to jobs</span></a>
   <a class="brand" href="/app.html#jobs"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='116' fill='%230938d5'/%3E%3Cpath d='M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z' fill='%23fff'/%3E%3Cpath d='M205 200l37 36 76-88' fill='none' stroke='%230938d5' stroke-width='30' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" alt=""><span>TrulyPlaced</span></a>
-  <span class="wkon" id="wkon" hidden></span>
-  <input class="rname" id="rname" type="text" aria-label="Resume name" placeholder="Resume name" maxlength="80" hidden>
+  <nav class="crumbs" aria-label="This resume"><span class="wkon" id="wkon" hidden></span><span class="cjob" id="cjob" hidden></span><input class="rname" id="rname" type="text" aria-label="Resume name" placeholder="Resume name" maxlength="80" hidden></nav>
   <div class="sp"></div>
   <span class="status" id="status" hidden><i></i><span></span></span>
   <div class="tbtns" id="tbtns" hidden>
-    <button type="button" class="ib" data-a="undo" id="bUndo" aria-label="Undo (Ctrl+Z)" data-tip="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
-    <button type="button" class="ib" data-a="redo" id="bRedo" aria-label="Redo (Ctrl+Y)" data-tip="Redo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
-    <button type="button" class="btn ai" data-a="optimize" id="bOpt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Optimise for a job</span></button>
-    <div class="dd" id="dlWrap"><button type="button" class="btn pri" data-a="dl-menu" id="bDl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg><span>Download</span></button>
+    <span class="hist"><button type="button" class="ib" data-a="undo" id="bUndo" aria-label="Undo (Ctrl+Z)" data-tip="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button><button type="button" class="ib" data-a="redo" id="bRedo" aria-label="Redo (Ctrl+Y)" data-tip="Redo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button></span>
+    <span class="vr" aria-hidden="true"></span>
+    <button type="button" class="btn ai" data-a="optimize" id="bOpt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Optimise for a job</span></button>
+    <div class="dd" id="dlWrap"><button type="button" class="btn pri" data-a="dl-menu" id="bDl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg><span>Download</span><i class="dv" aria-hidden="true"></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
       <div class="menu" id="dlMenu" hidden>
-        <button type="button" data-a="dl-pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span><b>PDF</b><small>Best for applying. Choose “Save as PDF” in the print window.</small></span></button>
-        <button type="button" data-a="dl-doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="m8.5 12 1.2 5 1.8-4 1.8 4 1.2-5"/></svg><span><b>Word (.doc)</b><small>For sites that ask for Word, or to keep editing in Word.</small></span></button>
+        <button type="button" data-a="dl-pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span><b>PDF</b><small>Best for applying. Choose “Save as PDF” in the print window.</small></span></button>
+        <button type="button" data-a="dl-doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="m8.5 12 1.2 5 1.8-4 1.8 4 1.2-5"/></svg><span><b>Word (.doc)</b><small>For sites that ask for Word, or to keep editing in Word.</small></span></button>
       </div></div>
   </div>
 </header>
@@ -495,22 +605,22 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 <div class="wrap" id="wrap" hidden>
   <div class="mswitch" id="mswitch"><button type="button" class="on" data-a="mob" data-v="edit">Edit</button><button type="button" data-a="mob" data-v="preview">Preview</button></div>
   <main class="stage" id="stage">
-    <div class="doctabs" id="doctabs"><button type="button" class="on" data-a="doc" data-v="resume">Resume</button><button type="button" data-a="doc" data-v="cover">Cover letter</button><label class="showchg" id="showChg" hidden><input type="checkbox" id="chgOn" data-a="chg"> Show changes</label><span class="pages" id="pagesN"></span></div>
+    <div class="doctabs" id="doctabs"><span class="dseg"><button type="button" class="on" data-a="doc" data-v="resume"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8M16 13H8M16 17H8"/></svg><span>Resume</span></button><button type="button" data-a="doc" data-v="cover"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><span>Cover letter</span></button></span><span class="pages" id="pagesN"></span><label class="showchg" id="showChg" hidden><input type="checkbox" id="chgOn" data-a="chg"> Show changes</label></div>
     <div class="frame" id="frame"><div class="sheetwrap" id="sheetwrap"><div class="sheet" id="sheet"></div><div class="breaks" id="breaks"></div></div></div>
   </main>
   <aside class="panel" id="panel">
-    <nav class="ptabs" id="ptabs">
-      <button type="button" class="on" data-a="ptab" data-v="edit">Edit</button>
-      <button type="button" data-a="ptab" data-v="format">Format</button>
-      <button type="button" data-a="ptab" data-v="check">Check</button>
-      <button type="button" data-a="ptab" data-v="versions" id="ptVersions" hidden>Versions</button>
+    <nav class="ptabs" id="ptabs" aria-label="Tools">
+      <button type="button" class="on" data-a="ptab" data-v="edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span>Edit</span></button>
+      <button type="button" data-a="ptab" data-v="format"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg><span>Format</span></button>
+      <button type="button" data-a="ptab" data-v="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg><span>Check</span></button>
+      <button type="button" data-a="ptab" data-v="versions" id="ptVersions" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg><span>Versions</span></button>
     </nav>
     <div class="pbody" id="pbody"></div>
   </aside>
 </div>
 
 <div id="selbar" class="selbar" hidden></div>
-<div id="pgbar" class="pgbar" hidden role="toolbar" aria-label="This bullet"><button type="button" class="pgadd" data-a="pg-badd" title="Add a bullet below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><button type="button" class="pgdel" data-a="pg-bdel" title="Delete this bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button><span class="pgdrag" draggable="true" title="Drag to move"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01"/></svg></span><button type="button" class="pgai" data-a="pg-bai" title="Improve this bullet with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button></div>
+<div id="pgbar" class="pgbar" hidden role="toolbar" aria-label="This bullet"><button type="button" class="pgadd" data-a="pg-badd" title="Add a bullet below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><button type="button" class="pgdel" data-a="pg-bdel" title="Delete this bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button><span class="pgdrag" draggable="true" title="Drag to move"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01"/></svg></span><button type="button" class="pgai" data-a="pg-bai" title="Improve this bullet with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button></div>
 <div id="modal" class="modal" hidden></div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <input type="file" id="fileIn" accept=".pdf,.docx,.txt" hidden>
@@ -1300,7 +1410,7 @@ function showStart() {
   const first = TEAM && CLIENT ? esc((CLIENT.full_name || 'the client').split(' ')[0]) : '';
   $('#start').innerHTML = (TEAM ? '<div class="card"><h1>Add ' + first + '’s resume</h1><p>Upload their resume file. ' + (SCAN_ON() ? 'Claude reads it word for word, then you check the copy before it opens.' : 'It’s laid out on the page, ready to edit.') + ' It’s saved to their account, not yours.</p>'
       : '<div class="card"><h1>Let’s make your resume stronger</h1><p>Add your resume and we’ll lay it out on the page, ready to edit — with AI help for every line.</p>') +
-    '<div class="drop" id="drop" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V5"/><path d="m7 10 5-5 5 5"/><path d="M5 20h14"/></svg><b>Upload ' + (TEAM ? 'the' : 'your') + ' resume</b><span>PDF or Word (.docx)</span></div>' +
+    '<div class="drop" id="drop" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V5"/><path d="m7 10 5-5 5 5"/><path d="M5 20h14"/></svg><b>Upload ' + (TEAM ? 'the' : 'your') + ' resume</b><span>PDF or Word (.docx)</span></div>' +
     '<div class="or">or</div><button class="btn wide" type="button" data-a="blank" style="margin-top:12px">Start from a blank resume</button></div>';
   show('start');
   const d = $('#drop');
@@ -1358,7 +1468,7 @@ function startDoc(D) {
   if (h === '#cover' || h === '#optimize' || h === '#sync') try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
   if (h === '#cover') { setDocTab('cover'); autoCover(); }
   else if (h === '#optimize') setTimeout(() => openOptimise(!!TEAM), 300);
-  else if (h === '#sync') setTimeout(syncNow, 300);   // the team portal's "Sync to this job": it runs straight away
+  else if (h === '#sync') setTimeout(syncNow, 300);   // an older "Sync to this job" link: it runs straight away
   if (BATCH) setTimeout(batchRun, 300);
   else if (TEAM && !READONLY && DOC.meta.optPending) setTimeout(openPending, 400);   // the batch's suggestions, waiting for review
 }
@@ -1552,9 +1662,9 @@ function skillRowHTML(s, r, f, ed) {
 }
 function sectionHTML(s, f, ed) {
   let body = '';
-  if (s.type === 'summary') body = P('sec.' + s.id + '.text', s.text, 'sum' + (HL['sum:' + s.id] && !SHOWCHG ? ' hl' : ''), 'p');
+  if (s.type === 'summary') body = P('sec.' + s.id + '.text', s.text, 'sum' + (HL['sum:' + s.id] && !SHOWCHG ? ' hl' : ''), 'p') + (ed ? sugSumHTML(s.id) : '');
   else if (s.type === 'entries') body = s.items.map((it) => entryHTML(s, it, f, ed)).join('');
-  else if (s.type === 'skills') body = '<div class="sk">' + s.rows.filter((r) => r.value || r.label).map((r) => skillRowHTML(s, r, f, ed)).join('') + '</div>';
+  else if (s.type === 'skills') body = '<div class="sk">' + s.rows.filter((r) => r.value || r.label).map((r) => skillRowHTML(s, r, f, ed)).join('') + '</div>' + (ed ? addSkillsHTML() : '');   // the job's missing skills, waiting to be accepted
   else if (f.oneLine && s.k === 'certifications') body = '<div class="certs">' + s.list.filter((b) => b.t).map((b) => '<div>' + certHTML('sec.' + s.id + '.list.' + b.id, b.t) + '</div>').join('') + '</div>';
   else body = '<ul class="bl">' + (ed ? s.list : s.list.filter((b) => b.t)).map((b) => liHTML('sec.' + s.id + '.list.' + b.id, b, ed)).join('') + '</ul>';
   return '<section class="ps" data-sec="' + s.id + '">' + P('sec.' + s.id + '.title', s.title, null, 'h2') + body + '</section>';
@@ -1562,8 +1672,9 @@ function sectionHTML(s, f, ed) {
 // ed: the on-screen page, with the controls for editing on it (the PDF hides them; the Word file never has them)
 function resumeHTML(D, f, ed) {
   D = D || DOC; f = f || fmtOf(D);
-  return '<header class="ph-h">' + P('name', D.name, null, 'h1') + (D.headline ? P('headline', D.headline, 'hlt', 'div') : '') + '<div class="ct">' + contactHTML(D, f) + '</div></header>' +
-    orderedSections(D).filter((s) => !s.hidden).map((s) => sectionHTML(s, f, ed)).join('');
+  return '<header class="ph-h">' + P('name', D.name, null, 'h1') + (D.headline ? P('headline', D.headline, 'hlt', 'div') : '') + (ed ? sugHeadHTML() : '') + '<div class="ct">' + contactHTML(D, f) + '</div>' + (ed ? sugLocHTML() : '') + '</header>' +
+    (ed ? sugSumHTML('') : '') +   // Optimise's suggestions wait on the page (never printed or exported)
+    orderedSections(D).filter((s) => !s.hidden).map((s) => sectionHTML(s, f, ed)).join('') + (ed && !D.sections.some((s) => s.k === 'skills' && !s.hidden) ? addSkillsHTML() : '');
 }
 function coverHTML(D) {
   D = D || DOC; const c = D.cover || {}, today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -1624,7 +1735,7 @@ function fitFrame() {
 function countPages() {
   const f = fmtOf(DOC), pg = PAPERS[f.paper], sheet = $('#sheet');
   sheet.style.minHeight = pg.h + 'px';   // measure the real height first, or a resume that got shorter would still count as two pages
-  const h = sheet.scrollHeight;
+  const h = sheet.scrollHeight - [...sheet.querySelectorAll('.pgui')].reduce((n, x) => { const c = getComputedStyle(x); return n + x.offsetHeight + parseFloat(c.marginTop) + parseFloat(c.marginBottom); }, 0);   // suggestions waiting on the page aren't part of the resume
   PAGES_N = Math.max(1, Math.ceil((h - 2) / pg.h));
   sheet.style.minHeight = (PAGES_N * pg.h) + 'px';
   const br = $('#breaks'); let html = '';
@@ -1694,13 +1805,18 @@ function confirmBox(title, text, okLabel, then, cancelLabel) {
    jump to its field.
    ===================================================================== */
 let HL = {};   // lines just changed by the AI, highlighted on the page until the next edit
-const I_UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>', I_DN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>', I_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>', I_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>', I_SPARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>';
+const I_UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>', I_DN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>', I_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>', I_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>', I_SPARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>';
+// each tool's heading at the top of the panel: what it is, in a line
+const PHEAD = { edit: ['Edit', 'Every section of the resume. You can also click a line on the page and type.'], cover: ['Cover letter', 'Written for this job, from the resume.'],
+  format: ['Format', 'Template, type and spacing for the whole resume.'], check: ['Check', 'How the resume scores, and what to fix first.'], versions: ['Versions', 'Saved copies you can go back to.'] };
 function renderPanel() {
   const body = $('#pbody'); if (!DOC || !body) return;
-  const sc = body.scrollTop;
+  const sc = body.scrollTop, hd = PHEAD[PTAB === 'edit' && TAB === 'cover' ? 'cover' : PTAB];
   $$('#ptabs button').forEach((b) => b.classList.toggle('on', b.getAttribute('data-v') === PTAB));
-  body.innerHTML = (READONLY ? roCardHTML() : '') + (PTAB === 'edit' ? (TAB === 'cover' ? coverPanelHTML() : editHTML()) : PTAB === 'format' ? formatHTML() : PTAB === 'check' ? checkHTML() : versionsHTML());
+  body.innerHTML = (READONLY ? roCardHTML() : '') + (hd ? '<div class="ihead"><h2>' + hd[0] + '</h2><p>' + hd[1] + '</p></div>' : '') +
+    (PTAB === 'edit' ? (TAB === 'cover' ? coverPanelHTML() : editHTML()) : PTAB === 'format' ? formatHTML() : PTAB === 'check' ? checkHTML() : versionsHTML());
   if (READONLY) $$('input, textarea, select', body).forEach((el) => { el.disabled = true; });
+  if (PTAB === 'format') drawTplThumbs();
   body.scrollTop = sc;
   if (PTAB === 'edit' && FOCUS) { const el = $('#pbody [data-path="' + FOCUS + '"]'); if (el) el.closest('.pc, .entry') && el.closest('.entry, .pc').classList.add('on'); }
 }
@@ -1711,7 +1827,7 @@ function secTools(s, i, n) {
   return '<span class="mini">' + mini('sec-up', s.id, 'Move section up', 'up', i === 0) + mini('sec-dn', s.id, 'Move section down', 'dn', i === n - 1) + mini('sec-del', s.id, 'Remove this section', 'x del') + '</span>';
 }
 function editHTML() {
-  const D = DOC; let h = '';
+  const D = DOC; let h = recCardHTML();   // the skills this job asks for that the resume doesn't show, first
   // contact & headline
   h += '<div class="pc" data-card="head"><div class="pch"><h3>Name &amp; contact</h3></div>' +
     '<label class="lbl">Full name</label>' + F('name', D.name, 'Your name') +
@@ -2068,20 +2184,28 @@ function pgDragEnd() { DRAG = null; $$('#sheet .pg-dropb, #sheet .pg-dropa').for
    spacing, Fit to one page, links and contact details. Every change is
    one undo step and shows on the page at once.
    ===================================================================== */
-function tplSVG(id) {
-  const c = id === 'modern' ? '#0938d5' : '#333', head = id === 'traditional' || id === 'interview' ? '<rect x="12" y="6" width="14" height="3" fill="' + c + '"/><rect x="10" y="11" width="18" height="1.2" fill="#999"/>' : '<rect x="5" y="6" width="16" height="3.5" fill="' + c + '"/><rect x="5" y="11" width="20" height="1.2" fill="#999"/>';
-  const rule = id === 'modern' ? '' : '<rect x="5" y="19.5" width="28" height=".6" fill="' + (id === 'classic' ? '#2a4bd8' : '#333') + '"/>';
-  const lines = (y) => '<rect x="5" y="' + y + '" width="28" height="1" fill="#bbb"/><rect x="5" y="' + (y + 2.5) + '" width="24" height="1" fill="#bbb"/><rect x="5" y="' + (y + 5) + '" width="26" height="1" fill="#bbb"/>';
-  return '<svg viewBox="0 0 38 50">' + head + '<rect x="5" y="16" width="9" height="2" fill="' + c + '"/>' + rule + lines(23) + '<rect x="5" y="32" width="9" height="2" fill="' + c + '"/>' + rule.replace('19.5', '35.5') + lines(39) + '</svg>';
+const rangePct = (v, a, b) => Math.round(clamp((v - a) / ((b - a) || 1), 0, 1) * 1000) / 10;   // how far along a slider is, for its fill
+// the template picker shows this resume in each template, drawn small - each in its own shadow root so the templates' styles never mix
+function drawTplThumbs() {
+  const cur = fmtOf(DOC);
+  $$('#pbody .tth[data-tpl]').forEach((el) => {
+    const id = el.getAttribute('data-tpl'), f = id === cur.template ? cur : fmtOf({ design: { template: id, paper: cur.paper } }), pg = PAPERS[f.paper], font = FONTS.find((x) => x[0] === f.font);
+    if (font && font[2]) loadFont(font[2]);
+    const root = el.shadowRoot || el.attachShadow({ mode: 'open' }), sc = (el.clientWidth || 100) / pg.w;
+    root.innerHTML = '<style>*{box-sizing:border-box;margin:0;padding:0}.sheet{background:#fff;position:absolute;left:0;top:0;transform-origin:0 0}' + sheetCSS(f) + '</style>' +
+      '<div class="sheet t-' + f.template + '" style="transform:scale(' + sc + ')">' + resumeHTML(DOC, f) + '</div>';
+  });
 }
 function formatHTML() {
   const f = fmtOf(DOC), d = DOC.design || {};
   const seg = (key, opts) => '<span class="seg">' + opts.map((o) => '<button type="button" data-a="fmt" data-k="' + key + '" data-v="' + o[0] + '" class="' + (String(f[key]) === String(o[0]) ? 'on' : '') + '"' + (o[2] ? ' aria-label="' + esc(o[2]) + '"' : '') + '>' + o[1] + '</button>').join('') + '</span>';
-  const slider = (label, key, unit, fmtv) => { const L = LIMITS[key]; return '<div class="sl"><div class="fr"><span>' + label + '</span><span class="val" id="v-' + key + '">' + (fmtv ? fmtv(f[key]) : f[key] + unit) + '</span></div>' +
-    '<input type="range" data-k="' + key + '" min="' + L[0] + '" max="' + L[1] + '" step="' + L[2] + '" value="' + f[key] + '" aria-label="' + label + '"></div>'; };
+  // a slider is a field you drag across: its name and value sit inside, the fill shows how far along it is
+  const slider = (label, key, unit, fmtv) => { const L = LIMITS[key]; return '<label class="sf"><input type="range" data-k="' + key + '" min="' + L[0] + '" max="' + L[1] + '" step="' + L[2] + '" value="' + f[key] + '" style="--p:' + rangePct(f[key], L[0], L[1]) + '%" aria-label="' + label + '">' +
+    '<span class="sfl">' + label + '</span><span class="val" id="v-' + key + '">' + (fmtv ? fmtv(f[key]) : f[key] + unit) + '</span></label>'; };
+  const pair = (a, b) => '<div class="sfg' + (b ? '' : ' one') + '">' + a + (b || '') + '</div>';
   const sw = (label, key) => '<div class="fr"><span>' + label + '</span><button type="button" class="sw ' + (f[key] ? 'on' : '') + '" data-a="fmt" data-k="' + key + '" data-v="' + (f[key] ? '0' : '1') + '" role="switch" aria-checked="' + (f[key] ? 'true' : 'false') + '" aria-label="' + label + '"></button></div>';
   const AL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h10M4 18h14"/></svg>', AJ = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
-  return '<div class="fh">Template</div><div class="tpl">' + TEMPLATES.map((t) => '<button type="button" data-a="tpl" data-v="' + t.id + '" class="' + (f.template === t.id ? 'on' : '') + '">' + tplSVG(t.id) + '<span><b>' + t.name + '</b><small>' + t.blurb + '</small></span></button>').join('') + '</div>' +
+  return '<div class="fh">Template</div><div class="tpl">' + TEMPLATES.map((t) => '<button type="button" data-a="tpl" data-v="' + t.id + '" class="' + (f.template === t.id ? 'on' : '') + '" title="' + esc(t.blurb) + '"><span class="tth" data-tpl="' + t.id + '"></span><b>' + t.name + '</b></button>').join('') + '</div>' +
     '<div class="fh">Layout</div>' +
     '<div class="fr"><span>Paper</span><select data-k="paper" aria-label="Paper">' + Object.keys(PAPERS).map((k) => '<option value="' + k + '"' + (f.paper === k ? ' selected' : '') + '>' + PAPERS[k].label + '</option>').join('') + '</select></div>' +
     '<div class="fr"><span>Section order</span>' + seg('eduFirst', [['false', 'Experience first'], ['true', 'Education first']]) + '</div>' +
@@ -2089,16 +2213,16 @@ function formatHTML() {
     '<div class="fh">Text</div>' +
     '<div class="fr"><span>Typeface</span><select data-k="font" aria-label="Typeface">' + FONTS.map((x) => '<option value="' + x[0] + '"' + (f.font === x[0] || (!x[1] && !d.font) ? ' selected' : '') + '>' + x[0] + '</option>').join('') + '</select></div>' +
     '<div class="fr"><span>Alignment</span>' + seg('align', [['left', AL, 'Left'], ['justify', AJ, 'Justified']]) + '</div>' +
-    slider('Font size', 'size', ' pt') + slider('Line height', 'lineHeight', '', (v) => Number(v).toFixed(2)) +
+    pair(slider('Font size', 'size', ' pt'), slider('Line height', 'lineHeight', '', (v) => Number(v).toFixed(2))) +
     '<div class="fh">Name &amp; headings</div>' +
-    slider('Name size', 'nameSize', ' pt') + slider('Heading size', 'headingSize', ' pt') + sw('Headings in capitals', 'caps') + sw('Line under each heading', 'rules') +
+    pair(slider('Name size', 'nameSize', ' pt'), slider('Headings', 'headingSize', ' pt')) + sw('Headings in capitals', 'caps') + sw('Line under each heading', 'rules') +
     (f.template === 'modern' ? '<div class="fr"><span>Accent colour</span><span class="dots">' + ACCENTS.map((c) => '<button type="button" data-a="fmt" data-k="accent" data-v="' + c + '" class="' + (f.accent === c ? 'on' : '') + '" style="background:' + c + '" aria-label="Accent ' + c + '"></button>').join('') + '</span></div>' : '') +
     '<div class="fh">Bullets &amp; dates</div>' +
     '<div class="fr"><span>Bullet</span>' + seg('bullet', Object.keys(BULLETS).map((k) => [k, BULLETS[k][2], BULLETS[k][0]])) + '</div>' +
-    slider('Bullet spacing', 'bulletGap', ' px') +
+    pair(slider('Bullet spacing', 'bulletGap', ' px')) +
     '<div class="fr"><span>Dates</span><select data-k="dates" aria-label="Date style">' + DATE_STYLES.map((x) => '<option value="' + x[0] + '"' + (f.dates === x[0] ? ' selected' : '') + '>' + x[1] + '</option>').join('') + '</select></div>' +
     '<div class="fh">Spacing</div>' +
-    slider('Page margin', 'margin', ' in', (v) => Number(v).toFixed(2) + ' in') + slider('Section gap', 'gap', '×', (v) => Number(v).toFixed(2) + '×') +
+    pair(slider('Page margin', 'margin', ' in', (v) => Number(v).toFixed(2) + ' in'), slider('Section gap', 'gap', '×', (v) => Number(v).toFixed(2) + '×')) +
     '<div class="fitbox"><button type="button" class="btn wide" data-a="fit-one">Fit to one page</button><p>Tightens the gaps, line height, margins and size a step at a time until the resume fits' + (PAGES_N > 1 ? ' (now ' + PAGES_N + ' pages)' : '') + '.</p>' +
     '<button type="button" class="addl" data-a="fmt-reset" style="margin-top:6px">Reset to the template’s style</button></div>' +
     '<div class="fh">Links &amp; contact</div>' + sw('Links as labels (LinkedIn, GitHub…)', 'linksAsLabels') +
@@ -2140,7 +2264,7 @@ function fitOnePage(silent) {
 }
 function onRangeInput(e) {   // sliders update the page live and show their value; the undo step is taken when the drag ends
   const el = e.target; if (!el.matches || !el.matches('input[type=range][data-k]') || !DOC) return;
-  const k = el.getAttribute('data-k'), v = +el.value; DOC.design = DOC.design || {}; DOC.design[k] = v;
+  const k = el.getAttribute('data-k'), v = +el.value; DOC.design = DOC.design || {}; DOC.design[k] = v; el.style.setProperty('--p', rangePct(v, +el.min, +el.max) + '%');
   const val = $('#v-' + k); if (val) val.textContent = k === 'lineHeight' ? v.toFixed(2) : k === 'margin' ? v.toFixed(2) + ' in' : k === 'gap' ? v.toFixed(2) + '×' : v + ({ size: ' pt', nameSize: ' pt', headingSize: ' pt', bulletGap: ' px' }[k] || '');
   applyFormat(); renderSheet();
 }
@@ -2460,8 +2584,9 @@ function optRows() {
   return rows;
 }
 const jobOk = () => !!(JOB && String(JOB.text || '').trim().length >= 80);   // a job description long enough to tailor to
-// Three shapes. An application (team portal) gets Sync only: the main resume was optimised already, this copy just moves toward
-// the job. A client's main resume gets the tick list, tailored to their target roles. The job board's own editor keeps both.
+// Pick what to tailor, then Optimise - like Scout Better. An application (team portal) runs it on the Sync model, which rewords
+// more deeply and puts each role's bullets in this job's order. A client's main resume is tailored to their target roles.
+// The job board's own editor also keeps the one-click Sync beside it.
 function openOptimise(preset) {   // preset: the team portal opened it - the client's usual choices come ticked
   if (!DOC || READONLY) return;
   hideSel(); setDocTab('resume');
@@ -2477,15 +2602,14 @@ function openOptimise(preset) {   // preset: the team portal opened it - the cli
   // Sync: one click, every part at once and more deeply - the posting's words, priorities and title, and each role's bullets in this job's order
   const syncB = '<button class="btn omb2 ' + (app ? 'ats' : 'osyncb') + '" type="button" data-a="opt-sync" id="optSync" title="Everything at once, more deeply: the posting’s words, priorities and title, and each role’s bullets in the order this job cares about. The facts stay as they are."><b>' + I_SPARK + '<span>Sync to this job</span></b><small>Everything, in the job’s words and order</small></button>';
   modalOpen('<div class="om sm opt" role="dialog" aria-modal="true" aria-labelledby="omT"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
-    '<div class="omh"><h2 id="omT">' + (app ? 'Sync to this job' : roles ? 'Optimise for their target roles' : 'Optimise for a job') + '</h2>' + sub + '</div>' +
+    '<div class="omh"><h2 id="omT">' + (app ? 'Optimise for this job' : roles ? 'Optimise for their target roles' : 'Optimise for a job') + '</h2>' + sub + '</div>' +
     '<div class="omb">' + (jobOk() ? '' : '<div class="omjd"><textarea id="optJd" placeholder="Paste the whole job description here"></textarea></div>') +
-    (app ? '<p class="osyn">The summary, the title under the name, every bullet and the skills move toward this posting: its words, its priorities, its order. The facts stay as they are, and nothing changes until you accept.</p>'
-      : '<div class="ohd"><span>Choose what to tailor</span><button type="button" data-a="opt-all">Select all</button></div>' +
+    ('<div class="ohd"><span>Choose what to optimise</span><button type="button" data-a="opt-all">Select all</button></div>' +
         '<div class="orows">' + rows.map((r) => '<button type="button" class="orow" data-a="opt-t" data-v="' + r[0] + '" aria-pressed="false"><span class="ol"><b>' + r[1] + '</b><small>' + esc(what[r[0]] || '') + '</small></span><i class="cb" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i></button>').join('') + '</div>') +
     '<div class="omins"><label class="lbl" for="optIns">Special instructions (optional)</label><textarea id="optIns" maxlength="400" placeholder="e.g. Keep each bullet under 22 words; don’t touch the first role.">' + esc(pref.ins || '') + '</textarea></div></div>' +
-    '<div class="omf"><button class="btn" type="button" data-a="fact">Fact check only</button><span id="optHint"></span>' + (roles ? '' : syncB) +
-      (app ? '' : '<button class="btn omb2 ats" type="button" data-a="opt-go" id="optGo" disabled><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="optGoT">Optimise</span></b><small>Tailor what you picked' + (roles ? ' to these roles' : ' to this job') + '</small></button>') + '</div></div>');
-  if (preset && !app) optPreset();
+    '<div class="omf"><button class="btn" type="button" data-a="fact">Fact check only</button><span id="optHint"></span>' + (roles || app ? '' : syncB) +
+      ('<button class="btn omb2 ats" type="button" data-a="opt-go" id="optGo" disabled><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="optGoT">Optimise</span></b><small>Tailor what you picked' + (roles ? ' to these roles' : ' to this job') + '</small></button>') + '</div></div>');
+  if (preset) optPreset();
 }
 // an application's one action: Sync to this job, straight away - the team portal's card opens the editor with #sync
 function syncNow() {
@@ -2495,8 +2619,8 @@ function syncNow() {
   OPT = { sel: {}, sync: false, ins: (lsGet(OPT_KEY, {}) || {}).ins || '' }; optRows().forEach((r) => { OPT.sel[r[0]] = false; });
   runOptimise(true);
 }
-function optPreset() {   // the choices last used for this client (the same ones the portal's list uses), else summary, experience and skills
-  const s = (lsGet(OPT_KEY, {}) || {}).sel || { summary: 1, experience: 1, skills: 1 };
+function optPreset() {   // the choices last used for this client (the same ones the portal's list uses), else summary, title, experience and skills
+  const s = (lsGet(OPT_KEY, {}) || {}).sel || { summary: 1, headline: 1, experience: 1, skills: 1 };
   $$('.orows .orow').forEach((r) => { if (s[r.getAttribute('data-v')]) optPick(r, true); });
 }
 function optPick(row, on) {
@@ -2505,7 +2629,7 @@ function optPick(row, on) {
   if (go) { go.disabled = !n; const gt = $('#optGoT'); if (gt) gt.textContent = n ? 'Optimise · ' + n : 'Optimise'; }
   if (all) all.textContent = n === $$('.orows .orow').length ? 'Clear all' : 'Select all';
 }
-function runOptimise(sync) {   // sync: "Sync to this job" - every part at once; the ticks stay as they were, for next time
+function runOptimise(sync) {   // sync: true = "Sync to this job", every part at once (the ticks stay as they were); 'deep' = the ticked parts, on the Sync model
   const ins = (($('#optIns') || {}).value || (OPT.ins || '')).trim(); OPT.ins = ins;
   if (!jobOk()) {
     const jd = (($('#optJd') || {}).value || '').trim();
@@ -2514,18 +2638,19 @@ function runOptimise(sync) {   // sync: "Sync to this job" - every part at once;
     JOB = DOC.meta.job = JOB && JOB.title ? Object.assign({}, JOB, { text: jd.slice(0, 15000) })   // an application knows its title and company already
       : { title: m ? m[1].trim() : first.length <= 90 ? first : '', company: m ? m[2].trim() : '', text: jd.slice(0, 15000) };
   }
-  if (sync) OPT.sel = Object.keys(OPT.sel).reduce((o, k) => { o[k] = true; return o; }, {});
+  const all = sync === true;
+  if (all) OPT.sel = Object.keys(OPT.sel).reduce((o, k) => { o[k] = true; return o; }, {});
   OPT.sync = !!sync;
   const sel = OPT.sel;
   if (!Object.keys(sel).some((k) => sel[k])) { toast('Pick at least one thing to optimise.'); return; }
   sel.sync = !!OPT.sync;
-  if (TEAM) saveVersion(sync ? 'Before Sync' : 'Before Optimise');   // one click of Restore undoes the whole run
-  const keep = {}; if (sync) Object.assign(keep, (lsGet(OPT_KEY, {}) || {}).sel || {}); else Object.keys(sel).forEach((k) => { if (k !== 'sync') keep[k] = sel[k] ? 1 : 0; });
+  if (TEAM) saveVersion(all ? 'Before Sync' : 'Before Optimise');   // one click of Restore undoes the whole run
+  const keep = {}; if (all) Object.assign(keep, (lsGet(OPT_KEY, {}) || {}).sel || {}); else Object.keys(sel).forEach((k) => { if (k !== 'sync') keep[k] = sel[k] ? 1 : 0; });
   delete keep.sync; lsSet(OPT_KEY, { sel: keep, ins });   // the ticks to remember: a Sync leaves them as they were
   const P = optPlan(sel), nb = P.nb;
-  const steps = [['job', JOB.roles ? 'Working out what these roles ask for' : 'Reading the job description and its requirements'], ['write', sel.sync ? 'Syncing the summary, title' + (nb ? ', ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' and their order' : '') + ' and skills to the job'
+  const steps = [['job', JOB.roles ? 'Working out what these roles ask for' : 'Reading the job description and its requirements'], ['write', all ? 'Syncing the summary, title' + (nb ? ', ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' and their order' : '') + ' and skills to the job'
     : nb ? 'Rewording ' + nb + ' bullet' + (nb > 1 ? 's' : '') + (sel.summary ? ' and the summary' : '') + ' for the job' : 'Tailoring for the job'], ['check', 'Checking every change against the facts']];
-  modalOpen('<div class="om sm run" role="dialog" aria-modal="true" aria-live="polite"><div class="runbar"><i id="runbar"></i></div><h2>' + (sel.sync ? 'Syncing to ' : 'Optimising for ') + esc(JOB.roles ? JOB.roles.join(' · ') : cleanTitle(JOB.title) || 'this job') + '</h2>' + (JOB.company ? '<p class="omsub">at ' + esc(JOB.company) + '</p>' : '') +
+  modalOpen('<div class="om sm run" role="dialog" aria-modal="true" aria-live="polite"><div class="runbar"><i id="runbar"></i></div><h2>' + (all ? 'Syncing to ' : 'Optimising for ') + esc(JOB.roles ? JOB.roles.join(' · ') : cleanTitle(JOB.title) || 'this job') + '</h2>' + (JOB.company ? '<p class="omsub">at ' + esc(JOB.company) + '</p>' : '') +
     '<ul class="steps">' + steps.map((x) => '<li data-st="' + x[0] + '" class="run"><i></i>' + esc(x[1]) + '</li>').join('') + '</ul><p class="fine" style="margin-top:16px">Only wording changes, never facts: nothing is added for a requirement the resume doesn’t prove. Projects, education and certifications are never touched.</p></div>');
   const done = (k, label) => { const li = $('.steps [data-st="' + k + '"]'); if (li) { li.classList.remove('run'); li.classList.add('ok'); if (label) li.lastChild.textContent = label; }
     const bar = $('#runbar'), all = $$('.steps li').length; if (bar && all) bar.style.width = Math.max(4, Math.round($$('.steps li.ok').length / all * 100)) + '%'; };
@@ -2546,7 +2671,7 @@ function optPlan(sel) {
 function optCompute(sel, ins, P, step) {
   const { targets, terms, cover0, sm, skills } = P, R = { reqs: [], mode: '' }, done = step || (() => {});
   return ai({ task: 'tailor', jd: jobText().slice(0, 6000), target: cleanTitle(JOB.title), rules: clientRules(), instructions: ins,
-    summary: sm ? sm.text : '', headline: DOC.headline || '', skills,
+    summary: sm ? sm.text : '', headline: DOC.headline || '', skills, skillRows: (DOC.sections.find((x) => x.k === 'skills' && !x.hidden) || { rows: [] }).rows.map((r) => r.label || ''),
     roles: targets.map((tg) => ({ id: tg.key, title: tg.it.title || '', org: tg.it.sub || '', bullets: tg.it.bullets.filter((b) => b.t.trim()).map((b) => b.t) })),
     touch: { summary: !!sel.summary, headline: !!sel.headline, experience: !!sel.experience, skills: !!sel.skills }, ...(sel.sync ? { sync: true } : {}) }, sel.sync ? 150000 : 95000)
   .then((r) => {
@@ -2564,7 +2689,15 @@ function optCompute(sel, ins, P, step) {
       tg.orderIds = sel.sync && Array.isArray(ord) && ord.length === bl.length && new Set(ord).size === bl.length && ord.some((x, i) => x !== i) && ord.every((x) => bl[x]) ? ord.map((x) => bl[x].id) : null;
     });
     if (sel.skills) R.skills = (r.skillsFromExperience || []).filter((k) => inText(k, docText().toLowerCase()) && !skills.some((x) => x.toLowerCase() === k.toLowerCase()));
-    if (sel.sync && Array.isArray(r.skillsOrder)) R.skorder = skillsReorder(r.skillsOrder);
+    if (sel.sync && sel.skills && Array.isArray(r.skillsOrder)) R.skorder = skillsReorder(r.skillsOrder);
+    // the skills the job asks for that the resume doesn't show, each with the Skills line it belongs on, wait under Skills on the
+    // page with the ones the bullets prove and the job-first order (a resume-ai from before this list: the job's named skills)
+    if (sel.skills) {
+      const lowd = docText().toLowerCase();
+      R.missing = (Array.isArray(r.missingSkills) ? r.missingSkills : skillsIn(jobText()).map((k) => ({ skill: k, kind: 'basic', req: '', row: '' })))
+        .filter((m) => m && m.skill && !inText(m.skill, lowd) && !(R.skills || []).some((k) => skKey(k) === skKey(m.skill))).slice(0, 10);
+      DOC.meta.rec = { key: recKey(), list: R.missing.map((m) => ({ skill: m.skill, kind: m.kind, req: m.req || '', row: m.row || '' })), proven: R.skills || [], order: R.skorder || null, at: Date.now() };
+    }
     done('write', R.mode === 'light' ? 'Light touch — the resume already shows the must-haves' : 'Reworded where the facts support a requirement');
     DOC.meta.pre = Object.assign({}, DOC.meta.pre || {}); allFields().forEach((f) => { if (DOC.meta.pre[f.path] === undefined) DOC.meta.pre[f.path] = f.t; });   // what the text was before any Optimise, for Show changes
     const V = validateAll(R, targets, terms, cover0);
@@ -2627,22 +2760,29 @@ function validateAll(R, targets, terms, cover0) {
   if (terms.length) V.after = atsCover(scoreAfter(R, targets, pool), terms).pct;
   return V;
 }
+// one suggestion in the review: the line as it is, Claude's version, accept or keep the original
+function optRow(type, data, orig, sug, note, fc) {
+  const i = OPT.rows.length, ord = type === 'order' || type === 'skorder'; OPT.rows.push(Object.assign({ type, st: 'p', orig, sug }, data));   // ord: the same lines in a new order
+  return '<div class="rr' + (ord ? ' ord' : '') + '" data-r="' + i + '" style="--i:' + i + '"><div class="ro">' + (orig ? esc(orig) : '<i>Not on the resume yet</i>') + '</div><div class="rn"><span' + (ord ? '' : ' contenteditable="true"') + ' data-rs="' + i + '">' + esc(sug) + '</span>' + (note ? '<small>' + esc(note) + '</small>' : '') +
+    (fc ? '<span class="fc fx">' + IC_WARN + ' ' + esc(fc) + '</span>' : '<span class="fc">' + IC_OK + ' ' + (ord ? 'The same ' + (type === 'order' ? 'bullets' : 'skills') + ', in a new order' : 'Fact-checked against the resume') + '</span>') +
+    '<div class="rb" id="rb' + i + '"><button type="button" class="ok" data-a="r-ok" data-v="' + i + '" aria-label="Accept">' + IC_OK + '</button><button type="button" class="no" data-a="r-no" data-v="' + i + '" aria-label="Reject">' + IC_X + '</button></div></div></div>';
+}
+const optCard = (title, body, plain, id) => '<section class="rc"' + (id ? ' id="' + id + '"' : '') + '><h3>' + title + '</h3>' + (plain ? '' : '<div class="rh"><span>Original</span><span>Claude’s suggestion</span></div>') + body + '</section>';
+// The results, like Scout Better: the title, summary and location wait on the resume page with Accept or Reject, the skills in
+// the box under Skills, and the work experience in a window, side by side. Nothing on the resume changes until it's accepted.
 function showResults(R, targets, sel, V) {
-  OPT.rows = []; OPT.skillsDone = false;
-  const row = (type, data, orig, sug, note, fc) => {
-    const i = OPT.rows.length, ord = type === 'order' || type === 'skorder'; OPT.rows.push(Object.assign({ type, st: 'p', orig, sug }, data));   // ord: the same lines in a new order
-    return '<div class="rr' + (ord ? ' ord' : '') + '" data-r="' + i + '" style="--i:' + i + '"><div class="ro">' + (orig ? esc(orig) : '<i>Not on the resume yet</i>') + '</div><div class="rn"><span' + (ord ? '' : ' contenteditable="true"') + ' data-rs="' + i + '">' + esc(sug) + '</span>' + (note ? '<small>' + esc(note) + '</small>' : '') +
-      (fc ? '<span class="fc fx">' + IC_WARN + ' ' + esc(fc) + '</span>' : '<span class="fc">' + IC_OK + ' ' + (ord ? 'The same ' + (type === 'order' ? 'bullets' : 'skills') + ', in a new order' : 'Fact-checked against the resume') + '</span>') +
-      '<div class="rb" id="rb' + i + '"><button type="button" class="ok" data-a="r-ok" data-v="' + i + '" aria-label="Accept">' + IC_OK + '</button><button type="button" class="no" data-a="r-no" data-v="' + i + '" aria-label="Reject">' + IC_X + '</button></div></div></div>';
-  };
-  const card = (title, body, plain) => '<section class="rc"><h3>' + title + '</h3>' + (plain ? '' : '<div class="rh"><span>Original</span><span>Claude’s suggestion</span></div>') + body + '</section>';
+  OPT.rows = []; OPT.skillsDone = true;   // the skills are in the box on the page now
+  const sug = { key: recKey(), at: Date.now() };
+  if (R.headline) sug.headline = { orig: R.headline.orig || '', sug: R.headline.sug, fc: R.headline.fc || '' };
+  if (R.summary && R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig)) sug.summary = { sid: R.summary.sid || '', orig: R.summary.orig || '', sug: R.summary.sug, fc: R.summary.fc || '' };
+  if (R.loc) sug.loc = { city: R.loc.city || '' };
+  DOC.meta.sug = sug.headline || sug.summary || sug.loc ? sug : null;
+  if (sel.skills && DOC.meta.rec && DOC.meta.rec.key === sug.key) DOC.meta.rec.dismissed = false;   // a new run with Skills brings the box back
+  persist(); renderSheet(); if (PTAB === 'edit') renderPanel();
+  const onPage = !!$('#sheet .pgui');
+  const row = optRow, card = optCard;
   const already = '<div class="rdone"><span>' + I_SPARK + '</span><span><b>Already optimised</b><small>This looks right — no changes needed.</small></span></div>';
   let h = '';
-  if (R.summary) h += R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig) ? card('Summary', row('summary', { sid: R.summary.sid }, R.summary.orig, R.summary.sug, '', R.summary.fc))
-    : card('Summary', R.summary.kept ? '<div class="rdone"><span>' + IC_OK + '</span><span><b>Kept the summary</b><small>' + (R.summary.kept.length ? 'The rewrite would have removed ' + esc(termList(R.summary.kept)) + ', which this job looks for' : 'The rewrite added a cliché') + ' — so the original stays.</small></span></div>'
-      : R.summary.dropped ? '<div class="rdone"><span>' + IC_OK + '</span><span><b>Kept the summary</b><small>The suggestion was dropped in the fact check — ' + esc(R.summary.dropped) + '.</small></span></div>' : already, true);
-  if (R.headline) h += card('Job title', row('headline', {}, R.headline.orig, R.headline.sug, 'Shown under the name.', R.headline.fc));
-  if (R.loc) h += card('Location', row('loc', {}, R.loc.orig, R.loc.sug, 'This role is in ' + R.loc.city + '. Accept only if a move is genuinely on.'));
   const firstWords = (t, n) => { const w = String(t || '').trim().split(/\s+/); return w.slice(0, n).join(' ') + (w.length > n ? '…' : ''); };
   const listOf = (it, ids) => ids.map((id, k) => (k + 1) + '. ' + firstWords((byId(it.bullets, id) || {}).t, 10)).join('\n');
   targets.forEach((tg) => {
@@ -2651,21 +2791,19 @@ function showResults(R, targets, sel, V) {
     const ord = tg.orderIds ? row('order', { key: tg.key, ids: tg.orderIds }, listOf(tg.it, tg.it.bullets.filter((b) => b.t.trim()).map((b) => b.id)), listOf(tg.it, tg.orderIds), 'The work this job cares about most comes first — recruiters read the top bullets.') : '';
     h += ch.length || ord ? card(t, ord + ch.map((x) => row('bullet', { bid: x.bid }, x.orig, x.sug, '', x.fc)).join('') + keptNote) : card(t, tg.res ? (tg.keptN ? keptNote : already) : '<div class="rdone"><span>!</span><span><b>Couldn’t rewrite this role</b><small>' + esc(aiMsg(R.err)) + '</small></span></div>', true);
   });
-  if (sel.skills) {
-    const so = R.skorder, line = (q, v) => (q.label ? q.label + ': ' : '') + v;
-    const ord = so ? '<div class="rh"><span>Original</span><span>Claude’s suggestion</span></div>' + row('skorder', { sid: so.sid, rows: so.rows }, so.rows.map((q) => line(q, q.orig)).join('\n'), so.rows.map((q) => line(q, q.sug)).join('\n'), 'The skills this job asks for come first.') : '';
-    // Sync ticks the proven skills for you; the tick is still there to take off
-    const add = R.skills && R.skills.length ? '<p class="rnote">The job asks for these and the resume’s own bullets or summary already state them, but the Skills list doesn’t. ' + (sel.sync ? 'They’re ticked for you — untick any to leave out.' : 'Tick the ones to add — nothing is added without a tick.') + '</p><div class="rsk">' + R.skills.map((k) => '<label><input type="checkbox" data-sk="' + esc(k) + '"' + (sel.sync ? ' checked' : '') + '><span>' + esc(k) + '</span></label>').join('') + '</div>'
-      : ord ? '' : '<div class="rdone"><span>' + IC_OK + '</span><span><b>Nothing to add to Skills</b><small>Every job skill the resume proves is already listed. Nothing is ever added just because the job asks for it.</small></span></div>';
-    h += card('Skills', ord + add, true);
+  if (!OPT.rows.length) {   // no bullet to review: everything is on the page
+    endPending(); modalClose();
+    const first = $('#sheet .pgui'); if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    toast(onPage ? 'The suggestions are on the resume — accept or reject each one' : R.summary && R.summary.kept ? 'Kept the summary: the rewrite would have lost words this job looks for' : 'The resume already fits this job — nothing to change');
+    return;
   }
   const reqs = R.reqs || [], met = reqs.filter((q) => q.status !== 'missing'), basics = reqs.filter((q) => q.kind === 'basic'), basicsMet = basics.filter((q) => q.status !== 'missing');
-  const reworded = targets.reduce((n, tg) => n + (tg.res || []).filter((x) => norm(x.sug) !== norm(x.orig)).length, 0) + (R.summary && R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig) ? 1 : 0);
+  const reworded = targets.reduce((n, tg) => n + (tg.res || []).filter((x) => norm(x.sug) !== norm(x.orig)).length, 0) + (sug.summary ? 1 : 0);
   const RQ = { shown: ['Shown', 'ok', 'The resume states it plainly.'], buried: ['Surfaced', 'blue', 'The facts prove it; a line was reworded to say it in the posting’s words.'], missing: ['Not on the resume', 'mute', 'Nothing was added — say so honestly if asked.'] };
   const reqCard = reqs.length ? '<div class="reqs"><button type="button" class="reqh" data-a="reqs-toggle" aria-expanded="false"><span><b>Meets ' + met.length + ' of ' + reqs.length + ' requirements</b><small>' + basicsMet.length + ' of ' + basics.length + ' must-haves · ' + reworded + ' line' + (reworded === 1 ? '' : 's') + ' reworded, facts unchanged' + (R.mode === 'light' ? ' · light touch' : '') + '</small></span>' + I_DN + '</button>' +
     '<ul class="reql" id="reqList" hidden>' + reqs.map((q) => '<li><span class="rs ' + RQ[q.status][1] + '">' + RQ[q.status][0] + '</span><span><b>' + esc(q.text) + '</b>' + (q.kind === 'preferred' ? ' <em>nice to have</em>' : '') + (q.evidence ? '<q>' + esc(q.evidence) + '</q>' : '<small>' + RQ[q.status][2] + '</small>') + '</span></li>').join('') + '</ul></div>' : '';
   modalOpen('<div class="om" role="dialog" aria-modal="true" aria-labelledby="omR"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
-    '<div class="omh"><h2 id="omR">' + (sel.sync ? 'Synced to ' : 'Optimised for ') + esc(JOB.roles ? JOB.roles.join(' · ') : cleanTitle(JOB.title) || 'this job') + '</h2><p class="omsub">' + (OPT.pending ? 'Made in the background from the team portal — nothing on the resume has changed yet. ' : '') + 'Review each suggestion beside the current line. Accept them one by one or all at once; edit a suggestion before accepting if you like.' + (/\[/.test(h) ? ' Replace anything in [ ] with the real number.' : '') + '</p></div>' +
+    '<div class="omh"><h2 id="omR">Optimised work experience</h2><p class="omsub">' + (OPT.pending ? 'Made in the background from the team portal — nothing on the resume has changed yet. ' : '') + 'Review each suggestion beside the current bullet. Accept them one by one or all at once; edit a suggestion before accepting if you like.' + (onPage ? ' The title, summary and skills suggestions wait on the resume.' : '') + (/\[/.test(h) ? ' Replace anything in [ ] with the real number.' : '') + '</p></div>' +
     reqCard +
     '<div class="vrep">' + (V.after != null ? '<div><span class="vi a">' + IC_OK + '</span><span><b>ATS keyword match: ' + (V.after > V.before ? V.before + '% → <span class="up">' + V.after + '%</span>' : '<span class="up">' + V.after + '%</span>') + '</b><small>Of the ' + atsTerms().length + ' keywords in this job description, once these changes are accepted. Every change keeps the keywords already there.</small></span></div>' : '') +
       '<div><span class="vi' + (V.fixed + V.removed ? ' w' : ' a') + '">' + (V.fixed + V.removed ? IC_WARN : IC_OK) + '</span><span><b>Fact-checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + '</b><small>' +
@@ -2673,6 +2811,38 @@ function showResults(R, targets, sel, V) {
         : 'Every suggestion uses only facts already on the resume — no new numbers, tools or employers.') + '</small></span></div></div>' +
     '<div class="omb">' + h + '</div><div class="omf"><span id="omCount"></span><button class="btn pri" type="button" data-a="r-all" id="rAll">✓ Accept all</button><button class="btn" type="button" data-a="opt-done">Done</button></div></div>');
   countRows();
+}
+/* ---------- on the page: the title, summary and location suggestions, each with Accept or Reject (never printed or exported) ----------
+   Kept on the resume (DOC.meta.sug) until accepted or rejected, so a reload or the team portal's background run doesn't lose them. */
+const sugOn = () => DOC && !READONLY && JOB && DOC.meta.sug && DOC.meta.sug.key === recKey() ? DOC.meta.sug : null;
+const sgBtns = (k) => '<span class="pgb"><button type="button" class="ok" data-a="sg-ok" data-v="' + k + '">' + IC_OK + 'Accept</button><button type="button" data-a="sg-no" data-v="' + k + '">Reject</button></span>';
+function sugHeadHTML() {
+  const s = sugOn(); if (!s || !s.headline) return '';
+  return '<div class="pgui pgsug" contenteditable="false"><span class="o"><b>Original</b>' + esc(s.headline.orig || 'No title') + '</span><span class="n"><b>Suggestion</b>' + esc(s.headline.sug) + '</span>' + sgBtns('headline') +
+    (s.headline.fc ? '<small class="w">' + esc(s.headline.fc) + '</small>' : '') + '</div>';
+}
+function sugLocHTML() {
+  const s = sugOn(); if (!s || !s.loc) return '';
+  return '<div class="pgui pgsug" contenteditable="false"><span class="n"><b>Add</b>Open to relocation</span>' + sgBtns('loc') + '<small>This job is in ' + esc(s.loc.city || 'another city') + '. Accept only if a move is genuinely on.</small></div>';
+}
+function sugSumHTML(sid) {   // sid '': a summary written for a resume that has none, shown above the first section
+  const s = sugOn(); if (!s || !s.summary || (s.summary.sid || '') !== (sid || '')) return '';
+  return '<div class="pgui pgcmp" contenteditable="false"><div class="pga-h"><b>' + I_SPARK + (s.summary.orig ? 'Suggested summary' : 'A summary, written from the resume') + '</b></div>' +
+    '<p>' + (s.summary.orig ? wdiff(s.summary.orig, s.summary.sug).n : esc(s.summary.sug)) + '</p>' +
+    '<div class="pga-f">' + sgBtns('summary') + '<small>' + esc(s.summary.fc || (s.summary.orig ? 'The changed words are marked. Fact-checked against the resume.' : 'Fact-checked against the resume.')) + '</small></div></div>';
+}
+function sugDone(k, ok) {
+  const s = DOC && DOC.meta.sug; if (!s || !s[k]) return;
+  if (ok) {
+    if (k === 'headline') { DOC.headline = s.headline.sug; HL.headline = 1; }
+    if (k === 'summary') { let sec = (s.summary.sid && secById(s.summary.sid)) || DOC.sections.find((x) => x.k === 'summary'); if (!sec) { sec = newSection('summary'); DOC.sections.unshift(sec); } sec.hidden = false; sec.text = s.summary.sug; HL['sum:' + sec.id] = 1; }
+    if (k === 'loc') { DOC.prefs = DOC.prefs || {}; DOC.prefs.relocate = true; }
+  }
+  delete s[k]; if (!s.headline && !s.summary && !s.loc) DOC.meta.sug = null;
+  if (!ok) { persist(); renderSheet(); return; }
+  if (DOC.meta.pre) { SHOWCHG = true; const c = $('#chgOn'); if (c) c.checked = true; }
+  markOptimised(); structural();
+  toast({ headline: 'Title', summary: 'Summary', loc: 'Open to relocation' }[k] + ' accepted', { a: 'undo', label: 'Undo' });
 }
 function countRows() {
   const p = OPT.rows.filter((r) => r.st === 'p').length, a = OPT.rows.filter((r) => r.st === 'a').length;
@@ -2707,10 +2877,123 @@ function addSkill(term) {
   if (!row) { row = { id: uid(), label: 'Skills', value: '' }; s.rows.push(row); }
   row.value = row.value ? row.value.replace(/[.\s]+$/, '') + ', ' + term : term; DOC.meta.added = uniq((DOC.meta.added || []).concat([term]));
 }
+function addSkillsTo(rid, label, list) {
+  let s = DOC.sections.find((x) => x.k === 'skills');
+  if (!s) { s = newSection('skills'); const at = DOC.sections.findIndex((x) => x.k === 'education'); DOC.sections.splice(at > -1 ? at + 1 : DOC.sections.length, 0, s); }
+  s.hidden = false; let w = rid ? byId(s.rows, rid) : null;
+  if (!w && label) w = s.rows.find((r) => skKey(r.label) === skKey(label)) || null;
+  if (!w) { w = { id: uid(), label: label || 'Skills', value: '' }; s.rows.push(w); }
+  const add = list.filter((k) => !inText(k, String(w.value).toLowerCase()));
+  if (add.length) w.value = (w.value ? w.value.replace(/[.\s]+$/, '') + ', ' : '') + add.join(', ');
+  DOC.meta.added = uniq((DOC.meta.added || []).concat(list));
+}
+
+/* ---------- skills the job asks for that the resume doesn't show ----------
+   A Sync or Optimise lists them, each with the Skills line it belongs on. The page shows them waiting under Skills, grouped
+   by line, with Accept or Reject (never printed or exported); the panel shows them as chips beside the skills that match,
+   with the keyword match. You decide: drop any one, or reject the lot. What was added or left out is kept (the client's
+   profile in the team portal; this resume for a member's own), so the next job starts from those choices. */
+const skKey = (t) => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim();
+function haveList(all) { const L = TEAM && CLIENT && Array.isArray(CLIENT.confirmed_skills) ? CLIENT.confirmed_skills : DOC && DOC.meta.have; return (Array.isArray(L) ? L : []).filter((x) => x && (all || x.has !== false)); }
+function saveHave(answers) {   // [{skill, has}]: added, or left out
+  const at = new Date().toISOString(), by = (USER && USER.email) || '', L0 = haveList(true);
+  const L = L0.filter((x) => !answers.some((m) => skKey(m.skill) === skKey(x.skill)));
+  answers.forEach((m) => { const was = L0.find((x) => skKey(x.skill) === skKey(m.skill) && x.has !== false);
+    L.push({ skill: m.skill, has: !!m.has, where: m.has ? (was && was.where) || 'Skills list' : '', key: '', note: m.has && was ? was.note || '' : '', by, at }); });
+  if (TEAM && CLIENT && Array.isArray(CLIENT.confirmed_skills)) {   // the client's profile (sql/supabase-team-portal.sql adds the column)
+    CLIENT.confirmed_skills = L;
+    if (sb && !READONLY) sb.from('clients').update({ confirmed_skills: L }).eq('id', CLIENT.id).then((r) => { if (r.error) toast('Couldn’t save the skills to the client’s profile'); }, () => {});
+  } else if (DOC) { DOC.meta.have = L; persist(); }
+}
+const whoHas = () => TEAM && CLIENT ? (String(CLIENT.full_name || '').split(' ')[0] || 'the client') : 'you';
+const recKey = () => !JOB ? '' : JOB.key || [cleanTitle(JOB.title), JOB.company || ''].join('|');
+let REC = null;   // {key, open, list: [{skill, kind, req, row, st, before}]}; st 'yes' = included
+function recSync() {
+  if (!DOC || !JOB || READONLY || !jobOk()) { REC = null; return []; }
+  const key = recKey(), saved = DOC.meta.rec && DOC.meta.rec.key === key && Array.isArray(DOC.meta.rec.list) ? DOC.meta.rec : null;
+  const low = docText().toLowerCase(), have = haveList(true), old = REC && REC.key === key ? REC : null;
+  const sk = DOC.sections.find((x) => x.k === 'skills' && !x.hidden), skLow = sk ? sk.rows.map((r) => r.label + ': ' + r.value).join(' | ').toLowerCase() : '';
+  const miss = (saved ? saved.list : skillsIn(jobText()).map((k) => ({ skill: k, kind: 'basic', req: '', row: '' }))).filter((m) => m && m.skill && !inText(m.skill, low));
+  const proven = (saved && Array.isArray(saved.proven) ? saved.proven : []).filter((k) => k && !inText(k, skLow) && !miss.some((m) => skKey(m.skill) === skKey(k))).map((k) => ({ skill: k, kind: 'basic', req: '', row: '', proven: true }));
+  const list = miss.concat(proven).slice(0, 14);
+  const order = saved && saved.order && sk && saved.order.sid === sk.id ? saved.order.rows.filter((q) => { const w = byId(sk.rows, q.id); return w && w.value === q.orig; }) : [];
+  REC = { key, open: !!saved && !saved.dismissed, order: order.length ? order : null, orderOn: old ? old.orderOn : true, list: list.map((m) => {
+    const was = old && old.list.find((x) => skKey(x.skill) === skKey(m.skill)); if (was) return Object.assign({}, m, { st: was.st, before: was.before });
+    const h = have.find((x) => skKey(x.skill) === skKey(m.skill));   // left out for this client before: starts left out
+    return Object.assign({}, m, { st: h && h.has === false ? '' : 'yes', before: h ? (h.has === false ? 'Left out before' : 'Added before') : '' });
+  }) };
+  return REC.list;
+}
+function recGroups() {   // the included skills, by the line they go on: the one Claude named (or a new line by that name), else the likeliest
+  const sk = DOC.sections.find((x) => x.k === 'skills' && !x.hidden), out = [];
+  REC.list.forEach((m, i) => { if (!m.st) return;
+    const w = sk && m.row ? sk.rows.find((r) => skKey(r.label) === skKey(m.row)) : null, guess = w || m.row ? '' : likelyRow(sk, m.skill);
+    const row = w || (guess && !/^new:/.test(guess) ? byId(sk.rows, guess) : null), label = row ? row.label || '' : m.row || (guess ? guess.slice(4) : '') || 'Skills', key = row ? row.id : 'new:' + skKey(label);
+    let g = out.find((x) => x.key === key); if (!g) { g = { key, rid: row ? row.id : '', label, isNew: !row, items: [] }; out.push(g); }
+    g.items.push({ skill: m.skill, i });
+  });
+  return out;
+}
+let REC_TERMS = null;   // the job's keywords, worked out once per job description
+const recTerms = () => { const t = jobText(); if (!REC_TERMS || REC_TERMS.t !== t) REC_TERMS = { t, terms: atsTerms() }; return REC_TERMS.terms; };
+const recLift = () => { const terms = recTerms(); if (!terms.length) return null; const t0 = docText(); return { a: atsCover(t0, terms).pct, z: atsCover(t0 + '\n' + REC.list.filter((m) => m.st).map((m) => m.skill).join(', '), terms).pct }; };
+// on the page, under Skills: what would be added, line by line, with Accept or Reject
+function addSkillsHTML() {
+  const r = DOC && DOC.meta.rec; if (!r || r.dismissed || !JOB || r.key !== recKey()) return '';   // nothing waiting: skip the work (the page redraws as you type)
+  const list = recSync(); if (!REC || !REC.open || !(list.some((m) => m.st) || REC.order)) return '';
+  const L = recLift();
+  return '<div class="pgui pgadd" contenteditable="false"><div class="pga-h"><b>' + I_SPARK + 'Add skills this job asks for</b>' + (L && L.z > L.a ? '<span>Keyword match ' + L.a + '% → ' + L.z + '%</span>' : '') + '</div>' +
+    recGroups().map((g) => '<div class="pga-r"><b>' + esc(g.label) + ':</b>' + (g.isNew ? ' <em>new line</em>' : '') + ' ' + g.items.map((y) => '<span class="pga-c">' + esc(y.skill) + (REC.list[y.i].proven ? '<small>in your bullets</small>' : '') + '<i data-a="ask-x" data-v="' + y.i + '" title="Leave out ' + esc(y.skill) + '">' + I_X + '</i></span>').join(' ') + '</div>').join('') +
+    (REC.order ? '<button type="button" class="pga-o" data-a="ask-ord" aria-pressed="' + !!REC.orderOn + '">' + (REC.orderOn ? IC_OK : I_PLUS) + 'Put the skills this job asks for first in each line</button>' : '') +
+    '<div class="pga-f"><button type="button" class="ok" data-a="ask-ok">' + IC_OK + 'Accept</button><button type="button" data-a="ask-no">Reject</button><small>Add only what ' + esc(whoHas()) + ' can talk about in an interview.</small></div></div>';
+}
+// in the panel: the job's skills, missing (click to include or leave out) and matching, with the keyword match
+function recCardHTML() {
+  const list = recSync(); if (!REC) return '';
+  const low = docText().toLowerCase(), hits = uniq(skillsIn(jobText())).filter((k) => inText(k, low)).slice(0, 16), terms = recTerms();
+  if (!list.length && !hits.length) return '';
+  const pct = terms.length ? atsCover(docText(), terms).pct : null, inc = list.filter((m) => m.st).length;
+  return '<div class="pc rec" id="recCard"><div class="mkt"><h3>Skills for this job</h3>' + (pct != null ? '<span class="kwm">Keyword match <b>' + pct + '%</b></span>' : '') + '</div>' +
+    (list.length ? '<p class="cl">Missing <span>— the job asks for these, the resume doesn’t show them</span></p><div class="chips">' +
+      list.map((m, i) => '<button type="button" class="chip miss' + (m.st ? ' on' : '') + '" data-a="ask-in" data-v="' + i + '" aria-pressed="' + !!m.st + '" title="' + esc((m.req ? '“' + m.req + '” · ' : '') + (m.proven ? 'In your bullets, not in the Skills list · ' : '') + (m.before ? m.before + ' · ' : '') + (m.st ? 'Included: click to leave it out' : 'Left out: click to include it')) + '">' + (m.st ? IC_OK : I_PLUS) + esc(m.skill) + '</button>').join('') + '</div>' : '') +
+    (hits.length ? '<p class="cl">Matching</p><div class="chips">' + hits.map((k) => '<span class="chip hit">' + esc(k) + '</span>').join('') + '</div>' : '') +
+    (!list.length ? '' : !inc ? '<p class="rnote">Click a missing skill to include it.</p>' : REC.open ? '<p class="rnote">' + inc + ' included: they wait under Skills on the page. Accept or reject them there.</p>'
+      : '<button type="button" class="addl" data-a="ask-show">' + I_PLUS + 'Add the ' + inc + ' included to the page</button>') + '</div>';
+}
+function recRefresh() { renderSheet(); const c = $('#recCard'); if (c) { const h = recCardHTML(); if (h) c.outerHTML = h; else c.remove(); } }
+function recShow(on) {   // Reject hides the box for this job; the panel's button brings it back
+  if (!REC) return; const key = recKey();
+  if (!DOC.meta.rec || DOC.meta.rec.key !== key) DOC.meta.rec = { key, list: REC.list.map((m) => ({ skill: m.skill, kind: m.kind, req: m.req || '', row: m.row || '' })), at: Date.now() };
+  DOC.meta.rec.dismissed = !on; persist(); recRefresh();
+}
+function recAccept() {   // the included skills go onto their lines, marked; one Undo takes them back
+  if (!REC) return; const inc = REC.list.filter((m) => m.st), out = REC.list.filter((m) => !m.st && !m.proven), ord = REC.orderOn && REC.order;
+  if (!inc.length && !ord) { saveHave(out.map((m) => ({ skill: m.skill, has: false }))); recShow(false); toast('Nothing added — the skills you left out are remembered'); return; }
+  const groups = recGroups(), pre = DOC.meta.pre, sk = DOC.sections.find((x) => x.k === 'skills' && !x.hidden);   // after a Sync or Optimise, Show changes marks them
+  if (pre) allFields().forEach((f) => { if (pre[f.path] === undefined) pre[f.path] = f.t; });
+  if (ord && sk) ord.forEach((q) => { const w = byId(sk.rows, q.id); if (w && w.value === q.orig) w.value = q.sug; });   // the job-first order, before anything is added
+  if (DOC.meta.rec) DOC.meta.rec.order = null;
+  groups.forEach((g) => addSkillsTo(g.rid, g.label, g.items.map((y) => y.skill)));
+  saveHave(inc.filter((m) => !m.proven).map((m) => ({ skill: m.skill, has: true })).concat(out.map((m) => ({ skill: m.skill, has: false }))));
+  markOptimised();
+  if (pre) { allFields().forEach((f) => { if (pre[f.path] === undefined) pre[f.path] = ''; }); SHOWCHG = true; const ch = $('#chgOn'); if (ch) ch.checked = true; }
+  structural();
+  toast((inc.length ? inc.length + ' skill' + (inc.length > 1 ? 's' : '') + ' added' : 'Skills reordered for this job') + (pre ? ' — marked on the page' : ''), { a: 'undo', label: 'Undo' });
+}
+function likelyRow(sk, skill) {   // no line named: the languages for a language, else the tools line, else the first line
+  if (!sk || !sk.rows.length) return 'new:Skills';
+  const lang = /^(c\+\+|c#|c|java|python|go|golang|rust|ruby|php|swift|kotlin|scala|r|matlab|typescript|javascript|sql|bash|perl|dart|julia)$/i.test(skill);
+  const w = (lang && sk.rows.find((r) => /lang/i.test(r.label))) || sk.rows.find((r) => /tool|tech|skill|framework|platform/i.test(r.label)) || sk.rows[0];
+  return w.id;
+}
 function applySkills() { if (OPT.skillsDone) return 0; const picked = $$('.rsk input:checked').map((x) => x.getAttribute('data-sk')); picked.forEach(addSkill); if (picked.length) { OPT.skillsDone = true; markOptimised(); $$('.rsk input').forEach((x) => { x.disabled = true; }); } return picked.length; }
 function finishOptimise() {
   const n = applySkills(), a = OPT ? OPT.rows.filter((r) => r.st === 'a').length + n : 0;
-  endPending(); modalClose(); if (a) { SHOWCHG = true; const c = $('#chgOn'); if (c) c.checked = true; structural(); toast(a + ' change' + (a > 1 ? 's' : '') + ' applied — the changed words are marked on the page', { a: 'undo', label: 'Undo' }); const first = $('#sheet .hl'); if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' }); if (PTAB === 'check') renderPanel(); }
+  endPending(); modalClose();
+  const more = !!$('#sheet .pgui');   // the title, summary and skills suggestions wait on the page
+  if (a) { SHOWCHG = true; const c = $('#chgOn'); if (c) c.checked = true; structural(); toast(a + ' change' + (a > 1 ? 's' : '') + ' applied' + (more ? ' — the other suggestions are on the resume' : ' — the changed words are marked on the page'), { a: 'undo', label: 'Undo' }); if (PTAB === 'check') renderPanel(); }
+  else if (more) toast('The suggestions are on the resume — accept or reject each one');
+  const go = $('#sheet .pgui') || $('#sheet .hl'); if (go) go.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 /* ---------- the team portal's batch Optimise leaves its suggestions on the draft until someone reviews them ---------- */
 const pendingOf = (o, sel, ins) => ({ at: Date.now(), sel, ins, V: o.V, R: { summary: o.R.summary, headline: o.R.headline, loc: o.R.loc, skills: o.R.skills, skorder: o.R.skorder || null, reqs: o.R.reqs, mode: o.R.mode },
@@ -2739,15 +3022,23 @@ function endPending() {   // reviewed (or closed): the suggestions are done with
 }
 function optAction(a, v, t) {
   switch (a) {
-    case 'optimize': openOptimise(); return true;
+    case 'optimize': openOptimise(!!TEAM); return true;   // the team portal: the client's usual choices come ticked, as from the card
     case 'm-close': endPending(); modalClose(); return true;
     case 'opt-t': optPick(t, t.getAttribute('aria-pressed') !== 'true'); return true;
     case 'opt-sync': runOptimise(true); return true;
     case 'opt-all': { const rows = $$('.orows .orow'), all = rows.every((r) => r.classList.contains('on')); rows.forEach((r) => optPick(r, !all)); return true; }
-    case 'opt-go': runOptimise(); return true;
+    case 'opt-go': runOptimise(TEAM && TEAM.app ? 'deep' : false); return true;   // an application: the Sync model, on what was picked
     case 'r-ok': { if (applyRow(+v)) { countRows(); structural(); } return true; }
     case 'r-no': { const r = OPT.rows[+v]; if (r && r.st === 'p') { r.st = 'r'; markRow(+v, 'r'); countRows(); } return true; }
     case 'r-all': { let n = 0; OPT.rows.forEach((r, i) => { if (applyRow(i)) n++; }); n += applySkills(); countRows(); if (n) structural(); return true; }
+    case 'ask-in': { const m = REC && REC.list[+v]; if (m) { m.st = m.st ? '' : 'yes'; recRefresh(); } return true; }
+    case 'ask-x': { const m = REC && REC.list[+v]; if (m) { m.st = ''; recRefresh(); } return true; }
+    case 'ask-ok': recAccept(); return true;
+    case 'ask-ord': if (REC) { REC.orderOn = !REC.orderOn; recRefresh(); } return true;
+    case 'sg-ok': sugDone(v, true); return true;
+    case 'sg-no': sugDone(v, false); return true;
+    case 'ask-no': recShow(false); return true;
+    case 'ask-show': recShow(true); return true;
     case 'opt-done': finishOptimise(); return true;
     case 'reqs-toggle': { const l = $('#reqList'); if (l) { l.hidden = !l.hidden; t.setAttribute('aria-expanded', l.hidden ? 'false' : 'true'); t.classList.toggle('open', !l.hidden); } return true; }
     case 'chg': SHOWCHG = !!t.checked; renderSheet(); return true;
@@ -2827,11 +3118,13 @@ function batchRun() {   // tailor this draft to its job with Optimise's own chec
 }
 function teamPill() {
   const name = (CLIENT && CLIENT.full_name) || 'Client', ini = name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase(), hue = [...name].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
-  const p = $('#wkon'); p.hidden = false; p.innerHTML = '<i style="background:hsl(' + hue + ' 60% 45%)">' + esc(ini) + '</i><small>Working on</small>' + esc(name);
+  // the top bar reads as a path: the client, then the job (with Draft or Sent); a base resume shows its name instead
+  const p = $('#wkon'); p.hidden = false; p.innerHTML = '<i style="background:hsl(' + hue + ' 70% 93%);color:hsl(' + hue + ' 45% 30%)">' + esc(ini) + '</i><span>' + esc(name) + '</span>';
+  const j = $('#cjob'); if (j && TEAM.app && TEAM_JOB) { j.hidden = false; j.innerHTML = '<span class="t">' + esc(TEAM_JOB.title || 'This job') + (TEAM_JOB.company ? ' at ' + esc(TEAM_JOB.company) : '') + '</span><em class="chip' + (READONLY ? ' sent' : '') + '">' + (READONLY ? 'Sent' : 'Draft') + '</em>'; }
   document.title = name + ' · resume — TrulyPlaced';
-  const bl = $('#backB'); if (bl) { bl.href = teamBack(); bl.lastChild.textContent = 'Back to ' + esc(name.split(' ')[0]); }
-  // an application is only ever synced to its job; a main resume is optimised for the client's target roles
-  const ob = $('#bOpt'); if (ob) ob.lastChild.textContent = TEAM.app ? 'Sync to this job' : rolesJob() ? 'Optimise for target roles' : 'Optimise for a job';
+  const bl = $('#backB'); if (bl) { const t = 'Back to ' + name.split(' ')[0]; bl.href = teamBack(); bl.lastChild.textContent = t; bl.setAttribute('data-tip', t); bl.setAttribute('aria-label', t); }
+  // an application is optimised for its job; a main resume for the client's target roles
+  const ob = $('#bOpt'); if (ob) ob.lastChild.textContent = TEAM.app ? 'Optimise for this job' : rolesJob() ? 'Optimise for target roles' : 'Optimise for a job';
 }
 function teamSync() {   // save to the draft application (only while it's a draft) or to the base resume
   if (!DOC || READONLY || !sb) return Promise.resolve();
@@ -2840,7 +3133,7 @@ function teamSync() {   // save to the draft application (only while it's a draf
                      : sb.from('client_resumes').update({ doc: DOC, text }).eq('id', TEAM.resume).select('id');
   return p.then((r) => {
     if (r.error) throw r.error;
-    if (!r.data || !r.data.length) { READONLY = true; document.body.classList.add('ro'); pgEnd(); pgHide(); TEAM_DIRTY = false; status('Not saved — already sent', true); toast('This application was marked as applied, so its resume can’t change any more. Reload to see exactly what was sent.'); return; }
+    if (!r.data || !r.data.length) { READONLY = true; document.body.classList.add('ro'); pgEnd(); pgHide(); TEAM_DIRTY = false; const ch = $('#cjob .chip'); if (ch) { ch.textContent = 'Sent'; ch.classList.add('sent'); } status('Not saved — already sent', true); toast('This application was marked as applied, so its resume can’t change any more. Reload to see exactly what was sent.'); return; }
     if (DOC.meta.saved === saving) TEAM_DIRTY = false;
     status(TEAM.app ? 'Saved for this application' : 'Saved to ' + ((CLIENT && CLIENT.full_name) || 'the client') + '’s resumes');
     if (TEAM_BC) try { TEAM_BC.postMessage({ client: TEAM.client, app: TEAM.app, resume: TEAM.resume }); } catch (e) {}
@@ -2854,7 +3147,7 @@ function teamBoot() {
   sbReady().then(() => session()).then((s) => {
     if (!s) return teamCard('Sign in to the team portal', 'Your sign-in has expired.', signIn);
     USER = { id: s.user.id, email: s.user.email || '', name: '' };
-    const cq = sb.from('clients').select('id,email,full_name,phone,location,target_roles,optimise_rules').eq('id', TEAM.client).maybeSingle();
+    const cq = sb.from('clients').select('*').eq('id', TEAM.client).maybeSingle();   // all of it: confirmed_skills exists once its SQL line has run
     const rq = TEAM.app ? sb.from('applications').select('id,client_id,status,title,company,location,job_key,jd_text,base_resume_id,resume_doc,resume_text,cover_letter,applied_at').eq('id', TEAM.app).maybeSingle()
                         : sb.from('client_resumes').select('id,client_id,name,doc,text').eq('id', TEAM.resume).maybeSingle();
     return Promise.all([cq, rq]).then((rs) => {
@@ -3079,7 +3372,7 @@ window.addEventListener('scroll', (e) => { if (PGB && !DRAG && (e.target === doc
 document.addEventListener('dragstart', pgDragStart); $('#sheet').addEventListener('dragover', pgDragOver); $('#sheet').addEventListener('drop', pgDrop); document.addEventListener('dragend', pgDragEnd);
 $('#fileIn').addEventListener('change', (e) => { if (e.target.files[0]) readUpload(e.target.files[0]); e.target.value = ''; });
 document.addEventListener('visibilitychange', () => { if (document.hidden && DOC && TEAM && TEAM_DIRTY) teamSync(); });
-// the portal's "Sync to this job" or "Optimise for target roles" on a tab that's already open only changes the address's #
+// the portal's "Optimise for this job" or "Optimise for target roles" on a tab that's already open only changes the address's #
 window.addEventListener('hashchange', () => {
   const h = location.hash; if ((h !== '#optimize' && h !== '#sync') || !DOC) return;
   try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}

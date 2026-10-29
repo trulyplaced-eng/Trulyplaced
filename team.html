@@ -192,6 +192,10 @@
   .lkneed{grid-template-columns:1fr}
   .lkrow .side .st{display:none}
 }
+/* Profile: skills added or left out for jobs */
+.skr.no .t{color:var(--muted);text-decoration:line-through}
+.skadd{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) minmax(0,1.6fr) auto;gap:8px;margin-top:12px}
+@media (max-width:760px){.skadd{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -521,6 +525,7 @@ function tProfile(){
       '<div id="pfQA">' + ans.map(qaRow).join('') + '</div>' +
       '<div class="row" style="margin-top:10px"><button class="btn sm" type="button" data-act="qaadd">' + I.plus + 'Add a question</button></div>' +
       '<div class="row" style="margin-top:10px;gap:6px" id="pfCommon">' + COMMON_Q.filter(function(x){ return !ans.some(function(a){ return a.q === x; }); }).map(function(x){ return '<button class="btn sm ghost" type="button" data-act="qacommon" data-q="' + esc(x) + '" style="border:1px dashed var(--line)">+ ' + esc(x) + '</button>'; }).join('') + '</div></div>' +
+    skCard(c) +
     '<div class="card"><h3>Plan</h3>' + (ME.owner
       ? '<p class="hint">Only the owner can change this.</p><div class="grid2"><div class="field"><label for="pf_plan">Applications in their plan</label><select id="pf_plan"><option value="">Not set</option>' +
           TP.CONFIG.PLANS.map(function(n){ return '<option value="' + n + '"' + (plan === n ? ' selected' : '') + '>' + n + '</option>'; }).join('') +
@@ -532,7 +537,37 @@ function tProfile(){
       '<button class="btn sm" type="button" data-act="resend">' + I.mail + 'Email them the set-password link again</button></div>' +
     '<div class="sticky-save"><span class="saved" id="pfMsg"></span><button class="btn pri" type="button" data-act="pfsave">Save changes</button></div></div>';
   $('#pf_status').value = c.status;
+  skFresh(c);
   if(ME.owner) $('#pf_plan').addEventListener('change', function(e){ $('#pfPCw').hidden = e.target.value !== 'custom'; });
+}
+// skills a job asked for that the team added to this client’s resumes or left out (the editor recommends; both are kept here)
+function skCard(c){
+  if(!Array.isArray(c.confirmed_skills)) return '';   // the column arrives with the 29 Oct line in sql/supabase-team-portal.sql
+  var first = esc((c.full_name || '').split(' ')[0] || 'the client');
+  C.skEdit = c.confirmed_skills.slice();
+  return '<div class="card"><h3>Skills for jobs</h3><p class="hint">When a job asks for a skill that isn’t on ' + first + '’s resume, the editor shows it under Skills and you accept it or leave it out. Both are kept here, and the next job that asks for the skill starts the same way. Remove one to start fresh.</p>' +
+    '<div id="pfSk">' + skRows() + '</div>' +
+    '<div class="skadd"><input class="inp" id="pfSkN" placeholder="Skill, e.g. C++" aria-label="Skill"><input class="inp" id="pfSkW" placeholder="Where they used it, e.g. MS coursework" aria-label="Where they used it">' +
+      '<input class="inp" id="pfSkT" placeholder="What was done with it (optional)" aria-label="What was done with it"><button class="btn sm" type="button" data-act="skadd">' + I.plus + 'Add</button></div></div>';
+}
+function skFresh(row){   // the editor saves added skills straight to the client’s row, from another tab: read them fresh
+  var cc = C; if(!Array.isArray(row.confirmed_skills)) return;
+  q(SB.from('clients').select('confirmed_skills').eq('id', row.id).maybeSingle()).then(function(r){
+    if(C !== cc || !r || !$('#pfSk')) return;
+    var untouched = JSON.stringify(C.skEdit) === JSON.stringify(row.confirmed_skills);
+    row.confirmed_skills = Array.isArray(r.confirmed_skills) ? r.confirmed_skills : [];
+    if(untouched){ C.skEdit = row.confirmed_skills.slice(); $('#pfSk').innerHTML = skRows(); }
+  }, function(){});
+}
+function skRows(){
+  var L = C.skEdit || [], row = function(x){ var i = L.indexOf(x);
+    return '<div class="li skr' + (x.has === false ? ' no' : '') + '"><div class="main"><div class="t">' + esc(x.skill) + (x.has !== false && x.where ? ' <span class="muted">· ' + esc(x.where) + '</span>' : '') + '</div>' +
+      (x.note ? '<div class="m">' + esc(x.note) + '</div>' : '') + '<div class="m">' + (x.by ? esc(x.by.split('@')[0]) + ' · ' : '') + esc(x.at ? TP.ago(x.at) : '') + '</div></div>' +
+      '<button class="icb" type="button" data-act="skdel" data-i="' + i + '" title="Remove — the editor starts fresh for this skill">' + I.trash + '</button></div>'; };
+  var has = L.filter(function(x){ return x.has !== false; }), no = L.filter(function(x){ return x.has === false; });
+  if(!L.length) return '<p class="hint" style="margin:0">Nothing yet. Skills added or left out in the editor appear here.</p>';
+  return (has.length ? '<div class="list">' + has.map(row).join('') + '</div>' : '') +
+    (no.length ? '<p class="hint" style="margin:12px 0 6px">Left out — start unticked for the next job</p><div class="list">' + no.map(row).join('') + '</div>' : '');
 }
 function qaRow(a){
   return '<div class="qa"><input class="inp" data-qa="q" value="' + esc(a.q || '') + '" placeholder="Question" aria-label="Question"><textarea class="inp" data-qa="a" rows="1" placeholder="Answer" aria-label="Answer">' + esc(a.a || '') + '</textarea>' +
@@ -546,6 +581,7 @@ function saveProfile(){
   PF.forEach(function(k){ var v = $('#pf_' + k).value.trim(); if(v !== (c[k] || '')) patch[k] = v || (k === 'full_name' ? '' : null); });
   var ans = readQA($('#pfQA')); if(JSON.stringify(ans) !== JSON.stringify(c.answers || [])) patch.answers = ans;
   var st = $('#pf_status').value; if(st !== c.status) patch.status = st;
+  if(C.skEdit && Array.isArray(c.confirmed_skills) && JSON.stringify(C.skEdit) !== JSON.stringify(c.confirmed_skills)) patch.confirmed_skills = C.skEdit;
   if(ME.owner){ var pv = $('#pf_plan').value, pn = pv === 'custom' ? +$('#pf_planc').value : (pv ? +pv : null); if(pv === 'custom' && !(pn > 0)) return TP.toast('Type the number of applications'); if((pn || null) !== (c.plan_total || null)) patch.plan_total = pn || null; }
   if(!Object.keys(patch).length){ $('#pfMsg').textContent = 'No changes'; return; }
   btn.disabled = true; btn.classList.add('busy');
@@ -1276,17 +1312,17 @@ function resumeCard(){
   var d = A.resume_doc, m = (d && d.meta) || {}, saved = !!(d || A.resume_text), pend = !!m.optPending, opt = !pend && optimisedDoc(d);   // pend: the list's Optimise left suggestions to review
   var preview = A.resume_text || (base && base.text) || '', url = edUrl('app', A.id), tgt = ' target="tp-ed-' + esc(A.id) + '" data-act="toeditor"';
   return '<div class="step"><span class="n' + (opt ? ' ok' : '') + '">2</span><div class="bd"><h3>Resume for this job</h3>' +
-    '<p class="fine" style="margin-top:2px">The copy that gets sent. The main resume is optimised once on the Resumes tab; here it’s only synced to this job.</p>' +
+    '<p class="fine" style="margin-top:2px">The copy that gets sent. The main resume is optimised once on the Resumes tab; here it’s optimised for this job.</p>' +
     (rs.length ? '<div class="row" style="margin:8px 0 10px"><label class="lbl" for="apBase">Start from</label><select class="inp" id="apBase" style="width:auto;flex:1;max-width:320px"' + (saved ? ' disabled title="This job’s copy is already made from it"' : '') + '>' +
       rs.map(function(r){ return '<option value="' + esc(r.id) + '"' + (r.id === A.base_resume_id ? ' selected' : '') + '>' + esc(r.name) + '</option>'; }).join('') + '</select></div>'
       : '<div class="note warn" style="margin:8px 0 10px">' + esc(C.row.full_name) + ' has no resume yet. <a href="' + esc(cUrl(C.id, 'resumes')) + '" data-go>Add one on the Resumes tab</a>, or open the editor and upload their file there.</div>') +
     '<div class="row">' + (pend ? '<a class="btn pri" href="' + esc(url) + '"' + tgt + '>' + I.spark + 'Review the suggestions</a>'
         : opt ? '<a class="btn" href="' + esc(url) + '"' + tgt + '>' + I.doc + 'Open the tailored resume</a>'
-        : '<a class="btn pri" href="' + esc(url + '#sync') + '"' + tgt + ' data-sync>' + I.spark + 'Sync to this job</a>') +
+        : '<a class="btn pri" href="' + esc(url + '#optimize') + '"' + tgt + ' data-opt>' + I.spark + 'Optimise for this job</a>') +
       (preview ? '<button class="btn" type="button" data-act="cpresume">' + I.copy + 'Copy resume text</button>' : '') + '</div>' +
     '<p class="fine" style="margin-top:8px">' + (pend ? '<b>Synced in the background</b> — the editor shows Claude’s suggestions to accept. Nothing on the resume has changed yet.'
-      : opt ? '<span class="lock" style="color:var(--ok)">' + I.check + 'Synced to this job</span> — ' + esc(TP.ago((m.optimised && m.optimised.at) || A.updated_at)) + '. Open it to check it and download the PDF to send.'
-      : (saved ? 'A copy of <b>' + bname + '</b>, not synced to this job yet. ' : 'Starts from <b>' + bname + '</b>. ') + '<b>Sync to this job</b> moves it toward the job description in one go: its words, its priorities, its order. Nothing changes until you accept.' +
+      : opt ? '<span class="lock" style="color:var(--ok)">' + I.check + 'Optimised for this job</span> — ' + esc(TP.ago((m.optimised && m.optimised.at) || A.updated_at)) + '. Open it to check it and download the PDF to send.'
+      : (saved ? 'A copy of <b>' + bname + '</b>, not optimised for this job yet. ' : 'Starts from <b>' + bname + '</b>. ') + '<b>Optimise for this job</b>: pick what to tailor (summary, title, bullets, skills), then accept or reject each suggestion on the resume.' +
         (A.jd_text ? '' : ' <span style="color:var(--warn)">Paste the job description in step 1 first.</span>')) + '</p>' +
     (preview ? '<details style="margin-top:8px"><summary class="fine" style="cursor:pointer">See the text that will be sent</summary><pre class="txt" style="margin-top:8px">' + esc(preview) + '</pre></details>' : '') + '</div></div>';
 }
@@ -1553,6 +1589,12 @@ document.addEventListener('click', function(e){
       return;
     case 'pfsave': return saveProfile();
     case 'qaadd': $('#pfQA').insertAdjacentHTML('beforeend', qaRow({})); $$('#pfQA [data-qa=q]').pop().focus(); return;
+    case 'skadd':
+      var skn = $('#pfSkN').value.trim(); if(!skn) return $('#pfSkN').focus();
+      C.skEdit = (C.skEdit || []).filter(function(x){ return x.skill.toLowerCase() !== skn.toLowerCase(); });
+      C.skEdit.push({skill:skn, has:true, where:$('#pfSkW').value.trim(), key:'', note:$('#pfSkT').value.trim(), by:ME.email, at:new Date().toISOString()});
+      $('#pfSk').innerHTML = skRows(); $('#pfSkN').value = $('#pfSkW').value = $('#pfSkT').value = ''; $('#pfMsg').textContent = 'Unsaved changes'; return;
+    case 'skdel': C.skEdit.splice(+b.getAttribute('data-i'), 1); $('#pfSk').innerHTML = skRows(); $('#pfMsg').textContent = 'Unsaved changes'; return;
     case 'qacommon': $('#pfQA').insertAdjacentHTML('beforeend', qaRow({q:b.getAttribute('data-q')})); b.remove(); $$('#pfQA [data-qa=a]').pop().focus(); return;
     case 'qaadd2': $('#apQA').insertAdjacentHTML('beforeend', qaRow({})); $$('#apQA [data-qa=q]').pop().focus(); return;
     case 'qacopy': var row = b.closest('.qa'); return TP.copy($('[data-qa=a]', row).value, 'Answer');
