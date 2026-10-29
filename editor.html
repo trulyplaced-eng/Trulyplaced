@@ -109,15 +109,15 @@ svg{flex:none;width:18px;height:18px}
 
 /* ---------- layout ---------- */
 .wrap{display:grid;grid-template-columns:minmax(0,1fr) var(--panel);min-height:calc(100vh - var(--top))}
-.stage{padding:16px 24px 40px;min-width:0}
-.doctabs{display:flex;align-items:center;gap:4px;margin-bottom:12px}
+.stage{padding:16px 24px 40px;min-width:0;display:flex;flex-direction:column;align-items:center}
+.doctabs{display:flex;align-items:center;gap:4px;margin-bottom:12px;width:100%;max-width:880px}
 .doctabs button{height:32px;padding:0 14px;border-radius:999px;font-weight:600;font-size:13px;color:var(--body)}
 .doctabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(18,26,51,.15)}
 .doctabs .pages{margin-left:auto;font-size:12.5px;color:var(--muted)}
 .doctabs .pages.warn{color:var(--warn);font-weight:600}
-.frame{position:relative;max-width:900px}
+.frame{position:relative;width:100%;max-width:880px;min-height:400px;overflow:hidden;overflow:clip;overflow-clip-margin:36px}   /* the page is laid out at paper size and scaled down: never let it widen the screen */
 .sheetwrap{position:relative;transform-origin:top left}
-.sheet{background:#fff;box-shadow:0 12px 40px -16px rgba(18,26,51,.35),0 0 0 1px var(--line);position:relative;overflow:visible}
+.sheet{background:#fff;box-shadow:0 12px 40px -16px rgba(18,26,51,.35),0 0 0 1px var(--line);position:relative;overflow:visible;min-height:1056px;contain:layout paint}
 .breaks{position:absolute;inset:0;pointer-events:none}
 .brk{position:absolute;left:-12px;right:-12px;border-top:2px dashed #e11d48;opacity:.6}
 .brk::after{content:attr(data-n);position:absolute;right:0;top:3px;font:600 10px Inter,sans-serif;color:#e11d48;background:#fff;padding:1px 5px;border-radius:4px}
@@ -239,6 +239,15 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .kw span.miss{background:var(--bad-soft);color:var(--bad)}
 .pbar{height:6px;border-radius:3px;background:#e9ebf3;overflow:hidden;margin-top:6px}
 .pbar i{display:block;height:100%;background:var(--blue)}
+
+/* icons inside badges, rows and buttons: one size, one weight */
+.vi svg,.fi svg,.fact i svg,.rdone>span svg,.fcok span svg{width:13px;height:13px}
+.rb button svg{width:15px;height:15px}
+.fc svg{width:12px;height:12px;vertical-align:-2px;margin-right:2px}
+.rdone>span{width:28px;height:28px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;flex:none}
+.fcok span{width:28px;height:28px;border-radius:50%;background:#fff;color:var(--ok);display:grid;place-items:center;flex:none;font-size:inherit}
+.btn.pri svg,.btn.ai svg{color:#fff}
+#rAll svg{width:14px;height:14px;margin-right:4px}
 
 /* ---------- diff ---------- */
 .diff{font-size:13px;line-height:1.55;color:var(--ink)}
@@ -368,10 +377,12 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
   .stage{padding:12px}
   body.m-edit .stage{display:none}
   body.m-preview .panel{display:none}
-  .top .backb span{display:none}
+  .top{padding:0 10px;gap:6px}
+  .top .backb span,.top .brand span,.rname,.status span,.wkon small{display:none}
+  .top .backb{padding:0 8px}
   .btn span{display:none}
   .btn.pri span,.btn.ai span{display:none}
-  .rname{max-width:140px}
+  .btn{padding:0 10px}
   .sv{grid-template-columns:1fr}.sv-c{max-height:none}
 }
 
@@ -398,13 +409,13 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
   <div class="sp"></div>
   <span class="status" id="status" hidden><i></i><span></span></span>
   <div class="tbtns" id="tbtns" hidden>
-    <button type="button" class="ib" data-a="undo" id="bUndo" aria-label="Undo (Ctrl+Z)" data-tip="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
-    <button type="button" class="ib" data-a="redo" id="bRedo" aria-label="Redo (Ctrl+Y)" data-tip="Redo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
-    <button type="button" class="btn ai" data-a="optimize" id="bOpt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Optimise for a job</span></button>
-    <div class="dd" id="dlWrap"><button type="button" class="btn pri" data-a="dl-menu" id="bDl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg><span>Download</span></button>
+    <button type="button" class="ib" data-a="undo" id="bUndo" aria-label="Undo (Ctrl+Z)" data-tip="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+    <button type="button" class="ib" data-a="redo" id="bRedo" aria-label="Redo (Ctrl+Y)" data-tip="Redo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
+    <button type="button" class="btn ai" data-a="optimize" id="bOpt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Optimise for a job</span></button>
+    <div class="dd" id="dlWrap"><button type="button" class="btn pri" data-a="dl-menu" id="bDl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg><span>Download</span></button>
       <div class="menu" id="dlMenu" hidden>
-        <button type="button" data-a="dl-pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span><b>PDF</b><small>Best for applying. Choose “Save as PDF” in the print window.</small></span></button>
-        <button type="button" data-a="dl-doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="m8.5 12 1.2 5 1.8-4 1.8 4 1.2-5"/></svg><span><b>Word (.doc)</b><small>For sites that ask for Word, or to keep editing in Word.</small></span></button>
+        <button type="button" data-a="dl-pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span><b>PDF</b><small>Best for applying. Choose “Save as PDF” in the print window.</small></span></button>
+        <button type="button" data-a="dl-doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="m8.5 12 1.2 5 1.8-4 1.8 4 1.2-5"/></svg><span><b>Word (.doc)</b><small>For sites that ask for Word, or to keep editing in Word.</small></span></button>
       </div></div>
   </div>
 </header>
@@ -1022,8 +1033,14 @@ const isContact = (p) => EM1.test(p) || PH1.test(p) || URL1.test(p) || /linkedin
 const pieces = (t) => t.split(/\s{3,}|\s*[|•·◆♦]\s*|\s+[–—]\s+/).map((s) => s.trim()).filter(Boolean);
 const nameCase = (s) => /[a-z]/.test(s) ? s : s.toLowerCase().replace(/(^|[\s\-'.])([a-z])/g, (m, a, b) => a + b.toUpperCase());
 const titleCase = (s) => { s = s.replace(/[:|•\-–—_]+\s*$/, '').trim(); return /[a-z]/.test(s) ? s : nameCase(s); };
-function headerish(t) { const w = t.split(/\s+/); return w.length <= 8 && !/[.!?]$/.test(t) && (RANGE.test(t) || /\b(19|20)\d{2}\b/.test(t) || /\s{3,}/.test(t) || w.length <= 5); }
-function isCont(t, prev) { return !!prev && /^[a-z(]/.test(t) && !/[.:;!?]$/.test(prev) && t.split(/\s+/).length <= 14 && !RANGE.test(t); }
+const hasRange = (t) => { RANGE.lastIndex = 0; const r = RANGE.test(t); RANGE.lastIndex = 0; return r; };
+// a role/school header: short, or a line that ends in dates set apart by a gap ("Senior Team Lead, ScoutBetter · India   Jan 2025 – Mar 2025")
+function headerish(t) {
+  const w = t.split(/\s+/), dated = hasRange(t) || /\b(19|20)\d{2}\b/.test(t);
+  if (/[.!?]$/.test(t) || verbStart(t)) return false;
+  return (w.length <= 8 && (dated || /\s{3,}/.test(t) || w.length <= 5)) || (w.length <= 14 && dated && /\s{3,}/.test(t));
+}
+function isCont(t, prev) { return !!prev && /^[a-z(]/.test(t) && !/[.:;!?]$/.test(prev) && t.split(/\s+/).length <= 14 && !hasRange(t); }
 function addHead(e, t) {
   RANGE.lastIndex = 0;
   const m = RANGE.exec(t); let dates = '';
@@ -1036,6 +1053,8 @@ function addHead(e, t) {
   else { e.sub = e.sub ? e.sub + ' · ' + left : left; if (right) { if (!e.loc) e.loc = right; else e.sub += ', ' + right; } if (dates && !e.dates) e.dates = dates; }
   e._h = (e._h || 0) + 1;
 }
+// "Led and coached…", "Managing a team…": a line that opens with an action verb is a bullet, never a company line
+const verbStart = (t) => { const w = String(t || '').split(/\s+/)[0].toLowerCase().replace(/[^a-z]/g, ''); return !!(VERBSET[w] || GERUND[w]); };
 function parseEntries(body) {
   const marks = body.some((l) => l.bullet), items = []; let cur = null, lastB = null;
   const fresh = () => { cur = newEntry(); cur._h = 0; items.push(cur); lastB = null; };
@@ -1043,7 +1062,7 @@ function parseEntries(body) {
     const t = L.t;
     if (lastB && !L.bullet && isCont(t, lastB.t)) { lastB.t += ' ' + t; return; }
     const wc = t.split(/\s+/).length;
-    if (L.bullet || (!marks && cur && !headerish(t) && wc >= 7 && !(cur._h === 1 && !cur.bullets.length && wc < 16 && !/[.]$/.test(t)))) {
+    if (L.bullet || (!marks && cur && !headerish(t) && wc >= 7 && !(cur._h === 1 && !cur.bullets.length && wc < 16 && !/[.]$/.test(t) && !verbStart(t))) || (!L.bullet && cur && wc >= 6 && verbStart(t) && !hasRange(t))) {
       if (!cur) fresh();
       lastB = { id: uid(), t }; cur.bullets.push(lastB); return;
     }
@@ -1071,6 +1090,22 @@ function parseSkills(body) {
     if (!r.label && p && !p.label && r.value.length < 70 && p.value.length < 420) p.value = p.value.replace(/[.,;]+$/, '') + ', ' + r.value.replace(/[.,;]+$/, '');
     else out.push(r); });
   return out;
+}
+// Puts an entry's pieces in the right fields when a reader got them tangled:
+// "Senior Team Lead, ScoutBetter · India" → title / company / location, and a sentence sitting in the company line → the first bullet.
+function tidyEntries(D) {
+  D.sections.forEach((s) => (s.items || []).forEach((it) => {
+    if (it.sub && (verbStart(it.sub) || it.sub.split(/\s+/).length >= 9)) { it.bullets.unshift({ id: uid(), t: it.sub }); it.sub = ''; }
+    if (it.loc && (verbStart(it.loc) || it.loc.split(/\s+/).length >= 9)) { it.bullets.unshift({ id: uid(), t: it.loc }); it.loc = ''; }
+    if (!it.sub && it.title) {
+      const m = /^(.{2,80}?)\s*[·|]\s*(.{2,60})$/.exec(it.title);   // "… · India" / "… | Hyderabad"
+      let head = it.title; if (m) { head = m[1]; if (!it.loc) it.loc = m[2].trim(); }
+      const c = s.k !== 'education' && /^(.{2,70}?),\s+([^,]{2,50})$/.exec(head);   // "Senior Team Lead, ScoutBetter" (a degree keeps its comma: "B.E., Computer Science")
+      if (c && !ROLEWORD.test(c[2]) && !/^\d/.test(c[2])) { it.title = c[1].trim(); it.sub = c[2].trim(); }
+      else if (m) it.title = head.trim();
+    }
+  }));
+  return D;
 }
 function parseDoc(raw, srcName) {
   const lines = raw.map((L) => { const t = L.t || '', b = !!L.bullet || BUL_RX.test(t); return { t: t.replace(BUL_RX, '').replace(/^[•\s]+/, '').trim(), bullet: b, head: L.head }; })
@@ -1103,6 +1138,7 @@ function parseDoc(raw, srcName) {
     D.sections = D.sections.map((s, i) => [s, i]).sort((a, b) => ((RANK[a[0].k] != null ? RANK[a[0].k] : 8) - (RANK[b[0].k] != null ? RANK[b[0].k] : 8)) || a[1] - b[1]).map((x) => x[0]);
   }
   D.contact = uniq(bits.map((b) => b.replace(/^(e-?mail|phone|mobile|tel|linkedin|address|location)\s*[:\-]\s*/i, '').trim()).filter(Boolean)).slice(0, 7);
+  tidyEntries(D);
   if (!D.name && TEAM && CLIENT) D.name = CLIENT.full_name || '';
   else if (!D.name && USER && USER.name) D.name = USER.name;
   D.meta.srcName = srcName || '';
@@ -1159,7 +1195,7 @@ function changed(path) {
   persist(); renderLater();
 }
 function structural() { snap(); persist(); renderAll(); }
-const renderLater = debounce(() => { renderSheet(); if (PTAB === 'check') renderPanel(); }, 250);
+const renderLater = debounce(() => { renderSheet(); if (PTAB === 'check') renderPanel(); }, 120);
 
 /* ---------- opening a resume ---------- */
 function show(id) { ['gate', 'start', 'boot', 'wrap'].forEach((x) => { $('#' + x).hidden = x !== id; }); }
@@ -1432,7 +1468,9 @@ function fitFrame() {
   frame.style.height = Math.ceil(($('#sheet').offsetHeight || pg.h) * sc) + 'px';
 }
 function countPages() {
-  const f = fmtOf(DOC), pg = PAPERS[f.paper], sheet = $('#sheet'), h = sheet.scrollHeight;
+  const f = fmtOf(DOC), pg = PAPERS[f.paper], sheet = $('#sheet');
+  sheet.style.minHeight = pg.h + 'px';   // measure the real height first, or a resume that got shorter would still count as two pages
+  const h = sheet.scrollHeight;
   PAGES_N = Math.max(1, Math.ceil((h - 2) / pg.h));
   sheet.style.minHeight = (PAGES_N * pg.h) + 'px';
   const br = $('#breaks'); let html = '';
@@ -1496,7 +1534,7 @@ function confirmBox(title, text, okLabel, then, cancelLabel) {
    jump to its field.
    ===================================================================== */
 let HL = {};   // lines just changed by the AI, highlighted on the page until the next edit
-const I_UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>', I_DN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>', I_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>', I_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>', I_SPARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>';
+const I_UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>', I_DN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>', I_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>', I_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>', I_SPARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>';
 function renderPanel() {
   const body = $('#pbody'); if (!DOC || !body) return;
   const sc = body.scrollTop;
@@ -1659,11 +1697,15 @@ function editAction(a, v, t) {
     case 'ct-add': D.contact.push(''); FOCUS = 'contact.' + (D.contact.length - 1); structural(); focusField(FOCUS, -1); return true;
     case 'ct-del': D.contact.splice(+v, 1); structural(); return true;
     case 'sec-menu': { const m = $('#secMenu'); if (m) m.hidden = !m.hidden; return true; }
-    case 'sec-add': { let s;
-      if (v === 'custom') { const t = prompt('Section title'); if (!t || !t.trim()) return true; s = newSection('other', t.trim()); }
-      else s = newSection(v);
-      if (s.type === 'entries') s.items.push(newEntry()); if (s.type === 'skills') s.rows.push({ id: uid(), label: '', value: '' }); if (s.type === 'list') s.list.push({ id: uid(), t: '' });
-      D.sections.push(s); FOCUS = 'sec.' + s.id + '.title'; structural(); focusField(FOCUS, -1); return true; }
+    case 'sec-add': {
+      const add = (s) => { if (s.type === 'entries') s.items.push(newEntry()); if (s.type === 'skills') s.rows.push({ id: uid(), label: '', value: '' }); if (s.type === 'list') s.list.push({ id: uid(), t: '' });
+        D.sections.push(s); FOCUS = 'sec.' + s.id + '.title'; structural(); focusField(FOCUS, -1); };
+      if (v !== 'custom') { add(newSection(v)); return true; }
+      modalOpen('<form class="card" role="dialog" aria-modal="true" id="secForm"><h2>New section</h2><label class="lbl" for="secT">Section title</label><input class="in" id="secT" maxlength="40" placeholder="e.g. Leadership, Patents, Training" autocomplete="off">' +
+        '<div class="acts"><button class="btn pri" type="submit">Add section</button><button class="btn" type="button" id="mNo">Cancel</button></div></form>');
+      $('#secT').focus(); $('#mNo').onclick = modalClose;
+      $('#secForm').onsubmit = (e) => { e.preventDefault(); const t = $('#secT').value.trim(); if (!t) return; modalClose(); add(newSection('other', t)); };
+      return true; }
     case 'sec-up': moveIn(D.sections, v, -1); structural(); return true;
     case 'sec-dn': moveIn(D.sections, v, 1); structural(); return true;
     case 'sec-del': { const s = secById(v); confirmBox('Remove “' + s.title + '”?', 'The whole section goes. Undo brings it back.', 'Remove', () => { D.sections.splice(idx(D.sections, v), 1); structural(); toast('Section removed', { a: 'undo', label: 'Undo' }); }); return true; }
@@ -1771,6 +1813,11 @@ function onSelectChange(e) { const el = e.target; if (!el.matches || !el.matches
    the Check tab (rubric score and fixes), Optimise for a job with its
    fact check, and the cover letter. Nothing changes without Accept.
    ===================================================================== */
+// one icon set for the AI panels: same stroke and size as the toolbar's, never a text glyph or emoji
+const IC_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+const IC_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+const IC_WARN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v8"/><path d="M12 17h.01"/></svg>';
+const IC_INFO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 11v6"/><path d="M12 7h.01"/></svg>';
 let AI_FAILS = 0, LIMIT_TOLD = false;
 const aiResting = () => +(ssGet('tp_ai_rest') || 0) > Date.now();
 const aiPause = (ms) => ssSet('tp_ai_rest', String(Date.now() + ms));
@@ -1876,6 +1923,8 @@ const WHY_KEPT = { num: 'used a number from somewhere else', blank: 'added a bla
 function keptWhy(list) { const kw = [], other = []; list.forEach((p) => { if (p.k === 'kw') kw.push(...p.terms); else if (WHY_KEPT[p.k] && !other.includes(WHY_KEPT[p.k])) other.push(WHY_KEPT[p.k]); });
   const bits = (kw.length ? ['would have removed ' + termList(uniq(kw))] : []).concat(other); return bits.length > 1 ? bits.slice(0, -1).join(', ') + ' or ' + bits[bits.length - 1] : bits[0] || ''; }
 
+// the key the page uses to highlight a changed line: a bullet's id, 'sum:<section>' for the summary, 'headline'
+const hlKey = (path) => /\.text$/.test(path) ? 'sum:' + path.split('.')[1] : path.split('.').pop();
 /* ---------- select some words → improve just those ---------- */
 let SEL = null;   // {path, start, end, text}
 const SEL_MODES = [['improve', 'Improve'], ['shorten', 'Shorten'], ['specific', 'Add specifics'], ['grammar', 'Fix grammar'], ['rephrase', 'Rephrase']];
@@ -1930,7 +1979,7 @@ function selRun(mode) {
 function selAccept() {
   if (!SEL || !SEL.out) return;
   const v = getField(SEL.path), nv = v.slice(0, SEL.start) + SEL.out + v.slice(SEL.end);
-  setField(SEL.path, nv); HL[SEL.path.split('.').pop()] = 1; const path = SEL.path; hideSel(); structural(); focusField(path, -1); lightOnPage(path); toast('Changed — Undo if you change your mind', { a: 'undo', label: 'Undo' });
+  setField(SEL.path, nv); HL[hlKey(SEL.path)] = 1; const path = SEL.path; hideSel(); structural(); focusField(path, -1); lightOnPage(path); toast('Changed — Undo if you change your mind', { a: 'undo', label: 'Undo' });
 }
 
 /* ---------- the Check tab: Claude grades a written rubric ---------- */
@@ -1987,7 +2036,7 @@ function checkHTML() {
       '<div class="acts" style="margin-top:4px"><button type="button" class="btn pri" data-a="review"' + (LIVE ? '' : ' disabled') + '>' + I_SPARK + '<span>Check it now</span></button><button type="button" class="btn sm ghost" data-a="rubric">How the score works</button></div>' +
       '<div id="rubric" hidden><ol class="rub">' + RUBRIC.map((r) => '<li>' + esc(r[1]) + ' — <b>' + r[2] + '</b></li>').join('') + '</ol></div>' + (LIVE ? '' : '<p class="hint">AI checks need the live site.</p>') + '</div>';
   }
-  h += '<div class="pc"><div class="pch"><h3>Facts</h3></div><div class="facts">' + (facts.length ? facts.map((f) => '<div class="fact"><i class="' + (f.w ? 'w' : 'ok') + '">' + (f.w ? '!' : 'i') + '</i><span>' + esc(f.t) + (f.path ? ' <a href="#" data-a="goto" data-v="' + f.path + '">Show me</a>' : '') + '</span></div>').join('')
+  h += '<div class="pc"><div class="pch"><h3>Facts</h3></div><div class="facts">' + (facts.length ? facts.map((f) => '<div class="fact"><i class="' + (f.w ? 'w' : 'ok') + '">' + (f.w ? IC_WARN : IC_INFO) + '</i><span>' + esc(f.t) + (f.path ? ' <a href="#" data-a="goto" data-v="' + f.path + '">Show me</a>' : '') + '</span></div>').join('')
     : '<div class="fact"><i class="ok">✓</i><span>Dates make sense, no blanks left, nothing empty, and the length is right.</span></div>') + '</div></div>';
   // the job it's being tailored to
   const terms = atsTerms();
@@ -2023,9 +2072,9 @@ function issueFix(i) {
   modalOpen('<div class="card" role="dialog" aria-modal="true"><h2>Replace this line?</h2>' + diffHTML(v, c.text) + (c.fixed.length ? '<p class="hint" style="margin-top:8px">“' + esc(c.fixed[0]) + '” isn’t on the resume, so it became a [ ] to fill in.</p>' : '') +
     '<div class="acts"><button class="btn pri" type="button" id="mOk">Replace</button><button class="btn" type="button" id="mNo">Keep mine</button></div></div>');
   $('#mNo').onclick = modalClose;
-  $('#mOk').onclick = () => { modalClose(); setField(f.path, c.text); HL[f.path.split('.').pop()] = 1; R.done.push(i); DOC.meta.review = R; structural(); lightOnPage(f.path); toast('Replaced', { a: 'undo', label: 'Undo' }); };
+  $('#mOk').onclick = () => { modalClose(); setField(f.path, c.text); HL[hlKey(f.path)] = 1; R.done.push(i); DOC.meta.review = R; structural(); lightOnPage(f.path); toast('Replaced', { a: 'undo', label: 'Undo' }); };
 }
-function issueShow(i) { const R = REVIEW_OK(); if (!R) return; const f = findQuote(R.data.issues[i].quote); if (f) showMe(f.path); else toast('That line isn’t on the resume any more.'); }
+function issueShow(i) { const R = REVIEW_OK(); if (!R) return; const f = findQuote(R.data.issues[i].quote); if (f) lightOnPage(f.path); else toast('That line isn’t on the resume any more.'); }   // stays on the Check tab; click the line on the page to edit it
 function issueSkip(i) { const R = REVIEW_OK(); if (!R) return; R.skipped.push(i); persist(); renderPanel(); }
 // Improve/Write the summary from the Edit tab
 function improveSummary(sid) {
@@ -2075,7 +2124,7 @@ function openOptimise() {
     '<div class="ohd"><span>Choose what to tailor</span><button type="button" data-a="opt-all">Select all</button></div>' +
     '<div class="orows">' + rows.map((r) => '<button type="button" class="orow" data-a="opt-t" data-v="' + r[0] + '" aria-pressed="false"><span class="ol"><b>' + r[1] + '</b><small>' + esc(what[r[0]] || '') + '</small></span><i class="cb" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i></button>').join('') + '</div>' +
     '<div class="omins"><label class="lbl" for="optIns">Special instructions (optional)</label><textarea id="optIns" maxlength="400" placeholder="e.g. Keep each bullet under 22 words; don’t touch the first role.">' + esc(pref.ins || '') + '</textarea></div></div>' +
-    '<div class="omf"><span id="optHint">Pick at least one above.</span><button class="btn" type="button" data-a="fact">Fact check only</button><button class="btn omb2 ats" type="button" data-a="opt-go" id="optGo" disabled><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="optGoT">Optimise</span></b><small>Tailor what you picked to this job</small></button></div></div>');
+    '<div class="omf"><span id="optHint">Pick at least one above.</span><button class="btn" type="button" data-a="fact">Fact check only</button><button class="btn omb2 ats" type="button" data-a="opt-go" id="optGo" disabled><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="optGoT">Optimise</span></b><small>Tailor what you picked to this job</small></button></div></div>');
 }
 function optPick(row, on) {
   const v = row.getAttribute('data-v'); OPT.sel[v] = on; row.classList.toggle('on', on); row.setAttribute('aria-pressed', on ? 'true' : 'false');
@@ -2182,15 +2231,15 @@ function showResults(R, targets, sel, V) {
   const row = (type, data, orig, sug, note, fc) => {
     const i = OPT.rows.length; OPT.rows.push(Object.assign({ type, st: 'p', orig, sug }, data));
     return '<div class="rr" data-r="' + i + '"><div class="ro">' + (orig ? esc(orig) : '<i>Not on the resume yet</i>') + '</div><div class="rn"><span contenteditable="true" data-rs="' + i + '">' + esc(sug) + '</span>' + (note ? '<small>' + esc(note) + '</small>' : '') +
-      (fc ? '<span class="fc fx">⚠ ' + esc(fc) + '</span>' : '<span class="fc">✓ Fact-checked against the resume</span>') +
-      '<div class="rb" id="rb' + i + '"><button type="button" class="ok" data-a="r-ok" data-v="' + i + '" aria-label="Accept">✓</button><button type="button" class="no" data-a="r-no" data-v="' + i + '" aria-label="Reject">✕</button></div></div></div>';
+      (fc ? '<span class="fc fx">' + IC_WARN + ' ' + esc(fc) + '</span>' : '<span class="fc">' + IC_OK + ' Fact-checked against the resume</span>') +
+      '<div class="rb" id="rb' + i + '"><button type="button" class="ok" data-a="r-ok" data-v="' + i + '" aria-label="Accept">' + IC_OK + '</button><button type="button" class="no" data-a="r-no" data-v="' + i + '" aria-label="Reject">' + IC_X + '</button></div></div></div>';
   };
   const card = (title, body, plain) => '<section class="rc"><h3>' + title + '</h3>' + (plain ? '' : '<div class="rh"><span>Original</span><span>Claude’s suggestion</span></div>') + body + '</section>';
-  const already = '<div class="rdone"><span>✨</span><span><b>Already optimised</b><small>This looks right — no changes needed.</small></span></div>';
+  const already = '<div class="rdone"><span>' + I_SPARK + '</span><span><b>Already optimised</b><small>This looks right — no changes needed.</small></span></div>';
   let h = '';
   if (R.summary) h += R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig) ? card('Summary', row('summary', { sid: R.summary.sid }, R.summary.orig, R.summary.sug, '', R.summary.fc))
-    : card('Summary', R.summary.kept ? '<div class="rdone"><span>✓</span><span><b>Kept the summary</b><small>' + (R.summary.kept.length ? 'The rewrite would have removed ' + esc(termList(R.summary.kept)) + ', which this job looks for' : 'The rewrite added a cliché') + ' — so the original stays.</small></span></div>'
-      : R.summary.dropped ? '<div class="rdone"><span>✓</span><span><b>Kept the summary</b><small>The suggestion was dropped in the fact check — ' + esc(R.summary.dropped) + '.</small></span></div>' : already, true);
+    : card('Summary', R.summary.kept ? '<div class="rdone"><span>' + IC_OK + '</span><span><b>Kept the summary</b><small>' + (R.summary.kept.length ? 'The rewrite would have removed ' + esc(termList(R.summary.kept)) + ', which this job looks for' : 'The rewrite added a cliché') + ' — so the original stays.</small></span></div>'
+      : R.summary.dropped ? '<div class="rdone"><span>' + IC_OK + '</span><span><b>Kept the summary</b><small>The suggestion was dropped in the fact check — ' + esc(R.summary.dropped) + '.</small></span></div>' : already, true);
   if (R.headline) h += card('Job title', row('headline', {}, R.headline.orig, R.headline.sug, 'Shown under the name.', R.headline.fc));
   if (R.loc) h += card('Location', row('loc', {}, R.loc.orig, R.loc.sug, 'This role is in ' + R.loc.city + '. Accept only if a move is genuinely on.'));
   targets.forEach((tg) => {
@@ -2199,11 +2248,11 @@ function showResults(R, targets, sel, V) {
     h += ch.length ? card(t, ch.map((x) => row('bullet', { bid: x.bid }, x.orig, x.sug, '', x.fc)).join('') + keptNote) : card(t, tg.res ? (tg.keptN ? keptNote : already) : '<div class="rdone"><span>!</span><span><b>Couldn’t rewrite this role</b><small>' + esc(aiMsg(R.err)) + '</small></span></div>', true);
   });
   if (sel.skills) h += card('Skills', R.skills && R.skills.length ? '<p class="rnote">This job asks for these and the resume doesn’t mention them. Tick only the ones that are genuinely there — they’ll be added to Skills.</p><div class="rsk">' + R.skills.map((k) => '<label><input type="checkbox" data-sk="' + esc(k) + '"><span>' + esc(k) + '</span></label>').join('') + '</div>'
-    : '<div class="rdone"><span>✓</span><span><b>The skills already line up</b><small>Every skill we found in this posting is on the resume.</small></span></div>', true);
+    : '<div class="rdone"><span>' + IC_OK + '</span><span><b>The skills already line up</b><small>Every skill we found in this posting is on the resume.</small></span></div>', true);
   modalOpen('<div class="om" role="dialog" aria-modal="true" aria-labelledby="omR"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
     '<div class="omh"><h2 id="omR">Optimised for ' + esc(cleanTitle(JOB.title) || 'this job') + '</h2><p class="omsub">Review each suggestion beside the current line. Accept them one by one or all at once; edit a suggestion before accepting if you like.' + (/\[/.test(h) ? ' Replace anything in [ ] with the real number.' : '') + '</p></div>' +
-    '<div class="vrep">' + (V.after != null ? '<div><span class="vi a">✓</span><span><b>ATS keyword match: ' + (V.after > V.before ? V.before + '% → <span class="up">' + V.after + '%</span>' : '<span class="up">' + V.after + '%</span>') + '</b><small>Of the ' + atsTerms().length + ' keywords in this job description, once these changes are accepted. Every change keeps the keywords already there.</small></span></div>' : '') +
-      '<div><span class="vi' + (V.fixed + V.removed ? ' w' : ' a') + '">' + (V.fixed + V.removed ? '!' : '✓') + '</span><span><b>Fact-checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + '</b><small>' +
+    '<div class="vrep">' + (V.after != null ? '<div><span class="vi a">' + IC_OK + '</span><span><b>ATS keyword match: ' + (V.after > V.before ? V.before + '% → <span class="up">' + V.after + '%</span>' : '<span class="up">' + V.after + '%</span>') + '</b><small>Of the ' + atsTerms().length + ' keywords in this job description, once these changes are accepted. Every change keeps the keywords already there.</small></span></div>' : '') +
+      '<div><span class="vi' + (V.fixed + V.removed ? ' w' : ' a') + '">' + (V.fixed + V.removed ? IC_WARN : IC_OK) + '</span><span><b>Fact-checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + '</b><small>' +
       (V.fixed + V.removed ? (V.fixed ? V.fixed + ' had a number that isn’t on the resume — now a [ ] to fill in. ' : '') + (V.removed ? V.removed + ' suggestion' + (V.removed > 1 ? 's' : '') + ' dropped, so the original stays: ' + V.notes.slice(0, 3).map((n) => esc(n.split(' — ')[1] || 'it changed a fact')).join('; ') + '.' : '')
         : 'Every suggestion uses only facts already on the resume — no new numbers, tools or employers.') + '</small></span></div></div>' +
     '<div class="omb">' + h + '</div><div class="omf"><span id="omCount"></span><button class="btn pri" type="button" data-a="r-all" id="rAll">✓ Accept all</button><button class="btn" type="button" data-a="opt-done">Done</button></div></div>');
@@ -2212,11 +2261,11 @@ function showResults(R, targets, sel, V) {
 function countRows() {
   const p = OPT.rows.filter((r) => r.st === 'p').length, a = OPT.rows.filter((r) => r.st === 'a').length;
   const c = $('#omCount'); if (c) c.textContent = OPT.rows.length ? (p ? p + ' to review' : 'All reviewed') + (a ? ' · ' + a + ' accepted' : '') : '';
-  const b = $('#rAll'); if (b) { const sk = $$('.rsk input:checked').length; b.disabled = !p && !sk; b.textContent = !p && !sk && a ? '✓ Accepted' : '✓ Accept all'; }
+  const b = $('#rAll'); if (b) { const sk = $$('.rsk input:checked').length; b.disabled = !p && !sk; b.innerHTML = !p && !sk && a ? IC_OK + ' Accepted' : IC_OK + ' Accept all'; }
 }
 function markRow(i, how) {
   const el = $('.rr[data-r="' + i + '"]'); if (!el) return; el.classList.add(how === 'a' ? 'acc' : 'rej');
-  const rb = $('#rb' + i); if (rb) rb.innerHTML = '<span class="st">' + (how === 'a' ? '✓ Accepted' : 'Kept the original') + '</span>';
+  const rb = $('#rb' + i); if (rb) rb.innerHTML = '<span class="st">' + (how === 'a' ? IC_OK + ' Accepted' : 'Kept the original') + '</span>';
   const sp = $('[data-rs="' + i + '"]', el); if (sp) sp.removeAttribute('contenteditable');
 }
 function applyRow(i) {
@@ -2292,13 +2341,13 @@ function factAudit() {
 function runFactCheck() {
   if (!DOC) return; const R = factAudit(); FC = R;
   const w = R.items.filter((x) => x.sev === 'w').length, since = new Date(R.since || Date.now());
-  const item = (x, i) => '<div class="fci ' + x.sev + '"><span class="fi">' + (x.sev === 'w' ? '!' : 'i') + '</span><span class="ft"><b>' + esc(x.title) + '</b>' + (x.quote ? '<q>' + esc(x.quote) + '</q>' : '') + (x.why ? '<small>' + esc(x.why) + '</small>' : '') +
+  const item = (x, i) => '<div class="fci ' + x.sev + '"><span class="fi">' + (x.sev === 'w' ? IC_WARN : IC_INFO) + '</span><span class="ft"><b>' + esc(x.title) + '</b>' + (x.quote ? '<q>' + esc(x.quote) + '</q>' : '') + (x.why ? '<small>' + esc(x.why) + '</small>' : '') +
     '<span class="fa">' + (x.path ? '<button type="button" data-a="fc-show" data-v="' + i + '">Show me</button>' : '') + (x.was != null ? '<button type="button" data-a="fc-restore" data-v="' + i + '">Restore the original</button>' : '') + '</span></span></div>';
   modalOpen('<div class="om sm" role="dialog" aria-modal="true" aria-labelledby="fcT"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
     '<div class="omh"><h2 id="fcT">Fact check</h2><p class="omsub">Compared with the resume uploaded on ' + since.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) + '. Nothing changes unless you choose to.</p></div>' +
-    '<div class="vrep"><div><span class="vi' + (w ? ' w' : ' a') + '">' + (w ? '!' : '✓') + '</span><span><b>' + (w ? w + ' thing' + (w === 1 ? '' : 's') + ' to check' : 'Everything checks out') + '</b><small>Checked ' + R.checked + ' lines for numbers, tools, titles, dates and blanks.</small></span></div>' +
-    (R.cov ? '<div><span class="vi a">✓</span><span><b>ATS keyword match: <span class="up">' + R.cov.pct + '%</span></b><small>' + (R.cov.miss.length ? 'Missing: ' + esc(R.cov.miss.slice(0, 6).join(', ')) + (R.cov.miss.length > 6 ? '…' : '') + '. Optimise works them in where they truthfully fit.' : 'The resume covers every keyword we found in this job.') + '</small></span></div>' : '') + '</div>' +
-    '<div class="omb">' + (R.items.length ? '<div class="fcl">' + R.items.map(item).join('') + '</div>' : '<div class="fcok"><span>✓</span><span><b>Everything checks out</b><small>No new numbers, tools or titles, no blanks, and the dates and contact details look right.</small></span></div>') + '</div>' +
+    '<div class="vrep"><div><span class="vi' + (w ? ' w' : ' a') + '">' + (w ? IC_WARN : IC_OK) + '</span><span><b>' + (w ? w + ' thing' + (w === 1 ? '' : 's') + ' to check' : 'Everything checks out') + '</b><small>Checked ' + R.checked + ' lines for numbers, tools, titles, dates and blanks.</small></span></div>' +
+    (R.cov ? '<div><span class="vi a">' + IC_OK + '</span><span><b>ATS keyword match: <span class="up">' + R.cov.pct + '%</span></b><small>' + (R.cov.miss.length ? 'Missing: ' + esc(R.cov.miss.slice(0, 6).join(', ')) + (R.cov.miss.length > 6 ? '…' : '') + '. Optimise works them in where they truthfully fit.' : 'The resume covers every keyword we found in this job.') + '</small></span></div>' : '') + '</div>' +
+    '<div class="omb">' + (R.items.length ? '<div class="fcl">' + R.items.map(item).join('') + '</div>' : '<div class="fcok"><span>' + IC_OK + '</span><span><b>Everything checks out</b><small>No new numbers, tools or titles, no blanks, and the dates and contact details look right.</small></span></div>') + '</div>' +
     '<div class="omf"><span></span><button class="btn pri" type="button" data-a="m-close">Done</button></div></div>');
 }
 
@@ -2447,7 +2496,7 @@ function docFromScan(o) {
     D.sections.push(sec);
   });
   if (!D.name && CLIENT) D.name = CLIENT.full_name || '';
-  return D;
+  return tidyEntries(D);
 }
 const srcWords = (text) => { const w = {}; (String(text).toLowerCase().match(/[a-z0-9]+/g) || []).forEach((x) => { w[x] = 1; }); return w; };
 const notInFile = (t, W) => (String(t || '').toLowerCase().match(/[a-z0-9]+/g) || []).filter((x) => (x.length > 2 || /\d/.test(x)) && !W[x]);
@@ -2516,7 +2565,7 @@ document.addEventListener('click', (e) => {
     case 'upload': return $('#fileIn').click();
     case 'newsrc': $('#banner').hidden = true; if (NEWSRC) fromSource(NEWSRC, true); return;
     case 'keep': $('#banner').hidden = true; if (DOC && NEWSRC) { DOC.meta.srcAt = NEWSRC.at; persist(); } return;
-    case 'goto': return showMe(v);
+    case 'goto': return lightOnPage(v);
     case 'rubric': { const r = $('#rubric'); if (r) r.hidden = !r.hidden; return; }
     case 'review': return runReview();
     case 'iss-fix': return issueFix(+v);
