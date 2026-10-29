@@ -126,7 +126,7 @@ svg{flex:none}
 .paper .er1 .l,.paper .er1 .r{font-weight:700}
 .paper .er2{font-style:italic}
 .paper .en:not(:hover):not(:focus-within)>.er2.opt{display:none}
-.paper .bl{padding-left:1.3em;margin:.12em 0 0}
+.paper .bl{padding-left:1.3em;margin:.12em 0 0;list-style-type:var(--bul,disc)}
 .paper .bl li{margin:.06em 0;padding-left:.15em}
 .paper .bl li>span{display:inline}
 .paper .sk>div{margin:.06em 0}
@@ -281,6 +281,28 @@ svg{flex:none}
 
 /* ---------- start / gate / banners ---------- */
 .center{max-width:560px;margin:48px auto;padding:0 16px}
+.center.wide{max-width:1180px;margin-top:24px}
+.card.scan p{margin-bottom:6px}
+.sv{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.sv-c{border:1px solid var(--line);border-radius:12px;padding:12px 14px;max-height:62vh;overflow:auto;background:#fff;text-align:left}
+.sv-c h4{font:700 12px Inter,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px;position:sticky;top:-12px;background:#fff;padding:4px 0}
+.sv-c pre{white-space:pre-wrap;font:12.5px/1.55 Inter,sans-serif;color:var(--body);margin:0}
+.sv-h{display:flex;flex-direction:column;gap:2px;margin-bottom:10px;font-size:13px;color:var(--body)}.sv-h b{font-size:16px;color:var(--ink)}
+.sv-s{margin-bottom:10px;font-size:12.5px;line-height:1.5;color:var(--ink)}
+.sv-s h5{font:700 11.5px Inter,sans-serif;text-transform:uppercase;letter-spacing:.05em;color:var(--blue);border-bottom:1px solid var(--line);padding-bottom:3px;margin-bottom:5px}
+.sv-e{margin-bottom:7px}.sv-e>div:first-child{display:flex;justify-content:space-between;gap:10px}.sv-e i{font-style:normal;color:var(--muted);white-space:nowrap}
+.sv-s ul{margin:3px 0 0 16px}.sv-s p{margin:0 0 3px}
+.snf{font-style:normal;font-size:10.5px;font-weight:700;background:var(--warn-soft);color:var(--warn);border-radius:5px;padding:0 5px;margin-left:3px;cursor:help}
+.snw{color:var(--warn)}
+.paper .dwarn{display:block;font:700 10px Inter,sans-serif;color:var(--bad);background:var(--bad-soft);border-radius:5px;padding:1px 6px;margin-top:2px;white-space:nowrap;text-align:right}
+.vhl{display:grid;gap:6px;max-height:300px;overflow:auto}
+.vh{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:9px;padding:7px 10px}
+.vh>div{min-width:0}.vh b{display:block;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vh span{font-size:11.5px;color:var(--muted)}.vh em{font-style:normal;font-size:11px;font-weight:700;color:var(--ok);background:var(--ok-soft);border-radius:999px;padding:2px 8px}
+.vh button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 11px;font:600 12px Inter,sans-serif;color:var(--ink)}
+.vh button:hover{border-color:var(--blue);color:var(--blue)}
+.sv-a{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+@media (max-width:760px){.sv{grid-template-columns:1fr}.sv-c{max-height:none}}
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:0 12px 40px -24px rgba(18,26,51,.3)}
 .card h1{font:700 23px Poppins,Inter,sans-serif;color:var(--ink);line-height:1.25}
 .card>p{margin-top:6px}
@@ -669,6 +691,7 @@ body.embed .tbi .scorep{display:flex}
       <button type="button" data-a="pop" data-v="loc" data-tip="Open to…" aria-label="Location preferences" id="bLoc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-5.6-7-11a7 7 0 0 1 14 0c0 5.4-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></button>
       <button type="button" data-a="checks" data-tip="Writing checks" aria-label="Writing checks on or off" id="bChk" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9M4 12h7M4 17h5"/><path d="m14 16 2.5 2.5L21 13"/></svg></button>
       <button type="button" data-a="edit" data-tip="Preview" aria-label="Preview without editing tools" id="bEdit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      <button type="button" data-a="pop" data-v="history" data-tip="Version history" aria-label="Version history" id="bHist" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.3L3 8"/><path d="M3 4v4h4"/><path d="M12 8v4l3 2"/></svg></button>
       <span class="dv"></span>
       <button type="button" data-a="pop" data-v="download" class="dl" aria-label="Download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg><span>Download</span></button>
     </div></div>
@@ -680,6 +703,8 @@ body.embed .tbi .scorep{display:flex}
       <div id="btb" hidden>
         <span class="bq" id="bq" hidden></span>
         <button type="button" class="add" data-a="b-add" aria-label="Add a bullet below" data-tip="Add a bullet below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+        <button type="button" data-a="b-up" aria-label="Move this bullet up" data-tip="Move up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>
+        <button type="button" data-a="b-dn" aria-label="Move this bullet down" data-tip="Move down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
         <button type="button" class="del" data-a="b-del" aria-label="Delete this bullet" data-tip="Delete bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
         <button type="button" class="ai" data-a="b-ai" id="btbAi" aria-label="Improve this bullet with AI" data-tip="Improve with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button>
       </div>
@@ -1463,6 +1488,38 @@ var FONTS = [
 ];
 var PAGES = {letter:{w:816, h:1056, css:'letter', label:'Letter (US, Canada)'}, a4:{w:794, h:1123, css:'A4', label:'A4 (UK, Europe, India, Australia)'}, legal:{w:816, h:1344, css:'legal', label:'Legal'}};
 var ACCENTS = ['#0938d5', '#111827', '#0f766e', '#7c3aed', '#b91c1c', '#9a3412'];
+var BULS = {disc:['Round', 'disc', '•'], square:['Square', 'square', '▪'], dash:['Dash', '"–  "', '–'], arrow:['Arrow', '"›  "', '›']};
+// Date style: rewrites every date on the resume the same way (one step, so Undo takes it back). Years alone and "Present" stay as they are.
+var DSTYLES = [['short', 'Apr 2025'], ['long', 'April 2025'], ['numeric', '04/2025'], ['year', '2025']];
+var MSHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    MLONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var DATE_TOK = /\b(?:(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?,?\s+'?((?:19|20)\d{2})|(0?[1-9]|1[0-2])\s*[\/.\-]\s*((?:19|20)\d{2}))\b/gi;
+function styleDates(t, st){
+  return String(t || '').replace(DATE_TOK, function(m, mn, y1, mm, y2){
+    var mi = mn ? MSHORT.map(function(x){ return x.toLowerCase(); }).indexOf(mn.toLowerCase().slice(0, 3)) : parseInt(mm, 10) - 1, y = y1 || y2;
+    if(mi < 0 || mi > 11) return m;
+    return st === 'long' ? MLONG[mi] + ' ' + y : st === 'numeric' ? (mi < 9 ? '0' : '') + (mi + 1) + '/' + y : st === 'year' ? y : MSHORT[mi] + ' ' + y;
+  });
+}
+// "Jun 2024 – Mar 2023" or a start date in the future: shown beside the dates while editing, never printed.
+function dateProblem(t){
+  var pts = [], rx = /\b(?:(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?,?\s+'?((?:19|20)\d{2})|(0?[1-9]|1[0-2])\s*[\/.\-]\s*((?:19|20)\d{2})|((?:19|20)\d{2}))\b|\b(present|current|now|today)\b/gi, m;
+  while((m = rx.exec(String(t || '')))){   // each date as [earliest month, latest month] (a year alone covers Jan–Dec)
+    var now = new Date(), nm = now.getFullYear() * 12 + now.getMonth();
+    if(m[6]){ pts.push([nm, nm]); continue; }
+    var y = +(m[2] || m[4] || m[5]) * 12, mi = m[1] ? MSHORT.map(function(x){ return x.toLowerCase(); }).indexOf(m[1].toLowerCase()) : m[3] ? parseInt(m[3], 10) - 1 : -1;
+    pts.push(mi < 0 ? [y, y + 11] : [y + mi, y + mi]);
+  }
+  if(pts.length >= 2 && pts[1][1] < pts[0][0]) return 'Ends before it starts';
+  if(pts.length && pts[0][0] > nm + 1) return 'Starts in the future';
+  return '';
+}
+function setDateStyle(st){
+  var n = 0;
+  DOC.sections.forEach(function(s){ (s.items || []).forEach(function(e){ var v = styleDates(e.dates, st); if(v !== e.dates){ e.dates = v; n++; } }); });
+  DOC.design.dates = st; structural(); refreshPop();
+  toast(n ? n + ' date' + (n === 1 ? '' : 's') + ' changed' : 'Dates already look like this', n ? {a:'undo', label:'Undo'} : null);
+}
 var FONT_LOADED = {};
 function loadFont(q){ if(!q || FONT_LOADED[q]) return; FONT_LOADED[q] = 1; var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=' + q + '&display=swap'; document.head.appendChild(l); }
 function applyDesign(){
@@ -1472,7 +1529,7 @@ function applyDesign(){
     p.className = 'paper L-' + d.layout + (p.id === 'paper' && CHECKS && EDIT ? ' wchk' : '');
     p.style.setProperty('--ff', f[1]); p.style.setProperty('--fs', d.size + 'pt'); p.style.setProperty('--lh', d.lh);
     p.style.setProperty('--mg', d.margin + 'in'); p.style.setProperty('--al', d.align); p.style.setProperty('--pw', pg.w + 'px');
-    p.style.setProperty('--ph', pg.h + 'px'); p.style.setProperty('--ac', d.accent);
+    p.style.setProperty('--ph', pg.h + 'px'); p.style.setProperty('--ac', d.accent); p.style.setProperty('--bul', (BULS[d.bullet] || BULS.disc)[1]);
   });
   $('#pageCss').textContent = '@page{size:' + pg.css + ';margin:' + d.margin + 'in}';
   fit(); breaks();
@@ -1638,10 +1695,12 @@ function entryHTML(s, it){
   return '<div class="en' + (busy ? ' busy' : '') + '" data-s="' + s.id + '" data-i="' + it.id + '">' +
     (EDIT ? '<div class="etools nopr">' +
       '<button type="button" class="add" data-a="b-new" data-k="' + ek + '" aria-label="Add a bullet" data-tip="Add a bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>' +
+      (s.items.length > 1 ? '<button type="button" data-a="e-up" data-s="' + s.id + '" data-i="' + it.id + '" aria-label="Move this ' + what + ' up" data-tip="Move up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>' +
+        '<button type="button" data-a="e-dn" data-s="' + s.id + '" data-i="' + it.id + '" aria-label="Move this ' + what + ' down" data-tip="Move down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>' : '') +
       '<button type="button" class="del" data-a="e-del" data-s="' + s.id + '" data-i="' + it.id + '" aria-label="Remove this ' + what + '" data-tip="Remove this ' + what + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>' +
       (!ed && it.bullets.some(function(b){ return b.t; }) ? '<button type="button" class="ai" data-a="e-ai" data-k="' + ek + '" aria-label="Improve this ' + what + ' with AI" data-tip="Improve with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button>' : '') +
     '</div>' : '') +
-    '<div class="er er1"><div class="l">' + ce(P + 'title', fmt(it.title), ed ? 'Degree, subject' : (s.k === 'projects' ? 'Project name' : 'Job title, Company')) + '</div><div class="r">' + ce(P + 'dates', fmt(it.dates), 'Dates') + '</div></div>' +
+    '<div class="er er1"><div class="l">' + ce(P + 'title', fmt(it.title), ed ? 'Degree, subject' : (s.k === 'projects' ? 'Project name' : 'Job title, Company')) + '</div><div class="r">' + ce(P + 'dates', fmt(it.dates), 'Dates') + (EDIT && dateProblem(it.dates) ? '<span class="dwarn nopr">' + dateProblem(it.dates) + '</span>' : '') + '</div></div>' +
     (r2 ? '<div class="er er2' + (!it.sub && !it.loc ? ' opt' : '') + '"><div class="l">' + ce(P + 'sub', fmt(it.sub), ed ? 'School' : 'Company or team') + '</div><div class="r">' + ce(P + 'loc', fmt(it.loc), 'Location') + '</div></div>' : '') +
     bulletsHTML(s.id, it.id, it.bullets) + '</div>';
 }
@@ -2300,6 +2359,7 @@ function factCheck(orig, sug, pool, extraNums){
 }
 function runOptimise(){
   var sel = OPT.sel, insEl = $('#optIns'), ins = (insEl ? insEl.value : (OPT.ins || '')).trim(); OPT.ins = ins;
+  if(TEAM) saveVersion('Before Optimise');   // one click of Restore undoes the whole Optimise
   if(!JOB){
     var jd = (($('#optJd') || {}).value || '').trim();
     if(jd.length < 80){ toast('Paste the full job description first.'); return; }
@@ -2615,6 +2675,8 @@ function popHTML(kind){
       }).join('') + '</div>' +
       (add.length ? '<select id="addSec" style="margin-top:4px"><option value="">+ Add a section…</option>' + add.map(function(c){ return '<option value="' + c[0] + '">' + c[1] + '</option>'; }).join('') + '</select>' : '') +
       '<h4>Font family<span>' + esc(d.font) + '</span></h4><select id="dFont">' + FONTS.map(function(f){ return '<option' + (f[0] === d.font ? ' selected' : '') + '>' + f[0] + '</option>'; }).join('') + '</select>' +
+      '<h4>Bullet style</h4><div class="seg">' + Object.keys(BULS).map(function(k){ return '<button type="button" data-a="bul" data-v="' + k + '" class="' + ((d.bullet || 'disc') === k ? 'on' : '') + '" aria-label="' + BULS[k][0] + '">' + BULS[k][2] + ' ' + BULS[k][0] + '</button>'; }).join('') + '</div>' +
+      '<h4>Date style</h4><div class="seg">' + DSTYLES.map(function(x){ return '<button type="button" data-a="ds" data-v="' + x[0] + '" class="' + (d.dates === x[0] ? 'on' : '') + '">' + x[1] + '</button>'; }).join('') + '</div>' +
       '<h4>Text align</h4><div class="seg"><button type="button" data-a="al" data-v="left" class="' + (d.align === 'left' ? 'on' : '') + '">Left</button><button type="button" data-a="al" data-v="justify" class="' + (d.align === 'justify' ? 'on' : '') + '">Justified</button></div>' +
       range('Font size', 'dSize', 9, 12.5, 0.5, d.size, 'pt') +
       '<h4>Page size</h4><select id="dPage">' + Object.keys(PAGES).map(function(k){ return '<option value="' + k + '"' + (k === d.page ? ' selected' : '') + '>' + PAGES[k].label + '</option>'; }).join('') + '</select>' +
@@ -2622,6 +2684,7 @@ function popHTML(kind){
       '<h4>Accent colour</h4><div class="sw">' + ACCENTS.map(function(c){ return '<button type="button" data-a="ac" data-v="' + c + '" class="' + (c === d.accent ? 'on' : '') + '" style="background:' + c + '" aria-label="Accent ' + c + '"></button>'; }).join('') + '</div>' +
       '<p class="fine" style="margin-top:6px">Colour shows in the Modern layout.</p>';
   }
+  if(kind === 'history') return historyHTML();
   if(kind === 'checks'){
     var A2 = analyse(), sc2 = A2.score;
     return '<div class="score"><div class="ring" data-sc="1" style="--v:' + sc2 + ';--c:' + scoreCol(sc2) + '"><span>' + sc2 + '</span></div><div><b>Resume score</b><p>' +
@@ -2667,6 +2730,7 @@ function openPop(kind, btn){
   var left = Math.min(Math.max(8, br.right - cr.left - pop.offsetWidth), cr.width - pop.offsetWidth - 8);
   pop.style.left = Math.max(8, left) + 'px'; pop.style.top = (br.bottom - cr.top + 8) + 'px';
   if(kind === 'design') bindOrder();
+  if(kind === 'history') loadVersions();
 }
 function closePop(){ POP = null; $('#pop').hidden = true; $$('#tbi button').forEach(function(b){ b.classList.remove('on'); }); }
 function refreshPop(){ if(!POP) return; var k = POP, sc = $('#pop').scrollTop; $('#pop').innerHTML = popHTML(k); $('#pop').scrollTop = sc; if(k === 'design') bindOrder(); }
@@ -2764,12 +2828,20 @@ document.addEventListener('click', function(e){
     case 'lay': DOC.design.layout = v; structural(); refreshPop(); return;
     case 'al': DOC.design.align = v; structural(); refreshPop(); return;
     case 'ac': DOC.design.accent = v; structural(); refreshPop(); return;
+    case 'bul': DOC.design.bullet = v; structural(); refreshPop(); return;
+    case 'ds': return setDateStyle(v);
+    case 'v-save': saveVersion('Saved by hand', true).then(function(ok){ toast(ok ? 'Version saved' : 'Couldn’t save — check your connection'); }); return;
+    case 'v-restore': return restoreVersion(+v);
     case 'so-up': return moveSec(sid, -1);
     case 'so-dn': return moveSec(sid, 1);
     case 'so-vis': var s0 = secById(sid); s0.hidden = !s0.hidden; structural(); refreshPop(); return;
     case 'dl-pdf': return downloadPDF();
     case 'dl-doc': return downloadDoc();
-    case 'b-add': case 'b-del': case 'b-ai': return bulletTool(a, t);
+    case 'b-add': case 'b-del': case 'b-ai': case 'b-up': case 'b-dn': return bulletTool(a, t);
+    case 'e-up': case 'e-dn':
+      var s2 = secById(sid), i2 = idx(s2.items, t.getAttribute('data-i')), j2 = i2 + (a === 'e-up' ? -1 : 1);
+      if(i2 < 0 || j2 < 0 || j2 >= s2.items.length) return;
+      s2.items.splice(j2, 0, s2.items.splice(i2, 1)[0]); structural(); return;
     case 'b-mode': $('#bmenu').hidden = true; if(AIM) improveOwner(AIM.key, v, AIM.bid ? [AIM.bid] : null); return;
     case 'b-new': var o = owner(k); if(!o) return; var nb = {id:uid(), t:''}; o.arr.push(nb); structural(); focusPath(bpath(o.sec.id, o.item && o.item.id, nb.id)); return;
     case 'e-ai': return openAiMenu(t, k, null);
@@ -2918,6 +2990,11 @@ function bulletTool(a, btn){
   var i = idx(o.arr, BT.bid); if(i < 0) return;
   if(a === 'b-add'){ var nb = {id:uid(), t:''}; o.arr.splice(i + 1, 0, nb); structural(); focusPath(bpath(o.sec.id, o.item && o.item.id, nb.id)); }
   if(a === 'b-del'){ o.arr.splice(i, 1); structural(); toast('Bullet deleted', {a:'undo', label:'Undo'}); }
+  if(a === 'b-up' || a === 'b-dn'){
+    var j = i + (a === 'b-up' ? -1 : 1); if(j < 0 || j >= o.arr.length) return;
+    o.arr.splice(j, 0, o.arr.splice(i, 1)[0]); structural();
+    var el = fieldEl(bpath(o.sec.id, o.item && o.item.id, BT.bid)), li = el && el.closest('li.b'); if(li){ setHover(li, true); showBtb(li); flashField(bpath(o.sec.id, o.item && o.item.id, BT.bid)); }
+  }
   if(a === 'b-ai') openAiMenu(btn, BT.key, BT.bid);
 }
 var ISS = null, ISS_T = null;
@@ -3045,6 +3122,11 @@ function onEdit(e){
   var li = el.closest('li.b'); if(li && HL[li.getAttribute('data-b')]){ delete HL[li.getAttribute('data-b')]; li.classList.remove('hl'); }
   if(/^s\|[^|]+\|text$/.test(f) && HL['sum:' + f.split('|')[1]]){ delete HL['sum:' + f.split('|')[1]]; el.classList.remove('hl'); }
   if(f === 'headline' && HL.headline){ delete HL.headline; el.classList.remove('hlx'); }
+  if(/\|dates$/.test(f)){   // the "Ends before it starts" note updates as the dates are typed
+    var w = el.parentNode.querySelector('.dwarn'), p = dateProblem(v);
+    if(p && !w){ w = document.createElement('span'); w.className = 'dwarn nopr'; el.parentNode.appendChild(w); }
+    if(w){ if(p) w.textContent = p; else w.remove(); }
+  }
   changed();
 }
 $('#paper').addEventListener('input', onEdit);
@@ -3135,7 +3217,7 @@ function showGate(){
 function showStart(){
   $('#start').innerHTML = (TEAM && CLIENT ? '<div class="card"><h1>Add ' + esc((CLIENT.full_name || 'the client').split(' ')[0]) + '’s resume</h1><p>Upload their resume file and we’ll lay it out on the page, ready to tailor. It’s saved to their account, not yours.</p>'
       : '<div class="card"><h1>Let’s make your resume stronger</h1><p>Add your resume and we’ll lay it out on the page, ready to edit — with suggestions for every bullet.</p>') +
-    '<div class="drop" id="drop" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V5"/><path d="m7 10 5-5 5 5"/><path d="M5 20h14"/></svg><b>Upload your resume</b><span>PDF or Word · read on your device</span></div>' +
+    '<div class="drop" id="drop" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V5"/><path d="m7 10 5-5 5 5"/><path d="M5 20h14"/></svg><b>Upload ' + (TEAM ? 'the' : 'your') + ' resume</b><span>' + (SCAN_ON() ? 'PDF or Word · Claude reads it word for word, then you check it' : 'PDF or Word · read on your device') + '</span></div>' +
     '<div class="or">or</div><button class="btn wide" type="button" data-a="blank" style="margin-top:12px">Start from a blank template</button></div>';
   show('start');
   var d = $('#drop');
@@ -3154,7 +3236,7 @@ function readUpload(f){
     var src = {kind:ext.toLowerCase(), name:f.name, buf:buf, at:Date.now()};
     return linesFrom(src).then(function(lines){
       var text = lines.map(function(l){ return l.t; }).join('\n');
-      if(text.replace(/\s/g, '').length < 120){ toast('We couldn’t read text from that file — it may be a scanned image. Try the Word version.'); DOC ? show('wrap') : showStart(); return; }
+      if(text.replace(/\s/g, '').length < 120 && !(SCAN_ON() && src.kind === 'pdf')){ toast('We couldn’t read text from that file — it may be a scanned image. Try the Word version.'); DOC ? show('wrap') : showStart(); return; }
       src.text = text;
       if(!TEAM) RESUME_DB.set({buf:buf.slice(0), kind:src.kind, name:src.name, size:f.size, text:text, at:src.at}).catch(function(){});   // a client's file never becomes the team member's own resume
       fromSource(src, true);
@@ -3163,6 +3245,7 @@ function readUpload(f){
 }
 function fromSource(src, fresh){
   show('boot');
+  if(SCAN_ON()) return linesFrom(src).then(function(lines){ scanFlow(src, lines, fresh); }).catch(function(){ toast('We couldn’t read that file. Upload it again, or start from a blank template.'); showStart(); });
   return linesFrom(src).then(function(lines){
     var keepDesign = DOC && DOC.design, keepCover = DOC && DOC.cover;
     var D = parseDoc(lines, src.name);
@@ -3171,6 +3254,145 @@ function fromSource(src, fresh){
     D.meta.srcAt = src.at || Date.now();
     SRC = src; startDoc(D);
   }).catch(function(){ toast('We couldn’t read your resume file. Upload it again, or start from a blank template.'); showStart(); });
+}
+/* ---- team mode: version history. A copy is saved when the resume opens, after a scan, before Optimise and Restore,
+        every 10 minutes while someone is editing, and whenever they click "Save a version". ---- */
+var VER = {list:null, last:'', at:0};
+function saveVersion(label, force){
+  if(!TEAM || READONLY || !DOC || !window.sb) return Promise.resolve(false);
+  var body = JSON.stringify(DOC);
+  if(!force && body === VER.last) return Promise.resolve(false);   // nothing changed since the last copy
+  var row = {client_id:TEAM.client, label:label, doc:JSON.parse(body)};
+  if(TEAM.app) row.application_id = TEAM.app; else row.resume_id = TEAM.resume;
+  return sb.from('client_versions').insert(row).then(function(r){ if(r.error) return false; VER.last = body; VER.at = Date.now(); VER.list = null; if(POP === 'history') loadVersions(); return true; }, function(){ return false; });
+}
+// On open: keep a copy of the resume as it was, unless the newest saved version already matches it.
+function initVersions(){
+  if(!TEAM || READONLY || !window.sb) return;
+  $('#bHist').hidden = false;
+  var q = sb.from('client_versions').select('doc').order('at', {ascending:false}).limit(1);
+  q = TEAM.app ? q.eq('application_id', TEAM.app) : q.eq('resume_id', TEAM.resume);
+  q.then(function(r){
+    var latest = r.data && r.data[0] && r.data[0].doc;
+    if(latest && JSON.stringify(latest) === JSON.stringify(DOC)){ VER.last = JSON.stringify(DOC); VER.at = Date.now(); return; }
+    saveVersion(latest ? 'Opened' : 'First version', true);
+  });
+}
+function loadVersions(){
+  var q = sb.from('client_versions').select('id,label,by_email,at').order('at', {ascending:false}).limit(60);
+  q = TEAM.app ? q.eq('application_id', TEAM.app) : q.eq('resume_id', TEAM.resume);
+  return q.then(function(r){ VER.list = r.error ? [] : r.data; refreshPop(); });
+}
+function restoreVersion(id){
+  sb.from('client_versions').select('doc,label,at').eq('id', id).maybeSingle().then(function(r){
+    var v = r.data; if(!v || !v.doc || !v.doc.sections){ toast('Couldn’t open that version.'); return; }
+    var when = new Date(v.at).toLocaleString([], {day:'numeric', month:'short', hour:'numeric', minute:'2-digit'});
+    confirmBox('Restore the version from ' + when + '?', 'The resume goes back to how it was then. The current version is saved first, so nothing is lost.', 'Restore', function(){
+      saveVersion('Before restoring an older version', true).then(function(){
+        var keepOrig = DOC.meta && DOC.meta.orig; DOC = v.doc; DOC.meta = DOC.meta || {}; if(!DOC.meta.orig && keepOrig) DOC.meta.orig = keepOrig;
+        SUG = {}; closePop(); structural(); saveVersion('Restored: ' + (v.label || when), true); toast('Restored the version from ' + when, {a:'undo', label:'Undo'});
+      });
+    });
+  });
+}
+function historyHTML(){
+  if(!TEAM) return '';
+  var who = function(e){ return e ? esc(String(e).split('@')[0]) : ''; };
+  var rows = VER.list == null ? '<p class="fine">Loading…</p>' : !VER.list.length ? '<p class="fine">No saved versions yet.</p>' : VER.list.map(function(v, i){
+    var when = new Date(v.at).toLocaleString([], {day:'numeric', month:'short', hour:'numeric', minute:'2-digit'});
+    return '<div class="vh"><div><b>' + esc(v.label || 'Saved') + '</b><span>' + when + (v.by_email ? ' · ' + who(v.by_email) : '') + '</span></div>' +
+      (i === 0 ? '<em>Latest</em>' : '') + (READONLY ? '' : '<button type="button" data-a="v-restore" data-v="' + v.id + '">Restore</button>') + '</div>';
+  }).join('');
+  return '<h4>Version history</h4>' + (READONLY ? '' : '<button type="button" class="btn wide" data-a="v-save" style="margin-bottom:10px">Save a version now</button>') + '<div class="vhl">' + rows + '</div>' +
+    '<p class="fine" style="margin-top:8px">Saved automatically when the resume opens, before Optimise, and every 10 minutes while you edit.</p>';
+}
+if(TEAM) setInterval(function(){ if(DOC && !READONLY && Date.now() - VER.at > 10 * 60000) saveVersion('Autosave'); }, 60000);
+
+/* ---- team mode: Claude reads the client's resume word for word, and the team checks it before editing ---- */
+function SCAN_ON(){ return !!(TEAM && LIVE && !READONLY); }
+function b64(buf){ var u = new Uint8Array(buf), s = '', i; for(i = 0; i < u.length; i += 32768) s += String.fromCharCode.apply(null, u.subarray(i, i + 32768)); return btoa(s); }
+function aiScan(src){
+  return session().then(function(s){
+    if(!s) throw 'auth';
+    var pdf = src.kind === 'pdf' && src.buf && src.buf.byteLength < 5*1048576 ? b64(src.buf) : '';
+    var ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function(){ if(ctl) ctl.abort(); }, 120000);
+    return fetch(CONFIG.SUPABASE_URL + '/functions/v1/' + CONFIG.AI_FUNCTION, {method:'POST', signal:ctl ? ctl.signal : undefined,
+      headers:{'Content-Type':'application/json', apikey:CONFIG.SUPABASE_ANON_KEY, Authorization:'Bearer ' + s.access_token},
+      body:JSON.stringify({task:'scan', text:src.text || '', pdf:pdf})})
+      .then(function(r){ clearTimeout(tm); return r.json().catch(function(){ return {}; }).then(function(j){ if(!r.ok || !j.doc) throw (j.error || 'http'); return j.doc; }); },
+            function(){ clearTimeout(tm); throw 'net'; });
+  });
+}
+function docFromScan(o){
+  var D = blankDoc(), str = function(x){ return String(x || '').trim(); };
+  D.name = str(o.name); D.headline = str(o.headline); D.contact = (o.contact || []).map(str).filter(Boolean);
+  (o.sections || []).forEach(function(q){
+    var k = q.kind === 'other' && /interest|hobb/i.test(q.title || '') ? 'interests' : q.kind || 'other', sec = newSection(k, str(q.title) || undefined);
+    var items = (q.items || []).filter(function(i){ return i.title || i.sub || i.dates || (i.bullets || []).length; });
+    var lines = (q.list || []).map(str).filter(Boolean);
+    if(sec.type === 'summary') sec.text = str(q.text) || lines.join(' ');
+    else if(sec.type === 'entries') sec.items = items.map(function(i){ var e = newEntry(); e.title = str(i.title); e.sub = str(i.sub); e.dates = str(i.dates); e.loc = str(i.loc); e.bullets = (i.bullets || []).map(function(b){ return {id:uid(), t:str(b)}; }); return e; });
+    else if(sec.type === 'skills') sec.rows = (q.rows || []).filter(function(r){ return r.value; }).map(function(r){ return {id:uid(), label:str(r.label), value:str(r.value)}; })
+      .concat(lines.map(function(t){ return {id:uid(), label:'', value:t}; }));
+    else sec.list = lines.concat(items.map(function(i){ return [i.title, i.sub, i.dates].filter(Boolean).join(' — '); }), (q.rows || []).map(function(r){ return (r.label ? r.label + ': ' : '') + r.value; }), q.text ? [str(q.text)] : [])
+      .filter(Boolean).map(function(t){ return {id:uid(), t:t}; });
+    D.sections.push(sec);
+  });
+  if(!D.name && CLIENT) D.name = CLIENT.full_name || '';
+  return D;
+}
+// Words Claude returned that aren't in the file: shown in amber so the team can check them against the original.
+function srcWords(text){ var w = {}; (String(text).toLowerCase().match(/[a-z0-9]+/g) || []).forEach(function(x){ w[x] = 1; }); return w; }
+function notInFile(t, W){ return (String(t || '').toLowerCase().match(/[a-z0-9]+/g) || []).filter(function(x){ return (x.length > 2 || /\d/.test(x)) && !W[x]; }); }
+function scanFlag(t, W){ var m = notInFile(t, W); return m.length ? ' <em class="snf" title="Not in the file: ' + esc(uniq(m).slice(0, 6).join(', ')) + '">check</em>' : ''; }
+function scanView(D, W){
+  var F = function(t){ return esc(t) + scanFlag(t, W); };
+  var h = '<div class="sv-h"><b>' + F(D.name || '(no name)') + '</b>' + (D.headline ? '<span>' + F(D.headline) + '</span>' : '') + (D.contact.length ? '<span>' + D.contact.map(F).join(' · ') + '</span>' : '') + '</div>';
+  D.sections.forEach(function(s){
+    h += '<div class="sv-s"><h5>' + esc(s.title) + '</h5>';
+    if(s.type === 'summary') h += '<p>' + F(s.text) + '</p>';
+    if(s.type === 'entries') s.items.forEach(function(e){
+      h += '<div class="sv-e"><div><b>' + F(e.title) + '</b>' + (e.dates ? '<i>' + F(e.dates) + '</i>' : '') + '</div>' + (e.sub || e.loc ? '<div>' + F([e.sub, e.loc].filter(Boolean).join(' · ')) + '</div>' : '') +
+        (e.bullets.length ? '<ul>' + e.bullets.map(function(b){ return '<li>' + F(b.t) + '</li>'; }).join('') + '</ul>' : '') + '</div>';
+    });
+    if(s.type === 'skills') h += s.rows.map(function(r){ return '<p>' + (r.label ? '<b>' + esc(r.label) + ':</b> ' : '') + F(r.value) + '</p>'; }).join('');
+    if(s.type === 'list') h += '<ul>' + s.list.map(function(b){ return '<li>' + F(b.t) + '</li>'; }).join('') + '</ul>';
+    h += '</div>';
+  });
+  return h;
+}
+function scanCounts(D){
+  var jobs = 0, bul = 0;
+  D.sections.forEach(function(s){ (s.items || []).forEach(function(e){ if(s.k === 'experience') jobs++; bul += e.bullets.length; }); bul += (s.list || []).length; });
+  return D.sections.length + ' sections · ' + jobs + ' job' + (jobs === 1 ? '' : 's') + ' · ' + bul + ' bullets and lines';
+}
+var SCAN_ERR = {no_claude:'Scanning is off until the Claude key is added in Supabase (Edge Functions → Secrets → ANTHROPIC_API_KEY).', team_only:'Only the TrulyPlaced team can scan resumes.',
+  limit:'Today’s AI allowance is used up.', too_long:'This resume is too long to scan in one go.', empty:'There’s no text in this file to read — it may be a scanned image.', net:'Couldn’t reach the server — check your connection.'};
+function scanFlow(src, lines, fresh){
+  var text = lines.map(function(l){ return l.t; }).join('\n'); src.text = src.text || text;
+  var quick = function(){ var D = parseDoc(lines, src.name); keep(D); D.meta.srcAt = src.at || Date.now(); D.meta.read = 'quick'; SRC = src; startDoc(D); };
+  var keep = function(D){ if(fresh && DOC){ if(DOC.design) D.design = DOC.design; if(DOC.cover) D.cover = DOC.cover; } };
+  show('boot'); $('#boot').lastChild.textContent = 'Claude is reading ' + (src.name || 'the resume') + ' word for word… (up to a minute)';
+  aiScan(src).then(function(o){
+    var D = docFromScan(o), W = srcWords(text), flags = 0;
+    keep(D); D.meta.srcName = src.name || ''; D.meta.srcAt = src.at || Date.now(); D.meta.read = 'claude';
+    var tmp = document.createElement('div'); tmp.innerHTML = scanView(D, W); flags = tmp.querySelectorAll('.snf').length;
+    $('#start').innerHTML = '<div class="card scan"><h1>Check what Claude read</h1><p>' + esc(scanCounts(D)) + '. Everything is copied word for word — nothing is reworded. ' +
+      (flags ? '<b class="snw">' + flags + ' place' + (flags === 1 ? '' : 's') + ' marked <em class="snf">check</em></b> use words we couldn’t find in the file: compare them with the original before you go on.' : 'Every word matches the file.') + '</p>' +
+      '<div class="sv"><div class="sv-c"><h4>Original file</h4><pre>' + esc(text) + '</pre></div><div class="sv-c"><h4>What Claude read</h4>' + scanView(D, W) + '</div></div>' +
+      '<div class="sv-a"><button class="btn pri" type="button" id="scOk">Looks right — open it</button><button class="btn" type="button" id="scAgain">Read it again</button><button class="btn" type="button" id="scQuick">Use the quick reader instead</button></div></div>';
+    show('start'); $('#start').classList.add('wide');
+    $('#scOk').onclick = function(){ $('#start').classList.remove('wide'); SRC = src; startDoc(D); toast('Resume read by Claude — check the page once more as you edit'); };
+    $('#scAgain').onclick = function(){ $('#start').classList.remove('wide'); scanFlow(src, lines, fresh); };
+    $('#scQuick').onclick = function(){ $('#start').classList.remove('wide'); quick(); };
+  }).catch(function(e){
+    $('#start').innerHTML = '<div class="card"><h1>Claude couldn’t read this resume</h1><p>' + esc(SCAN_ERR[e] || 'Something went wrong. Try again in a minute.') + '</p>' +
+      '<div class="sv-a"><button class="btn pri" type="button" id="scAgain">Try again</button><button class="btn" type="button" id="scQuick">Use the quick reader instead</button></div>' +
+      '<p class="fine" style="margin-top:12px;font-size:12.5px;color:var(--muted)">The quick reader works on this device without AI. It can put things in the wrong section on unusual layouts, so check every section.</p></div>';
+    show('start');
+    $('#scAgain').onclick = function(){ scanFlow(src, lines, fresh); };
+    $('#scQuick').onclick = quick;
+  });
 }
 function backLink(){
   var b = $('#backB'); if(!b) return;
@@ -3191,6 +3413,7 @@ function startDoc(D){
   JOB = loadJob(); backLink();
   show('wrap'); $('#tabs').hidden = false;
   renderAll(); snap(); persist();
+  if(TEAM) initVersions();
   tell({act:'ready'});
   if(CHECKS && !lsGet('tp_tip_iss', 0) && $('#paper mark.iss')){ lsSet('tp_tip_iss', 1); setTimeout(function(){ toast('Tip: underlined words have a one-click fix — hover them'); }, 1400); }
   var h = location.hash;
