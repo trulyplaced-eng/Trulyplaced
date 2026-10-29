@@ -1261,19 +1261,39 @@ function appHead(){
     '<div class="m">' + (A.applied_at ? 'Applied ' + esc(TP.fmtDateTime(A.applied_at)) : 'Started ' + esc(TP.ago(A.created_at))) + (by ? ' by ' + esc(who(by)) : '') + ' · for <b style="color:var(--client)">' + esc(C.row.full_name) + '</b></div></div>' +
     '<div class="row">' + (A.status === 'draft' ? TP.statusChip('draft') : '') + '<a class="btn sm" href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Job posting</a></div></div>';
 }
+// a field of a resume doc by its editor path (sec.<id>.item.<id>.b.<id>, sec.<id>.text, sec.<id>.row.<id>.value, headline …)
+function docField(d, p){
+  var x = String(p).split('.'), one = function(arr, id){ return (arr || []).filter(function(q){ return q.id === id; })[0]; };
+  if(x[0] === 'headline') return d.headline || '';
+  var s = x[0] === 'sec' && one(d.sections, x[1]); if(!s) return null;
+  if(x[2] === 'text') return s.text || '';
+  if(x[2] === 'item'){ var it = one(s.items, x[3]); if(!it) return null; if(x[4] === 'b'){ var b = one(it.bullets, x[5]); return b ? b.t : null; } return it[x[4]] || ''; }
+  if(x[2] === 'row'){ var r = one(s.rows, x[3]); return r ? r[x[4]] : null; }
+  if(x[2] === 'list'){ var l = one(s.list, x[3]); return l ? l.t : null; }
+  return null;
+}
+// tailored only once an Optimise suggestion was accepted: the editor marks it; older copies count if a line differs from before Optimise
+function optimisedDoc(d){
+  var m = d && d.meta; if(!m) return false; if(m.optimised) return true;
+  return !!m.pre && Object.keys(m.pre).some(function(p){ var v = docField(d, p); return v != null && v !== m.pre[p]; });
+}
 function resumeCard(){
-  var rs = C.resumes || [], base = rs.filter(function(r){ return r.id === A.base_resume_id; })[0];
-  var tailored = !!(A.resume_doc || A.resume_text), pend = !!(A.resume_doc && A.resume_doc.meta && A.resume_doc.meta.optPending);   // pend: the list's Optimise left suggestions to review
-  var preview = A.resume_text || (base && base.text) || '';
-  return '<div class="step"><span class="n' + (tailored && !pend ? ' ok' : '') + '">2</span><div class="bd"><h3>Resume for this job</h3>' +
-    (rs.length ? '<div class="row" style="margin:8px 0 10px"><label class="lbl" for="apBase">Start from</label><select class="inp" id="apBase" style="width:auto;flex:1;max-width:320px"' + (tailored ? ' disabled title="Already tailored — this copy is used"' : '') + '>' +
+  var rs = C.resumes || [], base = rs.filter(function(r){ return r.id === A.base_resume_id; })[0], bname = esc(base ? base.name : 'the main resume');
+  var d = A.resume_doc, m = (d && d.meta) || {}, saved = !!(d || A.resume_text), pend = !!m.optPending, opt = !pend && optimisedDoc(d);   // pend: the list's Optimise left suggestions to review
+  var preview = A.resume_text || (base && base.text) || '', url = edUrl('app', A.id), tgt = ' target="tp-ed-' + esc(A.id) + '" data-act="toeditor"';
+  return '<div class="step"><span class="n' + (opt ? ' ok' : '') + '">2</span><div class="bd"><h3>Resume for this job</h3>' +
+    '<p class="fine" style="margin-top:2px">The copy that gets sent, tailored to this job’s description. The main resume (Resumes tab) stays as it is.</p>' +
+    (rs.length ? '<div class="row" style="margin:8px 0 10px"><label class="lbl" for="apBase">Start from</label><select class="inp" id="apBase" style="width:auto;flex:1;max-width:320px"' + (saved ? ' disabled title="This job’s copy is already made from it"' : '') + '>' +
       rs.map(function(r){ return '<option value="' + esc(r.id) + '"' + (r.id === A.base_resume_id ? ' selected' : '') + '>' + esc(r.name) + '</option>'; }).join('') + '</select></div>'
       : '<div class="note warn" style="margin:8px 0 10px">' + esc(C.row.full_name) + ' has no resume yet. <a href="' + esc(cUrl(C.id, 'resumes')) + '" data-go>Add one on the Resumes tab</a>, or open the editor and upload their file there.</div>') +
-    '<div class="row"><a class="btn pri" href="' + esc(edUrl('app', A.id)) + '" target="tp-ed-' + esc(A.id) + '" data-act="toeditor">' + I.spark + (pend ? 'Review the suggestions in the editor' : tailored ? 'Keep editing in the editor' : 'Tailor in the editor') + '</a>' +
+    '<div class="row">' + (pend ? '<a class="btn pri" href="' + esc(url) + '"' + tgt + '>' + I.spark + 'Review the suggestions</a>'
+        : opt ? '<a class="btn" href="' + esc(url) + '"' + tgt + '>' + I.doc + 'Open the tailored resume</a><a class="btn" href="' + esc(url + '#optimize') + '"' + tgt + ' data-opt>' + I.spark + 'Optimise again</a>'
+        : '<a class="btn pri" href="' + esc(url + '#optimize') + '"' + tgt + ' data-opt>' + I.spark + 'Optimise for this job</a>') +
       (preview ? '<button class="btn" type="button" data-act="cpresume">' + I.copy + 'Copy resume text</button>' : '') + '</div>' +
     '<p class="fine" style="margin-top:8px">' + (pend ? '<b>Optimised in the background</b> — the editor shows Claude’s suggestions to accept. Nothing on the resume has changed yet.'
-      : tailored ? '<span class="lock" style="color:var(--ok)">' + I.check + 'Tailored for this job</span> — saved ' + esc(TP.ago(A.updated_at)) + '. In the editor: <b>Optimise for this job</b>, then <b>Download → PDF</b>.'
-      : 'Opens the editor with this job’s description, so <b>Optimise for this job</b> tailors it. It saves a copy for this application only.') + '</p>' +
+      : opt ? '<span class="lock" style="color:var(--ok)">' + I.check + 'Optimised for this job</span> — ' + esc(TP.ago((m.optimised && m.optimised.at) || A.updated_at)) + '. Open it to check it and download the PDF to send.'
+      : (saved ? 'A copy of <b>' + bname + '</b>, not tailored to this job yet. ' : 'Starts from <b>' + bname + '</b>. ') + '<b>Optimise for this job</b> rewrites it around the job description, and nothing changes until you accept.' +
+        (A.jd_text ? '' : ' <span style="color:var(--warn)">Paste the job description in step 1 first.</span>')) + '</p>' +
     (preview ? '<details style="margin-top:8px"><summary class="fine" style="cursor:pointer">See the text that will be sent</summary><pre class="txt" style="margin-top:8px">' + esc(preview) + '</pre></details>' : '') + '</div></div>';
 }
 function drawDraft(){
@@ -1300,6 +1320,7 @@ function drawDraft(){
       '<div class="row" style="margin-top:14px"><button class="btn ok lg" type="button" data-act="markapplied">' + I.check + 'Mark as applied for ' + first + '</button><span class="grow"></span><span class="saved" id="apSaved"></span>' +
         '<button class="btn sm bad" type="button" data-act="deldraft">' + I.trash + 'Delete draft</button></div></div></div></div></div>';
   ['apT', 'apC', 'apL2', 'apJD', 'apCL'].forEach(function(k){ $('#' + k).addEventListener('input', draftChanged); });
+  $('#apJD').addEventListener('input', function(e){ var had = !!A.jd_text; A.jd_text = e.target.value.trim(); if(had !== !!A.jd_text && $('#resCard')) $('#resCard').innerHTML = resumeCard(); });   // the resume step's "paste it first" hint follows
   $('#apQA').addEventListener('input', draftChanged);
   if($('#apBase')) $('#apBase').addEventListener('change', function(e){ A.base_resume_id = e.target.value; draftChanged(); $('#resCard').innerHTML = resumeCard(); });
   setupDrop($('#dShot'), 'shot', 'image/png,image/jpeg,image/webp');

@@ -124,6 +124,34 @@ svg{flex:none;width:18px;height:18px}
 .sheet [data-path]{cursor:text;border-radius:2px;transition:background .15s}
 .sheet [data-path]:hover{background:#fff6cc}
 .sheet .sel{outline:2px solid var(--blue);outline-offset:1px;background:#e8edff!important}
+/* editing on the page itself: the controls show on hover (never in the PDF, never in the Word file) */
+.sheet .pgx{display:none}
+.sheet .skr{position:relative}
+.sheet :is(.ps:hover,.ps.pgon) .skx,.sheet .skr.adding .skx{display:inline-grid}   /* .pgon: a phone tapped the skills */
+.sheet :is(.ps:hover,.ps.pgon) .skadd,.sheet :is(.ps:hover,.ps.pgon) .skrm{display:inline}
+.sheet :is(.ps:hover,.ps.pgon) .skdrag{display:grid}
+.sheet :is(.ps:hover,.ps.pgon) .sk,.sheet .sk:has(.adding){padding-right:8.2em}   /* room for "Remove category" on the right */
+.sheet .skx{place-items:center;width:.95em;height:1.05em;margin:0 0 0 .12em;vertical-align:-.14em;color:#dc2626;cursor:pointer;border-radius:3px}
+.sheet .skx:hover{background:#fee2e2}
+.sheet .skx svg{width:.78em;height:.78em}
+.sheet .skadd{margin-left:.45em;color:var(--blue);font-style:normal;font-weight:600;font-size:.92em;cursor:pointer;white-space:nowrap}
+.sheet .skrm{position:absolute;top:0;right:-8.2em;color:#dc2626;font-style:normal;font-size:.88em;cursor:pointer;white-space:nowrap}
+.sheet .skadd:hover,.sheet .skrm:hover{text-decoration:underline}
+.sheet .skdrag{position:absolute;left:-1.35em;top:.12em;width:1.1em;height:1.1em;place-items:center;color:#9aa1b5;cursor:grab}
+.sheet .skdrag svg{width:1em;height:1em}
+.sheet .pgin{font:inherit;font-size:.95em;width:9em;margin-left:.4em;padding:0 .35em;border:1px solid var(--blue);border-radius:4px;outline:none;background:#fff}
+.sheet li.pghov{outline:1px solid #c9cee0;outline-offset:2px;border-radius:3px}
+.sheet .pged{outline:2px solid var(--blue);outline-offset:2px;border-radius:2px;background:#fff!important;cursor:text}
+.sheet li.pgempty{display:none}.sheet li.pgempty:has(.pged){display:list-item}   /* a new, empty bullet shows only while it's typed into */
+.sheet .pged:empty::before{content:'Type here…';color:#9aa1b5}.sheet li .pged:empty::before{content:'Type the new bullet…'}
+.sheet .pg-dropb{box-shadow:0 -2px 0 var(--blue)}.sheet .pg-dropa{box-shadow:0 2px 0 var(--blue)}
+.pgbar{position:absolute;z-index:45;display:flex;align-items:center;gap:2px;padding:3px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 22px -10px rgba(18,26,51,.35)}
+.pgbar[hidden]{display:none}
+.pgbar button,.pgbar .pgdrag{width:30px;height:30px;display:grid;place-items:center;border-radius:7px}
+.pgbar button:hover,.pgbar .pgdrag:hover{background:var(--bg)}
+.pgbar svg{width:16px;height:16px}
+.pgbar .pgadd{color:var(--ok)}.pgbar .pgdel{color:#dc2626}.pgbar .pgdrag{color:#9aa1b5;cursor:grab}.pgbar .pgai{color:#d97706}
+.ro .sheet .pgx,.ro .pgbar{display:none!important}
 .sheet .hl{background:#fff2b8}
 
 /* ---------- panel ---------- */
@@ -299,7 +327,7 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .omsub{color:var(--body);font-size:13.5px;margin-top:4px}
 .omb{flex:1;overflow:auto;padding:16px 26px}
 .omf{display:flex;align-items:center;gap:8px;padding:12px 26px;border-top:1px solid var(--line);background:#fbfbfe}
-.omf span{flex:1;font-size:12.5px;color:var(--muted)}
+.omf>span{flex:1;font-size:12.5px;color:var(--muted)}   /* the footer's note only, not the text inside its buttons */
 .orows{display:grid;gap:8px}
 .orow{transition:border-color .15s,background .15s,transform .15s,box-shadow .15s;display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;text-align:left}
 .orow:hover{border-color:var(--blue-line)}.orow.on{border-color:var(--blue);background:var(--blue-soft)}
@@ -309,11 +337,10 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 .rb button:hover{transform:scale(1.08)}.rr.acc .rn,.rr.rej .rn{transition:background .25s,opacity .25s}.rdone{animation:rise .3s both}
 .omh h2{text-transform:none;letter-spacing:0;border:0}
 .orow.on .cb{background:var(--blue);border-color:var(--blue)}.orow.on .cb svg{opacity:1}
-/* Sync to this job: the whole resume at once, above the separate choices */
-.orow.osync{width:100%;padding:14px 16px;border-color:var(--blue-line);background:linear-gradient(135deg,#f5f7ff,#fff 70%)}
-.orow.osync b{display:flex;align-items:center;gap:7px;font-size:14.5px}
-.orow.osync b svg{width:16px;height:16px;flex:none;color:var(--blue)}
-.orow.osync.on{border-color:var(--blue);background:var(--blue-soft)}
+/* Sync to this job: its own button beside Optimise - every part at once, more deeply */
+.om.opt{width:min(700px,100%)}.om.opt .omf{flex-wrap:wrap}
+.omb2.osyncb{border-color:var(--blue-line);background:linear-gradient(135deg,#f5f7ff,#fff 70%)}.omb2.osyncb:hover{border-color:var(--blue)}
+.omb2.osyncb b svg{width:15px;height:15px;flex:none;color:var(--blue)}
 .rr.ord .ro,.rr.ord .rn span{white-space:pre-line}
 .ohd{display:flex;justify-content:space-between;align-items:center;margin:14px 0 8px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .ohd button{color:var(--blue);font-weight:600;text-transform:none;letter-spacing:0;font-size:12.5px}
@@ -432,6 +459,9 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
   .sheetwrap{transform:none!important}
   .sheet{box-shadow:none;width:auto!important;min-height:0!important}
   .sheet [data-path]:hover,.sheet .sel,.sheet .hl,.sheet ins{background:none!important;outline:none!important;box-shadow:none!important}
+  .sheet .pgx,.pgbar,.sheet li.pgempty,.sheet .pgin{display:none!important}
+  .sheet .sk{padding-right:0!important}
+  .sheet li.pghov,.sheet .pged{outline:none!important}
 }
 
 </style>
@@ -479,6 +509,7 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px}
 </div>
 
 <div id="selbar" class="selbar" hidden></div>
+<div id="pgbar" class="pgbar" hidden role="toolbar" aria-label="This bullet"><button type="button" class="pgadd" data-a="pg-badd" title="Add a bullet below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><button type="button" class="pgdel" data-a="pg-bdel" title="Delete this bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button><span class="pgdrag" draggable="true" title="Drag to move"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01"/></svg></span><button type="button" class="pgai" data-a="pg-bai" title="Improve this bullet with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button></div>
 <div id="modal" class="modal" hidden></div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <input type="file" id="fileIn" accept=".pdf,.docx,.txt" hidden>
@@ -1249,7 +1280,10 @@ function changed(path) {
   persist(); renderLater();
 }
 function structural() { snap(); persist(); renderAll(); }
-const renderLater = debounce(() => { renderSheet(); if (PTAB === 'check') renderPanel(); }, 120);
+// the page follows every keystroke: a full redraw costs a couple of milliseconds, so it happens on the next frame, not after a pause
+let RAF = 0;
+const checkLater = debounce(() => { if (PTAB === 'check') renderPanel(); }, 300);
+function renderLater() { if (!RAF) RAF = requestAnimationFrame(() => { RAF = 0; renderSheet(); }); checkLater(); }
 
 /* ---------- opening a resume ---------- */
 function show(id) { ['gate', 'start', 'boot', 'wrap'].forEach((x) => { $('#' + x).hidden = x !== id; }); }
@@ -1322,7 +1356,7 @@ function startDoc(D) {
   const h = location.hash;
   if (h === '#cover' || h === '#optimize') try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
   if (h === '#cover') { setDocTab('cover'); autoCover(); }
-  else if (h === '#optimize') setTimeout(openOptimise, 300);
+  else if (h === '#optimize') setTimeout(() => openOptimise(!!(TEAM && TEAM.app)), 300);
   if (BATCH) setTimeout(batchRun, 300);
   else if (TEAM && !READONLY && DOC.meta.optPending) setTimeout(openPending, 400);   // the batch's suggestions, waiting for review
 }
@@ -1472,9 +1506,12 @@ function contactHTML(D, f) {
 let SHOWCHG = false;   // Show changes: the words Optimise changed, marked on the page (never printed or exported)
 const marked = (path, t) => { const pre = SHOWCHG && DOC && DOC.meta.pre ? DOC.meta.pre[path] : undefined; return pre !== undefined && pre !== t && t ? wdiff(pre, t).n : esc(t); };
 const P = (path, t, cls, tag) => '<' + (tag || 'span') + ' data-path="' + path + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + (t ? marked(path, t) : '<span class="empty">&nbsp;</span>') + '</' + (tag || 'span') + '>';
-function entryHTML(s, it, f) {
+// a bullet line; on screen (ed) an empty one shows too, so it can be typed into on the page (it never prints)
+const liHTML = (path, b, ed) => '<li' + (b.t ? (HL[b.id] && !SHOWCHG ? ' class="hl"' : '') : ' class="pgempty"') + (ed ? ' data-b="' + b.id + '"' : '') + '>' + P(path, b.t) + '</li>';
+function entryHTML(s, it, f, ed) {
   const B = 'sec.' + s.id + '.item.' + it.id + '.', dates = it.dates ? '<span class="r" data-path="' + B + 'dates">' + esc(styleDates(it.dates, f.dates)) + '</span>' : '';
-  const bullets = it.bullets.some((b) => b.t) ? '<ul class="bl">' + it.bullets.filter((b) => b.t).map((b) => '<li' + (HL[b.id] && !SHOWCHG ? ' class="hl"' : '') + '>' + P(B + 'b.' + b.id, b.t) + '</li>').join('') + '</ul>' : '';
+  const bl = ed ? it.bullets : it.bullets.filter((b) => b.t);
+  const bullets = bl.length && (ed || it.bullets.some((b) => b.t)) ? '<ul class="bl">' + bl.map((b) => liHTML(B + 'b.' + b.id, b, ed)).join('') + '</ul>' : '';
   if (f.oneLine) {   // Interview format: "Title, Company | Location" on one bold line; a school as "School - Degree"
     const ed = s.k === 'education';
     const head = ed ? (it.sub ? P(B + 'sub', it.sub, 'b1') + (it.title ? '<span class="dash"> - </span>' + P(B + 'title', it.title, 'deg') : '') : P(B + 'title', it.title, 'b1'))
@@ -1487,19 +1524,38 @@ function entryHTML(s, it, f) {
 }
 // a certification line "AWS Solutions Architect, AWS": the name bold, the issuer lighter
 const certHTML = (path, t) => { const m = /^([^,]{2,80}),\s*(.{1,80})$/.exec(t); return m ? '<span data-path="' + path + '"><b>' + esc(m[1]) + '</b>, <span class="issuer">' + esc(m[2]) + '</span></span>' : P(path, t); };
-function sectionHTML(s, f) {
+// a skills line. On screen (ed) each skill is its own piece with a × to remove it, and the line gets a drag handle,
+// "+ Add skill" and "Remove category" - shown on hover, never printed and never in the Word file
+const skItems = (v) => {   // → the skills, the separator the line uses (commas inside brackets stay put) and a closing full stop
+  v = String(v || '').trim(); const end = /\.$/.test(v) ? '.' : '', s = end ? v.slice(0, -1) : v, m = /\s([|•·])\s/.exec(s), c = m ? m[1] : !/,/.test(s) && /;/.test(s) ? ';' : ',', items = [];
+  let d = 0, cur = '';
+  for (const ch of s) { if (ch === '(' || ch === '[') d++; else if ((ch === ')' || ch === ']') && d) d--; if (!d && ch === c) { items.push(cur); cur = ''; } else cur += ch; }
+  items.push(cur);
+  return { end, sep: m ? ' ' + c + ' ' : c + ' ', items: items.map((x) => x.trim()).filter(Boolean) };
+};
+function skillRowHTML(s, r, f, ed) {
+  const B = 'sec.' + s.id + '.row.' + r.id, lab = r.label ? '<b data-path="' + B + '.label">' + esc(r.label) + (f.oneLine ? ' :' : ':') + '</b> ' : '';
+  if (!ed) return '<div>' + lab + P(B + '.value', r.value) + '</div>';
+  const pre = SHOWCHG && DOC && DOC.meta.pre ? DOC.meta.pre[B + '.value'] : undefined, sv = skItems(r.value);
+  const val = (pre !== undefined && pre !== r.value) || !sv.items.length ? P(B + '.value', r.value)   // Show changes marks the line as a whole
+    : '<span data-path="' + B + '.value">' + sv.items.map((x, k) => '<span class="ski">' + esc(x) + '<i class="pgx skx" data-a="pg-skx" data-v="' + r.id + '" data-k="' + k + '" title="Remove ' + esc(x) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></i></span>').join(esc(sv.sep)) + sv.end + '</span>';
+  return '<div class="skr" data-row="' + r.id + '"><i class="pgx skdrag" draggable="true" data-row="' + r.id + '" title="Drag to reorder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01"/></svg></i>' + lab + val +
+    '<i class="pgx skadd" data-a="pg-skadd" data-v="' + r.id + '">+ Add skill</i><i class="pgx skrm" data-a="pg-skrm" data-v="' + r.id + '">Remove category</i></div>';
+}
+function sectionHTML(s, f, ed) {
   let body = '';
   if (s.type === 'summary') body = P('sec.' + s.id + '.text', s.text, 'sum' + (HL['sum:' + s.id] && !SHOWCHG ? ' hl' : ''), 'p');
-  else if (s.type === 'entries') body = s.items.map((it) => entryHTML(s, it, f)).join('');
-  else if (s.type === 'skills') body = '<div class="sk">' + s.rows.filter((r) => r.value || r.label).map((r) => '<div>' + (r.label ? '<b data-path="sec.' + s.id + '.row.' + r.id + '.label">' + esc(r.label) + (f.oneLine ? ' :' : ':') + '</b> ' : '') + P('sec.' + s.id + '.row.' + r.id + '.value', r.value) + '</div>').join('') + '</div>';
+  else if (s.type === 'entries') body = s.items.map((it) => entryHTML(s, it, f, ed)).join('');
+  else if (s.type === 'skills') body = '<div class="sk">' + s.rows.filter((r) => r.value || r.label).map((r) => skillRowHTML(s, r, f, ed)).join('') + '</div>';
   else if (f.oneLine && s.k === 'certifications') body = '<div class="certs">' + s.list.filter((b) => b.t).map((b) => '<div>' + certHTML('sec.' + s.id + '.list.' + b.id, b.t) + '</div>').join('') + '</div>';
-  else body = '<ul class="bl">' + s.list.filter((b) => b.t).map((b) => '<li>' + P('sec.' + s.id + '.list.' + b.id, b.t) + '</li>').join('') + '</ul>';
+  else body = '<ul class="bl">' + (ed ? s.list : s.list.filter((b) => b.t)).map((b) => liHTML('sec.' + s.id + '.list.' + b.id, b, ed)).join('') + '</ul>';
   return '<section class="ps" data-sec="' + s.id + '">' + P('sec.' + s.id + '.title', s.title, null, 'h2') + body + '</section>';
 }
-function resumeHTML(D, f) {
+// ed: the on-screen page, with the controls for editing on it (the PDF hides them; the Word file never has them)
+function resumeHTML(D, f, ed) {
   D = D || DOC; f = f || fmtOf(D);
   return '<header class="ph-h">' + P('name', D.name, null, 'h1') + (D.headline ? P('headline', D.headline, 'hlt', 'div') : '') + '<div class="ct">' + contactHTML(D, f) + '</div></header>' +
-    orderedSections(D).filter((s) => !s.hidden).map((s) => sectionHTML(s, f)).join('');
+    orderedSections(D).filter((s) => !s.hidden).map((s) => sectionHTML(s, f, ed)).join('');
 }
 function coverHTML(D) {
   D = D || DOC; const c = D.cover || {}, today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -1540,9 +1596,14 @@ function applyFormat() {
   fitFrame();
 }
 function renderSheet() {
+  if (PGTYPED && EDIT && EDIT.el.isConnected && document.activeElement === EDIT.el) { PGTYPED = false; countPages(); return; }   // typing on the page: that line already shows it
+  PGTYPED = false; if (RAF) { cancelAnimationFrame(RAF); RAF = 0; }   // anything else (undo, an accepted rewrite) redraws the page now
+  if (EDIT && document.activeElement !== EDIT.el) pgLeft();
+  EDIT = null; pgHide();
   const keep = FOCUS, chg = $('#showChg'); if (chg) chg.hidden = !(DOC && DOC.meta.pre && TAB === 'resume');
-  $('#sheet').innerHTML = TAB === 'cover' ? coverHTML(DOC) : resumeHTML(DOC);
+  $('#sheet').innerHTML = TAB === 'cover' ? coverHTML(DOC) : resumeHTML(DOC, null, !READONLY);
   if (keep) { const el = $('#sheet [data-path="' + keep + '"]'); if (el) el.classList.add('sel'); }
+  if (PGON) pgOn(PGON);
   countPages();
 }
 // the page is laid out at true paper size and shrunk to fit the stage; page boundaries are marked
@@ -1812,6 +1873,186 @@ function editAction(a, v, t) {
   }
   return false;
 }
+
+/* ---------- editing on the page itself: type into a line, skills and bullet controls on hover, drag to reorder ---------- */
+let EDIT = null, PGB = null, PGT = 0, PGS = 0, DRAG = null, PGADD = null;   // the line being typed on the page; the bullet showing its toolbar; two timers; what's being dragged; an open "Add skill" box
+let PGTYPED = false, PGDOWN = false, PGLATER = false;   // a keystroke the page already shows; a mouse button is down; a redraw waiting for that click to land
+let PGTOUCH = false, PGWAS = null, PGON = null;   // phones: this tap is a touch; the bullet whose toolbar showed before it; the skills section showing its controls
+const PG_TYPE = /\.(b|list)\.[^.]+$|^sec\.[^.]+\.text$|\.row\.[^.]+\.value$/;   // typed on the page: bullets, list lines, the summary, a skills line
+const PG_LIST = /\.(b|list)\.[^.]+$/;
+const pgSib = (path, id) => path.replace(/[^.]+$/, id);   // another line in the same list
+function caretAt(el, n) { const t = el.firstChild, r = document.createRange(), s = window.getSelection(); if (t && t.nodeType === 3) r.setStart(t, Math.max(0, Math.min(n, t.length))); else r.selectNodeContents(el); r.collapse(true); s.removeAllRanges(); s.addRange(r); }
+function caretIn(el) { const s = window.getSelection(); if (!s.rangeCount || !el.contains(s.getRangeAt(0).startContainer)) return -1; const pre = document.createRange(); pre.selectNodeContents(el); pre.setEnd(s.getRangeAt(0).startContainer, s.getRangeAt(0).startOffset); return pre.toString().length; }
+function pgEnd() { if (!EDIT) return; const el = EDIT.el; EDIT = null; el.removeAttribute('contenteditable'); el.classList.remove('pged'); }   // stop typing there; the next redraw tidies the line
+function pgLeft() {   // the focus left the line on the page: it's no longer the focused line, unless its field in the panel took over
+  if (!EDIT) return; const ae = document.activeElement; if (FOCUS === EDIT.path && !(ae && ae.closest && ae.closest('#pbody'))) FOCUS = null; pgEnd();
+}
+function editOnPage(el, ev) {   // false: this line is edited in the panel instead
+  const path = el.getAttribute('data-path');
+  if (READONLY || TAB !== 'resume' || !PG_TYPE.test(path)) return false;
+  if (EDIT && EDIT.el === el) return true;
+  pgEnd();
+  const v = getField(path); let at = -1;
+  if (ev && el.textContent === v && document.caretRangeFromPoint) {   // the caret where the click was
+    const r = document.caretRangeFromPoint(ev.clientX, ev.clientY);
+    if (r && el.contains(r.startContainer)) { const pre = document.createRange(); pre.selectNodeContents(el); pre.setEnd(r.startContainer, r.startOffset); at = pre.toString().length; }
+  }
+  pgHide(); $$('#sheet .sel').forEach((x) => x.classList.remove('sel')); el.textContent = v;
+  el.setAttribute('contenteditable', 'plaintext-only'); if (el.contentEditable !== 'plaintext-only') el.setAttribute('contenteditable', 'true');
+  el.classList.add('pged'); EDIT = { path, el }; FOCUS = path;
+  el.focus(); caretAt(el, at < 0 ? v.length : at);
+  const pf = $('#pbody [data-path="' + path + '"]'), card = pf && (pf.closest('.entry') || pf.closest('.pc'));   // the panel follows along
+  $$('#pbody .on').forEach((x) => x.classList.remove('on')); if (card) card.classList.add('on');
+  return true;
+}
+function pgEditPath(path, at) { const el = $('#sheet [data-path="' + path + '"]'); if (el && editOnPage(el) && at >= 0) caretAt(el, at); }
+function onPageInput(e) {
+  if (!EDIT || e.target !== EDIT.el) return;
+  const v = EDIT.el.innerText.replace(/ /g, ' ').replace(/\s*\n\s*/g, ' ');
+  if (!setField(EDIT.path, v.trimStart())) return;
+  const pf = $('#pbody [data-path="' + EDIT.path + '"]'); if (pf) pf.value = getField(EDIT.path);
+  const li = EDIT.el.closest('li'), hl = EDIT.el.closest('.hl'); if (li) li.classList.toggle('pgempty', !v.trim()); if (hl) hl.classList.remove('hl');
+  delete HL[hlKey(EDIT.path)]; Object.keys(HL).forEach((k) => { if (EDIT.path.indexOf(k) > -1) delete HL[k]; });
+  PGTYPED = true; changed(EDIT.path);
+}
+function onPageKey(e) {
+  if (!EDIT || e.target !== EDIT.el || e.isComposing) return;
+  const path = EDIT.path, list = PG_LIST.test(path);
+  if ((e.ctrlKey || e.metaKey) && !e.altKey && /^[zy]$/i.test(e.key)) {   // the editor's own undo and redo, then carry on in the same line
+    e.preventDefault(); const back = /z/i.test(e.key) && !e.shiftKey;
+    if (back ? HI > 0 : HI < HIST.length - 1) { pgEnd(); if (back) undo(); else redo(); pgEditPath(path, -1); }
+    return;
+  }
+  if (e.key === 'Escape' || (e.key === 'Enter' && !list)) { e.preventDefault(); EDIT.el.blur(); return; }
+  if (e.key === 'Enter') {   // a new bullet after this one, carrying the words after the caret (a bullet is one line, so Shift+Enter does nothing)
+    e.preventDefault(); if (e.shiftKey) return;
+    const v = getField(path), c = caretIn(EDIT.el), at = c < 0 ? v.length : c, arr = arrOf(path), r = fieldRef(path), nb = { id: uid(), t: v.slice(at).trim() };
+    r.obj.t = v.slice(0, at).trimEnd(); arr.splice(arr.indexOf(r.obj) + 1, 0, nb);
+    pgEnd(); structural(); pgEditPath(pgSib(path, nb.id), 0); return;
+  }
+  if (e.key === 'Backspace' && list) {   // at the very start: an empty bullet goes, a written one joins the bullet before
+    const arr = arrOf(path), i = arr.indexOf(fieldRef(path).obj), prev = arr[i - 1], v = getField(path);
+    if (v && (!prev || !window.getSelection().isCollapsed || caretIn(EDIT.el) !== 0)) return;
+    e.preventDefault(); let at = -1;
+    if (prev && v) { const head = prev.t.replace(/\s+$/, ''); prev.t = head + (head ? ' ' : '') + v.trim(); at = head.length + (head ? 1 : 0); }
+    arr.splice(i, 1); pgEnd(); structural(); if (prev) pgEditPath(pgSib(path, prev.id), at);
+  }
+}
+function onPageBlur(e) {
+  if (!EDIT || e.target !== EDIT.el) return;
+  const el = EDIT.el;
+  setTimeout(() => {   // back to the finished page; when a click took the focus, the redraw waits for that click to land
+    if (!EDIT || EDIT.el !== el || document.activeElement === el) return;
+    pgLeft(); if (PGDOWN) PGLATER = true; else renderSheet();
+  }, 0);
+}
+function pgAfterClick() { PGDOWN = false; if (!PGLATER) return; PGLATER = false; const s = window.getSelection(); if (!EDIT && (!s || s.isCollapsed)) renderSheet(); }
+// the bullet toolbar, just above the line: + a bullet below, × delete, drag to move, ✨ improve with AI
+function pgOver(li, x) {   // onto another bullet: wait a moment, so the pointer can cross it on its way to the toolbar
+  clearTimeout(PGT); if (PGB && PGB.li === li) { clearTimeout(PGS); return; }
+  clearTimeout(PGS); if (PGB) PGS = setTimeout(() => pgShow(li, x), 160); else pgShow(li, x);
+}
+function pgShow(li, x) {
+  if (READONLY || DRAG || !li || !li.isConnected || (EDIT && li.contains(EDIT.el))) return;
+  const sp = li.querySelector('[data-path]'); if (!sp) return;
+  clearTimeout(PGT); clearTimeout(PGS); if (PGB && PGB.li === li) return;
+  $$('#sheet li.pghov').forEach((q) => q.classList.remove('pghov')); li.classList.add('pghov');
+  PGB = { li, path: sp.getAttribute('data-path'), x }; $('#pgbar').hidden = false; pgPlace();
+}
+function pgPlace() {   // just above the line (below it when there's no room above), near where the pointer came in
+  if (!PGB) return; if (!PGB.li.isConnected) { pgHide(); return; }
+  const bar = $('#pgbar'), r = PGB.li.getBoundingClientRect(), w = bar.offsetWidth, h = bar.offsetHeight, at = PGB.x == null ? r.left + Math.min(r.width * 0.4, 240) : PGB.x - w / 2;
+  bar.style.left = clamp(clamp(at, r.left, r.right - w), 8, window.innerWidth - w - 8) + window.scrollX + 'px';
+  bar.style.top = (r.top - h < 4 ? r.bottom : r.top - h) + window.scrollY + 'px';
+}
+function pgHideSoon() { clearTimeout(PGT); PGT = setTimeout(pgHide, 260); }
+function pgHide() { clearTimeout(PGT); clearTimeout(PGS); const bar = $('#pgbar'); if (bar) bar.hidden = true; $$('#sheet li.pghov').forEach((q) => q.classList.remove('pghov')); PGB = null; }
+// phones have no hover: the first tap on a bullet or a skills line brings up the controls, the next tap types there
+function pgPointer(e) { PGTOUCH = e.pointerType === 'touch'; PGWAS = PGB ? PGB.li : null; }
+function pgOn(sid) { PGON = sid; $$('#sheet .ps.pgon').forEach((x) => x.classList.remove('pgon')); const s = sid && $('#sheet .ps[data-sec="' + sid + '"]'); if (s) s.classList.add('pgon'); }
+function pgTap(e) {   // → true when the tap only brought up the controls
+  if (!PGTOUCH || READONLY || TAB !== 'resume') return false;
+  const li = e.target.closest('li[data-b]'), row = !li && e.target.closest('.skr'), sid = row ? row.closest('.ps').getAttribute('data-sec') : null, it = li || row;
+  if (sid !== PGON) pgOn(null);
+  if (!it || (EDIT && it.contains(EDIT.el)) || (li ? PGWAS === li : sid === PGON)) return false;
+  if (EDIT) { pgLeft(); renderSheet(); }
+  if (li) { pgHide(); pgShow($('#sheet li[data-b="' + li.getAttribute('data-b') + '"]')); } else pgOn(sid);
+  return true;
+}
+// "+ Add skill": a little box right on the line; Enter adds (commas add several) and opens the next one, Escape closes it
+function skAddBox(rowId) {
+  const r = $('#sheet .skr[data-row="' + rowId + '"]'), add = r && r.querySelector('.skadd'); if (!add) return;
+  const inp = document.createElement('input'); inp.className = 'pgin'; inp.placeholder = 'New skill'; inp.setAttribute('aria-label', 'New skill'); inp.maxLength = 60;
+  add.replaceWith(inp); r.classList.add('adding'); inp.focus();
+  let done = false;
+  const commit = (again) => {
+    if (done) return; done = true; if (PGADD === commit) PGADD = null;
+    if (!inp.isConnected) return;
+    const s = DOC.sections.find((x) => (x.rows || []).some((q) => q.id === rowId)), row = s && byId(s.rows, rowId); if (!row) { renderSheet(); return; }
+    const sv = skItems(row.value), have = sv.items.map((x) => x.toLowerCase()), typed = inp.value.split(/,\s*/).map((x) => x.trim()).filter(Boolean);
+    const add2 = typed.filter((x) => { const k = x.toLowerCase(); if (have.includes(k)) return false; have.push(k); return true; });
+    if (!add2.length) { if (typed.length) toast('Already on this line'); renderSheet(); return; }
+    row.value = sv.items.concat(add2).join(sv.sep) + sv.end; structural(); if (again) skAddBox(rowId);
+  };
+  PGADD = commit;
+  inp.addEventListener('keydown', (e) => { if (e.isComposing) return; if (e.key === 'Enter') { e.preventDefault(); commit(true); } else if (e.key === 'Escape') { e.preventDefault(); done = true; PGADD = null; renderSheet(); } });
+  inp.addEventListener('blur', () => setTimeout(() => commit(false), 0));
+}
+function pageAction(a, v, t) {
+  if (!/^pg-/.test(a)) return false;
+  if (READONLY) return true;
+  const pb = PGB; pgLeft(); if (PGADD) PGADD(false);   // finish what was being typed on the page first
+  switch (a) {
+    case 'pg-skx': case 'pg-skadd': case 'pg-skrm': {
+      const s = DOC.sections.find((x) => (x.rows || []).some((q) => q.id === v)), row = s && byId(s.rows, v); if (!row) return true;
+      if (a === 'pg-skadd') { skAddBox(v); return true; }
+      if (a === 'pg-skrm') { s.rows.splice(idx(s.rows, v), 1); structural(); toast('Category removed', { a: 'undo', label: 'Undo' }); return true; }
+      const sv = skItems(row.value), gone = sv.items.splice(+t.getAttribute('data-k'), 1)[0];
+      row.value = sv.items.length ? sv.items.join(sv.sep) + sv.end : ''; structural(); toast('Removed ' + (gone || 'the skill'), { a: 'undo', label: 'Undo' }); return true;
+    }
+    case 'pg-badd': case 'pg-bdel': case 'pg-bai': {
+      if (!pb || !fieldRef(pb.path)) return true;
+      const path = pb.path, arr = arrOf(path), i = arr.indexOf(fieldRef(path).obj), sp = $('#sheet [data-path="' + path + '"]'), rect = ((sp && sp.closest('li')) || sp || document.body).getBoundingClientRect(); pgHide();
+      if (a === 'pg-badd') { const nb = { id: uid(), t: '' }; arr.splice(i + 1, 0, nb); structural(); pgEditPath(pgSib(path, nb.id), 0); return true; }
+      if (a === 'pg-bdel') { arr.splice(i, 1); structural(); toast('Bullet removed', { a: 'undo', label: 'Undo' }); return true; }
+      const val = getField(path); if (val.trim().length < 3) { toast('Type the bullet first.'); return true; }
+      SEL = { path, start: 0, end: val.length, text: val, x: rect.left, y: rect.bottom }; showSel(); selRun('improve'); return true;   // the usual review: nothing changes until Accept
+    }
+  }
+  return false;
+}
+// drag a skills line (its handle) or a bullet (the toolbar's handle) to a new place in the same list
+function pgDragStart(e) {
+  const h = e.target.closest && e.target.closest('.skdrag, .pgdrag'); if (!h || READONLY) return;
+  if (h.classList.contains('skdrag')) DRAG = { kind: 'row', id: h.getAttribute('data-row') };
+  else if (PGB) DRAG = { kind: 'b', path: PGB.path, id: PGB.path.split('.').pop() };
+  else return;
+  e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', DRAG.id); } catch (er) {}
+  if (DRAG.kind === 'b') setTimeout(() => { $('#pgbar').hidden = true; }, 0);
+}
+function pgTarget(e) {   // the line being dragged over, and whether the drop goes after it
+  if (!DRAG) return null;
+  const el = DRAG.kind === 'row' ? e.target.closest && e.target.closest('#sheet .skr') : e.target.closest && e.target.closest('#sheet li[data-b]'); if (!el) return null;
+  let ok = false;
+  if (DRAG.kind === 'row') { const s = DOC.sections.find((x) => (x.rows || []).some((q) => q.id === DRAG.id)); ok = !!(s && byId(s.rows, el.getAttribute('data-row'))); }
+  else { const sp = el.querySelector('[data-path]'); ok = !!sp && arrOf(sp.getAttribute('data-path')) === arrOf(DRAG.path); }
+  if (!ok) return null;
+  const r = el.getBoundingClientRect(); return { el, after: e.clientY > r.top + r.height / 2 };
+}
+function pgDragOver(e) {
+  const T = pgTarget(e); $$('#sheet .pg-dropb, #sheet .pg-dropa').forEach((x) => x.classList.remove('pg-dropb', 'pg-dropa')); if (!T) return;
+  e.preventDefault(); e.dataTransfer.dropEffect = 'move'; T.el.classList.add(T.after ? 'pg-dropa' : 'pg-dropb');
+}
+function pgDrop(e) {
+  const T = pgTarget(e); if (!T) return; e.preventDefault();
+  let arr, from, to;
+  if (DRAG.kind === 'row') { arr = DOC.sections.find((x) => (x.rows || []).some((q) => q.id === DRAG.id)).rows; from = idx(arr, DRAG.id); to = idx(arr, T.el.getAttribute('data-row')); }
+  else { arr = arrOf(DRAG.path); from = idx(arr, DRAG.id); to = idx(arr, T.el.getAttribute('data-b')); }
+  if (T.after) to++; if (from < to) to--;
+  DRAG = null; if (from < 0 || to < 0 || from === to) { renderSheet(); return; }
+  arr.splice(to, 0, arr.splice(from, 1)[0]); structural();
+}
+function pgDragEnd() { DRAG = null; $$('#sheet .pg-dropb, #sheet .pg-dropa').forEach((x) => x.classList.remove('pg-dropb', 'pg-dropa')); pgHide(); }
 
 /* ---- format.js ---- */
 /* =====================================================================
@@ -2204,7 +2445,7 @@ const clientRules = () => (TEAM && CLIENT && CLIENT.optimise_rules) ? String(CLI
 const XI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 function optTargets() { const out = []; DOC.sections.forEach((s) => { if (s.hidden || s.type !== 'entries' || s.k === 'education' || s.k === 'projects') return; s.items.forEach((it) => { if (it.bullets.some((b) => b.t.trim())) out.push({ key: s.id + ':' + it.id, sec: s, it }); }); }); return out; }   // never projects, education or certifications
 function jobFit() { if (!JOB) return null; const low = docText().toLowerCase(), terms = skillsIn(jobText()); const have = terms.filter((k) => inText(k, low)); return { have, miss: terms.filter((k) => !have.includes(k)) }; }
-function openOptimise() {
+function openOptimise(preset) {   // preset: the team portal's "Optimise for this job" - the client's usual choices come ticked
   if (!DOC || READONLY) return;
   hideSel(); setDocTab('resume');
   const pref = lsGet(OPT_KEY, {}) || {};
@@ -2215,38 +2456,44 @@ function openOptimise() {
   const hasSum = DOC.sections.some((x) => x.k === 'summary' && !x.hidden && String(x.text || '').trim()), jt = JOB ? cleanTitle(JOB.title) : '';
   const what = { summary: hasSum ? 'Rewrite it around this job’s keywords' : 'Write one from the experience — there isn’t one yet', headline: jt ? 'Set the title under the name to “' + jt + '”' : 'Match the title under the name to the job',
     location: JOB && JOB.loc ? 'Show you’re open to relocating to ' + JOB.loc : 'Show you’re open to relocating', experience: nb ? 'Tailor ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' across ' + tg.length + ' role' + (tg.length > 1 ? 's' : '') + ' to the job' : 'Add bullets to a role first', skills: 'Find skills the job asks for that aren’t listed' };
-  modalOpen('<div class="om sm" role="dialog" aria-modal="true" aria-labelledby="omT"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
+  modalOpen('<div class="om sm opt" role="dialog" aria-modal="true" aria-labelledby="omT"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
     '<div class="omh"><h2 id="omT">Optimise for a job</h2>' + (JOB ? '<p class="omsub"><b>' + esc(jt || 'This job') + '</b>' + (JOB.company ? ' at <b>' + esc(JOB.company) + '</b>' : '') + '</p>' : '<p class="omsub">Paste the job description, then choose what to tailor.</p>') + '</div>' +
     '<div class="omb">' + (JOB ? '' : '<div class="omjd"><textarea id="optJd" placeholder="Paste the whole job description here"></textarea></div>') +
-    // Sync: everything below, more deeply - the posting's words, priorities and title, and each role's bullets in this job's order
-    '<button type="button" class="orow osync" data-a="opt-sync" aria-pressed="false"><span class="ol"><b>' + I_SPARK + 'Sync to this job</b><small>Everything below, more deeply: the posting’s words, priorities and title, and each role’s bullets in the order this job cares about. The facts stay as they are.</small></span><i class="cb" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i></button>' +
-    '<div class="ohd"><span>Or choose what to tailor</span><button type="button" data-a="opt-all">Select all</button></div>' +
+    '<div class="ohd"><span>Choose what to tailor</span><button type="button" data-a="opt-all">Select all</button></div>' +
     '<div class="orows">' + rows.map((r) => '<button type="button" class="orow" data-a="opt-t" data-v="' + r[0] + '" aria-pressed="false"><span class="ol"><b>' + r[1] + '</b><small>' + esc(what[r[0]] || '') + '</small></span><i class="cb" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i></button>').join('') + '</div>' +
     '<div class="omins"><label class="lbl" for="optIns">Special instructions (optional)</label><textarea id="optIns" maxlength="400" placeholder="e.g. Keep each bullet under 22 words; don’t touch the first role.">' + esc(pref.ins || '') + '</textarea></div></div>' +
-    '<div class="omf"><span id="optHint">Pick at least one above.</span><button class="btn" type="button" data-a="fact">Fact check only</button><button class="btn omb2 ats" type="button" data-a="opt-go" id="optGo" disabled><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="optGoT">Optimise</span></b><small>Tailor what you picked to this job</small></button></div></div>');
+    // Sync is its own button: one click, every part at once and more deeply - the posting's words, priorities and title, and each role's bullets in this job's order
+    '<div class="omf"><button class="btn" type="button" data-a="fact">Fact check only</button><span id="optHint"></span>' +
+      '<button class="btn omb2 osyncb" type="button" data-a="opt-sync" id="optSync" title="Everything at once, more deeply: the posting’s words, priorities and title, and each role’s bullets in the order this job cares about. The facts stay as they are."><b>' + I_SPARK + '<span>Sync to this job</span></b><small>Everything, in the job’s words and order</small></button>' +
+      '<button class="btn omb2 ats" type="button" data-a="opt-go" id="optGo" disabled><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="optGoT">Optimise</span></b><small>Tailor what you picked to this job</small></button></div></div>');
+  if (preset) optPreset();
+}
+function optPreset() {   // the choices last used for this client (the same ones the portal's list uses), else summary, experience and skills
+  const s = (lsGet(OPT_KEY, {}) || {}).sel || { summary: 1, experience: 1, skills: 1 };
+  $$('.orows .orow').forEach((r) => { if (s[r.getAttribute('data-v')]) optPick(r, true); });
 }
 function optPick(row, on) {
   const v = row.getAttribute('data-v'); OPT.sel[v] = on; row.classList.toggle('on', on); row.setAttribute('aria-pressed', on ? 'true' : 'false');
-  if (!on && OPT.sync) optSyncCard(false);   // Sync means all of them
-  const n = Object.keys(OPT.sel).filter((k) => OPT.sel[k]).length, go = $('#optGo'), hint = $('#optHint'), all = $('[data-a=opt-all]');
-  if (go) { go.disabled = !n; const gt = $('#optGoT'); if (gt) gt.textContent = OPT.sync ? 'Sync to this job' : n ? 'Optimise · ' + n : 'Optimise'; }
-  if (hint) hint.textContent = n ? '' : 'Pick at least one above.';
+  const n = Object.keys(OPT.sel).filter((k) => OPT.sel[k]).length, go = $('#optGo'), all = $('[data-a=opt-all]');
+  if (go) { go.disabled = !n; const gt = $('#optGoT'); if (gt) gt.textContent = n ? 'Optimise · ' + n : 'Optimise'; }
   if (all) all.textContent = n === $$('.orows .orow').length ? 'Clear all' : 'Select all';
 }
-function optSyncCard(on) { OPT.sync = on; const c = $('.osync'); if (c) { c.classList.toggle('on', on); c.setAttribute('aria-pressed', on ? 'true' : 'false'); } }
-function optSync(on) { optSyncCard(on); $$('.orows .orow').forEach((r) => optPick(r, on)); }
-function runOptimise() {
-  const sel = OPT.sel, ins = (($('#optIns') || {}).value || (OPT.ins || '')).trim(); OPT.ins = ins;
+function runOptimise(sync) {   // sync: "Sync to this job" - every part at once; the ticks stay as they were, for next time
+  const ins = (($('#optIns') || {}).value || (OPT.ins || '')).trim(); OPT.ins = ins;
   if (!JOB) {
     const jd = (($('#optJd') || {}).value || '').trim();
     if (jd.length < 80) { toast('Paste the full job description first.'); return; }
     const first = jd.split(/\n/)[0].trim(), m = /^(.{3,80}?)\s+(?:[—–|@-]|at)\s+(.{2,60})$/.exec(first);
     JOB = DOC.meta.job = { title: m ? m[1].trim() : first.length <= 90 ? first : '', company: m ? m[2].trim() : '', text: jd.slice(0, 15000) };
   }
+  if (sync) OPT.sel = Object.keys(OPT.sel).reduce((o, k) => { o[k] = true; return o; }, {});
+  OPT.sync = !!sync;
+  const sel = OPT.sel;
   if (!Object.keys(sel).some((k) => sel[k])) { toast('Pick at least one thing to optimise.'); return; }
   sel.sync = !!OPT.sync;
   if (TEAM) saveVersion('Before Optimise');   // one click of Restore undoes the whole Optimise
-  const keep = {}; Object.keys(sel).forEach((k) => { keep[k] = sel[k] ? 1 : 0; }); lsSet(OPT_KEY, { sel: keep, ins });
+  const keep = {}; if (sync) Object.assign(keep, (lsGet(OPT_KEY, {}) || {}).sel || {}); else Object.keys(sel).forEach((k) => { if (k !== 'sync') keep[k] = sel[k] ? 1 : 0; });
+  delete keep.sync; lsSet(OPT_KEY, { sel: keep, ins });   // the ticks to remember: a Sync leaves them as they were
   const P = optPlan(sel), nb = P.nb;
   const steps = [['job', 'Reading the job description and its requirements'], ['write', sel.sync ? 'Syncing the summary, title' + (nb ? ', ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' and their order' : '') + ' and skills to the job'
     : nb ? 'Rewording ' + nb + ' bullet' + (nb > 1 ? 's' : '') + (sel.summary ? ' and the summary' : '') + ' for the job' : 'Tailoring for the job'], ['check', 'Checking every change against the facts']];
@@ -2421,8 +2668,10 @@ function applyRow(i) {
     if (it && keep.every(Boolean)) it.bullets = keep.concat(it.bullets.filter((b) => !r.ids.includes(b.id)));
   }
   if (r.type === 'skorder') { const s = secById(r.sid); if (s) r.rows.forEach((q) => { const w = byId(s.rows, q.id); if (w && w.value === q.orig) w.value = q.sug; }); }
-  r.st = 'a'; markRow(i, 'a'); return true;
+  r.st = 'a'; markRow(i, 'a'); markOptimised(); return true;
 }
+// an Optimise suggestion was accepted: this copy is now tailored to the job (the team portal's card says so only from here on)
+function markOptimised() { DOC.meta.optimised = { at: Date.now(), job: JOB ? [cleanTitle(JOB.title), JOB.company].filter(Boolean).join(' at ') : '' }; }
 function addSkill(term) {
   let s = DOC.sections.find((x) => x.k === 'skills');
   if (!s) { s = newSection('skills'); s.rows.push({ id: uid(), label: 'Skills', value: '' }); const at = DOC.sections.findIndex((x) => x.k === 'education'); DOC.sections.splice(at > -1 ? at + 1 : DOC.sections.length, 0, s); }
@@ -2430,7 +2679,7 @@ function addSkill(term) {
   if (!row) { row = { id: uid(), label: 'Skills', value: '' }; s.rows.push(row); }
   row.value = row.value ? row.value.replace(/[.\s]+$/, '') + ', ' + term : term; DOC.meta.added = uniq((DOC.meta.added || []).concat([term]));
 }
-function applySkills() { if (OPT.skillsDone) return 0; const picked = $$('.rsk input:checked').map((x) => x.getAttribute('data-sk')); picked.forEach(addSkill); if (picked.length) { OPT.skillsDone = true; $$('.rsk input').forEach((x) => { x.disabled = true; }); } return picked.length; }
+function applySkills() { if (OPT.skillsDone) return 0; const picked = $$('.rsk input:checked').map((x) => x.getAttribute('data-sk')); picked.forEach(addSkill); if (picked.length) { OPT.skillsDone = true; markOptimised(); $$('.rsk input').forEach((x) => { x.disabled = true; }); } return picked.length; }
 function finishOptimise() {
   const n = applySkills(), a = OPT ? OPT.rows.filter((r) => r.st === 'a').length + n : 0;
   endPending(); modalClose(); if (a) { SHOWCHG = true; const c = $('#chgOn'); if (c) c.checked = true; structural(); toast(a + ' change' + (a > 1 ? 's' : '') + ' applied — the changed words are marked on the page', { a: 'undo', label: 'Undo' }); const first = $('#sheet .hl'); if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' }); if (PTAB === 'check') renderPanel(); }
@@ -2465,7 +2714,7 @@ function optAction(a, v, t) {
     case 'optimize': openOptimise(); return true;
     case 'm-close': endPending(); modalClose(); return true;
     case 'opt-t': optPick(t, t.getAttribute('aria-pressed') !== 'true'); return true;
-    case 'opt-sync': optSync(!OPT.sync); return true;
+    case 'opt-sync': runOptimise(true); return true;
     case 'opt-all': { const rows = $$('.orows .orow'), all = rows.every((r) => r.classList.contains('on')); rows.forEach((r) => optPick(r, !all)); return true; }
     case 'opt-go': runOptimise(); return true;
     case 'r-ok': { if (applyRow(+v)) { countRows(); structural(); } return true; }
@@ -2561,7 +2810,7 @@ function teamSync() {   // save to the draft application (only while it's a draf
                      : sb.from('client_resumes').update({ doc: DOC, text }).eq('id', TEAM.resume).select('id');
   return p.then((r) => {
     if (r.error) throw r.error;
-    if (!r.data || !r.data.length) { READONLY = true; TEAM_DIRTY = false; status('Not saved — already sent', true); toast('This application was marked as applied, so its resume can’t change any more. Reload to see exactly what was sent.'); return; }
+    if (!r.data || !r.data.length) { READONLY = true; document.body.classList.add('ro'); pgEnd(); pgHide(); TEAM_DIRTY = false; status('Not saved — already sent', true); toast('This application was marked as applied, so its resume can’t change any more. Reload to see exactly what was sent.'); return; }
     if (DOC.meta.saved === saving) TEAM_DIRTY = false;
     status(TEAM.app ? 'Saved for this application' : 'Saved to ' + ((CLIENT && CLIENT.full_name) || 'the client') + '’s resumes');
     if (TEAM_BC) try { TEAM_BC.postMessage({ client: TEAM.client, app: TEAM.app, resume: TEAM.resume }); } catch (e) {}
@@ -2603,7 +2852,7 @@ function teamBoot() {
       const bq = row.base_resume_id ? sb.from('client_resumes').select('name,doc,text').eq('id', row.base_resume_id).maybeSingle() : Promise.resolve({ data: null });
       return bq.then((b) => {   // a new draft starts from the base resume; from now on the application has its own copy
         const base = b && b.data;
-        if (base && base.doc && base.doc.sections) { const D = JSON.parse(JSON.stringify(base.doc)); D.meta = D.meta || {}; D.meta.job = null; D.meta.owner = null; delete D.meta.review; delete D.meta.optPending; return startDoc(D); }
+        if (base && base.doc && base.doc.sections) { const D = JSON.parse(JSON.stringify(base.doc)); D.meta = D.meta || {}; D.meta.job = null; D.meta.owner = null; delete D.meta.review; delete D.meta.optPending; delete D.meta.pre; delete D.meta.optimised; return startDoc(D); }   // not tailored to this job yet
         // a batch can't stop to have a resume read and checked, or one uploaded
         if (BATCH) return batchTell('fail', { why: base ? 'Open ' + (base.name || 'the base resume') + ' in the editor once (Resumes tab), then Retry' : 'No resume yet — add one on the Resumes tab, then Retry' });
         if (base && base.text) return fromSource({ kind: 'text', name: base.name || 'resume', text: base.text, at: Date.now() });
@@ -2770,13 +3019,14 @@ document.addEventListener('click', (e) => {
     case 'v-restore': return restoreVersion(+v);
   }
   if (!DOC) return;
-  if (editAction(a, v, t) || formatAction(a, v, t) || optAction(a, v, t)) return;
+  if (editAction(a, v, t) || formatAction(a, v, t) || optAction(a, v, t) || pageAction(a, v, t)) return;
 });
 document.addEventListener('submit', (e) => { if (e.target.matches('[data-a=sel-ask]')) { e.preventDefault(); selRun('custom'); } });
-document.addEventListener('input', (e) => { if (e.target.closest('#pbody')) { onFieldInput(e); onRangeInput(e); } if (e.target.id === 'rname' && DOC) { DOC.meta.srcName = e.target.value.trim(); changed('rname'); } });
+document.addEventListener('input', (e) => { if (e.target.closest('#pbody')) { onFieldInput(e); onRangeInput(e); } if (e.target.closest('#sheet')) onPageInput(e); if (e.target.id === 'rname' && DOC) { DOC.meta.srcName = e.target.value.trim(); changed('rname'); } });
 document.addEventListener('change', (e) => { if (e.target.closest('#pbody')) { onRangeChange(e); onSelectChange(e); } if (e.target.closest('.rsk')) countRows(); });
 document.addEventListener('focusin', (e) => { if (e.target.closest('#pbody')) onFieldFocus(e); });
 document.addEventListener('keydown', (e) => {
+  if (EDIT && e.target === EDIT.el) { onPageKey(e); if (e.defaultPrevented) return; }   // typing on the page: Enter, Escape, Backspace
   const mod = e.ctrlKey || e.metaKey;
   if (mod && !e.altKey && (e.key === 'z' || e.key === 'Z') && DOC && !e.target.closest('[contenteditable]')) { if (e.target.matches('input,textarea') && !e.shiftKey && HTYPING) { /* let the field's own undo run first */ } else { e.preventDefault(); e.shiftKey ? redo() : undo(); return; } }
   if (mod && (e.key === 'y' || e.key === 'Y') && DOC) { e.preventDefault(); redo(); return; }
@@ -2785,12 +3035,22 @@ document.addEventListener('keydown', (e) => {
   if (e.target.closest('#pbody')) onFieldKey(e);
 });
 document.addEventListener('paste', (e) => { if (e.target.closest('#pbody')) onFieldPaste(e); });
-document.addEventListener('mouseup', () => setTimeout(selCheck, 10));
+document.addEventListener('mouseup', () => { setTimeout(selCheck, 10); setTimeout(pgAfterClick, 0); });
 document.addEventListener('keyup', (e) => { if (e.shiftKey || /^Arrow|^Shift/.test(e.key)) setTimeout(selCheck, 10); });
-document.addEventListener('mousedown', (e) => { if (e.target.closest('#selbar') && !e.target.matches('input')) e.preventDefault(); });   // keep the text selected while using the bar
-$('#sheet').addEventListener('click', (e) => { const el = e.target.closest('[data-path]'); if (el && DOC && !selFrom()) jumpTo(el.getAttribute('data-path')); });
+document.addEventListener('mousedown', (e) => { PGDOWN = true; if ((e.target.closest('#selbar') && !e.target.matches('input')) || e.target.closest('#sheet [data-a], #pgbar button')) e.preventDefault(); });   // keep the text selected while using the bar; the page's own controls don't end typing on the page
+document.addEventListener('pointerdown', pgPointer);
+// click a line on the page: bullets, the summary and skills are typed right there; anything else opens its field in the panel
+$('#sheet').addEventListener('click', (e) => { if (e.target.closest('[data-a], .pgin') || pgTap(e)) return; const el = e.target.closest('[data-path]'); if (el && DOC && !selFrom() && !editOnPage(el, e)) jumpTo(el.getAttribute('data-path')); });
+$('#sheet').addEventListener('focusout', onPageBlur);
+$('#sheet').addEventListener('mouseover', (e) => { const li = e.target.closest && e.target.closest('li[data-b]'); if (li) pgOver(li, e.clientX); });
+$('#sheet').addEventListener('mouseout', (e) => { const li = e.target.closest && e.target.closest('li[data-b]'); if (li && !li.contains(e.relatedTarget)) { clearTimeout(PGS); pgHideSoon(); } });
+$('#pgbar').addEventListener('mouseenter', () => { clearTimeout(PGT); clearTimeout(PGS); }); $('#pgbar').addEventListener('mouseleave', pgHideSoon);
+window.addEventListener('scroll', (e) => { if (PGB && !DRAG && (e.target === document || (e.target.contains && e.target.contains($('#sheet'))))) pgPlace(); }, { passive: true, capture: true });   // the toolbar follows the page; the panel scrolling doesn't touch it
+document.addEventListener('dragstart', pgDragStart); $('#sheet').addEventListener('dragover', pgDragOver); $('#sheet').addEventListener('drop', pgDrop); document.addEventListener('dragend', pgDragEnd);
 $('#fileIn').addEventListener('change', (e) => { if (e.target.files[0]) readUpload(e.target.files[0]); e.target.value = ''; });
 document.addEventListener('visibilitychange', () => { if (document.hidden && DOC && TEAM && TEAM_DIRTY) teamSync(); });
+// the portal's "Optimise for this job" on a tab that's already open only changes the address's #
+window.addEventListener('hashchange', () => { if (location.hash !== '#optimize' || !DOC) return; try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} if ($('#modal').hidden) openOptimise(!!(TEAM && TEAM.app)); });
 boot();
 
 </script>
