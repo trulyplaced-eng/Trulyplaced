@@ -1033,7 +1033,7 @@ var CONFIG = {
 };
 
 var LIVE = !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
-var APP_VERSION = '2026-10-28.1';   // also in /version.txt — lets us check which version the live site is serving
+var APP_VERSION = '2026-10-29.1';   // also in /version.txt — lets us check which version the live site is serving
 
 /* =====================================================================
    utils
@@ -1302,7 +1302,10 @@ function afterSignIn(u, silent){
         sb.from('profiles').select('*').eq('id', u.id).maybeSingle(),
         sb.from('tracked_jobs').select('*').eq('user_id', u.id).order('updated_at', {ascending:false}),
         sb.rpc('is_admin').then(function(r){ return r; }, function(){ return {data:false}; }),
-        sb.rpc('portal_whoami').then(function(r){ return r; }, function(){ return {data:null}; })   // team portal / client dashboard links
+        sb.rpc('portal_whoami').then(function(r){   // team portal link; a client goes straight to their own workspace
+          if(r && !r.error && r.data && r.data.client && !r.data.team){ state.portal = r.data; cacheAccount(); toClientPortal(); }
+          return r;
+        }, function(){ return {data:null}; })
       ]).then(function(rs){
         state.isAdmin = !!(rs[2] && rs[2].data === true);
         state.portal = (rs[3] && !rs[3].error && rs[3].data) || null;
@@ -1873,6 +1876,15 @@ var NAV = [
   {id:'editor', label:'Editor', icon:I.spark, href:'/editor.html'},
   {id:'settings', label:'Settings', icon:I.set}
 ];
+// Clients of the done-for-you service have their own workspace (portal.html: My applications and Settings). The job
+// board's pages — jobs, resume, editor, the "let us apply for you" offer — aren't for them, so they never see this page.
+var LEAVING = false;
+function isClient(){ return !!(state.user && state.portal && state.portal.client && !state.portal.team); }   // the team keeps the job board
+function toClientPortal(){
+  if(LEAVING) return; LEAVING = true;
+  try{ document.documentElement.style.visibility = 'hidden'; }catch(e){}   // no flash of the job board on the way out
+  location.replace('/portal.html');
+}
 function navItems(){
   var n = state.isAdmin ? NAV.concat([{id:'leads', label:'Leads', icon:I.team}, {id:'admin', label:'Add jobs', icon:I.plus}]) : NAV;
   var p = state.user && state.portal;   // the done-for-you service: each client's dashboard and the team portal (sidebar only)
@@ -1896,6 +1908,7 @@ function parseRoute(){
 function renderNav(){
   var a = function(n){ return '<a href="'+(n.href || '#'+n.id)+'" class="'+(route.name===n.id?'on':'')+'">'+n.icon+'<span>'+n.label+'</span></a>'; };
   $('#nav').innerHTML = navItems().map(a).join(''); $('#tabbar').innerHTML = navItems().filter(function(n){ return !n.side; }).map(a).join('');
+  var td = $('.tired'); if(td) td.hidden = isClient();   // never offer the service to someone who already has it
   $('#pageTitle').textContent = {dashboard:'Dashboard', jobs:'Job Board', resume:'My Resume', settings:'Settings', admin:'Add jobs', leads:'Leads'}[route.name];
   var w = $('#who');
   if(state.user){
@@ -1935,6 +1948,8 @@ function inAppHelp(){
 }
 function updateGate(){ if(!state.user && state.ready && lastView === '_gate'){ var v = $('#view'); if(v) v.innerHTML = gateHTML(); } }
 function render(soft){
+  if(LEAVING) return;
+  if(isClient()) return toClientPortal();
   var prev = route.name;
   route = parseRoute();
   renderNav();

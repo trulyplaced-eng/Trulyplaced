@@ -1333,6 +1333,13 @@ function backLink() {
 function boot() {
   if (TEAM) return teamBoot();
   if (LIVE ? !SESSION0 : !PREVIEW) { showGate(); return; }
+  // a client of the done-for-you service: their team looks after the resume, and their workspace is portal.html
+  const acct = lsGet('tp_acct', null);
+  if (!EMBED && SESSION0 && acct && acct.id === SESSION0.user.id && acct.portal && acct.portal.client && !acct.portal.team) { location.replace('/portal.html'); return; }
+  if (!EMBED && SESSION0) sbReady().then((c) => c && c.rpc('portal_whoami')).then((r) => {   // no copy on this device: ask once
+    const w = r && !r.error && r.data;
+    if (w && w.client && !w.team) location.replace('/portal.html');
+  }).catch(() => {});
   let saved = lsGet(STORE_KEY, null);
   const other = !!(saved && saved.meta && saved.meta.owner && USER && saved.meta.owner !== USER.id);
   if (other) saved = null;   // another account used this browser: don't show them that person's resume

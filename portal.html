@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Your applications | TrulyPlaced</title>
+<title>My applications | TrulyPlaced</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0938d5">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='116' fill='%230938d5'/%3E%3Cpath d='M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z' fill='%23fff'/%3E%3Cpath d='M205 200l37 36 76-88' fill='none' stroke='%230938d5' stroke-width='30' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -14,52 +14,200 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <link rel="stylesheet" href="/portal.css?v=2026-10-28.1">
 <style>
-.hero{background:linear-gradient(150deg,#0b2fb7,#0938d5 55%,#2a5bff);color:#fff;border-radius:20px;padding:24px;position:relative;overflow:hidden}
-.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.08)}
-.hero .hi{font-size:14px;opacity:.9}
-.hero .big{font-family:Poppins;font-weight:700;font-size:clamp(28px,5vw,40px);line-height:1.1;margin-top:6px;letter-spacing:-.02em}
-.hero .big span{font-size:.5em;font-weight:600;opacity:.85}
-.hero .prog{background:rgba(255,255,255,.22);height:12px;margin-top:14px}
-.hero .prog i{background:#fff}
-.hero .left{font-size:13.5px;margin-top:8px;opacity:.92}
-.hstats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
-.hstat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
-.hstat b{display:block;font-family:Poppins;font-size:20px;color:var(--ink);line-height:1.2}
-.hstat span{font-size:12.5px;color:var(--muted)}
-.sec{display:flex;align-items:flex-end;gap:10px;margin:26px 0 0}
-.sec h2{font-size:18px;flex:1}
+/* The client's workspace: the same shell as the job board (sidebar, top bar, phone tab bar), with only what a client needs. */
+:root{--side:252px}
+html,body{height:100%}
+.ws{display:grid;grid-template-columns:var(--side) minmax(0,1fr);min-height:100vh;   /* the sidebar's white column runs the full height of the page */
+  background:linear-gradient(90deg,#fff 0,#fff calc(var(--side) - 1px),var(--line) calc(var(--side) - 1px),var(--line) var(--side),transparent var(--side))}
+.sb{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;padding:20px 14px 16px}
+.sb .brand{padding:4px 8px 22px;font-size:18px}
+.sb .brand svg{width:32px;height:32px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:10px;color:var(--body);text-decoration:none;font-weight:500;font-size:14.5px}
+.nav a svg{width:20px;height:20px;flex:none;opacity:.85}
+.nav a:hover{background:var(--bg);color:var(--ink)}
+.nav a.on{background:var(--blue-soft);color:var(--blue);font-weight:600}
+.nav a.on svg{opacity:1}
+.nav a em{margin-left:auto;font-style:normal;font-size:12px;font-weight:600;color:var(--blue);background:#fff;border:1px solid var(--blue-line);border-radius:999px;padding:1px 8px}
+.sb .grow{flex:1}
+.plancard{border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;background:linear-gradient(165deg,#f5f7ff,#fff)}
+.plancard .pn{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.plancard b{font-size:13.5px;color:var(--ink)}
+.plancard .lab{display:block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.plancard .prog{margin:10px 0 6px;height:6px}
+.plancard small{font-size:12px;color:var(--muted)}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;background:var(--ok-soft);color:var(--ok)}
+.tag::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.tag.paused{background:var(--warn-soft);color:var(--warn)}
+.tag.done{background:var(--blue-soft);color:var(--blue)}
+.sb-foot a,.sb-foot button{display:flex;align-items:center;gap:10px;width:100%;min-height:40px;padding:0 12px;color:var(--muted);text-decoration:none;font-size:13.5px;border-radius:9px;border:0;background:none;text-align:left}
+.sb-foot a:hover,.sb-foot button:hover{background:var(--bg);color:var(--ink)}
+.sb-foot svg{width:18px;height:18px;flex:none}
+
+.content{min-width:0;display:flex;flex-direction:column}
+.top{position:sticky;top:0;z-index:20;height:64px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 28px}
+.top h1{font-family:Poppins;font-weight:600;font-size:17px;color:var(--ink);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .m-brand{display:none}
+.who{display:flex;align-items:center;gap:12px;min-width:0}
+.who .nm{text-align:right;line-height:1.3;font-size:12.5px;color:var(--muted);min-width:0}
+.who .nm b{display:block;color:var(--ink);font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px}
+.who .av{text-decoration:none}
+.view{width:100%;max-width:1120px;margin:0 auto;padding:26px 28px 64px}
+.hint{font-size:13px;color:var(--muted)}
+
+/* ---------- My applications ---------- */
+.greet{display:flex;align-items:flex-end;justify-content:space-between;gap:14px 20px;flex-wrap:wrap;margin-bottom:18px}
+.greet h2{font-size:25px;letter-spacing:-.02em}
+.greet p{color:var(--muted);font-size:14px;margin-top:3px;max-width:60ch}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:7px;min-height:32px;padding:0 13px;border-radius:999px;font-size:12.5px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.badge svg{width:15px;height:15px;color:var(--blue)}
+.hero{position:relative;overflow:hidden;border-radius:20px;padding:26px 28px;color:#fff;display:flex;align-items:center;gap:28px;
+  background:radial-gradient(120% 140% at 100% 0%,#3d6bff 0%,rgba(61,107,255,0) 55%),linear-gradient(135deg,#0a2aa6 0%,#0938d5 55%,#1f4fff 100%);
+  box-shadow:0 24px 48px -28px rgba(9,56,213,.75)}
+.hero>div:first-child{flex:1;min-width:0}
+.hero .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.8}
+.hero .big{font-family:Poppins;font-weight:700;line-height:1.05;margin-top:8px;letter-spacing:-.02em}
+.hero .big b{font-size:clamp(40px,5.6vw,58px)}
+.hero .big span{font-size:clamp(15px,1.8vw,19px);font-weight:600;opacity:.88}
+.hbar{height:10px;border-radius:99px;background:rgba(255,255,255,.22);overflow:hidden;margin-top:16px}
+.hbar i{display:block;height:100%;border-radius:99px;background:#fff;box-shadow:0 0 18px rgba(255,255,255,.55);transition:width .6s}
+.hfoot{display:flex;gap:6px 18px;flex-wrap:wrap;margin-top:10px;font-size:13.5px;opacity:.92}
+.hfoot span+span::before{content:"·";margin-right:18px;opacity:.6}
+.ring{position:relative;width:132px;height:132px;flex:none}
+.ring::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(#fff calc(var(--p) * 1%),rgba(255,255,255,.2) 0);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 11px),#000 calc(100% - 10px));mask:radial-gradient(farthest-side,transparent calc(100% - 11px),#000 calc(100% - 10px))}
+.ring span{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-size:12px;line-height:1.25;opacity:.92}
+.ring b{display:block;font-family:Poppins;font-size:28px;font-weight:700}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.kpi .ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue);margin-bottom:12px}
+.kpi .ic svg{width:18px;height:18px}
+.kpi.v .ic{background:var(--violet-soft);color:var(--violet)}
+.kpi.g .ic{background:var(--ok-soft);color:var(--ok)}
+.kpi b{display:block;font-family:Poppins;font-size:27px;color:var(--ink);line-height:1.1}
+.kpi>span:last-child{font-size:13px;color:var(--muted)}
+.kskel{display:inline-block;width:46px;height:24px;border-radius:7px;background:linear-gradient(90deg,#eef0f6 0%,#f7f8fc 50%,#eef0f6 100%);background-size:200% 100%;animation:sk 1.2s linear infinite;vertical-align:middle}
+.duo{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:14px;margin-top:14px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+.panel h3{font-size:15px;display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.panel h3 small{font-family:Inter;font-weight:500;font-size:12.5px;color:var(--muted)}
+.chart{display:flex;align-items:stretch;gap:10px;height:168px;margin-top:16px}
+.chart .b{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+.chart .col{flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px}
+.chart .n{font-size:11.5px;font-weight:600;color:var(--ink)}
+.chart .bar{width:100%;max-width:40px;border-radius:7px 7px 3px 3px;background:#cdd7ff;min-height:3px;transition:height .5s}
+.chart .b.now .bar{background:var(--blue)}
+.chart .b.now .n{color:var(--blue)}
+.chart .l{font-size:11px;color:var(--muted);white-space:nowrap}
+.chart .bar.sk{background:linear-gradient(90deg,#eef0f6 0%,#f7f8fc 50%,#eef0f6 100%);background-size:200% 100%;animation:sk 1.2s linear infinite}
+.mix{display:flex;height:12px;border-radius:99px;overflow:hidden;background:#eef0f6;margin:16px 0 10px;gap:2px}
+.mix i{display:block;height:100%}
+.leg{display:grid;gap:2px}
+.leg button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;padding:8px;border-radius:9px;font-size:13.5px;color:var(--ink);text-align:left}
+.leg button:hover{background:var(--bg)}
+.leg button.on{background:var(--blue-soft)}
+.leg .dot{width:10px;height:10px;border-radius:3px;flex:none}
+.leg .c{margin-left:auto;font-weight:700}
+.leg .pc{width:42px;text-align:right;font-size:12px;color:var(--muted)}
+.listhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:28px 0 0}
+.listhead h2{font-size:18px}
+.listhead .ct{font-size:13px;color:var(--muted)}
+.li .side .when{font-size:12.5px;color:var(--muted)}
+.tl{list-style:none;display:grid;gap:14px;margin:16px 0 18px}
+.tl li{display:flex;gap:14px;align-items:flex-start}
+.tl .n{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;font-size:13px;background:var(--blue-soft);color:var(--blue)}
+.tl b{display:block;color:var(--ink);font-size:14.5px}
+.tl p{font-size:13.5px;color:var(--muted);margin-top:1px}
+
+/* ---------- one application ---------- */
 .ahead{display:flex;gap:14px;align-items:flex-start}
 .ahead h1{font-size:21px}
 .ahead .m{font-size:13.5px;color:var(--muted);margin-top:3px}
+.sent{display:flex;align-items:flex-start;gap:8px;margin:10px 0 0 48px;font-size:13px;line-height:1.45;color:var(--ok);font-weight:600}
+.sent svg{width:15px;height:15px;flex:none;margin-top:1px}
 .qa-ro{padding:10px 0;border-top:1px solid var(--line)}
-.qa-ro:first-child{border-top:0}
+.card h3 + .qa-ro{border-top:0}
 .qa-ro b{display:block;font-size:13px;color:var(--ink)}
 .qa-ro div{font-size:14px;white-space:pre-wrap}
-.kv{display:grid;grid-template-columns:180px 1fr;gap:8px 14px;font-size:14px}
+
+/* ---------- settings ---------- */
+.sgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.sgrid .wide{grid-column:1/-1}
+.sgrid .panel p{font-size:13.5px}
+.kv{display:grid;grid-template-columns:190px 1fr;gap:9px 16px;font-size:14px;margin-top:12px}
 .kv dt{color:var(--muted)}
-.kv dd{color:var(--ink);white-space:pre-wrap}
-.sent{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--ok);font-weight:600}
-.sent svg{width:15px;height:15px}
-@media (max-width:760px){
-  .hero{padding:20px;border-radius:16px}
-  .hstats{grid-template-columns:repeat(3,1fr);gap:8px}
-  .hstat{padding:10px}
-  .hstat b{font-size:17px}
+.kv dd{color:var(--ink);white-space:pre-wrap;min-width:0;overflow-wrap:anywhere}
+.planbig{display:flex;align-items:center;gap:14px;margin-top:12px}
+.planbig .pi{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue);flex:none}
+.planbig .pi svg{width:22px;height:22px}
+.planbig b{display:block;font-family:Poppins;font-size:18px;color:var(--ink)}
+.planbig span{font-size:13px;color:var(--muted)}
+.pwf{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-top:14px}
+.pwf .err{grid-column:1/-1}
+
+/* ---------- phone ---------- */
+.tabbar{display:none}
+@media (max-width:900px){
+  .ws{display:block;background:none}
+  .sb{display:none}
+  .top{padding:0 16px;height:58px}
+  .top .m-brand{display:flex}
+  .top .m-brand svg{width:28px;height:28px}
+  .top h1{display:none}
+  .top .grow{flex:1}
+  .who .nm{display:none}
+  .view{padding:18px 16px calc(92px + env(safe-area-inset-bottom,0px))}
+  .greet h2{font-size:21px}
+  .hero{padding:20px;border-radius:18px;gap:16px}
+  .ring{width:96px;height:96px}
+  .ring b{font-size:21px}
+  .ring span{font-size:11px}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .kpi{padding:14px}
+  .kpi b{font-size:23px}
+  .duo,.sgrid{grid-template-columns:minmax(0,1fr)}
+  .chart{gap:6px}
+  .chart .l{white-space:normal;text-align:center;line-height:1.15;font-size:10.5px}   /* "14 Sept" on two lines, so 8 weeks fit */
   .kv{grid-template-columns:1fr;gap:2px}
   .kv dd{margin-bottom:8px}
+  .pwf{grid-template-columns:1fr}
+  .sent{margin-left:0}
+  .tools .seg{flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none}   /* the five filters stay on one line */
+  .tools .seg::-webkit-scrollbar{display:none}
+  .tools .seg button{flex:none;padding:0 11px}
   .li .side .when{display:none}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
+  .tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;font-size:11.5px;font-weight:600;color:var(--muted);text-decoration:none;border-radius:10px}
+  .tabbar a.on{color:var(--blue)}
+  .tabbar svg{width:22px;height:22px}
+  .toast{bottom:calc(90px + env(safe-area-inset-bottom,0px))}
 }
+@media (max-width:420px){ .ring{display:none} }
 </style>
 </head>
 <body>
-<header class="ptop">
-  <div class="ptop-in">
-    <a class="brand" href="/portal.html" data-go><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="#0938d5"/><path d="M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z" fill="#fff"/><path d="M205 200l37 36 76-88" fill="none" stroke="#0938d5" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg><span>TrulyPlaced<small>Your applications</small></span></a>
+<div class="ws">
+  <aside class="sb" aria-label="Your TrulyPlaced workspace">
+    <a class="brand" href="/portal.html" data-go><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="#0938d5"/><path d="M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z" fill="#fff"/><path d="M205 200l37 36 76-88" fill="none" stroke="#0938d5" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg><span>TrulyPlaced<small>Client portal</small></span></a>
+    <nav class="nav" id="nav" aria-label="Sections"></nav>
     <div class="grow"></div>
-    <div class="me" id="me"></div>
+    <div class="plancard" id="planCard" hidden></div>
+    <div class="sb-foot" id="sideFoot"></div>
+  </aside>
+  <div class="content">
+    <header class="top">
+      <a class="brand m-brand" href="/portal.html" data-go><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="#0938d5"/><path d="M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z" fill="#fff"/><path d="M205 200l37 36 76-88" fill="none" stroke="#0938d5" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg><span>TrulyPlaced</span></a>
+      <h1 id="pageTitle">My applications</h1>
+      <span class="grow"></span>
+      <div class="who" id="who"></div>
+    </header>
+    <main class="view" id="view"><div class="skel" style="height:190px"></div><div class="skel"></div><div class="skel"></div></main>
   </div>
-</header>
-<main class="wrap narrow" id="view" style="margin:0 auto"><div class="skel" style="height:170px"></div><div class="skel"></div><div class="skel"></div></main>
+</div>
+<nav class="tabbar" id="tabbar" aria-label="Sections"></nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="modalRoot"></div>
 <script src="/portal.js?v=2026-10-28.1"></script>
@@ -67,22 +215,42 @@
 (function(){
 "use strict";
 var $ = TP.$, $$ = TP.$$, esc = TP.esc, I = TP.I, q = TP.q;
-var SB = null, ME = null, CL = null, PROG = null, V = $('#view'), A = null;
+var SB = null, ME = null, CL = null, PROG = null, STATS = null, WEEKS = null, STERR = false, A = null, V = $('#view');
 var F = {f:'all', q:'', n:50};
-var TEAM = 'the TrulyPlaced team';
+var TEAM = 'the TrulyPlaced team', WA = TP.CONFIG.WHATSAPP, MAIL = TP.CONFIG.SUPPORT_EMAIL;
+var PLAN = {250:'Starter', 500:'Growth', 1000:'Super Saver'};
+var SV = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+var IC = {
+  apps:'<svg ' + SV + '><path d="M10 6h10M10 12h10M10 18h10"/><path d="m3.5 6 1.3 1.3L7.3 5M3.5 12l1.3 1.3 2.5-2.3M3.5 18l1.3 1.3 2.5-2.3"/></svg>',
+  set:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.85 1 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+  send:'<svg ' + SV + '><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>',
+  cal:'<svg ' + SV + '><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 3v3M16 3v3"/></svg>',
+  phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>',
+  star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>',
+  plan:'<svg ' + SV + '><path d="M12 3 4 7v5c0 4.4 3.4 8.3 8 9 4.6-.7 8-4.6 8-9V7z"/><path d="m8.5 12 2.4 2.4L15.5 9.8"/></svg>'
+};
+var STS = [['applied', 'Applied', '#0938d5'], ['interview', 'Interview', '#7c3aed'], ['offer', 'Offer', '#0a7f46'], ['rejected', 'Not selected', '#a3a9c2'], ['closed', 'Closed', '#d3d7e6']];
+var FILTERS = [['all', 'All'], ['applied', 'Applied'], ['interview', 'Interview'], ['offer', 'Offer'], ['rejected', 'Not selected']];
+
+$('#sideFoot').innerHTML = '<a href="' + esc(WA) + '" target="_blank" rel="noopener">' + I.wa + 'WhatsApp your team</a><a href="mailto:' + esc(MAIL) + '">' + I.mail + 'Support</a>' +
+  '<button type="button" data-act="out">' + I.out + 'Sign out</button>';
 
 TP.client().then(function(c){ SB = c; return TP.session(); }).then(function(s){
   if(!s){ TP.toLogin(); return; }
-  ME = {id:s.user.id, email:String(s.user.email || '').toLowerCase()};
-  $('#me').innerHTML = '<span>' + esc(ME.email) + '</span><button class="btn sm" type="button" data-act="out">' + I.out + 'Sign out</button>';
+  var md = s.user.user_metadata || {};
+  ME = {id:s.user.id, email:String(s.user.email || '').toLowerCase(), name:md.full_name || md.name || ''};
+  who();
   return Promise.all([q(SB.from('clients').select('*').eq('id', ME.id).maybeSingle()), q(SB.from('client_progress').select('*').eq('client_id', ME.id).maybeSingle())]).then(function(rs){
     CL = rs[0]; PROG = rs[1] || {};
     if(!CL) return notClient();
-    render();
+    who(); render(); loadStats();
   });
 }).catch(function(e){ V.innerHTML = '<div class="note bad">' + esc(TP.errText(e)) + ' <a href="/login.html">Sign in again</a></div>'; });
 
 function notClient(){
+  // this browser remembered them as a client (the job board sends clients here): forget that, so the job board opens again
+  var a = TP.lsGet('tp_acct', null); if(a && a.id === ME.id && a.portal && a.portal.client){ a.portal.client = false; TP.lsSet('tp_acct', a); }
+  $('#nav').innerHTML = ''; $('#tabbar').innerHTML = '';
   TP.whoami().catch(function(){ return {}; }).then(function(w){
     V.innerHTML = '<div class="empty">' + I.lock + '<h3>This page is for TrulyPlaced clients</h3><p>You’re signed in as <b>' + esc(ME.email) + '</b>, which isn’t a client account yet. ' +
       'If you’ve just joined, use the email you gave us — or message us and we’ll sort it out.</p><div class="row" style="justify-content:center">' +
@@ -90,71 +258,167 @@ function notClient(){
       '<button class="btn" type="button" data-act="out">Sign out</button></div></div>';
   });
 }
-function route(){ var m = /^#app=([0-9a-f-]{36})$/i.exec(location.hash); return m ? m[1].toLowerCase() : null; }
-function go(h){ history.pushState(null, '', location.pathname + h); render(); window.scrollTo(0, 0); }
+
+/* ---------- where we are ---------- */
+function view(){ return /^#app=[0-9a-f-]{36}$/i.test(location.hash) ? 'app' : location.hash === '#settings' ? 'settings' : 'apps'; }   // anything else: My applications
+function appId(){ var m = /^#app=([0-9a-f-]{36})$/i.exec(location.hash); return m ? m[1].toLowerCase() : null; }
+function go(h){ history.pushState(null, '', location.pathname + (h === '#' ? '' : h)); render(); window.scrollTo(0, 0); }
 window.addEventListener('popstate', function(){ if(CL) render(); });
 document.addEventListener('click', function(e){
   var a = e.target.closest && e.target.closest('a[data-go]');
   if(!a || !CL || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
   e.preventDefault(); var h = a.getAttribute('href'); go(h.indexOf('#') > -1 ? h.slice(h.indexOf('#')) : '');
 });
-function render(){ var id = route(); if(id) return vApp(id); vHome(); }
+function render(){
+  chrome();
+  var v = view();
+  if(v === 'app') return vApp(appId());
+  if(v === 'settings') return vSettings();
+  vHome();
+}
+function planName(){ var t = (CL && CL.plan_total) || 0; return PLAN[t] || (t ? 'Custom plan' : 'Your plan'); }
+function statusTag(){ var s = (CL && CL.status) || 'active'; return '<span class="tag ' + esc(s) + '">' + ({active:'Active', paused:'Paused', done:'Complete'}[s] || esc(s)) + '</span>'; }
+function chrome(){   // the sidebar, the phone tab bar, the page title and the plan card
+  var cur = view() === 'settings' ? 'settings' : 'apps';
+  var items = [['apps', 'My applications', IC.apps, '#'], ['settings', 'Settings', IC.set, '#settings']];
+  var link = function(n, tab){ return '<a href="' + n[3] + '" data-go class="' + (cur === n[0] ? 'on' : '') + '"' + (cur === n[0] ? ' aria-current="page"' : '') + '>' + n[2] + '<span>' + n[1] + '</span>' +
+    (!tab && n[0] === 'apps' && PROG && PROG.done ? '<em>' + PROG.done.toLocaleString() + '</em>' : '') + '</a>'; };
+  $('#nav').innerHTML = items.map(function(n){ return link(n); }).join('');
+  $('#tabbar').innerHTML = items.map(function(n){ return link(n, true); }).join('') + '<a href="' + esc(WA) + '" target="_blank" rel="noopener">' + I.wa + '<span>WhatsApp</span></a>';
+  $('#pageTitle').textContent = view() === 'settings' ? 'Settings' : view() === 'app' ? 'Application' : 'My applications';
+  var done = PROG.done || 0, tot = CL.plan_total || 0, pct = tot ? Math.min(100, Math.round(done / tot * 100)) : 0, pc = $('#planCard');
+  pc.hidden = false;
+  pc.innerHTML = '<span class="lab">Your plan</span><div class="pn"><b>' + esc(planName()) + '</b>' + statusTag() + '</div>' +
+    (tot ? '<div class="prog"><i style="width:' + pct + '%"></i></div><small>' + done.toLocaleString() + ' of ' + tot.toLocaleString() + ' applications sent</small>' : '<small>Your plan details are on the way.</small>');
+}
+function who(){
+  var name = (CL && CL.full_name) || ME.name || '';
+  $('#who').innerHTML = '<div class="nm"><b>' + esc(name || ME.email) + '</b>' + (name ? esc(ME.email) : '') + '</div>' +
+    '<a class="av" href="#settings" data-go title="Settings" aria-label="Settings">' + esc(TP.initials(name, ME.email)) + '</a>';
+}
 
-/* ---------- home: progress and the list ---------- */
+/* ---------- My applications ---------- */
 function vHome(){
-  document.title = 'Your applications | TrulyPlaced';
+  document.title = 'My applications | TrulyPlaced';
   var done = PROG.done || 0, tot = CL.plan_total || 0, pct = tot ? Math.min(100, Math.round(done / tot * 100)) : 0, first = String(CL.full_name || '').split(' ')[0];
-  V.innerHTML = '<section class="hero" aria-label="Your progress"><div class="hi">' + (first ? 'Hi ' + esc(first) : 'Welcome') + '</div>' +
-      '<div class="big">' + done.toLocaleString() + (tot ? ' <span>of ' + tot.toLocaleString() + ' applications sent</span>' : ' <span>applications sent</span>') + '</div>' +
-      (tot ? '<div class="prog big"><i style="width:' + pct + '%"></i></div><div class="left">' + (done >= tot ? 'Your plan is complete — thank you for trusting us.' : (tot - done).toLocaleString() + ' to go · ' + pct + '% done') + '</div>' : '<div class="left">Your plan details will appear here soon.</div>') + '</section>' +
-    '<div class="hstats"><div class="hstat"><b>' + (PROG.week || 0) + '</b><span>this week</span></div><div class="hstat"><b>' + (PROG.interviews || 0) + '</b><span>interviews &amp; offers</span></div>' +
-      '<div class="hstat"><b>' + (PROG.last_applied_at ? esc(TP.ago(PROG.last_applied_at)) : '—') + '</b><span>last application</span></div></div>' +
-    '<div class="sec"><h2>Every application we’ve sent</h2></div>' +
-    '<div class="tools"><input class="inp" id="aq" type="search" placeholder="Search role or company" value="' + esc(F.q) + '" autocomplete="off">' +
-      '<div class="seg" id="af">' + [['all','All'],['applied','Applied'],['interview','Interview'],['offer','Offer'],['rejected','Not selected']].map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (F.f === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div></div>' +
-    '<div id="al"><div class="skel"></div><div class="skel"></div></div>' +
-    '<div class="sec"><h2>Your details</h2></div><div class="card" style="margin-top:12px">' + details() + '</div>' +
-    '<p class="fine" style="margin-top:16px">Questions, or something to change? <a href="' + esc(TP.CONFIG.WHATSAPP) + '" target="_blank" rel="noopener">WhatsApp us</a> or email <a href="mailto:' + esc(TP.CONFIG.SUPPORT_EMAIL) + '">' + esc(TP.CONFIG.SUPPORT_EMAIL) + '</a>.</p>';
+  var hr = new Date().getHours(), hello = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
+  var line = CL.status === 'paused' ? 'Your plan is paused — message us when you’d like us to start again.'
+    : (CL.status === 'done' || (tot && done >= tot)) ? 'Your plan is complete. Thank you for trusting us with your search.'
+    : done ? 'We’re applying for you every business day. Here’s everything we’ve sent so far.' : 'Welcome aboard. Your first applications are on the way.';
+  V.innerHTML =
+    '<div class="greet"><div><h2>' + hello + (first ? ', ' + esc(first) : '') + '</h2><p>' + line + '</p></div>' +
+      '<div class="badges"><span class="badge">' + IC.plan + esc(planName()) + (tot ? ' · ' + tot.toLocaleString() + ' applications' : '') + '</span></div></div>' +
+    '<section class="hero" aria-label="Your progress"><div>' +
+      '<div class="eyebrow">Your progress</div>' +
+      '<div class="big"><b>' + done.toLocaleString() + '</b> <span>' + (tot ? 'of ' + tot.toLocaleString() + ' applications sent' : 'applications sent') + '</span></div>' +
+      (tot ? '<div class="hbar"><i style="width:' + pct + '%"></i></div><div class="hfoot"><span>' + (done >= tot ? 'Plan complete' : (tot - done).toLocaleString() + ' to go') + '</span>' +
+        (PROG.last_applied_at ? '<span>Last sent ' + esc(TP.ago(PROG.last_applied_at)) + '</span>' : '') + '</div>' : '<div class="hfoot"><span>Your plan details will appear here soon.</span></div>') +
+    '</div>' + (tot ? '<div class="ring" style="--p:' + pct + '" aria-hidden="true"><span><b>' + pct + '%</b>complete</span></div>' : '') + '</section>' +
+    '<div class="kpis" id="kpis">' + kpisHTML() + '</div>' +
+    (done ? '<div class="duo"><section class="panel"><h3>Applications per week <small>last 8 weeks</small></h3><div id="wk">' + weeksHTML() + '</div></section>' +
+        '<section class="panel"><h3>Where they stand <small>' + done.toLocaleString() + ' sent</small></h3><div id="mix">' + mixHTML() + '</div></section></div>' +
+      '<div class="listhead" id="listTop"><h2>All applications</h2><span class="ct" id="alc"></span></div>' +
+      '<div class="tools"><input class="inp" id="aq" type="search" placeholder="Search role or company" value="' + esc(F.q) + '" autocomplete="off" aria-label="Search your applications">' +
+        '<div class="seg" id="af">' + FILTERS.map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (F.f === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div></div>' +
+      '<div id="al"><div class="skel"></div><div class="skel"></div></div>'
+     : onboardingHTML());
+  if(!done) return;
   var t; $('#aq').addEventListener('input', function(e){ clearTimeout(t); t = setTimeout(function(){ F.q = e.target.value; F.n = 50; loadList(); }, 250); });
-  $('#af').addEventListener('click', function(e){ var b = e.target.closest('[data-f]'); if(!b) return; F.f = b.getAttribute('data-f'); F.n = 50; $$('#af button').forEach(function(x){ x.classList.toggle('on', x === b); }); loadList(); });
+  $('#af').addEventListener('click', function(e){ var b = e.target.closest('[data-f]'); if(b) setFilter(b.getAttribute('data-f')); });
   loadList();
 }
-function details(){
-  var rows = [['Target roles', CL.target_roles], ['Target locations', CL.target_locations], ['Work authorization', CL.work_auth], ['Salary expectation', CL.salary], ['Can start', CL.notice], ['Phone', CL.phone], ['LinkedIn', CL.linkedin], ['Email', CL.email]]
-    .filter(function(r){ return r[1]; });
-  return rows.length ? '<dl class="kv">' + rows.map(function(r){ return '<dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd>'; }).join('') + '</dl>' : '<p class="hint" style="margin:0">We’ll fill these in with you on your onboarding call.</p>';
+function kpisHTML(){
+  var k = [[IC.send, PROG.today || 0, 'Sent today', ''], [IC.cal, PROG.week || 0, 'Last 7 days', ''], [IC.phone, PROG.interviews || 0, 'Interviews', 'v'], [IC.star, STATS ? (STERR ? '–' : STATS.offer || 0) : null, 'Offers', 'g']];
+  return k.map(function(x){ return '<div class="kpi ' + x[3] + '"><span class="ic">' + x[0] + '</span><b>' + (x[1] == null ? '<i class="kskel"></i>' : typeof x[1] === 'number' ? x[1].toLocaleString() : esc(x[1])) + '</b><span>' + x[2] + '</span></div>'; }).join('');
 }
+var NOLOAD = '<p class="hint" style="margin-top:12px">This didn’t load just now — refresh the page to try again.</p>';
+function weeksHTML(){
+  if(STERR) return NOLOAD;
+  if(!WEEKS){ var s = ''; for(var i = 0; i < 8; i++) s += '<div class="b"><div class="col"><div class="bar sk" style="height:' + (20 + i * 8) + '%"></div></div><span class="l">&nbsp;</span></div>'; return '<div class="chart">' + s + '</div>'; }
+  var max = Math.max.apply(null, WEEKS.map(function(w){ return w.n; }).concat([1]));
+  return '<div class="chart" role="img" aria-label="Applications sent each week for the last 8 weeks">' + WEEKS.map(function(w, i){
+    var now = i === WEEKS.length - 1, d = w.start.toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+    return '<div class="b' + (now ? ' now' : '') + '" title="' + w.n + ' sent in the week of ' + esc(d) + '"><div class="col"><span class="n">' + w.n + '</span><div class="bar" style="height:' + Math.max(2, Math.round(w.n / max * 82)) + '%"></div></div>' +
+      '<span class="l">' + (now ? 'This week' : esc(d)) + '</span></div>';
+  }).join('') + '</div>';
+}
+function mixHTML(){
+  if(STERR) return NOLOAD;
+  if(!STATS) return '<div class="mix"><i class="kskel" style="width:100%;height:100%;border-radius:0"></i></div><div class="skel" style="height:150px"></div>';
+  var all = STS.reduce(function(n, s){ return n + (STATS[s[0]] || 0); }, 0);
+  if(!all) return '<p class="hint" style="margin-top:12px">Each application’s status shows here as companies reply.</p>';
+  var rows = STS.filter(function(s){ return s[0] !== 'closed' || STATS.closed; });
+  return '<div class="mix" role="img" aria-label="' + esc(rows.map(function(s){ return (STATS[s[0]] || 0) + ' ' + s[1].toLowerCase(); }).join(', ')) + '">' +
+      STS.map(function(s){ var n = STATS[s[0]] || 0; return n ? '<i style="width:' + (n / all * 100).toFixed(2) + '%;background:' + s[2] + '"></i>' : ''; }).join('') + '</div>' +
+    '<div class="leg">' + rows.map(function(s){ var n = STATS[s[0]] || 0;
+      return '<button type="button" data-leg="' + s[0] + '" class="' + (F.f === s[0] ? 'on' : '') + '"><span class="dot" style="background:' + s[2] + '"></span>' + s[1] + '<span class="c">' + n.toLocaleString() + '</span><span class="pc">' + Math.round(n / all * 100) + '%</span></button>';
+    }).join('') + '</div>';
+}
+function onboardingHTML(){
+  return '<section class="panel" style="margin-top:14px"><h3>What happens next</h3><ol class="tl">' +
+    '<li><span class="n">1</span><div><b>Your resume</b><p>We rebuild it for the roles you’re targeting — about 5 business days.</p></div></li>' +
+    '<li><span class="n">2</span><div><b>Applications, every business day</b><p>We apply to matched roles, with your resume tailored to each one.</p></div></li>' +
+    '<li><span class="n">3</span><div><b>Everything, right here</b><p>Each application appears the moment it’s sent — the job, the resume we sent and the company’s confirmation.</p></div></li></ol>' +
+    '<div class="row"><a class="btn pri" href="' + esc(WA) + '" target="_blank" rel="noopener">' + I.wa + 'WhatsApp your team</a><a class="btn" href="#settings" data-go>Check your details</a></div></section>';
+}
+function setFilter(f){
+  F.f = f; F.n = 50;
+  $$('#af button').forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-f') === f); });
+  $$('#mix [data-leg]').forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-leg') === f); });
+  loadList();
+}
+// counts for the KPIs and the two charts: small HEAD requests, so they're exact however many applications there are
+function weekStarts(){ var d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); var out = []; for(var i = 7; i >= 0; i--){ var s = new Date(d); s.setDate(s.getDate() - i * 7); out.push(s); } return out; }
+function paintStats(){
+  if(view() !== 'apps') return;
+  var k = $('#kpis'), w = $('#wk'), m = $('#mix');
+  if(k) k.innerHTML = kpisHTML(); if(w) w.innerHTML = weeksHTML(); if(m) m.innerHTML = mixHTML();
+}
+function loadStats(){
+  if(!(PROG.done > 0)){ STATS = {}; WEEKS = []; return paintStats(); }
+  var count = function(qb){ return qb.then(function(r){ if(r.error) throw r.error; return r.count || 0; }); };
+  var base = function(){ return SB.from('applications').select('id', {count:'exact', head:true}).eq('client_id', ME.id).neq('status', 'draft'); };
+  var ws = weekStarts();
+  var jobs = STS.map(function(s){ return count(base().eq('status', s[0])); }).concat(ws.map(function(s){ var e = new Date(s); e.setDate(e.getDate() + 7); return count(base().gte('applied_at', s.toISOString()).lt('applied_at', e.toISOString())); }));
+  Promise.all(jobs).then(function(n){
+    STATS = {}; STS.forEach(function(s, i){ STATS[s[0]] = n[i]; });
+    WEEKS = ws.map(function(s, i){ return {start:s, n:n[STS.length + i]}; });
+    STERR = false;
+  }, function(){ STATS = {}; WEEKS = []; STERR = true; }).then(paintStats);
+}
+var LSEQ = 0;
 function loadList(){
-  var box = $('#al');
-  var sq = SB.from('applications').select('id,status,title,company,location,applied_at,status_at').eq('client_id', ME.id).neq('status', 'draft');
+  var box = $('#al'), seq = ++LSEQ;
+  var sq = SB.from('applications').select('id,status,title,company,location,applied_at,status_at', {count:'exact'}).eq('client_id', ME.id).neq('status', 'draft');
   if(F.f !== 'all') sq = sq.eq('status', F.f);
-  var qq = F.q.trim().replace(/[,()*%\\]/g, ' ').trim();
+  var qq = F.q.trim().replace(/[,()*%"\\]/g, ' ').replace(/\s+/g, ' ').trim();
   if(qq) sq = sq.or('title.ilike.*' + qq + '*,company.ilike.*' + qq + '*');
-  q(sq.order('applied_at', {ascending:false}).range(0, F.n)).then(function(rows){
-    if(!$('#al')) return;
-    var more = rows.length > F.n; rows = rows.slice(0, F.n);
+  sq.order('applied_at', {ascending:false}).range(0, F.n).then(function(r){
+    if(r.error) throw r.error;
+    if(seq !== LSEQ || $('#al') !== box) return;   // a newer search, or the page moved on
+    var rows = r.data || [], more = rows.length > F.n, c = $('#alc'); rows = rows.slice(0, F.n);
+    if(c) c.textContent = r.count != null ? (F.f === 'all' && !qq ? r.count.toLocaleString() + ' sent' : r.count.toLocaleString() + ' found') : '';
     if(!rows.length){
-      box.innerHTML = F.f === 'all' && !qq ? '<div class="empty">' + I.clock + '<h3>Your first applications are on the way</h3><p>Our team is tailoring your resume to each role. Every application appears here the moment it’s sent, with exactly what we sent.</p></div>'
-        : '<div class="empty"><h3>Nothing here</h3><p>Try another filter or search.</p></div>';
+      box.innerHTML = '<div class="empty"><h3>Nothing here</h3><p>' + (qq ? 'No application matches “' + esc(qq) + '”.' : 'No applications with this status yet.') + '</p></div>';
       return;
     }
     box.innerHTML = '<div class="list">' + rows.map(function(a){
       return '<a class="li" href="#app=' + esc(a.id) + '" data-go>' + TP.logo(a.company) + '<div class="main"><div class="t">' + esc(a.title || 'Role') + '</div><div class="m">' + esc([a.company, a.location].filter(Boolean).join(' · ')) + '</div></div>' +
-        '<div class="side"><span class="m when" style="font-size:12.5px;color:var(--muted)">' + esc(TP.fmtDate(a.applied_at)) + '</span>' + TP.statusChip(a.status) + '</div></a>';
-    }).join('') + '</div>' + (more ? '<div class="row" style="justify-content:center;margin-top:12px"><button class="btn" type="button" data-act="more">Show more</button></div>' : '');
-  }, function(e){ if($('#al')) box.innerHTML = '<div class="note bad">' + esc(TP.errText(e)) + '</div>'; });
+        '<div class="side"><span class="when">' + esc(TP.fmtDate(a.applied_at)) + '</span>' + TP.statusChip(a.status) + '</div></a>';
+    }).join('') + '</div>' + (more ? '<div class="row" style="justify-content:center;margin-top:14px"><button class="btn" type="button" data-act="more">Show more</button></div>' : '');
+  }).catch(function(e){ if(seq === LSEQ && $('#al') === box) box.innerHTML = '<div class="note bad">' + esc(TP.errText(e)) + '</div>'; });
 }
 
 /* ---------- one application: exactly what was sent ---------- */
 function vApp(id){
   V.innerHTML = '<div class="skel"></div><div class="skel"></div>';
   q(SB.from('applications').select('id,status,title,company,location,job_url,jd_text,resume_text,resume_file,cover_letter,answers,screenshot,applied_at,status_at').eq('id', id).maybeSingle()).then(function(a){
-    if(route() !== id) return;
+    if(appId() !== id) return;
     if(!a){ V.innerHTML = '<div class="empty"><h3>Not found</h3><p>This application isn’t on your account.</p><a class="btn" href="#" data-go>All applications</a></div>'; return; }
     A = a; document.title = (a.company || 'Application') + ' | TrulyPlaced';
     V.innerHTML = '<a class="btn sm ghost" href="#" data-go>' + I.back + 'All applications</a>' +
-      '<div class="card" style="margin-top:10px"><div class="ahead">' + TP.logo(a.company) + '<div style="flex:1;min-width:0"><h1>' + esc(a.title || 'Role') + '</h1><div class="m">' + esc([a.company, a.location].filter(Boolean).join(' · ')) + '</div>' +
-        '<div class="sent" style="margin-top:8px">' + I.check + 'Sent ' + esc(TP.fmtDateTime(a.applied_at)) + ' by ' + TEAM + '</div></div>' + TP.statusChip(a.status) + '</div>' +
+      '<div class="card" style="margin-top:10px"><div class="ahead">' + TP.logo(a.company) + '<div style="flex:1;min-width:0"><h1>' + esc(a.title || 'Role') + '</h1><div class="m">' + esc([a.company, a.location].filter(Boolean).join(' · ')) + '</div></div>' + TP.statusChip(a.status) + '</div>' +
+        '<div class="sent">' + I.check + '<span>Sent ' + esc(TP.fmtDateTime(a.applied_at)) + ' by ' + TEAM + '</span></div>' +
         '<div class="row" style="margin-top:14px"><a class="btn sm" href="' + esc(TP.safeHref(a.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'View the job posting</a></div></div>' +
       (a.screenshot ? '<div class="card"><h3>Proof it was sent</h3><p class="hint">The company’s confirmation screen, saved when we applied.</p><a class="shot" data-file="' + esc(a.screenshot) + '" target="_blank" rel="noopener"><img data-file="' + esc(a.screenshot) + '" alt="Confirmation screenshot"></a></div>' : '') +
       '<div class="card"><h3>Your resume, as sent</h3><p class="hint">Tailored for this role by ' + TEAM + '.</p>' +
@@ -167,8 +431,45 @@ function vApp(id){
   }, function(e){ V.innerHTML = '<div class="note bad">' + esc(TP.errText(e)) + '</div>'; });
 }
 
+/* ---------- Settings ---------- */
+function details(){
+  var rows = [['Full name', CL.full_name], ['Where you live', CL.location], ['Target roles', CL.target_roles], ['Target locations', CL.target_locations], ['Work authorization', CL.work_auth], ['Salary expectation', CL.salary], ['Can start', CL.notice], ['Phone', CL.phone], ['LinkedIn', CL.linkedin], ['Email', CL.email], ['How you’d like us to apply', CL.apply_notes]]
+    .filter(function(r){ return r[1]; });
+  return rows.length ? '<dl class="kv">' + rows.map(function(r){ return '<dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd>'; }).join('') + '</dl>' : '<p class="hint" style="margin:12px 0 0">We’ll fill these in with you on your onboarding call.</p>';
+}
+function vSettings(){
+  document.title = 'Settings | TrulyPlaced';
+  var done = PROG.done || 0, tot = CL.plan_total || 0, since = CL.created_at ? TP.fmtDate(CL.created_at) : '';
+  V.innerHTML = '<div class="greet"><div><h2>Settings</h2><p>Your plan, the details we apply with, and how you sign in.</p></div></div>' +
+    '<div class="sgrid">' +
+      '<section class="panel"><h3>Your plan ' + statusTag() + '</h3><div class="planbig"><span class="pi">' + IC.plan + '</span><div><b>' + esc(planName()) + '</b><span>' +
+        (tot ? done.toLocaleString() + ' of ' + tot.toLocaleString() + ' applications sent' : 'Plan details on the way') + (since ? ' · client since ' + esc(since) : '') + '</span></div></div>' +
+        (tot ? '<div class="prog" style="margin-top:14px"><i style="width:' + Math.min(100, Math.round(done / tot * 100)) + '%"></i></div>' : '') + '</section>' +
+      '<section class="panel"><h3>Need a hand?</h3><p>Your team replies on WhatsApp, usually within the hour on business days.</p><div class="row" style="margin-top:12px">' +
+        '<a class="btn pri" href="' + esc(WA) + '" target="_blank" rel="noopener">' + I.wa + 'WhatsApp us</a><a class="btn" href="mailto:' + esc(MAIL) + '">' + I.mail + 'Email</a></div></section>' +
+      '<section class="panel wide"><h3>The details we apply with</h3><p class="hint" style="margin:4px 0 0">Your team keeps these up to date on every application. To change anything, message us.</p>' + details() + '</section>' +
+      '<section class="panel wide"><h3>Sign-in &amp; security</h3><dl class="kv"><dt>You sign in with</dt><dd>' + esc(ME.email) + '</dd></dl>' +
+        '<form class="pwf" id="pwF" autocomplete="off" novalidate><div class="field"><label for="pw1">New password</label><input id="pw1" type="password" minlength="8" autocomplete="new-password" required></div>' +
+        '<div class="field"><label for="pw2">Type it again</label><input id="pw2" type="password" minlength="8" autocomplete="new-password" required></div>' +
+        '<button class="btn pri" type="submit" id="pwGo">Change password</button><p class="err" id="pwErr" hidden></p></form>' +
+        '<div class="row" style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px"><span class="fine grow">Signing out here keeps your account and everything we’ve sent.</span><button class="btn" type="button" data-act="out">' + I.out + 'Sign out</button></div></section>' +
+    '</div>';
+  $('#pwF').addEventListener('submit', function(e){
+    e.preventDefault();
+    var a = $('#pw1').value, b = $('#pw2').value, err = $('#pwErr'), go = $('#pwGo');
+    err.hidden = true;
+    if(a.length < 8){ err.textContent = 'Use at least 8 characters.'; err.hidden = false; return; }
+    if(a !== b){ err.textContent = 'The two passwords don’t match.'; err.hidden = false; return; }
+    go.classList.add('busy'); go.disabled = true;
+    SB.auth.updateUser({password:a}).then(function(r){ if(r.error) throw r.error; $('#pwF').reset(); TP.toast('Password changed'); })
+      .catch(function(x){ err.textContent = TP.errText(x); err.hidden = false; })
+      .then(function(){ go.classList.remove('busy'); go.disabled = false; });
+  });
+}
+
 document.addEventListener('click', function(e){
-  var b = e.target.closest && e.target.closest('[data-act]'); if(!b) return;
+  var b = e.target.closest && e.target.closest('[data-act],[data-leg]'); if(!b) return;
+  if(b.hasAttribute('data-leg')){ setFilter(F.f === b.getAttribute('data-leg') ? 'all' : b.getAttribute('data-leg')); var t = $('#listTop'); if(t) t.scrollIntoView({behavior:'smooth', block:'start'}); return; }
   var act = b.getAttribute('data-act');
   if(act === 'out') return TP.signOut();
   if(act === 'more'){ F.n += 50; loadList(); }
