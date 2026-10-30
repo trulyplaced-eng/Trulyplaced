@@ -617,6 +617,18 @@ svg.defs{position:absolute;width:0;height:0}
   .sv{grid-template-columns:1fr}.sv-c{max-height:none}
 }
 
+/* ---------- view=1: the team portal's application page shows the resume through this page in a frame - the page, nothing
+   else, at any width (a narrow frame never switches to the phone's edit view) ---------- */
+html.view .top,html.view .panel,html.view .doctabs,html.view .mswitch,html.view .banner,html.view .selbar,html.view .toast,html.view .rocard,
+html.view .pgui,html.view .pgadd,html.view .pgln{display:none!important}
+html.view .wrap{display:block;min-height:0}
+html.view .stage{display:flex!important;padding:14px 14px 28px}
+html.view .frame{max-width:none}
+html.view #start{padding:14px}
+html.view .vtext{max-width:760px;margin:0 auto;padding:18px 20px;background:#fff;border-radius:12px;box-shadow:0 0 0 1px rgba(13,15,20,.05),0 2px 4px rgba(13,15,20,.05)}
+html.view .vtext p{margin:0 0 10px;font-size:13px;color:var(--muted)}
+html.view .vtext pre{margin:0;white-space:pre-wrap;font:13px/1.55 var(--ui);color:var(--ink)}
+
 /* ---------- print: only the sheet, unscaled ---------- */
 @media print{
   body{background:#fff}
@@ -1081,9 +1093,12 @@ const TEAM = (() => {                                   // the team portal opene
 // the team portal's batch Optimise opens a draft in a hidden frame; what to tailor comes in the address (batch=summary.experience.skills)
 const BATCH = TEAM && TEAM.app && QS.get('batch') ? { sel: QS.get('batch').split('.').filter((k) => /^(summary|headline|location|experience|skills|sync)$/.test(k)).reduce((o, k) => { o[k] = true; return o; }, {}),
   ins: String(QS.get('ins') || '').slice(0, 400) } : null;
+// the team portal's application page shows the resume through this page in a frame (view=1): the page only, read-only, never saved
+const VIEW = !!(TEAM && TEAM.app && !BATCH && QS.get('view') === '1');
 let CLIENT = null, TEAM_JOB = null, READONLY = false, TEAM_DIRTY = false;
 const OPT_KEY = TEAM ? 'tp_opt_c_' + TEAM.client : 'tp_opt';   // Optimise choices: one set per client, never shared
 if (EMBED) document.documentElement.classList.add('embed');
+if (VIEW) document.documentElement.classList.add('view');
 function tell(m) { if (!EMBED || window.parent === window) return; try { m.tp = 1; window.parent.postMessage(m, location.origin); } catch (e) {} }
 
 /* ---------- Supabase, the signed-in person and their profile ---------- */
@@ -3550,13 +3565,16 @@ function teamBoot() {
       if (!c || !row || row.client_id !== TEAM.client) return teamCard('Not found', 'This link doesn’t match a client you can open. Go back to the team portal and open it from there.', '<a class="btn" href="/team.html">Team portal</a>');
       CLIENT = c; PROFILE = { target_role: String(c.target_roles || '').split(',')[0].trim() };
       if (TEAM.app) {
-        READONLY = row.status !== 'draft';
+        READONLY = row.status !== 'draft' || VIEW;
         TEAM_JOB = { title: row.title || '', company: row.company || '', text: row.jd_text || '', key: 'app:' + row.id, loc: row.location || '' };
-        if (READONLY) TEAM_SENT = { at: row.applied_at, company: row.company };
+        if (row.status !== 'draft') TEAM_SENT = { at: row.applied_at, company: row.company };
       }
+      if (VIEW) document.body.classList.add('ro');
       teamPill(); $('#ptVersions').hidden = READONLY;
       if (BATCH && READONLY) return batchTell('fail', { why: 'Already sent' });
       if (TEAM.app && row.resume_doc && row.resume_doc.sections) return startDoc(row.resume_doc);
+      // the page only: a resume that was never laid out shows as its text, and nothing is read by Claude or saved
+      if (VIEW) return viewFrom(row);
       if (TEAM.app && READONLY) {
         if (row.resume_text) return fromSource({ kind: 'text', name: 'Resume as sent', text: row.resume_text, at: Date.now() });
         return teamCard('No resume was saved', 'This application was sent without a resume copy on record. Its file (if one was uploaded) is on the application page.', '<a class="btn" href="' + esc(teamBack()) + '">Back to the application</a>');
@@ -3577,6 +3595,18 @@ function teamBoot() {
       });
     });
   }).catch(() => teamCard('Couldn’t open this resume', 'Check your connection and reload the page.', '<a class="btn" href="' + esc(teamBack()) + '">Back</a>'));
+}
+// view=1 with no laid-out copy on the application: a draft shows the resume it starts from, a sent one the text that went
+function viewFrom(row) {
+  const text = (t, note) => { show('start'); $('#start').innerHTML = '<div class="vtext">' + (note ? '<p>' + esc(note) + '</p>' : '') + (t ? '<pre>' + esc(t) + '</pre>' : '') + '</div>'; };
+  if (row.status !== 'draft') return text(row.resume_text || '', row.resume_text ? 'The resume text that was sent.' : 'No resume copy was kept with this application.');
+  const bq = row.base_resume_id ? sb.from('client_resumes').select('name,doc,text').eq('id', row.base_resume_id).maybeSingle() : Promise.resolve({ data: null });
+  return bq.then((b) => {
+    const base = b && b.data;
+    if (base && base.doc && base.doc.sections) return startDoc(JSON.parse(JSON.stringify(base.doc)));
+    if (base && base.text) return text(base.text, (base.name || 'The resume') + ' hasn’t been laid out yet: open it in the editor to see it as a page.');
+    return text('', 'No resume yet: add one on the Resumes tab.');
+  });
 }
 function roCardHTML() {
   if (!READONLY || !TEAM_SENT) return '';
