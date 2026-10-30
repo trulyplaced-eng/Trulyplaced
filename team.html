@@ -410,6 +410,56 @@ h1,h2,h3,.hello,.brand,.stat b,.mod h2,.ahead h2{font-family:var(--ui);letter-sp
   .pgcard .pg b{font-size:20px}
   .me{padding-top:9px;padding-bottom:9px}
 }
+/* ---------- like Scout Better: your menu, My day, a client's Dashboard, the Profile's sections, Main / Tailored resumes ---------- */
+.mebtn{flex:1;min-width:0;display:flex;align-items:center;gap:10px;margin:-6px 0 -6px -8px;padding:6px 8px;border-radius:9px;background:none;border:0;text-align:left;cursor:pointer;color:inherit;font:inherit}
+.mebtn:hover,.mebtn[aria-expanded=true]{background:var(--sb-on)}
+.mebtn .mechev{width:14px;height:14px;flex:none;color:var(--sb-muted);transform:rotate(-90deg)}
+.memenu{position:absolute;left:10px;right:10px;bottom:calc(100% + 6px);z-index:30;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px -12px rgba(13,15,20,.28),0 2px 6px rgba(13,15,20,.06);padding:6px}
+.memenu [role=menuitem]{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:8px;border:0;background:none;color:var(--ink);font:inherit;font-size:14px;text-align:left;text-decoration:none;cursor:pointer}
+.memenu [role=menuitem]:hover,.memenu [role=menuitem]:focus-visible{background:var(--hover);outline:none}
+.memenu [role=menuitem] svg{width:17px;height:17px;flex:none;color:var(--muted)}
+.memenu small{display:block;font-size:12px;color:var(--muted);line-height:1.35}
+.memenu [data-act=out]{border-top:1px solid var(--line);border-radius:0 0 8px 8px;margin-top:4px}
+.stats.s5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.stats.s6{grid-template-columns:repeat(6,minmax(0,1fr))}
+.stat .of{font-size:14px;color:var(--muted);font-weight:500}
+.mdg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start}
+.mdg .card + .card{margin-top:0}
+.mdg .list .li,.card .list .li{text-decoration:none;color:inherit}
+.mdg .li .chev,.card .li .chev{width:16px;height:16px;color:var(--faint);flex:none}
+.dbwrap{position:relative;margin-top:10px}
+.dbsvg{display:block;max-width:100%;overflow:visible}
+.dbsvg .gl{stroke:var(--line);stroke-width:1}
+.dbsvg .ax{font:11px var(--ui);fill:var(--muted);font-variant-numeric:tabular-nums}
+.dbsvg .bar{fill:#0938d5}
+.dbsvg .hit{fill:transparent}
+.dbsvg .col{cursor:default;outline:none}
+.dbsvg .col.on .bar,.dbsvg .col:focus .bar{fill:#3d63e0}
+.dbsvg .col:focus-visible .hit{fill:rgba(9,56,213,.06)}
+.dbtip{position:absolute;top:-6px;pointer-events:none;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 10px;box-shadow:0 6px 18px -8px rgba(13,15,20,.3);white-space:nowrap}
+.dbtip b{display:block;font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums}.dbtip span{font-size:12px;color:var(--muted)}
+.pfwrap{display:grid;grid-template-columns:210px minmax(0,1fr);gap:24px;align-items:start}
+.pfnav{position:sticky;top:16px;display:flex;flex-direction:column;gap:2px}
+.pfnav button{display:block;width:100%;text-align:left;padding:9px 12px;border-radius:9px;border:0;background:none;color:var(--body);font:inherit;font-size:14px;font-weight:550;cursor:pointer}
+.pfnav button small{display:block;font-size:12px;font-weight:400;color:var(--muted);line-height:1.35;margin-top:1px}
+.pfnav button:hover{background:var(--hover)}
+.pfnav button.on{background:var(--blue-soft);color:var(--ink)}
+.pfsec{scroll-margin-top:16px}
+.pfsec + .pfsec{margin-top:26px}
+.pfsec > h2{font-size:17px;font-weight:600;color:var(--ink);margin:0 0 10px}
+.rsseg{display:inline-flex;margin-bottom:14px}
+.rsseg b{margin-left:6px;font-weight:500;color:var(--muted)}
+@media (max-width:1100px){.stats.s6{grid-template-columns:repeat(3,minmax(0,1fr))}.stats.s5{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:900px){
+  .mdg{grid-template-columns:minmax(0,1fr)}
+  .mdg .card + .card{margin-top:12px}
+  .pfwrap{grid-template-columns:minmax(0,1fr);gap:10px}
+  .pfnav{position:sticky;top:0;z-index:5;flex-direction:row;overflow-x:auto;background:var(--bg);padding:6px 0;margin:-6px 0 0}
+  .pfnav button{width:auto;flex:none;white-space:nowrap;padding:7px 12px}
+  .pfnav button small{display:none}
+  .pfsec{scroll-margin-top:56px}
+}
+@media (max-width:760px){.stats.s6,.stats.s5{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -443,12 +493,14 @@ var J = {
   act:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>',
   link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>',
   star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>',
-  swap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 3 8l4 4"/><path d="M3 8h13a4 4 0 0 1 4 4"/><path d="m17 20 4-4-4-4"/><path d="M21 16H8a4 4 0 0 1-4-4"/></svg>'
+  swap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 3 8l4 4"/><path d="M3 8h13a4 4 0 0 1 4 4"/><path d="m17 20 4-4-4-4"/><path d="M21 16H8a4 4 0 0 1-4-4"/></svg>',
+  dash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
+  day:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
 };
 var SB = null, ME = null, TEAMROWS = [], LIST = null, C = null, R = {}, GEN = 0, BOARD = null, BOARDP = null;
 var V = $('#view');
 var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-var TABS = [['profile', 'Profile', J.profile], ['resumes', 'Resumes', J.resume], ['jobs', 'Jobs', J.jobs], ['applications', 'Applications', J.apps], ['activity', 'Activity', J.act]];
+var TABS = [['dash', 'Dashboard', J.dash], ['profile', 'Profile', J.profile], ['resumes', 'Resumes', J.resume], ['jobs', 'Jobs', J.jobs], ['applications', 'Applications', J.apps, 'Apps'], ['activity', 'Activity', J.act]];   // [4]: the shorter name in a phone's bottom bar
 var COMMON_Q = ['Are you legally authorized to work in the United States?', 'Will you now or in the future require visa sponsorship (e.g. H-1B)?',
   'Are you willing to relocate?', 'What are your salary expectations?', 'When can you start?', 'LinkedIn profile', 'How did you hear about this job?',
   'Gender (voluntary)', 'Race / ethnicity (voluntary)', 'Veteran status (voluntary)', 'Disability status (voluntary)'];
@@ -479,11 +531,28 @@ function notTeam(w){
     (w.client ? '<a class="btn pri" href="/portal.html">Go to my dashboard</a>' : '<a class="btn" href="/app.html">Job board</a>') +
     '<button class="btn" type="button" data-act="out">Sign out</button></div></div>';
 }
-function meHTML(){   // you, at the bottom of the sidebar
+function meHTML(){   // you, at the bottom of the sidebar: your name opens your menu
   var t = TEAMROWS.filter(function(x){ return x.email === ME.email; })[0] || {};
-  return '<span class="av sm" style="background:' + TP.hue(ME.email) + '">' + esc(TP.initials(t.full_name, ME.email)) + '</span><span class="mw" title="' + esc(ME.email) + '"><b>' + esc(t.full_name || ME.email.split('@')[0]) + '</b>' +
-    '<small>' + (ME.owner ? 'Owner' : 'Team member') + ' · ' + esc(ME.email) + '</small></span><button class="icb" type="button" data-act="out" title="Sign out">' + I.out + '<span class="sr">Sign out</span></button>';
+  return '<button class="mebtn" type="button" data-act="memenu" aria-haspopup="menu" aria-expanded="false" title="Your menu — My day, switch client, sign out">' +
+      '<span class="av sm" style="background:' + TP.hue(ME.email) + '">' + esc(TP.initials(t.full_name, ME.email)) + '</span><span class="mw"><b>' + esc(t.full_name || ME.email.split('@')[0]) + '</b>' +
+      '<small>' + (ME.owner ? 'Owner' : 'Team member') + ' · ' + esc(ME.email) + '</small></span>' + I.chev.replace('<svg', '<svg class="mechev"') + '</button>' +
+    '<button class="icb" type="button" data-act="out" title="Sign out">' + I.out + '<span class="sr">Sign out</span></button>';
 }
+// your menu, just above your name: My day, switching client, the lists and signing out (like the profile menu on Scout Better)
+function meMenu(btn){
+  if($('#meMenu')) return closeMeMenu();
+  if(ME.team === false) return;
+  var it = function(href, icon, label, sub){ return '<a role="menuitem" href="' + href + '" data-go>' + icon + '<span>' + label + (sub ? '<small>' + sub + '</small>' : '') + '</span></a>'; };
+  $('#me').insertAdjacentHTML('beforeend', '<div class="memenu" id="meMenu" role="menu" aria-label="Your menu">' +
+    it('/team.html#myday', J.day, 'My day', 'Your work, and who still needs an application') +
+    '<button role="menuitem" type="button" data-act="switch">' + J.swap + '<span>Switch client<small>Ctrl K</small></span></button>' +
+    it('/team.html', I.users, 'All clients') + it('/team.html#team', I.team, 'Team') +
+    '<button role="menuitem" type="button" data-act="out">' + I.out + '<span>Sign out</span></button></div>');
+  btn.setAttribute('aria-expanded', 'true');
+  var first = $('#meMenu [role=menuitem]'); if(first) first.focus();
+}
+function closeMeMenu(){ var m = $('#meMenu'); if(m) m.remove(); var b = $('[data-act=memenu]'); if(b) b.setAttribute('aria-expanded', 'false'); }
+document.addEventListener('click', function(e){ if($('#meMenu') && !(e.target.closest && e.target.closest('#meMenu, [data-act=memenu]'))) closeMeMenu(); }, true);   // a click anywhere else closes it
 function errBox(e, top){
   return '<div class="note bad">' + esc(TP.errText(e)) + (top ? ' <a href="/login.html">Sign in again</a>' : ' <button class="btn sm" type="button" data-act="retry">Try again</button>') + '</div>';
 }
@@ -501,7 +570,7 @@ function route(){
   var p = new URLSearchParams(location.search), h = location.hash.replace(/^#/, ''), r = {client:null, tab:'applications', app:null, page:null};
   var c = p.get('client');
   if(c && UUID.test(c)) r.client = c.toLowerCase();
-  if(!r.client){ r.page = h === 'team' ? 'team' : 'clients'; return r; }
+  if(!r.client){ r.page = h === 'team' ? 'team' : h === 'myday' ? 'myday' : 'clients'; return r; }
   var m = /^app=([0-9a-f-]{36})$/i.exec(h);
   if(m) r.app = m[1].toLowerCase();
   else if(TABS.some(function(t){ return t[0] === h; })) r.tab = h;
@@ -557,11 +626,12 @@ function draw(){
   if(!ME) return;
   R = route();
   $('#me').innerHTML = meHTML();
-  var cl = R.page === 'clients', tm = R.page === 'team';
-  $('#pnav').innerHTML = '<a href="/team.html" data-go class="' + (cl ? 'on' : '') + '"' + (cl ? ' aria-current="page"' : '') + '>' + I.users + '<span>Clients</span></a><div class="otabs" id="otabs" hidden></div>' +
+  var cl = R.page === 'clients', tm = R.page === 'team', md = R.page === 'myday';
+  $('#pnav').innerHTML = '<a href="/team.html#myday" data-go class="' + (md ? 'on' : '') + '"' + (md ? ' aria-current="page"' : '') + '>' + J.day + '<span>My day</span></a>' +
+    '<a href="/team.html" data-go class="' + (cl ? 'on' : '') + '"' + (cl ? ' aria-current="page"' : '') + '>' + I.users + '<span>Clients</span></a><div class="otabs" id="otabs" hidden></div>' +
     '<a href="/team.html#team" data-go class="' + (tm ? 'on' : '') + '"' + (tm ? ' aria-current="page"' : '') + '>' + I.team + '<span>Team</span></a>';
   drawOpenTabs();
-  if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : vClients(); }
+  if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : md ? vMyDay() : vClients(); }
   vClient();
 }
 // phones: a top bar with the client and Switch, and the sections along the bottom
@@ -571,8 +641,8 @@ function drawPhone(c){
     (c ? '<div class="tcl"><span class="av sm" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span><b>' + esc(c.full_name || c.email) + '</b></div>' +
       '<button class="icb" type="button" data-act="switch" title="Switch client">' + J.swap + '<span class="sr">Switch client</span></button>' : '<span class="grow"></span>') +
     '<button class="icb" type="button" data-act="out" title="Sign out">' + I.out + '<span class="sr">Sign out</span></button>';
-  var items = c ? TABS.map(function(t){ return [cUrl(c.id, t[0]), t[1], t[2], R.tab === t[0]]; })
-    : [['/team.html', 'Clients', I.users, R.page === 'clients'], ['/team.html#team', 'Team', I.team, R.page === 'team']];
+  var items = c ? TABS.map(function(t){ return [cUrl(c.id, t[0]), t[3] || t[1], t[2], R.tab === t[0]]; })
+    : [['/team.html#myday', 'My day', J.day, R.page === 'myday'], ['/team.html', 'Clients', I.users, R.page === 'clients'], ['/team.html#team', 'Team', I.team, R.page === 'team']];
   $('#tabbar').innerHTML = items.map(function(n){ return '<a href="' + esc(n[0]) + '" data-go class="' + (n[3] ? 'on' : '') + '"' + (n[3] ? ' aria-current="page"' : '') + '>' + n[2] + '<span>' + n[1] + '</span></a>'; }).join('');
 }
 function setTitle(t, c){
@@ -707,6 +777,62 @@ function drawClients(){
   }).join('') + '</div>';
 }
 
+/* =====================================================================
+   My day: what you sent today and this week, who still needs an application today, and the clients you worked on —
+   your own page, like the coach page on Scout Better. "You" comes from the activity log, so it's exactly what you did.
+   ===================================================================== */
+function istDay(back){ var d = new Date(Date.now() + 330 * 60000); d.setUTCHours(0, 0, 0, 0); return new Date(d.getTime() - 330 * 60000 - (back || 0) * 864e5); }   // midnight in India, N days back
+function istWeek(){ return istDay((new Date(Date.now() + 330 * 60000).getUTCDay() + 6) % 7); }   // this Monday
+var MDAY = null;   // your activity this week, as last loaded: shows at once next time, then refreshes
+function vMyDay(){
+  setTitle('My day', null);
+  var t = TEAMROWS.filter(function(x){ return x.email === ME.email; })[0] || {}, first = String(t.full_name || ME.email.split('@')[0]).split(' ')[0];
+  var now = new Date(Date.now() + 330 * 60000), h = now.getUTCHours();
+  var when = now.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long', timeZone:'UTC'});
+  V.innerHTML = '<div class="pageh"><div class="grow"><h1>My day</h1><div class="sub">' + (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ', ' + esc(first) + ' · ' + esc(when) + '</div></div>' +
+      '<button class="btn" type="button" data-act="switch">' + J.swap + 'Switch client</button></div>' +
+    '<div class="stats s5" id="mdS"></div>' +
+    '<div class="mdg"><div class="card"><h3>Still to do today</h3><p class="hint">Active clients with nothing sent today — the most left on their plan first.</p><div id="mdTodo"><div class="skel"></div></div></div>' +
+      '<div class="card"><h3>Clients you worked on this week</h3><p class="hint">From the activity log: the applications you sent and the drafts you started.</p><div id="mdMine"><div class="skel"></div></div></div></div>';
+  var draw = function(){
+    if(R.page !== 'myday' || !$('#mdS')) return;
+    var today = istDay().getTime(), rows = (MDAY && MDAY.rows) || null, mine = rows || [];
+    var isToday = function(r){ return new Date(r.at).getTime() >= today; };
+    var sentT = mine.filter(function(r){ return r.kind === 'app_applied' && isToday(r); }).length, sentW = mine.filter(function(r){ return r.kind === 'app_applied'; }).length;
+    var startedT = mine.filter(function(r){ return r.kind === 'app_started' && isToday(r); }).length;
+    var workedT = mine.filter(isToday).map(function(r){ return r.client_id; }).filter(function(x, i, a){ return x && a.indexOf(x) === i; }).length;
+    var teamT = LIST ? LIST.rows.reduce(function(s, c){ return s + ((LIST.prog[c.id] || {}).today || 0); }, 0) : null;
+    var n = function(v){ return rows ? v : '–'; };
+    $('#mdS').innerHTML = [[n(sentT), 'sent by you today'], [n(sentW), 'sent by you this week'], [n(workedT), 'clients you worked on today'], [n(startedT), 'drafts you started today'], [teamT == null ? '–' : teamT, 'sent by the whole team today']]
+      .map(function(s){ return '<div class="stat"><b>' + s[0] + '</b><span>' + s[1] + '</span></div>'; }).join('');
+    if(LIST){
+      var P = LIST.prog, left = function(c){ return c.plan_total ? c.plan_total - ((P[c.id] || {}).done || 0) : -1; };
+      var todo = LIST.rows.filter(function(c){ return c.status === 'active' && !(P[c.id] || {}).today; })
+        .sort(function(a, b){ return left(b) - left(a) || String(a.full_name).localeCompare(String(b.full_name)); });
+      $('#mdTodo').innerHTML = todo.length ? '<div class="list">' + todo.slice(0, 12).map(function(c){
+        var p = P[c.id] || {};
+        return '<a class="li" href="' + esc(cUrl(c.id)) + '" data-go><span class="av" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span>' +
+          '<div class="main"><div class="t">' + esc(c.full_name || c.email) + '</div><div class="m">' + (c.plan_total ? (p.done || 0) + ' / ' + c.plan_total + ' sent · ' + left(c) + ' left' : (p.done || 0) + ' sent · no plan set') +
+          ' · last sent ' + (p.last_applied_at ? esc(TP.ago(p.last_applied_at)) : 'never') + '</div></div>' + I.chev.replace('<svg', '<svg class="chev"') + '</a>';
+      }).join('') + '</div>' + (todo.length > 12 ? '<p class="fine" style="margin-top:8px">and ' + (todo.length - 12) + ' more — <a href="/team.html" data-go>see Clients</a> (sorted fewest today first)</p>' : '')
+        : '<div class="note ok">Every active client has an application today.</div>';
+    }
+    if(rows){
+      var by = {}, names = {}; (LIST ? LIST.rows : []).forEach(function(c){ names[c.id] = c.full_name || c.email; });
+      mine.forEach(function(r){ if(!r.client_id) return; var x = by[r.client_id] = by[r.client_id] || {id:r.client_id, sent:0, started:0, at:r.at}; if(r.kind === 'app_applied') x.sent++; if(r.kind === 'app_started') x.started++; if(r.at > x.at) x.at = r.at; });
+      var list = Object.keys(by).map(function(k){ return by[k]; }).sort(function(a, b){ return a.at < b.at ? 1 : -1; });
+      $('#mdMine').innerHTML = list.length ? '<div class="list">' + list.map(function(x){
+        return '<a class="li" href="' + esc(cUrl(x.id)) + '" data-go><span class="av" style="background:' + TP.hue(x.id) + '">' + esc(TP.initials(names[x.id] || '?', '')) + '</span>' +
+          '<div class="main"><div class="t">' + esc(names[x.id] || 'A client') + '</div><div class="m">' + [x.sent ? x.sent + ' sent' : '', x.started ? x.started + ' started' : '', 'last ' + esc(TP.ago(x.at))].filter(Boolean).join(' · ') + '</div></div>' + I.chev.replace('<svg', '<svg class="chev"') + '</a>';
+      }).join('') + '</div>' : '<p class="fine">Nothing yet this week. Pick someone from Still to do.</p>';
+    }
+  };
+  draw();
+  var me = ME.email;
+  Promise.all([loadList(), q(SB.from('client_activity').select('client_id,kind,at').eq('by_email', me).in('kind', ['app_started', 'app_applied']).gte('at', istWeek().toISOString()).order('at', {ascending:false}).limit(3000))])
+    .then(function(rs){ MDAY = {at:Date.now(), rows:rs[1] || []}; draw(); }, function(e){ if($('#mdMine')) $('#mdMine').innerHTML = errBox(e); });
+}
+
 function newClient(){
   var planSel = ME.owner ? '<div class="field"><label for="ncP">Plan</label><select id="ncP"><option value="">Not set yet</option>' + TP.CONFIG.PLANS.map(function(n){ return '<option value="' + n + '">' + n + ' applications</option>'; }).join('') + '<option value="custom">Other number…</option></select></div>' +
       '<div class="field" id="ncPCw" hidden><label for="ncPC">Number of applications</label><input id="ncPC" type="number" min="1" max="100000" inputmode="numeric"></div>'
@@ -808,7 +934,7 @@ function drawBar(){
 }
 function showTab(){
   if(R.app) return tApp(R.app);
-  ({profile:tProfile, resumes:tResumes, jobs:tJobs, applications:tApps, activity:tActivity}[R.tab])();
+  ({dash:tDash, profile:tProfile, resumes:tResumes, jobs:tJobs, applications:tApps, activity:tActivity}[R.tab])();
 }
 function refreshProgress(){
   var c = C; if(!c) return Promise.resolve();
@@ -834,6 +960,73 @@ function switcher(){
   if(!all.length) loadList().then(function(){ all = LIST.rows; draw(); }, function(){});
 }
 
+/* ---------- Dashboard: where this client stands — sent against the plan, what came back, and the weeks so far ----------
+   Like the dashboard on Scout Better. Counted from the client's applications, so it always agrees with the Applications tab. */
+var DB = {by:'week'};
+function tDash(){
+  var c = C;
+  V.innerHTML = '<div class="stats s6" id="dbS">' + dashStats(c, null) + '</div>' +
+    '<div class="card dchart"><div class="row" style="align-items:flex-start"><div class="grow"><h3>Applications sent</h3><p class="hint" id="dbH">&nbsp;</p></div>' +
+      '<div class="seg" id="dbBy">' + [['week', 'Weekly'], ['day', 'Daily']].map(function(o){ return '<button type="button" data-by="' + o[0] + '" class="' + (DB.by === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</div></div>' +
+      '<div id="dbC"><div class="skel" style="height:190px"></div></div></div>' +
+    '<div class="card"><div class="row"><h3 class="grow">Latest applications</h3><a class="btn sm" href="' + esc(cUrl(c.id, 'applications')) + '" data-go>All applications</a></div><div id="dbL" style="margin-top:8px"><div class="skel"></div></div></div>';
+  $('#dbBy').addEventListener('click', function(e){ var b = e.target.closest('[data-by]'); if(!b) return; DB.by = b.getAttribute('data-by'); $$('#dbBy button').forEach(function(x){ x.classList.toggle('on', x === b); }); if(c.dash) dashChart(c); });
+  if(c.dash) dashDraw(c);   // what was loaded last shows at once
+  q(SB.from('applications').select('id,status,title,company,applied_at').eq('client_id', c.id).not('applied_at', 'is', null).order('applied_at', {ascending:false}).limit(5000))
+    .then(function(rows){ c.dash = rows || []; if(C === c && R.tab === 'dash' && !R.app) dashDraw(c); }, function(e){ if($('#dbC')) $('#dbC').innerHTML = errBox(e); });
+}
+function dashStats(c, rows){
+  var p = c.prog || {}, tot = c.row.plan_total || 0, done = p.done || 0, n = function(s){ return rows ? rows.filter(function(a){ return a.status === s; }).length : '–'; };
+  return [[done.toLocaleString() + (tot ? ' <span class="of">/ ' + tot.toLocaleString() + '</span>' : ''), tot ? 'sent · ' + Math.min(100, Math.round(done / tot * 100)) + '% of the plan' : 'sent · no plan set'],
+    [p.today || 0, 'sent today'], [p.week || 0, 'sent in the last 7 days'], [n('interview'), 'interviews'], [n('offer'), 'offers'], [n('rejected'), 'not selected']]
+    .map(function(s){ return '<div class="stat"><b>' + s[0] + '</b><span>' + s[1] + '</span></div>'; }).join('');
+}
+function dashDraw(c){
+  $('#dbS').innerHTML = dashStats(c, c.dash);
+  dashChart(c);
+  var top = c.dash.slice(0, 6);
+  $('#dbL').innerHTML = top.length ? '<div class="list">' + top.map(function(a){
+    return '<a class="li" href="' + esc(cUrl(c.id, 'app=' + a.id)) + '" data-go><div class="main"><div class="t">' + esc(a.title || 'Role') + (a.company ? ' <span class="muted">at ' + esc(a.company) + '</span>' : '') + '</div>' +
+      '<div class="m">Sent ' + esc(TP.fmtDate(a.applied_at)) + '</div></div>' + TP.statusChip(a.status) + '</a>';
+  }).join('') + '</div>' : '<p class="fine">Nothing sent yet. Start one on the Jobs tab.</p>';
+}
+// one column per week (the last 12, Monday to Sunday, India time) or per day (the last 30): how many were sent
+function dashChart(c){
+  var week = DB.by === 'week', n = week ? 12 : 30, start = week ? istWeek().getTime() - (n - 1) * 7 * 864e5 : istDay(n - 1).getTime(), span = (week ? 7 : 1) * 864e5;
+  var bins = []; for(var i = 0; i < n; i++) bins.push({from:start + i * span, n:0});
+  c.dash.forEach(function(a){ var k = Math.floor((new Date(a.applied_at).getTime() - start) / span); if(k >= 0 && k < n) bins[k].n++; });
+  var total = bins.reduce(function(s, b){ return s + b.n; }, 0), max = Math.max.apply(null, bins.map(function(b){ return b.n; }));
+  var day = function(t){ return new Date(t + 330 * 60000).toLocaleDateString('en-GB', {day:'numeric', month:'short', timeZone:'UTC'}); };
+  var label = function(b){ return week ? 'Week of ' + day(b.from) : new Date(b.from + 330 * 60000).toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short', timeZone:'UTC'}); };
+  $('#dbH').textContent = total ? total.toLocaleString() + ' sent in the last ' + (week ? '12 weeks' : '30 days') + ' · busiest ' + (week ? 'week' : 'day') + ': ' + max : 'Nothing sent in the last ' + (week ? '12 weeks' : '30 days') + ' yet.';
+  // clean ticks (0, a whole middle and the top), drawn at the card's real width so the text never stretches
+  var unit = max > 40 ? 20 : 10, top = max <= 4 ? 4 : Math.ceil(max / unit) * unit, W = Math.max(300, Math.round($('#dbC').clientWidth || 700)), H = 190, padL = 30, padB = 22, plotH = H - padB - 8, slot = (W - padL) / n, bw = Math.min(24, slot - 2);
+  var y = function(v){ return 8 + plotH - v / top * plotH; };
+  var svg = '<svg class="dbsvg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc($('#dbH').textContent) + '">' +
+    [0, top / 2, top].map(function(v){ return '<line x1="' + padL + '" x2="' + W + '" y1="' + y(v) + '" y2="' + y(v) + '" class="gl"/><text x="' + (padL - 6) + '" y="' + (y(v) + 4) + '" class="ax" text-anchor="end">' + v + '</text>'; }).join('') +
+    bins.map(function(b, k){
+      var x = padL + k * slot + (slot - bw) / 2, h = b.n ? Math.max(2, b.n / top * plotH) : 0, yt = 8 + plotH - h, r = Math.min(4, h);
+      var bar = h ? '<path class="bar" d="M' + x + ' ' + (8 + plotH) + 'V' + (yt + r) + 'Q' + x + ' ' + yt + ' ' + (x + r) + ' ' + yt + 'H' + (x + bw - r) + 'Q' + (x + bw) + ' ' + yt + ' ' + (x + bw) + ' ' + (yt + r) + 'V' + (8 + plotH) + 'Z"/>' : '';
+      var tick = (week ? k % 2 === 1 || k === n - 1 : k % 5 === 4 || k === n - 1) ? '<text x="' + (x + bw / 2) + '" y="' + (H - 6) + '" class="ax" text-anchor="middle">' + esc(week ? day(b.from) : new Date(b.from + 330 * 60000).getUTCDate()) + '</text>' : '';
+      return '<g class="col" tabindex="0" data-k="' + k + '"><rect class="hit" x="' + (padL + k * slot) + '" y="0" width="' + slot + '" height="' + (8 + plotH) + '"/>' + bar + '</g>' + tick;
+    }).join('') + '</svg>';
+  $('#dbC').innerHTML = '<div class="dbwrap">' + svg + '<div class="dbtip" id="dbTip" hidden><b></b><span></span></div></div>' +
+    '<table class="sr"><caption>Applications sent per ' + (week ? 'week' : 'day') + '</caption><tbody>' + bins.map(function(b){ return '<tr><th>' + esc(label(b)) + '</th><td>' + b.n + '</td></tr>'; }).join('') + '</tbody></table>';
+  // hover or focus a column: the value first, then when (written as text, never as markup)
+  var tip = $('#dbTip'), wrap = $('#dbC .dbwrap');
+  var show = function(g){
+    var b = bins[+g.getAttribute('data-k')]; $$('#dbC .col.on').forEach(function(x){ x.classList.remove('on'); }); g.classList.add('on');
+    tip.firstChild.textContent = b.n + ' sent'; tip.lastChild.textContent = label(b); tip.hidden = false;
+    var r = g.getBoundingClientRect(), w = wrap.getBoundingClientRect();
+    tip.style.left = Math.min(Math.max(0, r.left - w.left + r.width / 2 - tip.offsetWidth / 2), w.width - tip.offsetWidth) + 'px';
+  };
+  var hide = function(){ tip.hidden = true; $$('#dbC .col.on').forEach(function(x){ x.classList.remove('on'); }); };
+  $$('#dbC .col').forEach(function(g){ g.addEventListener('pointerenter', function(){ show(g); }); g.addEventListener('focus', function(){ show(g); }); g.addEventListener('blur', hide); });
+  wrap.addEventListener('pointerleave', hide);
+}
+var DBRS = 0;
+window.addEventListener('resize', function(){ clearTimeout(DBRS); DBRS = setTimeout(function(){ if(C && C.dash && R.tab === 'dash' && !R.app && $('#dbC .dbwrap')) dashChart(C); }, 150); });
+
 /* ---------- Profile ---------- */
 var PF = ['full_name', 'phone', 'linkedin', 'location', 'target_roles', 'target_locations', 'work_auth', 'salary', 'notice', 'apply_notes', 'optimise_rules'];
 function tProfile(){
@@ -841,20 +1034,26 @@ function tProfile(){
   function f(k, label, ph, wide){ return '<div class="field"' + (wide ? ' style="grid-column:1/-1"' : '') + '><label for="pf_' + k + '">' + label + '</label>' +
     (k === 'apply_notes' || k === 'optimise_rules' ? '<textarea id="pf_' + k + '" rows="3" placeholder="' + esc(ph || '') + '">' + esc(c[k] || '') + '</textarea>' : '<input id="pf_' + k + '" value="' + esc(c[k] || '') + '" placeholder="' + esc(ph || '') + '" autocomplete="off">') + '</div>'; }
   var plan = c.plan_total || '';
-  V.innerHTML = '<div class="narrow" style="margin:0 auto">' +
-    '<div class="card"><h3>Contact and targets</h3><p class="hint">What the team needs to apply well. The client can see these on their dashboard.</p><div class="grid2">' +
+  // three parts on one page, like Settings on Scout Better: the list beside them jumps to each, and nothing typed is ever out of sight
+  V.innerHTML = '<div class="pfwrap"><nav class="pfnav" id="pfNav" aria-label="Profile sections">' + PFS.map(function(s, i){ return '<button type="button" data-pfs="' + s[0] + '" class="' + (i ? '' : 'on') + '">' + s[1] + '<small>' + s[2] + '</small></button>'; }).join('') + '</nav>' +
+    '<div class="narrow pfmain"><section class="pfsec" id="pfs-profile"><h2>Profile</h2>' +
+    '<div class="card"><h3>Contact</h3><p class="hint">Who they are and how to reach them. The client can see these on their dashboard.</p><div class="grid2">' +
       f('full_name', 'Full name') + '<div class="field"><label>Login email</label><input value="' + esc(c.email) + '" readonly title="The email they sign in with"></div>' +
       f('phone', 'Phone / WhatsApp', '+1 …') + f('linkedin', 'LinkedIn', 'linkedin.com/in/…') +
       f('location', 'Lives in', 'e.g. Jersey City, NJ') + f('work_auth', 'Work authorization', 'e.g. F-1 OPT (STEM) — needs H-1B later') +
-      f('target_roles', 'Target roles', 'e.g. Data Analyst, BI Analyst') + f('target_locations', 'Target locations', 'e.g. US remote, New York, Toronto') +
-      f('salary', 'Salary expectation', 'e.g. $95K–$110K') + f('notice', 'Can start', 'e.g. 2 weeks’ notice') +
-      f('apply_notes', 'How to apply for them', 'e.g. No relocation outside the US East Coast. Skip contract roles.', true) +
-      f('optimise_rules', 'Optimisation rules for their resume', 'Followed on every Optimise for this client — e.g. Keep the summary to three lines. Never reword the first role. British spelling.', true) + '</div></div>' +
+      f('salary', 'Salary expectation', 'e.g. $95K–$110K') + f('notice', 'Can start', 'e.g. 2 weeks’ notice') + '</div></div>' +
     '<div class="card"><h3>Standard answers</h3><p class="hint">Used to pre-fill every new application’s form answers. Tap a common question to add it.</p>' +
       '<div id="pfQA">' + ans.map(qaRow).join('') + '</div>' +
       '<div class="row" style="margin-top:10px"><button class="btn sm" type="button" data-act="qaadd">' + I.plus + 'Add a question</button></div>' +
       '<div class="row" style="margin-top:10px;gap:6px" id="pfCommon">' + COMMON_Q.filter(function(x){ return !ans.some(function(a){ return a.q === x; }); }).map(function(x){ return '<button class="btn sm ghost" type="button" data-act="qacommon" data-q="' + esc(x) + '" style="border:1px dashed var(--line)">+ ' + esc(x) + '</button>'; }).join('') + '</div></div>' +
+    '</section><section class="pfsec" id="pfs-prefs"><h2>Preferences</h2>' +
+    '<div class="card"><h3>Jobs to apply for</h3><p class="hint">The Jobs tab starts from the first target role.</p><div class="grid2">' +
+      f('target_roles', 'Target roles', 'e.g. Data Analyst, BI Analyst') + f('target_locations', 'Target locations', 'e.g. US remote, New York, Toronto') +
+      f('apply_notes', 'How to apply for them', 'e.g. No relocation outside the US East Coast. Skip contract roles.', true) + '</div></div>' +
+    '<div class="card"><h3>Resume rules</h3><p class="hint">Followed on every Optimise for this client.</p><div class="grid2">' +
+      f('optimise_rules', 'Optimisation rules for their resume', 'Followed on every Optimise for this client — e.g. Keep the summary to three lines. Never reword the first role. British spelling.', true) + '</div></div>' +
     skCard(c) +
+    '</section><section class="pfsec" id="pfs-plan"><h2>Plan &amp; account</h2>' +
     '<div class="card"><h3>Plan</h3>' + (ME.owner
       ? '<p class="hint">Only the owner can change this.</p><div class="grid2"><div class="field"><label for="pf_plan">Applications in their plan</label><select id="pf_plan"><option value="">Not set</option>' +
           TP.CONFIG.PLANS.map(function(n){ return '<option value="' + n + '"' + (plan === n ? ' selected' : '') + '>' + n + '</option>'; }).join('') +
@@ -868,12 +1067,32 @@ function tProfile(){
     (c.status === 'archived'
       ? '<div class="card"><h3>Archived</h3><p class="hint">' + esc(first) + ' is off the team’s lists. Nothing was deleted, and their login and dashboard still work. Restore brings them back.</p><button class="btn sm pri" type="button" data-act="unarchive">Restore ' + esc(first) + '</button></div>'
       : '<div class="card"><h3>Remove from the client list</h3><p class="hint">For a client the team has stopped working for, or one added by mistake. Nothing is deleted: they move to <b>Archived</b>, off the team’s lists and counts, and Restore brings them back.</p><button class="btn sm bad" type="button" data-act="archive">Archive ' + esc(first) + '</button></div>') +
-    '<div class="sticky-save"><span class="saved" id="pfMsg"></span><button class="btn pri" type="button" data-act="pfsave">Save changes</button></div></div>';
+    '</section><div class="sticky-save"><span class="saved" id="pfMsg"></span><button class="btn pri" type="button" data-act="pfsave">Save changes</button></div></div></div>';
   $('#pf_status').value = c.status;
   skFresh(c); lastInvite(C);
   if(ME.owner) $('#pf_plan').addEventListener('change', function(e){ $('#pfPCw').hidden = e.target.value !== 'custom'; });
   V.querySelector('.narrow').addEventListener('input', function(e){ if(!e.target.closest('#pfRec')) pfMark(); });
   pfRecover(C);
+  pfSpy();
+}
+// the section list: a click scrolls to that part; while scrolling, the part at the top is the one marked
+var PFS = [['profile', 'Profile', 'Contact and standard answers'], ['prefs', 'Preferences', 'Jobs, how to apply, resume rules, skills'], ['plan', 'Plan & account', 'Plan, status, their login']], PFSPY = null;
+function pfSpy(){
+  if(PFSPY) window.removeEventListener('scroll', PFSPY);
+  var nav = $('#pfNav'); if(!nav) return;
+  var hold = 0;   // a click on the list wins while the page scrolls there
+  var mark = function(id){ $$('#pfNav button').forEach(function(b){ var on = b.getAttribute('data-pfs') === id; b.classList.toggle('on', on); if(on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current'); }); };
+  nav.addEventListener('click', function(e){ var b = e.target.closest('[data-pfs]'); if(!b) return; var s = $('#pfs-' + b.getAttribute('data-pfs')); if(s){ s.scrollIntoView({behavior:'smooth', block:'start'}); mark(b.getAttribute('data-pfs')); hold = Date.now() + 1000; } });
+  // the part whose heading has passed the top third is the one you're in; at the very bottom, the last part (it can't reach the top)
+  var spy = function(){
+    if(!$('#pfNav') || Date.now() < hold) return;
+    var secs = $$('.pfsec'), cur = secs[0]; if(!cur) return;
+    secs.forEach(function(s){ if(s.getBoundingClientRect().top <= window.innerHeight / 3) cur = s; });
+    if(window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) cur = secs[secs.length - 1];
+    mark(cur.id.replace('pfs-', ''));
+  };
+  var raf = 0; PFSPY = function(){ cancelAnimationFrame(raf); raf = requestAnimationFrame(spy); };
+  window.addEventListener('scroll', PFSPY, {passive:true});
 }
 // when the set-password email last went out, and who sent it
 function lastInvite(c){
@@ -1049,16 +1268,46 @@ function edUrl(kind, id){ return '/editor.html?client=' + encodeURIComponent(C.i
 function tResumes(){
   var c = C;
   var roles = String(c.row.target_roles || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
-  V.innerHTML = '<div class="row"><div class="grow"><div class="sub">Base resumes for ' + esc(c.row.full_name) + '. Optimise each one once' + (roles.length ? ' for ' + esc(roles.join(', ')) + ' roles' : '') + '; every application then gets its own copy, synced to that job, so editing these never changes what was already sent.</div></div>' +
-    '<button class="btn pri" type="button" data-act="newresume">' + I.plus + 'New resume</button></div><div id="rl" style="margin-top:14px"><div class="skel"></div></div><div id="rdR"></div>';
+  // two lists, like My Resumes on Scout Better: the main resumes, and every application's own copy tailored to its job
+  V.innerHTML = '<div class="seg rsseg" id="rsV" role="tablist" aria-label="Which resumes">' + [['main', 'Main resumes'], ['tailored', 'Tailored for jobs']].map(function(o){ return '<button type="button" role="tab" data-rv="' + o[0] + '" class="' + (RSV === o[0] ? 'on' : '') + '" aria-selected="' + (RSV === o[0]) + '">' + o[1] + '<b id="rsN-' + o[0] + '"></b></button>'; }).join('') + '</div>' +
+    '<div id="rsMain"' + (RSV === 'main' ? '' : ' hidden') + '><div class="row"><div class="grow"><div class="sub">Base resumes for ' + esc(c.row.full_name) + '. Optimise each one once' + (roles.length ? ' for ' + esc(roles.join(', ')) + ' roles' : '') + '; every application then gets its own copy, synced to that job, so editing these never changes what was already sent.</div></div>' +
+    '<button class="btn pri" type="button" data-act="newresume">' + I.plus + 'New resume</button></div><div id="rl" style="margin-top:14px"><div class="skel"></div></div><div id="rdR"></div></div>' +
+    '<div id="rsTail"' + (RSV === 'tailored' ? '' : ' hidden') + '><div class="sub">Each application’s own copy, tailored to that job. Open one to keep working on it — a sent one opens read-only, exactly as it was sent.</div><div id="rlT" style="margin-top:14px"><div class="skel"></div></div></div>';
+  $('#rsV').addEventListener('click', function(e){
+    var b = e.target.closest('[data-rv]'); if(!b) return; RSV = b.getAttribute('data-rv');
+    $$('#rsV button').forEach(function(x){ x.classList.toggle('on', x === b); x.setAttribute('aria-selected', String(x === b)); });
+    $('#rsMain').hidden = RSV !== 'main'; $('#rsTail').hidden = RSV !== 'tailored';
+  });
+  loadTailored(c);
   rdLink(c, 'resume', '#rdR');
   // what was loaded last shows at once; the fresh list replaces it when it comes
   if(c.resumes || c.rsShown) drawResumes(c, c.resumes || c.rsShown, roles);
   loadResumes(true).then(function(rs){ drawResumes(c, rs, roles); }, function(e){ if(!c.resumes || !$('#rl .li')) { if($('#rl')) $('#rl').innerHTML = errBox(e); } else TP.toast('Couldn’t refresh the resumes — ' + TP.errText(e)); });
 }
+var RSV = 'main';   // which list the Resumes tab shows
+// the tailored copies: the applications whose resume has been opened (and so copied) at least once — newest work first
+function loadTailored(c){
+  if(c.tailored) drawTailored(c, c.tailored);
+  q(SB.from('applications').select('id,title,company,status,updated_at,applied_at,optimised:resume_doc->meta->optimised').eq('client_id', c.id).not('resume_doc', 'is', null).order('updated_at', {ascending:false}).limit(500))
+    .then(function(rows){ c.tailored = rows || []; drawTailored(c, c.tailored); }, function(e){ if(C === c && $('#rlT') && !$('#rlT .li')) $('#rlT').innerHTML = errBox(e); });
+}
+function drawTailored(c, rows){
+  if(C !== c || !$('#rlT') || R.tab !== 'resumes' || R.app) return;
+  var n = $('#rsN-tailored'); if(n) n.textContent = rows.length;
+  $('#rlT').innerHTML = rows.length ? '<div class="list">' + rows.map(function(a){
+    var sent = a.status !== 'draft';
+    return '<div class="li"><span class="logo" style="background:' + TP.hue(a.id) + '">' + J.resume.replace('<svg', '<svg width="18" height="18" style="color:#fff"') + '</span>' +
+      '<div class="main"><div class="t">' + esc(a.title || 'Role') + (a.company ? ' <span class="muted">at ' + esc(a.company) + '</span>' : '') + '</div>' +
+      '<div class="m">' + TP.statusChip(a.status) + ' ' + (sent && a.applied_at ? 'Sent ' + esc(TP.fmtDate(a.applied_at)) : 'Edited ' + esc(TP.ago(a.updated_at))) + '</div>' +
+      (a.optimised ? '<div class="m" style="color:var(--ok)">✓ Optimised for this job</div>' : '') + '</div>' +
+      '<div class="side"><a class="btn sm' + (sent ? '' : ' pri') + '" href="' + esc(edUrl('app', a.id)) + '" target="tp-ed-' + esc(a.id) + '">' + I.doc + (sent ? 'View in editor' : 'Open in editor') + '</a>' +
+        '<a class="btn sm" href="' + esc(cUrl(c.id, 'app=' + a.id)) + '" data-go>Application</a></div></div>';
+  }).join('') + '</div>' : '<div class="empty">' + J.resume + '<h3>No tailored resumes yet</h3><p>Each application gets its own copy of a main resume the first time its resume is opened in the editor.</p></div>';
+}
 function drawResumes(c, rs, roles){
     if(C !== c || !$('#rl') || R.tab !== 'resumes' || R.app) return;
     c.rsShown = rs;
+    var rn = $('#rsN-main'); if(rn) rn.textContent = rs.length;
     drawBar();
     $('#rl').innerHTML = rs.length ? '<div class="list">' + rs.map(function(r){
       var first = String(r.text || '').split('\n').map(function(s){ return s.trim(); }).filter(Boolean).slice(0, 3).join(' · '), om = r.doc && r.doc.meta && r.doc.meta.optimised;
@@ -1184,8 +1433,8 @@ function canonUrl(u){
   return c;
 }
 function linkKey(u){ var it = parseLink(u); return (it && it.key) || null; }
-function dupNote(a){
-  return '<a class="tag" href="' + esc(cUrl(C.id, 'app=' + a.id)) + '" data-go style="background:' + (a.status === 'draft' ? 'var(--warn-soft);color:var(--warn)' : 'var(--ok-soft);color:var(--ok)') + '">' +
+function dupNote(a){   // the application this job already has, opened in its own browser tab (like every job from this tab)
+  return '<a class="tag" href="' + esc(cUrl(C.id, 'app=' + a.id)) + '" target="tp-app-' + esc(a.id) + '" style="background:' + (a.status === 'draft' ? 'var(--warn-soft);color:var(--warn)' : 'var(--ok-soft);color:var(--ok)') + '">' +
     (a.status === 'draft' ? 'Draft started' : 'Applied ' + esc(TP.ago(a.applied_at))) + '</a>';
 }
 var JB = {q:null, reg:'US', age:'30', n:40};
@@ -1281,11 +1530,20 @@ function boardDesc(j){
 }
 function startFromBoard(key, btn){
   var j = (BOARD || []).filter(function(x){ return x.key === key; })[0]; if(!j) return;
+  var w = jobTab();   // opened now, while we still have the click (pop-up blockers); the draft fills it in a moment
   btn.disabled = true; btn.classList.add('busy');
   boardDesc(j).catch(function(){ return ''; }).then(function(jd){
-    return createDraft({job_key:j.key, job_url:j.url, title:j.title, company:j.company, location:j.location, jd_text:jd || null});
+    return createDraft({job_key:j.key, job_url:j.url, title:j.title, company:j.company, location:j.location, jd_text:jd || null}, w);
   }).catch(function(e){ btn.disabled = false; btn.classList.remove('busy'); fail(e); });
 }
+// Every job started from the Jobs tab opens in its own browser tab, like on Scout Better: the list stays where it was, and each
+// tab keeps its own draft and edits. The tab opens on the click and shows "Starting…" until the draft is made.
+function jobTab(){
+  var w = null; try{ w = window.open('about:blank', '_blank'); }catch(e){}
+  if(w) try{ w.document.title = 'Starting the application…'; w.document.body.innerHTML = '<p style="font:15px/1.5 system-ui,sans-serif;color:#555;padding:40px">Starting the application…</p>'; }catch(e){}
+  return w;
+}
+function shutTab(w){ if(w && !w.closed) try{ w.close(); }catch(e){} }
 
 /* a pasted link: the big job boards are read here; any other page by our job-info server function */
 function parseLink(raw){
@@ -1416,8 +1674,9 @@ function readLink(raw){
       if(!t || !co){ TP.toast('Add the job title and company'); return; }
       if(!/^https?:\/\//i.test(url)){ TP.toast('Check the link'); return; }
       this.disabled = true; this.classList.add('busy');
-      var me = this;
-      createDraft({job_key:j.key, job_url:TP.cleanUrl(url), title:t, company:co, location:$('#lkL').value.trim() || null, jd_text:$('#lkJ').value.trim() || null})
+      var me = this, w = jobTab();
+      createDraft({job_key:j.key, job_url:TP.cleanUrl(url), title:t, company:co, location:$('#lkL').value.trim() || null, jd_text:$('#lkJ').value.trim() || null}, w)
+        .then(function(r){ if(r && r.tab && out.isConnected){ $('#lkIn').value = ''; out.innerHTML = '<div class="note ok" style="margin-top:14px">Started — ' + esc(t) + ' at ' + esc(co) + ' opened in a new browser tab. ' + dupNote({id:r.id, status:'draft'}) + '</div>'; } })
         .catch(function(e){ me.disabled = false; me.classList.remove('busy'); fail(e); });
     };
   });
@@ -1427,18 +1686,27 @@ function draftRow(c, job){
   var base = defaultResume(c);
   return Object.assign({client_id:c.id, base_resume_id:base ? base.id : null, answers:(Array.isArray(c.row.answers) ? c.row.answers : []).map(function(a){ return {q:a.q, a:a.a}; })}, job);
 }
-function createDraft(job){
+// w: the browser tab opened for it on the click (none if the browser blocked it: then it opens here, as before).
+// Resolves {id, tab}: tab is true when it opened in its own tab.
+function createDraft(job, w){
   var c = C;
   return Promise.all([loadResumes(), findSame(c, job)]).then(function(rs){
-    if(rs[1]) return sameJob(c, rs[1]).then(function(){ throw {quiet:true}; });
+    if(rs[1]){ shutTab(w); return sameJob(c, rs[1]).then(function(){ throw {quiet:true}; }); }
     return q(SB.from('applications').insert(draftRow(c, job)).select('id').single());
   }).then(function(r){
     c.idx = null; refreshProgress();
-    return go(cUrl(c.id, 'app=' + r.id)).then(function(){
-      TP.toast('Application started', {undo:function(){ undoDrafts(c, [r.id]).then(function(n){ if(n){ TP.toast('Application removed'); if(C === c && R.app === r.id) go(cUrl(c.id, 'jobs'), true); } }); }});
-    });
-  });
+    var undo = {undo:function(){ undoDrafts(c, [r.id]).then(function(n){ if(n){ TP.toast('Application removed'); if(C === c && R.app === r.id) go(cUrl(c.id, 'jobs'), true); else jobsFresh(c); } }); }};
+    if(w && !w.closed){
+      try{ w.name = 'tp-app-' + r.id; }catch(e){}   // its Draft started link elsewhere comes back to this tab
+      w.location.href = cUrl(c.id, 'app=' + r.id);
+      jobsFresh(c); TP.toast('Application started in a new browser tab', undo);
+      return {id:r.id, tab:true};
+    }
+    return go(cUrl(c.id, 'app=' + r.id)).then(function(){ TP.toast('Application started', undo); return {id:r.id, tab:false}; });
+  }).catch(function(e){ shutTab(w); throw e; });
 }
+// the Jobs tab after a job was started elsewhere: its row says Draft started instead of Start
+function jobsFresh(c){ if(C === c && R.tab === 'jobs' && !R.app) loadAppIndex(true).then(function(){ if(C === c && R.tab === 'jobs' && !R.app) drawBoard(); }, function(){}); }
 // right before a job is started: the database's own answer, so a teammate who started it a minute ago is caught too
 function findSame(c, job){
   var urls = [job.job_url, canonUrl(job.job_url), TP.cleanUrl(job.job_url)].filter(function(u, i, a){ return u && a.indexOf(u) === i; });
@@ -2548,6 +2816,7 @@ function teamMenu(email){
    keyboard: Ctrl+K switches client, / goes to the page's search
    ===================================================================== */
 document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape' && $('#meMenu')){ closeMeMenu(); var mb = $('[data-act=memenu]'); if(mb) mb.focus(); return; }
   if(!ME || ME.team === false || TP.isModal() || e.altKey) return;
   var a = document.activeElement, typing = a && (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable);
   if((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 'k'){ e.preventDefault(); switcher(); return; }
@@ -2560,7 +2829,9 @@ document.addEventListener('keydown', function(e){
 document.addEventListener('click', function(e){
   var b = e.target.closest && e.target.closest('[data-act]'); if(!b) return;
   var act = b.getAttribute('data-act');
+  if(act !== 'memenu' && b.closest('#meMenu')) closeMeMenu();   // a choice in your menu closes it
   switch(act){
+    case 'memenu': return meMenu(b);
     case 'out': return TP.signOut();
     case 'retry': if(!ME) return location.reload(); if(C){ C.row = null; C.resumes = null; } staleList(); return render();   // only this page loads again; nothing typed elsewhere is touched
     case 'newclient': return newClient();

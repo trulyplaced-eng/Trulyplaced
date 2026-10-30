@@ -244,6 +244,21 @@ svg.defs{position:absolute;width:0;height:0}
 #pbody .bl li .mini{display:flex;flex-direction:column;gap:0;padding-top:2px}
 .addl{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:12.5px;font-weight:500;color:var(--muted);padding:5px 8px 5px 6px;border-radius:7px;transition:background .15s,color .15s}
 .addl:hover{background:var(--blue-soft);color:var(--blue)}
+/* + Add a link: LinkedIn, GitHub, Portfolio or any page; and the same on the page, beside the contact details (never printed) */
+.addrow{display:flex;flex-wrap:wrap;gap:4px}
+.addl svg{width:14px;height:14px}
+.lnmenu{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;padding:8px;border-radius:10px;background:var(--bg)}
+.lnmenu button{padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:12.5px;font-weight:500;color:var(--ink);transition:border-color .15s,color .15s}
+.lnmenu button:hover,.lnmenu button:focus-visible{border-color:var(--blue);color:var(--blue);outline:none}
+.sheet .ph-h{position:relative}
+.sheet .pgln{position:absolute;top:0;right:0;display:inline-flex}   /* in the header's corner: it never moves a line, so the page count matches the PDF */
+.sheet .pgln button{display:inline-flex;align-items:center;gap:3px;padding:0 7px;border-radius:999px;border:1px dashed #b9c3e6;background:#fff;color:#4d5fae;font:500 10px/1.7 var(--ui);opacity:.55;transition:opacity .15s,background .15s}
+.sheet .pgln button svg{width:10px;height:10px}
+.sheet .ph-h:hover .pgln button,.sheet .pgln button:focus-visible{opacity:1}
+.sheet .pgln button:hover{background:var(--blue-soft)}
+/* Save: everything saves on its own a moment later; this saves now (Ctrl+S) */
+.savb{height:32px;padding:0 11px;gap:6px;font-size:13px}
+.savb svg{width:15px;height:15px}
 .addl svg{width:14px;height:14px}
 .row{display:flex;gap:6px;align-items:center;margin-top:6px}
 .row .in{flex:1;min-width:0}
@@ -564,7 +579,7 @@ svg.defs{position:absolute;width:0;height:0}
 .ro .rocard{margin:0 0 12px;padding:12px 14px;border-radius:12px;background:var(--ok-soft);color:var(--ink);font-size:13px;line-height:1.5}
 .ro .rocard b{display:block}
 .ro .pc input,.ro .pc textarea,.ro .pc select{pointer-events:none;background:var(--bg)}
-.ro .mb,.ro .addl,.ro .addsec,.ro #bOpt,.ro .selbar{display:none!important}
+.ro .mb,.ro .addl,.ro .addsec,.ro #bOpt,.ro .selbar,.ro #bSave,.ro .lnmenu{display:none!important}
 
 /* ---------- embed + phone ---------- */
 .embed .top .backb,.embed .top .brand{display:none}
@@ -591,6 +606,7 @@ svg.defs{position:absolute;width:0;height:0}
   body.m-edit .stage{display:none}
   body.m-preview .panel{display:none}
   .top{padding:0 8px;gap:6px}
+  .savb{width:32px;padding:0}.savb span{display:none}   /* a phone: the Save icon only */
   .top:has(.wkon:not([hidden])) .brand{display:none}   /* team mode: the client chip says where you are, and the bar fits a phone */
   .crumbs{gap:7px}.crumbs .cjob,.rname,.status span{display:none}
   .wkon span{max-width:34vw;overflow:hidden;text-overflow:ellipsis}
@@ -611,7 +627,7 @@ svg.defs{position:absolute;width:0;height:0}
   .sheetwrap{transform:none!important}
   .sheet{box-shadow:none;width:auto!important;min-height:0!important}
   .sheet [data-path]:hover,.sheet .sel,.sheet .hl,.sheet ins{background:none!important;outline:none!important;box-shadow:none!important}
-  .sheet .pgx,.pgbar,.sheet li.pgempty,.sheet .pgin,.sheet .pgui{display:none!important}
+  .sheet .pgx,.pgbar,.sheet li.pgempty,.sheet .pgin,.sheet .pgui,.sheet .pgln{display:none!important}
   .sheet .sk{padding-right:0!important}
   .sheet li.pghov,.sheet .pged{outline:none!important}
 }
@@ -628,6 +644,7 @@ svg.defs{position:absolute;width:0;height:0}
   <span class="status" id="status" hidden><i></i><span></span></span>
   <div class="tbtns" id="tbtns" hidden>
     <span class="hist"><button type="button" class="ib" data-a="undo" id="bUndo" aria-label="Undo (Ctrl+Z)" data-tip="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button><button type="button" class="ib" data-a="redo" id="bRedo" aria-label="Redo (Ctrl+Y)" data-tip="Redo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button></span>
+    <button type="button" class="btn savb" data-a="save-now" id="bSave" aria-label="Save now (Ctrl+S)" data-tip="Save now · Ctrl+S"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg><span>Save</span></button>
     <span class="vr" aria-hidden="true"></span>
     <button type="button" class="btn ai" data-a="optimize" id="bOpt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Optimise for a job</span></button>
     <div class="dd" id="dlWrap"><button type="button" class="btn pri" data-a="dl-menu" id="bDl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg><span>Download</span><i class="dv" aria-hidden="true"></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
@@ -1038,8 +1055,9 @@ function toast(msg, act) {
   t.innerHTML = '<span>' + esc(msg) + '</span>' + (act ? '<button type="button" data-a="' + act.a + '">' + esc(act.label) + '</button>' : '');
   t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), act ? act.ms || 6000 : 3200);
 }
-function status(t, busy) {
-  const s = $('#status'); s.hidden = false; s.classList.toggle('busy', !!busy); s.lastChild.textContent = t;
+function status(t, busy) {   // a save that went through says when: "Saved for this application · 11:42"
+  const s = $('#status'); s.hidden = false; s.classList.toggle('busy', !!busy);
+  s.lastChild.textContent = !busy && /^Saved\b/.test(t) ? t + ' · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : t;
 }
 
 /* ---------- which mode are we in ---------- */
@@ -1426,6 +1444,15 @@ function sync() {   // public mode: the job board and the X-ray read this copy, 
     });
   }).catch(() => status('Saved on this device', true));
 }
+// Save (the button, or Ctrl+S): every change already saves on its own a moment later; this saves now, and the status says when
+function saveNow() {
+  if (!DOC) return Promise.resolve();
+  if (READONLY) { toast('This application was sent, so its resume can’t change'); return Promise.resolve(); }
+  if (!TEAM && !lsSet(STORE_KEY, DOC)) { status('Couldn’t save in this browser', true); return Promise.resolve(); }
+  if (TEAM) TEAM_DIRTY = true;
+  status('Saving…', true);
+  return Promise.resolve(sync()).catch(() => status('Couldn’t save — check the connection', true));
+}
 // Called after every edit. `path` = the field being typed in (so keystrokes share one undo step); null = a structural change.
 function changed(path) {
   if (path) { snap(path); endTyping(); } else snap();
@@ -1655,9 +1682,9 @@ function contactHTML(D, f) {
   const items = [];
   D.contact.forEach((c, i) => {
     if (!c || (f.hideContact || []).includes(c)) return;
-    const lab = f.linksAsLabels ? linkLabel(c) : null;
-    const href = EM1.test(c) ? 'mailto:' + c : /^(https?:\/\/)/i.test(c) ? c : lab ? 'https://' + c.replace(/^\/+/, '') : null;
-    items.push('<span data-path="contact.' + i + '">' + (href && lab ? '<a href="' + esc(href) + '">' + esc(lab) + '</a>' : esc(c)) + '</span>');
+    // every link and email can be clicked in the PDF and the Word file: shown in full, or as LinkedIn / GitHub / Portfolio
+    const kind = linkLabel(c), em = String(c).match(EM1), href = em ? 'mailto:' + em[0] : /^(https?:\/\/)/i.test(c) ? c.trim() : kind ? 'https://' + c.trim().replace(/^\/+/, '') : null;
+    items.push('<span data-path="contact.' + i + '">' + (href ? '<a href="' + esc(href) + '">' + esc(f.linksAsLabels && kind ? kind : c) + '</a>' : esc(c)) + '</span>');
   });
   const pt = prefText(D); if (pt) items.push('<span class="pref">' + esc(pt) + '</span>');
   return items.join('<span class="sep">' + (f.template === 'traditional' || f.oneLine ? '|' : '·') + '</span>');
@@ -1713,7 +1740,8 @@ function sectionHTML(s, f, ed) {
 // ed: the on-screen page, with the controls for editing on it (the PDF hides them; the Word file never has them)
 function resumeHTML(D, f, ed) {
   D = D || DOC; f = f || fmtOf(D);
-  return '<header class="ph-h">' + P('name', D.name, null, 'h1') + (D.headline ? P('headline', D.headline, 'hlt', 'div') : '') + (ed ? sugHeadHTML() : '') + '<div class="ct">' + contactHTML(D, f) + '</div>' + (ed ? sugLocHTML() : '') + '</header>' +
+  return '<header class="ph-h">' + P('name', D.name, null, 'h1') + (D.headline ? P('headline', D.headline, 'hlt', 'div') : '') + (ed ? sugHeadHTML() : '') + '<div class="ct">' + contactHTML(D, f) +
+    (ed ? '<span class="pgln"><button type="button" data-a="ln-pg">' + I_PLUS + 'Add link</button></span>' : '') + '</div>' + (ed ? sugLocHTML() : '') + '</header>' +   // + Add link: on screen only, never printed or in the Word file
     (ed ? sugSumHTML('') : '') +   // Optimise's suggestions wait on the page (never printed or exported)
     orderedSections(D).filter((s) => !s.hidden).map((s) => sectionHTML(s, f, ed)).join('') + (ed && !D.sections.some((s) => s.k === 'skills' && !s.hidden) ? addSkillsHTML() : '');
 }
@@ -1846,7 +1874,7 @@ function confirmBox(title, text, okLabel, then, cancelLabel) {
    jump to its field.
    ===================================================================== */
 let HL = {};   // lines just changed by the AI, highlighted on the page until the next edit
-const I_UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>', I_DN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>', I_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>', I_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>', I_SPARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>';
+const I_UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>', I_DN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>', I_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>', I_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>', I_SPARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>', I_LINK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>';
 // each tool's heading at the top of the panel: what it is, in a line
 const PHEAD = { edit: ['Edit', 'Every section of the resume. You can also click a line on the page and type.'], cover: ['Cover letter', 'Written for this job, from the resume.'],
   format: ['Format', 'Template, type and spacing for the whole resume.'], check: ['Check', 'How the resume scores, and what to fix first.'], versions: ['Versions', 'Saved copies you can go back to.'] };
@@ -1867,6 +1895,16 @@ const mini = (a, v, tip, cls, dis) => '<button type="button" class="mb ' + (cls 
 function secTools(s, i, n) {
   return '<span class="mini">' + mini('sec-up', s.id, 'Move section up', 'up', i === 0) + mini('sec-dn', s.id, 'Move section down', 'dn', i === n - 1) + mini('sec-del', s.id, 'Remove this section', 'x del') + '</span>';
 }
+// + Add a link (like Scout Better): the start of the address is filled in and the field is ready to finish typing.
+// On the page every link can be clicked in the PDF and the Word file; Format → Links as labels shows them as LinkedIn, GitHub…
+const LINKS = [['linkedin', 'LinkedIn', 'linkedin.com/in/'], ['github', 'GitHub', 'github.com/'], ['portfolio', 'Portfolio', 'https://'], ['other', 'Other link', 'https://']];
+function addLink(kind) {
+  if (READONLY || !DOC) return;
+  const L = LINKS.find((x) => x[0] === kind) || LINKS[3];
+  DOC.contact.push(L[2]); FOCUS = 'contact.' + (DOC.contact.length - 1);
+  structural(); focusField(FOCUS, -1);
+  toast('Finish the ' + L[1] + ' address — it’s a link in the PDF and the Word file');
+}
 function editHTML() {
   const D = DOC; let h = recCardHTML();   // the skills this job asks for that the resume doesn't show, first
   // contact & headline
@@ -1875,7 +1913,9 @@ function editHTML() {
     '<label class="lbl">Headline <span style="text-transform:none;font-weight:500">(the title under the name)</span></label>' + F('headline', D.headline, 'e.g. Data Analyst') +
     '<label class="lbl">Contact details</label>' +
     D.contact.map((c, i) => '<div class="row">' + F('contact.' + i, c, 'Email, phone, city, LinkedIn…') + mini('ct-del', String(i), 'Remove', 'x del') + '</div>').join('') +
-    '<button type="button" class="addl" data-a="ct-add">' + I_PLUS + 'Add a contact detail</button></div>';
+    '<div class="addrow"><button type="button" class="addl" data-a="ct-add">' + I_PLUS + 'Add a contact detail</button>' +
+      '<button type="button" class="addl" data-a="ln-menu" aria-expanded="false" aria-controls="lnMenu">' + I_LINK + 'Add a link</button></div>' +
+    '<div class="lnmenu" id="lnMenu" hidden>' + LINKS.map((l) => '<button type="button" data-a="ln-add" data-v="' + l[0] + '">' + esc(l[1]) + '</button>').join('') + '</div></div>';
   const secs = D.sections, n = secs.length;
   secs.forEach((s, i) => {
     const B = 'sec.' + s.id + '.';
@@ -2012,6 +2052,16 @@ function editAction(a, v, t) {
   const D = DOC;
   switch (a) {
     case 'ct-add': D.contact.push(''); FOCUS = 'contact.' + (D.contact.length - 1); structural(); focusField(FOCUS, -1); return true;
+    case 'ln-menu': { const m = $('#lnMenu'); if (m) { m.hidden = !m.hidden; t.setAttribute('aria-expanded', String(!m.hidden)); if (!m.hidden) m.querySelector('button').focus(); } return true; }
+    case 'ln-add': addLink(v); return true;
+    case 'ln-pg': {   // + Add link on the page: the choices open in the panel, where the address is typed
+      if (READONLY) return true;
+      if (document.body.classList.contains('m-preview')) setMobile('edit');
+      if (PTAB !== 'edit' || TAB !== 'resume') { PTAB = 'edit'; if (TAB !== 'resume') setDocTab('resume'); renderPanel(); }
+      const m = $('#lnMenu'), b = $('[data-a=ln-menu]'); if (!m) return true;
+      m.hidden = false; if (b) b.setAttribute('aria-expanded', 'true');
+      m.scrollIntoView({ block: 'center', behavior: 'smooth' }); m.querySelector('button').focus(); return true;
+    }
     case 'ct-del': D.contact.splice(+v, 1); structural(); return true;
     case 'sec-menu': { const m = $('#secMenu'); if (m) m.hidden = !m.hidden; return true; }
     case 'sec-add': {
@@ -3678,6 +3728,7 @@ document.addEventListener('click', (e) => {
   switch (a) {
     case 'undo': return undo();
     case 'redo': return redo();
+    case 'save-now': return saveNow();
     case 'ptab': PTAB = v; renderPanel(); $('#pbody').scrollTop = 0; return;
     case 'doc': return setDocTab(v);
     case 'mob': return setMobile(v);
@@ -3714,6 +3765,7 @@ document.addEventListener('keydown', (e) => {
   const mod = e.ctrlKey || e.metaKey;
   if (mod && !e.altKey && (e.key === 'z' || e.key === 'Z') && DOC && !e.target.closest('[contenteditable]')) { if (e.target.matches('input,textarea') && !e.shiftKey && HTYPING) { /* let the field's own undo run first */ } else { e.preventDefault(); e.shiftKey ? redo() : undo(); return; } }
   if (mod && (e.key === 'y' || e.key === 'Y') && DOC) { e.preventDefault(); redo(); return; }
+  if (mod && !e.altKey && !e.shiftKey && (e.key === 's' || e.key === 'S') && DOC) { e.preventDefault(); saveNow(); return; }   // Ctrl+S saves now (never the browser's "Save page"); typing carries on
   if (mod && (e.key === 's' || e.key === 'S') && DOC) { e.preventDefault(); sync(); toast('Saved'); return; }
   if (e.key === 'Escape') { hideSel(); const dl = $('#dlMenu'); if (dl) dl.hidden = true; if (!$('#modal').hidden) { if (OPT && OPT.rows && $('#rAll')) finishOptimise(); else if (!$('.om.run')) modalClose(); } return; }
   if (e.target.closest('#pbody')) onFieldKey(e);
@@ -3724,7 +3776,8 @@ document.addEventListener('keyup', (e) => { if (e.shiftKey || /^Arrow|^Shift/.te
 document.addEventListener('mousedown', (e) => { PGDOWN = true; if ((e.target.closest('#selbar') && !e.target.matches('input')) || e.target.closest('#sheet [data-a], #pgbar button')) e.preventDefault(); });   // keep the text selected while using the bar; the page's own controls don't end typing on the page
 document.addEventListener('pointerdown', pgPointer);
 // click a line on the page: bullets, the summary and skills are typed right there; anything else opens its field in the panel
-$('#sheet').addEventListener('click', (e) => { if (e.target.closest('[data-a], .pgin') || pgTap(e)) return; const el = e.target.closest('[data-path]'); if (el && DOC && !selFrom() && !editOnPage(el, e)) jumpTo(el.getAttribute('data-path')); });
+$('#sheet').addEventListener('click', (e) => { if (e.target.closest('a[href]')) e.preventDefault();   // a link on the page opens its field here; in the PDF it opens the page
+  if (e.target.closest('[data-a], .pgin') || pgTap(e)) return; const el = e.target.closest('[data-path]'); if (el && DOC && !selFrom() && !editOnPage(el, e)) jumpTo(el.getAttribute('data-path')); });
 $('#sheet').addEventListener('focusout', onPageBlur);
 $('#sheet').addEventListener('mouseover', (e) => { const li = e.target.closest && e.target.closest('li[data-b]'); if (li) pgOver(li, e.clientX); });
 $('#sheet').addEventListener('mouseout', (e) => { const li = e.target.closest && e.target.closest('li[data-b]'); if (li && !li.contains(e.relatedTarget)) { clearTimeout(PGS); pgHideSoon(); } });
