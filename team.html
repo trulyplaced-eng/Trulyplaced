@@ -158,6 +158,18 @@
 .lkbar .btn.on{background:var(--blue-soft);border-color:var(--blue-line);color:var(--blue)}
 #lkM{margin-top:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
 #lkM b{font-weight:550;color:var(--body)}
+/* the fit, as app.trulyplaced.com scores it: 0-100 with its verdict, and the first reason and concern under the title */
+.fitp{display:inline-flex;align-items:baseline;gap:5px;height:24px;padding:0 8px;border-radius:7px;border:1px solid var(--line);background:#fff;line-height:22px;white-space:nowrap;font-variant-numeric:tabular-nums;cursor:default;color:var(--body)}
+.fitp b{font-size:12.5px;font-weight:650;color:var(--ink)}
+.fitp small{font-size:11px;font-weight:550}
+.fitp.strong{border-color:#c8e9d6}.fitp.strong small{color:var(--ok)}
+.fitp.good{border-color:var(--blue-line)}.fitp.good small{color:var(--blue)}
+.fitp.stretch{border-color:#f6d9a8}.fitp.stretch small{color:var(--warn)}
+.fitp.poor{border-color:#f7c6d1}.fitp.poor small{color:var(--bad)}
+.fitp.wait{align-items:center;color:var(--muted)}.fitp.wait .spin{width:11px;height:11px;border-width:1.5px}
+.lkrow .m.fitw{display:flex;flex-wrap:wrap;gap:4px 14px}
+.lkrow .m.fitw .ok{color:var(--ok)}.lkrow .m.fitw .gap{color:var(--warn)}
+@media (max-width:760px){ .fitp small{display:none} }
 .lkneed{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 4px;max-width:560px}
 .lkneed .inp{min-height:36px;font-size:13.5px;padding:0 10px}
 .lkrow.skip{padding-top:9px;padding-bottom:9px}
@@ -1822,6 +1834,7 @@ function lkList(cid){
     var s = TP.lsGet('tp_links_' + cid, null);
     LKS[cid] = {cid:cid, items:s && Array.isArray(s.items) && s.at > Date.now() - 30 * 864e5 ? s.items : [], skip:[], more:0};
     LKS[cid].items.forEach(function(x){ if(x.opt && (x.opt.st === 'wait' || x.opt.st === 'run')) x.opt = {st:'fail', why:'Stopped when the page was closed'}; });   // an Optimise runs in the tab that started it
+    LKS[cid].items.forEach(function(x){ if(x.fit && x.fit.wait) x.fit = null; });   // a fit that was on its way is asked for again
   }
   return LKS[cid];
 }
@@ -1986,16 +1999,18 @@ function lkDraw(){
   var c = C, L = lkList(c.id), f = document.activeElement;
   if(!c.resumes) loadResumes().then(function(){ if(lkShown(L)) lkDraw(); }, function(){});   // each job's match is counted against the main resume
   var keep = f && f.getAttribute && f.getAttribute('data-lk') && box.contains(f) ? [f.getAttribute('data-id'), f.getAttribute('data-lk'), f.selectionStart, f.selectionEnd] : null;
-  var rows = lkBest() ? L.items.slice().sort(function(a, b){ return lkPct(b) - lkPct(a); }) : L.items;   // best match first: the jobs not scored yet go last
+  var rows = lkBest() ? L.items.slice().sort(function(a, b){ return lkRank(b) - lkRank(a); }) : L.items;   // best first: by the fit, then the job match; jobs not scored yet go last
   box.innerHTML = (L.more ? '<div class="note warn" style="margin-top:14px">Up to ' + LK_MAX + ' links are read at a time. The other ' + L.more + ' are still in the box — press <b>Read links</b> again for them.</div>' : '') +
     (L.items.length ? '<div id="lkHd">' + lkHead(L) + '</div><div class="list" id="lkRows">' + rows.map(lkRow).join('') + '</div>' : '') +
     (L.skip.length ? '<div class="lkskip"><p class="fine"><b>' + L.skip.length + ' skipped</b> — not added to the list</p><div class="list">' + L.skip.map(lkSkipRow).join('') + '</div></div>' : '');
   if(keep){ var g = box.querySelector('[data-id="' + keep[0] + '"][data-lk="' + keep[1] + '"]'); if(g){ g.focus(); try{ g.setSelectionRange(keep[2], keep[3]); }catch(e2){} } }
+  setTimeout(function(){ fitRun(c, lkList(c.id)); }, 0);   // the fit for jobs that don't have one yet
 }
 function lkHead(L){
-  var sent = 0, drafts = 0, can = 0, need = 0, reading = 0, gone = 0, opt = 0, busy = 0, ready = 0, scored = 0, strong = 0;
+  var sent = 0, drafts = 0, can = 0, need = 0, reading = 0, gone = 0, opt = 0, busy = 0, ready = 0, scored = 0, strong = 0, fits = 0;
   L.items.forEach(function(x){
-    var m = lkMatch(C, x); if(m){ scored++; if(m.pct >= 75) strong++; }
+    var m = lkMatch(C, x); if(m || fitDone(x)){ scored++; if(m && m.pct >= 75) strong++; }
+    if(fitDone(x) && x.fit.verdict === 'strong') fits++;
     if(x.app){
       if(x.st === 'gone') gone++; else if(x.st && x.st !== 'draft') sent++;
       else { drafts++; var os = x.opt && x.opt.st; if(os === 'wait' || os === 'run') busy++; if(os === 'ready') ready++; if(lkCanOpt(x)) opt++; }
@@ -2006,9 +2021,10 @@ function lkHead(L){
   var n = L.items.length - gone, pct = n ? Math.round(sent / n * 100) : 0;
   return '<div class="lkbar"><div class="grow"><b>Your list · ' + n + ' job' + (n === 1 ? '' : 's') + '</b><div class="fine">' +
       [sent + ' of ' + n + ' sent', drafts ? drafts + ' draft' + (drafts === 1 ? '' : 's') : '', busy ? 'syncing ' + busy + '…' : '', ready ? ready + ' ready to review' : '',
-        can + need ? (can + need) + ' to start' : '', reading ? 'reading ' + reading + '…' : '', strong ? strong + ' strong match' + (strong === 1 ? '' : 'es') + ' (75%+)' : ''].filter(Boolean).join(' · ') + '</div>' +
+        can + need ? (can + need) + ' to start' : '', reading ? 'reading ' + reading + '…' : '', fits ? fits + ' strong fit' + (fits === 1 ? '' : 's') : '',
+        strong ? strong + ' strong match' + (strong === 1 ? '' : 'es') + ' (75%+)' : ''].filter(Boolean).join(' · ') + '</div>' +
       (sent ? '<div class="prog' + (sent === n ? ' full' : '') + '"><i style="width:' + pct + '%"></i></div>' : '') + '</div>' +
-    (scored > 1 ? '<button class="btn sm' + (lkBest() ? ' on' : '') + '" type="button" data-act="lksort" aria-pressed="' + lkBest() + '" title="Order the list by job match, best first">Best match first</button>' : '') +
+    (scored > 1 ? '<button class="btn sm' + (lkBest() ? ' on' : '') + '" type="button" data-act="lksort" aria-pressed="' + lkBest() + '" title="Order the list by fit, then job match, best first">Best match first</button>' : '') +
     (can ? '<button class="btn pri" type="button" data-act="lkstart">' + (can === 1 ? 'Start 1 application' : 'Start all ' + can) + '</button>' : '') +
     (opt ? '<button class="btn' + (can ? '' : ' pri') + '" type="button" data-act="lkopt">' + I.spark + 'Sync ' + opt + (opt === 1 ? ' to its job' : ' to their jobs') + '</button>' : '') +
     '<button class="btn sm" type="button" data-act="lkclear">Clear list</button></div>' +
@@ -2031,6 +2047,7 @@ function lkMatch(c, x){
   return x.match;
 }
 function lkPct(x){ var m = lkMatch(C, x); return m ? m.pct : -1; }
+function lkRank(x){ return (fitDone(x) ? x.fit.score : -1) * 1000 + lkPct(x); }
 function lkBest(){ return TP.lsGet('tp_lk_best', false) === true; }
 function mTier(p){ return p >= 75 ? 'hi' : p >= 50 ? 'mid' : p >= 30 ? 'lo' : 'min'; }
 function mPill(m, after){
@@ -2053,10 +2070,89 @@ function lkJd(id){
     if(v.length < 80){ TP.toast('That looks too short — paste the whole job description'); return; }
     var M = lkList(c.id); TP.closeModal();
     if(M.items.indexOf(x) < 0 || x.app) return;   // taken off the list, or started, meanwhile
-    x.jd = v.slice(0, 15000); x.match = null; lkSave(M); if(lkShown(M)) lkDraw();
+    x.jd = v.slice(0, 15000); x.match = null; x.fit = null; lkSave(M); if(lkShown(M)) lkDraw();
     var s = lkMatch(c, x);
     TP.toast(s ? 'Job match ' + s.pct + '%' + (s.miss.length ? ' — missing ' + s.miss.slice(0, 3).join(', ') : ' — every keyword is on the resume') : 'Saved — add a resume to see the match');
   };
+}
+/* ---------- the fit: how well the client fits each job, scored as app.trulyplaced.com scores it - its "Check my fit", ported to
+   resume-ai's task "fit": a 0-100 score, strong / good / stretch / poor, up to 3 reasons and 2 concerns. The client goes in as the
+   app's profile has a candidate: the main resume's roles, education and skills, and the Profile's work authorisation, target roles,
+   places and salary; skills the team marked as missing count against a job that needs them. One score per job and resume (and
+   Profile), ten jobs a request; a started job keeps its fit. ---------- */
+var FITQ = {};   // a client whose fit request is on its way
+function fitDone(x){ return !!(x.fit && x.fit.score != null); }
+function fitDates(d){   // "Jan 2023 – Present" → ["Jan 2023", "Present"]; one date alone is both ends
+  var p = String(d || '').split(/\s*[–—]\s*|\s+-\s+|\s+to\s+|(?<=\d)-(?=\d{4}\b|[A-Za-z])/i).map(function(s){ return s.trim(); }).filter(Boolean);
+  return [p[0] || null, p.length > 1 ? p[1] : (p[0] || null)];
+}
+// the countries a client can work in, read from the Profile's own words ("F-1 OPT (STEM)", "US citizen", "Canadian PR")
+function fitAuth(t){
+  t = String(t || ''); var out = [];
+  if(/\b(u\.?s\.?a?|united states|american)\b[^.]{0,30}\b(citizen|national|green card|permanent resident)|\bgreen card\b|\b(stem[\s-]+)?opt\b|\bcpt\b|\bh-?1b\b|\bh-?4\b|\bead\b|\bl-?[12]\b|\bo-?1\b|\btn visa\b|\be-?3\b|authori[sz]ed to work in the (u\.?s|united states)/i.test(t)) out.push('United States');
+  if(/\bcanad(a|ian)\b[^.]{0,30}\b(citizen|pr|permanent resident)|\bpgwp\b|open work permit/i.test(t)) out.push('Canada');
+  if(/\b(uk|british)\b[^.]{0,30}\b(citizen|settled|ilr)|graduate visa|skilled worker visa/i.test(t)) out.push('United Kingdom');
+  if(/\bindian\b[^.]{0,20}\bcitizen|\bcitizen of india\b/i.test(t)) out.push('India');
+  return out;
+}
+function fitSponsor(t){
+  t = String(t || '');
+  if(/no sponsorship (is )?(needed|required)|(doesn'?t|does not|won'?t|will not|never) (need|require) (visa )?sponsorship|\bcitizen\b|green card|permanent resident/i.test(t)) return false;
+  return /sponsor/i.test(t) ? true : null;
+}
+function fitList(t){ return String(t || '').split(/\s*[,;\n]\s*|\s+\/\s+|\s+or\s+/i).map(function(x){ return x.trim(); }).filter(Boolean); }
+function fitCandidate(c){
+  var row = c.row || {}, r = defaultResume(c), D = r && r.doc && Array.isArray(r.doc.sections) ? r.doc : null;
+  var secs = function(k){ return D ? D.sections.filter(function(s){ return s.k === k && !s.hidden; }) : []; };
+  var items = function(k){ return [].concat.apply([], secs(k).map(function(s){ return s.items || []; })); };
+  var roles = items('experience').map(function(it){ var d = fitDates(it.dates); return {title:it.title || '', company:it.sub || '', start:d[0], end:d[1], bullets:(it.bullets || []).map(function(b){ return b.t; }).filter(Boolean).slice(0, 4)}; });
+  var conf = Array.isArray(row.confirmed_skills) ? row.confirmed_skills : [], seen = {};
+  var skills = [].concat.apply([], secs('skills').map(function(s){ return (s.rows || []).map(function(w){ return String(w.value || ''); }); })).join(', ').split(/\s*[,;|]\s*/)
+    .concat(conf.filter(function(s){ return s && s.has === true; }).map(function(s){ return s.skill; }))
+    .map(function(s){ return String(s || '').replace(/\.$/, '').trim(); }).filter(function(s){ var k = s.toLowerCase(); if(!s || seen[k]) return false; seen[k] = 1; return true; });
+  var locs = fitList(row.target_locations), sp = fitSponsor(row.work_auth);
+  var o = {headline:(D && D.headline) || fitList(row.target_roles)[0] || '', location:row.location || '', experience:roles,
+    education:items('education').map(function(it){ return [it.title, it.sub].filter(Boolean).join(', '); }), skills:skills.slice(0, 60),
+    authorizedCountries:fitAuth(row.work_auth), workAuthNotes:row.work_auth || '',
+    preferences:{targetRoles:fitList(row.target_roles), locations:locs, workType:locs.length && locs.every(function(l){ return /\bremote\b/i.test(l); }) ? 'remote' : 'any', minSalary:row.salary || ''},
+    missingSkills:conf.filter(function(s){ return s && s.has === false; }).map(function(s){ return s.skill; })};
+  if(sp !== null) o.requiresSponsorship = sp;
+  if(!roles.length && r) o.resumeText = String(r.text || '').slice(0, 6000);   // a resume that was never laid out: its text
+  return o;
+}
+// what a fit is scored against: the main resume, the Profile and the job's description
+function fitKey(c, x){ var r = lkResume(c); return r ? r.id + '|' + (r.updated_at || '') + '|' + (c.row.updated_at || '') + '|' + String(x.jd || '').length : ''; }
+function fitErr(e){
+  var s = (e && (e.code || e.message)) || '';
+  return s === 'limit' ? 'Today’s AI allowance is used up' : s === 'no_claude' ? 'Claude isn’t set up in Supabase yet' : /bad_task/.test(s) ? 'resume-ai needs redeploying in Supabase for the fit' : TP.errText(e);
+}
+function fitRun(c, L){
+  if(FITQ[c.id] || C !== c || !lkResume(c)) return;
+  var todo = L.items.filter(function(x){ var k = fitKey(c, x); return !x.app && String(x.jd || '').trim() && k && (!x.fit || x.fit.k !== k); }).slice(0, 10);
+  if(!todo.length) return;
+  var sent = {}; todo.forEach(function(x){ sent[x.id] = fitKey(c, x); x.fit = {k:sent[x.id], wait:1}; });
+  FITQ[c.id] = 1; if(lkShown(L)) lkDraw();
+  TP.fn('resume-ai', {task:'fit', candidate:fitCandidate(c), jobs:todo.map(function(x){ return {id:x.id, company:x.company || '', title:x.title || '', location:x.location || '', description:String(x.jd).slice(0, 3000)}; })}, 90000)
+    .then(function(d){
+      var by = {}; ((d && d.results) || []).forEach(function(r){ by[r.jobId] = r; });
+      todo.forEach(function(x){ var r = by[x.id]; if(x.fit && x.fit.k === sent[x.id]) x.fit = r ? {k:sent[x.id], score:r.score, verdict:r.verdict, reasons:r.reasons || [], concerns:r.concerns || [], skills:r.skills || []} : {k:sent[x.id], err:'Not scored this time'}; });
+    }, function(e){
+      var why = fitErr(e); todo.forEach(function(x){ if(x.fit && x.fit.k === sent[x.id]) x.fit = {k:sent[x.id], err:why}; });
+    })
+    .then(function(){ delete FITQ[c.id]; var M = lkList(c.id); lkSave(M); if(lkShown(M)) lkDraw(); });   // lkDraw asks for the next ten, if there are more
+}
+function lkFitRetry(id){ var c = C, L = lkList(c.id), x = L.items.filter(function(y){ return y.id === id; })[0]; if(!x) return; x.fit = null; fitRun(c, L); }
+function fitPill(x){
+  var f = x.fit; if(!f) return '';
+  if(f.wait) return '<span class="fitp wait" role="status"><span class="spin"></span>Fit</span>';
+  if(f.err) return '<button class="btn sm" type="button" data-act="lkfit" data-id="' + esc(x.id) + '" title="' + esc('Couldn’t check the fit: ' + f.err) + '">Check fit</button>';
+  var V = {strong:'Strong fit', good:'Good fit', stretch:'Stretch', poor:'Poor fit'}[f.verdict] || 'Fit';
+  var tip = V + ' (' + f.score + '/100)' + f.reasons.map(function(r){ return '\n✓ ' + r; }).join('') + f.concerns.map(function(r){ return '\n! ' + r; }).join('') + (f.skills.length ? '\nSkills it names: ' + f.skills.join(', ') : '');
+  return '<span class="fitp ' + esc(f.verdict) + '" title="' + esc(tip) + '"><b>' + f.score + '</b><small>' + V + '</small></span>';
+}
+function fitLine(x){
+  var f = x.fit; if(!fitDone(x) || !(f.reasons.length || f.concerns.length)) return '';
+  return '<div class="m fitw">' + (f.reasons[0] ? '<span class="ok">✓ ' + esc(f.reasons[0]) + '</span>' : '') + (f.concerns[0] ? '<span class="gap">! ' + esc(f.concerns[0]) + '</span>' : '') + '</div>';
 }
 function lkRow(x){
   var del = '<button class="icb" type="button" data-act="lkdel" data-id="' + esc(x.id) + '" title="' + (x.app ? 'Take it off the list (the application stays)' : 'Remove from the list') + '" aria-label="Remove">' + I.x + '</button>';
@@ -2073,8 +2169,8 @@ function lkRow(x){
       : os === 'done' ? (o.same ? 'Already a good match — nothing to change' : 'Reviewed — the tailored resume is saved')
       : os === 'fail' ? 'Couldn’t optimise: ' + esc(o.why) : 'Draft started — open it to tailor the resume and apply';
     return '<div class="li lkrow" data-state="' + s + '" data-opt="' + os + '">' + coLogo(x.company, x.url, x.dom) + '<div class="main"><div class="t">' + esc(x.title) + '</div><div class="m">' + who + '</div>' +
-        '<div class="m' + (s === 'sent' || os === 'ready' || os === 'done' ? ' ok' : os === 'fail' ? ' err' : '') + '">' + line + '</div></div>' +
-      '<div class="side">' + pill + (s === 'gone' ? '<span class="st closed">Deleted</span>' : TP.statusChip(st) +
+        '<div class="m' + (s === 'sent' || os === 'ready' || os === 'done' ? ' ok' : os === 'fail' ? ' err' : '') + '">' + line + '</div>' + (s === 'gone' ? '' : fitLine(x)) + '</div>' +
+      '<div class="side">' + (s === 'gone' ? '' : fitPill(x)) + pill + (s === 'gone' ? '<span class="st closed">Deleted</span>' : TP.statusChip(st) +
         (os === 'ready' ? '<a class="btn sm pri" href="' + esc(edUrl('app', x.app)) + '" target="tp-ed-' + esc(x.app) + '">Review</a>' : os === 'fail' ? '<button class="btn sm pri" type="button" data-act="lkretry" data-id="' + esc(x.id) + '">Retry</button>' : '') +
         '<a class="btn sm' + (s === 'draft' && os !== 'ready' && os !== 'fail' ? ' pri' : '') + '" href="' + esc(cUrl(C.id, 'app=' + x.app)) + '" data-go>' + (s === 'draft' ? 'Open' : 'View') + '</a>') + del + '</div></div>';
   }
@@ -2087,9 +2183,9 @@ function lkRow(x){
         (x.guessed ? 'Couldn’t read this page — ' + (x.title ? 'check the title and company' : 'type the job title' + (x.company ? '' : ' and company')) : 'Add the ' + (x.title ? 'company' : x.company ? 'job title' : 'job title and company')) + '</div>' +
         '<div class="lkneed"><input class="inp" data-lk="title" data-id="' + esc(x.id) + '" value="' + esc(x.title || '') + '" placeholder="Job title" aria-label="Job title" autocomplete="off">' +
           '<input class="inp" data-lk="company" data-id="' + esc(x.id) + '" value="' + esc(x.company || '') + '" placeholder="Company" aria-label="Company" autocomplete="off"></div>' +
-        (mm ? mMiss(mm) : '') + '<div class="m">' + esc(shortLink(x.url)) + '</div>' + err + '</div><div class="side">' + score + ext + del + '</div></div>';
+        fitLine(x) + (mm ? mMiss(mm) : '') + '<div class="m">' + esc(shortLink(x.url)) + '</div>' + err + '</div><div class="side">' + fitPill(x) + score + ext + del + '</div></div>';
   return '<div class="li lkrow" data-state="ready">' + coLogo(x.company, x.url, x.dom) + '<div class="main"><div class="t">' + esc(x.title) + '</div><div class="m">' + who + '</div>' +
-      (mm ? mMiss(mm) : '<div class="m ' + (x.jd ? 'ok">Job description read' : 'warn">No job description yet — add it to see the match') + '</div>') + err + '</div><div class="side">' + score + ext + del + '</div></div>';
+      fitLine(x) + (mm ? mMiss(mm) : '<div class="m ' + (x.jd ? 'ok">Job description read' : 'warn">No job description yet — add it to see the match') + '</div>') + err + '</div><div class="side">' + fitPill(x) + score + ext + del + '</div></div>';
 }
 /* ---------- Optimise the list: the editor's own Optimise, run for each draft in a hidden editor, a few at a time ----------
    It runs in this browser tab, so other tabs and other clients' pages are fine; closing the tab stops it, so the page asks
@@ -3027,6 +3123,7 @@ document.addEventListener('click', function(e){
     case 'lkretry': return lkRetry(b.getAttribute('data-id'));
     case 'lkjd': return lkJd(b.getAttribute('data-id'));
     case 'lksort': TP.lsSet('tp_lk_best', !lkBest()); return lkDraw();
+    case 'lkfit': return lkFitRetry(b.getAttribute('data-id'));
     case 'apmore': AP.n += 50; return loadApps();
     case 'apsel': AP.sel = AP.sel ? null : {}; b.textContent = AP.sel ? 'Done selecting' : 'Select'; drawBulk(); return loadApps();
     case 'apcsv': return exportCsv(b);
