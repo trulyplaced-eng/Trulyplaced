@@ -42,7 +42,7 @@
 .otab button svg{width:12px;height:12px}
 .otab.add{gap:6px;color:var(--blue);font-weight:500}
 /* the client you're working on: who, their sections and, at the bottom, their progress */
-#cbar{flex:1;display:flex;flex-direction:column;min-height:0}
+#cbar{flex:1 0 auto;display:flex;flex-direction:column}   /* never shorter than what it holds: a short window scrolls the sidebar instead */
 .cbar{flex:1;display:flex;flex-direction:column;margin-top:12px;padding-top:14px;border-top:1px solid rgba(0,0,0,.06)}
 .cb1{padding:0 14px 10px 20px}
 .cb1 .lab{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--client)}
@@ -397,6 +397,18 @@ h1,h2,h3,.hello,.brand,.stat b,.mod h2,.ahead h2{font-family:var(--ui);letter-sp
   .tbl.team .li{grid-template-columns:minmax(0,1fr) auto auto}
   .tbl.team .tm-acc,.tbl.team .tday{display:none}
   .pageh h1,.phead h1{font-size:20px}
+}
+/* a short window: nothing in the sidebar overlaps. It scrolls, you and Sign out stay in view at the bottom,
+   and below 760px tall it's a little tighter so it usually all fits */
+.me{position:sticky;bottom:0;z-index:2;background:var(--sb-bg)}
+@media (max-height:760px){
+  .sb .brand{height:52px}
+  .navsearch{margin-bottom:6px}
+  .nav a{padding-top:5px;padding-bottom:5px}
+  .cbar{margin-top:8px;padding-top:10px}
+  .pgcard{padding:10px 20px 12px}
+  .pgcard .pg b{font-size:20px}
+  .me{padding-top:9px;padding-bottom:9px}
 }
 </style>
 </head>

@@ -428,25 +428,43 @@ svg.defs{position:absolute;width:0;height:0}
 .ohd button{color:var(--blue);font-weight:500;text-transform:none;letter-spacing:0;font-size:12.5px}
 .omjd textarea{width:100%;border:1px solid transparent;background:var(--field);border-radius:10px;padding:10px;font-size:13.5px;resize:vertical;min-height:110px}
 .omjd textarea:focus{outline:none;background:#fff;border-color:var(--blue);box-shadow:0 0 0 3px var(--ring)}
-/* the Optimise progress screen: a bar that advances per step, ticks that draw in */
+/* the Optimise progress screen: one step worked on at a time, joined by a line that fills as they're done; a bar that keeps moving; ticks that draw in */
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes pop{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
 @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes tick{from{transform:rotate(45deg) scale(0)}to{transform:rotate(45deg) scale(1)}}
 @keyframes glide{from{background-position:200% 0}to{background-position:-200% 0}}
-.om.run{text-align:left;padding:26px 30px 28px}
+@keyframes okPop{0%{transform:scale(.7)}60%{transform:scale(1.08)}100%{transform:none}}
+.om.run{text-align:left;padding:24px 28px 18px}
 .om.run h2{font:600 18px var(--ui);color:var(--ink);text-transform:none;letter-spacing:-.01em;border:0;margin:0 0 2px;line-height:1.3}
-.om.run .omsub{margin:0 0 18px}
-.runbar{height:5px;border-radius:3px;background:var(--line);overflow:hidden;margin-bottom:20px}
-.runbar i{display:block;height:100%;width:4%;border-radius:3px;background:linear-gradient(90deg,var(--blue),#7c3aed,var(--blue));background-size:200% 100%;animation:glide 1.6s linear infinite;transition:width .5s cubic-bezier(.2,.8,.2,1)}
-.steps{list-style:none;margin:0;display:block;max-width:none;text-align:left}
-.steps li{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13.5px;padding:9px 0;border-top:1px solid var(--line);transition:color .3s}
-.steps li:first-child{border-top:0}
-.steps li i{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center;font-style:normal;transition:background .25s,border-color .25s}
-.steps li.run{color:var(--ink)}.steps li.run i{border-color:var(--blue);border-top-color:transparent;animation:spin .8s linear infinite}
-.steps li.ok{color:var(--ink)}.steps li.ok i{border-color:var(--ok);background:var(--ok)}
-.steps li.ok i::before{content:"";width:5px;height:9px;border-right:2px solid #fff;border-bottom:2px solid #fff;margin-top:-3px;transform:rotate(45deg);animation:tick .28s cubic-bezier(.2,.8,.2,1) both}
-.om.run .fine{margin-top:16px}
+.om.run .omsub{margin:0}
+.runbar{flex:none;height:4px;border-radius:999px;background:var(--line);overflow:hidden;margin-bottom:20px}
+.runbar i{display:block;height:100%;width:2%;border-radius:999px;background:linear-gradient(90deg,var(--blue),#7c3aed,var(--blue));background-size:200% 100%;animation:glide 1.6s linear infinite;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.runhd{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px}
+.runhd>div{min-width:0}
+.runmeta{flex:none;margin-top:4px;font:500 12px var(--ui);color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.steps{list-style:none;margin:0;padding:0;display:block;max-width:none;text-align:left}
+.steps li{position:relative;display:flex;align-items:flex-start;gap:14px;padding:9px 0;color:var(--muted);font-size:13.5px;line-height:1.45}
+.steps li:not(:last-child)::after{content:"";position:absolute;left:10px;top:35px;bottom:-5px;width:2px;border-radius:2px;background:var(--line);transition:background .45s ease}
+.steps li.ok:not(:last-child)::after{background:var(--ok)}
+.steps li i{width:22px;height:22px;flex:none;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-style:normal;transition:border-color .25s,background .25s}
+.steps li.run i{border-color:var(--blue-line);border-top-color:var(--blue);animation:spin .8s linear infinite}
+.steps li.ok i{border-color:var(--ok);background:var(--ok);animation:okPop .34s cubic-bezier(.2,.8,.2,1)}
+.steps li.ok i::before{content:"";width:5px;height:9px;border-right:2px solid #fff;border-bottom:2px solid #fff;margin-top:-3px;transform:rotate(45deg);animation:tick .28s .06s cubic-bezier(.2,.8,.2,1) both}
+.steps li>div{min-width:0;padding-top:1px}
+.steps li b{display:block;font-weight:500;color:inherit;transition:color .3s}
+.steps li.ok b{color:var(--ink)}
+/* the step worked on: a light passes over its words, as when Claude reads a resume */
+.steps li.run b{font-weight:600;color:transparent;background:linear-gradient(100deg,var(--ink) 0%,var(--ink) 38%,#a1a1aa 50%,var(--ink) 62%,var(--ink) 100%);background-size:300% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;animation:cwSweep 2.4s ease-in-out infinite}
+.steps .hint{display:none;margin-top:2px;font-size:12.5px;color:var(--muted);transition:opacity .26s ease,transform .26s ease}
+.steps li.run .hint{display:block;min-height:1.45em}
+.steps .hint.out{opacity:0;transform:translateY(3px)}
+.runslow{margin:8px 0 0 36px;font-size:12.5px;line-height:1.5;color:var(--muted);animation:rise .3s ease-out}
+.runft{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.om.run .runft .fine{margin:0}
+.runft .btn{flex:none}
+.sronly{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+@media (prefers-reduced-motion:reduce){.steps li.run b{animation:none;background:none;color:var(--ink)}.steps li.ok i,.steps li.ok i::before{animation:none}.steps .hint{transition:none}.runbar i{animation:none;transition:none}}
 .vrep{display:grid;gap:8px;padding:14px 26px;border-bottom:1px solid var(--line);background:#fafbfc}
 .vrep>div{display:flex;gap:10px;align-items:flex-start;font-size:13px}
 .vrep b{color:var(--ink);display:block}.vrep small{color:var(--muted);display:block;line-height:1.4}
@@ -2800,18 +2818,84 @@ function runOptimise(sync) {   // sync: true = "Sync to this job", every part at
   if (TEAM) saveVersion(all ? 'Before Sync' : 'Before Optimise');   // one click of Restore undoes the whole run
   const keep = {}; if (all) Object.assign(keep, (lsGet(OPT_KEY, {}) || {}).sel || {}); else Object.keys(sel).forEach((k) => { if (k !== 'sync') keep[k] = sel[k] ? 1 : 0; });
   delete keep.sync; lsSet(OPT_KEY, { sel: keep, ins });   // the ticks to remember: a Sync leaves them as they were
-  const P = optPlan(sel), nb = P.nb;
-  const steps = [['job', JOB.roles ? 'Working out what these roles ask for' : 'Reading the job description and its requirements'], ['write', all ? 'Syncing the summary, title' + (nb ? ', ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' and their order' : '') + ' and skills to the job'
-    : nb ? 'Rewording ' + nb + ' bullet' + (nb > 1 ? 's' : '') + (sel.summary ? ' and the summary' : '') + ' for the job' : 'Tailoring for the job'], ['check', 'Checking every change against the facts']]
-    .concat(appOpt() ? [['verify', 'A second reader checks every change against the original resume and the job']] : []);
-  modalOpen('<div class="om sm run" role="dialog" aria-modal="true" aria-live="polite"><div class="runbar"><i id="runbar"></i></div><h2>' + (all ? 'Syncing to ' : 'Optimising for ') + esc(JOB.roles ? JOB.roles.join(' · ') : cleanTitle(JOB.title) || 'this job') + '</h2>' + (JOB.company ? '<p class="omsub">at ' + esc(JOB.company) + '</p>' : '') +
-    '<ul class="steps">' + steps.map((x) => '<li data-st="' + x[0] + '" class="run"><i></i>' + esc(x[1]) + '</li>').join('') + '</ul><p class="fine" style="margin-top:16px">Only wording changes, never facts: nothing is added for a requirement the resume doesn’t prove. Projects, education and certifications are never touched.</p></div>');
-  const done = (k, label) => { const li = $('.steps [data-st="' + k + '"]'); if (li) { li.classList.remove('run'); li.classList.add('ok'); if (label) li.lastChild.textContent = label; }
-    const bar = $('#runbar'), all = $$('.steps li').length; if (bar && all) bar.style.width = Math.max(4, Math.round($$('.steps li.ok').length / all * 100)) + '%'; };
-  optCompute(sel, ins, P, done).then((o) => {
+  const P = optPlan(sel), nb = P.nb, second = appOpt();
+  // each step: its key, what it says, its usual seconds, its share of the bar, what it says when it moves on before the answer, what Claude is doing meanwhile
+  const steps = [['job', JOB.roles ? 'Working out what these roles ask for' : 'Reading the job description and its requirements', 3.5, 10, JOB.roles ? 'Worked out what these roles ask for' : 'Read the job description', ['Picking out the must-haves and the nice-to-haves']],
+    ['write', all ? 'Syncing the summary, title' + (nb ? ', ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' and their order' : '') + ' and skills to the job'
+      : nb ? 'Rewording ' + nb + ' bullet' + (nb > 1 ? 's' : '') + (sel.summary ? ' and the summary' : '') + ' for the job' : 'Tailoring for the job', Math.min(45, Math.max(12, 8 + nb * 0.9)) + (all ? 10 : 0), second ? 56 : 84, '',
+      ['Matching each requirement to the resume’s own lines', 'Rewording bullets in the job’s words', 'Keeping every number, tool and employer as it is'].concat(all ? ['Putting each role’s bullets in this job’s order'] : [])],
+    ['check', 'Checking every change against the facts', 1, 6, '', []]]
+    .concat(second ? [['verify', 'A second reader checks every change against the original resume and the job', 14, 28, '', ['Comparing each change with the original line', 'Making sure nothing is overstated or invented', 'Marking the requirements again on the new wording']]] : []);
+  const card = runCard((all ? 'Syncing to ' : 'Optimising for ') + (JOB.roles ? JOB.roles.join(' · ') : cleanTitle(JOB.title) || 'this job'), JOB.company ? 'at ' + JOB.company : '', steps);
+  optCompute(sel, ins, P, card.done).then((o) => {
+    if (RUN !== card) return;   // stopped meanwhile
     OPT.R = o.R; OPT.targets = o.targets; OPT.terms = P.terms; OPT.cover0 = P.cover0;
-    setTimeout(() => showResults(o.R, o.targets, sel, o.V), 500);
-  }).catch((e) => { modalClose(); toast(e === 'shape' ? AI_ERR.http : aiMsg(e)); });
+    return card.finish().then(() => { if (RUN !== card) return; RUN = null; showResults(o.R, o.targets, sel, o.V); });
+  }).catch((e) => { if (e === 'stopped' || RUN !== card) return; RUN = null; modalClose(); toast(e === 'shape' ? AI_ERR.http : aiMsg(e)); });
+}
+// The run card: the steps are worked through one at a time, like a checklist. The bar keeps moving at the usual pace (most of the
+// way in the usual time, then slowly), the step being worked on says what Claude is doing, steps that finish together tick off one
+// after another, and Stop closes it - nothing on the resume changes until a suggestion is accepted.
+let RUN = null;
+function runCard(title, sub, steps) {
+  modalOpen('<div class="om sm run" role="dialog" aria-modal="true" aria-labelledby="runT"><div class="runbar" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="runbar"></i></div>' +
+    '<div class="runhd"><div><h2 id="runT">' + esc(title) + '</h2>' + (sub ? '<p class="omsub">' + esc(sub) + '</p>' : '') + '</div><span class="runmeta" id="runMeta"></span></div>' +
+    '<ol class="steps" id="runSteps">' + steps.map((s) => '<li data-st="' + s[0] + '" class="wait"><i aria-hidden="true"></i><div><b>' + esc(s[1]) + '</b><small class="hint"></small></div></li>').join('') + '</ol>' +
+    '<p class="runslow" id="runSlow" hidden>Taking a little longer than usual — Claude is still working. A long job description can take up to a minute.</p>' +
+    '<div class="runft"><p class="fine">Only wording changes, never facts: nothing is added for a requirement the resume doesn’t prove. Projects, education and certifications are never touched.</p><button type="button" class="btn sm ghost" data-a="run-stop">Stop</button></div>' +
+    '<p class="sronly" id="runSay" aria-live="polite"></p></div>');
+  const C = RUN = { stopped: false, k: null, t0: Date.now(), s0: Date.now(), shown: 0, q: [], busy: 0, hint: 0, hintAt: 0, timer: 0 };
+  const li = (k) => $('#runSteps [data-st="' + k + '"]'), at = (k) => steps.findIndex((s) => s[0] === k), total = steps.reduce((n, s) => n + s[3], 0);
+  const isOk = (k) => li(k).classList.contains('ok');
+  const clock = () => { const s = Math.floor((Date.now() - C.t0) / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+  const meta = () => C.k ? 'Step ' + (at(C.k) + 1) + ' of ' + steps.length + ' · ' + clock() : 'Done in ' + clock();
+  const label = (k, t) => { const b = li(k).querySelector('b'); if (t && b.textContent !== t) b.textContent = t; };
+  const hint = (first) => {   // what Claude is doing, a line at a time
+    const h = C.k && li(C.k).querySelector('.hint'), list = C.k ? steps[at(C.k)][5] : []; if (!h || !list.length) return;
+    const t = list[C.hint++ % list.length]; C.hintAt = Date.now(); if (list.length === 1 && !first) return;
+    if (first) { h.textContent = t; return; }
+    h.classList.add('out'); setTimeout(() => { h.textContent = t; h.classList.remove('out'); }, 260);
+  };
+  const next = () => {   // the first step not done is the one worked on
+    const s = steps.find((x) => !isOk(x[0])); C.k = s ? s[0] : null; C.s0 = Date.now(); C.hint = 0; $('#runSlow').hidden = true;
+    $('#runMeta').textContent = meta(); if (!s) return;
+    const el = li(s[0]); el.classList.remove('wait'); el.classList.add('run'); hint(true);
+    $('#runSay').textContent = 'Step ' + (at(s[0]) + 1) + ' of ' + steps.length + ': ' + el.querySelector('b').textContent;
+  };
+  const advance = (k, t) => {   // k is done (and any step before it), and the next one starts
+    steps.slice(0, at(k) + 1).forEach((s) => { const el = li(s[0]); if (!el.classList.contains('ok')) { el.classList.remove('wait', 'run'); el.classList.add('ok'); } });
+    label(k, t); next();
+  };
+  const pct = () => {   // the steps done count in full; the one worked on moves most of the way in its usual time, then slowly
+    let p = 0;
+    for (const s of steps) {
+      if (isOk(s[0])) { p += s[3]; continue; }
+      if (s[0] === C.k) { const x = (Date.now() - C.s0) / 1000 / s[2]; p += s[3] * (x < 1 ? 0.85 * x : 0.85 + 0.12 * (1 - Math.exp(-(x - 1) / 1.5))); }
+      break;
+    }
+    return Math.min(100, p / total * 100);
+  };
+  const tick = () => {
+    if (C.stopped || !$('#runSteps')) { clearInterval(C.timer); return; }
+    const bar = $('#runbar'); C.shown = Math.max(C.shown, pct()); bar.style.width = Math.max(2, C.shown) + '%'; bar.parentNode.setAttribute('aria-valuenow', String(Math.round(C.shown)));
+    $('#runMeta').textContent = meta();
+    if (!C.k) return;
+    const s = steps[at(C.k)], secs = (Date.now() - C.s0) / 1000;
+    if (s[4] && secs >= s[2] && !C.q.length && !C.busy) return advance(C.k, s[4]);   // the job is read in the first seconds of the call: on to the writing
+    if (Date.now() - C.hintAt > 3400) hint();
+    if (secs > Math.max(25, s[2] * 1.8)) $('#runSlow').hidden = false;
+  };
+  const pump = () => {   // answers that come together tick off one after another
+    if (C.busy || !C.q.length || !$('#runSteps')) return;
+    const [k, t] = C.q.shift();
+    if (isOk(k)) { label(k, t); return pump(); }   // moved on already: just its result
+    advance(k, t); C.busy = setTimeout(() => { C.busy = 0; pump(); }, 420);
+  };
+  C.done = (k, t) => { if (C.stopped) throw 'stopped'; C.q.push([k, t]); pump(); };
+  C.finish = () => new Promise((res) => { const w = () => { if (C.stopped) return; if (C.busy || C.q.length) return setTimeout(w, 100); tick(); setTimeout(res, 650); }; w(); });
+  C.stop = () => { C.stopped = true; clearInterval(C.timer); RUN = null; modalClose(); toast('Stopped — nothing on the resume changed'); };
+  next(); tick(); C.timer = setInterval(tick, 200);
+  return C;
 }
 // what Optimise tailors: the roles and their bullets, the job's keywords, and the summary and skills as they are now
 function optPlan(sel) {
@@ -3271,6 +3355,7 @@ function optAction(a, v, t) {
   switch (a) {
     case 'optimize': openOptimise(!!TEAM); return true;   // the team portal: the client's usual choices come ticked, as from the card
     case 'm-close': endPending(); modalClose(); return true;
+    case 'run-stop': if (RUN) RUN.stop(); return true;   // the run card's Stop: its answer, when it comes, is ignored
     case 'opt-t': optPick(t, t.getAttribute('aria-pressed') !== 'true'); return true;
     case 'opt-sync': runOptimise(true); return true;
     case 'opt-all': { const rows = $$('.orows .orow'), all = rows.every((r) => r.classList.contains('on')); rows.forEach((r) => optPick(r, !all)); return true; }
