@@ -11,8 +11,8 @@
 <link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-10-28.1">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="/portal.css?v=2026-10-30.1">
 <style>
 /* The shell, laid out like the job board app (app.trulyplaced.com): a left sidebar with the sections, the clients open in
    this browser tab, the client you're working on with their progress, and you. Phones get a top bar and a tab bar. */
@@ -119,11 +119,11 @@
 .hi{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:13.5px}
 .hi:first-child{border-top:0}
 .hi .dot{flex:none;width:10px;height:10px;border-radius:50%;margin-top:6px;background:var(--blue-line)}
-.hi .dot.app_applied{background:var(--blue)}
-.hi .dot.app_status{background:var(--violet)}
-.hi .dot.note{background:var(--warn)}
-.hi .dot.client_created,.hi .dot.invite_sent{background:var(--ok)}
-.hi .dot.app_deleted,.hi .dot.resume_deleted{background:var(--bad)}
+.hi .dot.k-app_applied{background:var(--blue)}
+.hi .dot.k-app_status{background:var(--violet)}
+.hi .dot.k-note{background:var(--warn)}
+.hi .dot.k-client_created,.hi .dot.k-invite_sent,.hi .dot.k-app_restored,.hi .dot.k-resume_restored,.hi .dot.k-client_restored{background:var(--ok)}
+.hi .dot.k-app_deleted,.hi .dot.k-resume_deleted,.hi .dot.k-client_archived{background:var(--bad)}
 .hi .tx{flex:1;min-width:0}
 .hi .tx b{color:var(--ink);font-weight:600}
 .hi .tx small{display:block;color:var(--muted);font-size:12px}
@@ -192,16 +192,219 @@
   .lkneed{grid-template-columns:1fr}
   .lkrow .side .st{display:none}
 }
+/* safeguards: the new-client check, a draft changed in two places, the team's day */
+.rvs{margin-top:10px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.rv{display:grid;grid-template-columns:104px minmax(0,1fr);gap:2px 12px;padding:10px 14px;border-top:1px solid var(--line);font-size:14px}
+.rv:first-child{border-top:0}
+.rv span{color:var(--muted);font-size:13px}
+.rv b{color:var(--ink);font-weight:600;overflow-wrap:anywhere}
+.rv small{grid-column:2;font-size:12px;color:var(--warn)}
+.clash{margin-top:14px}
+.clash > b{display:block;color:var(--ink);font-size:14px;margin-bottom:6px}
+.cv{border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13px;margin-top:6px;background:#fafbff}
+.cv.mine{border-color:var(--blue-line);background:var(--blue-soft)}
+.cv span{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.cv p{white-space:pre-wrap;overflow-wrap:anywhere;max-height:120px;overflow:auto}
+.saved.bad{color:var(--bad);font-weight:600}
+.tday{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.tday b{color:var(--ink)}
+.tday.zero b{color:var(--warn)}
+.st.archived{background:#f4f5f9;color:#5b6280}
+.archn{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.archn span{flex:1;min-width:200px;display:flex;align-items:center;gap:8px}
+.archn svg{width:16px;height:16px;flex:none}
+.rdlink{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none}
+.rdlink:hover{color:var(--ink)}
+.rdlink svg{width:14px;height:14px}
+.rdi{background:#eef0f6;color:var(--muted)}
+.rec{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0}
+.rec span{flex:1;min-width:220px}
+.rechint{margin-top:6px;color:var(--warn)}
+@media (max-width:760px){.rv{grid-template-columns:1fr}.rv small{grid-column:1}.tday{display:none}}
 /* Profile: skills added or left out for jobs */
 .skr.no .t{color:var(--muted);text-decoration:line-through}
 .skadd{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) minmax(0,1.6fr) auto;gap:8px;margin-top:12px}
 @media (max-width:760px){.skadd{grid-template-columns:1fr}}
+
+/* =====================================================================
+   The Workspace look: calm, light and dense enough for a full day of work — the same as the resume editor and
+   app.trulyplaced.com. One typeface (Geist), neutral greys, hairline borders, tables with headings.
+   ===================================================================== */
+:root{--ui:Geist,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--ink:#0d0f14;--body:#3b3f4b;--muted:#6b7080;--faint:#a3a7b3;
+  --line:#e6e8ec;--line-2:#d6d9e0;--bg:#f5f6f8;--hover:#f7f8fa;--head:#fafbfc;--blue-soft:#eef1fd;--blue-line:#d2dbfa;
+  --sb-bg:#fbfbfc;--sb-line:#eceef1;--sb-ink:#0d0f14;--sb-text:#4a4f5c;--sb-muted:#8a8f9c;--sb-hover:rgba(13,15,20,.04);--sb-on:rgba(13,15,20,.065);--sb-ic:#8a8f9c;--sb-ic-on:var(--blue);
+  --sh-1:0 1px 2px rgba(13,15,20,.05);--row:54px;--r:10px}
+  --sb-bg:#0f172a;--sb-line:rgba(255,255,255,.08);--sb-ink:#fff;--sb-text:#c3cbdb;--sb-muted:#7f8aa3;--sb-hover:rgba(255,255,255,.06);--sb-on:rgba(255,255,255,.1);--sb-ic:#7f8aa3;--sb-ic-on:#8fb0ff;--row:46px}
+body{font-family:var(--ui);font-size:14px;color:var(--body);background:var(--bg)}
+h1,h2,h3,.hello,.brand,.stat b,.mod h2,.ahead h2{font-family:var(--ui);letter-spacing:-.012em}
+/* sidebar */
+.sb{background:var(--sb-bg);border-right:1px solid var(--sb-line)}
+.sb .brand{color:var(--sb-ink);font-weight:600;font-size:16px}
+.sb .brand small{color:var(--sb-muted);font-family:var(--ui)}
+.nav a{color:var(--sb-text);font-size:14px;padding:7px 10px;border-radius:7px}
+.nav a svg{color:var(--sb-ic)}
+.nav a:hover{background:var(--sb-hover);color:var(--sb-ink)}
+.nav a.on{background:var(--sb-on);color:var(--sb-ink);font-weight:550}
+.nav a.on svg{color:var(--sb-ic-on)}
+.nav a em{background:var(--sb-ink);color:var(--sb-bg)}
+.otabs{border-left-color:var(--sb-line)}
+.otab{color:var(--sb-text)}
+.otab:hover{background:var(--sb-hover);color:var(--sb-ink)}
+.otab.on{background:var(--sb-on);color:var(--sb-ink)}
+.otab button{color:var(--sb-muted)}
+.otab button:hover{background:var(--sb-hover);color:var(--sb-ink)}
+.otab.add{color:var(--sb-ic-on)}
+.cbar,.pgcard,.me{border-top-color:var(--sb-line)}
+.cb1 .lab,.pgcard .lab{color:var(--sb-muted);letter-spacing:.07em}
+.cbw .nm,.me .mw b,.pgcard .pg b{color:var(--sb-ink)}
+.cbw small,.me .mw small,.pgcard .pg{color:var(--sb-muted)}
+.sb .icb{background:transparent;border-color:var(--sb-line);color:var(--sb-text)}
+.sb .icb:hover{color:var(--sb-ink);border-color:var(--sb-muted)}
+.pgcard .prog{background:var(--sb-hover)}
+/* page header: where you are, the title, its actions */
+.content .wrap{max-width:1320px;padding:24px 32px 64px}
+.bc{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);margin-bottom:4px;min-width:0;white-space:nowrap;overflow:hidden}
+.bc a{color:var(--muted);text-decoration:none}
+.bc a:hover{color:var(--ink);text-decoration:underline}
+.bc i{font-style:normal;color:var(--faint)}
+.bc span{color:var(--body);overflow:hidden;text-overflow:ellipsis}
+.phead{display:block;margin-bottom:18px}
+.phead h1,.pageh h1{font-size:22px;font-weight:600;color:var(--ink)}
+.pageh{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.pageh .grow{flex:1;min-width:200px}
+.pageh .sub{font-size:13px;color:var(--muted);margin-top:3px}
+/* controls */
+.btn{min-height:34px;height:34px;padding:0 14px;border-radius:8px;font-size:13.5px;font-weight:550;border-color:var(--line-2);box-shadow:var(--sh-1)}
+.btn:hover{border-color:#c4c8d2;background:#fbfbfc}
+.btn.pri{box-shadow:0 1px 2px rgba(9,56,213,.22)}
+.btn.pri:hover{background:var(--blue-d)}
+.btn.ok:hover{filter:brightness(.95)}
+.btn.sm{min-height:30px;height:30px;padding:0 10px;font-size:13px;border-radius:7px}
+.btn.lg{min-height:42px;height:42px;padding:0 18px;font-size:14px;border-radius:9px}
+.btn.ghost{box-shadow:none;background:none;border-color:transparent}
+.btn.ghost:hover{background:var(--hover)}
+.btn.bad{background:#fff;border-color:#f1c4cf}
+.icb{width:32px;height:32px;border-radius:8px;border-color:var(--line-2)}
+.inp,.field input,.field select,.field textarea{min-height:38px;border-color:var(--line-2);border-radius:8px;font-size:14px}
+.inp:focus,.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(9,56,213,.14)}
+.field label,.lbl{font-size:12.5px;font-weight:600;color:var(--body)}
+.seg{background:#eceef2;border-radius:9px;padding:3px}
+.seg button{min-height:30px;border-radius:7px;font-size:13px;font-weight:550}
+.seg b{font-weight:500;color:var(--faint);margin-left:5px;font-variant-numeric:tabular-nums}
+.seg button.on b{color:var(--muted)}
+.tools{margin:0 0 14px}
+.tools .inp{max-width:440px;min-height:36px}
+/* cards, figures, notes */
+.card{border-radius:12px;border-color:var(--line);padding:20px 22px;box-shadow:var(--sh-1)}
+.card + .card{margin-top:12px}
+.card h3{font-size:15px;font-weight:600;color:var(--ink)}
+.card .hint{font-size:13px;color:var(--muted)}
+.stats{gap:12px}
+.stat{border-radius:12px;border-color:var(--line);padding:14px 16px;box-shadow:var(--sh-1)}
+.stat b{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.stat span{font-size:12.5px;color:var(--muted)}
+.note{border-radius:10px}
+.empty{border-radius:12px;border-color:var(--line-2)}
+.st{border-radius:6px;font-size:11.5px;font-weight:600;padding:2px 8px}
+.st.active{background:var(--ok-soft);color:var(--ok);border-color:#c8e9d6}
+.step .n{background:#fff;color:var(--ink);border:1px solid var(--line-2);font-weight:600;font-size:12.5px}
+.step .n.ok{background:var(--ok-soft);color:var(--ok);border-color:#c8e9d6}
+.ahead h2{font-size:20px;font-weight:600}
+.mod{border-radius:14px}
+.mod h2{font-size:18px;font-weight:600}
+/* tables: a heading row, then one row per client / application / person */
+.tbl{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh-1)}
+.tbl .thead{display:grid;align-items:center;gap:14px;padding:0 16px;height:38px;background:var(--head);border-bottom:1px solid var(--line);
+  font-size:11.5px;font-weight:600;letter-spacing:.045em;text-transform:uppercase;color:var(--muted)}
+.tbl .thead button{border:0;background:none;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit;display:inline-flex;align-items:center;gap:4px;padding:0;cursor:pointer}
+.tbl .thead button:hover,.tbl .thead button.on{color:var(--ink)}
+.tbl .thead button.on::after{content:"↓";font-size:11px}
+.tbl .li{display:grid;align-items:center;gap:14px;min-height:var(--row);padding:8px 16px;border-top:1px solid var(--line)}
+.tbl .thead + .li{border-top:0}
+.tbl a.li:hover,.tbl .li:hover{background:var(--hover)}
+.tbl .num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl .td{width:auto;text-align:left}
+.tbl .td.num{text-align:right}
+.tbl .td b{display:inline;font-size:14px}
+.tbl .num b{font-weight:600;color:var(--ink)}
+.tbl .m{font-size:12.5px}
+.cwho{display:flex;align-items:center;gap:12px;min-width:0}
+.cwho .av{width:32px;height:32px;font-size:12px}
+.tbl.clients .thead,.tbl.clients .li{grid-template-columns:minmax(0,2.4fr) minmax(0,1.5fr) 64px 64px minmax(0,1.1fr) 92px 16px}
+.tbl.clients .pgc{width:auto}
+.pgl{display:flex;align-items:baseline;gap:6px;font-size:13px;color:var(--muted)}
+.pgl b{font-size:13.5px;color:var(--ink);font-variant-numeric:tabular-nums}
+.tbl.clients .prog{height:5px;margin-top:5px}
+.tbl.clients .td.zero b{color:var(--warn)}
+.tbl.apps .thead,.tbl.apps .li{grid-template-columns:minmax(0,2.6fr) minmax(0,1.3fr) 108px minmax(0,1.2fr) minmax(0,.9fr)}
+.arole{display:flex;align-items:center;gap:12px;min-width:0}
+.arole .logo{width:30px;height:30px;border-radius:8px}
+.adate{font-size:13px;color:var(--body);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.adate small{display:block;font-size:12px;color:var(--muted)}
+.adate .stale{color:var(--warn);font-weight:500}
+.tbl.team .thead,.tbl.team .li{grid-template-columns:minmax(0,2.4fr) 96px 90px 120px 32px}
+.tbl.team .side{display:contents}
+/* pages line up under their title, the sidebar runs the full height, and Save sits in a floating bar */
+.content .narrow{margin-left:0!important;margin-right:auto!important}
+@media (min-width:901px){.ws{background:linear-gradient(90deg,var(--sb-bg) 0,var(--sb-bg) calc(var(--side) - 1px),var(--sb-line) calc(var(--side) - 1px),var(--sb-line) var(--side),transparent var(--side))}}
+.sticky-save{position:sticky;bottom:16px;z-index:20;margin-top:14px;padding:10px 12px 10px 16px;background:rgba(255,255,255,.96);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 1px 2px rgba(13,15,20,.05),0 10px 30px -14px rgba(13,15,20,.3)}
+.sticky-save .saved{flex:1;font-size:13px}
+.sticky-save .saved:empty::before{content:"Changes here are saved with Save changes";color:var(--faint)}
+/* Activity: the history's filters beside its title */
+.acbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.acbar h3{margin:0}
+.acbar .grow{flex:1;min-width:10px}
+.acbar .seg button{min-height:28px;padding:0 10px;font-size:12.5px}
+.acbar .inp{width:auto;min-height:32px;font-size:13px}
+/* Applications: the second row of filters, Select mode and its bar */
+.apt2{margin-top:-4px}
+.apt2 .grow{flex:1;min-width:0}
+.apt2 .inp{flex:0 0 auto;width:auto;min-width:150px;max-width:none}
+.apmine{align-items:center;font-size:13.5px;color:var(--body);white-space:nowrap}
+.apmine input{margin-top:0}
+.bulk{position:sticky;top:8px;z-index:15;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 10px;padding:8px 10px 8px 14px;background:#fff;border:1px solid var(--blue-line);border-radius:10px;box-shadow:0 8px 24px -14px rgba(9,56,213,.35)}
+.bulk b{color:var(--ink);font-size:13.5px}
+.bulk .grow{flex:1}
+.tbl.apps.picking .thead,.tbl.apps.picking .li{grid-template-columns:22px minmax(0,2.6fr) minmax(0,1.3fr) 108px minmax(0,1.2fr) minmax(0,.9fr)}
+.tbl.apps.picking .li{cursor:pointer;user-select:none}
+.tbl.apps.picking .li.on{background:var(--blue-soft)}
+.apick input,.tbl .thead input{width:16px;height:16px;accent-color:var(--blue);pointer-events:none}
+.tbl .thead input{pointer-events:auto;cursor:pointer}
+@media (max-width:760px){
+  .tbl.apps.picking .li{grid-template-columns:22px minmax(0,1fr) auto;grid-template-areas:"pk role st" "pk date date"}
+  .tbl.apps.picking .apick{grid-area:pk}
+}
+/* the search for a client, at the top of the sidebar */
+.navsearch{display:flex;align-items:center;gap:10px;width:calc(100% - 24px);margin:2px 12px 10px;height:34px;padding:0 10px;border:1px solid var(--sb-line);border-radius:8px;background:#fff;color:var(--sb-muted);font-size:13.5px;text-align:left}
+.navsearch:hover{border-color:var(--line-2);color:var(--sb-text)}
+.navsearch svg{width:15px;height:15px;flex:none}
+.navsearch span{flex:1}
+.navsearch kbd{font:500 11px var(--ui);color:var(--sb-muted);border:1px solid var(--sb-line);border-radius:5px;padding:1px 5px;background:var(--sb-bg)}
+@media (max-width:900px){
+  .content .wrap{padding:16px 16px calc(96px + env(safe-area-inset-bottom,0px))}
+  .tbl.clients .td{display:block}
+}
+@media (max-width:760px){
+  .tbl .thead{display:none}
+  .tbl.clients .li{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"who st" "pg today";row-gap:8px}
+  .tbl.clients .cwho{grid-area:who}.tbl.clients .pgc{grid-area:pg;width:auto}.tbl.clients .ctoday{grid-area:today}.tbl.clients .cst{grid-area:st}
+  .tbl.clients .cdrafts,.tbl.clients .clast,.tbl.clients .chev{display:none}
+  .tbl.clients .ctoday::after{content:" today";font-size:12px;color:var(--muted)}
+  .tbl.apps .li{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"role st" "date date";row-gap:4px}
+  .tbl.apps .arole{grid-area:role}.tbl.apps .ast{grid-area:st}.tbl.apps .adate{grid-area:date;padding-left:42px}
+  .tbl.apps .aloc,.tbl.apps .aby{display:none}
+  .tbl.team .li{grid-template-columns:minmax(0,1fr) auto auto}
+  .tbl.team .tm-acc,.tbl.team .tday{display:none}
+  .pageh h1,.phead h1{font-size:20px}
+}
 </style>
 </head>
 <body>
 <div class="ws">
   <aside class="sb" aria-label="Team portal">
     <a class="brand" href="/team.html" data-go><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="#0938d5"/><path d="M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z" fill="#fff"/><path d="M205 200l37 36 76-88" fill="none" stroke="#0938d5" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg><span>TrulyPlaced<small>Team</small></span></a>
+    <button class="navsearch" type="button" data-act="switch" title="Find a client (Ctrl+K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Find a client</span><kbd>Ctrl K</kbd></button>
     <nav class="nav" id="pnav" aria-label="Main"></nav>
     <div id="cbar"></div>
     <div class="me" id="me"></div>
@@ -215,7 +418,7 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="modalRoot"></div>
 <input type="file" id="fileIn" hidden>
-<script src="/portal.js?v=2026-10-28.1"></script>
+<script src="/portal.js?v=2026-10-30.1"></script>
 <script>
 (function(){
 "use strict";
@@ -244,10 +447,15 @@ var COMMON_Q = ['Are you legally authorized to work in the United States?', 'Wil
 TP.client().then(function(c){ SB = c; return TP.session(); }).then(function(s){
   if(!s){ TP.toLogin(); return null; }
   ME = {id:s.user.id, email:String(s.user.email || '').toLowerCase()};
+  // the client list as last seen in this browser tab shows at once (marked out of date, so it's asked for again)
+  var kept = TP.ssGet('tp_cache_list', null); if(kept && kept.me === ME.id && Array.isArray(kept.rows)) LIST = {rows:kept.rows, prog:kept.prog || {}, at:0};
+  // while the team check runs, this page's data is already on its way (what a non-member could read is only their own)
+  var r0 = route(), names = loadTeamNames(); trashReady();
+  if(r0.client) clientData(r0.client).catch(function(){}); else if(r0.page === 'clients') loadList().catch(function(){});
   return TP.whoami().then(function(w){
-    if(!w || !w.team) return notTeam(w || {});
+    if(!w || !w.team){ ME.team = false; return notTeam(w || {}); }
     ME.owner = !!w.owner;
-    loadTeamNames().then(function(){ $('#me').innerHTML = meHTML(); });   // your name in the sidebar
+    names.then(function(){ $('#me').innerHTML = meHTML(); });   // your name in the sidebar
     render();
   });
 }).catch(function(e){ V.innerHTML = errBox(e, true); });
@@ -288,14 +496,52 @@ function route(){
   return r;
 }
 function cUrl(id, hash){ return '/team.html?client=' + encodeURIComponent(id) + (hash ? '#' + hash : ''); }
-function go(url, replace){ history[replace ? 'replaceState' : 'pushState'](null, '', url); render(); window.scrollTo(0, 0); }
-window.addEventListener('popstate', render);
+// every move inside the page goes through here: a draft's last edits are saved first, and unsaved Profile changes or a
+// half-written note are asked about. Resolves true once it has moved.
+var HERE = location.href;
+function go(url, replace){
+  return leaveOK().then(function(ok){
+    if(!ok) return false;
+    history[replace ? 'replaceState' : 'pushState'](null, '', url); HERE = location.href; render(); window.scrollTo(0, 0);
+    return true;
+  });
+}
+window.addEventListener('popstate', function(){
+  var to = location.pathname + location.search + location.hash;
+  if(location.href === HERE) return;
+  if(!askWhy()){ flushDraft(); HERE = location.href; render(); return; }
+  history.pushState(null, '', HERE);   // back on the page with the unsaved work while we ask
+  go(to);
+});
+// what can't be left without asking: Profile edits not saved, a note being written
+function askWhy(){
+  if(pfDirty()) return 'profile';
+  var n = $('#nt') || $('#anT'); return n && n.value.trim() ? 'note' : '';
+}
+function leaveOK(){
+  return flushDraft().then(function(saved){
+    if(!saved) return TP.confirmBox('Leave this page?', 'A draft’s latest changes haven’t saved yet (' + (DS && DS.why || 'no connection') + '). They keep trying in the background while this browser tab is open.', 'Leave anyway', true);
+    var w = askWhy();
+    if(w === 'profile') return pfAsk();
+    if(w === 'note') return TP.confirmBox('Discard your note?', 'It hasn’t been saved.', 'Discard note', true, {cancel:'Keep writing'}).then(function(ok){
+      if(ok){ if(C) bkDel('note_' + C.id); if(A) bkDel('anote_' + A.id); }
+      return ok;
+    });
+    return true;
+  });
+}
 document.addEventListener('click', function(e){
   var a = e.target.closest && e.target.closest('a[data-go]');
   if(!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;   // Ctrl/middle click: a new browser tab
+  var act = e.target.closest('[data-act]'); if(act && a.contains(act) && act !== a){ e.preventDefault(); return; }   // a button inside a link (an open tab's ×) does its own thing
   e.preventDefault(); go(a.getAttribute('href'));
 });
+// a page that fails to draw shows what went wrong and Try again, never a blank screen
 function render(){
+  try{ draw(); }
+  catch(e){ if(window.console) console.error(e); V.innerHTML = errBox({message:'This page didn’t open properly (' + (e && e.message || 'unknown error') + ').'}); }
+}
+function draw(){
   if(!ME) return;
   R = route();
   $('#me').innerHTML = meHTML();
@@ -341,39 +587,79 @@ function drawOpenTabs(){
   box.hidden = false;
   box.innerHTML = l.map(function(x){
     return '<a class="otab' + (R.client === x.id ? ' on' : '') + '" href="' + esc(cUrl(x.id, last[x.id] || '')) + '" data-go title="' + esc(x.name) + ' — Ctrl+click to open in a new browser tab"><i style="background:' + TP.hue(x.id) + '"></i><span>' + esc(x.name) + '</span>' +
-      '<button type="button" data-act="closetab" data-id="' + esc(x.id) + '" aria-label="Close ' + esc(x.name) + '">' + I.x + '</button></a>';
+      '<button type="button" data-act="closetab" data-id="' + esc(x.id) + '" title="Close this tab — ' + esc(x.name) + ' stays in Clients" aria-label="Close ' + esc(x.name) + '’s tab (they stay in Clients)">' + I.x + '</button></a>';
   }).join('') + '<a class="otab add" href="/team.html" data-go>' + I.plus.replace('<svg', '<svg width="14" height="14"') + 'Another client</a>';
+}
+// the × on an open client only closes their tab here — nothing about the client changes — and Undo brings it back
+function closeTab(id){
+  var before = openList(), x = before.filter(function(y){ return y.id === id; })[0]; if(!x) return;
+  var here = R.client === id, back = cUrl(id, TP.ssGet('tp_last_tab', {})[id] || '');
+  var shut = function(){
+    TP.ssSet('tp_open_clients', before.filter(function(y){ return y.id !== id; })); drawOpenTabs();
+    TP.toast('Closed ' + x.name + '’s tab — they’re still in Clients', {undo:function(){
+      var now = openList(); if(!now.some(function(y){ return y.id === id; })) TP.ssSet('tp_open_clients', before.filter(function(y){ return y.id === id || now.some(function(z){ return z.id === y.id; }); }));
+      if(here) go(back); else drawOpenTabs();
+    }});
+  };
+  if(!here) return shut();
+  go('/team.html').then(function(moved){ if(moved) shut(); });
 }
 
 /* =====================================================================
    Clients list
    ===================================================================== */
 var CL = {q:'', f:'active', sort:'need'};
+var CL_F = [['active','Active'],['paused','Paused'],['done','Done'],['all','All'],['archived','Archived']];
+var ST_NAME = {paused:'Paused', done:'Done', archived:'Archived'};
+function digits(s){ return String(s || '').replace(/\D/g, '').slice(-10); }
 function loadList(force){
   if(LIST && !force && Date.now() - LIST.at < 60000) return Promise.resolve(LIST);
-  return Promise.all([
-    q(SB.from('clients').select('id,email,full_name,plan_total,status,target_roles,created_at').order('created_at', {ascending:false}).limit(3000)),
+  if(LISTP && Date.now() - LISTP.at < 3000) return LISTP.p;   // one already on its way (asked for while signing in)
+  var p = Promise.all([
+    q(SB.from('clients').select('id,email,full_name,phone,plan_total,status,target_roles,created_at').order('created_at', {ascending:false}).limit(3000)),
     q(SB.from('client_progress').select('*').limit(3000))
   ]).then(function(rs){
     var prog = {}; (rs[1] || []).forEach(function(p){ prog[p.client_id] = p; });
     LIST = {rows:rs[0] || [], prog:prog, at:Date.now()};
+    TP.ssSet('tp_cache_list', {rows:LIST.rows, prog:prog, me:ME && ME.id});   // this browser tab only; cleared on sign-out
     return LIST;
   });
+  LISTP = {at:Date.now(), p:p}; p.then(function(){ LISTP = null; }, function(){ LISTP = null; });
+  return p;
 }
+var LISTP = null;
+// something changed: the list is asked for again next time, but the copy here still shows at once meanwhile
+function staleList(){ if(LIST) LIST.at = 0; }
+// a client's row and progress, fetched ahead: while signing in, or when the pointer rests on their name
+var PRE = {};
+function clientData(id){
+  var x = PRE[id]; if(x && Date.now() - x.at < 20000) return x.p;
+  var p = Promise.all([q(SB.from('clients').select('*').eq('id', id).maybeSingle()), q(SB.from('client_progress').select('*').eq('client_id', id).maybeSingle())]);
+  PRE[id] = {at:Date.now(), p:p}; p.catch(function(){ delete PRE[id]; });
+  return p;
+}
+var HOVER = null;
+document.addEventListener('mouseover', function(e){
+  var a = e.target.closest && e.target.closest('a.crow, #swL a.li, a.otab'); if(!a || !SB || !ME) return;
+  var m = /[?&]client=([0-9a-f-]{36})/i.exec(a.getAttribute('href') || ''); if(!m || (C && C.id === m[1].toLowerCase())) return;
+  clearTimeout(HOVER); HOVER = setTimeout(function(){ clientData(m[1].toLowerCase()); }, 90);
+});
 function vClients(){
   setTitle('Clients', null);
-  var first = (TEAMROWS.filter(function(t){ return t.email === ME.email; })[0] || {}).full_name;
-  V.innerHTML = '<div class="row"><div class="grow"><div class="hello">' + (first ? 'Hi ' + esc(first.split(' ')[0]) : 'Clients') + '</div><div class="sub" id="cSub">Loading clients…</div></div>' +
+  V.innerHTML = '<div class="pageh"><div class="grow"><h1>Clients</h1><div class="sub" id="cSub">Loading clients…</div></div>' +
       '<button class="btn pri" type="button" data-act="newclient">' + I.plus + 'New client</button></div>' +
-    '<div class="tools"><input class="inp" id="cq" type="search" placeholder="Search name, email or target role" value="' + esc(CL.q) + '" autocomplete="off">' +
-      '<div class="seg" id="cf">' + [['active','Active'],['paused','Paused'],['done','Done'],['all','All']].map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (CL.f === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div>' +
+    '<div class="tools"><input class="inp" id="cq" type="search" placeholder="Search name, email, phone or target role" value="' + esc(CL.q) + '" autocomplete="off">' +
+      '<div class="seg" id="cf">' + CL_F.map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (CL.f === f[0] ? 'on' : '') + '">' + f[1] + '<b data-n="' + f[0] + '"></b></button>'; }).join('') + '</div>' +
       '<select class="inp" id="cs" style="flex:0 0 auto;width:auto" aria-label="Sort"><option value="need">Fewest today first</option><option value="name">Name A–Z</option><option value="new">Newest clients</option><option value="left">Most left to do</option></select></div>' +
     '<div id="cl"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>';
   $('#cs').value = CL.sort;
-  var t; $('#cq').addEventListener('input', function(e){ clearTimeout(t); t = setTimeout(function(){ CL.q = e.target.value; drawClients(); }, 150); });
+  var t; $('#cq').addEventListener('input', function(e){ clearTimeout(t); t = setTimeout(function(){ CL.q = e.target.value; drawClients(); }, 60); });   // filtered here, no waiting on the server
   $('#cf').addEventListener('click', function(e){ var b = e.target.closest('[data-f]'); if(!b) return; CL.f = b.getAttribute('data-f'); $$('#cf button').forEach(function(x){ x.classList.toggle('on', x === b); }); drawClients(); });
   $('#cs').addEventListener('change', function(e){ CL.sort = e.target.value; drawClients(); });
-  loadList(true).then(drawClients, function(e){ $('#cl').innerHTML = errBox(e); $('#cSub').textContent = ''; });
+  $('#cl').addEventListener('click', function(e){ var b = e.target.closest('[data-sort]'); if(!b) return; CL.sort = b.getAttribute('data-sort'); $('#cs').value = CL.sort; drawClients(); });   // the column headings sort too
+  // the list as last loaded shows at once; the fresh one replaces it a moment later
+  if(LIST) drawClients();
+  loadList(true).then(drawClients, function(e){ if(LIST && $('#cl .crow')) return TP.toast('Couldn’t refresh the list — ' + TP.errText(e)); $('#cl').innerHTML = errBox(e); $('#cSub').textContent = ''; });
 }
 function drawClients(){
   var box = $('#cl'); if(!box || !LIST) return;
@@ -381,8 +667,10 @@ function drawClients(){
   var all = LIST.rows, act = all.filter(function(c){ return c.status === 'active'; }).length;
   var todayAll = all.reduce(function(s, c){ return s + ((P[c.id] || {}).today || 0); }, 0);
   $('#cSub').textContent = all.length ? act + ' active client' + (act === 1 ? '' : 's') + ' · ' + todayAll + ' application' + (todayAll === 1 ? '' : 's') + ' sent today' : '';
-  var rows = all.filter(function(c){ return CL.f === 'all' || c.status === CL.f; }).filter(function(c){
-    return !qq || [c.full_name, c.email, c.target_roles].join(' ').toLowerCase().indexOf(qq) > -1;
+  var inF = function(c, f){ return f === 'all' ? c.status !== 'archived' : c.status === f; }, qd = digits(qq);   // archived clients only under Archived
+  CL_F.forEach(function(f){ var n = all.filter(function(c){ return inF(c, f[0]); }).length, el = $('#cf [data-n="' + f[0] + '"]'); if(el) el.textContent = n; });
+  var rows = all.filter(function(c){ return inF(c, CL.f); }).filter(function(c){
+    return !qq || [c.full_name, c.email, c.target_roles, c.phone].join(' ').toLowerCase().indexOf(qq) > -1 || (qd.length >= 4 && digits(c.phone).indexOf(qd) > -1);
   });
   var left = function(c){ var p = P[c.id] || {}; return (c.plan_total || 0) - (p.done || 0); };
   rows.sort(CL.sort === 'name' ? function(a, b){ return String(a.full_name).localeCompare(String(b.full_name)); }
@@ -390,17 +678,19 @@ function drawClients(){
     : CL.sort === 'left' ? function(a, b){ return left(b) - left(a); }
     : function(a, b){ var pa = P[a.id] || {}, pb = P[b.id] || {}; return (pa.today || 0) - (pb.today || 0) || String(pa.last_applied_at || '').localeCompare(String(pb.last_applied_at || '')); });
   if(!all.length){ box.innerHTML = '<div class="empty">' + I.users + '<h3>No clients yet</h3><p>Add your first client. They get an email to set their password and can then see every application you send.</p><button class="btn pri" type="button" data-act="newclient">' + I.plus + 'New client</button></div>'; return; }
-  if(!rows.length){ box.innerHTML = '<div class="empty"><h3>No one matches</h3><p>Try another search or filter.</p></div>'; return; }
-  box.innerHTML = '<div class="list">' + rows.map(function(c){
+  if(!rows.length){ box.innerHTML = CL.f === 'archived' && !qq ? '<div class="empty"><h3>No archived clients</h3><p>A client removed from the list (Profile → Archive) waits here, with everything kept, until someone restores them.</p></div>'
+    : '<div class="empty"><h3>No one matches</h3><p>Try another search or filter.</p></div>'; return; }
+  var sortBtn = function(k, label){ return '<button type="button" data-sort="' + k + '" class="' + (CL.sort === k ? 'on' : '') + '">' + label + '</button>'; };
+  box.innerHTML = '<div class="tbl clients"><div class="thead">' + sortBtn('name', 'Client') + sortBtn('left', 'Plan') + '<span class="num">' + sortBtn('need', 'Today') + '</span><span class="num">Drafts</span><span>Last sent</span><span>Status</span><span></span></div>' + rows.map(function(c){
     var p = P[c.id] || {}, done = p.done || 0, tot = c.plan_total || 0, pct = tot ? Math.min(100, Math.round(done / tot * 100)) : 0;
     return '<a class="li crow" href="' + esc(cUrl(c.id)) + '" data-go>' +
-      '<span class="av" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span>' +
-      '<div class="main"><div class="t">' + esc(c.full_name || c.email) + (c.status !== 'active' ? ' <span class="st ' + esc(c.status) + '">' + (c.status === 'paused' ? 'Paused' : 'Done') + '</span>' : '') + '</div>' +
-        '<div class="m">' + esc([c.target_roles, c.email].filter(Boolean).join(' · ')) + '</div></div>' +
-      '<div class="pgc"><b>' + done + (tot ? ' / ' + tot : '') + '</b> <span class="m">' + (tot ? pct + '%' : 'no plan set') + '</span><div class="prog' + (tot && done >= tot ? ' full' : '') + '" style="margin-top:4px"><i style="width:' + pct + '%"></i></div></div>' +
-      '<div class="td' + (c.status === 'active' && !p.today ? ' zero' : '') + '"><b>' + (p.today || 0) + '</b>today</div>' +
-      '<div class="td"><b>' + (p.drafts || 0) + '</b>drafts</div>' +
-      '<div class="td" title="' + esc(TP.fmtDateTime(p.last_applied_at)) + '">' + (p.last_applied_at ? 'last ' + esc(TP.ago(p.last_applied_at)) : 'none yet') + '</div>' +
+      '<div class="cwho"><span class="av" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span>' +
+        '<div class="main"><div class="t">' + esc(c.full_name || c.email) + '</div><div class="m">' + esc([c.target_roles, c.email].filter(Boolean).join(' · ')) + '</div></div></div>' +
+      '<div class="pgc"><div class="pgl"><b>' + done.toLocaleString() + (tot ? ' / ' + tot.toLocaleString() : '') + '</b><span>' + (tot ? pct + '%' : 'no plan set') + '</span></div><div class="prog' + (tot && done >= tot ? ' full' : '') + '"><i style="width:' + pct + '%"></i></div></div>' +
+      '<div class="td num ctoday' + (c.status === 'active' && !p.today ? ' zero' : '') + '"><b>' + (p.today || 0) + '</b></div>' +
+      '<div class="td num cdrafts"><b>' + (p.drafts || 0) + '</b></div>' +
+      '<div class="td m clast" title="' + esc(TP.fmtDateTime(p.last_applied_at)) + '">' + (p.last_applied_at ? esc(TP.ago(p.last_applied_at)) : 'None yet') + '</div>' +
+      '<div class="cst"><span class="st ' + esc(c.status) + '">' + (ST_NAME[c.status] || 'Active') + '</span></div>' +
       I.chev.replace('<svg', '<svg class="chev"') + '</a>';
   }).join('') + '</div>';
 }
@@ -415,23 +705,52 @@ function newClient(){
       '<div class="field"><label for="ncE">Email</label><input id="ncE" type="email" required autocomplete="off" placeholder="the email they’ll sign in with"></div>' +
       '<div class="field"><label for="ncPh">Phone / WhatsApp <span class="muted">(optional)</span></label><input id="ncPh" type="tel" autocomplete="off"></div>' +
       planSel + '<p class="err" id="ncErr" hidden></p>' +
-      '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="ncGo">Create client and send email</button></div></form>');
+      '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="ncGo">Check and continue</button></div></form>' +
+    '<div id="ncRev" hidden></div>', false, {keep:true});
   if(ME.owner) $('#ncP').addEventListener('change', function(e){ $('#ncPCw').hidden = e.target.value !== 'custom'; });
   $('#ncF', m).addEventListener('submit', function(e){
     e.preventDefault();
-    var name = $('#ncN').value.trim(), email = $('#ncE').value.trim().toLowerCase(), err = $('#ncErr'), go2 = $('#ncGo');
-    var plan = ME.owner ? ($('#ncP').value === 'custom' ? +$('#ncPC').value : +$('#ncP').value) : 0;
+    var name = $('#ncN').value.trim().replace(/\s+/g, ' '), email = $('#ncE').value.trim().toLowerCase(), phone = $('#ncPh').value.trim(), err = $('#ncErr'), go2 = $('#ncGo');
+    var pv = ME.owner ? $('#ncP').value : '', plan = pv === 'custom' ? +$('#ncPC').value : +pv;
     err.hidden = false;
     if(!name){ err.textContent = 'Add their name.'; return; }
-    if(!/^\S+@\S+\.\S+$/.test(email)){ err.textContent = 'Check the email address.'; return; }
-    err.hidden = true; go2.disabled = true; go2.classList.add('busy');
-    TP.fn('client-accounts', {action:'create_client', full_name:name, email:email, phone:$('#ncPh').value.trim(), plan_total:plan || null}).then(function(r){
-      TP.closeModal(); LIST = null;
-      TP.toast(r.already_client ? 'They’re already a client — opening them' : 'Client added. Set-password email sent to ' + email);
-      go(cUrl(r.client_id, 'profile'));
-    }).catch(function(e2){ go2.disabled = false; go2.classList.remove('busy'); err.hidden = false;
-      err.textContent = e2 && e2.code === 'bad_email' ? 'Check the email address.' : TP.errText(e2); });
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ err.textContent = 'Check the email address.'; return; }
+    if(pv === 'custom' && !(plan >= 1 && plan <= 100000)){ err.textContent = 'Type the number of applications in their plan.'; return; }
+    err.hidden = true;
+    // before anything is created: the same person may already be a client
+    TP.busy(go2, loadList()).then(function(L){ ncReview(m, {name:name, email:email, phone:phone, plan:plan || null}, L.rows); }, function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
   });
+}
+function ncReview(m, n, rows){
+  var key = function(s){ return String(s || '').toLowerCase().replace(/\s+/g, ' ').trim(); };
+  var same = rows.filter(function(c){ return c.email === n.email; })[0];
+  var named = rows.filter(function(c){ return c !== same && key(c.full_name) === key(n.name); });
+  var phoned = digits(n.phone).length >= 7 ? rows.filter(function(c){ return c !== same && named.indexOf(c) < 0 && digits(c.phone) === digits(n.phone); }) : [];
+  var who = function(c){ return '<a href="' + esc(cUrl(c.id, 'profile')) + '" data-go data-mclose="0" class="nclink">' + esc(c.full_name || c.email) + '</a> (' + esc(c.email) + ')'; };
+  var row = function(k, v, hint){ return '<div class="rv"><span>' + k + '</span><b>' + v + '</b>' + (hint ? '<small>' + hint + '</small>' : '') + '</div>'; };
+  $('#ncF', m).hidden = true;
+  var rv = $('#ncRev', m); rv.hidden = false;
+  rv.innerHTML = '<h3 style="margin-top:14px">Check before we create the login</h3>' +
+    '<div class="rvs">' + row('Name', esc(n.name)) + row('Login email', esc(n.email), 'They sign in with it, and it can’t be changed later.') +
+      row('Phone', n.phone ? esc(n.phone) : '<span class="muted">—</span>') + (ME.owner ? row('Plan', n.plan ? n.plan + ' applications' : 'Not set yet') : '') + '</div>' +
+    (same ? '<div class="note warn" style="margin-top:12px">' + who(same) + ' already uses this email. Nothing new is created — open them instead.</div>'
+      : '<p class="fine" style="margin-top:12px">We’ll email <b>' + esc(n.email) + '</b> a link to set their password.</p>') +
+    named.concat(phoned).map(function(c){ return '<div class="note warn" style="margin-top:8px">' + (named.indexOf(c) > -1 ? 'Another client has the same name: ' : 'Another client has this phone number: ') + who(c) + '. Check it isn’t the same person.</div>'; }).join('') +
+    '<p class="err" id="ncErr2" hidden></p><div class="acts"><button class="btn" type="button" id="ncBack">Back to edit</button>' +
+    (same ? '<a class="btn pri" href="' + esc(cUrl(same.id, 'profile')) + '" data-go data-mclose="0" id="ncOpen">Open ' + esc((same.full_name || same.email).split(' ')[0]) + '</a>'
+      : '<button class="btn pri" type="button" id="ncMake">Create client and send email</button>') + '</div>';
+  rv.addEventListener('click', function(e){ if(e.target.closest('[data-go][data-mclose="0"]')) TP.closeModal(); });
+  $('#ncBack', m).onclick = function(){ rv.hidden = true; rv.innerHTML = ''; $('#ncF', m).hidden = false; $('#ncN', m).focus(); };
+  var mk = $('#ncMake', m); if(!mk) return;
+  mk.focus();
+  mk.onclick = function(){
+    var er = $('#ncErr2', m); er.hidden = true;
+    TP.busy(mk, TP.fn('client-accounts', {action:'create_client', full_name:n.name, email:n.email, phone:n.phone, plan_total:n.plan})).then(function(r){
+      TP.closeModal(); staleList();
+      TP.toast(r.already_client ? 'They’re already a client — opening them' : 'Client added. Set-password email sent to ' + n.email);
+      go(cUrl(r.client_id, 'profile'));
+    }, function(e2){ er.hidden = false; er.textContent = e2 && e2.code === 'bad_email' ? 'Check the email address.' : TP.errText(e2); });
+  };
 }
 
 /* =====================================================================
@@ -441,10 +760,7 @@ function vClient(){
   var id = R.client;
   if(!C || C.id !== id){ C = {id:id, gen:++GEN, row:null}; V.innerHTML = '<div class="skel"></div><div class="skel"></div>'; $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); }
   var c = C;
-  var ready = c.row ? Promise.resolve() : Promise.all([
-    q(SB.from('clients').select('*').eq('id', id).maybeSingle()),
-    q(SB.from('client_progress').select('*').eq('client_id', id).maybeSingle())
-  ]).then(function(rs){ if(!rs[0]) throw {message:'not_found'}; c.row = rs[0]; c.prog = rs[1] || {}; });
+  var ready = c.row ? Promise.resolve() : clientData(id).then(function(rs){ if(!rs[0]) throw {message:'not_found'}; c.row = rs[0]; c.prog = rs[1] || {}; delete PRE[id]; });
   ready.then(function(){
     if(C !== c) return;   // switched to another client meanwhile
     rememberOpen(c.row); drawOpenTabs();
@@ -463,7 +779,7 @@ function drawBar(){
   var counts = {applications:(p.done || 0) + (p.drafts || 0) ? (p.done || 0) : '', resumes:C.resumes ? C.resumes.length : ''}, name = c.full_name || c.email;
   $('#cbar').innerHTML = '<div class="cbar"><div class="cb1"><div class="lab">Working on</div><div class="cbw">' +
       '<span class="av" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span>' +
-      '<div class="who"><div class="nm" id="cbName" title="' + esc(name) + '">' + esc(name) + (c.status !== 'active' ? ' <span class="st ' + esc(c.status) + '">' + (c.status === 'paused' ? 'Paused' : 'Done') + '</span>' : '') + '</div>' +
+      '<div class="who"><div class="nm" id="cbName" title="' + esc(name) + '">' + esc(name) + (c.status !== 'active' ? ' <span class="st ' + esc(c.status) + '">' + (ST_NAME[c.status] || esc(c.status)) + '</span>' : '') + '</div>' +
         '<small title="' + esc(c.email) + '">' + esc(c.email) + '</small></div>' +
       '<button class="icb" type="button" data-act="switch" title="Switch client">' + J.swap + '<span class="sr">Switch client</span></button></div></div>' +
     '<nav class="nav ctabs" aria-label="' + esc(name) + '">' + TABS.map(function(t){
@@ -474,7 +790,8 @@ function drawBar(){
       '<div class="prog' + (tot && done >= tot ? ' full' : '') + '"><i style="width:' + pct + '%"></i></div></div></div>';
   // the page's title line: the section, and whose page this is
   var sec = R.app ? null : TABS.filter(function(t){ return t[0] === R.tab; })[0];
-  $('#phead').innerHTML = sec ? '<div class="phead"><h1>' + esc(sec[1]) + '</h1><span class="pfor"><i style="background:' + TP.hue(c.id) + '"></i>for <b>' + esc(name) + '</b></span></div>' : '';
+  $('#phead').innerHTML = (c.status === 'archived' ? '<div class="note warn archn"><span>' + I.lock + '<b>' + esc(name) + ' is archived</b> — off the team’s lists. Nothing was deleted.</span><button class="btn sm" type="button" data-act="unarchive">Restore</button></div>' : '') +
+    (sec ? '<div class="phead"><nav class="bc" aria-label="Where you are"><a href="/team.html" data-go>Clients</a><i>/</i><span>' + esc(name) + '</span></nav><h1>' + esc(sec[1]) + '</h1></div>' : '');
   drawPhone(c);
 }
 function showTab(){
@@ -483,18 +800,18 @@ function showTab(){
 }
 function refreshProgress(){
   var c = C; if(!c) return Promise.resolve();
-  LIST = null;
+  staleList();
   return q(SB.from('client_progress').select('*').eq('client_id', c.id).maybeSingle()).then(function(p){ if(C === c){ c.prog = p || {}; drawBar(); } }, function(){});
 }
 function switcher(){
   var all = (LIST && LIST.rows) || [];
-  var m = TP.modal('<h2>Switch client</h2><p>Ctrl+click (or middle-click) a name to open them in a new browser tab.</p>' +
+  var m = TP.modal('<h2>Find a client</h2><p>Type a name or email, then Enter. Ctrl+click (or middle-click) opens them in a new browser tab.</p>' +
     '<input class="inp" id="swQ" type="search" placeholder="Find a client" style="margin-top:14px" autocomplete="off"><div id="swL" class="list" style="margin-top:10px;max-height:52vh;overflow:auto"></div>');
   function draw(){
     var box = $('#swQ'); if(!box) return;   // the list can arrive after the dialog was closed
     var qq = box.value.toLowerCase().trim(), open = openList().map(function(x){ return x.id; });
     var rows = all.length ? all : openList().map(function(x){ return {id:x.id, full_name:x.name, email:''}; });
-    rows = rows.filter(function(c){ return !qq || [c.full_name, c.email].join(' ').toLowerCase().indexOf(qq) > -1; })
+    rows = rows.filter(function(c){ return (c.status !== 'archived' || open.indexOf(c.id) > -1) && (!qq || [c.full_name, c.email].join(' ').toLowerCase().indexOf(qq) > -1); })
       .sort(function(a, b){ return (open.indexOf(b.id) > -1) - (open.indexOf(a.id) > -1); }).slice(0, 60);
     $('#swL').innerHTML = rows.map(function(c){ return '<a class="li" href="' + esc(cUrl(c.id)) + '" data-go data-mclose="0"><span class="av sm" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span><div class="main"><div class="t">' + esc(c.full_name || c.email) + '</div><div class="m">' + esc(c.email || 'open in this tab') + '</div></div>' + (c.id === (C && C.id) ? '<span class="tag">now</span>' : '') + '</a>'; }).join('') || '<p class="fine" style="padding:14px">No one matches.</p>';
   }
@@ -508,7 +825,7 @@ function switcher(){
 /* ---------- Profile ---------- */
 var PF = ['full_name', 'phone', 'linkedin', 'location', 'target_roles', 'target_locations', 'work_auth', 'salary', 'notice', 'apply_notes', 'optimise_rules'];
 function tProfile(){
-  var c = C.row, ans = Array.isArray(c.answers) ? c.answers : [];
+  var c = C.row, ans = Array.isArray(c.answers) ? c.answers : [], first = (c.full_name || '').split(' ')[0] || 'them';
   function f(k, label, ph, wide){ return '<div class="field"' + (wide ? ' style="grid-column:1/-1"' : '') + '><label for="pf_' + k + '">' + label + '</label>' +
     (k === 'apply_notes' || k === 'optimise_rules' ? '<textarea id="pf_' + k + '" rows="3" placeholder="' + esc(ph || '') + '">' + esc(c[k] || '') + '</textarea>' : '<input id="pf_' + k + '" value="' + esc(c[k] || '') + '" placeholder="' + esc(ph || '') + '" autocomplete="off">') + '</div>'; }
   var plan = c.plan_total || '';
@@ -532,13 +849,38 @@ function tProfile(){
           (plan && TP.CONFIG.PLANS.indexOf(plan) < 0 ? '<option value="' + plan + '" selected>' + plan + '</option>' : '') + '<option value="custom">Other number…</option></select></div>' +
           '<div class="field" id="pfPCw" hidden><label for="pf_planc">Number</label><input id="pf_planc" type="number" min="1" max="100000"></div></div>'
       : '<p class="hint">' + (plan ? '<b>' + plan + ' applications</b>. ' : 'Not set yet. ') + 'Only the owner can change the plan.</p>') +
-      '<div class="field" style="margin-top:12px;max-width:260px"><label for="pf_status">Status</label><select id="pf_status"><option value="active">Active — we’re applying</option><option value="paused">Paused</option><option value="done">Done</option></select></div></div>' +
+      '<div class="field" style="margin-top:12px;max-width:260px"><label for="pf_status">Status</label><select id="pf_status"' + (c.status === 'archived' ? ' disabled title="Restore them first"' : '') + '><option value="active">Active — we’re applying</option><option value="paused">Paused</option><option value="done">Done</option>' +
+        (c.status === 'archived' ? '<option value="archived">Archived</option>' : '') + '</select></div></div>' +
     '<div class="card"><h3>Their login</h3><p class="hint">They sign in at <b>trulyplaced.com/login.html</b> with <b>' + esc(c.email) + '</b> and a password (or Google, if it’s a Gmail address).</p>' +
-      '<button class="btn sm" type="button" data-act="resend">' + I.mail + 'Email them the set-password link again</button></div>' +
+      '<div class="row"><button class="btn sm" type="button" data-act="resend">' + I.mail + 'Email them the set-password link again</button><span class="fine" id="pfInv"></span></div></div>' +
+    (c.status === 'archived'
+      ? '<div class="card"><h3>Archived</h3><p class="hint">' + esc(first) + ' is off the team’s lists. Nothing was deleted, and their login and dashboard still work. Restore brings them back.</p><button class="btn sm pri" type="button" data-act="unarchive">Restore ' + esc(first) + '</button></div>'
+      : '<div class="card"><h3>Remove from the client list</h3><p class="hint">For a client the team has stopped working for, or one added by mistake. Nothing is deleted: they move to <b>Archived</b>, off the team’s lists and counts, and Restore brings them back.</p><button class="btn sm bad" type="button" data-act="archive">Archive ' + esc(first) + '</button></div>') +
     '<div class="sticky-save"><span class="saved" id="pfMsg"></span><button class="btn pri" type="button" data-act="pfsave">Save changes</button></div></div>';
   $('#pf_status').value = c.status;
-  skFresh(c);
+  skFresh(c); lastInvite(C);
   if(ME.owner) $('#pf_plan').addEventListener('change', function(e){ $('#pfPCw').hidden = e.target.value !== 'custom'; });
+  V.querySelector('.narrow').addEventListener('input', function(e){ if(!e.target.closest('#pfRec')) pfMark(); });
+  pfRecover(C);
+}
+// when the set-password email last went out, and who sent it
+function lastInvite(c){
+  q(SB.from('client_activity').select('at,by_email').eq('client_id', c.id).eq('kind', 'invite_sent').order('at', {ascending:false}).limit(1)).then(function(r){
+    var x = r && r[0], el = $('#pfInv'); if(C !== c || !el) return;
+    el.textContent = x ? 'Last sent ' + TP.ago(x.at) + (x.by_email && x.by_email !== 'system' ? ' by ' + who(x.by_email) : '') : '';
+  }, function(){});
+}
+function resendInvite(b){
+  var c = C, em = c.row.email, first = (c.row.full_name || '').split(' ')[0] || 'them';
+  TP.confirmBox('Email ' + first + ' the set-password link again?', 'It goes to ' + em + '.', 'Send the email').then(function(ok){
+    if(!ok) return;
+    TP.busy(b, TP.fn('client-accounts', {action:'resend', client_id:c.id})).then(function(){
+      TP.toast('Set-password email sent to ' + em); lastInvite(c);
+      // a minute before it can be sent again, so a double click or an impatient second try doesn't send two
+      b.disabled = true; var t0 = b.innerHTML; b.innerHTML = I.check + 'Sent — again in a minute';
+      setTimeout(function(){ if(b.isConnected){ b.disabled = false; b.innerHTML = t0; } }, 60000);
+    }, function(e2){ TP.toast(TP.errText(e2)); });
+  });
 }
 // skills a job asked for that the team added to this client’s resumes or left out (the editor recommends; both are kept here)
 function skCard(c){
@@ -554,7 +896,7 @@ function skFresh(row){   // the editor saves added skills straight to the client
   var cc = C; if(!Array.isArray(row.confirmed_skills)) return;
   q(SB.from('clients').select('confirmed_skills').eq('id', row.id).maybeSingle()).then(function(r){
     if(C !== cc || !r || !$('#pfSk')) return;
-    var untouched = JSON.stringify(C.skEdit) === JSON.stringify(row.confirmed_skills);
+    var untouched = stable(C.skEdit) === stable(row.confirmed_skills);
     row.confirmed_skills = Array.isArray(r.confirmed_skills) ? r.confirmed_skills : [];
     if(untouched){ C.skEdit = row.confirmed_skills.slice(); $('#pfSk').innerHTML = skRows(); }
   }, function(){});
@@ -576,22 +918,111 @@ function qaRow(a){
 function readQA(box){
   return $$('.qa', box).map(function(r){ return {q:$('[data-qa=q]', r).value.trim(), a:$('[data-qa=a]', r).value.trim()}; }).filter(function(x){ return x.q || x.a; });
 }
-function saveProfile(){
-  var c = C.row, patch = {}, btn = $('[data-act=pfsave]');
+/* ---------- local backups: what was typed but isn't saved yet survives a crash, a refresh or a closed tab ----------
+   Kept in this browser until it's saved (or thrown away); the next time the page opens it's offered back. */
+var BK = 'tp_unsaved_';
+function bkSet(key, v){ try{ localStorage.setItem(BK + key, JSON.stringify({at:Date.now(), v:v})); }catch(e){} }
+function bkGet(key){ try{ var x = JSON.parse(localStorage.getItem(BK + key) || 'null'); if(x && x.at > Date.now() - 14 * 864e5) return x; localStorage.removeItem(BK + key); }catch(e){} return null; }
+function bkDel(key){ try{ localStorage.removeItem(BK + key); }catch(e){} }
+function bkBar(id, what, when, fields){
+  return '<div class="note warn rec" id="' + id + '"><span><b>' + what + ' from ' + esc(TP.ago(when)) + ' weren’t saved</b> — the page closed before they were. ' + esc(fields) + '</span>' +
+    '<button class="btn sm" type="button" data-rec="toss">Discard</button><button class="btn sm pri" type="button" data-rec="put">Put them back</button></div>';
+}
+// JSON with its keys in one order: the database hands back {"a","q"} for what was saved as {"q","a"}
+function stable(v){
+  if(Array.isArray(v)) return '[' + v.map(stable).join(',') + ']';
+  if(v && typeof v === 'object') return '{' + Object.keys(v).sort().map(function(k){ return JSON.stringify(k) + ':' + stable(v[k]); }).join(',') + '}';
+  return JSON.stringify(v === undefined ? null : v);
+}
+// what the Profile form would change ({} when nothing; null while the plan number is half typed)
+function pfPatch(){
+  if(!C || !C.row || !$('#pf_full_name')) return {};
+  var c = C.row, patch = {};
   PF.forEach(function(k){ var v = $('#pf_' + k).value.trim(); if(v !== (c[k] || '')) patch[k] = v || (k === 'full_name' ? '' : null); });
-  var ans = readQA($('#pfQA')); if(JSON.stringify(ans) !== JSON.stringify(c.answers || [])) patch.answers = ans;
+  var ans = readQA($('#pfQA')); if(stable(ans) !== stable(c.answers || [])) patch.answers = ans;
   var st = $('#pf_status').value; if(st !== c.status) patch.status = st;
-  if(C.skEdit && Array.isArray(c.confirmed_skills) && JSON.stringify(C.skEdit) !== JSON.stringify(c.confirmed_skills)) patch.confirmed_skills = C.skEdit;
-  if(ME.owner){ var pv = $('#pf_plan').value, pn = pv === 'custom' ? +$('#pf_planc').value : (pv ? +pv : null); if(pv === 'custom' && !(pn > 0)) return TP.toast('Type the number of applications'); if((pn || null) !== (c.plan_total || null)) patch.plan_total = pn || null; }
-  if(!Object.keys(patch).length){ $('#pfMsg').textContent = 'No changes'; return; }
-  btn.disabled = true; btn.classList.add('busy');
-  q(SB.from('clients').update(patch).eq('id', c.id).select('*').maybeSingle()).then(function(row){
-    btn.disabled = false; btn.classList.remove('busy');
-    if(!row) throw {message:'You don’t have access to that.'};
-    C.row = row; LIST = null; drawBar(); rememberOpen(row); drawOpenTabs();
-    $('#pfMsg').textContent = 'Saved ' + new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
-    TP.toast('Profile saved');
-  }).catch(function(e){ btn.disabled = false; btn.classList.remove('busy'); TP.toast(TP.errText(e)); });
+  if(C.skEdit && Array.isArray(c.confirmed_skills) && stable(C.skEdit) !== stable(c.confirmed_skills)) patch.confirmed_skills = C.skEdit;
+  if(ME.owner && $('#pf_plan')){ var pv = $('#pf_plan').value, pn = pv === 'custom' ? +$('#pf_planc').value : (pv ? +pv : null); if(pv === 'custom' && !(pn > 0)) return null; if((pn || null) !== (c.plan_total || null)) patch.plan_total = pn || null; }
+  return patch;
+}
+function pfDirty(){ var p = pfPatch(); return p === null || Object.keys(p).length > 0; }
+// the "Unsaved changes" line, and the local backup of what isn't saved yet
+function pfMark(){
+  if(!C || !$('#pf_full_name')) return;
+  var p = pfPatch(), dirty = p === null || Object.keys(p).length > 0, s = $('#pfMsg');
+  if(s) s.textContent = dirty ? 'Unsaved changes' : '';
+  if(!dirty) bkDel('pf_' + C.id); else if(p) bkSet('pf_' + C.id, p);
+}
+var PF_NAME = {full_name:'Full name', phone:'Phone', linkedin:'LinkedIn', location:'Lives in', target_roles:'Target roles', target_locations:'Target locations', work_auth:'Work authorization',
+  salary:'Salary', notice:'Can start', apply_notes:'How to apply', optimise_rules:'Optimisation rules', answers:'Standard answers', status:'Status', confirmed_skills:'Skills for jobs', plan_total:'Plan'};
+// opening the Profile: changes typed here before the page closed, not saved, are offered back
+function pfRecover(c){
+  var bk = bkGet('pf_' + c.id), v = bk && bk.v, keys = v ? Object.keys(v).filter(function(k){ return PF_NAME[k]; }) : [];
+  if(!bk) return;
+  if(!keys.length){ bkDel('pf_' + c.id); return; }
+  var box = V.querySelector('.narrow'); box.insertAdjacentHTML('afterbegin', bkBar('pfRec', 'Profile changes', bk.at, keys.map(function(k){ return PF_NAME[k]; }).join(', ') + '.'));
+  $('#pfRec').addEventListener('click', function(e){
+    var b = e.target.closest('[data-rec]'); if(!b) return;
+    if(b.getAttribute('data-rec') === 'put') keys.forEach(function(k){
+      var x = v[k];
+      if(k === 'answers') $('#pfQA').innerHTML = (x || []).map(qaRow).join('');
+      else if(k === 'confirmed_skills'){ if($('#pfSk')){ C.skEdit = (x || []).slice(); $('#pfSk').innerHTML = skRows(); } }
+      else if(k === 'status'){ if(!$('#pf_status').disabled) $('#pf_status').value = x; }
+      else if(k === 'plan_total'){ var ps = $('#pf_plan'); if(ps){ if(x && TP.CONFIG.PLANS.indexOf(x) < 0 && !$('option[value="' + x + '"]', ps)) ps.insertAdjacentHTML('beforeend', '<option value="' + x + '">' + x + '</option>'); ps.value = x ? String(x) : ''; } }
+      else if($('#pf_' + k)) $('#pf_' + k).value = x || '';
+    });
+    else bkDel('pf_' + c.id);
+    $('#pfRec').remove(); pfMark();
+    if(b.getAttribute('data-rec') === 'put') TP.toast('Put back — press Save changes to keep them');
+  });
+}
+// leaving the Profile with changes not saved: save them, throw them away, or stay
+function pfAsk(){
+  return new Promise(function(res){
+    var name = (C && C.row && C.row.full_name) || 'this client', done = false, fin = function(v){ if(done) return; done = true; res(v); };
+    var m = TP.modal('<h2>Save the changes to ' + esc(name) + '’s profile?</h2><p>You changed the profile and haven’t saved it.</p>' +
+      '<div class="acts"><button class="btn" type="button" data-v="stay">Keep editing</button><button class="btn bad" type="button" data-v="toss">Don’t save</button><button class="btn pri" type="button" data-v="save">Save changes</button></div>', false,
+      {onClose:function(){ fin(false); }});
+    setTimeout(function(){ var b = $('[data-v=stay]', m); if(b) b.focus(); }, 40);
+    m.addEventListener('click', function(e){
+      var b = e.target.closest('[data-v]'); if(!b) return;
+      var v = b.getAttribute('data-v'); TP.closeModal();
+      if(v === 'stay') return fin(false);
+      if(v === 'toss'){ if(C) bkDel('pf_' + C.id); return fin(true); }
+      saveProfile().then(fin);
+    });
+  });
+}
+// what a status or plan change means for the client, said before it's saved
+function pfEffects(patch){
+  var c = C.row, first = esc((c.full_name || '').split(' ')[0] || 'The client'), out = [];
+  if(patch.status === 'paused') out.push(['warn', '<b>Paused</b> — ' + first + '’s dashboard says the plan is paused, and they leave the Active list.']);
+  if(patch.status === 'done') out.push(['warn', '<b>Done</b> — ' + first + '’s dashboard says the plan is complete, and they move to Done.']);
+  if(patch.status === 'active') out.push(['ok', '<b>Active</b> — back on the Active list, and the plan shows as running on ' + first + '’s dashboard.']);
+  if('plan_total' in patch){
+    var sent = (C.prog && C.prog.done) || 0;
+    out.push(['info', 'Plan: ' + (c.plan_total ? c.plan_total + ' → ' : '') + (patch.plan_total ? '<b>' + patch.plan_total + ' applications</b>' : '<b>not set</b>') + ' — ' + first + ' sees it on their dashboard.']);
+    if(patch.plan_total && patch.plan_total < sent) out.push(['warn', 'That’s fewer than the ' + sent + ' already sent.']);
+  }
+  return out;
+}
+// resolves true once saved (or when there was nothing to save)
+function saveProfile(){
+  var c = C.row, btn = $('[data-act=pfsave]'), patch = pfPatch();
+  if(patch === null){ TP.toast('Type the number of applications'); return Promise.resolve(false); }
+  if(!Object.keys(patch).length){ $('#pfMsg').textContent = 'No changes'; return Promise.resolve(true); }
+  var fx = pfEffects(patch);
+  return (fx.length ? TP.confirmBox('Save these changes?', '', 'Save changes', false, {items:fx}) : Promise.resolve(true)).then(function(ok){
+    if(!ok) return false;
+    return TP.busy(btn, q(SB.from('clients').update(patch).eq('id', c.id).select('*').maybeSingle())).then(function(row){
+      if(!row) throw {message:'You don’t have access to that.'};
+      C.row = row; staleList(); drawBar(); rememberOpen(row); drawOpenTabs(); bkDel('pf_' + row.id);
+      if(C.skEdit && Array.isArray(row.confirmed_skills)) C.skEdit = row.confirmed_skills.slice();
+      var s = $('#pfMsg'); if(s) s.textContent = 'Saved ' + new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+      TP.toast('Profile saved');
+      return true;
+    }).catch(function(e){ TP.toast(TP.errText(e)); return false; });
+  });
 }
 
 /* ---------- Resumes ---------- */
@@ -607,9 +1038,15 @@ function tResumes(){
   var c = C;
   var roles = String(c.row.target_roles || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
   V.innerHTML = '<div class="row"><div class="grow"><div class="sub">Base resumes for ' + esc(c.row.full_name) + '. Optimise each one once' + (roles.length ? ' for ' + esc(roles.join(', ')) + ' roles' : '') + '; every application then gets its own copy, synced to that job, so editing these never changes what was already sent.</div></div>' +
-    '<button class="btn pri" type="button" data-act="newresume">' + I.plus + 'New resume</button></div><div id="rl" style="margin-top:14px"><div class="skel"></div></div>';
-  loadResumes(true).then(function(rs){
-    if(C !== c) return;
+    '<button class="btn pri" type="button" data-act="newresume">' + I.plus + 'New resume</button></div><div id="rl" style="margin-top:14px"><div class="skel"></div></div><div id="rdR"></div>';
+  rdLink(c, 'resume', '#rdR');
+  // what was loaded last shows at once; the fresh list replaces it when it comes
+  if(c.resumes || c.rsShown) drawResumes(c, c.resumes || c.rsShown, roles);
+  loadResumes(true).then(function(rs){ drawResumes(c, rs, roles); }, function(e){ if(!c.resumes || !$('#rl .li')) { if($('#rl')) $('#rl').innerHTML = errBox(e); } else TP.toast('Couldn’t refresh the resumes — ' + TP.errText(e)); });
+}
+function drawResumes(c, rs, roles){
+    if(C !== c || !$('#rl') || R.tab !== 'resumes' || R.app) return;
+    c.rsShown = rs;
     drawBar();
     $('#rl').innerHTML = rs.length ? '<div class="list">' + rs.map(function(r){
       var first = String(r.text || '').split('\n').map(function(s){ return s.trim(); }).filter(Boolean).slice(0, 3).join(' · '), om = r.doc && r.doc.meta && r.doc.meta.optimised;
@@ -622,7 +1059,6 @@ function tResumes(){
           '<button class="icb" type="button" data-act="resmenu" data-id="' + esc(r.id) + '" title="More">⋯</button></div></div>';
     }).join('') + '</div>'
       : '<div class="empty">' + J.resume + '<h3>No resume yet</h3><p>Add ' + esc(c.row.full_name.split(' ')[0] || 'their') + '’s resume: create one, then upload their file (PDF or Word) in the editor.</p><button class="btn pri" type="button" data-act="newresume">' + I.plus + 'New resume</button></div>';
-  }, function(e){ $('#rl').innerHTML = errBox(e); });
 }
 function newResume(){
   var m = TP.modal('<h2>New resume</h2><p>Give it a name you’ll recognise when choosing it for a job.</p><form id="nrF" class="stack" style="margin-top:14px">' +
@@ -646,16 +1082,65 @@ function newResume(){
 function resumeMenu(id){
   var r = (C.resumes || []).filter(function(x){ return x.id === id; })[0]; if(!r) return;
   var m = TP.modal('<h2>' + esc(r.name) + '</h2><div class="stack" style="margin-top:14px">' +
-    '<div class="field"><label for="rmN">Rename</label><div class="row"><input class="inp grow" id="rmN" value="' + esc(r.name) + '"><button class="btn" type="button" id="rmSave">Save</button></div></div>' +
+    '<div class="field"><label for="rmN">Rename</label><form class="row" id="rmF"><input class="inp grow" id="rmN" value="' + esc(r.name) + '" maxlength="80"><button class="btn" type="submit" id="rmSave">Save</button></form></div>' +
     (r.is_default ? '' : '<button class="btn" type="button" id="rmDef">' + J.star + 'Use by default for new applications</button>') +
+    '<button class="btn" type="button" id="rmDup">' + I.copy + 'Make a copy (for another role)</button>' +
     (r.text ? '<button class="btn" type="button" id="rmCopy">' + I.copy + 'Copy the resume text</button>' : '') +
     '<button class="btn bad" type="button" id="rmDel">' + I.trash + 'Delete this resume</button>' +
-    '<p class="fine">Deleting it doesn’t change any application already sent — each one keeps its own copy.</p></div>');
-  var c = C, done = function(msg){ TP.closeModal(); c.resumes = null; TP.toast(msg); tResumes(); };
-  $('#rmSave', m).onclick = function(){ var n = $('#rmN').value.trim(); if(!n) return; q(SB.from('client_resumes').update({name:n}).eq('id', id)).then(function(){ done('Renamed'); }, function(e){ TP.toast(TP.errText(e)); }); };
-  if($('#rmDef', m)) $('#rmDef', m).onclick = function(){ q(SB.from('client_resumes').update({is_default:false}).eq('client_id', c.id).eq('is_default', true)).then(function(){ return q(SB.from('client_resumes').update({is_default:true}).eq('id', id)); }).then(function(){ done('Now the default resume'); }, function(e){ TP.toast(TP.errText(e)); }); };
+    '<p class="fine">Deleting it doesn’t change any application already sent — each one keeps its own copy.</p></div>', false, {keep:true});
+  var c = C, done = function(msg){ TP.closeModal(); c.resumes = null; TP.toast(msg); tResumes(); }, fail = function(e){ TP.toast(TP.errText(e)); };
+  $('#rmF', m).onsubmit = function(e){
+    e.preventDefault(); var n = $('#rmN').value.trim().replace(/\s+/g, ' ');
+    if(!n) return TP.toast('Give it a name');
+    if(n === r.name) return TP.closeModal();
+    if((c.resumes || []).some(function(x){ return x.id !== id && x.name.toLowerCase() === n.toLowerCase(); })) return TP.toast('Another resume already has that name');
+    TP.busy($('#rmSave', m), q(SB.from('client_resumes').update({name:n}).eq('id', id))).then(function(){ done('Renamed'); }, fail);
+  };
+  if($('#rmDef', m)) $('#rmDef', m).onclick = function(){ TP.busy(this, q(SB.from('client_resumes').update({is_default:false}).eq('client_id', c.id).eq('is_default', true)).then(function(){ return q(SB.from('client_resumes').update({is_default:true}).eq('id', id)); })).then(function(){ done('Now the default resume'); }, fail); };
+  $('#rmDup', m).onclick = function(){
+    var names = (c.resumes || []).map(function(x){ return x.name.toLowerCase(); }), nm = r.name + ' (copy)', i = 2;
+    while(names.indexOf(nm.toLowerCase()) > -1) nm = r.name + ' (copy ' + i++ + ')';
+    TP.busy(this, q(SB.from('client_resumes').select('doc,text').eq('id', id).maybeSingle()).then(function(full){
+      if(!full) throw {message:'That resume was deleted meanwhile'};
+      var d = full.doc ? JSON.parse(JSON.stringify(full.doc)) : null; if(d && d.meta){ delete d.meta.optimised; delete d.meta.review; }
+      return q(SB.from('client_resumes').insert({client_id:c.id, name:nm, doc:d, text:full.text, is_default:false}));
+    })).then(function(){ done('Copy made: “' + nm + '” — rename it for its role'); }, fail);
+  };
   if($('#rmCopy', m)) $('#rmCopy', m).onclick = function(){ TP.copy(r.text, 'Resume text'); };
-  $('#rmDel', m).onclick = function(){ TP.confirmBox('Delete “' + r.name + '”?', 'Applications already sent keep their own copy of the resume.', 'Delete', true).then(function(ok){ if(ok) q(SB.from('client_resumes').delete().eq('id', id)).then(function(){ done('Resume deleted'); }, function(e){ TP.toast(TP.errText(e)); }); }); };
+  $('#rmDel', m).onclick = function(){ delResume(r, this); };
+}
+// deleting a base resume: drafts still starting from it (not tailored yet) move to another one, so none is left without a resume
+function delResume(r, btn){
+  var c = C, others = (c.resumes || []).filter(function(x){ return x.id !== r.id; }), to = others.filter(function(x){ return x.is_default; })[0] || others[0];
+  TP.busy(btn, Promise.all([q(SB.from('applications').select('id').eq('client_id', c.id).eq('base_resume_id', r.id).eq('status', 'draft').is('resume_doc', null).is('resume_text', null)), trashReady()])).then(function(rs){
+    var deps = rs[0] || [], kept = rs[1];
+    var n = deps.length, drafts = n + ' draft' + (n === 1 ? '' : 's');
+    if(n && !to){ TP.modal('<h2>“' + esc(r.name) + '” is still in use</h2><p>' + drafts + ' start' + (n === 1 ? 's' : '') + ' from it and ' + (n === 1 ? 'hasn’t' : 'haven’t') + ' been tailored yet, and it’s the only resume. Add another resume first, or delete those drafts.</p><div class="acts"><button class="btn pri" type="button" data-mclose="1">OK</button></div>'); return; }
+    var items = [];
+    if(n) items.push(['warn', drafts + ' start' + (n === 1 ? 's' : '') + ' from it and ' + (n === 1 ? 'hasn’t' : 'haven’t') + ' been tailored yet — ' + (n === 1 ? 'it' : 'they') + ' will start from <b>' + esc(to.name) + '</b> instead.']);
+    if(r.is_default && to) items.push(['info', '<b>' + esc(to.name) + '</b> becomes the default for new applications.']);
+    items.push(['ok', 'Applications already sent keep their own copy.']);
+    items.push(kept ? ['ok', 'It stays in Recently deleted for 30 days.'] : ['warn', 'This can’t be undone.']);
+    return TP.confirmBox('Delete “' + r.name + '”?', '', 'Delete resume', true, {items:items}).then(function(ok){
+      if(!ok) return;
+      var ids = deps.map(function(d){ return d.id; });
+      var shown = function(){ c.resumes = null; if(C === c && R.tab === 'resumes' && !R.app) tResumes(); };
+      return (n ? q(SB.from('applications').update({base_resume_id:to.id}).in('id', ids).eq('status', 'draft')) : Promise.resolve())
+        .then(function(){ return q(SB.from('client_resumes').delete().eq('id', r.id)); })
+        .then(function(){ return r.is_default && to ? q(SB.from('client_resumes').update({is_default:true}).eq('id', to.id)) : null; })
+        .then(function(){
+          shown();
+          // Undo: the resume back, its drafts starting from it again, and the default as it was
+          TP.toast('Resume deleted', kept ? {undo:function(){
+            restoreItem(r.id).then(function(){
+              return n ? q(SB.from('applications').update({base_resume_id:r.id}).in('id', ids).eq('base_resume_id', to.id).eq('status', 'draft').is('resume_doc', null).is('resume_text', null)) : null;
+            }).then(function(){
+              return r.is_default && to ? q(SB.from('client_resumes').update({is_default:false}).eq('id', to.id)).then(function(){ return q(SB.from('client_resumes').update({is_default:true}).eq('id', r.id)); }) : null;
+            }).then(function(){ shown(); TP.toast('Resume restored'); }, fail);
+          }} : null);
+        });
+    });
+  }).catch(function(e){ TP.toast(TP.errText(e)); });
 }
 
 /* ---------- Jobs: the job board, or any pasted link ---------- */
@@ -787,7 +1272,7 @@ function startFromBoard(key, btn){
   btn.disabled = true; btn.classList.add('busy');
   boardDesc(j).catch(function(){ return ''; }).then(function(jd){
     return createDraft({job_key:j.key, job_url:j.url, title:j.title, company:j.company, location:j.location, jd_text:jd || null});
-  }).catch(function(e){ btn.disabled = false; btn.classList.remove('busy'); TP.toast(TP.errText(e)); });
+  }).catch(function(e){ btn.disabled = false; btn.classList.remove('busy'); fail(e); });
 }
 
 /* a pasted link: the big job boards are read here; any other page by our job-info server function */
@@ -921,7 +1406,7 @@ function readLink(raw){
       this.disabled = true; this.classList.add('busy');
       var me = this;
       createDraft({job_key:j.key, job_url:TP.cleanUrl(url), title:t, company:co, location:$('#lkL').value.trim() || null, jd_text:$('#lkJ').value.trim() || null})
-        .catch(function(e){ me.disabled = false; me.classList.remove('busy'); TP.toast(TP.errText(e)); });
+        .catch(function(e){ me.disabled = false; me.classList.remove('busy'); fail(e); });
     };
   });
 }
@@ -932,14 +1417,42 @@ function draftRow(c, job){
 }
 function createDraft(job){
   var c = C;
-  return loadResumes().then(function(){
+  return Promise.all([loadResumes(), findSame(c, job)]).then(function(rs){
+    if(rs[1]) return sameJob(c, rs[1]).then(function(){ throw {quiet:true}; });
     return q(SB.from('applications').insert(draftRow(c, job)).select('id').single());
   }).then(function(r){
     c.idx = null; refreshProgress();
-    TP.toast('Application started');
-    go(cUrl(c.id, 'app=' + r.id));
+    return go(cUrl(c.id, 'app=' + r.id)).then(function(){
+      TP.toast('Application started', {undo:function(){ undoDrafts(c, [r.id]).then(function(n){ if(n){ TP.toast('Application removed'); if(C === c && R.app === r.id) go(cUrl(c.id, 'jobs'), true); } }); }});
+    });
   });
 }
+// right before a job is started: the database's own answer, so a teammate who started it a minute ago is caught too
+function findSame(c, job){
+  var urls = [job.job_url, canonUrl(job.job_url), TP.cleanUrl(job.job_url)].filter(function(u, i, a){ return u && a.indexOf(u) === i; });
+  var cols = 'id,status,title,company,applied_at,created_at', base = function(){ return SB.from('applications').select(cols).eq('client_id', c.id); };
+  return Promise.all([q(base().in('job_url', urls).limit(5)), job.job_key ? q(base().eq('job_key', job.job_key).limit(5)) : Promise.resolve([])]).then(function(rs){
+    var all = (rs[0] || []).concat(rs[1] || []);
+    return all.filter(function(a){ return a.status !== 'draft'; })[0] || all[0] || null;
+  });
+}
+function sameJob(c, a){
+  return loadWho(c, true).then(function(w){
+    var by = w[a.id] ? ' by ' + who(w[a.id]) : '', what = a.status === 'draft' ? 'started this job' + by + ' ' + TP.ago(a.created_at) : 'applied for this job' + by + ' on ' + TP.fmtDate(a.applied_at);
+    return TP.confirmBox((c.row.full_name || 'This client') + ' already has this job', 'It was ' + what + ' — ' + (a.title || 'Role') + (a.company ? ' at ' + a.company : '') + '.', 'Open it', false).then(function(ok){
+      if(ok) go(cUrl(c.id, 'app=' + a.id));
+    });
+  });
+}
+// Undo for drafts just started: removes the ones that are still drafts; resolves how many went
+function undoDrafts(c, ids){
+  // with the safeguards SQL the Undo leaves nothing behind in Recently deleted; without it, a plain delete
+  return trashReady().then(function(kept){
+    return kept ? q(SB.rpc('discard_new_drafts', {p_ids:ids}))
+      : q(SB.from('applications').delete().in('id', ids).eq('client_id', c.id).eq('status', 'draft').select('id')).then(function(r){ return (r || []).length; });
+  }).then(function(n){ c.idx = null; refreshProgress(); return +n || 0; }, function(e){ TP.toast(TP.errText(e)); return 0; });
+}
+function fail(e){ if(e && e.quiet) return; TP.toast(TP.errText(e)); }
 
 /* ---------- Apply from links: many links at once ----------
    Each link is checked against what the client already has and the rest of the paste before it's read. The rest are
@@ -1049,7 +1562,7 @@ function lkFresh(c, L){
   }, function(){});
 }
 function lkStart(btn){
-  var c = C, L = lkList(c.id), todo = L.items.filter(lkCanStart), made = 0, had = 0, bad = 0;
+  var c = C, L = lkList(c.id), todo = L.items.filter(lkCanStart), made = [], had = 0, bad = 0;
   if(!todo.length) return;
   btn.disabled = true; btn.classList.add('busy');
   Promise.all([loadResumes(), loadAppIndex(true)]).then(function(){
@@ -1057,24 +1570,53 @@ function lkStart(btn){
       var a = already(x, c.idx) || already({url:x.from}, c.idx);   // a teammate may have started it meanwhile
       if(a){ had++; lkDrop(L, x, a.status === 'draft' ? 'draft' : 'applied', a); return; }
       return q(SB.from('applications').insert(draftRow(c, {job_key:x.key || null, job_url:x.url, title:String(x.title).trim(), company:String(x.company).trim(), location:String(x.location || '').trim() || null, jd_text:x.jd || null})).select('id').single())
-        .then(function(r){ x.app = r.id; x.st = 'draft'; x.state = 'started'; delete x.jd; delete x.err; made++; }, function(e){ bad++; x.err = TP.errText(e); });
+        .then(function(r){ made.push({x:x, jd:x.jd}); x.app = r.id; x.st = 'draft'; x.state = 'started'; delete x.jd; delete x.err; }, function(e){ bad++; x.err = TP.errText(e); });
     });
   }).then(function(){
     c.idx = null; lkSave(L); refreshProgress();
-    TP.toast([made ? made + ' draft' + (made === 1 ? '' : 's') + ' started' : '', had ? had + (had === 1 ? ' was' : ' were') + ' already started' : '', bad ? bad + ' couldn’t start — try again' : ''].filter(Boolean).join(' · '));
+    var n = made.length, msg = [n ? n + ' draft' + (n === 1 ? '' : 's') + ' started' : '', had ? had + (had === 1 ? ' was' : ' were') + ' already started' : '', bad ? bad + ' couldn’t start — try again' : ''].filter(Boolean).join(' · ');
+    // Undo takes the new drafts away again and puts the jobs back in the list, ready to start
+    TP.toast(msg, n ? {undo:function(){
+      undoDrafts(c, made.map(function(m){ return m.x.app; })).then(function(gone){
+        var M = lkList(c.id);
+        made.forEach(function(m){ if(M.items.indexOf(m.x) < 0) return; m.x.app = null; m.x.st = null; m.x.opt = null; m.x.state = 'ready'; if(m.jd) m.x.jd = m.jd; });
+        lkSave(M); if(lkShown(M)) lkDraw();
+        TP.toast(gone === n ? 'Undone — ' + n + ' draft' + (n === 1 ? '' : 's') + ' removed' : gone + ' of ' + n + ' removed — the others were opened meanwhile');
+      });
+    }} : null);
   }, function(e){ TP.toast(TP.errText(e)); }).then(function(){
     btn.disabled = false; btn.classList.remove('busy');
     if(lkShown(L)){ lkDraw(); loadAppIndex(true).then(function(){ if(lkShown(L)) drawBoard(); }, function(){}); }
   });
 }
+// clearing the list or taking one job off it: Undo puts it back as it was
 function lkClear(){
-  var L = lkList(C.id), open = L.items.filter(function(x){ return !x.app; }).length;
-  (open ? TP.confirmBox('Clear the list?', open + (open === 1 ? ' job hasn’t' : ' jobs haven’t') + ' been started, so ' + (open === 1 ? 'it goes' : 'they go') + ' too. Drafts and sent applications stay in Applications.', 'Clear list') : Promise.resolve(true)).then(function(ok){
-    if(!ok) return;
-    L.items = []; L.skip = []; L.more = 0; lkSave(L); lkDraw();
-  });
+  var c = C, L = lkList(c.id), was = {items:L.items, skip:L.skip, more:L.more};
+  if(!was.items.length && !was.skip.length) return;
+  L.items = []; L.skip = []; L.more = 0; lkSave(L); lkDraw();
+  TP.toast('List cleared — drafts and sent applications stay in Applications', {undo:function(){
+    var M = lkList(c.id);
+    M.items = was.items.concat(M.items.filter(function(x){ return was.items.indexOf(x) < 0; })); M.skip = was.skip; M.more = was.more;
+    lkRestored(c, M);
+  }});
 }
-function lkDel(id){ var L = lkList(C.id); L.items = L.items.filter(function(x){ return x.id !== id; }); lkSave(L); lkDraw(); }
+function lkDel(id){
+  var c = C, L = lkList(c.id), i = -1, x = null;
+  L.items.forEach(function(y, k){ if(y.id === id){ i = k; x = y; } }); if(!x) return;
+  L.items.splice(i, 1); lkSave(L); lkDraw();
+  TP.toast('Taken off your list' + (x.app ? ' — the application stays' : ''), {undo:function(){
+    var M = lkList(c.id); if(M.items.indexOf(x) > -1) return;
+    M.items.splice(Math.min(i, M.items.length), 0, x); lkRestored(c, M);
+  }});
+}
+// jobs back on the list: reading or syncing that stopped while they were off it starts again (or offers Retry)
+function lkRestored(c, M){
+  M.items.forEach(function(x){
+    var live = x.opt && (x.opt.st === 'run' ? OQ.cur[x.id] : OQ.jobs.some(function(j){ return j.id === x.id; }));
+    if(x.opt && (x.opt.st === 'wait' || x.opt.st === 'run') && !live) x.opt = {st:'fail', why:'Stopped while it was off the list'};
+  });
+  lkSave(M); if(lkShown(M)) lkDraw(); lkRead(c, M);
+}
 // typing the title and company of a link that couldn't be read
 function lkType(e){
   var f = e.target, k = f.getAttribute && f.getAttribute('data-lk'); if(!k || !C) return;
@@ -1144,7 +1686,7 @@ function lkRow(x){
 /* ---------- Optimise the list: the editor's own Optimise, run for each draft in a hidden editor, a few at a time ----------
    It runs in this browser tab, so other tabs and other clients' pages are fine; closing the tab stops it, so the page asks
    first. The suggestions wait on each draft until someone reviews them in the editor. */
-var OPT_LANES = 4, OQ = {jobs:[], run:0};
+var OPT_LANES = 4, OQ = {jobs:[], run:0, cur:{}};
 // a draft is only ever synced to its own job - every part, in one go - since the main resume was optimised already
 var SYNC_SEL = {summary:1, headline:1, location:1, experience:1, skills:1, sync:1};
 function lkCanOpt(x){ return !!x.app && (x.st || 'draft') === 'draft' && (!x.opt || x.opt.st === 'fail'); }
@@ -1171,10 +1713,10 @@ function optPump(){ while(OQ.run < OPT_LANES && OQ.jobs.length) optOne(OQ.jobs.s
 function optOne(job){
   var L = lkList(job.cid), x = L.items.filter(function(y){ return y.id === job.id; })[0];
   if(!x || x.app !== job.app || !x.opt || x.opt.st !== 'wait') return;   // taken off the list meanwhile
-  OQ.run++; x.opt = {st:'run', at:Date.now()}; lkSave(L); if(lkShown(L)) lkDraw();
+  OQ.run++; OQ.cur[x.id] = 1; x.opt = {st:'run', at:Date.now()}; lkSave(L); if(lkShown(L)) lkDraw();
   var f = document.createElement('iframe'), over = false, tm;
   function end(o){
-    if(over) return; over = true; clearTimeout(tm); window.removeEventListener('message', hear); f.remove(); OQ.run--;
+    if(over) return; over = true; clearTimeout(tm); window.removeEventListener('message', hear); f.remove(); OQ.run--; delete OQ.cur[x.id];
     if(o.why === 'limit'){   // today's AI allowance is used up: the rest would only fail too
       o.why = 'Today’s AI allowance is used up';
       OQ.jobs.splice(0).forEach(function(j){ var M = lkList(j.cid), y = M.items.filter(function(z){ return z.id === j.id; })[0]; if(y){ y.opt = {st:'fail', why:o.why}; lkSave(M); } });
@@ -1196,7 +1738,7 @@ function optOne(job){
   document.body.appendChild(f);
 }
 function lkRetry(id){ var c = C, L = lkList(c.id), x = L.items.filter(function(y){ return y.id === id; })[0], p = optChoices(c.id); if(x) optQueue(c, L, SYNC_SEL, p.ins, x); }
-window.addEventListener('beforeunload', function(e){ if(OQ.run || OQ.jobs.length){ e.preventDefault(); e.returnValue = ''; } });   // closing the tab would stop the Optimise
+TP.onLeave(function(){ var n = OQ.run + OQ.jobs.length; return n ? n + ' resume' + (n === 1 ? ' is' : 's are') + ' still syncing in this browser tab — closing it or signing out stops ' + (n === 1 ? 'it' : 'them') + '.' : ''; });
 function lkSkipRow(s){
   return '<div class="li lkrow skip" data-why="' + s.why + '"><div class="main"><div class="t">' + esc(s.title ? s.title + (s.company ? ' · ' + s.company : '') : shortLink(s.url)) + '</div><div class="m">' + LK_WHY[s.why] + '</div></div>' +
     (s.app ? '<div class="side">' + dupNote(s.app) + '</div>' : '') + '</div>';
@@ -1227,39 +1769,171 @@ function lkNext(){
 
 /* ---------- Applications ---------- */
 var AP = {f:'all', q:'', n:50};
+var AP_W = [['', 'Any time'], ['today', 'Sent today'], ['week', 'Sent this week']];
 function tApps(){
   var c = C, p = c.prog || {};
-  if(AP.c !== c.id){ AP = {f:'all', q:'', n:50, c:c.id}; }
+  if(AP.c !== c.id){ AP = {f:'all', q:'', n:50, c:c.id, w:'', mine:false, sel:null}; }
   V.innerHTML = '<div class="stats"><div class="stat"><b>' + (p.done || 0) + (c.row.plan_total ? ' <span style="font-size:14px;color:var(--muted)">/ ' + c.row.plan_total + '</span>' : '') + '</b><span>applications sent</span></div>' +
       '<div class="stat"><b>' + (p.today || 0) + '</b><span>sent today</span></div><div class="stat"><b>' + (p.drafts || 0) + '</b><span>drafts in progress</span></div><div class="stat"><b>' + (p.interviews || 0) + '</b><span>interviews and offers</span></div></div>' +
     '<div class="tools" style="margin-top:0"><input class="inp" id="apQ" type="search" placeholder="Search role or company" value="' + esc(AP.q) + '" autocomplete="off">' +
-      '<div class="seg" id="apF">' + [['all','All'],['draft','Drafts'],['applied','Applied'],['interview','Interview'],['offer','Offer'],['rejected','Not selected'],['closed','Closed']].map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (AP.f === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div>' +
-      '<a class="btn pri" href="' + esc(cUrl(c.id, 'jobs')) + '" data-go>' + I.plus + 'New application</a></div><div id="apL"><div class="skel"></div><div class="skel"></div></div>';
+      '<div class="seg" id="apF">' + [['all','All'],['draft','Drafts'],['applied','Applied'],['interview','Interview'],['offer','Offer'],['rejected','Not selected'],['closed','Closed']].map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (AP.f === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div></div>' +
+    '<div class="tools apt2"><select class="inp" id="apW" aria-label="When">' + AP_W.map(function(w){ return '<option value="' + w[0] + '"' + (AP.w === w[0] ? ' selected' : '') + '>' + w[1] + '</option>'; }).join('') + '</select>' +
+      '<label class="check apmine"><input type="checkbox" id="apMine"' + (AP.mine ? ' checked' : '') + '> Only mine</label><span class="grow"></span>' +
+      '<button class="btn" type="button" data-act="apsel">' + (AP.sel ? 'Done selecting' : 'Select') + '</button>' +
+      '<button class="btn" type="button" data-act="apcsv">' + I.doc + 'Export CSV</button>' +
+      '<a class="btn pri" href="' + esc(cUrl(c.id, 'jobs')) + '" data-go>' + I.plus + 'New application</a></div>' +
+    '<div id="apBulk"></div><div id="apL"><div class="skel"></div><div class="skel"></div></div><div id="rdA"></div>';
+  rdLink(c, 'application', '#rdA');
   var t; $('#apQ').addEventListener('input', function(e){ clearTimeout(t); t = setTimeout(function(){ AP.q = e.target.value; AP.n = 50; loadApps(); }, 250); });
   $('#apF').addEventListener('click', function(e){ var b = e.target.closest('[data-f]'); if(!b) return; AP.f = b.getAttribute('data-f'); AP.n = 50; $$('#apF button').forEach(function(x){ x.classList.toggle('on', x === b); }); loadApps(); });
-  loadApps();
+  $('#apW').addEventListener('change', function(e){ AP.w = e.target.value; AP.n = 50; loadApps(); });
+  $('#apMine').addEventListener('change', function(e){ AP.mine = e.target.checked; AP.n = 50; loadApps(); });
+  // in Select mode a click picks a row instead of opening it
+  $('#apL').addEventListener('click', function(e){
+    if(!AP.sel) return;
+    var all = e.target.closest('[data-pickall]'), r = e.target.closest('[data-pick]');
+    if(all){ var on = !$$('#apL [data-pick]').every(function(x){ return AP.sel[x.getAttribute('data-pick')]; });
+      $$('#apL [data-pick]').forEach(function(x){ var id = x.getAttribute('data-pick'); if(on) AP.sel[id] = x.getAttribute('data-st'); else delete AP.sel[id]; }); }
+    else if(r){ var id = r.getAttribute('data-pick'); if(AP.sel[id]) delete AP.sel[id]; else AP.sel[id] = r.getAttribute('data-st'); }
+    else return;
+    e.preventDefault(); markPicked(); drawBulk();
+  });
+  drawBulk(); loadApps();
 }
-function loadApps(){
-  var c = C, box = $('#apL');
-  var sq = SB.from('applications').select('id,status,title,company,location,job_url,applied_at,created_at,status_at').eq('client_id', c.id);
+// what's on the list: the filters above it, as one question to the database
+function apQuery(c, cols){
+  var sq = SB.from('applications').select(cols).eq('client_id', c.id);
   if(AP.f !== 'all') sq = sq.eq('status', AP.f);
   var qq = AP.q.trim().replace(/[,()*%\\]/g, ' ').trim();
   if(qq) sq = sq.or('title.ilike.*' + qq + '*,company.ilike.*' + qq + '*');
-  sq = sq.order('applied_at', {ascending:false, nullsFirst:true}).order('created_at', {ascending:false}).range(0, AP.n);   // drafts first, then newest sent
-  Promise.all([q(sq), loadWho(c)]).then(function(rs){
+  if(AP.w){ var d = new Date(); d.setHours(0, 0, 0, 0); if(AP.w === 'week') d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); sq = sq.gte('applied_at', d.toISOString()); }   // weeks start on Monday
+  if(AP.mine) sq = sq.in('id', AP.mineIds && AP.mineIds.length ? AP.mineIds : ['00000000-0000-0000-0000-000000000000']);
+  return sq;
+}
+// the applications you started or sent for this client, most recent first (the last 150 is plenty for a day's work)
+function mineIds(c){
+  if(c.mine && Date.now() - c.mine.at < 60000) return Promise.resolve(c.mine.ids);
+  return q(SB.from('client_activity').select('application_id').eq('client_id', c.id).eq('by_email', ME.email).in('kind', ['app_started', 'app_applied']).order('at', {ascending:false}).limit(150)).then(function(rows){
+    var ids = []; (rows || []).forEach(function(r){ if(r.application_id && ids.indexOf(r.application_id) < 0) ids.push(r.application_id); });
+    c.mine = {at:Date.now(), ids:ids}; return ids;
+  });
+}
+function loadApps(){
+  var c = C, box = $('#apL');
+  var qq = AP.q.trim().replace(/[,()*%\\]/g, ' ').trim(), picking = !!AP.sel;
+  // the list as it was last seen shows at once, and the fresh one replaces it when it comes
+  var key = [AP.f, qq, AP.n, AP.w, AP.mine ? 1 : 0, picking ? 1 : 0].join('|'); c.apCache = c.apCache || {};
+  if(c.apCache[key] && box){ box.innerHTML = c.apCache[key]; markPicked(); }
+  (AP.mine ? mineIds(c) : Promise.resolve(null)).then(function(ids){
+    AP.mineIds = ids;
+    return q(apQuery(c, 'id,status,title,company,location,job_url,applied_at,created_at,status_at').order('applied_at', {ascending:false, nullsFirst:true}).order('created_at', {ascending:false}).range(0, AP.n));   // drafts first, then newest sent
+  }).then(function(rows){ rows = rows || []; return whoOf(c, rows.slice(0, AP.n).map(function(a){ return a.id; })).then(function(){ return rows; }); }).then(function(rows){
     if(C !== c || !$('#apL')) return;
-    var rows = rs[0] || [], more = rows.length > AP.n; rows = rows.slice(0, AP.n);
+    var more = rows.length > AP.n; rows = rows.slice(0, AP.n);
     if(!rows.length){
-      box.innerHTML = AP.f === 'all' && !qq ? '<div class="empty">' + J.apps + '<h3>No applications yet</h3><p>Find a job on the Jobs tab — from the job board or any link — and start the first one.</p><a class="btn pri" href="' + esc(cUrl(c.id, 'jobs')) + '" data-go>Find a job</a></div>' : '<div class="empty"><h3>Nothing here</h3><p>Try another filter or search.</p></div>';
+      box.innerHTML = c.apCache[key] = AP.f === 'all' && !qq && !AP.w && !AP.mine ? '<div class="empty">' + J.apps + '<h3>No applications yet</h3><p>Find a job on the Jobs tab — from the job board or any link — and start the first one.</p><a class="btn pri" href="' + esc(cUrl(c.id, 'jobs')) + '" data-go>Find a job</a></div>' : '<div class="empty"><h3>Nothing here</h3><p>Try another filter or search.</p></div>';
       return;
     }
-    box.innerHTML = '<div class="list">' + rows.map(function(a){
-      var by = c.who[a.id], when = (a.applied_at ? esc(TP.fmtDateTime(a.applied_at)) : 'started ' + esc(TP.ago(a.created_at))) + (by ? ' · by ' + esc(who(by)) : '');
-      return '<a class="li" href="' + esc(cUrl(c.id, 'app=' + a.id)) + '" data-go>' + coLogo(a.company, a.job_url) +
-        '<div class="main"><div class="t">' + esc(a.title || 'Role') + '</div><div class="m">' + esc([a.company, a.location].filter(Boolean).join(' · ')) + '</div><div class="m ph">' + when + '</div></div>' +
-        '<div class="side"><span class="m pc" style="font-size:12.5px;color:var(--muted);text-align:right">' + when.replace(' · by ', '<br>by ') + '</span>' + TP.statusChip(a.status) + '</div></a>';
+    box.innerHTML = c.apCache[key] = '<div class="tbl apps' + (picking ? ' picking' : '') + '"><div class="thead">' + (picking ? '<span><input type="checkbox" data-pickall aria-label="Select all shown"></span>' : '') + '<span>Role</span><span>Location</span><span>Status</span><span>Sent / started</span><span>By</span></div>' + rows.map(function(a){
+      var by = c.who[a.id], old = !a.applied_at && Date.now() - new Date(a.created_at) > 2 * 864e5;
+      var cells = '<div class="arole">' + coLogo(a.company, a.job_url) + '<div class="main"><div class="t">' + esc(a.title || 'Role') + '</div><div class="m">' + esc(a.company || '') + '</div></div></div>' +
+        '<div class="m aloc">' + esc(a.location || '—') + '</div>' +
+        '<div class="ast">' + TP.statusChip(a.status) + '</div>' +
+        '<div class="adate"' + (a.applied_at ? ' title="' + esc(TP.fmtDateTime(a.applied_at)) + '"' : '') + '>' + (a.applied_at ? esc(TP.fmtDateTime(a.applied_at)) : '<span' + (old ? ' class="stale" title="A draft for more than 2 days"' : '') + '>Started ' + esc(TP.ago(a.created_at)) + '</span>') + '</div>' +
+        '<div class="m aby">' + (by ? esc(who(by)) : '—') + '</div>';
+      return picking ? '<div class="li arow" data-pick="' + esc(a.id) + '" data-st="' + esc(a.status) + '" role="checkbox" aria-checked="false" tabindex="0"><span class="apick"><input type="checkbox" tabindex="-1" aria-hidden="true"></span>' + cells + '</div>'
+        : '<a class="li arow" href="' + esc(cUrl(c.id, 'app=' + a.id)) + '" data-go>' + cells + '</a>';
     }).join('') + '</div>' + (more ? '<div class="row" style="justify-content:center;margin-top:12px"><button class="btn" type="button" data-act="apmore">Show more</button></div>' : '');
-  }, function(e){ if($('#apL')) box.innerHTML = errBox(e); });
+    markPicked();
+  }, function(e){ if($('#apL') && !c.apCache[key]) box.innerHTML = errBox(e); else TP.toast('Couldn’t refresh the list — ' + TP.errText(e)); });
+}
+/* ---------- several applications at once: change the status of sent ones, delete drafts, export ---------- */
+function markPicked(){
+  if(!AP.sel) return;
+  $$('#apL [data-pick]').forEach(function(r){ var on = !!AP.sel[r.getAttribute('data-pick')]; r.classList.toggle('on', on); r.setAttribute('aria-checked', on ? 'true' : 'false'); var i = $('input', r); if(i) i.checked = on; });
+  var rows = $$('#apL [data-pick]'), all = $('#apL [data-pickall]');
+  if(all){ var n = rows.filter(function(r){ return AP.sel[r.getAttribute('data-pick')]; }).length; all.checked = !!rows.length && n === rows.length; all.indeterminate = n > 0 && n < rows.length; }
+}
+function drawBulk(){
+  var box = $('#apBulk'); if(!box) return;
+  if(!AP.sel){ box.innerHTML = ''; return; }
+  var ids = Object.keys(AP.sel), sent = ids.filter(function(id){ return AP.sel[id] !== 'draft'; }).length, drafts = ids.length - sent;
+  box.innerHTML = '<div class="bulk"><b>' + (ids.length ? ids.length + ' selected' : 'Select applications on the list') + '</b>' +
+    (ids.length ? '<span class="fine">' + [sent ? sent + ' sent' : '', drafts ? drafts + ' draft' + (drafts === 1 ? '' : 's') : ''].filter(Boolean).join(' · ') + '</span>' : '<span class="fine">Click a row to pick it</span>') + '<span class="grow"></span>' +
+    '<button class="btn sm" type="button" data-act="bkstatus"' + (sent ? '' : ' disabled title="Pick sent applications to change their status"') + '>Change status' + (sent ? ' (' + sent + ')' : '') + '</button>' +
+    '<button class="btn sm bad" type="button" data-act="bkdel"' + (drafts ? '' : ' disabled title="Only drafts can be deleted here"') + '>' + I.trash + 'Delete drafts' + (drafts ? ' (' + drafts + ')' : '') + '</button>' +
+    (ids.length ? '<button class="btn sm ghost" type="button" data-act="bkclear">Clear</button>' : '') + '</div>';
+}
+function bulkStatus(){
+  var c = C, prev = {}, ids = Object.keys(AP.sel || {}).filter(function(id){ return AP.sel[id] !== 'draft'; }); if(!ids.length) return;
+  ids.forEach(function(id){ prev[id] = AP.sel[id]; });
+  var first = (c.row.full_name || '').split(' ')[0] || 'The client', n = ids.length;
+  var m = TP.modal('<h2>Change the status of ' + n + ' application' + (n === 1 ? '' : 's') + '</h2><p>Each change shows on ' + esc(first) + '’s dashboard straight away and is kept in the history.</p>' +
+    '<div class="field" style="margin-top:14px"><label for="bsS">New status</label><select id="bsS">' + TP.STATUS.filter(function(s){ return s[0] !== 'draft'; }).map(function(s){ return '<option value="' + s[0] + '">' + s[1] + '</option>'; }).join('') + '</select></div>' +
+    '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="button" id="bsGo">Change ' + n + '</button></div>');
+  $('#bsGo', m).onclick = function(){
+    var st = $('#bsS', m).value;
+    TP.busy(this, q(SB.from('applications').update({status:st}).in('id', ids).eq('client_id', c.id).neq('status', 'draft').select('id'))).then(function(r){
+      TP.closeModal(); AP.sel = {}; refreshProgress(); if(C === c && R.tab === 'applications' && !R.app){ drawBulk(); loadApps(); }
+      // Undo puts each one back to what it was
+      TP.toast((r || []).length + ' changed to ' + TP.statusLabel(st), {undo:function(){
+        var by = {}; ids.forEach(function(id){ (by[prev[id]] = by[prev[id]] || []).push(id); });
+        Promise.all(Object.keys(by).map(function(s){ return q(SB.from('applications').update({status:s}).in('id', by[s]).eq('client_id', c.id)); })).then(function(){
+          refreshProgress(); TP.toast('Back as they were'); if(C === c && R.tab === 'applications' && !R.app) loadApps();
+        }, fail);
+      }});
+    }, fail);
+  };
+}
+function bulkDelete(){
+  var c = C, ids = Object.keys(AP.sel || {}).filter(function(id){ return AP.sel[id] === 'draft'; }), n = ids.length; if(!n) return;
+  trashReady().then(function(kept){
+    return TP.confirmBox('Delete ' + n + ' draft' + (n === 1 ? '' : 's') + '?', 'Nothing was sent, so nothing else changes.' + (kept ? ' They stay in Recently deleted for 30 days.' : ' This can’t be undone.'), 'Delete ' + n, true).then(function(ok){
+      if(!ok) return;
+      return q(SB.from('applications').delete().in('id', ids).eq('client_id', c.id).eq('status', 'draft').select('id')).then(function(r){
+        var gone = (r || []).map(function(x){ return x.id; });
+        gone.forEach(function(id){ bkDel('app_' + id); });
+        AP.sel = {}; c.idx = null; refreshProgress(); if(C === c && R.tab === 'applications' && !R.app){ drawBulk(); loadApps(); }
+        TP.toast(gone.length + ' draft' + (gone.length === 1 ? '' : 's') + ' deleted', kept && gone.length ? {undo:function(){
+          Promise.all(gone.map(restoreItem)).then(function(){ c.idx = null; refreshProgress(); TP.toast('Restored'); if(C === c && R.tab === 'applications' && !R.app) loadApps(); }, fail);
+        }} : null);
+      });
+    });
+  }).catch(fail);
+}
+// what's on the list (every page of it), as a spreadsheet for a client update; a cell can never start a formula
+function exportCsv(btn){
+  var c = C, rows = [], size = 1000;
+  function page(i){
+    return q(apQuery(c, 'title,company,location,status,job_url,applied_at,created_at').order('applied_at', {ascending:false, nullsFirst:true}).order('created_at', {ascending:false}).range(i * size, i * size + size - 1)).then(function(r){
+      rows = rows.concat(r || []); if((r || []).length === size && rows.length < 50000) return page(i + 1);
+    });
+  }
+  var cell = function(v){ v = String(v == null ? '' : v); if(/^[=+\-@\t\r]/.test(v)) v = '\'' + v; return /[",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+  var pad = function(n){ return (n < 10 ? '0' : '') + n; }, day = function(ts){ var d = new Date(ts); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); };
+  TP.busy(btn, (AP.mine ? mineIds(c).then(function(ids){ AP.mineIds = ids; }) : Promise.resolve()).then(function(){ return page(0); })).then(function(){
+    if(!rows.length) return TP.toast('Nothing to export with these filters');
+    var lines = [['Date sent', 'Role', 'Company', 'Location', 'Status', 'Job link']].concat(rows.map(function(a){
+      return [a.applied_at ? day(a.applied_at) : 'Not sent (draft)', a.title || '', a.company || '', a.location || '', TP.statusLabel(a.status), a.job_url || ''];
+    }));
+    var csv = '﻿' + lines.map(function(r){ return r.map(cell).join(','); }).join('\r\n');
+    var a = document.createElement('a'), now = new Date();
+    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+    a.download = String(c.row.full_name || 'client').replace(/[^\w]+/g, '-').replace(/^-|-$/g, '') + '-applications-' + now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + '.csv';
+    document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+    TP.toast(rows.length + ' application' + (rows.length === 1 ? '' : 's') + ' exported');
+  }, fail);
+}
+// who started / sent just these applications (only the ones not known yet: a short question, not the whole history)
+function whoOf(c, ids){
+  c.who = c.who || {};
+  var need = ids.filter(function(id){ return !(id in c.who); });
+  if(!need.length) return Promise.resolve(c.who);
+  return q(SB.from('client_activity').select('application_id,kind,by_email,at').in('application_id', need).in('kind', ['app_started', 'app_applied']).order('at', {ascending:true}).limit(need.length * 4 + 10)).then(function(rows){
+    need.forEach(function(id){ c.who[id] = null; });
+    (rows || []).forEach(function(r){ if(r.kind === 'app_applied' || !c.who[r.application_id]) c.who[r.application_id] = r.by_email; });
+    return c.who;
+  }, function(){ return c.who; });
 }
 // who started / sent each application (from the history; never shown to clients)
 function loadWho(c, force){
@@ -1275,7 +1949,8 @@ var A = null;   // the application on screen
 function tApp(id){
   var c = C;
   V.innerHTML = '<div class="skel"></div><div class="skel"></div>';
-  Promise.all([q(SB.from('applications').select('*').eq('id', id).eq('client_id', c.id).maybeSingle()), loadResumes(), loadWho(c, true)]).then(function(rs){
+  if(c.who) delete c.who[id];   // asked fresh: it may have been sent a moment ago
+  Promise.all([q(SB.from('applications').select('*').eq('id', id).eq('client_id', c.id).maybeSingle()), loadResumes(), whoOf(c, [id])]).then(function(rs){
     if(C !== c || R.app !== id) return;
     if(!rs[0]){ V.innerHTML = '<div class="empty"><h3>Not found for ' + esc(c.row.full_name) + '</h3><p>This application doesn’t belong to this client, or it was deleted.</p><a class="btn" href="' + esc(cUrl(c.id, 'applications')) + '" data-go>All applications</a></div>'; return; }
     A = rs[0]; A._c = c.id;
@@ -1328,7 +2003,8 @@ function resumeCard(){
 }
 function drawDraft(){
   var first = esc(C.row.full_name.split(' ')[0] || 'them');
-  V.innerHTML = '<div class="narrow" style="margin:0 auto">' + appHead() + '<div id="lkNext"></div>' +
+  if(!DS || DS.a !== A) dsStart(A);
+  V.innerHTML = '<div class="narrow" style="margin:0 auto">' + appHead() + '<div id="lkNext"></div><div id="apDup"></div><div id="apRec"></div>' +
     '<div class="card" style="margin-top:16px"><div class="step"><span class="n' + (A.jd_text ? ' ok' : '') + '">1</span><div class="bd"><h3>The job</h3>' +
       '<div class="grid3" style="margin-top:8px"><div class="field"><label for="apT">Title</label><input id="apT" value="' + esc(A.title) + '"></div><div class="field"><label for="apC">Company</label><input id="apC" value="' + esc(A.company) + '"></div><div class="field"><label for="apL2">Location</label><input id="apL2" value="' + esc(A.location || '') + '"></div></div>' +
       '<div class="field" style="margin-top:10px"><label for="apJD">Job description</label><textarea id="apJD" rows="6" placeholder="Paste the job description — the editor tailors the resume to it">' + esc(A.jd_text || '') + '</textarea></div></div></div></div>' +
@@ -1352,28 +2028,146 @@ function drawDraft(){
   ['apT', 'apC', 'apL2', 'apJD', 'apCL'].forEach(function(k){ $('#' + k).addEventListener('input', draftChanged); });
   $('#apJD').addEventListener('input', function(e){ var had = !!A.jd_text; A.jd_text = e.target.value.trim(); if(had !== !!A.jd_text && $('#resCard')) $('#resCard').innerHTML = resumeCard(); });   // the resume step's "paste it first" hint follows
   $('#apQA').addEventListener('input', draftChanged);
-  if($('#apBase')) $('#apBase').addEventListener('change', function(e){ A.base_resume_id = e.target.value; draftChanged(); $('#resCard').innerHTML = resumeCard(); });
+  $('#resCard').addEventListener('change', function(e){ if(e.target.id !== 'apBase') return; A.base_resume_id = e.target.value; draftChanged(); $('#resCard').innerHTML = resumeCard(); });
+  ['apT', 'apC'].forEach(function(k){ $('#' + k).addEventListener('change', dupCheck); });
   setupDrop($('#dShot'), 'shot', 'image/png,image/jpeg,image/webp');
   setupDrop($('#dRes'), 'res', '.pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-  lkNext();
+  lkNext(); dupCheck(); apRecover(A);
 }
-var draftDirty = false;
-function draftChanged(){ draftDirty = true; var s = $('#apSaved'); if(s) s.textContent = 'Saving…'; saveDraftLater(); }
-var saveDraftLater = TP.debounce(function(){ saveDraft(); }, 900);
-function draftPatch(){
+// opening a draft: changes typed before the page closed (a crash, a refresh), never saved, are offered back
+function apRecover(a){
+  var bk = bkGet('app_' + a.id); if(!bk || !$('#apRec')) return;
+  if(DSALL.some(function(s){ return s !== DS && s.a.id === a.id && (s.cur || s.p || s.why); })) return;   // still saving in the background here
+  var v = bk.v || {}, diff = DFIELDS.filter(function(k){ return k in v && !dsame(k, v[k], a[k]); });
+  if(!diff.length){ bkDel('app_' + a.id); return; }
+  $('#apRec').innerHTML = bkBar('apRecBar', 'Changes to this draft', bk.at, diff.map(function(k){ return DNAME[k]; }).join(', ') + '.');
+  $('#apRecBar').addEventListener('click', function(e){
+    var b = e.target.closest('[data-rec]'); if(!b || A !== a) return;
+    if(b.getAttribute('data-rec') === 'put'){
+      diff.forEach(function(k){
+        if(DFORM[k]){ var el = $(DFORM[k]); if(el) el.value = v[k] || ''; }
+        else if(k === 'answers') $('#apQA').innerHTML = (v.answers || []).map(qaRow).join('');
+        else if(k === 'base_resume_id' && (C.resumes || []).some(function(r){ return r.id === v[k]; })){ A.base_resume_id = v[k]; $('#resCard').innerHTML = resumeCard(); }
+      });
+      $('#apRec').innerHTML = ''; draftChanged(); TP.toast('Put back — saving now');
+    } else { bkDel('app_' + a.id); $('#apRec').innerHTML = ''; }
+  });
+}
+// the same role at the same company already applied for (or started) for this client: say so before a second one goes
+function dupCheck(){
+  var a = A, c = C; if(!a || a.status !== 'draft' || !$('#apDup')) return;
+  var co = ($('#apC') || {}).value || a.company, ti = ($('#apT') || {}).value || a.title, key = function(s){ return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); };
+  if(!key(co) || !key(ti)) { $('#apDup').innerHTML = ''; return; }
+  q(SB.from('applications').select('id,status,title,company,applied_at,created_at').eq('client_id', c.id).ilike('company', co.trim().replace(/[%_*\\?]/g, '_')).neq('id', a.id).limit(50)).then(function(rows){
+    if(A !== a || !$('#apDup')) return;
+    var hit = (rows || []).filter(function(r){ return key(r.title) === key(ti) && key(r.company) === key(co); });
+    var sent = hit.filter(function(r){ return r.status !== 'draft'; })[0], other = sent || hit[0];
+    $('#apDup').innerHTML = other ? '<div class="note warn" style="margin-top:12px">' + esc(c.row.full_name) + (sent ? ' already applied for ' : ' has another draft for ') + '<b>' + esc(other.title) + '</b> at <b>' + esc(other.company) + '</b>' +
+      (sent ? ' on ' + esc(TP.fmtDate(other.applied_at)) : ', started ' + esc(TP.ago(other.created_at))) + '. <a href="' + esc(cUrl(c.id, 'app=' + other.id)) + '" data-go>Open it</a></div>' : '';
+  }, function(){});
+}
+/* ---------- saving a draft ----------
+   What was typed is kept the moment it's typed (DS.cur), so it's saved even if the page moves on before the save runs.
+   A save sends only the fields changed since the last save, after checking the database: a field someone else changed
+   meanwhile (a teammate, the editor's cover letter, another tab) is never overwritten without asking, and their other
+   changes come into the form. A failed save is retried every few seconds, and closing the tab warns until it's saved. */
+var DFIELDS = ['title', 'company', 'location', 'jd_text', 'cover_letter', 'answers', 'base_resume_id'];
+var DNAME = {title:'Job title', company:'Company', location:'Location', jd_text:'Job description', cover_letter:'Cover letter', answers:'Form answers', base_resume_id:'Resume it starts from'};
+var DFORM = {title:'#apT', company:'#apC', location:'#apL2', jd_text:'#apJD', cover_letter:'#apCL'};
+var DS = null, DSALL = [];
+function dval(k, v){
+  if(k === 'answers') return JSON.stringify((Array.isArray(v) ? v : []).map(function(x){ return [String(x.q || '').trim(), String(x.a || '').trim()]; }));
+  v = v == null ? '' : String(v).trim(); return v;
+}
+function dsame(k, a, b){ return dval(k, a) === dval(k, b); }
+function dsStart(a){
+  DS = {a:a, base:{}, cur:null, p:null, why:'', retry:0};
+  DFIELDS.forEach(function(k){ DS.base[k] = a[k] == null ? null : a[k]; });
+  DSALL = DSALL.filter(function(s){ return s.cur || s.p || s.why; }); DSALL.push(DS);
+}
+function draftForm(){
   return {title:$('#apT').value.trim(), company:$('#apC').value.trim(), location:$('#apL2').value.trim() || null, jd_text:$('#apJD').value.trim() || null,
     cover_letter:$('#apCL').value.trim() || null, answers:readQA($('#apQA')), base_resume_id:A.base_resume_id || null};
 }
-function saveDraft(){
-  if(!A || A.status !== 'draft' || !$('#apT') || !draftDirty) return Promise.resolve();
-  var a = A, patch = draftPatch(); draftDirty = false;
-  return q(SB.from('applications').update(patch).eq('id', a.id).eq('status', 'draft').select('id,updated_at').maybeSingle()).then(function(r){
-    if(A !== a) return;
-    if(!r){ TP.toast('This application was already marked as applied elsewhere'); return tApp(a.id); }
-    Object.assign(a, patch, {updated_at:r.updated_at});
-    var s = $('#apSaved'); if(s) s.textContent = 'All changes saved';
-  }, function(e){ draftDirty = true; var s = $('#apSaved'); if(s) s.textContent = 'Not saved — ' + TP.errText(e); });
+function draftChanged(){
+  if(!DS || DS.a !== A || !$('#apT')) return;
+  DS.cur = draftForm(); bkSet('app_' + A.id, DS.cur); setSaved('Saving…'); saveDraftLater();
 }
+var saveDraftLater = TP.debounce(function(){ saveDraft(); }, 900);
+function setSaved(t, bad){ var s = $('#apSaved'); if(s && DS && DS.a === A){ s.textContent = t; s.classList.toggle('bad', !!bad); } }
+// save now (resolves true once everything typed is saved)
+function flushDraft(){ return DS ? saveDraft() : Promise.resolve(true); }
+function saveDraft(s){
+  s = s || DS; if(!s) return Promise.resolve(true);
+  if(s.p) return s.p.then(function(){ return saveDraft(s); });
+  var cur = s.cur; if(!cur) return Promise.resolve(!s.why);
+  var changed = DFIELDS.filter(function(k){ return !dsame(k, cur[k], s.base[k]); });
+  s.cur = null;
+  if(!changed.length){ s.why = ''; bkDel('app_' + s.a.id); if(DS === s) setSaved('All changes saved'); return Promise.resolve(true); }
+  s.p = q(SB.from('applications').select(DFIELDS.join(',') + ',status,updated_at').eq('id', s.a.id).maybeSingle()).then(function(srv){
+    if(!srv) throw {gone:true};
+    if(srv.status !== 'draft') throw {sent:true};
+    var clash = changed.filter(function(k){ return !dsame(k, srv[k], s.base[k]) && !dsame(k, srv[k], cur[k]); });
+    return (clash.length ? askClash(clash, srv, cur) : Promise.resolve('mine')).then(function(pick){
+      var patch = {}, fresh = {};
+      changed.forEach(function(k){ if(clash.indexOf(k) < 0 || pick === 'mine') patch[k] = cur[k]; });
+      DFIELDS.forEach(function(k){ fresh[k] = k in patch ? patch[k] : srv[k]; });
+      var write = Object.keys(patch).length ? q(SB.from('applications').update(patch).eq('id', s.a.id).eq('status', 'draft').select('id,updated_at').maybeSingle()) : Promise.resolve({updated_at:srv.updated_at});
+      return write.then(function(r){
+        if(!r) throw {sent:true};
+        s.base = fresh; Object.assign(s.a, fresh, {updated_at:r.updated_at});
+        if(DS === s && A === s.a && $('#apT')) syncForm(fresh, cur);
+      });
+    });
+  }).then(function(){
+    s.p = null; s.why = ''; clearTimeout(s.retry);
+    if(s.cur) return saveDraft(s);
+    bkDel('app_' + s.a.id);
+    if(DS === s) setSaved('All changes saved');
+    return true;
+  }, function(e){
+    s.p = null; clearTimeout(s.retry);
+    if(e && (e.gone || e.sent)){
+      s.cur = null; s.why = ''; bkDel('app_' + s.a.id);
+      if(A === s.a){ TP.toast(e.gone ? 'This draft was deleted somewhere else' : 'This application was already marked as applied elsewhere'); tApp(s.a.id); }
+      return true;
+    }
+    if(!s.cur) s.cur = cur;   // keep what wasn't saved (newer typing, if any, already took its place)
+    s.why = TP.errText(e);
+    if(DS === s) setSaved('Not saved — ' + s.why + '. Trying again…', true);
+    s.retry = setTimeout(function(){ saveDraft(s); }, 5000);
+    return false;
+  });
+  return s.p;
+}
+// after a save: what others changed (and kept versions) go into the form — but never over something typed since
+function syncForm(fresh, mine){
+  var now = draftForm(), redraw = false;
+  DFIELDS.forEach(function(k){
+    if(dsame(k, now[k], fresh[k]) || (mine && !dsame(k, now[k], mine[k]))) return;
+    if(DFORM[k]){ var el = $(DFORM[k]); if(el) el.value = fresh[k] || ''; }
+    else if(k === 'answers'){ var box = $('#apQA'); if(box) box.innerHTML = (fresh.answers || []).map(qaRow).join(''); }
+    else if(k === 'base_resume_id'){ A.base_resume_id = fresh[k]; redraw = true; }
+  });
+  A.jd_text = fresh.jd_text;
+  if(redraw && $('#resCard')) $('#resCard').innerHTML = resumeCard();
+}
+function askClash(clash, srv, cur){
+  return new Promise(function(res){
+    var show = function(k, v){
+      if(k === 'answers') return (v || []).length + ' answer' + ((v || []).length === 1 ? '' : 's') + ((v || []).length ? ': ' + esc((v || []).map(function(x){ return x.q; }).join(' · ').slice(0, 140)) : '');
+      if(k === 'base_resume_id'){ var r = (C.resumes || []).filter(function(x){ return x.id === v; })[0]; return r ? esc(r.name) : '—'; }
+      var t = String(v || '').trim(); return t ? esc(t.length > 220 ? t.slice(0, 220) + '…' : t) : '<i class="muted">empty</i>';
+    };
+    var m = TP.modal('<h2>This draft was changed somewhere else</h2><p>While you were typing, ' + (clash.length === 1 ? 'this was' : 'these were') + ' saved from another tab or by a teammate. Which should be kept?</p>' +
+      clash.map(function(k){ return '<div class="clash"><b>' + DNAME[k] + '</b><div class="cv"><span>Saved there</span><p>' + show(k, srv[k]) + '</p></div><div class="cv mine"><span>Yours</span><p>' + show(k, cur[k]) + '</p></div></div>'; }).join('') +
+      '<div class="acts"><button class="btn" type="button" data-v="theirs">Keep what was saved there</button><button class="btn pri" type="button" data-v="mine">Keep mine</button></div>', true,
+      {onClose:function(){ res('theirs'); }});
+    m.addEventListener('click', function(e){ var b = e.target.closest('[data-v]'); if(!b) return; TP.closeModal(); res(b.getAttribute('data-v')); });
+  });
+}
+TP.onLeave(function(){ return DSALL.some(function(s){ return s.cur || s.p || s.why; }) ? 'Changes to a draft haven’t been saved yet.' : ''; });
+document.addEventListener('tp-online', function(){ DSALL.forEach(function(s){ if(s.cur || s.why){ clearTimeout(s.retry); saveDraft(s); } }); });
 var FILES = {};
 function setupDrop(el, kind, accept){
   function take(f){
@@ -1403,14 +2197,43 @@ document.addEventListener('paste', function(e){
   }
 });
 function ext(f){ var m = /\.(\w{2,5})$/.exec(f.name || ''); return (m ? m[1] : (f.type.split('/')[1] || 'bin')).toLowerCase().replace('jpeg', 'jpg'); }
+// "Mark as applied" is permanent and the client sees it at once, so it first shows exactly what goes on the record
 function markApplied(btn){
-  var a = A, err = $('#mkErr'), noShot = $('#noShot').checked;
+  var a = A, c = C, err = $('#mkErr'), noShot = $('#noShot').checked;
   err.hidden = true;
   if(!FILES.shot && !noShot){ err.hidden = false; err.textContent = 'Add the confirmation screenshot (paste it with Ctrl+V), or tick “There was no confirmation screen”.'; return; }
-  var patch = draftPatch();
-  if(!patch.title || !patch.company){ err.hidden = false; err.textContent = 'Add the job title and company in step 1.'; return; }
+  var f = draftForm();
+  if(!f.title || !f.company){ err.hidden = false; err.textContent = 'Add the job title and company in step 1.'; return; }
+  // everything typed is saved first, and the latest the editor saved is read back
+  TP.busy(btn, saveDraft().then(function(ok){
+    if(!ok) throw {message:'The latest changes to this draft haven’t saved yet (' + (DS && DS.why || 'no connection') + '). Try again in a moment.'};
+    return q(SB.from('applications').select('resume_doc,resume_text,cover_letter,answers,jd_text,base_resume_id,status,updated_at').eq('id', a.id).maybeSingle());
+  })).then(function(row){
+    if(!row) throw {message:'This draft was deleted somewhere else.'};
+    if(row.status !== 'draft') throw {message:'It’s already marked as applied — refresh the page.'};
+    Object.assign(a, row);
+    if(A !== a) return;
+    var base = (c.resumes || []).filter(function(r){ return r.id === a.base_resume_id; })[0], own = !!(a.resume_doc || a.resume_text);
+    if(!own && !base && !FILES.res) throw {message:'There’s no resume on this application yet — tailor it in the editor, or attach the file you uploaded.'};
+    var first = (c.row.full_name || '').split(' ')[0] || 'The client', saved = a.resume_doc && a.resume_doc.meta && a.resume_doc.meta.saved, n = (a.answers || []).length;
+    var items = [
+      own ? (optimisedDoc(a.resume_doc) ? ['ok', 'Resume <b>optimised for this job</b>' + (saved ? ' — last saved in the editor ' + esc(TP.ago(saved)) : '')]
+                                        : ['warn', 'Resume <b>not optimised for this job</b> — it goes as copied from ' + esc(base ? base.name : 'the main resume')])
+          : base ? ['warn', 'Resume <b>not opened for this job</b> — ' + esc(base.name) + ' goes exactly as it is today'] : ['warn', 'Only the attached file is kept as the resume'],
+      FILES.shot ? ['ok', 'Confirmation screenshot attached'] : ['warn', 'No confirmation screenshot (“There was no confirmation screen” is ticked)'],
+      FILES.res ? ['ok', 'Uploaded resume file attached: ' + esc(FILES.res.name)] : ['warn', 'The resume file you uploaded isn’t attached — recommended, it shows exactly what ' + esc(a.company || 'the company') + ' got'],
+      a.cover_letter ? ['ok', 'Cover letter included'] : ['info', 'No cover letter'],
+      n ? ['ok', n + ' form answer' + (n === 1 ? '' : 's') + ' kept'] : ['info', 'No form answers'],
+      a.jd_text ? ['ok', 'Job description kept'] : ['warn', 'No job description kept']
+    ];
+    return TP.confirmBox('Mark as applied for ' + first + '?', 'This becomes the permanent record of what went to ' + (a.company || 'the company') + '. ' + first + ' sees it on their dashboard straight away, and only the owner can delete it.',
+      'Mark as applied', false, {items:items, careful:true}).then(function(ok){ if(ok) doMarkApplied(a, btn); });
+  }).catch(function(e){ err.hidden = false; err.textContent = TP.errText(e); });
+}
+function doMarkApplied(a, btn){
+  var err = $('#mkErr');
   btn.disabled = true; btn.classList.add('busy');
-  var base = (C.resumes || []).filter(function(r){ return r.id === patch.base_resume_id; })[0];
+  var base = (C.resumes || []).filter(function(r){ return r.id === a.base_resume_id; })[0];
   var stamp = Date.now(), dir = C.id + '/applications/' + a.id + '/';
   // what goes on the record: the tailored copy, or the base resume exactly as it is today
   var resume = (a.resume_doc || a.resume_text) ? Promise.resolve({}) : base ? q(SB.from('client_resumes').select('doc,text').eq('id', base.id).maybeSingle()).then(function(r){ return r ? {resume_doc:r.doc, resume_text:r.text} : {}; }) : Promise.resolve({});
@@ -1418,11 +2241,11 @@ function markApplied(btn){
   var res = FILES.res ? TP.upload(dir + 'resume-' + stamp + '.' + ext(FILES.res), FILES.res) : Promise.resolve(null);
   Promise.all([resume, shot, res]).then(function(rs){
     if(!rs[0].resume_text && !a.resume_text && !rs[2]){ throw {message:'There’s no resume on this application yet — tailor it in the editor, or attach the file you uploaded.'}; }
-    var up = Object.assign(patch, rs[0], {status:'applied', screenshot:rs[1], resume_file:rs[2]});
+    var up = Object.assign({}, rs[0], {status:'applied', screenshot:rs[1], resume_file:rs[2]});
     return q(SB.from('applications').update(up).eq('id', a.id).eq('status', 'draft').select('*').maybeSingle());
   }).then(function(row){
     if(!row) throw {message:'Couldn’t mark it — it may already be marked as applied. Refresh the page.'};
-    FILES = {}; draftDirty = false; C.idx = null; C.who = null;
+    FILES = {}; if(DS && DS.a === a){ DS.cur = null; DS.why = ''; } bkDel('app_' + a.id); C.idx = null; C.who = null;
     TP.toast('Marked as applied for ' + C.row.full_name);
     refreshProgress().then(function(){ var p = C.prog || {}; if(C.row.plan_total) TP.toast('Marked as applied — ' + (p.done || 0) + ' / ' + C.row.plan_total + ' for ' + C.row.full_name); });
     tApp(a.id);
@@ -1446,22 +2269,34 @@ function drawSent(){
       (A.screenshot ? '' : '<div class="drop" id="dShot2" tabindex="0" role="button">' + I.img + '<b>Add the confirmation screenshot</b></div>') +
       (A.resume_file ? '' : '<div class="drop" id="dRes2" tabindex="0" role="button">' + I.doc + '<b>Add the resume file that was uploaded</b></div>') + '</div>' +
       '<div class="row end" style="margin-top:10px"><button class="btn" type="button" data-act="addmissing">Save file</button></div></div>' : '') +
+    '<div class="card"><h3>Notes</h3><p class="hint">Interview times, recruiter replies, anything about this application. Only the team sees them; they’re kept in its history.</p>' +
+      '<textarea class="inp" id="anT" rows="2" placeholder="e.g. Recruiter call booked for Tue 3 pm (EST)"></textarea><div class="row end" style="margin-top:8px"><button class="btn sm pri" type="button" data-act="appnote">Save note</button></div></div>' +
     '<div class="card"><h3>History</h3><div class="hist" id="apHist"><div class="skel"></div></div></div>' +
     (ME.owner ? '<div class="row end" style="margin-top:14px"><button class="btn sm bad" type="button" data-act="delsent">' + I.trash + 'Delete this application (owner)</button></div>' : '') + '</div>';
-  TP.fillFiles(V);
-  $('#apSt').addEventListener('change', function(e){ setStatus(e.target.value); });
+  TP.fillFiles(V); noteKeep($('#anT'), 'anote_' + A.id);
+  // the client sees the status on their dashboard, so a change is confirmed first (and can be undone)
+  $('#apSt').addEventListener('change', function(e){
+    var sel = e.target, to = sel.value, from = A.status, first = (C.row.full_name || '').split(' ')[0] || 'the client';
+    TP.confirmBox('Change the status to ' + TP.statusLabel(to) + '?', 'It shows on ' + first + '’s dashboard straight away. ' + (A.title || 'Role') + (A.company ? ' at ' + A.company : '') + ': ' + TP.statusLabel(from) + ' → ' + TP.statusLabel(to) + '.',
+      'Change to ' + TP.statusLabel(to), false).then(function(ok){ if(ok) setStatus(to, from); else if(sel.isConnected) sel.value = from; });
+  });
   if($('#dShot2')) setupDrop($('#dShot2'), 'shot', 'image/png,image/jpeg,image/webp');
   if($('#dRes2')) setupDrop($('#dRes2'), 'res', '.pdf,.docx');
   var a = A;
   q(SB.from('client_activity').select('*').eq('application_id', a.id).order('at', {ascending:true})).then(function(rows){ if(A === a && $('#apHist')) $('#apHist').innerHTML = (rows || []).map(histRow).join('') || '<p class="fine">No history yet.</p>'; }, function(){});
   lkNext();
 }
-function setStatus(s){
-  var a = A;
+function setStatus(s, from){
+  var a = A, c = C, sel = $('#apSt'); if(sel) sel.disabled = true;
   q(SB.from('applications').update({status:s}).eq('id', a.id).select('*').maybeSingle()).then(function(row){
     if(!row) throw {message:'You don’t have access to that.'};
-    TP.toast('Status: ' + TP.statusLabel(s)); refreshProgress(); A = row; drawSent();
-  }, function(e){ TP.toast(TP.errText(e)); tApp(a.id); });
+    refreshProgress();
+    if(A && A.id === a.id){ A = row; drawSent(); }
+    TP.toast('Status: ' + TP.statusLabel(s), from ? {undo:function(){
+      if(A && A.id === a.id && R.app === a.id) return setStatus(from);
+      q(SB.from('applications').update({status:from}).eq('id', a.id)).then(function(){ if(C === c) refreshProgress(); TP.toast('Status back to ' + TP.statusLabel(from)); }, fail);
+    }} : null);
+  }, function(e){ TP.toast(TP.errText(e)); if(R.app === a.id) tApp(a.id); });
 }
 function addMissing(btn){
   var a = A, dir = C.id + '/applications/' + a.id + '/', stamp = Date.now(), patch = {};
@@ -1474,7 +2309,7 @@ function addMissing(btn){
   }).then(function(row){ FILES = {}; TP.toast('File added'); A = row; drawSent(); }, function(e){ btn.disabled = false; btn.classList.remove('busy'); TP.toast(TP.errText(e)); });
 }
 function histRow(h){
-  return '<div class="hi"><span class="dot ' + esc(h.kind) + '"></span><div class="tx"><b>' + esc(h.summary) + '</b><small>' + esc(who(h.by_email)) + (h.by_email && h.by_email !== 'system' ? ' (' + esc(h.by_email) + ')' : '') + ' · <span title="' + esc(TP.fmtDateTime(h.at)) + '">' + esc(TP.ago(h.at)) + '</span></small></div></div>';
+  return '<div class="hi"><span class="dot k-' + esc(h.kind) + '"></span><div class="tx"><b>' + esc(h.summary) + '</b><small>' + esc(who(h.by_email)) + (h.by_email && h.by_email !== 'system' ? ' (' + esc(h.by_email) + ')' : '') + ' · <span title="' + esc(TP.fmtDateTime(h.at)) + '">' + esc(TP.ago(h.at)) + '</span></small></div></div>';
 }
 // coming back from the editor tab: show its latest save
 function refreshApp(){
@@ -1484,7 +2319,13 @@ function refreshApp(){
     if(row.status !== a.status){ A = row; return row.status === 'draft' ? drawDraft() : drawSent(); }
     if(row.status !== 'draft') return;
     a.resume_doc = row.resume_doc; a.resume_text = row.resume_text; a.updated_at = row.updated_at;
-    var cl = $('#apCL'); if(cl && row.cover_letter && document.activeElement !== cl && !draftDirty){ cl.value = row.cover_letter; a.cover_letter = row.cover_letter; }
+    // fields saved elsewhere (the editor's cover letter, a teammate) come in where nothing was typed since the last save;
+    // where something was, the next save asks which to keep
+    var s = DS; if(s && s.a === a && !s.p && $('#apT')){
+      var now = draftForm(), fresh = {};
+      DFIELDS.forEach(function(k){ fresh[k] = dsame(k, now[k], s.base[k]) ? (row[k] == null ? null : row[k]) : now[k]; if(dsame(k, now[k], s.base[k])) s.base[k] = fresh[k]; });
+      syncForm(fresh, null); Object.assign(a, s.base);
+    }
     if($('#resCard')) $('#resCard').innerHTML = resumeCard();
   }, function(){});
 }
@@ -1504,23 +2345,114 @@ document.addEventListener('visibilitychange', function(){
   if(R.app) refreshApp();
   else if(C && R.tab === 'jobs' && $('#lkList')){ var L = lkList(C.id); lkFresh(C, L).then(function(){ if(lkShown(L)) lkDraw(); }); }   // drafts from the list sent in another browser tab
 });
-window.addEventListener('beforeunload', function(){ if(draftDirty) saveDraft(); });
+window.addEventListener('pagehide', function(){ DSALL.forEach(function(s){ if(s.cur) saveDraft(s); }); });   // a last try; the leave warning covers the rest
+
+/* ---------- archived clients, and Recently deleted (sql/supabase-team-safeguards.sql) ---------- */
+function archiveClient(b){
+  var c = C, row = c.row, was = row.status;
+  TP.confirmBox('Archive ' + (row.full_name || row.email) + '?', '', 'Archive', true, {items:[
+    ['info', 'Off the Clients list, Switch and the counts — they wait under <b>Archived</b>.'],
+    ['ok', 'Nothing is deleted: applications, resumes and the history all stay.'],
+    ['ok', 'Their login and dashboard keep working.'],
+    ['info', 'Restore brings them back at any time.']]}).then(function(ok){
+    if(!ok) return;
+    setClientStatus(c, 'archived', b).then(function(r){ if(r) TP.toast((row.full_name || 'The client') + ' archived', {undo:function(){ setClientStatus(c, was); }}); });
+  });
+}
+function unarchiveClient(b){
+  var c = C;   // back to what they were before (the history says), else Active
+  q(SB.from('client_activity').select('detail').eq('client_id', c.id).eq('kind', 'client_archived').order('at', {ascending:false}).limit(1)).catch(function(){ return []; }).then(function(r){
+    var was = r && r[0] && r[0].detail && r[0].detail.was; if(!/^(active|paused|done)$/.test(was || '')) was = 'active';
+    return setClientStatus(c, was, b);
+  }).then(function(r){ if(r) TP.toast((r.full_name || 'The client') + ' restored'); });
+}
+function setClientStatus(c, st, b){
+  return TP.busy(b, q(SB.from('clients').update({status:st}).eq('id', c.id).select('*').maybeSingle())).then(function(r){
+    if(!r) throw {message:'You don’t have access to that.'};
+    c.row = r; staleList();
+    if(C === c){ drawBar(); if(R.tab === 'profile' && !R.app && !pfDirty()) tProfile(); }
+    return r;
+  }).catch(function(e){ TP.toast(/clients_status_check/.test((e && e.message) || '') ? 'Archiving needs sql/supabase-team-safeguards.sql run once in Supabase' : TP.errText(e)); return null; });
+}
+// Recently deleted is there once the safeguards SQL has run; until then a delete says it can't be undone
+var TRASH = null;
+function trashReady(){
+  if(TRASH !== null) return Promise.resolve(TRASH);
+  return Promise.resolve(SB.from('deleted_items').select('id', {count:'exact', head:true}).limit(1)).then(function(r){ return (TRASH = !(r && r.error)); }, function(){ return false; });
+}
+// put back the most recently deleted copy of an application or resume
+function restoreItem(itemId){
+  return q(SB.from('deleted_items').select('id').eq('item_id', itemId).order('at', {ascending:false}).limit(1)).then(function(r){
+    if(!r || !r[0]) throw {message:'It’s no longer in Recently deleted'};
+    return q(SB.rpc('restore_deleted', {p_id:r[0].id}));
+  });
+}
+function loadDeleted(c){
+  var box = $('#rdBox'); if(!box) return;
+  trashReady().then(function(ok){
+    if(!ok) return [];
+    return q(SB.from('deleted_items').select('id,kind,label,status,by_email,at,item_id').eq('client_id', c.id).order('at', {ascending:false}).limit(100));
+  }).then(function(rows){
+    if(C !== c || !$('#rdBox')) return;
+    $('#rdBox').innerHTML = (rows || []).length ? '<div class="card" id="rdCard"><h3>Recently deleted</h3><p class="hint">Kept for 30 days. Restore puts it back exactly as it was — with its saved versions and its history.</p><div class="list">' + rows.map(rdRow).join('') + '</div></div>' : '';
+  }, function(){});
+}
+function rdRow(x){
+  var sent = x.kind === 'application' && x.status && x.status !== 'draft', can = !sent || ME.owner, left = Math.max(1, 30 - Math.floor((Date.now() - new Date(x.at)) / 864e5));
+  var what = x.kind === 'resume' ? 'Resume' : sent ? 'Sent application (' + TP.statusLabel(x.status) + ')' : 'Draft';
+  return '<div class="li rdrow"><span class="logo rdi">' + (x.kind === 'resume' ? J.resume : J.apps).replace('<svg', '<svg width="17" height="17"') + '</span>' +
+    '<div class="main"><div class="t">' + esc(x.label) + '</div><div class="m">' + what + ' · deleted by ' + esc(who(x.by_email)) + ' ' + esc(TP.ago(x.at)) + ' · ' + left + ' day' + (left === 1 ? '' : 's') + ' left</div></div>' +
+    '<div class="side"><button class="btn sm" type="button" data-act="rdrestore" data-id="' + x.id + '" data-kind="' + esc(x.kind) + '" data-item="' + esc(x.item_id) + '"' + (can ? '' : ' disabled title="Only the owner can restore a sent application"') + '>Restore</button></div></div>';
+}
+// a small "Recently deleted (3)" link on Applications and Resumes, when there's anything to bring back
+function rdLink(c, kind, box){
+  trashReady().then(function(ok){
+    if(!ok) return 0;
+    return Promise.resolve(SB.from('deleted_items').select('id', {count:'exact', head:true}).eq('client_id', c.id).eq('kind', kind)).then(function(r){ return (r && !r.error && r.count) || 0; });
+  }).then(function(n){ var el = $(box); if(C === c && el) el.innerHTML = n ? '<a class="rdlink" href="' + esc(cUrl(c.id, 'activity')) + '" data-go>' + I.trash + 'Recently deleted (' + n + ')</a>' : ''; }, function(){});
+}
 
 /* ---------- Activity ---------- */
 function tActivity(){
   var c = C;
+  if(ACF.c !== c.id) ACF = {k:'all', by:'', c:c.id};   // each client starts with the whole history
   V.innerHTML = '<div class="narrow" style="margin:0 auto"><div class="card"><h3>Add a note</h3><p class="hint">Calls, messages, anything the team should know. Only the team sees this page.</p>' +
     '<textarea class="inp" id="nt" rows="3" placeholder="e.g. Priya asked us to focus on remote roles this week"></textarea><div class="row end" style="margin-top:8px"><button class="btn pri" type="button" data-act="note">Save note</button></div></div>' +
-    '<div class="card"><h3>Everything done for ' + esc(c.row.full_name) + '</h3><div class="hist" id="acL"><div class="skel"></div></div><div id="acMore"></div></div></div>';
-  loadActivity(c, 100);
+    '<div id="rdBox"></div>' +
+    '<div class="card"><div class="acbar"><h3>Everything done for ' + esc(c.row.full_name) + '</h3><span class="grow"></span>' +
+      '<div class="seg" id="acK">' + AC_K.map(function(k){ return '<button type="button" data-k="' + k[0] + '" class="' + (ACF.k === k[0] ? 'on' : '') + '">' + k[1] + '</button>'; }).join('') + '</div>' +
+      '<select class="inp" id="acBy" aria-label="Who"><option value="">Anyone</option>' + TEAMROWS.map(function(t){ return '<option value="' + esc(t.email) + '"' + (ACF.by === t.email ? ' selected' : '') + '>' + esc(t.full_name || t.email) + '</option>'; }).join('') +
+        '<option value="system"' + (ACF.by === 'system' ? ' selected' : '') + '>TrulyPlaced (automatic)</option></select></div>' +
+      '<div class="hist" id="acL"><div class="skel"></div></div><div id="acMore"></div></div></div>';
+  loadActivity(c, 100); loadDeleted(c);
+  noteKeep($('#nt'), 'note_' + c.id);
+  $('#acK').addEventListener('click', function(e){ var b = e.target.closest('[data-k]'); if(!b) return; ACF.k = b.getAttribute('data-k'); $$('#acK button').forEach(function(x){ x.classList.toggle('on', x === b); }); $('#acL').innerHTML = '<div class="skel"></div>'; loadActivity(c, 100); });
+  $('#acBy').addEventListener('change', function(e){ ACF.by = e.target.value; $('#acL').innerHTML = '<div class="skel"></div>'; loadActivity(c, 100); });
+}
+// the history, narrowed to one kind of thing, or to one person
+var ACF = {k:'all', by:''};
+var AC_K = [['all', 'All'], ['note', 'Notes'], ['apps', 'Applications'], ['status', 'Status'], ['profile', 'Profile & resumes']];
+var AC_KINDS = {note:['note'], apps:['app_started', 'app_applied', 'app_deleted', 'app_restored', 'app_edited'], status:['app_status'],
+  profile:['profile_updated', 'plan_changed', 'resume_added', 'resume_updated', 'resume_deleted', 'resume_restored', 'client_created', 'invite_sent', 'client_archived', 'client_restored']};
+// a note being written is kept in this browser until it's saved, and put back if the page closed first
+function noteKeep(el, key){
+  if(!el) return;
+  var bk = bkGet(key); if(bk && bk.v && !el.value){ el.value = bk.v; el.insertAdjacentHTML('afterend', '<p class="fine rechint">Put back what you were writing — it wasn’t saved yet.</p>'); }
+  el.addEventListener('input', function(){ if(el.value.trim()) bkSet(key, el.value); else bkDel(key); });
 }
 function loadActivity(c, n){
-  q(SB.from('client_activity').select('*').eq('client_id', c.id).order('at', {ascending:false}).limit(n + 1)).then(function(rows){
+  var plain = ACF.k === 'all' && !ACF.by;
+  if(plain && c.acHtml && n === 100 && $('#acL') && $('#acL .skel')) $('#acL').innerHTML = c.acHtml;   // as last seen, at once
+  var sq = SB.from('client_activity').select('*').eq('client_id', c.id);
+  if(ACF.k !== 'all') sq = sq.in('kind', AC_KINDS[ACF.k]);
+  if(ACF.by) sq = sq.eq('by_email', ACF.by);
+  q(sq.order('at', {ascending:false}).limit(n + 1)).then(function(rows){
     if(C !== c || !$('#acL')) return;
     var more = rows.length > n; rows = rows.slice(0, n);
-    $('#acL').innerHTML = rows.map(histRow).join('') || '<p class="fine">Nothing yet.</p>';
+    $('#acL').innerHTML = rows.map(histRow).join('') || '<p class="fine">' + (plain ? 'Nothing yet.' : 'Nothing with these filters.') + '</p>';
+    if(n === 100 && plain) c.acHtml = $('#acL').innerHTML;
     $('#acMore').innerHTML = more ? '<div class="row" style="justify-content:center;margin-top:10px"><button class="btn sm" type="button" data-act="acmore" data-n="' + (n + 200) + '">Show more</button></div>' : '';
-  }, function(e){ if($('#acL')) $('#acL').innerHTML = errBox(e); });
+  }, function(e){ if($('#acL') && !c.acHtml) $('#acL').innerHTML = errBox(e); else TP.toast('Couldn’t refresh the history — ' + TP.errText(e)); });
 }
 
 /* =====================================================================
@@ -1528,48 +2460,87 @@ function loadActivity(c, n){
    ===================================================================== */
 function vTeam(){
   setTitle('Team', null);
-  V.innerHTML = '<div class="narrow" style="margin:0 auto"><div class="hello">Team</div><div class="sub">Everyone here can open every client, apply for them and see the history. ' + (ME.owner ? 'You’re the owner, so you can add and remove people.' : 'Only the owner can change this list.') + '</div>' +
+  V.innerHTML = '<div class="narrow" style="margin:0 auto"><div class="pageh"><div class="grow"><h1>Team</h1><div class="sub">Everyone here can open every client, apply for them and see the history. ' + (ME.owner ? 'You’re the owner, so you can add and remove people.' : 'Only the owner can change this list.') + '</div></div></div>' +
     (ME.owner ? '<div class="card" style="margin-top:16px"><h3>Add someone</h3><p class="hint">They sign in at trulyplaced.com/login.html with this email — with Google, or a password.</p><form id="tmF" class="stack" novalidate><div class="grid3">' +
       '<div class="field"><label for="tmE">Email</label><input id="tmE" type="email" required autocomplete="off"></div><div class="field"><label for="tmN">Name</label><input id="tmN" autocomplete="off"></div>' +
       '<div class="field"><label for="tmR">Role</label><select id="tmR"><option value="member">Member</option><option value="owner">Owner</option></select></div></div>' +
       '<label class="check"><input type="checkbox" id="tmI" checked> If they don’t have a TrulyPlaced login yet, email them a link to set a password</label>' +
       '<div class="row end"><button class="btn pri" type="submit" id="tmGo">Add to the team</button></div></form></div>' : '') +
-    '<div class="list" id="tmL" style="margin-top:16px"><div class="skel"></div></div></div>';
+    '<div class="tbl team" id="tmL" style="margin-top:16px"><div class="skel"></div></div></div>';
   if(ME.owner) $('#tmF').addEventListener('submit', function(e){
     e.preventDefault();
-    var email = $('#tmE').value.trim().toLowerCase(), name = $('#tmN').value.trim(), role = $('#tmR').value, b = $('#tmGo');
-    if(!/^\S+@\S+\.\S+$/.test(email)) return TP.toast('Check the email address');
-    b.disabled = true; b.classList.add('busy');
-    var p = $('#tmI').checked ? TP.fn('client-accounts', {action:'invite_member', email:email, full_name:name, role:role})
-      : q(SB.from('team_members').upsert({email:email, full_name:name || null, role:role, active:true}, {onConflict:'email'}));
-    p.then(function(r){ TP.toast(r && r.emailed ? 'Added. We emailed ' + email + ' a link to set a password' : 'Added to the team'); loadTeamNames().then(vTeam); })
-     .catch(function(e2){ b.disabled = false; b.classList.remove('busy'); TP.toast(TP.errText(e2)); });
+    var email = $('#tmE').value.trim().toLowerCase(), name = $('#tmN').value.trim(), role = $('#tmR').value, b = $('#tmGo'), invite = $('#tmI').checked;
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return TP.toast('Check the email address');
+    var had = TEAMROWS.filter(function(x){ return x.email === email; })[0];
+    if(had && had.active && had.role === role) return TP.toast((had.full_name || email) + ' is already on the team');
+    var items = [['info', '<b>' + esc(name || email) + '</b> (' + esc(email) + ') signs in at trulyplaced.com/login.html'],
+      role === 'owner' ? ['warn', 'As an <b>owner</b> they can add and remove people, set clients’ plans and delete sent applications'] : ['ok', 'As a <b>member</b> they can open every client, apply for them and see the history'],
+      invite ? ['info', 'If they don’t have a TrulyPlaced login yet, they get an email to set a password'] : null];
+    TP.confirmBox(had ? 'Update ' + (had.full_name || email) + '?' : 'Add ' + (name || email) + ' to the team?', '', had ? 'Update' : 'Add to the team', false, {items:items}).then(function(ok){
+      if(!ok) return;
+      var p = invite ? TP.fn('client-accounts', {action:'invite_member', email:email, full_name:name, role:role})
+        : q(SB.from('team_members').upsert({email:email, full_name:name || null, role:role, active:true}, {onConflict:'email'}));
+      TP.busy(b, p).then(function(r){ TP.toast(r && r.emailed ? 'Added. We emailed ' + email + ' a link to set a password' : 'Added to the team'); loadTeamNames().then(vTeam); }, fail);
+    });
   });
   loadTeamNames().then(drawTeam);
+  // what each person sent today, from the history
+  var d0 = new Date(); d0.setHours(0, 0, 0, 0);
+  q(SB.from('client_activity').select('by_email').eq('kind', 'app_applied').gte('at', d0.toISOString()).limit(5000)).then(function(rows){
+    TODAY = {}; (rows || []).forEach(function(r){ TODAY[r.by_email] = (TODAY[r.by_email] || 0) + 1; });
+    if(R.page === 'team' && $('#tmL')) drawTeam();
+  }, function(){});
 }
+var TODAY = null;
 function drawTeam(){
   var rows = TEAMROWS.slice().sort(function(a, b){ return (b.active - a.active) || (a.role === 'owner' ? -1 : b.role === 'owner' ? 1 : 0) || a.email.localeCompare(b.email); });
-  $('#tmL').innerHTML = rows.map(function(t){
-    return '<div class="li"><span class="av sm" style="background:' + TP.hue(t.email) + '">' + esc(TP.initials(t.full_name, t.email)) + '</span><div class="main"><div class="t">' + esc(t.full_name || t.email.split('@')[0]) + (t.email === ME.email ? ' <span class="tag">you</span>' : '') + '</div><div class="m">' + esc(t.email) + '</div></div>' +
-      '<div class="side">' + (t.active ? '' : '<span class="st paused">Off</span>') + (t.role === 'owner' ? '<span class="st applied">Owner</span>' : '<span class="st">Member</span>') +
-      (ME.owner ? '<button class="icb" type="button" data-act="tmmenu" data-email="' + esc(t.email) + '" title="Change">⋯</button>' : '') + '</div></div>';
-  }).join('') || '<p class="fine" style="padding:14px">No one yet.</p>';
+  $('#tmL').innerHTML = rows.length ? '<div class="thead"><span>Person</span><span>Role</span><span>Access</span><span>Today</span><span></span></div>' + rows.map(function(t){
+    var n = TODAY ? TODAY[t.email] || 0 : null;
+    return '<div class="li"><div class="cwho"><span class="av sm" style="background:' + TP.hue(t.email) + '">' + esc(TP.initials(t.full_name, t.email)) + '</span><div class="main"><div class="t">' + esc(t.full_name || t.email.split('@')[0]) + (t.email === ME.email ? ' <span class="tag">you</span>' : '') + '</div><div class="m">' + esc(t.email) + '</div></div></div>' +
+      '<div>' + (t.role === 'owner' ? '<span class="st applied">Owner</span>' : '<span class="st">Member</span>') + '</div>' +
+      '<div class="tm-acc">' + (t.active ? '<span class="st active">Active</span>' : '<span class="st paused">Off</span>') + '</div>' +
+      '<div>' + (n != null && t.active ? '<span class="tday' + (n ? '' : ' zero') + '" title="Applications marked as applied today"><b>' + n + '</b> sent</span>' : '<span class="m">—</span>') + '</div>' +
+      '<div>' + (ME.owner ? '<button class="icb" type="button" data-act="tmmenu" data-email="' + esc(t.email) + '" title="Change" aria-label="Change ' + esc(t.full_name || t.email) + '">⋯</button>' : '') + '</div></div>';
+  }).join('') : '<p class="fine" style="padding:14px">No one yet.</p>';
 }
+// every change to the team is said out loud first — and doubly so when it's you
 function teamMenu(email){
   var t = TEAMROWS.filter(function(x){ return x.email === email; })[0]; if(!t) return;
-  var m = TP.modal('<h2>' + esc(t.full_name || t.email) + '</h2><p>' + esc(t.email) + '</p><div class="stack" style="margin-top:14px">' +
+  var me = t.email === ME.email, nm = t.full_name || t.email, owners = TEAMROWS.filter(function(x){ return x.role === 'owner' && x.active && x.email !== t.email; }).length;
+  var m = TP.modal('<h2>' + esc(nm) + (me ? ' (you)' : '') + '</h2><p>' + esc(t.email) + '</p><div class="stack" style="margin-top:14px">' +
     '<button class="btn" type="button" data-v="role">' + (t.role === 'owner' ? 'Make them a member' : 'Make them an owner') + '</button>' +
     '<button class="btn" type="button" data-v="active">' + (t.active ? 'Turn off their access (keeps their history)' : 'Turn their access back on') + '</button>' +
     '<button class="btn bad" type="button" data-v="del">Remove from the team</button><p class="fine">There must always be at least one owner.</p></div>');
   m.addEventListener('click', function(e){
     var b = e.target.closest('[data-v]'); if(!b) return;
-    var v = b.getAttribute('data-v');
-    var p = v === 'role' ? q(SB.from('team_members').update({role:t.role === 'owner' ? 'member' : 'owner'}).eq('email', email))
-      : v === 'active' ? q(SB.from('team_members').update({active:!t.active}).eq('email', email))
-      : q(SB.from('team_members').delete().eq('email', email));
-    p.then(function(){ TP.closeModal(); TP.toast('Updated'); loadTeamNames().then(drawTeam); }, function(e2){ TP.toast(TP.errText(e2)); });
+    var v = b.getAttribute('data-v'), last = t.role === 'owner' && t.active && !owners && v !== 'role' || (v === 'role' && t.role === 'owner' && !owners);
+    if(last && (v !== 'active' || t.active)) return TP.toast('Keep at least one owner: make someone else an owner first');
+    var conf = v === 'role' ? (t.role === 'owner'
+          ? ['Make ' + nm + ' a member?', me ? 'You won’t be able to manage the team, set plans or delete sent applications any more.' : 'They keep every client, but can’t manage the team, set plans or delete sent applications.', 'Make a member', me]
+          : ['Make ' + nm + ' an owner?', 'Owners can add and remove people, set clients’ plans and delete sent applications.', 'Make an owner', false])
+      : v === 'active' ? (t.active
+          ? ['Turn off ' + (me ? 'your own' : nm + '’s') + ' access?', me ? 'You’ll be locked out of the team portal straight away.' : 'They can’t use the team portal until it’s turned back on. Everything they did stays in the history.', 'Turn off access', true]
+          : ['Turn ' + nm + '’s access back on?', 'They can use the team portal again.', 'Turn on', false])
+      : ['Remove ' + (me ? 'yourself' : nm) + ' from the team?', me ? 'You’ll lose access to the team portal straight away.' : 'They lose access straight away. Their name stays on everything they did.', 'Remove', true];
+    TP.confirmBox(conf[0], conf[1], conf[2], conf[3] || v === 'del', me && v !== 'role' ? {type:t.email} : {}).then(function(ok){
+      if(!ok) return;
+      var p = v === 'role' ? q(SB.from('team_members').update({role:t.role === 'owner' ? 'member' : 'owner'}).eq('email', email))
+        : v === 'active' ? q(SB.from('team_members').update({active:!t.active}).eq('email', email))
+        : q(SB.from('team_members').delete().eq('email', email));
+      p.then(function(){ TP.toast('Updated'); if(me && v !== 'role') return location.reload(); loadTeamNames().then(function(){ if(me && v === 'role') ME.owner = t.role !== 'owner'; vTeam(); }); }, fail);
+    });
   });
 }
+
+/* =====================================================================
+   keyboard: Ctrl+K switches client, / goes to the page's search
+   ===================================================================== */
+document.addEventListener('keydown', function(e){
+  if(!ME || ME.team === false || TP.isModal() || e.altKey) return;
+  var a = document.activeElement, typing = a && (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable);
+  if((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 'k'){ e.preventDefault(); switcher(); return; }
+  if(e.key === '/' && !typing && !e.ctrlKey && !e.metaKey){ var s = $('#cq') || $('#apQ') || $('#jbQ'); if(s){ e.preventDefault(); s.focus(); s.select(); } }
+});
 
 /* =====================================================================
    buttons
@@ -1579,30 +2550,33 @@ document.addEventListener('click', function(e){
   var act = b.getAttribute('data-act');
   switch(act){
     case 'out': return TP.signOut();
-    case 'retry': return location.reload();
+    case 'retry': if(!ME) return location.reload(); if(C){ C.row = null; C.resumes = null; } staleList(); return render();   // only this page loads again; nothing typed elsewhere is touched
     case 'newclient': return newClient();
     case 'switch': return switcher();
     case 'closetab':
       e.preventDefault(); e.stopPropagation();
-      var id = b.getAttribute('data-id'); TP.ssSet('tp_open_clients', openList().filter(function(x){ return x.id !== id; }));
-      if(R.client === id) go('/team.html'); else drawOpenTabs();
-      return;
+      return closeTab(b.getAttribute('data-id'));
     case 'pfsave': return saveProfile();
     case 'qaadd': $('#pfQA').insertAdjacentHTML('beforeend', qaRow({})); $$('#pfQA [data-qa=q]').pop().focus(); return;
     case 'skadd':
       var skn = $('#pfSkN').value.trim(); if(!skn) return $('#pfSkN').focus();
       C.skEdit = (C.skEdit || []).filter(function(x){ return x.skill.toLowerCase() !== skn.toLowerCase(); });
       C.skEdit.push({skill:skn, has:true, where:$('#pfSkW').value.trim(), key:'', note:$('#pfSkT').value.trim(), by:ME.email, at:new Date().toISOString()});
-      $('#pfSk').innerHTML = skRows(); $('#pfSkN').value = $('#pfSkW').value = $('#pfSkT').value = ''; $('#pfMsg').textContent = 'Unsaved changes'; return;
-    case 'skdel': C.skEdit.splice(+b.getAttribute('data-i'), 1); $('#pfSk').innerHTML = skRows(); $('#pfMsg').textContent = 'Unsaved changes'; return;
+      $('#pfSk').innerHTML = skRows(); $('#pfSkN').value = $('#pfSkW').value = $('#pfSkT').value = ''; pfMark(); return;
+    case 'skdel':
+      var si = +b.getAttribute('data-i'), sk = C.skEdit[si], skc = C; if(!sk) return;
+      C.skEdit.splice(si, 1); $('#pfSk').innerHTML = skRows(); pfMark();
+      return TP.toast('Removed ' + sk.skill + ' — Save changes to keep it that way', {undo:function(){ if(C !== skc || !$('#pfSk')) return; C.skEdit.splice(Math.min(si, C.skEdit.length), 0, sk); $('#pfSk').innerHTML = skRows(); pfMark(); }});
     case 'qacommon': $('#pfQA').insertAdjacentHTML('beforeend', qaRow({q:b.getAttribute('data-q')})); b.remove(); $$('#pfQA [data-qa=a]').pop().focus(); return;
     case 'qaadd2': $('#apQA').insertAdjacentHTML('beforeend', qaRow({})); $$('#apQA [data-qa=q]').pop().focus(); return;
     case 'qacopy': var row = b.closest('.qa'); return TP.copy($('[data-qa=a]', row).value, 'Answer');
-    case 'qadel': var r2 = b.closest('.qa'), inApp = !!r2.closest('#apQA'); r2.remove(); if(inApp) draftChanged(); return;
-    case 'resend':
-      b.disabled = true; b.classList.add('busy');
-      return TP.fn('client-accounts', {action:'resend', client_id:C.id}).then(function(){ b.classList.remove('busy'); TP.toast('Set-password email sent to ' + C.row.email); },
-        function(e2){ b.disabled = false; b.classList.remove('busy'); TP.toast(TP.errText(e2)); });
+    case 'qadel':
+      // an answer taken out: Undo puts it back in the same place (on a draft both are saved straight away)
+      var r2 = b.closest('.qa'), qbox = r2.parentNode, qnext = r2.nextSibling, inApp = !!r2.closest('#apQA'), had = $$('[data-qa]', r2).some(function(x){ return x.value.trim(); });
+      r2.remove(); if(inApp) draftChanged(); else pfMark();
+      if(had) TP.toast('Answer removed', {undo:function(){ if(!qbox.isConnected) return; qbox.insertBefore(r2, qnext && qnext.parentNode === qbox ? qnext : null); if(inApp) draftChanged(); else pfMark(); }});
+      return;
+    case 'resend': return resendInvite(b);
     case 'newresume': return newResume();
     case 'resmenu': return resumeMenu(b.getAttribute('data-id'));
     case 'jbstart': return startFromBoard(b.getAttribute('data-key'), b);
@@ -1613,28 +2587,62 @@ document.addEventListener('click', function(e){
     case 'lkopt': return lkOptimise();
     case 'lkretry': return lkRetry(b.getAttribute('data-id'));
     case 'apmore': AP.n += 50; return loadApps();
+    case 'apsel': AP.sel = AP.sel ? null : {}; b.textContent = AP.sel ? 'Done selecting' : 'Select'; drawBulk(); return loadApps();
+    case 'apcsv': return exportCsv(b);
+    case 'bkstatus': return bulkStatus();
+    case 'bkdel': return bulkDelete();
+    case 'bkclear': AP.sel = {}; markPicked(); return drawBulk();
     case 'acmore': return loadActivity(C, +b.getAttribute('data-n'));
     case 'cpresume': return TP.copy(A.resume_text || (((C.resumes || []).filter(function(r){ return r.id === A.base_resume_id; })[0] || {}).text) || '', 'Resume text');
     case 'cpcover': return TP.copy($('#apCL').value, 'Cover letter');
     case 'toeditor': saveDraft(); return;   // the link opens the editor in its own tab
-    case 'markapplied': return saveDraft().then(function(){ markApplied(b); });
+    case 'markapplied': return markApplied(b);
     case 'deldraft':
-      return TP.confirmBox('Delete this draft?', 'Nothing was sent, so nothing else changes. The deletion is kept in the history.', 'Delete draft', true).then(function(ok){
-        if(!ok) return;
-        draftDirty = false;
-        q(SB.from('applications').delete().eq('id', A.id).eq('status', 'draft')).then(function(){ C.idx = null; refreshProgress(); TP.toast('Draft deleted'); go(cUrl(C.id, 'applications'), true); }, function(e2){ TP.toast(TP.errText(e2)); });
+      var da = A, dc = C;
+      return trashReady().then(function(kept){
+        return TP.confirmBox('Delete this draft?', (da.title || 'Role') + (da.company ? ' at ' + da.company : '') + '. Nothing was sent, so nothing else changes.' +
+          (kept ? ' It stays in Recently deleted for 30 days.' : ' This can’t be undone.'), 'Delete draft', true).then(function(ok){
+          if(!ok) return;
+          if(DS && DS.a === da){ DS.cur = null; DS.why = ''; clearTimeout(DS.retry); } bkDel('app_' + da.id);
+          q(SB.from('applications').delete().eq('id', da.id).eq('status', 'draft').select('id')).then(function(r){
+            if(!r || !r.length) throw {message:'It was already marked as applied, or deleted — refresh the page.'};
+            dc.idx = null; refreshProgress(); if(C === dc) go(cUrl(dc.id, 'applications'), true);
+            TP.toast('Draft deleted', kept ? {undo:function(){ restoreItem(da.id).then(function(){ dc.idx = null; refreshProgress(); TP.toast('Draft restored'); if(C === dc) go(cUrl(dc.id, 'app=' + da.id)); }, fail); }} : null);
+          }, fail);
+        });
       });
     case 'delsent':
-      return TP.confirmBox('Delete this sent application?', 'Only for one marked by mistake. It comes off ' + C.row.full_name + '’s count and dashboard. The history keeps a note that it was deleted.', 'Delete it', true).then(function(ok){
-        if(!ok) return;
-        q(SB.from('applications').delete().eq('id', A.id).select('id')).then(function(r){ if(!r || !r.length) throw {message:'Only the owner can delete a sent application.'}; C.idx = null; refreshProgress(); TP.toast('Deleted'); go(cUrl(C.id, 'applications'), true); }, function(e2){ TP.toast(TP.errText(e2)); });
+      var sa = A, sc = C;
+      return trashReady().then(function(kept){
+        return TP.confirmBox('Delete this sent application?', 'Only for one marked by mistake. It comes off ' + sc.row.full_name + '’s count and dashboard. ' +
+          (kept ? 'It stays in Recently deleted for 30 days, and only the owner can restore it.' : 'This can’t be undone.'), 'Delete it', true, {type:sa.company || 'delete'}).then(function(ok){
+          if(!ok) return;
+          q(SB.from('applications').delete().eq('id', sa.id).select('id')).then(function(r){
+            if(!r || !r.length) throw {message:'Only the owner can delete a sent application.'};
+            sc.idx = null; refreshProgress(); if(C === sc) go(cUrl(sc.id, 'applications'), true);
+            TP.toast('Deleted', kept ? {undo:function(){ restoreItem(sa.id).then(function(){ sc.idx = null; refreshProgress(); TP.toast('Restored'); if(C === sc) go(cUrl(sc.id, 'app=' + sa.id)); }, fail); }} : null);
+          }, fail);
+        });
       });
+    case 'rdrestore':
+      var rdId = +b.getAttribute('data-id'), rdKind = b.getAttribute('data-kind'), rdc = C;
+      return TP.busy(b, q(SB.rpc('restore_deleted', {p_id:rdId}))).then(function(){
+        rdc.idx = null; rdc.resumes = null; refreshProgress();
+        TP.toast(rdKind === 'resume' ? 'Resume restored — it’s back on the Resumes tab' : 'Restored — it’s back in Applications');
+        if(C === rdc && R.tab === 'activity' && !R.app){ loadDeleted(rdc); loadActivity(rdc, 100); }
+      }, function(e2){ fail(e2); if(C === rdc) loadDeleted(rdc); });
+    case 'archive': return archiveClient(b);
+    case 'unarchive': return unarchiveClient(b);
     case 'addmissing': return addMissing(b);
     case 'note':
-      var t = $('#nt').value.trim(); if(!t) return;
-      b.disabled = true;
-      return q(SB.from('client_activity').insert({client_id:C.id, kind:'note', summary:t})).then(function(){ b.disabled = false; $('#nt').value = ''; TP.toast('Note saved'); loadActivity(C, 100); },
-        function(e2){ b.disabled = false; TP.toast(TP.errText(e2)); });
+      var t = $('#nt').value.trim(), nc = C; if(!t) return $('#nt').focus();
+      return TP.busy(b, q(SB.from('client_activity').insert({client_id:nc.id, kind:'note', summary:t}))).then(function(){ bkDel('note_' + nc.id); if($('#nt')) $('#nt').value = ''; $$('.rechint').forEach(function(x){ x.remove(); }); TP.toast('Note saved'); if(C === nc) loadActivity(nc, 100); }, fail);
+    case 'appnote':
+      var at = $('#anT').value.trim(), aa = A, ac = C; if(!at) return $('#anT').focus();
+      return TP.busy(b, q(SB.from('client_activity').insert({client_id:ac.id, application_id:aa.id, kind:'note', summary:at}))).then(function(){
+        bkDel('anote_' + aa.id); if($('#anT')) $('#anT').value = ''; $$('.rechint').forEach(function(x){ x.remove(); }); TP.toast('Note saved');
+        q(SB.from('client_activity').select('*').eq('application_id', aa.id).order('at', {ascending:true})).then(function(rows){ if(A === aa && $('#apHist')) $('#apHist').innerHTML = (rows || []).map(histRow).join(''); }, function(){});
+      }, fail);
     case 'tmmenu': return teamMenu(b.getAttribute('data-email'));
   }
 });

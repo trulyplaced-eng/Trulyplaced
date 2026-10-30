@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-10-28.1">
+<link rel="stylesheet" href="/portal.css?v=2026-10-30.1">
 <style>
 /* The client's workspace: the same shell as the job board (sidebar, top bar, phone tab bar), with only what a client needs. */
 :root{--side:252px}
@@ -210,7 +210,7 @@ html,body{height:100%}
 <nav class="tabbar" id="tabbar" aria-label="Sections"></nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="modalRoot"></div>
-<script src="/portal.js?v=2026-10-28.1"></script>
+<script src="/portal.js?v=2026-10-30.1"></script>
 <script>
 (function(){
 "use strict";
@@ -277,7 +277,7 @@ function render(){
   vHome();
 }
 function planName(){ var t = (CL && CL.plan_total) || 0; return PLAN[t] || (t ? 'Custom plan' : 'Your plan'); }
-function statusTag(){ var s = (CL && CL.status) || 'active'; return '<span class="tag ' + esc(s) + '">' + ({active:'Active', paused:'Paused', done:'Complete'}[s] || esc(s)) + '</span>'; }
+function statusTag(){ var s = (CL && CL.status) || 'active'; return '<span class="tag ' + esc(s) + '">' + ({active:'Active', paused:'Paused', done:'Complete', archived:'Closed'}[s] || esc(s)) + '</span>'; }
 function chrome(){   // the sidebar, the phone tab bar, the page title and the plan card
   var cur = view() === 'settings' ? 'settings' : 'apps';
   var items = [['apps', 'My applications', IC.apps, '#'], ['settings', 'Settings', IC.set, '#settings']];
@@ -302,7 +302,8 @@ function vHome(){
   document.title = 'My applications | TrulyPlaced';
   var done = PROG.done || 0, tot = CL.plan_total || 0, pct = tot ? Math.min(100, Math.round(done / tot * 100)) : 0, first = String(CL.full_name || '').split(' ')[0];
   var hr = new Date().getHours(), hello = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
-  var line = CL.status === 'paused' ? 'Your plan is paused — message us when you’d like us to start again.'
+  var line = CL.status === 'archived' ? 'Your plan is closed. Message us on WhatsApp if you have any questions — everything we sent is still here.'
+    : CL.status === 'paused' ? 'Your plan is paused — message us when you’d like us to start again.'
     : (CL.status === 'done' || (tot && done >= tot)) ? 'Your plan is complete. Thank you for trusting us with your search.'
     : done ? 'We’re applying for you every business day. Here’s everything we’ve sent so far.' : 'Welcome aboard. Your first applications are on the way.';
   V.innerHTML =

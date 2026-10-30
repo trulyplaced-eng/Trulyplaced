@@ -152,6 +152,28 @@ button.li:first-child{border-top:0}
   background:#121a33;color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;font-weight:500;max-width:calc(100% - 32px);
   box-shadow:0 18px 40px -16px rgba(0,0,0,.5);transition:opacity .2s,transform .2s}
 .toast.on{opacity:1;transform:translate(-50%,0)}
+.toast.act{display:flex;align-items:center;gap:14px;pointer-events:auto;padding-right:8px}
+.toast .tbtn{flex:none;border:0;background:rgba(255,255,255,.1);color:#b9c8ff;font-weight:700;font-size:13.5px;padding:6px 12px;border-radius:9px}
+.toast .tbtn:hover{background:rgba(255,255,255,.18);color:#fff}
+/* a confirmation's list of what will happen */
+.cfl{list-style:none;display:grid;gap:7px;margin-top:14px;font-size:13.5px;color:var(--body)}
+.cfl li{display:flex;gap:10px;align-items:flex-start}
+.cfl li i{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:12px;background:var(--bg);color:var(--muted);margin-top:1px}
+.cfl li i svg{width:12px;height:12px}
+.cfl li.ok i{background:var(--ok-soft);color:var(--ok)}
+.cfl li.warn i{background:var(--warn-soft);color:var(--warn)}
+.cfl li.bad i{background:var(--bad-soft);color:var(--bad)}
+.cfl li b{color:var(--ink)}
+.cft{margin-top:16px}
+/* closing a form with something typed in it */
+.mod-discard{position:sticky;bottom:-26px;margin:16px -26px -26px;padding:12px 26px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  background:var(--warn-soft);border-top:1px solid #f8dcae;font-size:13.5px;font-weight:600;color:#6b3d00}
+.mod-discard span{flex:1;min-width:140px}
+/* offline, or the sign-in expired */
+.netbar{position:fixed;left:0;right:0;top:0;z-index:130;padding:9px 16px;text-align:center;font-size:13.5px;color:#6b3d00;background:var(--warn-soft);border-bottom:1px solid #f8dcae;box-shadow:0 6px 18px -12px rgba(0,0,0,.4)}
+.netbar.auth{color:#7f1230;background:var(--bad-soft);border-color:#f6c9d3}
+.netbar a{color:inherit;font-weight:700}
+.netbar.oops{color:#1e2a6b;background:var(--blue-soft);border-color:var(--blue-line)}
 .mod-wrap{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:16px;background:rgba(10,16,38,.5)}
 .mod{background:#fff;border-radius:20px;width:min(480px,100%);max-height:calc(100vh - 32px);overflow-y:auto;padding:26px;position:relative;
   box-shadow:0 30px 70px -20px rgba(10,16,38,.5)}
@@ -180,6 +202,7 @@ button.li:first-child{border-top:0}
   .hello{font-size:20px}
   .li{padding:12px 14px}
   .mod{padding:22px 18px}
+  .mod-discard{bottom:-22px;margin:14px -18px -22px;padding:12px 18px}
   .tools .inp{min-width:0;flex-basis:100%}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

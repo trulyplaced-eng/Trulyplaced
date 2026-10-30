@@ -12,7 +12,7 @@ var CONFIG = {
   SUPPORT_EMAIL: 'hello@trulyplaced.com',
   PLANS: [250, 500, 1000]
 };
-var VERSION = '2026-10-28.1';
+var VERSION = '2026-10-30.1';
 var SBLIB = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
 
 /* ---------- small helpers ---------- */
@@ -26,8 +26,32 @@ function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e)
 function ssGet(k, d){ try{ var v = sessionStorage.getItem(k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } }
 function ssSet(k, v){ try{ sessionStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 function uid(){ return Math.random().toString(36).slice(2, 10); }
-function toast(m){ var t = $('#toast'); if(!t){ t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; t.setAttribute('role', 'status'); t.setAttribute('aria-live', 'polite'); document.body.appendChild(t); }
-  t.textContent = m; t.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(function(){ t.classList.remove('on'); }, 3000); }
+// a short message at the bottom; with {undo:fn} it carries an Undo button for 8 seconds (Ctrl+Z works too)
+var UNDO = null;
+function toast(m, o){
+  var t = $('#toast'); if(!t){ t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; t.setAttribute('role', 'status'); t.setAttribute('aria-live', 'polite'); document.body.appendChild(t); }
+  o = o || {}; clearTimeout(toast._t); UNDO = null;
+  t.textContent = m;
+  if(o.undo){
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'tbtn'; b.textContent = o.label || 'Undo';
+    UNDO = function(){ UNDO = null; clearTimeout(toast._t); t.classList.remove('on', 'act'); o.undo(); };
+    b.onclick = function(){ if(UNDO) UNDO(); };
+    t.appendChild(b);
+  }
+  t.classList.toggle('act', !!o.undo); t.classList.add('on');
+  toast._t = setTimeout(function(){ UNDO = null; t.classList.remove('on', 'act'); }, o.ms || (o.undo ? 8000 : 3000));
+}
+document.addEventListener('keydown', function(e){
+  if(!UNDO || !(e.ctrlKey || e.metaKey) || e.shiftKey || e.key.toLowerCase() !== 'z') return;
+  var a = document.activeElement; if(a && (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable)) return;   // there Ctrl+Z undoes typing
+  e.preventDefault(); UNDO();
+});
+// a button that saves: disabled with a spinner until it's done, so a double click never does it twice
+function busy(btn, p){
+  if(btn){ btn.disabled = true; btn.classList.add('busy'); }
+  var end = function(){ if(btn){ btn.disabled = false; btn.classList.remove('busy'); } };
+  return Promise.resolve(p).then(function(v){ end(); return v; }, function(e){ end(); throw e; });
+}
 function copy(text, what){
   var done = function(){ toast((what || 'Text') + ' copied'); };
   if(navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(String(text || '')).then(done, function(){ fallback(); });
@@ -125,19 +149,68 @@ function client(){
   return sbP;
 }
 function session(){ return client().then(function(c){ return c.auth.getSession(); }).then(function(r){ return (r && r.data && r.data.session) || null; }); }
-// unwrap a Supabase answer: give back the data, or throw its error
-function q(p){ return Promise.resolve(p).then(function(r){ if(r && r.error) throw r.error; return r ? r.data : null; }); }
+// unwrap a Supabase answer: give back the data, or throw its error (an expired sign-in also shows the banner)
+function q(p){ return Promise.resolve(p).then(function(r){ if(r && r.error){ if(authGone(r.error)) net('auth'); throw r.error; } return r ? r.data : null; }); }
+function authGone(e){ var s = (e && (e.message || e.code)) + ' ' + ((e && e.code) || ''); return /JWT expired|invalid JWT|jwt|PGRST30[0-3]|sign_in/i.test(s) || (e && e.status === 401); }
 function whoami(){ return client().then(function(c){ return q(c.rpc('portal_whoami')); }); }
-function toLogin(){ location.replace('/login.html?next=' + encodeURIComponent(location.pathname + location.search + location.hash)); }
-function signOut(){ return client().then(function(c){ return c.auth.signOut(); }).catch(function(){}).then(function(){ location.replace('/login.html?out=1'); }); }
+function loginUrl(){ return '/login.html?next=' + encodeURIComponent(location.pathname + location.search + location.hash); }
+function toLogin(){ location.replace(loginUrl()); }
+
+/* ---------- leaving with work in progress: pages register what would be lost; signing out and closing the tab ask first ---------- */
+var LEAVE = [];
+function onLeave(fn){ LEAVE.push(fn); }
+function leaveWhy(){ for(var i = 0; i < LEAVE.length; i++){ var w = LEAVE[i](); if(w) return w; } return ''; }
+window.addEventListener('beforeunload', function(e){ if(leaveWhy()){ e.preventDefault(); e.returnValue = ''; } });
+function signOut(){
+  var why = leaveWhy();
+  return (why ? confirmBox('Sign out?', why, 'Sign out anyway', true) : Promise.resolve(true)).then(function(ok){
+    if(!ok) return;
+    LEAVE = [];
+    try{ Object.keys(sessionStorage).forEach(function(k){ if(/^tp_cache_/.test(k)) sessionStorage.removeItem(k); }); }catch(e){}   // copies of client data kept for speed
+    return client().then(function(c){ return c.auth.signOut(); }).catch(function(){}).then(function(){ location.replace('/login.html?out=1'); });
+  });
+}
+
+/* ---------- connection: a bar at the top while offline, or when the sign-in has expired (the page keeps its work) ---------- */
+var NET = null;
+function net(state){
+  if(state === 'auth' && NET === 'auth') return;
+  NET = state;
+  var b = $('#netBar');
+  if(!state){ if(b) b.remove(); return; }
+  if(!b){ b = document.createElement('div'); b.id = 'netBar'; b.setAttribute('role', 'alert'); document.body.appendChild(b); }
+  b.className = 'netbar ' + state;
+  b.innerHTML = state === 'offline'
+    ? '<b>You’re offline.</b> Keep working — changes are saved when the connection is back.'
+    : '<b>Your sign-in has expired.</b> <a href="' + esc(loginUrl()) + '" target="_blank" rel="noopener">Sign in again</a> in a new tab, then come back — this page keeps your work.';
+}
+// something in the page's own code went wrong: say so plainly (work in progress is kept and saved as usual) instead of
+// leaving a button that silently does nothing
+function oops(){
+  if($('#oopsBar') || NET) return;
+  var b = document.createElement('div'); b.id = 'oopsBar'; b.className = 'netbar oops'; b.setAttribute('role', 'alert');
+  b.innerHTML = '<b>Something on this page didn’t work.</b> Your work is kept. <a href="#" data-oops="reload">Reload the page</a> · <a href="#" data-oops="hide">Hide</a>';
+  b.addEventListener('click', function(e){ var a = e.target.closest('[data-oops]'); if(!a) return; e.preventDefault(); if(a.getAttribute('data-oops') === 'reload') location.reload(); else b.remove(); });
+  document.body.appendChild(b);
+}
+window.addEventListener('error', function(e){ if(e && e.filename && e.filename.indexOf(location.origin) === 0) oops(); });
+window.addEventListener('unhandledrejection', function(e){ var r = e && e.reason; if(r instanceof Error && !/Failed to fetch|NetworkError|AbortError|Load failed/i.test(r.message)) oops(); });
+window.addEventListener('offline', function(){ net('offline'); });
+window.addEventListener('online', function(){ if(NET === 'offline') net(null); document.dispatchEvent(new Event('tp-online')); });
+// back from signing in again in another tab: the sign-in is picked up when this tab is seen again
+document.addEventListener('visibilitychange', function(){
+  if(NET !== 'auth' || document.visibilityState !== 'visible') return;
+  session().then(function(s){ if(s && s.expires_at * 1000 > Date.now()){ net(null); document.dispatchEvent(new Event('tp-online')); } }, function(){});
+});
 // call one of our server functions (client-accounts, job-info, resume-ai) as the signed-in person
 function fn(name, body, ms){
   return session().then(function(s){
-    if(!s) throw {code:'sign_in', message:'Please sign in again'};
+    if(!s){ net('auth'); throw {code:'sign_in', message:'Please sign in again'}; }
     var ctl = window.AbortController ? new AbortController() : null, tm = setTimeout(function(){ if(ctl) ctl.abort(); }, ms || 25000);
     return fetch(CONFIG.SUPABASE_URL + '/functions/v1/' + name, {method:'POST', signal:ctl ? ctl.signal : undefined,
       headers:{'Content-Type':'application/json', apikey:CONFIG.SUPABASE_ANON_KEY, Authorization:'Bearer ' + s.access_token}, body:JSON.stringify(body || {})})
       .then(function(r){ clearTimeout(tm); return r.json().catch(function(){ return {}; }).then(function(j){
+        if(r.status === 401) net('auth');
         if(!r.ok) throw {code:(j && j.error) || ('http_' + r.status), status:r.status, message:(j && j.error) || ('HTTP ' + r.status)};
         return j; }); }, function(e){ clearTimeout(tm); throw {code:'network', message:'Couldn’t reach the server — check your connection'}; });
   });
@@ -193,36 +266,79 @@ function shrinkImage(file, maxW, maxBytes){
   });
 }
 
-/* ---------- modal ---------- */
-function modal(html, wide){
+/* ---------- modal ----------
+   modal(html, wide, {keep, onClose}): keep is for forms — a click beside it doesn't close it, and once something was
+   typed, × / Esc / Cancel ask before throwing it away. onClose runs when the person closes it (not after a save). */
+var MOD = null;
+function modal(html, wide, o){
   var root = $('#modalRoot'); if(!root){ root = document.createElement('div'); root.id = 'modalRoot'; document.body.appendChild(root); }
+  if(MOD && MOD.onClose){ var was = MOD.onClose; MOD = null; was(); }   // a dialog replaced by another counts as cancelled
   root.innerHTML = '<div class="mod-wrap" data-mclose="1"><div class="mod ' + (wide ? 'wide' : '') + '" role="dialog" aria-modal="true">' +
     '<button class="x" type="button" data-mclose="1" aria-label="Close">' + I.x + '</button>' + html + '</div></div>';
-  var f = $('#modalRoot .mod input:not([type=hidden]), #modalRoot .mod textarea, #modalRoot .mod select'); if(f) setTimeout(function(){ f.focus(); }, 30);
-  return $('#modalRoot .mod');
+  var m = $('#modalRoot .mod');
+  MOD = {el:m, keep:!!(o && o.keep), onClose:(o && o.onClose) || null, dirty:false};
+  if(MOD.keep){ var me = MOD; m.addEventListener('input', function(e){ if(!e.target.closest('.mod-discard')) me.dirty = true; }); }
+  // the first field gets the cursor — unless the person already clicked into the form (never pull typing elsewhere)
+  var f = $('input:not([type=hidden]):not([type=checkbox]), textarea, select', m); if(f) setTimeout(function(){ if(f.isConnected && !m.contains(document.activeElement)) f.focus(); }, 30);
+  return m;
 }
-function closeModal(){ var r = $('#modalRoot'); if(r) r.innerHTML = ''; }
-function confirmBox(title, text, okLabel, danger){
+function closeModal(){ var r = $('#modalRoot'); MOD = null; if(r) r.innerHTML = ''; }
+// the person closes it: × / Esc / Cancel / a click beside it
+function tryClose(byBackdrop){
+  var me = MOD; if(!me){ closeModal(); return; }
+  if(byBackdrop && me.keep) return;
+  if(me.dirty && me.keep){
+    if($('.mod-discard', me.el)) return;
+    var bar = document.createElement('div'); bar.className = 'mod-discard';
+    bar.innerHTML = '<span>Discard what you typed?</span><button class="btn sm" type="button" data-keep="1">Keep editing</button><button class="btn sm bad" type="button" data-toss="1">Discard</button>';
+    me.el.appendChild(bar); bar.scrollIntoView({block:'nearest'}); $('[data-keep]', bar).focus();
+    bar.addEventListener('click', function(e){
+      if(e.target.closest('[data-keep]')) bar.remove();
+      else if(e.target.closest('[data-toss]')){ me.dirty = false; tryClose(); }
+    });
+    return;
+  }
+  var cb = me.onClose; closeModal(); if(cb) cb();
+}
+/* confirmBox(title, text, ok, danger, {items, html, type, cancel, careful, wide}) → true / false
+   items: what will happen, as lines (['warn', '…'] or ['ok', '…'] for a coloured mark); html: a body built by the page;
+   type: the text to type before the button works (for what can't be taken back). A dangerous one (or careful) starts on Cancel. */
+function confirmBox(title, text, okLabel, danger, o){
+  o = o || {};
   return new Promise(function(res){
-    var m = modal('<h2>' + esc(title) + '</h2><p>' + esc(text) + '</p><div class="acts"><button class="btn" type="button" data-no="1">Cancel</button>' +
-      '<button class="btn ' + (danger ? 'bad' : 'pri') + '" type="button" data-yes="1">' + esc(okLabel || 'OK') + '</button></div>');
-    m.addEventListener('click', function(e){ if(e.target.closest('[data-yes]')){ closeModal(); res(true); } else if(e.target.closest('[data-no]')){ closeModal(); res(false); } });
-    m.parentNode.addEventListener('click', function(e){ if(e.target.getAttribute && e.target.getAttribute('data-mclose')) res(false); });
+    var done = false, fin = function(v){ if(done) return; done = true; if(MOD && MOD.el === m) closeModal(); res(v); };
+    var mark = {ok:I.check, warn:'!', bad:'!', info:'•'};
+    var items = (o.items || []).filter(Boolean).map(function(x){ var k = Array.isArray(x) ? x[0] : 'info', t = Array.isArray(x) ? x[1] : x;
+      return '<li class="' + k + '"><i>' + (mark[k] || '•') + '</i><span>' + t + '</span></li>'; }).join('');
+    var m = modal('<h2>' + esc(title) + '</h2>' + (text ? '<p>' + esc(text) + '</p>' : '') + (o.html || '') + (items ? '<ul class="cfl">' + items + '</ul>' : '') +
+      (o.type ? '<div class="field cft"><label for="cfT">Type <b>' + esc(o.type) + '</b> to confirm</label><input id="cfT" autocomplete="off" spellcheck="false" autocapitalize="off"></div>' : '') +
+      '<div class="acts"><button class="btn" type="button" data-no="1">' + esc(o.cancel || 'Cancel') + '</button>' +
+      '<button class="btn ' + (danger ? 'bad' : 'pri') + '" type="button" data-yes="1"' + (o.type ? ' disabled' : '') + '>' + esc(okLabel || 'OK') + '</button></div>', o.wide,
+      {onClose:function(){ fin(false); }});
+    var yes = $('[data-yes]', m), norm = function(s){ return String(s || '').trim().toLowerCase().replace(/\s+/g, ' '); };
+    if(o.type){
+      var t = $('#cfT', m);
+      t.addEventListener('input', function(){ yes.disabled = norm(t.value) !== norm(o.type); });
+      t.addEventListener('keydown', function(e){ if(e.key === 'Enter' && !yes.disabled){ e.preventDefault(); fin(true); } });
+    } else setTimeout(function(){ var b = danger || o.careful ? $('[data-no]', m) : yes; if(b && b.isConnected && !m.contains(document.activeElement)) b.focus(); }, 40);   // Enter never confirms a dangerous one by accident
+    m.addEventListener('click', function(e){ if(e.target.closest('[data-yes]')) fin(true); else if(e.target.closest('[data-no]')) fin(false); });
   });
 }
 document.addEventListener('click', function(e){
   var c = e.target.closest && e.target.closest('[data-mclose]');
-  if(c && (c.classList.contains('x') || e.target === c)) closeModal();
+  if(c && c.getAttribute('data-mclose') !== '0' && (c.classList.contains('x') || e.target === c || c.tagName === 'BUTTON')) tryClose(e.target === c && c.classList.contains('mod-wrap'));
   var cp = e.target.closest && e.target.closest('[data-copy]');
   if(cp){ e.preventDefault(); copy(cp.getAttribute('data-copy'), cp.getAttribute('data-what') || 'Text'); }
 });
-document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && $('#modalRoot') && $('#modalRoot').innerHTML) closeModal(); });
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && MOD){ e.preventDefault(); tryClose(); } });
 
 window.TP = {
   CONFIG:CONFIG, VERSION:VERSION, I:I, $:$, $$:$$, esc:esc, debounce:debounce, lsGet:lsGet, lsSet:lsSet, ssGet:ssGet, ssSet:ssSet, uid:uid,
-  toast:toast, copy:copy, fmtDate:fmtDate, fmtDateTime:fmtDateTime, ago:ago, initials:initials, hue:hue, logo:logo,
+  toast:toast, busy:busy, copy:copy, fmtDate:fmtDate, fmtDateTime:fmtDateTime, ago:ago, initials:initials, hue:hue, logo:logo,
   STATUS:STATUS, statusLabel:statusLabel, statusChip:statusChip, cleanUrl:cleanUrl, safeHref:safeHref, safeNext:safeNext,
-  client:client, session:session, q:q, whoami:whoami, toLogin:toLogin, signOut:signOut, fn:fn, errText:errText,
-  upload:upload, fileUrl:fileUrl, fillFiles:fillFiles, shrinkImage:shrinkImage, modal:modal, closeModal:closeModal, confirmBox:confirmBox
+  client:client, session:session, q:q, whoami:whoami, toLogin:toLogin, signOut:signOut, fn:fn, errText:errText, authGone:authGone, net:net,
+  onLeave:onLeave, leaveWhy:leaveWhy,
+  upload:upload, fileUrl:fileUrl, fillFiles:fillFiles, shrinkImage:shrinkImage, modal:modal, closeModal:closeModal, tryClose:tryClose, confirmBox:confirmBox,
+  isModal:function(){ return !!MOD; }
 };
 })();
