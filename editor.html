@@ -19,7 +19,7 @@
 :root{--ui:Geist,Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   --blue:#0938d5;--blue-d:#072ca8;--blue-soft:#eef1fd;--blue-line:#d2dbfa;--ink:#0d0f14;--body:#3b3f4b;--muted:#6c7080;--faint:#a3a7b3;
   --line:#e6e8ec;--line-2:#d5d8df;--bg:#f5f6f8;--canvas:#eef0f3;--dot:#d3d6dd;--field:#f3f4f6;--field-h:#eceef1;--hover:#f2f3f5;--track:#eceef1;
-  --ring:rgba(9,56,213,.16);--fill:rgba(9,56,213,.1);--edge:rgba(9,56,213,.6);
+  --ring:rgba(9,56,213,.16);
   --ok:#0a7f46;--ok-soft:#e8f6ee;--warn:#b45309;--warn-soft:#fff5e5;--bad:#be123c;--bad-soft:#fff0f2;--vio:#6d4dff;--vio-soft:#f4f1ff;
   --sh-1:0 1px 2px rgba(13,15,20,.06);--sh-2:0 1px 2px rgba(13,15,20,.05),0 8px 24px -12px rgba(13,15,20,.22);--sh-3:0 2px 8px rgba(13,15,20,.06),0 28px 64px -24px rgba(13,15,20,.36);
   --panel:424px;--top:52px;color-scheme:light}
@@ -116,6 +116,19 @@ svg.defs{position:absolute;width:0;height:0}
 .banner .sp{flex:1}
 .fine{font-size:12.5px;color:var(--muted);line-height:1.5}
 .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+
+/* ---------- while Claude reads a resume: like the app's reading step - each line writes itself in, a light passes over the words ---------- */
+.card.readc{max-width:560px;text-align:left;padding:32px 32px 26px}
+.rd-eye{font:600 11.5px var(--ui);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card .rd-line{margin-top:8px;min-height:2.1em;font:600 20px/1.35 var(--ui);letter-spacing:-.01em;color:var(--ink)}
+.cw{display:inline-block;white-space:pre;opacity:0;transform:translateY(4px);background:linear-gradient(100deg,var(--ink) 0%,var(--ink) 35%,#b4b4b9 50%,var(--ink) 65%,var(--ink) 100%);background-size:300% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;color:transparent;animation:cwIn .5s cubic-bezier(.2,.7,.2,1) forwards,cwSweep 2.6s ease-in-out infinite}
+@keyframes cwIn{to{opacity:1;transform:none}}
+@keyframes cwSweep{0%{background-position:100% 0}60%,100%{background-position:0 0}}
+.rd-bar{margin-top:20px;height:3px;border-radius:999px;background:rgba(13,15,20,.06);overflow:hidden}
+.rd-bar i{display:block;height:100%;width:0;border-radius:999px;background:var(--ink);transition:width .5s ease-out}
+.card .rd-note{margin-top:14px;font-size:13.5px;color:var(--muted);line-height:1.5}
+.rd-q{margin-top:12px;font:600 13px var(--ui);color:var(--blue)}.rd-q:hover{text-decoration:underline}
+@media (prefers-reduced-motion:reduce){.cw{animation:none;opacity:1;transform:none;color:var(--ink);background:none}.rd-bar i{transition:none}}
 
 /* ---------- scan check screen ---------- */
 .sv{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
@@ -258,21 +271,25 @@ svg.defs{position:absolute;width:0;height:0}
 .seg button:hover{color:var(--ink)}
 .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(13,15,20,.08),0 0 0 1px rgba(13,15,20,.05)}
 .seg button svg{width:15px;height:15px}
-/* sliders: a filled field you drag across - its name and value inside, the fill shows how far along it is */
-.sfg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 6px}.sfg.one{grid-template-columns:1fr}
-.sf{position:relative;display:block;height:34px;border-radius:8px;background:var(--field);overflow:hidden;cursor:ew-resize;transition:background .15s,box-shadow .15s}
-.sf:hover{background:var(--field-h)}
-.sf:focus-within{box-shadow:0 0 0 2px var(--ring)}
-.sf input{position:absolute;inset:0;width:100%;height:100%;margin:0;-webkit-appearance:none;appearance:none;background:linear-gradient(var(--fill),var(--fill)) 0 0/var(--p,50%) 100% no-repeat;cursor:ew-resize}
-.sf input:focus-visible{outline:none}
-.sf input::-webkit-slider-runnable-track{height:34px;background:transparent}
-.sf input::-webkit-slider-thumb{-webkit-appearance:none;width:2px;height:34px;background:var(--edge);opacity:0;transition:opacity .15s}
-.sf:hover input::-webkit-slider-thumb,.sf input:focus-visible::-webkit-slider-thumb,.sf input:active::-webkit-slider-thumb{opacity:1}
-.sf input::-moz-range-track{height:34px;background:transparent}
-.sf input::-moz-range-thumb{width:2px;height:34px;border:0;border-radius:0;background:var(--edge)}
-.sf .sfl,.sf .val{position:absolute;top:0;line-height:34px;font-size:12.5px;pointer-events:none}
-.sf .sfl{left:11px;color:var(--muted)}
-.sf .val{right:11px;color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+/* − value +: one exact step per click */
+.stp{display:inline-flex;align-items:center;flex:none;height:32px;padding:2px;border-radius:9px;background:var(--track)}
+.stp button{display:grid;place-items:center;width:28px;height:28px;border-radius:7px;color:var(--ink);transition:background .15s,box-shadow .15s,color .15s}
+.stp button:hover{background:#fff;box-shadow:0 1px 2px rgba(13,15,20,.08),0 0 0 1px rgba(13,15,20,.05)}
+.stp button:focus-visible{outline:none;box-shadow:0 0 0 2px var(--ring),0 0 0 1px var(--blue)}
+.stp button[aria-disabled=true],.stp button:disabled{color:var(--muted);opacity:.45;background:none;box-shadow:none;cursor:default}
+.stp button svg{width:14px;height:14px}
+.stp b{min-width:64px;text-align:center;font-size:13px;font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
+/* Fit to one page, right under the templates; its note is always one line so nothing below moves */
+.fit{margin-top:14px}
+.fit p{margin-top:7px;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fit p.ok{color:var(--ok)}
+/* the settings used now and then, folded away */
+.fmore{display:flex;align-items:center;justify-content:space-between;width:calc(100% + 40px);margin:18px -20px 0;padding:14px 20px;border-top:1px solid var(--line);font:600 12.5px var(--ui);color:var(--ink);text-align:left;transition:background .15s}
+.fmore:hover{background:var(--hover)}
+.fmore svg{width:16px;height:16px;color:var(--muted);transition:transform .2s}
+.fmore[aria-expanded=true] svg{transform:rotate(180deg)}
+.fmb>.fh:first-child{margin-top:2px}
+.fmb>.addl{margin-top:14px}
 .sw{position:relative;width:30px;height:18px;border-radius:999px;background:#d5d8df;transition:background .15s;flex:none}
 .sw::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
 .sw.on{background:var(--blue)}.sw.on::after{left:14px}
@@ -292,8 +309,6 @@ svg.defs{position:absolute;width:0;height:0}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips button{padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px;color:var(--ink);background:#fff;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .chips button.off{text-decoration:line-through;color:var(--muted);background:var(--field);border-color:transparent}
-.fitbox{margin-top:12px;padding:12px;border-radius:12px;background:var(--bg)}
-.fitbox p{font-size:12px;color:var(--muted);margin-top:6px}
 
 /* ---------- check panel ---------- */
 .score{display:flex;align-items:center;gap:16px;padding:2px 0 12px}
@@ -386,6 +401,7 @@ svg.defs{position:absolute;width:0;height:0}
 .omh{padding:22px 26px 14px;border-bottom:1px solid var(--line)}
 .omh h2{font:600 19px var(--ui);letter-spacing:-.015em;color:var(--ink)}
 .omsub{color:var(--body);font-size:13.5px;margin-top:4px}
+.omagain{margin-top:10px;padding:8px 11px;border-radius:9px;background:var(--blue-soft);color:var(--body);font-size:12.5px;line-height:1.45}   /* optimised for this job before */
 .omb{flex:1;overflow:auto;padding:16px 26px}
 .omf{display:flex;align-items:center;gap:8px;padding:12px 26px;border-top:1px solid var(--line);background:#fafbfc}
 .omf>span{flex:1;font-size:12.5px;color:var(--muted)}   /* the footer's note only, not the text inside its buttons */
@@ -543,8 +559,10 @@ svg.defs{position:absolute;width:0;height:0}
   .ptabs button{width:auto;flex:1;flex-direction:row;justify-content:center;gap:6px;padding:8px 0;font-size:12.5px}
   .ptabs button svg{width:16px;height:16px}
   .pbody{padding:14px 16px 60px}
+  .stp{height:40px;padding:3px}.stp button{width:36px;height:34px}
   .pc{margin:0 -16px;padding:16px}
   .fh{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}
+  .fmore{width:calc(100% + 32px);margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}
   .stage{padding:12px}
   .doctabs{position:static;margin:0 auto 12px}
   body.m-edit .stage{display:none}
@@ -2180,11 +2198,18 @@ function pgDragEnd() { DRAG = null; $$('#sheet .pg-dropb, #sheet .pg-dropa').for
 
 /* ---- format.js ---- */
 /* =====================================================================
-   Format tab: template, paper, typography, headings, bullets, dates,
-   spacing, Fit to one page, links and contact details. Every change is
-   one undo step and shows on the page at once.
+   Format tab: the template, Fit to one page, − / + steps for size and
+   spacing, and which section comes first. The rest (paper, typeface,
+   headings, bullets, dates, links, contact) waits under More settings.
+   Every change is one undo step and shows on the page at once.
    ===================================================================== */
-const rangePct = (v, a, b) => Math.round(clamp((v - a) / ((b - a) || 1), 0, 1) * 1000) / 10;   // how far along a slider is, for its fill
+const FMT_UNIT = { size: ' pt', nameSize: ' pt', headingSize: ' pt', bulletGap: ' px' };
+const fmtVal = (k, v) => k === 'lineHeight' ? (+v).toFixed(2) : k === 'margin' ? (+v).toFixed(2) + ' in' : k === 'gap' ? (+v).toFixed(2) + '×' : +v + (FMT_UNIT[k] || '');
+let FMT_MORE = !!lsGet('tp_fmt_more', false);   // More settings open or closed, remembered in this browser
+// Fit to one page, with how long the resume runs now; one line either way, so the steps below never jump
+const fitHTML = () => PAGES_N > 1
+  ? '<button type="button" class="btn pri wide" data-a="fit-one">Fit to one page</button><p>Now ' + PAGES_N + ' pages — tightens spacing and size to fit.</p>'
+  : '<button type="button" class="btn wide" data-a="fit-one" disabled>Fit to one page</button><p class="ok">Fits on one page.</p>';
 // the template picker shows this resume in each template, drawn small - each in its own shadow root so the templates' styles never mix
 function drawTplThumbs() {
   const cur = fmtOf(DOC);
@@ -2198,35 +2223,40 @@ function drawTplThumbs() {
 }
 function formatHTML() {
   const f = fmtOf(DOC), d = DOC.design || {};
-  const seg = (key, opts) => '<span class="seg">' + opts.map((o) => '<button type="button" data-a="fmt" data-k="' + key + '" data-v="' + o[0] + '" class="' + (String(f[key]) === String(o[0]) ? 'on' : '') + '"' + (o[2] ? ' aria-label="' + esc(o[2]) + '"' : '') + '>' + o[1] + '</button>').join('') + '</span>';
-  // a slider is a field you drag across: its name and value sit inside, the fill shows how far along it is
-  const slider = (label, key, unit, fmtv) => { const L = LIMITS[key]; return '<label class="sf"><input type="range" data-k="' + key + '" min="' + L[0] + '" max="' + L[1] + '" step="' + L[2] + '" value="' + f[key] + '" style="--p:' + rangePct(f[key], L[0], L[1]) + '%" aria-label="' + label + '">' +
-    '<span class="sfl">' + label + '</span><span class="val" id="v-' + key + '">' + (fmtv ? fmtv(f[key]) : f[key] + unit) + '</span></label>'; };
-  const pair = (a, b) => '<div class="sfg' + (b ? '' : ' one') + '">' + a + (b || '') + '</div>';
+  const seg = (key, opts, cur) => { cur = String(cur === undefined ? f[key] : cur); return '<span class="seg">' + opts.map((o) => '<button type="button" data-a="fmt" data-k="' + key + '" data-v="' + o[0] + '" class="' + (cur === String(o[0]) ? 'on' : '') + '" aria-pressed="' + (cur === String(o[0])) + '"' + (o[2] ? ' aria-label="' + esc(o[2]) + '"' : '') + '>' + o[1] + '</button>').join('') + '</span>'; };
+  // − value +: each click is one step of that setting, within its limits (a sent application's can't change, as before)
+  const step = (label, key) => { const L = LIMITS[key], v = f[key], off = READONLY ? ' disabled' : '';
+    return '<div class="fr"><span>' + label + '</span><span class="stp" role="group" aria-label="' + label + '">' +
+      '<button type="button" data-a="fmt-step" data-k="' + key + '" data-v="-1" aria-label="Decrease" aria-disabled="' + (v <= L[0]) + '"' + off + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button><b id="v-' + key + '">' + fmtVal(key, v) + '</b>' +
+      '<button type="button" data-a="fmt-step" data-k="' + key + '" data-v="1" aria-label="Increase" aria-disabled="' + (v >= L[1]) + '"' + off + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></span></div>'; };
   const sw = (label, key) => '<div class="fr"><span>' + label + '</span><button type="button" class="sw ' + (f[key] ? 'on' : '') + '" data-a="fmt" data-k="' + key + '" data-v="' + (f[key] ? '0' : '1') + '" role="switch" aria-checked="' + (f[key] ? 'true' : 'false') + '" aria-label="' + label + '"></button></div>';
   const AL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h10M4 18h14"/></svg>', AJ = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
+  // which comes first as the page shows it: the choice made here, else the resume's own order
+  const xi = DOC.sections.findIndex((s) => s.k === 'experience' && !s.hidden), ei = DOC.sections.findIndex((s) => s.k === 'education' && !s.hidden);
+  const eduFirst = f.eduFirst != null ? !!f.eduFirst : ei < xi;
   return '<div class="fh">Template</div><div class="tpl">' + TEMPLATES.map((t) => '<button type="button" data-a="tpl" data-v="' + t.id + '" class="' + (f.template === t.id ? 'on' : '') + '" title="' + esc(t.blurb) + '"><span class="tth" data-tpl="' + t.id + '"></span><b>' + t.name + '</b></button>').join('') + '</div>' +
-    '<div class="fh">Layout</div>' +
+    '<div class="fit" id="fitBox">' + fitHTML() + '</div>' +
+    '<div class="fh">Size &amp; spacing</div>' +
+    step('Font size', 'size') + step('Line height', 'lineHeight') + step('Page margin', 'margin') + step('Section gap', 'gap') +
+    (xi > -1 && ei > -1 ? '<div class="fr"><span>Comes first</span>' + seg('eduFirst', [['false', 'Experience'], ['true', 'Education']], eduFirst) + '</div>' : '') +
+    '<button type="button" class="fmore" data-a="fmt-more" aria-expanded="' + FMT_MORE + '" aria-controls="fmtMore">More settings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>' +
+    '<div class="fmb" id="fmtMore"' + (FMT_MORE ? '' : ' hidden') + '>' +
+    '<div class="fh">Page</div>' +
     '<div class="fr"><span>Paper</span><select data-k="paper" aria-label="Paper">' + Object.keys(PAPERS).map((k) => '<option value="' + k + '"' + (f.paper === k ? ' selected' : '') + '>' + PAPERS[k].label + '</option>').join('') + '</select></div>' +
-    '<div class="fr"><span>Section order</span>' + seg('eduFirst', [['false', 'Experience first'], ['true', 'Education first']]) + '</div>' +
     '<div class="fr"><span>Name and contact</span>' + seg('headerAlign', [['left', 'Left'], ['center', 'Center']]) + '</div>' +
     '<div class="fh">Text</div>' +
     '<div class="fr"><span>Typeface</span><select data-k="font" aria-label="Typeface">' + FONTS.map((x) => '<option value="' + x[0] + '"' + (f.font === x[0] || (!x[1] && !d.font) ? ' selected' : '') + '>' + x[0] + '</option>').join('') + '</select></div>' +
     '<div class="fr"><span>Alignment</span>' + seg('align', [['left', AL, 'Left'], ['justify', AJ, 'Justified']]) + '</div>' +
-    pair(slider('Font size', 'size', ' pt'), slider('Line height', 'lineHeight', '', (v) => Number(v).toFixed(2))) +
     '<div class="fh">Name &amp; headings</div>' +
-    pair(slider('Name size', 'nameSize', ' pt'), slider('Headings', 'headingSize', ' pt')) + sw('Headings in capitals', 'caps') + sw('Line under each heading', 'rules') +
+    step('Name size', 'nameSize') + step('Headings', 'headingSize') + sw('Headings in capitals', 'caps') + sw('Line under each heading', 'rules') +
     (f.template === 'modern' ? '<div class="fr"><span>Accent colour</span><span class="dots">' + ACCENTS.map((c) => '<button type="button" data-a="fmt" data-k="accent" data-v="' + c + '" class="' + (f.accent === c ? 'on' : '') + '" style="background:' + c + '" aria-label="Accent ' + c + '"></button>').join('') + '</span></div>' : '') +
     '<div class="fh">Bullets &amp; dates</div>' +
     '<div class="fr"><span>Bullet</span>' + seg('bullet', Object.keys(BULLETS).map((k) => [k, BULLETS[k][2], BULLETS[k][0]])) + '</div>' +
-    pair(slider('Bullet spacing', 'bulletGap', ' px')) +
+    step('Bullet spacing', 'bulletGap') +
     '<div class="fr"><span>Dates</span><select data-k="dates" aria-label="Date style">' + DATE_STYLES.map((x) => '<option value="' + x[0] + '"' + (f.dates === x[0] ? ' selected' : '') + '>' + x[1] + '</option>').join('') + '</select></div>' +
-    '<div class="fh">Spacing</div>' +
-    pair(slider('Page margin', 'margin', ' in', (v) => Number(v).toFixed(2) + ' in'), slider('Section gap', 'gap', '×', (v) => Number(v).toFixed(2) + '×')) +
-    '<div class="fitbox"><button type="button" class="btn wide" data-a="fit-one">Fit to one page</button><p>Tightens the gaps, line height, margins and size a step at a time until the resume fits' + (PAGES_N > 1 ? ' (now ' + PAGES_N + ' pages)' : '') + '.</p>' +
-    '<button type="button" class="addl" data-a="fmt-reset" style="margin-top:6px">Reset to the template’s style</button></div>' +
     '<div class="fh">Links &amp; contact</div>' + sw('Links as labels (LinkedIn, GitHub…)', 'linksAsLabels') +
-    '<div class="fr" style="align-items:flex-start"><span>Shown</span><span class="chips">' + DOC.contact.filter(Boolean).map((c) => '<button type="button" data-a="ct-vis" data-v="' + esc(c) + '" class="' + ((f.hideContact || []).includes(c) ? 'off' : '') + '" title="' + esc(c) + '">' + esc(c.length > 26 ? c.slice(0, 24) + '…' : c) + '</button>').join('') + '</span></div>';
+    '<div class="fr" style="align-items:flex-start"><span>Shown</span><span class="chips">' + DOC.contact.filter(Boolean).map((c) => '<button type="button" data-a="ct-vis" data-v="' + esc(c) + '" class="' + ((f.hideContact || []).includes(c) ? 'off' : '') + '" title="' + esc(c) + '">' + esc(c.length > 26 ? c.slice(0, 24) + '…' : c) + '</button>').join('') + '</span></div>' +
+    '<button type="button" class="addl" data-a="fmt-reset">Reset to the template’s style</button></div>';
 }
 function setFormat(k, v, silent) {
   DOC.design = DOC.design || {};
@@ -2241,8 +2271,22 @@ function formatAction(a, v, t) {
     case 'fmt-reset': { DOC.design = { template: fmtOf(DOC).template }; snap(); persist(); renderAll(); toast('Back to the template’s style'); return true; }
     case 'ct-vis': { const f = fmtOf(DOC), h = (f.hideContact || []).slice(), i = h.indexOf(v); if (i > -1) h.splice(i, 1); else h.push(v); setFormat('hideContact', h); return true; }
     case 'fit-one': fitOnePage(); return true;
+    case 'fmt-step': stepFormat(t.getAttribute('data-k'), +v); return true;
+    case 'fmt-more': { FMT_MORE = !FMT_MORE; lsSet('tp_fmt_more', FMT_MORE); t.setAttribute('aria-expanded', String(FMT_MORE)); const b = $('#fmtMore'); if (b) b.hidden = !FMT_MORE; return true; }
   }
   return false;
+}
+// one − / + click: the next step of that setting, kept inside its limits. The panel is updated in place so the button
+// keeps focus, and quick clicks on the same setting are a single undo step (like one drag of the old slider).
+function stepFormat(k, dir) {
+  const L = LIMITS[k]; if (!L || READONLY) return;
+  const v0 = fmtOf(DOC)[k], v = Math.round(clamp(Math.round((v0 + dir * L[2]) / L[2]) * L[2], L[0], L[1]) * 1000) / 1000;
+  if (v === v0) return;
+  DOC.design = DOC.design || {}; DOC.design[k] = v;
+  snap('fmt-' + k); endTyping(); persist(); applyFormat(); renderSheet();
+  const out = $('#v-' + k); if (out) out.textContent = fmtVal(k, v);
+  $$('#pbody [data-a=fmt-step][data-k=' + k + ']').forEach((b) => b.setAttribute('aria-disabled', String(+b.getAttribute('data-v') < 0 ? v <= L[0] : v >= L[1])));
+  const fit = $('#fitBox'); if (fit) fit.innerHTML = fitHTML();
 }
 // Tightens the page in small steps, measuring after each one, until it fits on one page (or nothing more can give).
 function fitOnePage(silent) {
@@ -2262,13 +2306,6 @@ function fitOnePage(silent) {
   if (PAGES_N > 1) { DOC.design = JSON.parse(f0); applyFormat(); renderSheet(); renderPanel(); if (!silent) toast('It won’t fit on one page without cutting text — shorten a few bullets first.'); return; }
   snap(); persist(); renderPanel(); if (!silent) toast('Fits on one page now', { a: 'undo', label: 'Undo' });
 }
-function onRangeInput(e) {   // sliders update the page live and show their value; the undo step is taken when the drag ends
-  const el = e.target; if (!el.matches || !el.matches('input[type=range][data-k]') || !DOC) return;
-  const k = el.getAttribute('data-k'), v = +el.value; DOC.design = DOC.design || {}; DOC.design[k] = v; el.style.setProperty('--p', rangePct(v, +el.min, +el.max) + '%');
-  const val = $('#v-' + k); if (val) val.textContent = k === 'lineHeight' ? v.toFixed(2) : k === 'margin' ? v.toFixed(2) + ' in' : k === 'gap' ? v.toFixed(2) + '×' : v + ({ size: ' pt', nameSize: ' pt', headingSize: ' pt', bulletGap: ' px' }[k] || '');
-  applyFormat(); renderSheet();
-}
-function onRangeChange(e) { const el = e.target; if (!el.matches || !el.matches('input[type=range][data-k]') || !DOC) return; snap(); persist(); }
 function onSelectChange(e) { const el = e.target; if (!el.matches || !el.matches('select[data-k]') || !DOC) return; setFormat(el.getAttribute('data-k'), el.value); }
 
 /* ---- ai.js ---- */
@@ -2383,7 +2420,10 @@ function bulletProblem(orig, sug, mode) {   // why a rewrite is thrown away ('' 
   if (BUZZ_RX.test(sug) && !BUZZ_RX.test(orig)) return { k: 'buzz' };
   return '';
 }
-const WHY_KEPT = { num: 'used a number from somewhere else', blank: 'added a blank nobody asked for', grade: 'read weaker than the original', long: 'ran too long', buzz: 'added a cliché' };
+const WHY_KEPT = { num: 'used a number from somewhere else', blank: 'added a blank nobody asked for', grade: 'read weaker than the original', long: 'ran too long', buzz: 'added a cliché',
+  // an application's own checks, and the second reader's verdicts
+  lead: 'made the role sound bigger (“led”, “managed”…)', crowd: 'repeated a keyword already used in this role', stuffed: 'repeated a keyword',
+  overstates: 'made the work sound bigger than it was', unsupported: 'added something the original line doesn’t say', 'off-topic': 'added keywords that don’t fit the work', meaning: 'changed what the line says' };
 function keptWhy(list) { const kw = [], other = []; list.forEach((p) => { if (p.k === 'kw') kw.push(...p.terms); else if (WHY_KEPT[p.k] && !other.includes(WHY_KEPT[p.k])) other.push(WHY_KEPT[p.k]); });
   const bits = (kw.length ? ['would have removed ' + termList(uniq(kw))] : []).concat(other); return bits.length > 1 ? bits.slice(0, -1).join(', ') + ' or ' + bits[bits.length - 1] : bits[0] || ''; }
 
@@ -2584,6 +2624,26 @@ function optRows() {
   return rows;
 }
 const jobOk = () => !!(JOB && String(JOB.text || '').trim().length >= 80);   // a job description long enough to tailor to
+// An application's Optimise is held to the team's rules: the whole posting is read; the candidate's own lines (as first added) are the
+// facts; a run on a copy optimised for this job before is a careful second pass; keyword limits; a second reader checks every change;
+// and the match score is measured before, after, and again once the team has accepted.
+const appOpt = () => !!(TEAM && TEAM.app);
+const LEAD_RX = /\b(led|managed|owned|headed|spearheaded|directed|oversaw|supervised|mentored|architected|orchestrated|championed)\b/i;
+const origLine = (bid, cur) => { const O = DOC.meta.orig, t = O && O.b ? O.b[bid] : null; return t == null ? cur : t; };   // the line as the resume was first added
+const bPath = (tg, b) => 'sec.' + tg.sec.id + '.item.' + tg.it.id + '.b.' + b.id;
+const termN = (k, low) => (low.match(new RegExp('(^|[^a-z0-9+#])' + k.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(s|es)?(?=$|[^a-z0-9+#])', 'gi')) || []).length;   // how often a keyword appears
+function remember(k, text) {   // a rewrite the team rejected (a bullet's id, 'summary' or 'headline'): never offered again for this job
+  if (!appOpt() || !text) return;
+  const R = DOC.meta.rej = DOC.meta.rej || {}, l = R[k] = (R[k] || []).filter((x) => norm(x) !== norm(text)); l.push(String(text).slice(0, 300)); if (l.length > 5) l.shift();
+}
+const wasRejected = (k, text) => ((DOC.meta.rej || {})[k] || []).some((x) => norm(x) === norm(text));
+const lastScore = () => { const l = DOC.meta.scores || []; return l.length ? l[l.length - 1] : null; };   // {at, before, expect, now}: each run's match score
+const optAgain = () => appOpt() && !!(DOC.meta.optimised || lastScore());   // optimised for this job before
+function scoreNow() {   // the match score measured again on the resume as it now is, kept on the application for the next run
+  if (!appOpt() || !JOB) return null; const terms = atsTerms(); if (!terms.length) return null;
+  const pct = atsCover(docText(), terms).pct, s = lastScore(); if (s) s.now = pct;
+  return { pct, was: s ? s.before : null };
+}
 // Pick what to tailor, then Optimise - like Scout Better. An application (team portal) runs it on the Sync model, which rewords
 // more deeply and puts each role's bullets in this job's order. A client's main resume is tailored to their target roles.
 // The job board's own editor also keeps the one-click Sync beside it.
@@ -2599,10 +2659,12 @@ function openOptimise(preset) {   // preset: the team portal opened it - the cli
     skills: roles ? 'Find skills these roles ask for that aren’t listed' : 'Find skills the job asks for that aren’t listed' };
   const sub = roles ? '<p class="omsub"><b>' + esc(roles.join(' · ')) + '</b> — the main resume, used for every job</p>'
     : JOB && JOB.title ? '<p class="omsub"><b>' + esc(jt || 'This job') + '</b>' + (JOB.company ? ' at <b>' + esc(JOB.company) + '</b>' : '') + '</p>' : '<p class="omsub">Paste the job description, then choose what to tailor.</p>';
+  const ls = lastScore(), again = optAgain() ? '<p class="omagain">Optimised for this job before' + (ls && ls.before != null ? ' on ' + new Date(ls.at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) + ' — match score ' + ls.before + '% → ' + (ls.now != null ? ls.now : ls.before) + '%' : '') +
+    '. This run builds on what was accepted and works only on what’s still missing.</p>' : '';
   // Sync: one click, every part at once and more deeply - the posting's words, priorities and title, and each role's bullets in this job's order
   const syncB = '<button class="btn omb2 ' + (app ? 'ats' : 'osyncb') + '" type="button" data-a="opt-sync" id="optSync" title="Everything at once, more deeply: the posting’s words, priorities and title, and each role’s bullets in the order this job cares about. The facts stay as they are."><b>' + I_SPARK + '<span>Sync to this job</span></b><small>Everything, in the job’s words and order</small></button>';
   modalOpen('<div class="om sm opt" role="dialog" aria-modal="true" aria-labelledby="omT"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
-    '<div class="omh"><h2 id="omT">' + (app ? 'Optimise for this job' : roles ? 'Optimise for their target roles' : 'Optimise for a job') + '</h2>' + sub + '</div>' +
+    '<div class="omh"><h2 id="omT">' + (app ? 'Optimise for this job' : roles ? 'Optimise for their target roles' : 'Optimise for a job') + '</h2>' + sub + again + '</div>' +
     '<div class="omb">' + (jobOk() ? '' : '<div class="omjd"><textarea id="optJd" placeholder="Paste the whole job description here"></textarea></div>') +
     ('<div class="ohd"><span>Choose what to optimise</span><button type="button" data-a="opt-all">Select all</button></div>' +
         '<div class="orows">' + rows.map((r) => '<button type="button" class="orow" data-a="opt-t" data-v="' + r[0] + '" aria-pressed="false"><span class="ol"><b>' + r[1] + '</b><small>' + esc(what[r[0]] || '') + '</small></span><i class="cb" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i></button>').join('') + '</div>') +
@@ -2649,7 +2711,8 @@ function runOptimise(sync) {   // sync: true = "Sync to this job", every part at
   delete keep.sync; lsSet(OPT_KEY, { sel: keep, ins });   // the ticks to remember: a Sync leaves them as they were
   const P = optPlan(sel), nb = P.nb;
   const steps = [['job', JOB.roles ? 'Working out what these roles ask for' : 'Reading the job description and its requirements'], ['write', all ? 'Syncing the summary, title' + (nb ? ', ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' and their order' : '') + ' and skills to the job'
-    : nb ? 'Rewording ' + nb + ' bullet' + (nb > 1 ? 's' : '') + (sel.summary ? ' and the summary' : '') + ' for the job' : 'Tailoring for the job'], ['check', 'Checking every change against the facts']];
+    : nb ? 'Rewording ' + nb + ' bullet' + (nb > 1 ? 's' : '') + (sel.summary ? ' and the summary' : '') + ' for the job' : 'Tailoring for the job'], ['check', 'Checking every change against the facts']]
+    .concat(appOpt() ? [['verify', 'A second reader checks every change against the original resume and the job']] : []);
   modalOpen('<div class="om sm run" role="dialog" aria-modal="true" aria-live="polite"><div class="runbar"><i id="runbar"></i></div><h2>' + (all ? 'Syncing to ' : 'Optimising for ') + esc(JOB.roles ? JOB.roles.join(' · ') : cleanTitle(JOB.title) || 'this job') + '</h2>' + (JOB.company ? '<p class="omsub">at ' + esc(JOB.company) + '</p>' : '') +
     '<ul class="steps">' + steps.map((x) => '<li data-st="' + x[0] + '" class="run"><i></i>' + esc(x[1]) + '</li>').join('') + '</ul><p class="fine" style="margin-top:16px">Only wording changes, never facts: nothing is added for a requirement the resume doesn’t prove. Projects, education and certifications are never touched.</p></div>');
   const done = (k, label) => { const li = $('.steps [data-st="' + k + '"]'); if (li) { li.classList.remove('run'); li.classList.add('ok'); if (label) li.lastChild.textContent = label; }
@@ -2670,10 +2733,16 @@ function optPlan(sel) {
 // through the same fact checks (validateAll). Nothing on the resume changes; step(k, label) reports progress.
 function optCompute(sel, ins, P, step) {
   const { targets, terms, cover0, sm, skills } = P, R = { reqs: [], mode: '' }, done = step || (() => {});
-  return ai({ task: 'tailor', jd: jobText().slice(0, 6000), target: cleanTitle(JOB.title), rules: clientRules(), instructions: ins,
+  // an application: the whole posting; each bullet's original line where it has changed since, and whether it's already optimised for this job
+  const strict = appOpt(), pre = DOC.meta.pre || {}, again = optAgain();
+  return ai({ task: 'tailor', jd: jobText().slice(0, strict ? 15000 : 6000), target: cleanTitle(JOB.title), rules: clientRules(), instructions: ins,
     summary: sm ? sm.text : '', headline: DOC.headline || '', skills, skillRows: (DOC.sections.find((x) => x.k === 'skills' && !x.hidden) || { rows: [] }).rows.map((r) => r.label || ''),
-    roles: targets.map((tg) => ({ id: tg.key, title: tg.it.title || '', org: tg.it.sub || '', bullets: tg.it.bullets.filter((b) => b.t.trim()).map((b) => b.t) })),
-    touch: { summary: !!sel.summary, headline: !!sel.headline, experience: !!sel.experience, skills: !!sel.skills }, ...(sel.sync ? { sync: true } : {}) }, sel.sync ? 150000 : 95000)
+    roles: targets.map((tg) => { const bl = tg.it.bullets.filter((b) => b.t.trim()), r = { id: tg.key, title: tg.it.title || '', org: tg.it.sub || '', bullets: bl.map((b) => b.t) };
+      if (strict) { const was = bl.map((b) => { const o = origLine(b.id, b.t); return o !== b.t ? o : ''; }), dn = bl.map((b) => { const p = pre[bPath(tg, b)]; return p !== undefined && p !== b.t; });
+        if (was.some(Boolean)) r.was = was; if (dn.some(Boolean)) r.done = dn; }
+      return r; }),
+    touch: { summary: !!sel.summary, headline: !!sel.headline, experience: !!sel.experience, skills: !!sel.skills }, ...(sel.sync ? { sync: true } : {}),
+    ...(again ? { repeat: true, rejected: [].concat(...Object.values(DOC.meta.rej || {})).slice(-20) } : {}) }, sel.sync ? 150000 : 95000)
   .then((r) => {
     if (!r || !Array.isArray(r.roles)) throw 'shape';
     R.reqs = r.requirements || []; R.mode = r.mode || '';
@@ -2703,8 +2772,62 @@ function optCompute(sel, ins, P, step) {
     const V = validateAll(R, targets, terms, cover0);
     DOC.meta.job = Object.assign({}, DOC.meta.job || JOB, { reqs: R.reqs, mode: R.mode });
     done('check', V.removed ? V.removed + ' suggestion' + (V.removed > 1 ? 's' : '') + ' dropped for changing a fact' : 'Every change checked');
-    return { R, targets, V };
+    const o = { R, targets, V };
+    return strict ? secondCheck(o, terms, done) : o;
   });
+}
+// An application's own checks, before the second reader: nothing the team rejected before, no new "led" or "managed", no line already
+// optimised for this job reworded for nothing, and a job keyword never twice in one line or in more than two lines of a role.
+function strictChecks(R, targets, V) {
+  const terms = atsTerms(), pre = DOC.meta.pre || {}, low = docText().toLowerCase(), sk = skillsIn(jobText()).map((k) => k.toLowerCase());
+  const hard = terms.filter((k) => /\s/.test(k) || sk.includes(k.toLowerCase()));   // skills and phrases: an everyday word like "data" may come twice
+  targets.forEach((tg) => {
+    const lines = (tg.res || []).map((x) => x.sug);   // the role as it would read with every suggestion accepted
+    (tg.res || []).forEach((x, i) => {
+      if (norm(x.sug) === norm(x.orig)) return;
+      const back = (k) => { x.sug = x.orig; lines[i] = x.orig; if (k) { (tg.why = tg.why || []).push({ k }); tg.keptN = (tg.keptN || 0) + 1; } };
+      if (wasRejected(x.bid, x.sug)) return back('');   // the team said no to this exact rewrite before
+      if (LEAD_RX.test(x.sug) && !LEAD_RX.test(x.orig) && !LEAD_RX.test(origLine(x.bid, x.orig))) return back('lead');
+      const lowS = x.sug.toLowerCase(), lowO = x.orig.toLowerCase(), added = terms.filter((k) => inText(k, lowS) && !inText(k, lowO));
+      if (hard.some((k) => termN(k, lowS) > Math.max(1, termN(k, lowO)))) return back('stuffed');
+      if (added.some((k) => lines.filter((t, j) => j !== i && inText(k, String(t).toLowerCase())).length >= 2)) return back('crowd');
+      const b = byId(tg.it.bullets, x.bid), p = b ? pre[bPath(tg, b)] : undefined;
+      if (p !== undefined && p !== x.orig && !added.length && gradeBullet({ t: x.sug }).score < gradeBullet({ t: x.orig }).score + 5) { tg.sameN = (tg.sameN || 0) + 1; back(''); }   // already optimised: no rewording for its own sake
+    });
+  });
+  if (R.summary && R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig)) {
+    const big = (R.summary.sug.match(new RegExp(LEAD_RX.source, 'gi')) || []).find((w) => !inText(w, low));
+    if (wasRejected('summary', R.summary.sug)) R.summary.sug = R.summary.orig;
+    else if (big) { R.summary.dropped = 'it said “' + big + '”, which isn’t anywhere on the resume'; R.summary.sug = R.summary.orig; V.removed++; V.notes.push('Summary: kept yours — ' + R.summary.dropped); }
+  }
+  if (R.headline && wasRejected('headline', R.headline.sug)) delete R.headline;
+}
+// The second reader (resume-ai "verify"): every reworded bullet against the candidate's own lines and the job, then the requirements on
+// the resume as it would read. A change it finds overstated, unsupported, off-topic, stuffed or changed in meaning is dropped, and the
+// match score is measured again on what's left. If it can't run, the suggestions still come, marked as not checked a second time.
+function secondCheck(o, terms, step) {
+  const { R, targets, V } = o, done = step || (() => {}), changes = [];
+  targets.forEach((tg) => (tg.res || []).forEach((x) => { if (norm(x.sug) !== norm(x.orig)) changes.push({ id: x.bid, role: [tg.it.title, tg.it.sub].filter(Boolean).join(' at '), was: origLine(x.bid, x.orig), now: x.orig, sug: x.sug }); }));
+  if (!changes.length) { V.second = { n: 0, dropped: 0 }; done('verify', 'No bullet reworded — nothing more to check'); return Promise.resolve(o); }
+  return ai({ task: 'verify', jd: jobText().slice(0, 15000), target: cleanTitle(JOB.title), changes, requirements: (R.reqs || []).map((q) => ({ text: q.text, kind: q.kind })), resume: scoreAfter(R, targets, docText()) }, 90000)
+    .then((v) => {
+      if (!v || !Array.isArray(v.changes)) throw 'shape';
+      const by = {}, S = V.second = { n: changes.length, dropped: 0, unchecked: 0 }; v.changes.forEach((c) => { by[c.id] = c; });
+      targets.forEach((tg) => (tg.res || []).forEach((x) => {
+        const c = by[x.bid]; if (norm(x.sug) === norm(x.orig)) return;
+        if (!c || c.problem === 'unchecked') { S.unchecked++; x.fc = x.fc || 'The second reader didn’t check this one — read it before accepting'; return; }
+        if (!c.ok) { S.dropped++; (tg.why = tg.why || []).push({ k: WHY_KEPT[c.problem] ? c.problem : 'unsupported' }); tg.keptN = (tg.keptN || 0) + 1; x.sug = x.orig; }
+      }));
+      if (Array.isArray(v.requirements) && v.requirements.length) R.reqsAfter = v.requirements;
+      if (terms.length) V.after = atsCover(scoreAfter(R, targets, docText()), terms).pct;
+      done('verify', S.dropped ? 'Second reader dropped ' + S.dropped + ' of ' + S.n + ' change' + (S.n > 1 ? 's' : '') : 'Second reader: all ' + S.n + ' change' + (S.n > 1 ? 's' : '') + ' hold up');
+      return o;
+    })
+    .catch((e) => {
+      V.second = { failed: e === 'shape' ? AI_ERR.http : aiMsg(e) };
+      targets.forEach((tg) => (tg.res || []).forEach((x) => { if (norm(x.sug) !== norm(x.orig) && !x.fc) x.fc = 'Not checked by the second reader — read it before accepting'; }));
+      done('verify', 'The second check couldn’t run'); return o;
+    });
 }
 // Sync: each skills line in the order the job asks for them (the same skills, each group kept together)
 function skillsReorder(order) {
@@ -2757,6 +2880,7 @@ function validateAll(R, targets, terms, cover0) {
     else if (missing.length) R.headline.fc = 'This exact title hasn’t been held — keep it only if it describes the work';
   }
   guardAll(R, targets);
+  if (appOpt()) strictChecks(R, targets, V);
   if (terms.length) V.after = atsCover(scoreAfter(R, targets, pool), terms).pct;
   return V;
 }
@@ -2764,7 +2888,7 @@ function validateAll(R, targets, terms, cover0) {
 function optRow(type, data, orig, sug, note, fc) {
   const i = OPT.rows.length, ord = type === 'order' || type === 'skorder'; OPT.rows.push(Object.assign({ type, st: 'p', orig, sug }, data));   // ord: the same lines in a new order
   return '<div class="rr' + (ord ? ' ord' : '') + '" data-r="' + i + '" style="--i:' + i + '"><div class="ro">' + (orig ? esc(orig) : '<i>Not on the resume yet</i>') + '</div><div class="rn"><span' + (ord ? '' : ' contenteditable="true"') + ' data-rs="' + i + '">' + esc(sug) + '</span>' + (note ? '<small>' + esc(note) + '</small>' : '') +
-    (fc ? '<span class="fc fx">' + IC_WARN + ' ' + esc(fc) + '</span>' : '<span class="fc">' + IC_OK + ' ' + (ord ? 'The same ' + (type === 'order' ? 'bullets' : 'skills') + ', in a new order' : 'Fact-checked against the resume') + '</span>') +
+    (fc ? '<span class="fc fx">' + IC_WARN + ' ' + esc(fc) + '</span>' : '<span class="fc">' + IC_OK + ' ' + (ord ? 'The same ' + (type === 'order' ? 'bullets' : 'skills') + ', in a new order' : OPT.okLabel || 'Fact-checked against the resume') + '</span>') +
     '<div class="rb" id="rb' + i + '"><button type="button" class="ok" data-a="r-ok" data-v="' + i + '" aria-label="Accept">' + IC_OK + '</button><button type="button" class="no" data-a="r-no" data-v="' + i + '" aria-label="Reject">' + IC_X + '</button></div></div></div>';
 }
 const optCard = (title, body, plain, id) => '<section class="rc"' + (id ? ' id="' + id + '"' : '') + '><h3>' + title + '</h3>' + (plain ? '' : '<div class="rh"><span>Original</span><span>Claude’s suggestion</span></div>') + body + '</section>';
@@ -2772,6 +2896,10 @@ const optCard = (title, body, plain, id) => '<section class="rc"' + (id ? ' id="
 // the box under Skills, and the work experience in a window, side by side. Nothing on the resume changes until it's accepted.
 function showResults(R, targets, sel, V) {
   OPT.rows = []; OPT.skillsDone = true;   // the skills are in the box on the page now
+  // an application: this run's match score is kept (before, expected, and measured again once accepted); the second reader's verdict labels each row
+  const strict = appOpt(), again = strict && optAgain(), prev = lastScore(), S = strict ? V.second || null : null;
+  if (strict && V.before != null && !V.logged) { V.logged = 1; DOC.meta.scores = (DOC.meta.scores || []).slice(-9).concat({ at: Date.now(), before: V.before, expect: V.after, now: V.before }); }
+  OPT.okLabel = S && !S.failed && S.n ? 'Checked against the original line, twice' : '';
   const sug = { key: recKey(), at: Date.now() };
   if (R.headline) sug.headline = { orig: R.headline.orig || '', sug: R.headline.sug, fc: R.headline.fc || '' };
   if (R.summary && R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig)) sug.summary = { sid: R.summary.sid || '', orig: R.summary.orig || '', sug: R.summary.sug, fc: R.summary.fc || '' };
@@ -2794,21 +2922,43 @@ function showResults(R, targets, sel, V) {
   if (!OPT.rows.length) {   // no bullet to review: everything is on the page
     endPending(); modalClose();
     const first = $('#sheet .pgui'); if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    toast(onPage ? 'The suggestions are on the resume — accept or reject each one' : R.summary && R.summary.kept ? 'Kept the summary: the rewrite would have lost words this job looks for' : 'The resume already fits this job — nothing to change');
+    const c = strict && !onPage && atsTerms().length ? atsCover(docText(), atsTerms()) : null;   // an application with nothing left to change says where it stands
+    toast(onPage ? 'The suggestions are on the resume — accept or reject each one' : c ? 'Already optimised for this job — match score ' + c.pct + '%' + (c.miss.length ? '. Still missing ' + c.miss.slice(0, 3).join(', ') + ': only the client can confirm those' : '')
+      : R.summary && R.summary.kept ? 'Kept the summary: the rewrite would have lost words this job looks for' : 'The resume already fits this job — nothing to change');
     return;
   }
-  const reqs = R.reqs || [], met = reqs.filter((q) => q.status !== 'missing'), basics = reqs.filter((q) => q.kind === 'basic'), basicsMet = basics.filter((q) => q.status !== 'missing');
+  // the requirements: on an application, as the second reader marked them on the resume as it would read (else as the writer found them)
+  const after = strict && R.reqsAfter, reqs = after || R.reqs || [], met = reqs.filter((q) => q.status !== 'missing'), basics = reqs.filter((q) => q.kind === 'basic'), basicsMet = basics.filter((q) => q.status !== 'missing');
   const reworded = targets.reduce((n, tg) => n + (tg.res || []).filter((x) => norm(x.sug) !== norm(x.orig)).length, 0) + (sug.summary ? 1 : 0);
   const RQ = { shown: ['Shown', 'ok', 'The resume states it plainly.'], buried: ['Surfaced', 'blue', 'The facts prove it; a line was reworded to say it in the posting’s words.'], missing: ['Not on the resume', 'mute', 'Nothing was added — say so honestly if asked.'] };
-  const reqCard = reqs.length ? '<div class="reqs"><button type="button" class="reqh" data-a="reqs-toggle" aria-expanded="false"><span><b>Meets ' + met.length + ' of ' + reqs.length + ' requirements</b><small>' + basicsMet.length + ' of ' + basics.length + ' must-haves · ' + reworded + ' line' + (reworded === 1 ? '' : 's') + ' reworded, facts unchanged' + (R.mode === 'light' ? ' · light touch' : '') + '</small></span>' + I_DN + '</button>' +
-    '<ul class="reql" id="reqList" hidden>' + reqs.map((q) => '<li><span class="rs ' + RQ[q.status][1] + '">' + RQ[q.status][0] + '</span><span><b>' + esc(q.text) + '</b>' + (q.kind === 'preferred' ? ' <em>nice to have</em>' : '') + (q.evidence ? '<q>' + esc(q.evidence) + '</q>' : '<small>' + RQ[q.status][2] + '</small>') + '</span></li>').join('') + '</ul></div>' : '';
+  const was = {}; (R.reqs || []).forEach((q) => { was[q.text] = q.status; });
+  const rq = (q) => !after ? RQ[q.status] : q.status === 'shown' ? (was[q.text] && was[q.text] !== 'shown' ? ['Surfaced', 'blue', 'Now said in the posting’s words.'] : RQ.shown)
+    : q.status === 'buried' ? ['Not in its words', 'blue', 'The facts prove it, but no line says it the posting’s way yet.'] : RQ.missing;
+  const reqCard = reqs.length ? '<div class="reqs"><button type="button" class="reqh" data-a="reqs-toggle" aria-expanded="false"><span><b>Meets ' + met.length + ' of ' + reqs.length + ' requirements</b><small>' + basicsMet.length + ' of ' + basics.length + ' must-haves · ' + reworded + ' line' + (reworded === 1 ? '' : 's') + ' reworded, facts unchanged' + (after ? ' · re-marked by a second reader' : '') + (R.mode === 'light' ? ' · light touch' : '') + '</small></span>' + I_DN + '</button>' +
+    '<ul class="reql" id="reqList" hidden>' + reqs.map((q) => '<li><span class="rs ' + rq(q)[1] + '">' + rq(q)[0] + '</span><span><b>' + esc(q.text) + '</b>' + (q.kind === 'preferred' ? ' <em>nice to have</em>' : '') + (q.evidence ? '<q>' + esc(String(q.evidence).replace(/^[•▪–-]\s*/, '')) + '</q>' : '<small>' + rq(q)[2] + '</small>') + '</span></li>').join('') + '</ul></div>' : '';
+  // an application: the match score before → after (the same keywords, the same job), the requirements in the job's words, both checks, and the last run
+  const terms = atsTerms(), miss = strict && terms.length ? atsCover(scoreAfter(R, targets, docText()), terms).miss : [];
+  const kept = targets.reduce((n, tg) => n + (tg.keptN || 0), 0) + V.removed, sameN = targets.reduce((n, tg) => n + (tg.sameN || 0), 0);
+  const whyAll = uniq([keptWhy([].concat(...targets.map((tg) => tg.why || [])))].concat(V.notes.map((n) => n.split(' — ')[1] || 'it changed a fact')).filter(Boolean)).slice(0, 3);
+  const vrow = (ok, b, small) => '<div><span class="vi' + (ok ? ' a' : ' w') + '">' + (ok ? IC_OK : IC_WARN) + '</span><span><b>' + b + '</b><small>' + small + '</small></span></div>';
+  const strictRep = !strict ? '' :
+    (V.after != null ? vrow(true, V.after > V.before ? 'Match score ' + V.before + '% → <span class="up">' + V.after + '%</span>' : 'Match score stays at ' + V.after + '%',
+      V.after > V.before ? 'The same ' + terms.length + ' keywords from this job description, once these changes are accepted. It’s measured again after you accept.'
+        : miss.length ? 'Still missing ' + esc(miss.slice(0, 4).join(', ')) + ' — not on the resume, so only the client can confirm ' + (miss.length > 1 ? 'them' : 'it') + ($('#sheet .pgadd') ? '; the ones to ask about wait under Skills.' : '.') : 'Every keyword of this job is already on the resume.') : '') +
+    (after ? vrow(true, 'In the job’s words: ' + (R.reqs || []).filter((q) => q.status === 'shown').length + ' → ' + after.filter((q) => q.status === 'shown').length + ' of ' + after.length + ' requirements',
+      'Re-marked by the second reader on the resume as it would read.' + (after.some((q) => q.status === 'missing') ? ' ' + after.filter((q) => q.status === 'missing').length + ' not on the resume — nothing was added for them.' : '')) : '') +
+    (!V.checked && !kept ? '' : S && S.failed ? vrow(false, 'The second check couldn’t run', esc(String(S.failed).replace(/[.\s]*$/, '.')) + ' The word checks ran (numbers, tools, “led”, repeated keywords) — read each change before accepting.')
+      : vrow(!kept && !(S && S.unchecked), 'Checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + ' twice', 'Against the candidate’s original lines (numbers, tools, “led” or “managed”, repeated keywords), then by a second reader.' +
+        (kept ? ' ' + kept + ' dropped, so the original stays: ' + whyAll.map(esc).join('; ') + '.' : ' Every change holds up.') + (V.fixed ? ' ' + V.fixed + ' had a number that isn’t on the resume — now a [ ] to fill in.' : '') + (S && S.unchecked ? ' ' + S.unchecked + ' weren’t checked by the second reader — they’re marked.' : ''))) +
+    (again ? vrow(true, 'Optimised for this job before', (prev && prev.before != null ? new Date(prev.at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) + ': ' + prev.before + '% → ' + (prev.now != null ? prev.now : prev.before) + '%. ' : '') +
+      'This run built on what was accepted' + (sameN ? ' — ' + sameN + ' line' + (sameN > 1 ? 's' : '') + ' already optimised stayed as ' + (sameN > 1 ? 'they are' : 'it is') : '') + '.') : '');
   modalOpen('<div class="om" role="dialog" aria-modal="true" aria-labelledby="omR"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
     '<div class="omh"><h2 id="omR">Optimised work experience</h2><p class="omsub">' + (OPT.pending ? 'Made in the background from the team portal — nothing on the resume has changed yet. ' : '') + 'Review each suggestion beside the current bullet. Accept them one by one or all at once; edit a suggestion before accepting if you like.' + (onPage ? ' The title, summary and skills suggestions wait on the resume.' : '') + (/\[/.test(h) ? ' Replace anything in [ ] with the real number.' : '') + '</p></div>' +
     reqCard +
-    '<div class="vrep">' + (V.after != null ? '<div><span class="vi a">' + IC_OK + '</span><span><b>ATS keyword match: ' + (V.after > V.before ? V.before + '% → <span class="up">' + V.after + '%</span>' : '<span class="up">' + V.after + '%</span>') + '</b><small>Of the ' + atsTerms().length + ' keywords in this job description, once these changes are accepted. Every change keeps the keywords already there.</small></span></div>' : '') +
+    '<div class="vrep">' + (strict ? strictRep : (V.after != null ? '<div><span class="vi a">' + IC_OK + '</span><span><b>ATS keyword match: ' + (V.after > V.before ? V.before + '% → <span class="up">' + V.after + '%</span>' : '<span class="up">' + V.after + '%</span>') + '</b><small>Of the ' + atsTerms().length + ' keywords in this job description, once these changes are accepted. Every change keeps the keywords already there.</small></span></div>' : '') +
       '<div><span class="vi' + (V.fixed + V.removed ? ' w' : ' a') + '">' + (V.fixed + V.removed ? IC_WARN : IC_OK) + '</span><span><b>Fact-checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + '</b><small>' +
       (V.fixed + V.removed ? (V.fixed ? V.fixed + ' had a number that isn’t on the resume — now a [ ] to fill in. ' : '') + (V.removed ? V.removed + ' suggestion' + (V.removed > 1 ? 's' : '') + ' dropped, so the original stays: ' + uniq(V.notes.map((n) => n.split(' — ')[1] || 'it changed a fact')).slice(0, 3).map(esc).join('; ') + '.' : '')
-        : 'Every suggestion uses only facts already on the resume — no new numbers, tools or employers.') + '</small></span></div></div>' +
+        : 'Every suggestion uses only facts already on the resume — no new numbers, tools or employers.') + '</small></span></div>') + '</div>' +
     '<div class="omb">' + h + '</div><div class="omf"><span id="omCount"></span><button class="btn pri" type="button" data-a="r-all" id="rAll">✓ Accept all</button><button class="btn" type="button" data-a="opt-done">Done</button></div></div>');
   countRows();
 }
@@ -2833,6 +2983,7 @@ function sugSumHTML(sid) {   // sid '': a summary written for a resume that has 
 }
 function sugDone(k, ok) {
   const s = DOC && DOC.meta.sug; if (!s || !s[k]) return;
+  if (!ok && s[k].sug) remember(k, s[k].sug);   // never offered again for this job
   if (ok) {
     if (k === 'headline') { DOC.headline = s.headline.sug; HL.headline = 1; }
     if (k === 'summary') { let sec = (s.summary.sid && secById(s.summary.sid)) || DOC.sections.find((x) => x.k === 'summary'); if (!sec) { sec = newSection('summary'); DOC.sections.unshift(sec); } sec.hidden = false; sec.text = s.summary.sug; HL['sum:' + sec.id] = 1; }
@@ -2841,7 +2992,7 @@ function sugDone(k, ok) {
   delete s[k]; if (!s.headline && !s.summary && !s.loc) DOC.meta.sug = null;
   if (!ok) { persist(); renderSheet(); return; }
   if (DOC.meta.pre) { SHOWCHG = true; const c = $('#chgOn'); if (c) c.checked = true; }
-  markOptimised(); structural();
+  markOptimised(); scoreNow(); structural();
   toast({ headline: 'Title', summary: 'Summary', loc: 'Open to relocation' }[k] + ' accepted', { a: 'undo', label: 'Undo' });
 }
 function countRows() {
@@ -2857,7 +3008,7 @@ function markRow(i, how) {
 function applyRow(i) {
   const r = OPT.rows[i]; if (!r || r.st !== 'p') return false;
   const el = $('[data-rs="' + i + '"]'), v = el ? el.innerText.replace(/\s+/g, ' ').trim() : r.sug; if (!v) return false;
-  if (r.type === 'bullet') { const o = bulletOwner(r.bid), b = o && byId(o.arr, r.bid); if (b) { b.t = v; HL[b.id] = 1; } }
+  if (r.type === 'bullet') { const o = bulletOwner(r.bid), b = o && o.s.k !== 'education' && o.s.k !== 'projects' && byId(o.arr, r.bid); if (!b) return false; b.t = v; HL[b.id] = 1; }   // never projects or education
   if (r.type === 'summary') { let s = r.sid && secById(r.sid); if (!s) { s = newSection('summary'); DOC.sections.unshift(s); r.sid = s.id; } s.hidden = false; s.text = v; HL['sum:' + s.id] = 1; }
   if (r.type === 'headline') { DOC.headline = v; HL.headline = 1; }
   if (r.type === 'loc') { DOC.prefs = DOC.prefs || {}; DOC.prefs.relocate = true; }
@@ -2977,8 +3128,8 @@ function recAccept() {   // the included skills go onto their lines, marked; one
   saveHave(inc.filter((m) => !m.proven).map((m) => ({ skill: m.skill, has: true })).concat(out.map((m) => ({ skill: m.skill, has: false }))));
   markOptimised();
   if (pre) { allFields().forEach((f) => { if (pre[f.path] === undefined) pre[f.path] = ''; }); SHOWCHG = true; const ch = $('#chgOn'); if (ch) ch.checked = true; }
-  structural();
-  toast((inc.length ? inc.length + ' skill' + (inc.length > 1 ? 's' : '') + ' added' : 'Skills reordered for this job') + (pre ? ' — marked on the page' : ''), { a: 'undo', label: 'Undo' });
+  const sc = scoreNow(); structural();
+  toast((inc.length ? inc.length + ' skill' + (inc.length > 1 ? 's' : '') + ' added' : 'Skills reordered for this job') + (pre ? ' — marked on the page' : '') + (sc ? (pre ? ', match score now ' : ' — match score now ') + sc.pct + '%' : ''), { a: 'undo', label: 'Undo' });
 }
 function likelyRow(sk, skill) {   // no line named: the languages for a language, else the tools line, else the first line
   if (!sk || !sk.rows.length) return 'new:Skills';
@@ -2991,13 +3142,14 @@ function finishOptimise() {
   const n = applySkills(), a = OPT ? OPT.rows.filter((r) => r.st === 'a').length + n : 0;
   endPending(); modalClose();
   const more = !!$('#sheet .pgui');   // the title, summary and skills suggestions wait on the page
-  if (a) { SHOWCHG = true; const c = $('#chgOn'); if (c) c.checked = true; structural(); toast(a + ' change' + (a > 1 ? 's' : '') + ' applied' + (more ? ' — the other suggestions are on the resume' : ' — the changed words are marked on the page'), { a: 'undo', label: 'Undo' }); if (PTAB === 'check') renderPanel(); }
+  const sc = a ? scoreNow() : null, now = sc && sc.pct != null ? ' — match score now ' + sc.pct + '%' + (sc.was != null && sc.was !== sc.pct ? ' (was ' + sc.was + '%)' : '') : '';   // an application: measured again on what was accepted
+  if (a) { SHOWCHG = true; const c = $('#chgOn'); if (c) c.checked = true; structural(); toast(a + ' change' + (a > 1 ? 's' : '') + ' applied' + (now ? now + (more ? '. The other suggestions are on the resume' : '') : more ? ' — the other suggestions are on the resume' : ' — the changed words are marked on the page'), { a: 'undo', label: 'Undo' }); if (PTAB === 'check') renderPanel(); }
   else if (more) toast('The suggestions are on the resume — accept or reject each one');
   const go = $('#sheet .pgui') || $('#sheet .hl'); if (go) go.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 /* ---------- the team portal's batch Optimise leaves its suggestions on the draft until someone reviews them ---------- */
-const pendingOf = (o, sel, ins) => ({ at: Date.now(), sel, ins, V: o.V, R: { summary: o.R.summary, headline: o.R.headline, loc: o.R.loc, skills: o.R.skills, skorder: o.R.skorder || null, reqs: o.R.reqs, mode: o.R.mode },
-  roles: o.targets.map((t) => ({ key: t.key, res: t.res || [], keptN: t.keptN || 0, why: t.why || [], orderIds: t.orderIds || null })) });
+const pendingOf = (o, sel, ins) => ({ at: Date.now(), sel, ins, V: o.V, R: { summary: o.R.summary, headline: o.R.headline, loc: o.R.loc, skills: o.R.skills, skorder: o.R.skorder || null, reqs: o.R.reqs, reqsAfter: o.R.reqsAfter || null, mode: o.R.mode },
+  roles: o.targets.map((t) => ({ key: t.key, res: t.res || [], keptN: t.keptN || 0, sameN: t.sameN || 0, why: t.why || [], orderIds: t.orderIds || null })) });
 const pendingCount = (P) => (P.roles || []).reduce((n, t) => n + t.res.filter((x) => norm(x.sug) !== norm(x.orig)).length + (t.orderIds ? 1 : 0), 0) +
   (P.R.summary && P.R.summary.sug && norm(P.R.summary.sug) !== norm(P.R.summary.orig) ? 1 : 0) + (P.R.headline ? 1 : 0) + (P.R.loc ? 1 : 0) + (P.R.skorder ? 1 : 0);
 function openPending() {
@@ -3005,7 +3157,7 @@ function openPending() {
   const R = P.R || {}, targets = [];
   (P.roles || []).forEach((p) => {   // only lines still exactly as they were when the suggestion was made
     const ids = String(p.key).split(':'), sec = secById(ids[0]), it = sec && byId(sec.items, ids[1]); if (!it) return;
-    targets.push({ key: p.key, sec, it, keptN: p.keptN, why: p.why, res: (p.res || []).filter((x) => { const b = byId(it.bullets, x.bid); return b && b.t === x.orig; }),
+    targets.push({ key: p.key, sec, it, keptN: p.keptN, sameN: p.sameN, why: p.why, res: (p.res || []).filter((x) => { const b = byId(it.bullets, x.bid); return b && b.t === x.orig; }),
       orderIds: p.orderIds && p.orderIds.every((id) => byId(it.bullets, id)) ? p.orderIds : null });
   });
   if (R.skorder) { const s = secById(R.skorder.sid), rows = s ? R.skorder.rows.filter((q) => (byId(s.rows, q.id) || {}).value === q.orig) : []; R.skorder = rows.length ? { sid: R.skorder.sid, rows } : null; }
@@ -3029,7 +3181,7 @@ function optAction(a, v, t) {
     case 'opt-all': { const rows = $$('.orows .orow'), all = rows.every((r) => r.classList.contains('on')); rows.forEach((r) => optPick(r, !all)); return true; }
     case 'opt-go': runOptimise(TEAM && TEAM.app ? 'deep' : false); return true;   // an application: the Sync model, on what was picked
     case 'r-ok': { if (applyRow(+v)) { countRows(); structural(); } return true; }
-    case 'r-no': { const r = OPT.rows[+v]; if (r && r.st === 'p') { r.st = 'r'; markRow(+v, 'r'); countRows(); } return true; }
+    case 'r-no': { const r = OPT.rows[+v]; if (r && r.st === 'p') { r.st = 'r'; markRow(+v, 'r'); if (r.type === 'bullet') { remember(r.bid, r.sug); persist(); } countRows(); } return true; }
     case 'r-all': { let n = 0; OPT.rows.forEach((r, i) => { if (applyRow(i)) n++; }); n += applySkills(); countRows(); if (n) structural(); return true; }
     case 'ask-in': { const m = REC && REC.list[+v]; if (m) { m.st = m.st ? '' : 'yes'; recRefresh(); } return true; }
     case 'ask-x': { const m = REC && REC.list[+v]; if (m) { m.st = ''; recRefresh(); } return true; }
@@ -3175,7 +3327,7 @@ function teamBoot() {
       const bq = row.base_resume_id ? sb.from('client_resumes').select('name,doc,text').eq('id', row.base_resume_id).maybeSingle() : Promise.resolve({ data: null });
       return bq.then((b) => {   // a new draft starts from the base resume; from now on the application has its own copy
         const base = b && b.data;
-        if (base && base.doc && base.doc.sections) { const D = JSON.parse(JSON.stringify(base.doc)); D.meta = D.meta || {}; D.meta.job = null; D.meta.owner = null; delete D.meta.review; delete D.meta.optPending; delete D.meta.pre; delete D.meta.optimised; return startDoc(D); }   // not tailored to this job yet
+        if (base && base.doc && base.doc.sections) { const D = JSON.parse(JSON.stringify(base.doc)); D.meta = D.meta || {}; D.meta.job = null; D.meta.owner = null; delete D.meta.review; delete D.meta.optPending; delete D.meta.pre; delete D.meta.optimised; delete D.meta.scores; delete D.meta.rej; return startDoc(D); }   // not tailored to this job yet (its scores and rejected rewrites belong to another job)
         // a batch can't stop to have a resume read and checked, or one uploaded
         if (BATCH) return batchTell('fail', { why: base ? 'Open ' + (base.name || 'the base resume') + ' in the editor once (Resumes tab), then Retry' : 'No resume yet — add one on the Resumes tab, then Retry' });
         if (base && base.text) return fromSource({ kind: 'text', name: base.name || 'resume', text: base.text, at: Date.now() });
@@ -3278,12 +3430,39 @@ function scanView(D, W) {
 }
 function scanCounts(D) { let jobs = 0, bul = 0; D.sections.forEach((s) => { (s.items || []).forEach((e) => { if (s.k === 'experience') jobs++; bul += e.bullets.length; }); bul += (s.list || []).length; }); return D.sections.length + ' sections · ' + jobs + ' job' + (jobs === 1 ? '' : 's') + ' · ' + bul + ' bullets and lines'; }
 const SCAN_ERR = { no_claude: 'Scanning is off until the Claude key is added in Supabase (Edge Functions → Secrets → ANTHROPIC_API_KEY).', team_only: 'Only the TrulyPlaced team can scan resumes.', limit: 'Today’s AI allowance is used up.', too_long: 'This resume is too long to scan in one go.', empty: 'There’s no text in this file to read — it may be a scanned image.', net: 'Couldn’t reach the server — check your connection.' };
+// While Claude reads, a card like the app's reading step (app.trulyplaced.com): each line writes itself in and a light passes over
+// the words, a thin bar fills, and the quick reader is one click away. A read that was left for the quick reader is ignored.
+let SCAN_RUN = null;
+const crafted = (t) => t.split(' ').map((w, i) => '<span class="cw" style="animation-delay:' + (i * 70) + 'ms,' + (i * 110) + 'ms">' + esc(w) + ' </span>').join('');
+function readingCard(src, run, quick) {
+  const who = CLIENT && String(CLIENT.full_name || '').trim() ? String(CLIENT.full_name).trim().split(' ')[0] + '’s' : 'the';
+  const steps = ['Reading ' + who + ' resume', 'Copying every line word for word', 'Pulling out the experience', 'Noting the education and skills', 'Laying it out for you to check'];
+  $('#start').classList.remove('wide');
+  $('#start').innerHTML = '<div class="card readc" role="status" aria-busy="true"><p class="rd-eye">' + esc(src.name || 'The resume') + '</p><p class="rd-line" id="rdLine" aria-live="polite">' + crafted(steps[0]) + '</p>' +
+    '<div class="rd-bar" role="progressbar" aria-label="Reading" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="rdBar"></i></div>' +
+    '<p class="rd-note"><span id="rdNote">Usually under half a minute.</span> Claude copies every word, then you check it.</p>' +
+    '<button type="button" class="rd-q" id="rdQuick">Use the quick reader instead</button></div>';
+  show('start');
+  $('#rdQuick').onclick = () => { SCAN_RUN = null; readDone(run); quick(); };
+  const t0 = Date.now(); let at = 0;
+  run.timer = setInterval(() => {
+    const line = $('#rdLine'); if (SCAN_RUN !== run || !line) return readDone(run);
+    const secs = (Date.now() - t0) / 1000, pct = Math.min(94, secs < 15 ? secs / 15 * 85 : 85 + (1 - Math.exp(-(secs - 15) / 20)) * 9);   // like the app: most of the way in the usual time, then slowly
+    const bar = $('#rdBar'); bar.style.width = pct + '%'; bar.parentNode.setAttribute('aria-valuenow', String(Math.round(pct)));
+    const k = Math.min(steps.length - 1, Math.floor(secs / 3)); if (k !== at) { at = k; line.innerHTML = crafted(steps[k]); }
+    if (secs > 25) $('#rdNote').textContent = 'Taking a little longer than usual — a long resume can take up to a minute.';
+  }, 250);
+}
+const readDone = (run) => { if (run && run.timer) { clearInterval(run.timer); run.timer = 0; } };
 function scanFlow(src, lines, fresh) {
   const text = lines.map((l) => l.t).join('\n'); src.text = src.text || text;
   const keep = (D) => { if (fresh && DOC) { if (DOC.design) D.design = DOC.design; if (DOC.cover) D.cover = DOC.cover; } };
   const quick = () => { const D = parseDoc(lines, src.name); keep(D); D.meta.srcAt = src.at || Date.now(); D.meta.read = 'quick'; SRC = src; startDoc(D); };
-  show('boot'); $('#boot').lastChild.textContent = 'Claude is reading ' + (src.name || 'the resume') + ' word for word… (up to a minute)';
+  const run = SCAN_RUN = {};
+  readingCard(src, run, quick);
   aiScan(src).then((o) => {
+    if (SCAN_RUN !== run) return;   // the quick reader was chosen meanwhile
+    readDone(run);
     const D = docFromScan(o), W = srcWords(text);
     keep(D); D.meta.srcName = src.name || ''; D.meta.srcAt = src.at || Date.now(); D.meta.read = 'claude';
     const tmp = document.createElement('div'); tmp.innerHTML = scanView(D, W); const flags = tmp.querySelectorAll('.snf').length;
@@ -3296,6 +3475,8 @@ function scanFlow(src, lines, fresh) {
     $('#scAgain').onclick = () => { $('#start').classList.remove('wide'); scanFlow(src, lines, fresh); };
     $('#scQuick').onclick = () => { $('#start').classList.remove('wide'); quick(); };
   }).catch((e) => {
+    if (SCAN_RUN !== run) return;
+    readDone(run);
     $('#start').innerHTML = '<div class="card"><h1>Claude couldn’t read this resume</h1><p>' + esc(SCAN_ERR[e] || 'Something went wrong. Try again in a minute.') + '</p>' +
       '<div class="sv-a"><button class="btn pri" type="button" id="scAgain">Try again</button><button class="btn" type="button" id="scQuick">Use the quick reader instead</button></div>' +
       '<p class="hint" style="margin-top:12px">The quick reader works on this device without AI. It can put things in the wrong section on unusual layouts, so check every section.</p></div>';
@@ -3345,8 +3526,8 @@ document.addEventListener('click', (e) => {
   if (editAction(a, v, t) || formatAction(a, v, t) || optAction(a, v, t) || pageAction(a, v, t)) return;
 });
 document.addEventListener('submit', (e) => { if (e.target.matches('[data-a=sel-ask]')) { e.preventDefault(); selRun('custom'); } });
-document.addEventListener('input', (e) => { if (e.target.closest('#pbody')) { onFieldInput(e); onRangeInput(e); } if (e.target.closest('#sheet')) onPageInput(e); if (e.target.id === 'rname' && DOC) { DOC.meta.srcName = e.target.value.trim(); changed('rname'); } });
-document.addEventListener('change', (e) => { if (e.target.closest('#pbody')) { onRangeChange(e); onSelectChange(e); } if (e.target.closest('.rsk')) countRows(); });
+document.addEventListener('input', (e) => { if (e.target.closest('#pbody')) onFieldInput(e); if (e.target.closest('#sheet')) onPageInput(e); if (e.target.id === 'rname' && DOC) { DOC.meta.srcName = e.target.value.trim(); changed('rname'); } });
+document.addEventListener('change', (e) => { if (e.target.closest('#pbody')) onSelectChange(e); if (e.target.closest('.rsk')) countRows(); });
 document.addEventListener('focusin', (e) => { if (e.target.closest('#pbody')) onFieldFocus(e); });
 document.addEventListener('keydown', (e) => {
   if (EDIT && e.target === EDIT.el) { onPageKey(e); if (e.defaultPrevented) return; }   // typing on the page: Enter, Escape, Backspace
