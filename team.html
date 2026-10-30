@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-10-30.2">
+<link rel="stylesheet" href="/portal.css?v=2026-10-30.3">
 <style>
 /* The shell, laid out like the job board app (app.trulyplaced.com): a left sidebar with the sections, the clients open in
    this browser tab, the client you're working on with their progress, and you. Phones get a top bar and a tab bar. */
@@ -124,6 +124,7 @@
 .hi .dot.k-note{background:var(--warn)}
 .hi .dot.k-client_created,.hi .dot.k-invite_sent,.hi .dot.k-app_restored,.hi .dot.k-resume_restored,.hi .dot.k-client_restored{background:var(--ok)}
 .hi .dot.k-app_deleted,.hi .dot.k-resume_deleted,.hi .dot.k-client_archived{background:var(--bad)}
+.hi .dot.k-resume_request{background:#f59e0b}.hi .dot.k-resume_request_done{background:var(--ok)}
 .hi .tx{flex:1;min-width:0}
 .hi .tx b{color:var(--ink);font-weight:600}
 .hi .tx small{display:block;color:var(--muted);font-size:12px}
@@ -745,6 +746,23 @@ a.li:hover,button.li:hover{background:var(--hover)}
 .lkrow.skip .t{font-weight:500;color:var(--body)}
 .lknext{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
 .lknext .grow{flex:1;min-width:200px}
+/* ---------- what clients ask about their resume: on their Resumes tab (Answer) and on My day; the tab's count turns amber ---------- */
+.nav a em.wait{background:#f59e0b;color:#fff}
+.rqcard{margin-bottom:14px;border-color:#fde68a;background:linear-gradient(180deg,#fffdf5,#fff 80px)}
+.rqcard h3{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rqi{padding:12px 0;border-top:1px solid var(--line)}
+.rqi:first-of-type{border-top:0}
+.rqh{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rqh b{font-size:14px;color:var(--ink)}
+.rqh .grow{flex:1}
+.rqi p{margin:4px 0 0;font-size:13.5px;color:var(--body);white-space:pre-wrap;overflow-wrap:anywhere}
+.rqr{margin-top:8px;padding:10px 12px;border-radius:10px;background:#ecfdf5;color:#065f46;font-size:13.5px;white-space:pre-wrap;overflow-wrap:anywhere}
+.rqr b{display:block;font-size:12px;font-weight:600;margin-bottom:2px}
+.rqdone{margin:0 0 14px;padding:0 16px;border:1px solid var(--edge);border-radius:14px;background:#fff}
+.rqdone summary{padding:12px 0;font-size:13.5px;font-weight:500;color:var(--body);cursor:pointer}
+.rqdone .rqi{border-top:1px solid var(--line)}
+.mdreq{margin-bottom:12px;border-color:#fde68a}
+.mdreq h3{display:flex;align-items:center;gap:10px}
 @media (max-width:900px){ .lkgrid{grid-template-columns:minmax(0,1fr)} }
 @media (max-width:760px){
   #lkF .btn{flex:1 1 100%}
@@ -774,7 +792,7 @@ a.li:hover,button.li:hover{background:var(--hover)}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="modalRoot"></div>
 <input type="file" id="fileIn" hidden>
-<script src="/portal.js?v=2026-10-30.1"></script>
+<script src="/portal.js?v=2026-10-30.2"></script>
 <script src="/match.js?v=2026-10-30.1"></script>
 <script>
 (function(){
@@ -808,9 +826,7 @@ var SB = null, ME = null, TEAMROWS = [], LIST = null, C = null, R = {}, GEN = 0,
 var V = $('#view');
 var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 var TABS = [['dash', 'Dashboard', J.dash], ['profile', 'Profile', J.profile], ['resumes', 'Resumes', J.resume], ['jobs', 'Jobs', J.jobs], ['applications', 'Applications', J.apps, 'Apps'], ['activity', 'Activity', J.act]];   // [4]: the shorter name in a phone's bottom bar
-var COMMON_Q = ['Are you legally authorized to work in the United States?', 'Will you now or in the future require visa sponsorship (e.g. H-1B)?',
-  'Are you willing to relocate?', 'What are your salary expectations?', 'When can you start?', 'LinkedIn profile', 'How did you hear about this job?',
-  'Gender (voluntary)', 'Race / ethnicity (voluntary)', 'Veteran status (voluntary)', 'Disability status (voluntary)'];
+var COMMON_Q = TP.COMMON_Q;   // shared with the client's own Profile (portal.js), with the answers suggested from the profile
 
 /* =====================================================================
    start: signed in? on the team?
@@ -1098,7 +1114,7 @@ function vMyDay(){
   var when = now.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long', timeZone:'UTC'});
   V.innerHTML = '<div class="pageh"><div class="grow"><h1>My day</h1><div class="sub">' + (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ', ' + esc(first) + ' · ' + esc(when) + '</div></div>' +
       '<button class="btn" type="button" data-act="switch">' + J.swap + 'Switch client</button></div>' +
-    '<div class="stats s5" id="mdS"></div>' +
+    '<div class="stats s5" id="mdS"></div><div id="mdReq"></div>' +
     '<div class="mdg"><div class="card"><h3>Still to do today</h3><p class="hint">Active clients with nothing sent today — the most left on their plan first.</p><div id="mdTodo"><div class="skel"></div></div></div>' +
       '<div class="card"><h3>Clients you worked on this week</h3><p class="hint">From the activity log: the applications you sent and the drafts you started.</p><div id="mdMine"><div class="skel"></div></div></div></div>';
   var draw = function(){
@@ -1138,6 +1154,16 @@ function vMyDay(){
   var me = ME.email;
   Promise.all([loadList(), q(SB.from('client_activity').select('client_id,kind,at').eq('by_email', me).in('kind', ['app_started', 'app_applied']).gte('at', istWeek().toISOString()).order('at', {ascending:false}).limit(3000))])
     .then(function(rs){ MDAY = {at:Date.now(), rows:rs[1] || []}; draw(); }, function(e){ if($('#mdMine')) $('#mdMine').innerHTML = errBox(e); });
+  // clients waiting on an answer about their resume (asked from their workspace), oldest first
+  Promise.all([loadList().catch(function(){}), SB.from('resume_requests').select('id,client_id,kind,message,created_at').eq('status', 'open').order('created_at', {ascending:true}).limit(50)]).then(function(rs){
+    var r = rs[1], el = $('#mdReq'); if(!r || r.error || !el || R.page !== 'myday') return;
+    var L = r.data || [], names = {}; (LIST ? LIST.rows : []).forEach(function(c){ names[c.id] = c.full_name || c.email; });
+    el.innerHTML = L.length ? '<div class="card mdreq"><h3>Clients waiting on an answer <span class="st wait">' + L.length + '</span></h3><p class="hint">They asked about their resume from their workspace — oldest first. Answer on their Resumes tab.</p><div class="list">' +
+      L.map(function(x){
+        return '<a class="li" href="' + esc(cUrl(x.client_id, 'resumes')) + '" data-go><span class="av" style="background:' + TP.hue(x.client_id) + '">' + esc(TP.initials(names[x.client_id] || '?', '')) + '</span>' +
+          '<div class="main"><div class="t">' + esc(names[x.client_id] || 'A client') + ' · ' + esc(RQK[x.kind] || 'Request') + '</div><div class="m">' + (x.message ? esc(x.message) + ' · ' : '') + 'asked ' + esc(TP.ago(x.created_at)) + '</div></div>' + I.chev.replace('<svg', '<svg class="chev"') + '</a>';
+      }).join('') + '</div></div>' : '';
+  }, function(){});
 }
 
 function newClient(){
@@ -1228,8 +1254,9 @@ function drawBar(){
         '<small title="' + esc(c.email) + '">' + esc(c.email) + '</small></div>' +
       '<button class="icb" type="button" data-act="switch" title="Switch client">' + J.swap + '<span class="sr">Switch client</span></button></div></div>' +
     '<nav class="nav ctabs" aria-label="' + esc(name) + '">' + TABS.map(function(t){
-      var on = R.tab === t[0], n = counts[t[0]];
-      return '<a href="' + esc(cUrl(C.id, t[0])) + '" data-go class="' + (on ? 'on' : '') + '"' + (on ? ' aria-current="page"' : '') + '>' + t[2] + '<span>' + t[1] + '</span>' + (n !== '' && n != null ? '<em>' + n + '</em>' : '') + '</a>';
+      var on = R.tab === t[0], n = counts[t[0]], ask = t[0] === 'resumes' && C.reqOpen;   // the client is waiting on an answer about their resume
+      return '<a href="' + esc(cUrl(C.id, t[0])) + '" data-go class="' + (on ? 'on' : '') + '"' + (on ? ' aria-current="page"' : '') + '>' + t[2] + '<span>' + t[1] + '</span>' +
+        (ask ? '<em class="wait" title="' + C.reqOpen + ' request' + (C.reqOpen === 1 ? '' : 's') + ' from ' + esc(name) + ' waiting">' + C.reqOpen + '</em>' : n !== '' && n != null ? '<em>' + n + '</em>' : '') + '</a>';
     }).join('') + '</nav><div class="grow"></div>' +
     '<div class="pgcard" title="Applications sent / plan"><span class="lab">Applications sent</span><div class="pg"><b>' + done.toLocaleString() + '</b>' + (tot ? ' / ' + tot.toLocaleString() + ' · ' + (p.today || 0) + ' today' : ' sent · no plan set') + '</div>' +
       '<div class="prog' + (tot && done >= tot ? ' full' : '') + '"><i style="width:' + pct + '%"></i></div></div></div>';
@@ -1238,6 +1265,7 @@ function drawBar(){
   $('#phead').innerHTML = (c.status === 'archived' ? '<div class="note warn archn"><span>' + I.lock + '<b>' + esc(name) + ' is archived</b> — off the team’s lists. Nothing was deleted.</span><button class="btn sm" type="button" data-act="unarchive">Restore</button></div>' : '') +
     (sec ? '<div class="phead"><nav class="bc" aria-label="Where you are"><a href="/team.html" data-go>Clients</a><i>/</i><span>' + esc(name) + '</span></nav><h1>' + esc(sec[1]) + '</h1></div>' : '');
   drawPhone(c);
+  reqCount(C);
 }
 function showTab(){
   if(R.app) return tApp(R.app);
@@ -1338,24 +1366,26 @@ window.addEventListener('resize', function(){ clearTimeout(DBRS); DBRS = setTime
 var PF = ['full_name', 'phone', 'linkedin', 'location', 'target_roles', 'target_locations', 'work_auth', 'salary', 'notice', 'apply_notes', 'optimise_rules'];
 function tProfile(){
   var c = C.row, ans = Array.isArray(c.answers) ? c.answers : [], first = (c.full_name || '').split(' ')[0] || 'them';
-  function f(k, label, ph, wide){ return '<div class="field"' + (wide ? ' style="grid-column:1/-1"' : '') + '><label for="pf_' + k + '">' + label + '</label>' +
-    (k === 'apply_notes' || k === 'optimise_rules' ? '<textarea id="pf_' + k + '" rows="3" placeholder="' + esc(ph || '') + '">' + esc(c[k] || '') + '</textarea>' : '<input id="pf_' + k + '" value="' + esc(c[k] || '') + '" placeholder="' + esc(ph || '') + '" autocomplete="off">') + '</div>'; }
+  // a field, with the same quick picks the client sees on their own Profile (TP.picksHTML: a tap fills it in, or adds to a list)
+  function f(k, label, ph, wide, picks, isList){ return '<div class="field"' + (wide ? ' style="grid-column:1/-1"' : '') + '><label for="pf_' + k + '">' + label + '</label>' +
+    (k === 'apply_notes' || k === 'optimise_rules' ? '<textarea id="pf_' + k + '" rows="3" placeholder="' + esc(ph || '') + '">' + esc(c[k] || '') + '</textarea>' : '<input id="pf_' + k + '" value="' + esc(c[k] || '') + '" placeholder="' + esc(ph || '') + '" autocomplete="off">') +
+    TP.picksHTML('pf_' + k, picks, isList) + '</div>'; }
   var plan = c.plan_total || '';
   // three parts on one page, like Settings on Scout Better: the list beside them jumps to each, and nothing typed is ever out of sight
   V.innerHTML = '<div class="pfwrap"><nav class="pfnav" id="pfNav" aria-label="Profile sections">' + PFS.map(function(s, i){ return '<button type="button" data-pfs="' + s[0] + '" class="' + (i ? '' : 'on') + '">' + s[1] + '<small>' + s[2] + '</small></button>'; }).join('') + '</nav>' +
-    '<div class="narrow pfmain"><section class="pfsec" id="pfs-profile"><h2>Profile</h2>' +
-    '<div class="card"><h3>Contact</h3><p class="hint">Who they are and how to reach them. The client can see these on their dashboard.</p><div class="grid2">' +
+    '<div class="narrow pfmain"><section class="pfsec" id="pfs-profile"><h2>Profile</h2><div id="pfByClient" hidden></div>' +
+    '<div class="card"><h3>Contact</h3><p class="hint">Who they are and how to reach them. ' + esc(first) + ' sees these on their Profile in their workspace, and can change them there too.</p><div class="grid2">' +
       f('full_name', 'Full name') + '<div class="field"><label>Login email</label><input value="' + esc(c.email) + '" readonly title="The email they sign in with"></div>' +
       f('phone', 'Phone / WhatsApp', '+1 …') + f('linkedin', 'LinkedIn', 'linkedin.com/in/…') +
-      f('location', 'Lives in', 'e.g. Jersey City, NJ') + f('work_auth', 'Work authorization', 'e.g. F-1 OPT (STEM) — needs H-1B later') +
-      f('salary', 'Salary expectation', 'e.g. $95K–$110K') + f('notice', 'Can start', 'e.g. 2 weeks’ notice') + '</div></div>' +
-    '<div class="card"><h3>Standard answers</h3><p class="hint">Used to pre-fill every new application’s form answers. Tap a common question to add it.</p>' +
+      f('location', 'Lives in', 'e.g. Jersey City, NJ') + f('work_auth', 'Work authorization', 'e.g. F-1 OPT (STEM) — needs H-1B later', false, TP.PICKS.work_auth) +
+      f('salary', 'Salary expectation', 'e.g. $95K–$110K', false, TP.PICKS.salary) + f('notice', 'Can start', 'e.g. 2 weeks’ notice', false, TP.PICKS.notice) + '</div></div>' +
+    '<div class="card"><h3>Standard answers</h3><p class="hint">Used to pre-fill every new application’s form answers. Tap a common question to add it — its answer is suggested from the profile above.</p>' +
       '<div id="pfQA">' + ans.map(qaRow).join('') + '</div>' +
       '<div class="row" style="margin-top:10px"><button class="btn sm" type="button" data-act="qaadd">' + I.plus + 'Add a question</button></div>' +
-      '<div class="row" style="margin-top:10px;gap:6px" id="pfCommon">' + COMMON_Q.filter(function(x){ return !ans.some(function(a){ return a.q === x; }); }).map(function(x){ return '<button class="btn sm ghost" type="button" data-act="qacommon" data-q="' + esc(x) + '" style="border:1px dashed var(--line)">+ ' + esc(x) + '</button>'; }).join('') + '</div></div>' +
+      '<div class="picks" style="margin-top:10px" id="pfCommon">' + COMMON_Q.filter(function(x){ return !ans.some(function(a){ return a.q === x; }); }).map(function(x){ return '<button type="button" data-act="qacommon" data-q="' + esc(x) + '">+ ' + esc(x) + '</button>'; }).join('') + '</div></div>' +
     '</section><section class="pfsec" id="pfs-prefs"><h2>Preferences</h2>' +
-    '<div class="card"><h3>Jobs to apply for</h3><p class="hint">The Jobs tab starts from the first target role.</p><div class="grid2">' +
-      f('target_roles', 'Target roles', 'e.g. Data Analyst, BI Analyst') + f('target_locations', 'Target locations', 'e.g. US remote, New York, Toronto') +
+    '<div class="card"><h3>Jobs to apply for</h3><p class="hint">The Jobs tab starts from the first target role. The suggestions are roles and places close to theirs.</p><div class="grid2">' +
+      f('target_roles', 'Target roles', 'e.g. Data Analyst, BI Analyst', false, TP.roleIdeas(c.target_roles), true) + f('target_locations', 'Target locations', 'e.g. US remote, New York, Toronto', false, TP.placeIdeas(c.target_locations, c.location), true) +
       f('apply_notes', 'How to apply for them', 'e.g. No relocation outside the US East Coast. Skip contract roles.', true) + '</div></div>' +
     '<div class="card"><h3>Resume rules</h3><p class="hint">Followed on every Optimise for this client.</p><div class="grid2">' +
       f('optimise_rules', 'Optimisation rules for their resume', 'Followed on every Optimise for this client — e.g. Keep the summary to three lines. Never reword the first role. British spelling.', true) + '</div></div>' +
@@ -1376,11 +1406,32 @@ function tProfile(){
       : '<div class="card"><h3>Remove from the client list</h3><p class="hint">For a client the team has stopped working for, or one added by mistake. Nothing is deleted: they move to <b>Archived</b>, off the team’s lists and counts, and Restore brings them back.</p><button class="btn sm bad" type="button" data-act="archive">Archive ' + esc(first) + '</button></div>') +
     '</section><div class="sticky-save"><span class="saved" id="pfMsg"></span><button class="btn pri" type="button" data-act="pfsave">Save changes</button></div></div></div>';
   $('#pf_status').value = c.status;
-  skFresh(c); lastInvite(C);
+  skFresh(c); lastInvite(C); byClient(C); pfFresh(C);
   if(ME.owner) $('#pf_plan').addEventListener('change', function(e){ $('#pfPCw').hidden = e.target.value !== 'custom'; });
   V.querySelector('.narrow').addEventListener('input', function(e){ if(!e.target.closest('#pfRec')) pfMark(); });
   pfRecover(C);
   pfSpy();
+}
+// the client can change their own Profile from their workspace: the row is read fresh each time this tab opens. Nothing typed
+// here is touched — with edits in progress they stay, and the page says so (Save writes only the fields changed here)
+function pfFresh(cc){
+  q(SB.from('clients').select('*').eq('id', cc.id).maybeSingle()).then(function(row){
+    if(!row || C !== cc || R.tab !== 'profile' || R.app || !$('#pf_full_name') || stable(row) === stable(cc.row)) return;
+    if(pfDirty()){
+      var n = $('#pfByClient'); if(n){ n.innerHTML = '<div class="note warn" style="margin-bottom:12px">' + esc((cc.row.full_name || '').split(' ')[0] || 'The client') + '’s profile changed while you were editing. Save your changes — only what you changed is written — and theirs show too.</div>'; n.hidden = false; }
+      return;
+    }
+    cc.row = row; staleList(); drawBar(); tProfile();
+  }, function(){});
+}
+// what the client changed themselves on their own Profile lately (their workspace saves to this same row)
+function byClient(c){
+  var em = String(c.row.email || '').toLowerCase(), first = esc((c.row.full_name || '').split(' ')[0] || 'The client');
+  q(SB.from('client_activity').select('at,detail').eq('client_id', c.id).eq('kind', 'profile_updated').eq('by_email', em).gte('at', new Date(Date.now() - 30 * 864e5).toISOString()).order('at', {ascending:false}).limit(1)).then(function(r){
+    var x = r && r[0], el = $('#pfByClient'); if(C !== c || !el || !x) return;
+    var f = ((x.detail && x.detail.fields) || []).map(function(k){ return PF_NAME[k] || k; });
+    el.innerHTML = '<div class="note ok" style="margin-bottom:12px">' + first + ' updated ' + (f.length ? esc(f.join(', ')) : 'their profile') + ' ' + esc(TP.ago(x.at)) + ', from their workspace.</div>'; el.hidden = false;
+  }, function(){});
 }
 // the section list: a click scrolls to that part; while scrolling, the part at the top is the one marked
 var PFS = [['profile', 'Profile', 'Contact and standard answers'], ['prefs', 'Preferences', 'Jobs, how to apply, resume rules, skills'], ['plan', 'Plan & account', 'Plan, status, their login']], PFSPY = null;
@@ -1575,8 +1626,9 @@ function edUrl(kind, id){ return '/editor.html?client=' + encodeURIComponent(C.i
 function tResumes(){
   var c = C;
   var roles = String(c.row.target_roles || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
-  // two lists, like My Resumes on Scout Better: the main resumes, and every application's own copy tailored to its job
-  V.innerHTML = '<div class="seg rsseg" id="rsV" role="tablist" aria-label="Which resumes">' + [['main', 'Main resumes'], ['tailored', 'Tailored for jobs']].map(function(o){ return '<button type="button" role="tab" data-rv="' + o[0] + '" class="' + (RSV === o[0] ? 'on' : '') + '" aria-selected="' + (RSV === o[0]) + '">' + o[1] + '<b id="rsN-' + o[0] + '"></b></button>'; }).join('') + '</div>' +
+  // two lists, like My Resumes on Scout Better: the main resumes, and every application's own copy tailored to its job;
+  // above them, what the client asked about their resume from their workspace
+  V.innerHTML = '<div id="rqBox"></div><div class="seg rsseg" id="rsV" role="tablist" aria-label="Which resumes">' + [['main', 'Main resumes'], ['tailored', 'Tailored for jobs']].map(function(o){ return '<button type="button" role="tab" data-rv="' + o[0] + '" class="' + (RSV === o[0] ? 'on' : '') + '" aria-selected="' + (RSV === o[0]) + '">' + o[1] + '<b id="rsN-' + o[0] + '"></b></button>'; }).join('') + '</div>' +
     '<div id="rsMain"' + (RSV === 'main' ? '' : ' hidden') + '><div class="row"><div class="grow"><div class="sub">Base resumes for ' + esc(c.row.full_name) + '. Optimise each one once' + (roles.length ? ' for ' + esc(roles.join(', ')) + ' roles' : '') + '; every application then gets its own copy, synced to that job, so editing these never changes what was already sent.</div></div>' +
     '<button class="btn pri" type="button" data-act="newresume">' + I.plus + 'New resume</button></div><div id="rl" style="margin-top:14px"><div class="skel"></div></div><div id="rdR"></div></div>' +
     '<div id="rsTail"' + (RSV === 'tailored' ? '' : ' hidden') + '><div class="sub">Each application’s own copy, tailored to that job. Open one to keep working on it — a sent one opens read-only, exactly as it was sent.</div><div id="rlT" style="margin-top:14px"><div class="skel"></div></div></div>';
@@ -1585,13 +1637,63 @@ function tResumes(){
     $$('#rsV button').forEach(function(x){ x.classList.toggle('on', x === b); x.setAttribute('aria-selected', String(x === b)); });
     $('#rsMain').hidden = RSV !== 'main'; $('#rsTail').hidden = RSV !== 'tailored';
   });
-  loadTailored(c);
+  loadTailored(c); loadReqs(c);
   rdLink(c, 'resume', '#rdR');
   // what was loaded last shows at once; the fresh list replaces it when it comes
   if(c.resumes || c.rsShown) drawResumes(c, c.resumes || c.rsShown, roles);
   loadResumes(true).then(function(rs){ drawResumes(c, rs, roles); }, function(e){ if(!c.resumes || !$('#rl .li')) { if($('#rl')) $('#rl').innerHTML = errBox(e); } else TP.toast('Couldn’t refresh the resumes — ' + TP.errText(e)); });
 }
 var RSV = 'main';   // which list the Resumes tab shows
+/* ---------- what clients ask about their resume (their workspace's Resume page; sql/supabase-client-workspace.sql): the open
+   ones on top with Answer, the answered ones folded below. The answer is what the client reads. ---------- */
+var RQK = {no_interviews:'Not getting interviews', wrong:'Something on it is wrong', change:'A change to make', other:'Something else'};
+var RQ_REPLIES = ['We’ve made a new version of your resume — it’s in use from today.', 'Fixed — thank you for telling us.', 'Thanks — we’re looking at it and will update you this week.'];
+function loadReqs(c){
+  if(c.reqs) drawReqs(c);
+  SB.from('resume_requests').select('id,resume_id,kind,message,status,reply,created_at,done_at').eq('client_id', c.id).order('created_at', {ascending:false}).limit(30).then(function(r){
+    if(r.error) return;   // the SQL file hasn't run yet: no requests to show
+    c.reqs = r.data || []; c.reqOpen = c.reqs.filter(function(x){ return x.status === 'open'; }).length; c.reqAt = Date.now();
+    drawReqs(c); if(C === c) drawBar();
+  });
+}
+function drawReqs(c){
+  var box = $('#rqBox'); if(C !== c || !box || R.tab !== 'resumes' || R.app) return;
+  var L = c.reqs || [], open = L.filter(function(x){ return x.status === 'open'; }), done = L.filter(function(x){ return x.status !== 'open'; });
+  var first = esc((c.row.full_name || '').split(' ')[0] || 'The client');
+  box.innerHTML = (open.length ? '<div class="card rqcard"><h3>' + first + ' asked about their resume <span class="st wait">' + open.length + ' waiting</span></h3>' +
+      '<p class="hint">From the Resume page in their workspace. If it needs a new version, make one below (<b>Make a copy</b>, edit it, then <b>Use by default for new applications</b>) before you answer — they see every version, and the one in use.</p>' +
+      open.map(reqItem).join('') + '</div>' : '') +
+    (done.length ? '<details class="rqdone"><summary>' + done.length + ' answered request' + (done.length === 1 ? '' : 's') + ' from ' + first + '</summary>' + done.map(reqItem).join('') + '</details>' : '');
+}
+function reqItem(r){
+  var res = (C.resumes || []).filter(function(x){ return x.id === r.resume_id; })[0];
+  return '<div class="rqi"><div class="rqh"><b>' + esc(RQK[r.kind] || 'Request') + '</b><span class="fine">' + esc(TP.ago(r.created_at)) + (res ? ' · about ' + esc(res.name) : '') + '</span><span class="grow"></span>' +
+      (r.status === 'open' ? '<button class="btn sm pri" type="button" data-act="rqanswer" data-id="' + esc(r.id) + '">Answer</button>' : '<span class="st done">Answered ' + esc(TP.ago(r.done_at)) + '</span>') + '</div>' +
+    (r.message ? '<p>' + esc(r.message) + '</p>' : '') + (r.reply ? '<div class="rqr"><b>Your team’s answer</b>' + esc(r.reply) + '</div>' : '') + '</div>';
+}
+function answerReq(id){
+  var c = C, r = (c.reqs || []).filter(function(x){ return x.id === id; })[0]; if(!r) return;
+  var first = esc((c.row.full_name || '').split(' ')[0] || 'the client');
+  var m = TP.modal('<h2>Answer ' + first + '</h2><p><b>' + esc(RQK[r.kind] || 'Request') + '</b>' + (r.message ? ' — “' + esc(r.message) + '”' : '') + '</p>' +
+    '<div class="field" style="margin-top:14px"><label for="rqR">Your answer</label><textarea id="rqR" rows="4" maxlength="2000" placeholder="e.g. We rewrote your summary and first role for analyst jobs — Version 2 is in use from today."></textarea>' +
+      '<small>' + first + ' reads this on the Resume page in their workspace. Tap one to start from it.</small></div>' + TP.picksHTML('rqR', RQ_REPLIES) +
+    '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="button" id="rqOk">Send and mark as answered</button></div>', false, {keep:true});
+  $('#rqOk', m).onclick = function(){
+    var t = $('#rqR', m).value.trim(); if(!t){ TP.toast('Write a short answer first'); $('#rqR', m).focus(); return; }
+    TP.busy(this, q(SB.from('resume_requests').update({status:'done', reply:t}).eq('id', id).select('id'))).then(function(){
+      TP.closeModal(); TP.toast('Answered — ' + first + ' sees it on their Resume page'); loadReqs(c);
+    }, fail);
+  };
+}
+// how many are waiting, for the Resumes tab's count (asked again at most once a minute)
+function reqCount(c){
+  if(c.reqAt && Date.now() - c.reqAt < 60000) return;
+  c.reqAt = Date.now();
+  SB.from('resume_requests').select('id', {count:'exact', head:true}).eq('client_id', c.id).eq('status', 'open').then(function(r){
+    if(r.error) return;
+    var n = r.count || 0; if(n !== (c.reqOpen || 0)){ c.reqOpen = n; if(C === c) drawBar(); }
+  });
+}
 // the tailored copies: the applications whose resume has been opened (and so copied) at least once — newest work first
 function loadTailored(c){
   if(c.tailored) drawTailored(c, c.tailored);
@@ -3509,7 +3611,11 @@ document.addEventListener('click', function(e){
       var si = +b.getAttribute('data-i'), sk = C.skEdit[si], skc = C; if(!sk) return;
       C.skEdit.splice(si, 1); $('#pfSk').innerHTML = skRows(); pfMark();
       return TP.toast('Removed ' + sk.skill + ' — Save changes to keep it that way', {undo:function(){ if(C !== skc || !$('#pfSk')) return; C.skEdit.splice(Math.min(si, C.skEdit.length), 0, sk); $('#pfSk').innerHTML = skRows(); pfMark(); }});
-    case 'qacommon': $('#pfQA').insertAdjacentHTML('beforeend', qaRow({q:b.getAttribute('data-q')})); b.remove(); $$('#pfQA [data-qa=a]').pop().focus(); return;
+    case 'qacommon': {   // its answer suggested from what the Profile says now (typed but not saved yet included)
+      var qq = b.getAttribute('data-q'), form = {}; PF.forEach(function(k){ var fl = $('#pf_' + k); form[k] = fl ? fl.value.trim() : C.row[k]; });
+      $('#pfQA').insertAdjacentHTML('beforeend', qaRow({q:qq, a:TP.suggestAnswer(qq, form)})); b.remove();
+      var na = $$('#pfQA [data-qa=a]').pop(); na.focus(); na.select(); pfMark(); return;
+    }
     case 'qaadd2': $('#apQA').insertAdjacentHTML('beforeend', qaRow({})); $$('#apQA [data-qa=q]').pop().focus(); return;
     case 'qacopy': var row = b.closest('.qa'); return TP.copy($('[data-qa=a]', row).value, 'Answer');
     case 'qadel':
@@ -3520,6 +3626,7 @@ document.addEventListener('click', function(e){
       return;
     case 'resend': return resendInvite(b);
     case 'newresume': return newResume();
+    case 'rqanswer': return answerReq(b.getAttribute('data-id'));
     case 'resmenu': return resumeMenu(b.getAttribute('data-id'));
     case 'jbstart': return startFromBoard(b.getAttribute('data-key'), b);
     case 'jbmore': JB.n += 40; return drawBoard();

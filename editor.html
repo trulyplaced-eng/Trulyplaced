@@ -1102,8 +1102,9 @@ const TEAM = (() => {                                   // the team portal opene
 // the team portal's batch Optimise opens a draft in a hidden frame; what to tailor comes in the address (batch=summary.experience.skills)
 const BATCH = TEAM && TEAM.app && QS.get('batch') ? { sel: QS.get('batch').split('.').filter((k) => /^(summary|headline|location|experience|skills|sync)$/.test(k)).reduce((o, k) => { o[k] = true; return o; }, {}),
   ins: String(QS.get('ins') || '').slice(0, 400) } : null;
-// the team portal's application page shows the resume through this page in a frame (view=1): the page only, read-only, never saved
-const VIEW = !!(TEAM && TEAM.app && !BATCH && QS.get('view') === '1');
+// the page only, read-only, never saved (view=1), in a frame: the team portal's application page shows an application's resume
+// this way, and the client workspace's Resume page a client's own main resume
+const VIEW = !!(TEAM && !BATCH && QS.get('view') === '1');
 let CLIENT = null, TEAM_JOB = null, READONLY = false, TEAM_DIRTY = false;
 const OPT_KEY = TEAM ? 'tp_opt_c_' + TEAM.client : 'tp_opt';   // Optimise choices: one set per client, never shared
 if (EMBED) document.documentElement.classList.add('embed');
@@ -3564,6 +3565,7 @@ function teamBoot() {
   show('boot'); $('#boot').lastChild.textContent = 'Opening the client’s resume…';
   sbReady().then(() => session()).then((s) => {
     if (!s) return teamCard('Sign in to the team portal', 'Your sign-in has expired.', signIn);
+    if (s.user.id === TEAM.client && !VIEW) { location.replace('/portal.html#resume'); return; }   // a client reads their own resume; only the team edits it
     USER = { id: s.user.id, email: s.user.email || '', name: '' };
     const cq = sb.from('clients').select('*').eq('id', TEAM.client).maybeSingle();   // all of it: confirmed_skills exists once its SQL line has run
     const rq = TEAM.app ? sb.from('applications').select('id,client_id,status,title,company,location,job_key,jd_text,base_resume_id,resume_doc,resume_text,cover_letter,applied_at').eq('id', TEAM.app).maybeSingle()
@@ -3571,14 +3573,14 @@ function teamBoot() {
     return Promise.all([cq, rq]).then((rs) => {
       if (rs[0].error || rs[1].error) throw rs[0].error || rs[1].error;
       const c = rs[0].data, row = rs[1].data;
-      if (!c || !row || row.client_id !== TEAM.client) return teamCard('Not found', 'This link doesn’t match a client you can open. Go back to the team portal and open it from there.', '<a class="btn" href="/team.html">Team portal</a>');
+      if (!c || !row || row.client_id !== TEAM.client) return VIEW ? viewFrom(null) : teamCard('Not found', 'This link doesn’t match a client you can open. Go back to the team portal and open it from there.', '<a class="btn" href="/team.html">Team portal</a>');
       CLIENT = c; PROFILE = { target_role: String(c.target_roles || '').split(',')[0].trim() };
       if (TEAM.app) {
         READONLY = row.status !== 'draft' || VIEW;
         TEAM_JOB = { title: row.title || '', company: row.company || '', text: row.jd_text || '', key: 'app:' + row.id, loc: row.location || '' };
         if (row.status !== 'draft') TEAM_SENT = { at: row.applied_at, company: row.company };
       }
-      if (VIEW) document.body.classList.add('ro');
+      if (VIEW) { READONLY = true; document.body.classList.add('ro'); }
       teamPill(); $('#ptVersions').hidden = READONLY;
       if (BATCH && READONLY) return batchTell('fail', { why: 'Already sent' });
       if (TEAM.app && row.resume_doc && row.resume_doc.sections) return startDoc(row.resume_doc);
@@ -3605,9 +3607,15 @@ function teamBoot() {
     });
   }).catch(() => teamCard('Couldn’t open this resume', 'Check your connection and reload the page.', '<a class="btn" href="' + esc(teamBack()) + '">Back</a>'));
 }
-// view=1 with no laid-out copy on the application: a draft shows the resume it starts from, a sent one the text that went
+// view=1 with no laid-out copy on the application: a draft shows the resume it starts from, a sent one the text that went;
+// a main resume (the client workspace) shows itself, or its text while it isn't laid out yet
 function viewFrom(row) {
   const text = (t, note) => { show('start'); $('#start').innerHTML = '<div class="vtext">' + (note ? '<p>' + esc(note) + '</p>' : '') + (t ? '<pre>' + esc(t) + '</pre>' : '') + '</div>'; };
+  if (!row) return text('', 'This resume isn’t available.');
+  if (!TEAM.app) {
+    if (row.doc && row.doc.sections) return startDoc(JSON.parse(JSON.stringify(row.doc)));
+    return text(row.text || '', row.text ? (row.name || 'This resume') + ' is being laid out as a page — here is its text for now.' : 'This resume is on its way.');
+  }
   if (row.status !== 'draft') return text(row.resume_text || '', row.resume_text ? 'The resume text that was sent.' : 'No resume copy was kept with this application.');
   const bq = row.base_resume_id ? sb.from('client_resumes').select('name,doc,text').eq('id', row.base_resume_id).maybeSingle() : Promise.resolve({ data: null });
   return bq.then((b) => {

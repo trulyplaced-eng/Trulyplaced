@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-10-30.2">
+<link rel="stylesheet" href="/portal.css?v=2026-10-30.3">
 <style>
 /* The client's workspace, laid out as app.trulyplaced.com is: the sidebar in the app's light grey, a white page, white cards with
    a hairline and a soft shadow, figures in near-black, TrulyPlaced blue for progress and where you are. */
@@ -147,10 +147,83 @@ body{background:#fff}
 .planbig span{font-size:13px;color:var(--muted)}
 .pwf{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-top:14px}
 .pwf .err{grid-column:1/-1}
+.seeall{display:flex;justify-content:center;margin-top:18px}
+.greet .ct{font-size:13px;color:var(--muted);align-self:flex-end}
+
+/* ---------- Resume: the page in a frame on the left (in view while the right scrolls), how it's doing, its versions and the
+   requests on the right; on a phone: how it's doing, the page, the versions, the requests ---------- */
+.rgrid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);grid-template-areas:"view sum" "view vers" "view req" "view .";grid-template-rows:auto auto auto 1fr;gap:14px;align-items:start}
+.rview{grid-area:view;position:sticky;top:80px;display:flex;flex-direction:column;height:calc(100vh - 100px);min-height:560px;overflow:hidden;background:#fff;border:1px solid var(--edge);border-radius:16px;box-shadow:var(--sh-card)}
+.rvhead{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.rvhead b{font-size:15px;font-weight:600;color:var(--ink)}
+.rvhead .st{margin-left:6px;vertical-align:1px}
+.rvhead small{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.rframe{flex:1;min-height:0;background:var(--bg)}
+.rframe iframe{display:block;width:100%;height:100%;border:0}
+.rsum{grid-area:sum}.rvers{grid-area:vers}.rreq{grid-area:req}
+.rstats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.rstats div{background:var(--bg);border-radius:12px;padding:12px 14px}
+.rstats b{display:block;font-family:var(--ui-d);font-size:26px;font-weight:650;letter-spacing:-.02em;color:var(--ink);line-height:1.1;font-variant-numeric:tabular-nums}
+.rstats span{font-size:12.5px;color:var(--muted)}
+.rask{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.rask b{display:block;font-size:14.5px;color:var(--ink)}
+.rask p{font-size:13.5px;color:#525252;margin:3px 0 12px}
+.rask small{display:block;text-align:center;font-size:12.5px;color:#b45309;margin-top:8px}
+.vers{list-style:none;display:grid;gap:6px;margin-top:10px}
+.vers button{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:left;font:inherit;cursor:pointer;transition:border-color .15s,background-color .15s}
+.vers button:hover{border-color:#cdcdcd}
+.vers button.on{border-color:#171717;background:#fafafa}
+.vers .vn{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--bg);font-size:12px;font-weight:600;color:var(--ink)}
+.vers .vt{flex:1;min-width:0}
+.vers .vt b{display:block;font-size:14px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vers .vt small{display:block;font-size:12px;color:var(--muted)}
+.rql{list-style:none;display:grid;gap:10px;margin-top:10px}
+.rql li{padding:12px 14px;border:1px solid var(--line);border-radius:12px}
+.rqh{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.rqh b{font-size:14px;color:var(--ink)}
+.rql p{font-size:13.5px;color:var(--body);margin-top:4px;white-space:pre-wrap;overflow-wrap:anywhere}
+.rql small{display:block;font-size:12px;color:var(--muted);margin-top:4px}
+.rqr{margin-top:8px;padding:10px 12px;border-radius:10px;background:#ecfdf5;color:#065f46;font-size:13.5px;white-space:pre-wrap;overflow-wrap:anywhere}
+.rqr b{display:block;font-size:12px;font-weight:600;margin-bottom:2px}
+.kinds{display:grid;gap:8px;margin-top:14px}
+.kinds label{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid #e0e0e0;border-radius:12px;cursor:pointer;transition:border-color .15s,background-color .15s}
+.kinds label:hover{border-color:#cdcdcd}
+.kinds label:has(input:checked){border-color:#171717;background:#fafafa}
+.kinds input{margin-top:3px;accent-color:#171717;flex:none}
+.kinds b{display:block;font-size:14px;color:var(--ink);font-weight:600}
+.kinds small{display:block;font-size:12.5px;color:var(--muted)}
+
+/* ---------- Profile: the details the team applies with, a quick pick or a suggested answer where it helps ---------- */
+.pfwrap{display:grid;gap:14px;max-width:880px}
+.pfwrap .panel h3{display:block}
+.pfwrap .hint{margin:3px 0 14px}
+.pfgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.pfgrid .wide{grid-column:1/-1}
+.pfgrid .field small{margin-top:-2px}
+.qa{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px;align-items:start;padding:8px 0;border-top:1px solid var(--line)}
+.qa:first-child{border-top:0}
+.qa .inp{min-height:42px}
+.qa textarea.inp{padding:10px 12px;min-height:42px;resize:vertical}
+.xb{width:36px;height:42px;border:0;border-radius:999px;background:none;display:grid;place-items:center;color:var(--muted);cursor:pointer}
+.xb:hover{background:rgba(0,0,0,.05);color:#b91c1c}
+.xb svg{width:16px;height:16px}
+.picks.common{margin-top:12px}
+.savebar{position:sticky;bottom:16px;z-index:10;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 18px;background:rgba(255,255,255,.96);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid var(--edge);border-radius:16px;box-shadow:var(--sh-float)}
+.savebar span{flex:1;font-size:13px;color:var(--muted)}
+.savebar span.dirty{color:#b45309;font-weight:500}
+.savebar span:empty::before{content:"Changes here are saved with Save changes";color:#a3a3a3}
+.twa{display:none}
 
 /* ---------- phone ---------- */
 .tabbar{display:none}
 @media (max-width:900px){
+  .twa{display:grid;place-items:center;width:40px;height:40px;border-radius:999px;color:#525252;text-decoration:none}
+  .twa:hover{background:rgba(0,0,0,.05);color:#171717}
+  .twa svg{width:21px;height:21px}
+  .rgrid{grid-template-columns:minmax(0,1fr);grid-template-areas:"sum" "view" "vers" "req";grid-template-rows:none}
+  .rview{position:static;height:72vh;min-height:440px}
+  .savebar{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
   .ws{display:block;background:none}
   .sb{display:none}
   .top{padding:0 16px;height:58px}
@@ -187,6 +260,7 @@ body{background:#fff}
   .tabbar svg{width:22px;height:22px}
   .toast{bottom:calc(90px + env(safe-area-inset-bottom,0px))}
 }
+@media (max-width:760px){ .pfgrid{grid-template-columns:minmax(0,1fr)} .qa{grid-template-columns:minmax(0,1fr) auto} .qa textarea.inp{grid-column:1} .qa .xb{grid-row:1;grid-column:2} }
 @media (max-width:420px){ .ring{display:none} }
 </style>
 </head>
@@ -202,8 +276,9 @@ body{background:#fff}
   <div class="content">
     <header class="top">
       <a class="brand m-brand" href="/portal.html" data-go><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="#0938d5"/><path d="M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z" fill="#fff"/><path d="M205 200l37 36 76-88" fill="none" stroke="#0938d5" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg><span>TrulyPlaced</span></a>
-      <h1 id="pageTitle">My applications</h1>
+      <h1 id="pageTitle">Dashboard</h1>
       <span class="grow"></span>
+      <a class="twa" id="twa" target="_blank" rel="noopener" aria-label="WhatsApp your team" title="WhatsApp your team"></a>
       <div class="who" id="who"></div>
     </header>
     <main class="view" id="view"><div class="skel" style="height:190px"></div><div class="skel"></div><div class="skel"></div></main>
@@ -212,13 +287,14 @@ body{background:#fff}
 <nav class="tabbar" id="tabbar" aria-label="Sections"></nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="modalRoot"></div>
-<script src="/portal.js?v=2026-10-30.1"></script>
+<script src="/portal.js?v=2026-10-30.2"></script>
 <script>
 (function(){
 "use strict";
 var $ = TP.$, $$ = TP.$$, esc = TP.esc, I = TP.I, q = TP.q;
 var SB = null, ME = null, CL = null, PROG = null, STATS = null, WEEKS = null, STERR = false, A = null, V = $('#view');
 var F = {f:'all', q:'', n:50};
+var RES = null, RV = null;   // the Resume page: the client's resumes with how each one did, their requests; the version on show
 var TEAM = 'the TrulyPlaced team', WA = TP.CONFIG.WHATSAPP, MAIL = TP.CONFIG.SUPPORT_EMAIL;
 var PLAN = {250:'Starter', 500:'Growth', 1000:'Super Saver'};
 var SV = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
@@ -229,13 +305,22 @@ var IC = {
   cal:'<svg ' + SV + '><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 3v3M16 3v3"/></svg>',
   phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>',
   star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>',
-  plan:'<svg ' + SV + '><path d="M12 3 4 7v5c0 4.4 3.4 8.3 8 9 4.6-.7 8-4.6 8-9V7z"/><path d="m8.5 12 2.4 2.4L15.5 9.8"/></svg>'
+  plan:'<svg ' + SV + '><path d="M12 3 4 7v5c0 4.4 3.4 8.3 8 9 4.6-.7 8-4.6 8-9V7z"/><path d="m8.5 12 2.4 2.4L15.5 9.8"/></svg>',
+  dash:'<svg ' + SV + '><rect x="3" y="3" width="7.5" height="7.5" rx="1.8"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.8"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.8"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.8"/></svg>',
+  res:'<svg ' + SV + '><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>',
+  user:'<svg ' + SV + '><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg>',
+  ask:'<svg ' + SV + '><path d="M21 12a8.5 8.5 0 0 1-12.3 7.6L3 21l1.5-5.4A8.5 8.5 0 1 1 21 12z"/></svg>'
 };
+// what a client can ask the team about their resume (sql/supabase-client-workspace.sql)
+var KINDS = [['no_interviews', 'I’m not getting interviews', 'Applications are going out, but no calls back'], ['wrong', 'Something on it is wrong', 'A date, a title, a detail that isn’t right'],
+  ['change', 'I’d like something changed', 'Something to add, take out or say differently'], ['other', 'Something else', 'Anything else about your resume']];
+var KLABEL = {no_interviews:'Not getting interviews', wrong:'Something on it is wrong', change:'A change to make', other:'Something else'};   // as the history says it
 var STS = [['applied', 'Applied', '#10b981'], ['interview', 'Interview', '#0ea5e9'], ['offer', 'Offer', '#047857'], ['rejected', 'Not selected', '#d4d4d4'], ['closed', 'Closed', '#e5e5e5']];   // the status pills' own dots
 var FILTERS = [['all', 'All'], ['applied', 'Applied'], ['interview', 'Interview'], ['offer', 'Offer'], ['rejected', 'Not selected']];
 
 $('#sideFoot').innerHTML = '<a href="' + esc(WA) + '" target="_blank" rel="noopener">' + I.wa + 'WhatsApp your team</a><a href="mailto:' + esc(MAIL) + '">' + I.mail + 'Support</a>' +
   '<button type="button" data-act="out">' + I.out + 'Sign out</button>';
+$('#twa').href = WA; $('#twa').innerHTML = I.wa;   // a phone: WhatsApp in the top bar (the tab bar holds the five sections)
 
 TP.client().then(function(c){ SB = c; return TP.session(); }).then(function(s){
   if(!s){ TP.toLogin(); return; }
@@ -262,9 +347,15 @@ function notClient(){
 }
 
 /* ---------- where we are ---------- */
-function view(){ return /^#app=[0-9a-f-]{36}$/i.test(location.hash) ? 'app' : location.hash === '#settings' ? 'settings' : 'apps'; }   // anything else: My applications
+// the sections: Dashboard (anything else), Applications and one application, Resume, Profile, Settings
+var PAGES = {'#applications':'apps', '#resume':'resume', '#profile':'profile', '#settings':'settings'};
+function view(){ return /^#app=[0-9a-f-]{36}$/i.test(location.hash) ? 'app' : PAGES[location.hash] || 'home'; }
 function appId(){ var m = /^#app=([0-9a-f-]{36})$/i.exec(location.hash); return m ? m[1].toLowerCase() : null; }
-function go(h){ history.pushState(null, '', location.pathname + (h === '#' ? '' : h)); render(); window.scrollTo(0, 0); }
+function go(h){
+  // leaving the Profile with changes not saved: ask first
+  if(view() === 'profile' && pfDirty()) return TP.confirmBox('Leave without saving?', 'Your changes on this page aren’t saved yet.', 'Leave without saving', true, {cancel:'Keep editing'}).then(function(ok){ if(ok){ PFOFF = true; go(h); PFOFF = false; } });
+  history.pushState(null, '', location.pathname + (h === '#' ? '' : h)); render(); window.scrollTo(0, 0);
+}
 window.addEventListener('popstate', function(){ if(CL) render(); });
 document.addEventListener('click', function(e){
   var a = e.target.closest && e.target.closest('a[data-go]');
@@ -275,19 +366,23 @@ function render(){
   chrome();
   var v = view();
   if(v === 'app') return vApp(appId());
+  if(v === 'apps') return vApps();
+  if(v === 'resume') return vResume();
+  if(v === 'profile') return vProfile();
   if(v === 'settings') return vSettings();
   vHome();
 }
+var TITLES = {home:'Dashboard', apps:'Applications', app:'Application', resume:'Your resume', profile:'Profile', settings:'Settings'};
 function planName(){ var t = (CL && CL.plan_total) || 0; return PLAN[t] || (t ? 'Custom plan' : 'Your plan'); }
 function statusTag(){ var s = (CL && CL.status) || 'active'; return '<span class="tag ' + esc(s) + '">' + ({active:'Active', paused:'Paused', done:'Complete', archived:'Closed'}[s] || esc(s)) + '</span>'; }
 function chrome(){   // the sidebar, the phone tab bar, the page title and the plan card
-  var cur = view() === 'settings' ? 'settings' : 'apps';
-  var items = [['apps', 'My applications', IC.apps, '#'], ['settings', 'Settings', IC.set, '#settings']];
+  var v = view(), cur = v === 'app' ? 'apps' : v;
+  var items = [['home', 'Dashboard', IC.dash, '#'], ['apps', 'Applications', IC.apps, '#applications'], ['resume', 'Resume', IC.res, '#resume'], ['profile', 'Profile', IC.user, '#profile'], ['settings', 'Settings', IC.set, '#settings']];
   var link = function(n, tab){ return '<a href="' + n[3] + '" data-go class="' + (cur === n[0] ? 'on' : '') + '"' + (cur === n[0] ? ' aria-current="page"' : '') + '>' + n[2] + '<span>' + n[1] + '</span>' +
     (!tab && n[0] === 'apps' && PROG && PROG.done ? '<em>' + PROG.done.toLocaleString() + '</em>' : '') + '</a>'; };
   $('#nav').innerHTML = items.map(function(n){ return link(n); }).join('');
-  $('#tabbar').innerHTML = items.map(function(n){ return link(n, true); }).join('') + '<a href="' + esc(WA) + '" target="_blank" rel="noopener">' + I.wa + '<span>WhatsApp</span></a>';
-  $('#pageTitle').textContent = view() === 'settings' ? 'Settings' : view() === 'app' ? 'Application' : 'My applications';
+  $('#tabbar').innerHTML = items.map(function(n){ return link(n, true); }).join('');
+  $('#pageTitle').textContent = TITLES[v] || 'Dashboard';
   var done = PROG.done || 0, tot = CL.plan_total || 0, pct = tot ? Math.min(100, Math.round(done / tot * 100)) : 0, pc = $('#planCard');
   pc.hidden = false;
   pc.innerHTML = '<span class="lab">Your plan</span><div class="pn"><b>' + esc(planName()) + '</b>' + statusTag() + '</div>' +
@@ -296,12 +391,12 @@ function chrome(){   // the sidebar, the phone tab bar, the page title and the p
 function who(){
   var name = (CL && CL.full_name) || ME.name || '';
   $('#who').innerHTML = '<div class="nm"><b>' + esc(name || ME.email) + '</b>' + (name ? esc(ME.email) : '') + '</div>' +
-    '<a class="av" href="#settings" data-go title="Settings" aria-label="Settings">' + esc(TP.initials(name, ME.email)) + '</a>';
+    '<a class="av" href="#profile" data-go title="Your profile" aria-label="Your profile">' + esc(TP.initials(name, ME.email)) + '</a>';
 }
 
-/* ---------- My applications ---------- */
+/* ---------- Dashboard: the progress, the figures and the two charts ---------- */
 function vHome(){
-  document.title = 'My applications | TrulyPlaced';
+  document.title = 'Dashboard | TrulyPlaced';
   var done = PROG.done || 0, tot = CL.plan_total || 0, pct = tot ? Math.min(100, Math.round(done / tot * 100)) : 0, first = String(CL.full_name || '').split(' ')[0];
   var hr = new Date().getHours(), hello = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
   var line = CL.status === 'archived' ? 'Your plan is closed. Message us on WhatsApp if you have any questions — everything we sent is still here.'
@@ -320,11 +415,20 @@ function vHome(){
     '<div class="kpis" id="kpis">' + kpisHTML() + '</div>' +
     (done ? '<div class="duo"><section class="panel"><h3>Applications per week <small>last 8 weeks</small></h3><div id="wk">' + weeksHTML() + '</div></section>' +
         '<section class="panel"><h3>Where they stand <small>' + done.toLocaleString() + ' sent</small></h3><div id="mix">' + mixHTML() + '</div></section></div>' +
-      '<div class="listhead" id="listTop"><h2>All applications</h2><span class="ct" id="alc"></span></div>' +
-      '<div class="tools"><input class="inp" id="aq" type="search" placeholder="Search role or company" value="' + esc(F.q) + '" autocomplete="off" aria-label="Search your applications">' +
+      '<div class="seeall"><a class="btn" href="#applications" data-go>See all ' + done.toLocaleString() + ' application' + (done === 1 ? '' : 's') + I.chev + '</a></div>'
+     : onboardingHTML());
+}
+
+/* ---------- Applications: every one sent, newest first, with search and the status filters ---------- */
+function vApps(){
+  document.title = 'Applications | TrulyPlaced';
+  var done = PROG.done || 0;
+  V.innerHTML = '<div class="greet" id="listTop"><div><h2>Applications</h2><p>' + (done ? 'Everything we’ve sent for you, newest first. Open one to see the job, your resume as sent and the company’s confirmation.' : 'Your first applications are on the way — each appears here the moment it’s sent.') +
+      '</p></div><span class="ct" id="alc"></span></div>' +
+    (done ? '<div class="tools"><input class="inp" id="aq" type="search" placeholder="Search role or company" value="' + esc(F.q) + '" autocomplete="off" aria-label="Search your applications">' +
         '<div class="seg" id="af">' + FILTERS.map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (F.f === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div></div>' +
       '<div id="al"><div class="skel"></div><div class="skel"></div></div>'
-     : onboardingHTML());
+     : '<div class="empty">' + IC.apps + '<h3>Nothing sent yet</h3><p>We start applying as soon as your resume is ready. You’ll see every application here, with exactly what was sent.</p></div>');
   if(!done) return;
   var t; $('#aq').addEventListener('input', function(e){ clearTimeout(t); t = setTimeout(function(){ F.q = e.target.value; F.n = 50; loadList(); }, 250); });
   $('#af').addEventListener('click', function(e){ var b = e.target.closest('[data-f]'); if(b) setFilter(b.getAttribute('data-f')); });
@@ -373,7 +477,7 @@ function setFilter(f){
 // counts for the KPIs and the two charts: small HEAD requests, so they're exact however many applications there are
 function weekStarts(){ var d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); var out = []; for(var i = 7; i >= 0; i--){ var s = new Date(d); s.setDate(s.getDate() - i * 7); out.push(s); } return out; }
 function paintStats(){
-  if(view() !== 'apps') return;
+  if(view() !== 'home') return;
   var k = $('#kpis'), w = $('#wk'), m = $('#mix');
   if(k) k.innerHTML = kpisHTML(); if(w) w.innerHTML = weeksHTML(); if(m) m.innerHTML = mixHTML();
 }
@@ -417,9 +521,9 @@ function vApp(id){
   V.innerHTML = '<div class="skel"></div><div class="skel"></div>';
   q(SB.from('applications').select('id,status,title,company,location,job_url,jd_text,resume_text,resume_file,cover_letter,answers,screenshot,applied_at,status_at').eq('id', id).maybeSingle()).then(function(a){
     if(appId() !== id) return;
-    if(!a){ V.innerHTML = '<div class="empty"><h3>Not found</h3><p>This application isn’t on your account.</p><a class="btn" href="#" data-go>All applications</a></div>'; return; }
+    if(!a){ V.innerHTML = '<div class="empty"><h3>Not found</h3><p>This application isn’t on your account.</p><a class="btn" href="#applications" data-go>All applications</a></div>'; return; }
     A = a; document.title = (a.company || 'Application') + ' | TrulyPlaced';
-    V.innerHTML = '<a class="btn sm ghost" href="#" data-go>' + I.back + 'All applications</a>' +
+    V.innerHTML = '<a class="btn sm ghost" href="#applications" data-go>' + I.back + 'All applications</a>' +
       '<div class="card" style="margin-top:10px"><div class="ahead">' + TP.logo(a.company) + '<div style="flex:1;min-width:0"><h1>' + esc(a.title || 'Role') + '</h1><div class="m">' + esc([a.company, a.location].filter(Boolean).join(' · ')) + '</div></div>' + TP.statusChip(a.status) + '</div>' +
         '<div class="sent">' + I.check + '<span>Sent ' + esc(TP.fmtDateTime(a.applied_at)) + ' by ' + TEAM + '</span></div>' +
         '<div class="row" style="margin-top:14px"><a class="btn sm" href="' + esc(TP.safeHref(a.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'View the job posting</a></div></div>' +
@@ -434,23 +538,161 @@ function vApp(id){
   }, function(e){ V.innerHTML = '<div class="note bad">' + esc(TP.errText(e)) + '</div>'; });
 }
 
-/* ---------- Settings ---------- */
-function details(){
-  var rows = [['Full name', CL.full_name], ['Where you live', CL.location], ['Target roles', CL.target_roles], ['Target locations', CL.target_locations], ['Work authorization', CL.work_auth], ['Salary expectation', CL.salary], ['Can start', CL.notice], ['Phone', CL.phone], ['LinkedIn', CL.linkedin], ['Email', CL.email], ['How you’d like us to apply', CL.apply_notes]]
-    .filter(function(r){ return r[1]; });
-  return rows.length ? '<dl class="kv">' + rows.map(function(r){ return '<dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd>'; }).join('') + '</dl>' : '<p class="hint" style="margin:12px 0 0">We’ll fill these in with you on your onboarding call.</p>';
+/* ---------- Resume: the resume the team built (every version of it), how each version is doing, and asking the team about it.
+   The page itself is the editor's read-only view in a frame (editor.html?client=…&resume=…&view=1), as the team sees it. ---------- */
+function loadRes(){
+  return Promise.all([
+    q(SB.from('client_resumes').select('id,name,is_default,created_at,updated_at').eq('client_id', ME.id).order('created_at', {ascending:true})),
+    q(SB.from('applications').select('base_resume_id,status').eq('client_id', ME.id).neq('status', 'draft').limit(5000)),
+    // the requests need sql/supabase-client-workspace.sql: until it has run there's no list, and Ask goes to WhatsApp
+    SB.from('resume_requests').select('id,resume_id,kind,message,status,reply,created_at,done_at').eq('client_id', ME.id).order('created_at', {ascending:false}).limit(30)
+      .then(function(r){ return r.error ? null : (r.data || []); }, function(){ return null; })
+  ]).then(function(rs){
+    var use = {};
+    (rs[1] || []).forEach(function(a){ if(!a.base_resume_id) return; var u = use[a.base_resume_id] = use[a.base_resume_id] || {n:0, iv:0};
+      u.n++; if(a.status === 'interview' || a.status === 'offer') u.iv++; });
+    var list = rs[0] || []; list.forEach(function(r, i){ r.v = i + 1; r.use = use[r.id] || {n:0, iv:0}; });
+    RES = {list:list, reqs:rs[2]};
+  });
 }
+function inUse(){ var L = (RES && RES.list) || []; return L.filter(function(r){ return r.is_default; })[0] || L[L.length - 1] || null; }
+function vResume(){
+  document.title = 'Your resume | TrulyPlaced';
+  V.innerHTML = resHead() + '<div class="skel" style="height:420px"></div>';
+  loadRes().then(drawRes, function(e){ if(view() === 'resume') V.innerHTML = resHead() + '<div class="note bad">' + esc(TP.errText(e)) + '</div>'; });
+}
+function resHead(pdf){
+  return '<div class="greet"><div><h2>Your resume</h2><p>The resume your team built for you. Every application goes out with it, tailored to each job.</p></div>' +
+    (pdf ? '<button class="btn" type="button" data-act="pdf">' + I.doc + 'Download PDF</button>' : '') + '</div>';
+}
+function drawRes(){
+  if(view() !== 'resume' || !RES) return;
+  var L = RES.list, cur = inUse();
+  if(!L.length){ V.innerHTML = resHead() + '<div class="empty">' + IC.res + '<h3>Your resume is on its way</h3><p>Your team is rebuilding it for the roles you’re targeting — usually within 5 business days. It appears here as soon as it’s ready.</p></div>'; return; }
+  var sel = L.filter(function(r){ return r.id === RV; })[0] || cur, u = sel.use;
+  var rate = u.n ? Math.round(u.iv / u.n * 1000) / 10 : 0;
+  var how = !u.n ? 'Not sent with any application yet.'
+    : u.iv ? rate + '% of the applications sent with it have led to an interview.'
+    : u.n >= 25 ? 'No interviews yet from ' + u.n.toLocaleString() + ' applications — ask your team to take a look.' : 'It’s early: interviews usually start to come after the first few weeks.';
+  var reqs = RES.reqs, open = reqs ? reqs.filter(function(r){ return r.status === 'open'; }).length : 0;
+  V.innerHTML = resHead(true) + '<div class="rgrid">' +
+    '<section class="rview" aria-label="' + esc(sel.name) + '"><div class="rvhead"><div><b>' + esc(sel.name || 'Your resume') + '</b>' + (sel === cur ? ' <span class="st done">In use</span>' : '') +
+        '<small>Version ' + sel.v + ' of ' + L.length + ' · ' + (sel === cur ? 'sent with every new application' : 'an earlier version') + ' · updated ' + esc(TP.ago(sel.updated_at)) + '</small></div></div>' +
+      '<div class="rframe"><iframe id="rvF" title="' + esc(sel.name || 'Your resume') + '" src="/editor.html?client=' + encodeURIComponent(ME.id) + '&amp;resume=' + encodeURIComponent(sel.id) + '&amp;view=1"></iframe></div></section>' +
+    '<section class="panel rsum"><h3>How it’s doing</h3><div class="rstats"><div><b>' + u.n.toLocaleString() + '</b><span>applications sent with it</span></div><div><b>' + u.iv.toLocaleString() + '</b><span>interview' + (u.iv === 1 ? '' : 's') + '</span></div></div>' +
+      '<p class="hint" style="margin:10px 0 0">' + how + '</p>' +
+      '<div class="rask"><b>Not getting interviews?</b><p>Tell your team what’s not working. They’ll look at your resume, reply here, and make a new version if it needs one.</p>' +
+        '<button class="btn pri wide" type="button" data-act="ask">' + IC.ask + 'Ask for changes</button>' + (open ? '<small>' + open + ' request' + (open === 1 ? '' : 's') + ' waiting for your team</small>' : '') + '</div></section>' +
+    '<section class="panel rvers"><h3>Versions <small>' + L.length + '</small></h3><ul class="vers">' + L.slice().reverse().map(function(r){
+        return '<li><button type="button" data-ver="' + esc(r.id) + '" class="' + (r === sel ? 'on' : '') + '"' + (r === sel ? ' aria-current="true"' : '') + '><span class="vn">v' + r.v + '</span><span class="vt"><b>' + esc(r.name || 'Resume') + '</b>' +
+          '<small>' + (r.use.n ? r.use.n.toLocaleString() + ' sent · ' + r.use.iv + ' interview' + (r.use.iv === 1 ? '' : 's') : 'Not sent yet') + ' · made ' + esc(TP.fmtDate(r.created_at)) + '</small></span>' +
+          (r === cur ? '<span class="st done">In use</span>' : '') + '</button></li>'; }).join('') + '</ul></section>' +
+    (reqs ? '<section class="panel rreq"><h3>Your requests</h3>' + (reqs.length ? '<ul class="rql">' + reqs.map(reqHTML).join('') + '</ul>' : '<p class="hint" style="margin:6px 0 0">Nothing asked yet. When you ask your team about your resume, it’s listed here with their answer.</p>') + '</section>' : '') +
+  '</div>';
+}
+function reqHTML(r){
+  return '<li><div class="rqh"><b>' + esc(KLABEL[r.kind] || 'Request') + '</b>' + (r.status === 'done' ? '<span class="st done">Answered</span>' : '<span class="st wait">Waiting for your team</span>') + '</div>' +
+    (r.message ? '<p>' + esc(r.message) + '</p>' : '') + '<small>Asked ' + esc(TP.ago(r.created_at)) + (r.status === 'done' && r.done_at ? ' · answered ' + esc(TP.ago(r.done_at)) : '') + '</small>' +
+    (r.reply ? '<div class="rqr"><b>Your team</b>' + esc(r.reply) + '</div>' : '') + '</li>';
+}
+// asking the team about the resume on show
+function askModal(){
+  var cur = (RES && (RES.list.filter(function(r){ return r.id === RV; })[0] || inUse())) || null;
+  if(!RES || RES.reqs === null){   // the request list isn't set up in the database yet: WhatsApp still works
+    TP.confirmBox('Ask your team on WhatsApp', 'Tell your team what isn’t working with your resume — they reply on WhatsApp, usually within the hour on business days.', 'Open WhatsApp').then(function(ok){ if(ok) window.open(WA, '_blank', 'noopener'); });
+    return;
+  }
+  var m = TP.modal('<h2>Ask your team about your resume</h2><p>About <b>' + esc(cur ? cur.name : 'your resume') + '</b>' + (cur ? ' (version ' + cur.v + ')' : '') + '. They’ll reply here — and if it needs it, make a new version.</p>' +
+    '<div class="kinds" role="radiogroup" aria-label="What’s happening">' + KINDS.map(function(k, i){ return '<label><input type="radio" name="rqK" value="' + k[0] + '"' + (i ? '' : ' checked') + '><span><b>' + k[1] + '</b><small>' + k[2] + '</small></span></label>'; }).join('') + '</div>' +
+    '<div class="field" style="margin-top:14px"><label for="rqM">Tell us more <span class="muted">(optional)</span></label><textarea id="rqM" rows="4" maxlength="2000" placeholder="e.g. Three weeks of data analyst applications and no calls back"></textarea></div>' +
+    '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="button" id="rqGo">Send to your team</button></div>', false, {keep:true});
+  $('#rqGo', m).onclick = function(){
+    var b = this, kind = ($('input[name=rqK]:checked', m) || {}).value || 'other', msg = $('#rqM', m).value.trim();
+    TP.busy(b, q(SB.from('resume_requests').insert({client_id:ME.id, resume_id:cur ? cur.id : null, kind:kind, message:msg}).select('id'))).then(function(){
+      TP.closeModal(); TP.toast('Sent — your team will reply here');
+      return loadRes().then(drawRes);
+    }, function(e){ TP.toast(/5 requests waiting/.test(TP.errText(e)) ? 'You already have 5 requests waiting — your team will answer those first' : TP.errText(e)); });
+  };
+}
+
+/* ---------- Profile: the details the team applies with, kept up to date by the client and the team alike (the same row as
+   the team's Profile tab). Quick picks and suggested answers help fill it in; only what changed is saved. ---------- */
+var PFF = ['full_name', 'phone', 'linkedin', 'location', 'work_auth', 'salary', 'notice', 'target_roles', 'target_locations', 'apply_notes'], PFOFF = false;
+function pfField(k, label, ph, picks, list, wide){
+  return '<div class="field' + (wide ? ' wide' : '') + '"><label for="pf_' + k + '">' + label + '</label>' +
+    (k === 'apply_notes' ? '<textarea id="pf_' + k + '" rows="3" maxlength="2000" placeholder="' + esc(ph) + '">' + esc(CL[k] || '') + '</textarea>'
+      : '<input id="pf_' + k + '" value="' + esc(CL[k] || '') + '" maxlength="300" placeholder="' + esc(ph) + '" autocomplete="off">') +
+    TP.picksHTML('pf_' + k, picks, list) + '</div>';
+}
+function qaRow(a){
+  return '<div class="qa"><input class="inp" data-qa="q" value="' + esc(a.q || '') + '" placeholder="Question" aria-label="Question" maxlength="300"><textarea class="inp" data-qa="a" rows="1" placeholder="Your answer" aria-label="Answer" maxlength="2000">' + esc(a.a || '') + '</textarea>' +
+    '<button class="xb" type="button" data-act="qadel" title="Remove" aria-label="Remove">' + I.trash + '</button></div>';
+}
+function readQA(){ return $$('#pfQA .qa').map(function(r){ return {q:$('[data-qa=q]', r).value.trim(), a:$('[data-qa=a]', r).value.trim()}; }).filter(function(x){ return x.q || x.a; }); }
+function commonHTML(){
+  var have = $('#pfQA') ? readQA() : (CL.answers || []);
+  return TP.COMMON_Q.filter(function(x){ return !have.some(function(a){ return a.q === x; }); }).map(function(x){ return '<button type="button" data-act="qacommon" data-q="' + esc(x) + '">+ ' + esc(x) + '</button>'; }).join('');
+}
+function vProfile(){
+  document.title = 'Profile | TrulyPlaced';
+  var ans = Array.isArray(CL.answers) ? CL.answers : [];
+  V.innerHTML = '<div class="greet"><div><h2>Your profile</h2><p>The details your team applies with. Your changes reach your team the moment you save, and they keep these up to date too.</p></div></div>' +
+    '<div class="pfwrap">' +
+    '<section class="panel"><h3>Contact</h3><p class="hint">How companies and your team reach you.</p><div class="pfgrid">' +
+      pfField('full_name', 'Full name', 'e.g. Priya Sharma') + '<div class="field"><label for="pf_email">Email</label><input id="pf_email" value="' + esc(CL.email || ME.email) + '" readonly title="You sign in with this email"><small>You sign in with this. To change it, message your team.</small></div>' +
+      pfField('phone', 'Phone / WhatsApp', 'e.g. +1 201 555 0147') + pfField('linkedin', 'LinkedIn', 'linkedin.com/in/…') +
+      pfField('location', 'Where you live', 'e.g. Jersey City, NJ') + '</div></section>' +
+    '<section class="panel"><h3>Work authorization &amp; availability</h3><p class="hint">Most applications ask these — tap one of the suggestions, or type your own.</p><div class="pfgrid">' +
+      pfField('work_auth', 'Work authorization', 'e.g. F-1 STEM OPT — needs H-1B later', TP.PICKS.work_auth, false, true) +
+      pfField('salary', 'Salary expectation', 'e.g. $95K–$110K', TP.PICKS.salary) + pfField('notice', 'When you can start', 'e.g. 2 weeks’ notice', TP.PICKS.notice) + '</div></section>' +
+    '<section class="panel"><h3>Jobs you want</h3><p class="hint">Your team searches and applies from these. The roles and places below are suggestions close to yours — tap to add one.</p><div class="pfgrid">' +
+      pfField('target_roles', 'Roles', 'e.g. Data Analyst, BI Analyst', TP.roleIdeas(CL.target_roles), true, true) +
+      pfField('target_locations', 'Places', 'e.g. US remote, New York', TP.placeIdeas(CL.target_locations, CL.location), true, true) +
+      pfField('apply_notes', 'Anything your team should know', 'e.g. No relocation outside the East Coast. Skip contract roles. I’d love to work in healthcare.', null, false, true) + '</div></section>' +
+    '<section class="panel"><h3>Standard answers</h3><p class="hint">Companies ask these on most applications, and your team uses your answers on every form. Tap a question to add it — the answer is suggested from your profile, so check it says what you mean.</p>' +
+      '<div id="pfQA">' + ans.map(qaRow).join('') + '</div>' +
+      '<div class="row" style="margin-top:10px"><button class="btn sm" type="button" data-act="qaadd">' + I.plus + 'Add a question</button></div>' +
+      '<div class="picks common" id="pfCommon">' + commonHTML() + '</div></section>' +
+    '<div class="savebar"><span id="pfMsg"></span><button class="btn pri" type="button" data-act="pfsave" id="pfSave">Save changes</button></div></div>';
+  V.querySelector('.pfwrap').addEventListener('input', pfMark);
+}
+// what the form would change ({} when nothing)
+function pfPatch(){
+  if(!$('#pf_full_name')) return {};
+  var p = {};
+  PFF.forEach(function(k){ var v = $('#pf_' + k).value.trim(); if(v !== (CL[k] || '')) p[k] = v; });
+  var ans = readQA(); if(JSON.stringify(ans.map(function(x){ return [x.q, x.a]; })) !== JSON.stringify((CL.answers || []).map(function(x){ return [x.q || '', x.a || '']; }))) p.answers = ans;
+  return p;
+}
+function pfDirty(){ return !PFOFF && Object.keys(pfPatch()).length > 0; }
+function pfMark(){ var s = $('#pfMsg'); if(s){ var d = pfDirty(); s.textContent = d ? 'Unsaved changes' : ''; s.classList.toggle('dirty', d); } }
+TP.onLeave(function(){ return view() === 'profile' && pfDirty() ? 'Your profile changes aren’t saved yet.' : ''; });
+function pfSave(b){
+  var p = pfPatch();
+  if(!Object.keys(p).length){ TP.toast('Nothing to save'); return; }
+  if(p.full_name === '') { TP.toast('Your name can’t be empty'); $('#pf_full_name').focus(); return; }
+  TP.busy(b, SB.rpc('update_my_profile', {p:p}).then(function(r){ if(r.error) throw r.error; return r.data; })).then(function(row){
+    if(row && row.id) CL = row; else PFF.concat(['answers']).forEach(function(k){ if(k in p) CL[k] = p[k]; });
+    who(); vProfile(); TP.toast('Saved — your team sees it now');
+  }, function(e){
+    var t = TP.errText(e);
+    TP.toast(/update_my_profile|PGRST202|Could not find the function/i.test(t + (e && e.code)) ? 'Your profile can’t be saved here yet — message your team on WhatsApp' : t);
+  });
+}
+
+/* ---------- Settings ---------- */
 function vSettings(){
   document.title = 'Settings | TrulyPlaced';
   var done = PROG.done || 0, tot = CL.plan_total || 0, since = CL.created_at ? TP.fmtDate(CL.created_at) : '';
-  V.innerHTML = '<div class="greet"><div><h2>Settings</h2><p>Your plan, the details we apply with, and how you sign in.</p></div></div>' +
+  V.innerHTML = '<div class="greet"><div><h2>Settings</h2><p>Your plan, help when you need it, and how you sign in.</p></div></div>' +
     '<div class="sgrid">' +
       '<section class="panel"><h3>Your plan ' + statusTag() + '</h3><div class="planbig"><span class="pi">' + IC.plan + '</span><div><b>' + esc(planName()) + '</b><span>' +
         (tot ? done.toLocaleString() + ' of ' + tot.toLocaleString() + ' applications sent' : 'Plan details on the way') + (since ? ' · client since ' + esc(since) : '') + '</span></div></div>' +
         (tot ? '<div class="prog" style="margin-top:14px"><i style="width:' + Math.min(100, Math.round(done / tot * 100)) + '%"></i></div>' : '') + '</section>' +
       '<section class="panel"><h3>Need a hand?</h3><p>Your team replies on WhatsApp, usually within the hour on business days.</p><div class="row" style="margin-top:12px">' +
         '<a class="btn pri" href="' + esc(WA) + '" target="_blank" rel="noopener">' + I.wa + 'WhatsApp us</a><a class="btn" href="mailto:' + esc(MAIL) + '">' + I.mail + 'Email</a></div></section>' +
-      '<section class="panel wide"><h3>The details we apply with</h3><p class="hint" style="margin:4px 0 0">Your team keeps these up to date on every application. To change anything, message us.</p>' + details() + '</section>' +
+      '<section class="panel wide"><h3>The details we apply with</h3><p class="hint" style="margin:4px 0 12px">Your contact details, work authorization, the jobs you want and your standard answers are on your Profile — keep them up to date there.</p>' +
+        '<a class="btn" href="#profile" data-go>' + IC.user + 'Open your profile</a></section>' +
       '<section class="panel wide"><h3>Sign-in &amp; security</h3><dl class="kv"><dt>You sign in with</dt><dd>' + esc(ME.email) + '</dd></dl>' +
         '<form class="pwf" id="pwF" autocomplete="off" novalidate><div class="field"><label for="pw1">New password</label><input id="pw1" type="password" minlength="8" autocomplete="new-password" required></div>' +
         '<div class="field"><label for="pw2">Type it again</label><input id="pw2" type="password" minlength="8" autocomplete="new-password" required></div>' +
@@ -471,11 +713,22 @@ function vSettings(){
 }
 
 document.addEventListener('click', function(e){
-  var b = e.target.closest && e.target.closest('[data-act],[data-leg]'); if(!b) return;
-  if(b.hasAttribute('data-leg')){ setFilter(F.f === b.getAttribute('data-leg') ? 'all' : b.getAttribute('data-leg')); var t = $('#listTop'); if(t) t.scrollIntoView({behavior:'smooth', block:'start'}); return; }
+  var b = e.target.closest && e.target.closest('[data-act],[data-leg],[data-ver]'); if(!b) return;
+  if(b.hasAttribute('data-leg')){ F.f = b.getAttribute('data-leg'); F.q = ''; F.n = 50; go('#applications'); return; }   // the Dashboard's breakdown opens that list
+  if(b.hasAttribute('data-ver')){ RV = b.getAttribute('data-ver'); drawRes(); return; }
   var act = b.getAttribute('data-act');
   if(act === 'out') return TP.signOut();
   if(act === 'more'){ F.n += 50; loadList(); }
+  if(act === 'ask') askModal();
+  if(act === 'pdf'){ var fw = $('#rvF'); try{ if(fw && fw.contentWindow && fw.contentWindow.downloadPDF){ fw.contentWindow.downloadPDF(); return; } }catch(x){} TP.toast('One moment — the resume is still opening'); }
+  if(act === 'pfsave') pfSave(b);
+  if(act === 'qaadd'){ $('#pfQA').insertAdjacentHTML('beforeend', qaRow({q:'', a:''})); $('#pfQA .qa:last-child [data-qa=q]').focus(); pfMark(); }
+  if(act === 'qacommon'){
+    var qq = b.getAttribute('data-q'), form = {}; PFF.forEach(function(k){ var f = $('#pf_' + k); form[k] = f ? f.value.trim() : CL[k]; });
+    $('#pfQA').insertAdjacentHTML('beforeend', qaRow({q:qq, a:TP.suggestAnswer(qq, form)})); b.remove();
+    var a = $('#pfQA .qa:last-child [data-qa=a]'); a.focus(); a.select(); pfMark();
+  }
+  if(act === 'qadel'){ b.closest('.qa').remove(); $('#pfCommon').innerHTML = commonHTML(); pfMark(); }
 });
 })();
 </script>

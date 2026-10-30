@@ -115,8 +115,15 @@ h1{font-weight:650}
 pre.txt{white-space:pre-wrap;word-wrap:break-word;font-family:inherit;font-size:13.5px;line-height:1.55;background:var(--bg);border:1px solid var(--edge);
   border-radius:12px;padding:12px 14px;max-height:340px;overflow:auto;color:var(--ink)}
 
+/* quick picks under a profile field: a tap fills it in (on a list, adds one) - TP.picksHTML */
+.picks{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.picks button{display:inline-flex;align-items:center;height:28px;padding:0 11px;border-radius:999px;border:1px dashed rgba(0,0,0,.18);background:#fff;font-size:12.5px;font-weight:500;color:#525252;cursor:pointer;
+  transition:border-color .15s,color .15s,background-color .15s}
+.picks button:hover{border-style:solid;border-color:#bdbdbd;color:#171717;background:#fafafa}
 /* status chips: the app's StatusBadge, a quiet pill whose dot carries the meaning */
 .st{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:3px 10px;border-radius:999px;white-space:nowrap;background:#f5f5f5;color:#525252;border:0}
+.st.wait{background:#fffbeb;color:#b45309}
+.st.wait::before{background:#f59e0b}
 .st::before{content:"";width:6px;height:6px;border-radius:50%;background:#a3a3a3}
 .st.draft{background:#f5f5f5;color:#525252}
 .st.applied,.st.offer,.st.done{background:#ecfdf5;color:#047857}

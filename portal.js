@@ -332,6 +332,62 @@ document.addEventListener('click', function(e){
 });
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && MOD){ e.preventDefault(); tryClose(); } });
 
+/* ---------- help filling in a client's profile: the same suggestions on the team's Profile tab and the client's own ----------
+   Quick picks under a field (a tap fills it in; on a list, like target roles, it adds one), and the common form questions,
+   each with its answer suggested from what the profile already says. */
+var COMMON_Q = ['Are you legally authorized to work in the United States?', 'Will you now or in the future require visa sponsorship (e.g. H-1B)?',
+  'Are you willing to relocate?', 'What are your salary expectations?', 'When can you start?', 'LinkedIn profile', 'How did you hear about this job?',
+  'Gender (voluntary)', 'Race / ethnicity (voluntary)', 'Veteran status (voluntary)', 'Disability status (voluntary)'];
+var PICKS = {
+  work_auth:['US citizen', 'Green card holder', 'F-1 OPT', 'F-1 STEM OPT — needs H-1B later', 'H-1B — needs a transfer', 'H-4 EAD'],
+  notice:['Immediately', '2 weeks’ notice', '1 month’s notice'],
+  salary:['Open to discuss']
+};
+// a few roles close to the ones named, for a quick tap
+var ROLE_NEAR = [[/data analy|analytics|\bbi\b/i, ['Data Analyst', 'BI Analyst', 'Business Analyst', 'Reporting Analyst', 'Analytics Engineer']],
+  [/data scien|machine learning|\bml\b/i, ['Data Scientist', 'Machine Learning Engineer', 'Applied Scientist']], [/data engineer/i, ['Data Engineer', 'Analytics Engineer', 'ETL Developer']],
+  [/software|developer|backend|front.?end|full.?stack/i, ['Software Engineer', 'Backend Engineer', 'Full Stack Engineer', 'Frontend Engineer']],
+  [/product manager|product owner/i, ['Product Manager', 'Product Owner', 'Technical Product Manager']], [/business analyst/i, ['Business Analyst', 'Systems Analyst', 'Product Analyst']],
+  [/devops|cloud|platform|reliability|\bsre\b/i, ['DevOps Engineer', 'Cloud Engineer', 'Site Reliability Engineer']], [/project manager|program manager|scrum/i, ['Project Manager', 'Program Manager', 'Scrum Master']],
+  [/designer|\bux\b|\bui\b/i, ['Product Designer', 'UX Designer', 'UI Designer']], [/\bqa\b|quality|test/i, ['QA Engineer', 'Test Automation Engineer', 'SDET']]];
+function listOf(s){ return String(s || '').split(',').map(function(x){ return x.trim(); }).filter(Boolean); }
+function hasIn(list, v){ return list.some(function(x){ return x.toLowerCase() === String(v).toLowerCase(); }); }
+function roleIdeas(roles){
+  var have = listOf(roles), src = have.join(' '), out = [];
+  ROLE_NEAR.forEach(function(r){ if(r[0].test(src)) r[1].forEach(function(x){ if(!hasIn(out, x) && !hasIn(have, x)) out.push(x); }); });
+  return out.slice(0, 6);
+}
+function placeIdeas(places, livesIn){
+  var have = listOf(places), city = String(livesIn || '').trim();
+  return ['US remote', city, city ? 'Hybrid near ' + city.split(',')[0] : '', 'Anywhere in the US'].filter(function(x){ return x && !hasIn(have, x); });
+}
+// the answer the profile already gives to a common question ('' when it doesn't say)
+function suggestAnswer(q, p){
+  p = p || {}; var wa = String(p.work_auth || ''), t = String(q || '');
+  var free = /citizen|green card|permanent resident/i.test(wa), visa = /\bopt\b|\bstem\b|\bf-?1\b|h-?1b|h-?4|\bead\b|\bcpt\b|\btn\b|\bl-?1\b|\bo-?1\b|sponsor/i.test(wa);
+  if(/authori[sz]ed to work/i.test(t)) return free || visa ? 'Yes' : '';
+  if(/sponsorship/i.test(t)) return free ? 'No' : visa ? 'Yes' : '';
+  if(/salary/i.test(t)) return p.salary || '';
+  if(/when can you start|start date/i.test(t)) return p.notice || '';
+  if(/linkedin/i.test(t)) return p.linkedin || '';
+  if(/hear about/i.test(t)) return 'LinkedIn';
+  if(/gender|race|ethnicity|veteran|disability/i.test(t)) return 'I don’t wish to answer';
+  return '';
+}
+// the quick picks under a field: data-picks names the field; data-list adds to a comma list instead of replacing
+function picksHTML(id, picks, isList){
+  return picks && picks.length ? '<div class="picks" data-picks="' + esc(id) + '"' + (isList ? ' data-list="1"' : '') + '>' +
+    picks.map(function(v){ return '<button type="button" data-pick="' + esc(v) + '">' + (isList ? '+ ' : '') + esc(v) + '</button>'; }).join('') + '</div>' : '';
+}
+document.addEventListener('click', function(e){
+  var b = e.target.closest && e.target.closest('[data-pick]'); if(!b) return;
+  var box = b.closest('[data-picks]'), f = box && document.getElementById(box.getAttribute('data-picks')); if(!f || f.readOnly || f.disabled) return;
+  var v = b.getAttribute('data-pick');
+  if(box.hasAttribute('data-list')){ var have = listOf(f.value); if(!hasIn(have, v)) have.push(v); f.value = have.join(', '); b.remove(); }
+  else f.value = v;
+  f.dispatchEvent(new Event('input', {bubbles:true}));
+});
+
 window.TP = {
   CONFIG:CONFIG, VERSION:VERSION, I:I, $:$, $$:$$, esc:esc, debounce:debounce, lsGet:lsGet, lsSet:lsSet, ssGet:ssGet, ssSet:ssSet, uid:uid,
   toast:toast, busy:busy, copy:copy, fmtDate:fmtDate, fmtDateTime:fmtDateTime, ago:ago, initials:initials, hue:hue, logo:logo,
@@ -339,6 +395,7 @@ window.TP = {
   client:client, session:session, q:q, whoami:whoami, toLogin:toLogin, signOut:signOut, fn:fn, errText:errText, authGone:authGone, net:net,
   onLeave:onLeave, leaveWhy:leaveWhy,
   upload:upload, fileUrl:fileUrl, fillFiles:fillFiles, shrinkImage:shrinkImage, modal:modal, closeModal:closeModal, tryClose:tryClose, confirmBox:confirmBox,
-  isModal:function(){ return !!MOD; }
+  isModal:function(){ return !!MOD; },
+  COMMON_Q:COMMON_Q, PICKS:PICKS, roleIdeas:roleIdeas, placeIdeas:placeIdeas, suggestAnswer:suggestAnswer, picksHTML:picksHTML
 };
 })();
