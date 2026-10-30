@@ -1005,6 +1005,17 @@ var TSTOP = /\b(senior|sr|junior|jr|staff|principal|lead|head|of|and|the|ii|iii|
 function tTok(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(TSTOP,' ').split(/\s+/).filter(function(w){ return w.length > 1; }); }
 
 
+/* ---- match.js ---- */
+/* =====================================================================
+   The job match: one formula for the editor (the Check tab, Optimise)
+   and the team portal's Jobs list. The job's skills and the phrases it
+   repeats (up to 30, read by the X-ray's shared helpers), and how many
+   of them a resume shows. build.py puts this in editor.html and also
+   writes site-live/match.js from the same text, so they always agree.
+   ===================================================================== */
+function jobTerms(t) { const s = {}; t = String(t || ''); return skillsIn(t).concat(kwFrom(t)).filter((x) => { const k = String(x).toLowerCase(); if (s[k]) return false; s[k] = 1; return true; }).slice(0, 30); }
+function jobCover(text, terms) { const low = String(text || '').toLowerCase(), hit = terms.filter((k) => inText(k, low)); return { pct: terms.length ? Math.round(hit.length / terms.length * 100) : null, hit, miss: terms.filter((k) => !hit.includes(k)) }; }
+
 /* ---- core.js ---- */
 /* =====================================================================
    TrulyPlaced resume editor — core: config, helpers, the resume model,
@@ -2470,8 +2481,8 @@ function factCheck(orig, sug, pool, extraNums) {
   return res;
 }
 const cleanTitle = (t) => String(t || '').replace(/\s*\([^)]*\)\s*/g, ' ').replace(/\s+[-–—|]\s+.*$/, '').replace(/,\s*(remote|hybrid|on-?site).*$/i, '').trim();
-function atsTerms() { if (!JOB) return []; const t = jobText(); return uniq(skillsIn(t).concat(kwFrom(t))).slice(0, 30); }
-function atsCover(text, terms) { const low = String(text || '').toLowerCase(), hit = terms.filter((k) => inText(k, low)); return { pct: terms.length ? Math.round(hit.length / terms.length * 100) : null, hit, miss: terms.filter((k) => !hit.includes(k)) }; }
+function atsTerms() { return JOB ? jobTerms(jobText()) : []; }   // match.js: the same count as the team portal's Jobs list
+function atsCover(text, terms) { return jobCover(text, terms); }
 const TITLE_SKIP = /^(senior|sr|junior|jr|staff|principal|lead|head|of|and|the|ii|iii|iv|i|new|grad|associate|intern|manager|remote|us|usa)$/;
 const jobTitleWords = () => JOB ? cleanTitle(JOB.title).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter((w) => w.length > 1 && !TITLE_SKIP.test(w)) : [];
 function lostTerms(orig, sug, withTitle) {
@@ -3490,12 +3501,13 @@ function batchTell(act, extra) { if (!BATCH || window.parent === window) return;
 function batchRun() {   // tailor this draft to its job with Optimise's own checks; the suggestions wait on the draft for review
   if (READONLY) return batchTell('fail', { why: 'Already sent' });
   if (!JOB || String(JOB.text || '').trim().length < 80) return batchTell('fail', { why: 'No job description — paste it in the draft, then Retry' });
-  if (DOC.meta.optPending) return batchTell('done', { n: pendingCount(DOC.meta.optPending), sk: (DOC.meta.optPending.R.skills || []).length });
+  const scores = (V) => ({ before: V && V.before != null ? V.before : null, after: V && V.after != null ? V.after : null });   // the job match now, and once the suggestions are accepted
+  if (DOC.meta.optPending) return batchTell('done', Object.assign({ n: pendingCount(DOC.meta.optPending), sk: (DOC.meta.optPending.R.skills || []).length }, scores(DOC.meta.optPending.V)));
   saveVersion('Before Optimise').then(() => optCompute(BATCH.sel, BATCH.ins, optPlan(BATCH.sel))).then((o) => {
     const P = pendingOf(o, BATCH.sel, BATCH.ins), n = pendingCount(P), sk = (P.R.skills || []).length;
     if (n || sk) DOC.meta.optPending = P;   // nothing to change: no review to wait for
     TEAM_DIRTY = true;
-    return teamSync().then(() => { if (READONLY) throw { msg: 'Already sent' }; if (TEAM_DIRTY) throw { msg: 'Couldn’t save — check the connection' }; batchTell('done', { n, sk }); });
+    return teamSync().then(() => { if (READONLY) throw { msg: 'Already sent' }; if (TEAM_DIRTY) throw { msg: 'Couldn’t save — check the connection' }; batchTell('done', Object.assign({ n, sk }, scores(P.V))); });
   }).catch((e) => batchTell('fail', { why: e === 'limit' ? 'limit' : aiMsg(e) }));
 }
 function teamPill() {

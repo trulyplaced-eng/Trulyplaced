@@ -145,6 +145,19 @@
 .lkrow .m.warn{color:var(--warn)}
 .lkrow .m.err{color:var(--bad)}
 .lkrow .logo.wait{background:#eef0f6}
+/* each job's match with the main resume (match.js: the editor's own count), and what it's missing */
+.mscore{display:inline-flex;align-items:baseline;gap:4px;height:24px;padding:0 8px;border-radius:7px;border:1px solid transparent;line-height:22px;white-space:nowrap;font-variant-numeric:tabular-nums;cursor:default}
+.mscore b{font-size:12.5px;font-weight:650}
+.mscore i{font-style:normal;font-size:11px;opacity:.7}
+.mscore small{font-size:11px;font-weight:500;opacity:.85}
+.mscore.hi{background:var(--ok-soft);color:var(--ok);border-color:#c8e9d6}
+.mscore.mid{background:var(--blue-soft);color:var(--blue);border-color:var(--blue-line)}
+.mscore.lo{background:var(--warn-soft);color:var(--warn);border-color:#f6d9a8}
+.mscore.min{background:var(--bad-soft);color:var(--bad);border-color:#f7c6d1}
+.lkrow .m.miss b{font-weight:550;color:var(--body)}
+.lkbar .btn.on{background:var(--blue-soft);border-color:var(--blue-line);color:var(--blue)}
+#lkM{margin-top:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+#lkM b{font-weight:550;color:var(--body)}
 .lkneed{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 4px;max-width:560px}
 .lkneed .inp{min-height:36px;font-size:13.5px;padding:0 10px}
 .lkrow.skip{padding-top:9px;padding-bottom:9px}
@@ -541,6 +554,7 @@ h1,h2,h3,.hello,.brand,.stat b,.mod h2,.ahead h2{font-family:var(--ui);letter-sp
 <div id="modalRoot"></div>
 <input type="file" id="fileIn" hidden>
 <script src="/portal.js?v=2026-10-30.1"></script>
+<script src="/match.js?v=2026-10-30.1"></script>
 <script>
 (function(){
 "use strict";
@@ -1727,8 +1741,11 @@ function readLink(raw){
       (dup ? '<div class="note warn">' + esc(C.row.full_name) + ' already has this job: ' + dupNote(dup) + '</div>' : '') +
       '<div class="grid3"><div class="field"><label for="lkT">Job title</label><input id="lkT" value="' + esc(j.title || '') + '"></div><div class="field"><label for="lkC">Company</label><input id="lkC" value="' + esc(j.company || '') + '"></div><div class="field"><label for="lkL">Location</label><input id="lkL" value="' + esc(j.location || '') + '"></div></div>' +
       '<div class="field"><label for="lkU">Link</label><input id="lkU" value="' + esc(j.url) + '"></div>' +
-      '<div class="field"><label for="lkJ">Job description</label><textarea id="lkJ" rows="8" placeholder="Paste the whole job description — the editor tailors the resume to it">' + esc(j.jd || '') + '</textarea></div>' +
+      '<div class="field"><label for="lkJ">Job description</label><textarea id="lkJ" rows="8" placeholder="Paste the whole job description — the editor tailors the resume to it">' + esc(j.jd || '') + '</textarea><div id="lkM" aria-live="polite"></div></div>' +
       '<div class="row end"><button class="btn pri" type="button" id="lkStart">Start application for ' + esc(C.row.full_name.split(' ')[0] || 'this client') + '</button></div></div>';
+    // the job match with the main resume, as the description is read or pasted
+    var showM = function(){ var el = $('#lkM'); if(!el) return; var mm = lkMatch(C, {jd:$('#lkJ').value}); el.innerHTML = mm ? mPill(mm) + '<span>' + missText(mm) + '</span>' : ''; };
+    $('#lkJ').addEventListener('input', TP.debounce(showM, 300)); loadResumes().then(showM, function(){});
     $('#lkStart').onclick = function(){
       var t = $('#lkT').value.trim(), co = $('#lkC').value.trim(), url = $('#lkU').value.trim();
       if(!t || !co){ TP.toast('Add the job title and company'); return; }
@@ -1966,16 +1983,19 @@ function lkType(e){
 }
 function lkDraw(){
   var box = $('#lkList'); if(!box || !C) return;
-  var L = lkList(C.id), f = document.activeElement;
+  var c = C, L = lkList(c.id), f = document.activeElement;
+  if(!c.resumes) loadResumes().then(function(){ if(lkShown(L)) lkDraw(); }, function(){});   // each job's match is counted against the main resume
   var keep = f && f.getAttribute && f.getAttribute('data-lk') && box.contains(f) ? [f.getAttribute('data-id'), f.getAttribute('data-lk'), f.selectionStart, f.selectionEnd] : null;
+  var rows = lkBest() ? L.items.slice().sort(function(a, b){ return lkPct(b) - lkPct(a); }) : L.items;   // best match first: the jobs not scored yet go last
   box.innerHTML = (L.more ? '<div class="note warn" style="margin-top:14px">Up to ' + LK_MAX + ' links are read at a time. The other ' + L.more + ' are still in the box — press <b>Read links</b> again for them.</div>' : '') +
-    (L.items.length ? '<div id="lkHd">' + lkHead(L) + '</div><div class="list" id="lkRows">' + L.items.map(lkRow).join('') + '</div>' : '') +
+    (L.items.length ? '<div id="lkHd">' + lkHead(L) + '</div><div class="list" id="lkRows">' + rows.map(lkRow).join('') + '</div>' : '') +
     (L.skip.length ? '<div class="lkskip"><p class="fine"><b>' + L.skip.length + ' skipped</b> — not added to the list</p><div class="list">' + L.skip.map(lkSkipRow).join('') + '</div></div>' : '');
   if(keep){ var g = box.querySelector('[data-id="' + keep[0] + '"][data-lk="' + keep[1] + '"]'); if(g){ g.focus(); try{ g.setSelectionRange(keep[2], keep[3]); }catch(e2){} } }
 }
 function lkHead(L){
-  var sent = 0, drafts = 0, can = 0, need = 0, reading = 0, gone = 0, opt = 0, busy = 0, ready = 0;
+  var sent = 0, drafts = 0, can = 0, need = 0, reading = 0, gone = 0, opt = 0, busy = 0, ready = 0, scored = 0, strong = 0;
   L.items.forEach(function(x){
+    var m = lkMatch(C, x); if(m){ scored++; if(m.pct >= 75) strong++; }
     if(x.app){
       if(x.st === 'gone') gone++; else if(x.st && x.st !== 'draft') sent++;
       else { drafts++; var os = x.opt && x.opt.st; if(os === 'wait' || os === 'run') busy++; if(os === 'ready') ready++; if(lkCanOpt(x)) opt++; }
@@ -1986,21 +2006,67 @@ function lkHead(L){
   var n = L.items.length - gone, pct = n ? Math.round(sent / n * 100) : 0;
   return '<div class="lkbar"><div class="grow"><b>Your list · ' + n + ' job' + (n === 1 ? '' : 's') + '</b><div class="fine">' +
       [sent + ' of ' + n + ' sent', drafts ? drafts + ' draft' + (drafts === 1 ? '' : 's') : '', busy ? 'syncing ' + busy + '…' : '', ready ? ready + ' ready to review' : '',
-        can + need ? (can + need) + ' to start' : '', reading ? 'reading ' + reading + '…' : ''].filter(Boolean).join(' · ') + '</div>' +
+        can + need ? (can + need) + ' to start' : '', reading ? 'reading ' + reading + '…' : '', strong ? strong + ' strong match' + (strong === 1 ? '' : 'es') + ' (75%+)' : ''].filter(Boolean).join(' · ') + '</div>' +
       (sent ? '<div class="prog' + (sent === n ? ' full' : '') + '"><i style="width:' + pct + '%"></i></div>' : '') + '</div>' +
+    (scored > 1 ? '<button class="btn sm' + (lkBest() ? ' on' : '') + '" type="button" data-act="lksort" aria-pressed="' + lkBest() + '" title="Order the list by job match, best first">Best match first</button>' : '') +
     (can ? '<button class="btn pri" type="button" data-act="lkstart">' + (can === 1 ? 'Start 1 application' : 'Start all ' + can) + '</button>' : '') +
     (opt ? '<button class="btn' + (can ? '' : ' pri') + '" type="button" data-act="lkopt">' + I.spark + 'Sync ' + opt + (opt === 1 ? ' to its job' : ' to their jobs') + '</button>' : '') +
     '<button class="btn sm" type="button" data-act="lkclear">Clear list</button></div>' +
     (busy ? '<p class="fine" style="margin:-4px 0 10px">Syncing in this browser tab — keep it open. You can work in other tabs and on other clients meanwhile.</p>' : '') +
-    (need ? '<p class="fine" style="margin:-4px 0 10px;color:var(--warn)">' + need + (need === 1 ? ' needs' : ' need') + ' a job title and company before ' + (need === 1 ? 'it' : 'they') + ' can start.</p>' : '');
+    (need ? '<p class="fine" style="margin:-4px 0 10px;color:var(--warn)">' + need + (need === 1 ? ' needs' : ' need') + ' a job title and company before ' + (need === 1 ? 'it' : 'they') + ' can start.</p>' : '') +
+    (C.resumes && !lkResume(C) ? '<p class="fine" style="margin:-4px 0 10px">No resume yet — add one under <a href="' + esc(cUrl(C.id, 'resumes')) + '" data-go>Resumes</a> to see how well each job matches.</p>' : '');
+}
+/* ---------- the job match on each job: the job's keywords found on the client's main resume, counted as the editor's Job match
+   counts them (match.js, built from the same code), so the number is the same when the draft opens. What's missing says what to
+   tailor. A started job keeps the score it had; a synced one shows the score now → once its suggestions are accepted. ---------- */
+function lkResume(c){ var r = defaultResume(c); return r && String(r.text || '').trim() ? r : null; }
+function lkMatch(c, x){
+  var jd = String(x.jd || '');
+  if(!jd.trim() || !window.TPMatch || !c) return x.match || null;
+  var r = lkResume(c); if(!r) return null;
+  var k = r.id + '|' + (r.updated_at || '') + '|' + jd.length;
+  if(x.match && x.match.k === k) return x.match;
+  var t = TPMatch.terms(jd), v = t.length ? TPMatch.cover(r.text, t) : null;
+  x.match = v ? {k:k, pct:v.pct, hit:v.hit, miss:v.miss, n:t.length, rn:r.name || ''} : null;
+  return x.match;
+}
+function lkPct(x){ var m = lkMatch(C, x); return m ? m.pct : -1; }
+function lkBest(){ return TP.lsGet('tp_lk_best', false) === true; }
+function mTier(p){ return p >= 75 ? 'hi' : p >= 50 ? 'mid' : p >= 30 ? 'lo' : 'min'; }
+function mPill(m, after){
+  var up = after != null && after > m.pct;
+  var tip = (m.n ? m.hit.length + ' of the ' + m.n + ' keywords in this job are on ' + (m.rn ? '“' + m.rn + '”' : 'the resume') + (m.miss.length ? '. Missing: ' + m.miss.join(', ') : '') : 'Job match now') +
+    (up ? '. ' + after + '% once the suggestions are accepted' : '');
+  return '<span class="mscore ' + mTier(up ? after : m.pct) + '" title="' + esc(tip) + '"><b>' + m.pct + '%</b>' + (up ? '<i>→</i><b>' + after + '%</b>' : '') + '<small>match</small></span>';
+}
+function missText(m){ return m.miss.length ? 'Missing ' + m.miss.slice(0, 5).map(function(k){ return '<b>' + esc(k) + '</b>'; }).join(', ') + (m.miss.length > 5 ? ' +' + (m.miss.length - 5) + ' more' : '') : 'Every keyword in this job is on the resume'; }
+function mMiss(m){ return '<div class="m ' + (m.miss.length ? 'miss' : 'ok') + '">' + missText(m) + '</div>'; }
+// a job whose page couldn't give its description: paste it here, and it's scored at once (and the draft starts with it)
+function lkJd(id){
+  var c = C, L = lkList(c.id), x = L.items.filter(function(y){ return y.id === id; })[0]; if(!x || x.app) return;
+  var who = String(c.row.full_name || '').split(' ')[0] || 'the client';
+  var m = TP.modal('<h2>Job description</h2><p>' + esc([x.title, x.company].filter(Boolean).join(' at ') || 'This job') + ' — paste the whole posting. It’s matched against ' + esc(who) + '’s main resume at once, and the draft starts with it.</p>' +
+    '<div class="field" style="margin-top:12px"><label for="lkJdT">Job description</label><textarea id="lkJdT" rows="12" placeholder="Paste the job description">' + esc(x.jd || '') + '</textarea></div>' +
+    '<div class="row end" style="margin-top:14px"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="button" id="lkJdOk">Save and match</button></div>', true, {keep:true});
+  $('#lkJdOk', m).onclick = function(){
+    var v = $('#lkJdT', m).value.trim();
+    if(v.length < 80){ TP.toast('That looks too short — paste the whole job description'); return; }
+    var M = lkList(c.id); TP.closeModal();
+    if(M.items.indexOf(x) < 0 || x.app) return;   // taken off the list, or started, meanwhile
+    x.jd = v.slice(0, 15000); x.match = null; lkSave(M); if(lkShown(M)) lkDraw();
+    var s = lkMatch(c, x);
+    TP.toast(s ? 'Job match ' + s.pct + '%' + (s.miss.length ? ' — missing ' + s.miss.slice(0, 3).join(', ') : ' — every keyword is on the resume') : 'Saved — add a resume to see the match');
+  };
 }
 function lkRow(x){
   var del = '<button class="icb" type="button" data-act="lkdel" data-id="' + esc(x.id) + '" title="' + (x.app ? 'Take it off the list (the application stays)' : 'Remove from the list') + '" aria-label="Remove">' + I.x + '</button>';
   if(x.state === 'queued' || x.state === 'reading')
     return '<div class="li lkrow" data-state="reading"><span class="logo wait"></span><div class="main"><div class="t muted">Reading…</div><div class="m">' + esc(shortLink(x.from)) + '</div></div><div class="side"><span class="spin" role="status" aria-label="Reading"></span>' + del + '</div></div>';
-  var who = esc([x.company, x.location].filter(Boolean).join(' · '));
+  var who = esc([x.company, x.location].filter(Boolean).join(' · ')), mm = lkMatch(C, x);
   if(x.app){
     var st = x.st || 'draft', s = st === 'gone' ? 'gone' : st === 'draft' ? 'draft' : 'sent', o = s === 'draft' && x.opt ? x.opt : null, os = o ? o.st : '';
+    // the score it started with; once synced, the draft's own score now → once its suggestions are accepted
+    var pill = s === 'gone' ? '' : os === 'ready' && o.before != null ? mPill(Object.assign({hit:[], miss:[], n:0, rn:''}, mm || {}, {pct:o.before}), o.after) : mm ? mPill(mm) : '';
     var line = s === 'gone' ? 'The draft was deleted' : s === 'sent' ? 'Sent ' + esc(TP.ago(x.at))
       : os === 'wait' ? 'Waiting to sync' : os === 'run' ? '<span class="spin" style="width:12px;height:12px;vertical-align:-1px;margin-right:6px"></span>Syncing…'
       : os === 'ready' ? (o.n ? o.n + ' suggested change' + (o.n === 1 ? '' : 's') : 'No wording changes') + (o.sk ? ' · ' + o.sk + ' skill' + (o.sk === 1 ? '' : 's') + ' to tick' : '') + ' — ready to review'
@@ -2008,20 +2074,22 @@ function lkRow(x){
       : os === 'fail' ? 'Couldn’t optimise: ' + esc(o.why) : 'Draft started — open it to tailor the resume and apply';
     return '<div class="li lkrow" data-state="' + s + '" data-opt="' + os + '">' + coLogo(x.company, x.url, x.dom) + '<div class="main"><div class="t">' + esc(x.title) + '</div><div class="m">' + who + '</div>' +
         '<div class="m' + (s === 'sent' || os === 'ready' || os === 'done' ? ' ok' : os === 'fail' ? ' err' : '') + '">' + line + '</div></div>' +
-      '<div class="side">' + (s === 'gone' ? '<span class="st closed">Deleted</span>' : TP.statusChip(st) +
+      '<div class="side">' + pill + (s === 'gone' ? '<span class="st closed">Deleted</span>' : TP.statusChip(st) +
         (os === 'ready' ? '<a class="btn sm pri" href="' + esc(edUrl('app', x.app)) + '" target="tp-ed-' + esc(x.app) + '">Review</a>' : os === 'fail' ? '<button class="btn sm pri" type="button" data-act="lkretry" data-id="' + esc(x.id) + '">Retry</button>' : '') +
         '<a class="btn sm' + (s === 'draft' && os !== 'ready' && os !== 'fail' ? ' pri' : '') + '" href="' + esc(cUrl(C.id, 'app=' + x.app)) + '" data-go>' + (s === 'draft' ? 'Open' : 'View') + '</a>') + del + '</div></div>';
   }
   var ext = '<a class="icb" href="' + esc(TP.safeHref(x.url)) + '" target="_blank" rel="noopener" title="Open the posting">' + I.ext + '</a>';
   var err = x.err ? '<div class="m err">Couldn’t start: ' + esc(x.err) + '</div>' : '';
+  // no description to match against: paste it here (a page that couldn't be read, or a posting that only gave its title)
+  var score = mm ? mPill(mm) : x.jd ? '' : '<button class="btn sm" type="button" data-act="lkjd" data-id="' + esc(x.id) + '">Add job description</button>';
   if(x.state === 'need')
     return '<div class="li lkrow" data-state="need">' + coLogo(x.company, x.url, x.dom) + '<div class="main"><div class="m warn">' +
         (x.guessed ? 'Couldn’t read this page — ' + (x.title ? 'check the title and company' : 'type the job title' + (x.company ? '' : ' and company')) : 'Add the ' + (x.title ? 'company' : x.company ? 'job title' : 'job title and company')) + '</div>' +
         '<div class="lkneed"><input class="inp" data-lk="title" data-id="' + esc(x.id) + '" value="' + esc(x.title || '') + '" placeholder="Job title" aria-label="Job title" autocomplete="off">' +
           '<input class="inp" data-lk="company" data-id="' + esc(x.id) + '" value="' + esc(x.company || '') + '" placeholder="Company" aria-label="Company" autocomplete="off"></div>' +
-        '<div class="m">' + esc(shortLink(x.url)) + '</div>' + err + '</div><div class="side">' + ext + del + '</div></div>';
+        (mm ? mMiss(mm) : '') + '<div class="m">' + esc(shortLink(x.url)) + '</div>' + err + '</div><div class="side">' + score + ext + del + '</div></div>';
   return '<div class="li lkrow" data-state="ready">' + coLogo(x.company, x.url, x.dom) + '<div class="main"><div class="t">' + esc(x.title) + '</div><div class="m">' + who + '</div>' +
-      '<div class="m ' + (x.jd ? 'ok">Job description read' : 'warn">No job description yet — paste it in the draft') + '</div>' + err + '</div><div class="side">' + ext + del + '</div></div>';
+      (mm ? mMiss(mm) : '<div class="m ' + (x.jd ? 'ok">Job description read' : 'warn">No job description yet — add it to see the match') + '</div>') + err + '</div><div class="side">' + score + ext + del + '</div></div>';
 }
 /* ---------- Optimise the list: the editor's own Optimise, run for each draft in a hidden editor, a few at a time ----------
    It runs in this browser tab, so other tabs and other clients' pages are fine; closing the tab stops it, so the page asks
@@ -2067,7 +2135,7 @@ function optOne(job){
   }
   function hear(e){
     var d = e.data || {}; if(e.origin !== location.origin || !d.tp || !d.batch || d.app !== job.app) return;
-    if(d.act === 'done') end(d.n || d.sk ? {st:'ready', n:d.n || 0, sk:d.sk || 0, at:Date.now()} : {st:'done', same:1, at:Date.now()});
+    if(d.act === 'done') end(d.n || d.sk ? {st:'ready', n:d.n || 0, sk:d.sk || 0, before:d.before, after:d.after, at:Date.now()} : {st:'done', same:1, before:d.before, at:Date.now()});
     else if(d.act === 'fail') end({st:'fail', why:String(d.why || 'Something went wrong'), at:Date.now()});
   }
   window.addEventListener('message', hear);
@@ -2957,6 +3025,8 @@ document.addEventListener('click', function(e){
     case 'lkdel': return lkDel(b.getAttribute('data-id'));
     case 'lkopt': return lkOptimise();
     case 'lkretry': return lkRetry(b.getAttribute('data-id'));
+    case 'lkjd': return lkJd(b.getAttribute('data-id'));
+    case 'lksort': TP.lsSet('tp_lk_best', !lkBest()); return lkDraw();
     case 'apmore': AP.n += 50; return loadApps();
     case 'apsel': AP.sel = AP.sel ? null : {}; b.textContent = AP.sel ? 'Done selecting' : 'Select'; drawBulk(); return loadApps();
     case 'apcsv': return exportCsv(b);
