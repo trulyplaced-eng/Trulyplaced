@@ -460,6 +460,66 @@ h1,h2,h3,.hello,.brand,.stat b,.mod h2,.ahead h2{font-family:var(--ui);letter-sp
   .pfsec{scroll-margin-top:56px}
 }
 @media (max-width:760px){.stats.s6,.stats.s5{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* ---------- the application page: a record. Its actions in a header that stays at the top, the form on the left, and on the
+   right the checklist of what's left to do (a draft) or the confirmation, record, notes and history (sent) ---------- */
+.ahead{position:sticky;top:8px;z-index:20;align-items:center;justify-content:space-between;gap:16px;margin:8px 0 14px;padding:12px 16px;background:rgba(255,255,255,.96);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh-1)}
+.ahead .ahl{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.ahead .aht{min-width:0}
+.ahead h2{font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ahead .m{margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ahr{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:none;max-width:60%}
+.ahm{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.ahm .saved:empty{display:none}
+.aha{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.stsel{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.stsel .inp{width:auto;min-height:32px;height:32px;font-size:13px;padding:0 28px 0 10px}
+.apcols{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px;align-items:start}
+.apside{position:sticky;top:104px;display:grid;gap:12px}
+.apside .card{margin-top:0}
+.ch{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.ch h3{margin:0}
+.ch .muted{font-weight:500;font-size:13px}
+.ch + .hint{margin-top:-4px;margin-bottom:10px}
+.apck h3{margin-bottom:2px}
+.ck .ckit{padding:11px 0;border-top:1px solid var(--line);gap:10px}
+.ck .ckit:first-child{border-top:0;padding-top:8px}
+.ck .ckit:last-child{padding-bottom:4px}
+.ckit .n{width:24px;height:24px;font-size:12px}
+.ckit .n svg{width:13px;height:13px}
+.ckit .bd b{display:block;font-size:13.5px;font-weight:600;color:var(--ink)}
+.ckit .bd small{display:block;font-size:12.5px;color:var(--muted);line-height:1.45;margin-top:2px}
+.ckit .bd small b{display:inline;font-size:inherit;color:var(--body)}
+.ckit .lbl{font-size:12.5px}
+.ckit .row{gap:6px}
+.ckit .row .btn.sm{padding:0 10px}
+.warnt{color:var(--warn)}
+.btn.wide{width:100%;justify-content:center}
+.drop.sm{display:flex;align-items:center;gap:10px;text-align:left;padding:10px 12px;margin-top:8px;border-radius:10px}
+.drop.sm svg{width:20px;height:20px;flex:none}
+.drop.sm > span{min-width:0}
+.drop.sm b{margin-top:0;font-size:13px}
+.drop.sm .fine{display:block;font-size:12px;margin-top:1px}
+.drop.sm.has{display:block;text-align:center}
+.drop.sm img{max-height:140px}
+.apside .txt{max-height:220px;overflow:auto}
+.apside .shot{display:block}
+.apside .shot img{width:100%;max-height:220px;object-fit:cover;object-position:top;border-radius:10px;border:1px solid var(--line)}
+.apside .rvs .rv{padding:8px 12px;font-size:13px}
+.apside .rvs .rv span{font-size:12.5px}
+.apbar{display:none}
+@media (max-width:1100px){.apcols{grid-template-columns:minmax(0,1fr) 340px}}
+@media (max-width:900px){
+  .ahead{position:static;margin:0 0 12px;flex-wrap:wrap;gap:10px}
+  .ahr{align-items:flex-start;max-width:none;width:100%}
+  .ahm,.aha{justify-content:flex-start}
+  .apcols{grid-template-columns:minmax(0,1fr)}
+  .apside{position:static}
+  .aprec{padding-bottom:56px}
+  /* a phone: the resume and Mark as applied stay within reach above the tab bar */
+  .apbar{display:flex;position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom,0px));z-index:35;gap:8px;padding:8px 10px;background:rgba(255,255,255,.97);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+  .apbar .btn{flex:1;justify-content:center;min-height:38px}
+  body:has(.apbar) .toast{bottom:calc(136px + env(safe-area-inset-bottom,0px))}
+}
 </style>
 </head>
 <body>
@@ -2239,13 +2299,30 @@ function tApp(id){
   }, function(e){ V.innerHTML = errBox(e); });
 }
 function appHead(){
-  var by = C.who && C.who[A.id];
+  var by = C.who && C.who[A.id], draft = A.status === 'draft';
+  var when = A.applied_at ? 'Applied ' + esc(TP.fmtDateTime(A.applied_at)) : 'Started ' + esc(TP.ago(A.created_at));
+  // the actions used all day stay at the top: the posting, the resume, and Mark as applied — or the status once it's sent
+  var acts = draft
+    ? '<a class="btn sm" href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Job posting</a>' + resumeBtn(true) +
+      '<button class="btn sm ok" type="button" data-act="gomark">' + I.check + 'Mark as applied</button>'
+    : '<label class="stsel" for="apSt">Status<select class="inp" id="apSt">' + TP.STATUS.filter(function(s){ return s[0] !== 'draft'; }).map(function(s){ return '<option value="' + s[0] + '"' + (s[0] === A.status ? ' selected' : '') + '>' + s[1] + '</option>'; }).join('') + '</select></label>' +
+      (A.resume_doc ? '<a class="btn sm" href="' + esc(edUrl('app', A.id)) + '" target="tp-ed-' + esc(A.id) + '">' + I.doc + 'View as sent</a>' : '') +
+      '<a class="btn sm" href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Job posting</a>';
   return '<a class="btn sm ghost" href="' + esc(cUrl(C.id, 'applications')) + '" data-go>' + I.back + 'Applications</a>' +
-    '<div class="ahead" style="margin-top:10px">' + coLogo(A.company, A.job_url) + '<div style="flex:1;min-width:0"><h2>' + esc(A.title || 'Role') + '</h2>' +
-    '<div class="m">' + esc([A.company, A.location].filter(Boolean).join(' · ')) + '</div>' +
-    '<div class="m">' + (A.applied_at ? 'Applied ' + esc(TP.fmtDateTime(A.applied_at)) : 'Started ' + esc(TP.ago(A.created_at))) + (by ? ' by ' + esc(who(by)) : '') + ' · for <b style="color:var(--client)">' + esc(C.row.full_name) + '</b></div></div>' +
-    '<div class="row">' + (A.status === 'draft' ? TP.statusChip('draft') : '') + '<a class="btn sm" href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Job posting</a></div></div>';
+    '<div class="ahead"><div class="ahl">' + coLogo(A.company, A.job_url) + '<div class="aht"><h2>' + esc(A.title || 'Role') + '</h2><div class="m">' + esc([A.company, A.location].filter(Boolean).join(' · ')) + '</div></div></div>' +
+    '<div class="ahr"><div class="ahm">' + TP.statusChip(A.status) + '<span>' + when + (by ? ' by ' + esc(who(by)) : '') + ' · for <b style="color:var(--client)">' + esc(C.row.full_name) + '</b></span>' + (draft ? '<span class="saved" id="apSaved"></span>' : '') + '</div>' +
+      '<div class="aha">' + acts + '</div></div></div>';
 }
+// the resume's one action, in the header and in the checklist: review the list's suggestions, open the tailored copy, or optimise it
+function resumeBtn(hdr){
+  var d = A.resume_doc, m = (d && d.meta) || {}, pend = !!m.optPending, opt = !pend && optimisedDoc(d), url = edUrl('app', A.id);
+  var cls = 'btn sm' + (!hdr && !opt ? ' pri' : ''), tgt = ' target="tp-ed-' + esc(A.id) + '" data-act="toeditor"';
+  return pend ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + '>' + I.spark + 'Review the suggestions</a>'
+    : opt ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + '>' + I.doc + (hdr ? 'Open resume' : 'Open the tailored resume') + '</a>'
+    : '<a class="' + cls + '" href="' + esc(url + '#optimize') + '"' + tgt + ' data-opt>' + I.spark + 'Optimise for this job</a>';
+}
+// a checklist line as the form changes: done (a tick) or not, and what's left to do
+function ckMark(id, ok, num, text){ var el = $('#' + id); if(!el) return; var n = el.querySelector('.n'); n.className = 'n' + (ok ? ' ok' : ''); n.innerHTML = ok ? I.check : num; el.querySelector('small').textContent = text; }
 // a field of a resume doc by its editor path (sec.<id>.item.<id>.b.<id>, sec.<id>.text, sec.<id>.row.<id>.value, headline …)
 function docField(d, p){
   var x = String(p).split('.'), one = function(arr, id){ return (arr || []).filter(function(q){ return q.id === id; })[0]; };
@@ -2262,52 +2339,56 @@ function optimisedDoc(d){
   var m = d && d.meta; if(!m) return false; if(m.optimised) return true;
   return !!m.pre && Object.keys(m.pre).some(function(p){ var v = docField(d, p); return v != null && v !== m.pre[p]; });
 }
-function resumeCard(){
+function resumeCard(){   // the resume step of the checklist (#resCard): drawn again whenever the job description, the base resume or the editor's save changes it
   var rs = C.resumes || [], base = rs.filter(function(r){ return r.id === A.base_resume_id; })[0], bname = esc(base ? base.name : 'the main resume');
   var d = A.resume_doc, m = (d && d.meta) || {}, saved = !!(d || A.resume_text), pend = !!m.optPending, opt = !pend && optimisedDoc(d);   // pend: the list's Optimise left suggestions to review
-  var preview = A.resume_text || (base && base.text) || '', url = edUrl('app', A.id), tgt = ' target="tp-ed-' + esc(A.id) + '" data-act="toeditor"';
-  return '<div class="step"><span class="n' + (opt ? ' ok' : '') + '">2</span><div class="bd"><h3>Resume for this job</h3>' +
-    '<p class="fine" style="margin-top:2px">The copy that gets sent. The main resume is optimised once on the Resumes tab; here it’s optimised for this job.</p>' +
-    (rs.length ? '<div class="row" style="margin:8px 0 10px"><label class="lbl" for="apBase">Start from</label><select class="inp" id="apBase" style="width:auto;flex:1;max-width:320px"' + (saved ? ' disabled title="This job’s copy is already made from it"' : '') + '>' +
+  var preview = A.resume_text || (base && base.text) || '';
+  return '<span class="n' + (opt ? ' ok' : '') + '">' + (opt ? I.check : '2') + '</span><div class="bd"><b>Resume for this job</b>' +
+    '<small>' + (pend ? '<b>Synced in the background</b> — the editor shows Claude’s suggestions to accept. Nothing on the resume has changed yet.'
+      : opt ? '<span class="lock">' + I.check + 'Optimised for this job</span> ' + esc(TP.ago((m.optimised && m.optimised.at) || A.updated_at)) + '. Open it to check it and download the PDF to send.'
+      : (saved ? 'A copy of <b>' + bname + '</b>, not optimised for this job yet. ' : 'Starts from <b>' + bname + '</b>. ') + 'Optimise picks what to tailor, then you accept or reject each suggestion on the resume.' +
+        (A.jd_text ? '' : ' <span class="warnt">Paste the job description first.</span>')) + '</small>' +
+    (rs.length ? '<div class="row" style="margin-top:8px"><label class="lbl" for="apBase">Start from</label><select class="inp" id="apBase" style="width:auto;flex:1;min-width:0"' + (saved ? ' disabled title="This job’s copy is already made from it"' : '') + '>' +
       rs.map(function(r){ return '<option value="' + esc(r.id) + '"' + (r.id === A.base_resume_id ? ' selected' : '') + '>' + esc(r.name) + '</option>'; }).join('') + '</select></div>'
-      : '<div class="note warn" style="margin:8px 0 10px">' + esc(C.row.full_name) + ' has no resume yet. <a href="' + esc(cUrl(C.id, 'resumes')) + '" data-go>Add one on the Resumes tab</a>, or open the editor and upload their file there.</div>') +
-    '<div class="row">' + (pend ? '<a class="btn pri" href="' + esc(url) + '"' + tgt + '>' + I.spark + 'Review the suggestions</a>'
-        : opt ? '<a class="btn" href="' + esc(url) + '"' + tgt + '>' + I.doc + 'Open the tailored resume</a>'
-        : '<a class="btn pri" href="' + esc(url + '#optimize') + '"' + tgt + ' data-opt>' + I.spark + 'Optimise for this job</a>') +
-      (preview ? '<button class="btn" type="button" data-act="cpresume">' + I.copy + 'Copy resume text</button>' : '') + '</div>' +
-    '<p class="fine" style="margin-top:8px">' + (pend ? '<b>Synced in the background</b> — the editor shows Claude’s suggestions to accept. Nothing on the resume has changed yet.'
-      : opt ? '<span class="lock" style="color:var(--ok)">' + I.check + 'Optimised for this job</span> — ' + esc(TP.ago((m.optimised && m.optimised.at) || A.updated_at)) + '. Open it to check it and download the PDF to send.'
-      : (saved ? 'A copy of <b>' + bname + '</b>, not optimised for this job yet. ' : 'Starts from <b>' + bname + '</b>. ') + '<b>Optimise for this job</b>: pick what to tailor (summary, title, bullets, skills), then accept or reject each suggestion on the resume.' +
-        (A.jd_text ? '' : ' <span style="color:var(--warn)">Paste the job description in step 1 first.</span>')) + '</p>' +
-    (preview ? '<details style="margin-top:8px"><summary class="fine" style="cursor:pointer">See the text that will be sent</summary><pre class="txt" style="margin-top:8px">' + esc(preview) + '</pre></details>' : '') + '</div></div>';
+      : '<div class="note warn" style="margin-top:8px">' + esc(C.row.full_name) + ' has no resume yet. <a href="' + esc(cUrl(C.id, 'resumes')) + '" data-go>Add one on the Resumes tab</a>, or open the editor and upload their file there.</div>') +
+    '<div class="row" style="margin-top:8px">' + resumeBtn(false) + (preview ? '<button class="btn sm" type="button" data-act="cpresume">' + I.copy + 'Copy resume text</button>' : '') + '</div>' +
+    (preview ? '<details class="fine" style="margin-top:8px"><summary style="cursor:pointer">See the text that will be sent</summary><pre class="txt" style="margin-top:8px">' + esc(preview) + '</pre></details>' : '') + '</div>';
 }
 function drawDraft(){
-  var first = esc(C.row.full_name.split(' ')[0] || 'them');
+  var first = esc(C.row.full_name.split(' ')[0] || 'them'), n = (A.answers || []).length;
   if(!DS || DS.a !== A) dsStart(A);
-  V.innerHTML = '<div class="narrow" style="margin:0 auto">' + appHead() + '<div id="lkNext"></div><div id="apDup"></div><div id="apRec"></div>' +
-    '<div class="card" style="margin-top:16px"><div class="step"><span class="n' + (A.jd_text ? ' ok' : '') + '">1</span><div class="bd"><h3>The job</h3>' +
-      '<div class="grid3" style="margin-top:8px"><div class="field"><label for="apT">Title</label><input id="apT" value="' + esc(A.title) + '"></div><div class="field"><label for="apC">Company</label><input id="apC" value="' + esc(A.company) + '"></div><div class="field"><label for="apL2">Location</label><input id="apL2" value="' + esc(A.location || '') + '"></div></div>' +
-      '<div class="field" style="margin-top:10px"><label for="apJD">Job description</label><textarea id="apJD" rows="6" placeholder="Paste the job description — the editor tailors the resume to it">' + esc(A.jd_text || '') + '</textarea></div></div></div></div>' +
-    '<div class="card" id="resCard">' + resumeCard() + '</div>' +
-    '<div class="card"><div class="step"><span class="n' + (A.cover_letter ? ' ok' : '') + '">3</span><div class="bd"><h3>Cover letter <span class="muted" style="font-weight:500;font-size:13px">(if the form asks)</span></h3>' +
-      '<p class="hint">Write it in the editor’s <b>Cover letter</b> tab, or paste it here.</p><textarea class="inp" id="apCL" rows="5">' + esc(A.cover_letter || '') + '</textarea>' +
-      '<div class="row" style="margin-top:8px"><button class="btn sm" type="button" data-act="cpcover">' + I.copy + 'Copy cover letter</button></div></div></div></div>' +
-    '<div class="card"><div class="step"><span class="n">4</span><div class="bd"><h3>Answers for the form</h3><p class="hint">From ' + first + '’s standard answers. Add anything this form asks — it’s all kept with the application.</p>' +
-      '<div id="apQA">' + (A.answers || []).map(qaRow).join('') + '</div><div class="row" style="margin-top:8px"><button class="btn sm" type="button" data-act="qaadd2">' + I.plus + 'Add a question</button></div></div></div></div>' +
-    '<div class="card"><div class="step"><span class="n">5</span><div class="bd"><h3>Apply on the company’s site</h3>' +
-      '<ol class="fine" style="margin:6px 0 12px 18px;font-size:13.5px;color:var(--body)"><li>Download the PDF in the editor (<b>Download → PDF</b>).</li><li>Fill in the form — copy the answers above.</li><li>Submit, then take a screenshot of the “application received” screen.</li></ol>' +
-      '<a class="btn" href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Open the application page</a></div></div></div>' +
-    '<div class="card" style="border-color:var(--blue-line)"><div class="step"><span class="n">6</span><div class="bd"><h3>Mark as applied</h3>' +
-      '<p class="hint">Once it’s sent. This keeps a permanent record of exactly what went to ' + esc(A.company || 'the company') + '.</p>' +
-      '<div class="grid2"><div><div class="lbl" style="margin-bottom:6px">Confirmation screenshot</div><div class="drop" id="dShot" tabindex="0" role="button">' + I.img + '<b>Paste (<span class="kbd">Ctrl</span>+<span class="kbd">V</span>), drop, or choose</b><span class="fine">PNG or JPG</span></div></div>' +
-        '<div><div class="lbl" style="margin-bottom:6px">Resume file you uploaded <span class="muted" style="font-weight:500">(recommended)</span></div><div class="drop" id="dRes" tabindex="0" role="button">' + I.doc + '<b>Drop or choose the PDF</b><span class="fine">PDF or Word</span></div></div></div>' +
-      '<label class="check" style="margin-top:12px"><input type="checkbox" id="noShot"> There was no confirmation screen</label>' +
-      '<p class="err" id="mkErr" hidden></p>' +
-      '<div class="row" style="margin-top:14px"><button class="btn ok lg" type="button" data-act="markapplied">' + I.check + 'Mark as applied for ' + first + '</button><span class="grow"></span><span class="saved" id="apSaved"></span>' +
-        '<button class="btn sm bad" type="button" data-act="deldraft">' + I.trash + 'Delete draft</button></div></div></div></div></div>';
+  // a record page: the header holds the actions, the form is on the left, and the checklist of what's left to do stays in view on the right
+  V.innerHTML = '<div class="aprec">' + appHead() + '<div id="apDup"></div><div id="apRec"></div><div class="apcols"><div class="apmain">' +
+    '<div class="card"><div class="ch"><h3>The job</h3></div>' +
+      '<div class="grid3"><div class="field"><label for="apT">Title</label><input id="apT" value="' + esc(A.title) + '"></div><div class="field"><label for="apC">Company</label><input id="apC" value="' + esc(A.company) + '"></div><div class="field"><label for="apL2">Location</label><input id="apL2" value="' + esc(A.location || '') + '"></div></div>' +
+      '<div class="field" style="margin-top:12px"><label for="apJD">Job description <span class="muted" style="font-weight:500">— the resume is tailored to it</span></label><textarea id="apJD" rows="7" placeholder="Paste the whole job description">' + esc(A.jd_text || '') + '</textarea></div></div>' +
+    '<div class="card"><div class="ch"><h3>Cover letter <span class="muted">(if the form asks)</span></h3><button class="btn sm" type="button" data-act="cpcover">' + I.copy + 'Copy</button></div>' +
+      '<p class="hint">Write it in the editor’s <b>Cover letter</b> tab, or paste it here.</p><textarea class="inp" id="apCL" rows="5">' + esc(A.cover_letter || '') + '</textarea></div>' +
+    '<div class="card"><div class="ch"><h3>Answers for the form</h3><button class="btn sm" type="button" data-act="qaadd2">' + I.plus + 'Add a question</button></div>' +
+      '<p class="hint">From ' + first + '’s standard answers. Copy each into the form; anything this form asks is kept with the application.</p>' +
+      '<div id="apQA">' + (A.answers || []).map(qaRow).join('') + '</div></div></div>' +
+    '<aside class="apside"><div id="lkNext"></div><div class="card apck"><h3>To send this application</h3><div class="ck">' +
+      '<div class="step ckit" id="ckJob"><span class="n' + (A.jd_text ? ' ok' : '') + '">' + (A.jd_text ? I.check : '1') + '</span><div class="bd"><b>Job description</b><small>' + (A.jd_text ? 'Pasted.' : 'Paste it under The job — the resume is tailored to it.') + '</small></div></div>' +
+      '<div class="step ckit" id="resCard">' + resumeCard() + '</div>' +
+      '<div class="step ckit" id="ckCL"><span class="n' + (A.cover_letter ? ' ok' : '') + '">' + (A.cover_letter ? I.check : '3') + '</span><div class="bd"><b>Cover letter</b><small>' + (A.cover_letter ? 'Written.' : 'Optional — only if the form asks for one.') + '</small></div></div>' +
+      '<div class="step ckit" id="ckAns"><span class="n' + (n ? ' ok' : '') + '">' + (n ? I.check : '4') + '</span><div class="bd"><b>Form answers</b><small>' + (n ? n + ' ready to copy into the form.' : 'None yet — add what the form asks.') + '</small></div></div>' +
+      '<div class="step ckit"><span class="n">5</span><div class="bd"><b>Apply on the company’s site</b><small>Download the PDF in the editor, fill in the form, submit, then screenshot the confirmation.</small>' +
+        '<div class="row" style="margin-top:8px"><a class="btn sm" href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Open the application page</a></div></div></div>' +
+      '<div class="step ckit" id="ckRec"><span class="n">6</span><div class="bd"><b>Record it as sent</b><small>Keeps exactly what went to ' + esc(A.company || 'the company') + '. ' + first + ' sees it on their dashboard.</small>' +
+        '<div class="drop sm" id="dShot" tabindex="0" role="button">' + I.img + '<span><b>Confirmation screenshot</b><span class="fine">Paste (<span class="kbd">Ctrl</span>+<span class="kbd">V</span>), drop, or choose · PNG or JPG</span></span></div>' +
+        '<div class="drop sm" id="dRes" tabindex="0" role="button">' + I.doc + '<span><b>Resume file you uploaded</b><span class="fine">Recommended · PDF or Word</span></span></div>' +
+        '<label class="check" style="margin-top:10px"><input type="checkbox" id="noShot"> There was no confirmation screen</label>' +
+        '<p class="err" id="mkErr" hidden></p>' +
+        '<button class="btn ok wide" type="button" data-act="markapplied" style="margin-top:10px">' + I.check + 'Mark as applied for ' + first + '</button></div></div></div>' +
+      '<div class="row end" style="margin-top:12px"><button class="btn sm bad" type="button" data-act="deldraft">' + I.trash + 'Delete draft</button></div></div></aside></div>' +
+    '<div class="apbar">' + resumeBtn(true) + '<button class="btn ok" type="button" data-act="gomark">' + I.check + 'Mark as applied</button></div></div>';
   ['apT', 'apC', 'apL2', 'apJD', 'apCL'].forEach(function(k){ $('#' + k).addEventListener('input', draftChanged); });
-  $('#apJD').addEventListener('input', function(e){ var had = !!A.jd_text; A.jd_text = e.target.value.trim(); if(had !== !!A.jd_text && $('#resCard')) $('#resCard').innerHTML = resumeCard(); });   // the resume step's "paste it first" hint follows
-  $('#apQA').addEventListener('input', draftChanged);
+  // the checklist follows the form: the job description and cover letter tick off as they're typed, the answers as they're added
+  $('#apJD').addEventListener('input', function(e){ var had = !!A.jd_text; A.jd_text = e.target.value.trim(); ckMark('ckJob', !!A.jd_text, '1', A.jd_text ? 'Pasted.' : 'Paste it under The job — the resume is tailored to it.'); if(had !== !!A.jd_text && $('#resCard')) $('#resCard').innerHTML = resumeCard(); });
+  $('#apCL').addEventListener('input', function(e){ var v = e.target.value.trim(); ckMark('ckCL', !!v, '3', v ? 'Written.' : 'Optional — only if the form asks for one.'); });
+  var ckAns = function(){ var k = readQA($('#apQA')).length; ckMark('ckAns', !!k, '4', k ? k + ' ready to copy into the form.' : 'None yet — add what the form asks.'); };
+  $('#apQA').addEventListener('input', function(){ draftChanged(); ckAns(); });
+  if(window.MutationObserver) new MutationObserver(ckAns).observe($('#apQA'), {childList:true});
   $('#resCard').addEventListener('change', function(e){ if(e.target.id !== 'apBase') return; A.base_resume_id = e.target.value; draftChanged(); $('#resCard').innerHTML = resumeCard(); });
   ['apT', 'apC'].forEach(function(k){ $('#' + k).addEventListener('change', dupCheck); });
   setupDrop($('#dShot'), 'shot', 'image/png,image/jpeg,image/webp');
@@ -2532,27 +2613,33 @@ function doMarkApplied(a, btn){
   }).catch(function(e){ btn.disabled = false; btn.classList.remove('busy'); err.hidden = false; err.textContent = TP.errText(e); });
 }
 function drawSent(){
-  var miss = !A.screenshot || !A.resume_file;
-  V.innerHTML = '<div class="narrow" style="margin:0 auto">' + appHead() + '<div id="lkNext"></div>' +
-    '<div class="card" style="margin-top:16px"><div class="row"><div class="grow"><span class="lock">' + I.lock + 'Sent ' + esc(TP.fmtDateTime(A.applied_at)) + ' — this record can’t be changed</span></div>' +
-      '<label class="lbl" for="apSt">Status</label><select class="inp" id="apSt" style="width:auto">' + TP.STATUS.filter(function(s){ return s[0] !== 'draft'; }).map(function(s){ return '<option value="' + s[0] + '"' + (s[0] === A.status ? ' selected' : '') + '>' + s[1] + '</option>'; }).join('') + '</select></div></div>' +
-    '<div class="card"><h3>Confirmation screenshot</h3>' + (A.screenshot ? '<a class="shot" data-file="' + esc(A.screenshot) + '" target="_blank" rel="noopener"><img data-file="' + esc(A.screenshot) + '" alt="Confirmation screenshot"></a>' : '<p class="hint">None was saved.</p>') + '</div>' +
-    '<div class="card"><h3>Resume sent</h3><div class="row" style="margin:6px 0 10px">' +
-      (A.resume_file ? '<a class="file" data-file="' + esc(A.resume_file) + '" target="_blank" rel="noopener">' + I.doc + '<span>The exact file uploaded</span></a>' : '') +
-      (A.resume_doc ? '<a class="btn sm" href="' + esc(edUrl('app', A.id)) + '" target="tp-ed-' + esc(A.id) + '">' + I.doc + 'View it as sent (and download the PDF again)</a>' : '') +
-      (A.resume_text ? '<button class="btn sm" type="button" data-act="cpresume">' + I.copy + 'Copy text</button>' : '') + '</div>' +
-      (A.resume_text ? '<pre class="txt">' + esc(A.resume_text) + '</pre>' : '') + '</div>' +
-    (A.cover_letter ? '<div class="card"><h3>Cover letter</h3><pre class="txt">' + esc(A.cover_letter) + '</pre></div>' : '') +
-    ((A.answers || []).length ? '<div class="card"><h3>Answers given</h3>' + A.answers.map(function(x){ return '<div class="qa-ro"><b>' + esc(x.q) + '</b><div>' + esc(x.a) + '</div></div>'; }).join('') + '</div>' : '') +
-    (A.jd_text ? '<div class="card"><details><summary style="cursor:pointer"><h3 style="display:inline">Job description</h3> <span class="fine">as it was when we applied</span></summary><pre class="txt" style="margin-top:10px">' + esc(A.jd_text) + '</pre></details></div>' : '') +
-    (miss ? '<div class="card"><h3>Add a missing file</h3><p class="hint">A file that wasn’t added at the time can be added once. Files already saved can’t be replaced.</p><div class="grid2">' +
-      (A.screenshot ? '' : '<div class="drop" id="dShot2" tabindex="0" role="button">' + I.img + '<b>Add the confirmation screenshot</b></div>') +
-      (A.resume_file ? '' : '<div class="drop" id="dRes2" tabindex="0" role="button">' + I.doc + '<b>Add the resume file that was uploaded</b></div>') + '</div>' +
-      '<div class="row end" style="margin-top:10px"><button class="btn" type="button" data-act="addmissing">Save file</button></div></div>' : '') +
-    '<div class="card"><h3>Notes</h3><p class="hint">Interview times, recruiter replies, anything about this application. Only the team sees them; they’re kept in its history.</p>' +
+  var by = C.who && C.who[A.id], miss = !A.screenshot || !A.resume_file, n = (A.answers || []).length, opt = optimisedDoc(A.resume_doc);
+  var rv = function(k, v){ return '<div class="rv"><span>' + k + '</span><b>' + v + '</b></div>'; };
+  // the same shape as a draft: what was sent on the left; the confirmation, the record, notes and the history on the right
+  V.innerHTML = '<div class="aprec">' + appHead() + '<div class="apcols"><div class="apmain">' +
+    '<div class="card"><div class="ch"><h3>Resume sent</h3><div class="row">' +
+      (A.resume_file ? '<a class="btn sm" data-file="' + esc(A.resume_file) + '" target="_blank" rel="noopener">' + I.doc + 'The exact file uploaded</a>' : '') +
+      (A.resume_doc ? '<a class="btn sm" href="' + esc(edUrl('app', A.id)) + '" target="tp-ed-' + esc(A.id) + '">' + I.doc + 'View as sent</a>' : '') +
+      (A.resume_text ? '<button class="btn sm" type="button" data-act="cpresume">' + I.copy + 'Copy text</button>' : '') + '</div></div>' +
+      (A.resume_text ? '<pre class="txt">' + esc(A.resume_text) + '</pre>' : '<p class="hint">' + (A.resume_file ? 'Only the uploaded file was kept.' : 'No resume text was kept.') + '</p>') + '</div>' +
+    (n ? '<div class="card"><div class="ch"><h3>Answers given</h3><span class="muted">' + n + '</span></div>' + A.answers.map(function(x){ return '<div class="qa-ro"><b>' + esc(x.q) + '</b><div>' + esc(x.a) + '</div></div>'; }).join('') + '</div>' : '') +
+    (A.cover_letter ? '<div class="card"><div class="ch"><h3>Cover letter</h3></div><pre class="txt">' + esc(A.cover_letter) + '</pre></div>' : '') +
+    (A.jd_text ? '<div class="card"><details><summary style="cursor:pointer"><h3 style="display:inline">Job description</h3> <span class="fine">as it was when we applied</span></summary><pre class="txt" style="margin-top:10px">' + esc(A.jd_text) + '</pre></details></div>' : '') + '</div>' +
+    '<aside class="apside"><div id="lkNext"></div>' +
+    '<div class="card"><div class="ch"><h3>Confirmation</h3></div>' + (A.screenshot ? '<a class="shot" data-file="' + esc(A.screenshot) + '" target="_blank" rel="noopener"><img data-file="' + esc(A.screenshot) + '" alt="Confirmation screenshot"></a><p class="fine" style="margin-top:6px">Click to open it full size.</p>' : '<p class="hint">No screenshot was saved.</p>') + '</div>' +
+    '<div class="card"><div class="ch"><h3>Record</h3></div><span class="lock">' + I.lock + 'Sent ' + esc(TP.fmtDateTime(A.applied_at)) + ' — this record can’t be changed</span>' +
+      '<div class="rvs" style="margin-top:10px">' + rv('Status', TP.statusChip(A.status)) + rv('Sent by', esc(who(by))) +
+        rv('Resume', opt ? 'Optimised for this job' : (A.resume_doc || A.resume_text) ? 'As copied from the main resume' : A.resume_file ? 'The uploaded file only' : '—') +
+        rv('Files', [A.screenshot ? 'Screenshot' : '', A.resume_file ? 'Resume file' : ''].filter(Boolean).join(', ') || 'None') +
+        rv('Cover letter', A.cover_letter ? 'Included' : 'None') + rv('Form answers', n ? String(n) : 'None') + '</div>' +
+      (miss ? '<div style="margin-top:12px"><p class="hint">A file that wasn’t added at the time can be added once. Saved files can’t be replaced.</p>' +
+        (A.screenshot ? '' : '<div class="drop sm" id="dShot2" tabindex="0" role="button">' + I.img + '<span><b>Add the confirmation screenshot</b></span></div>') +
+        (A.resume_file ? '' : '<div class="drop sm" id="dRes2" tabindex="0" role="button">' + I.doc + '<span><b>Add the resume file that was uploaded</b></span></div>') +
+        '<div class="row end" style="margin-top:8px"><button class="btn sm" type="button" data-act="addmissing">Save file</button></div></div>' : '') +
+      (ME.owner ? '<div class="row end" style="margin-top:12px"><button class="btn sm bad" type="button" data-act="delsent">' + I.trash + 'Delete this application (owner)</button></div>' : '') + '</div>' +
+    '<div class="card"><div class="ch"><h3>Notes</h3></div><p class="hint">Interview times, recruiter replies. Only the team sees them; they go into the history.</p>' +
       '<textarea class="inp" id="anT" rows="2" placeholder="e.g. Recruiter call booked for Tue 3 pm (EST)"></textarea><div class="row end" style="margin-top:8px"><button class="btn sm pri" type="button" data-act="appnote">Save note</button></div></div>' +
-    '<div class="card"><h3>History</h3><div class="hist" id="apHist"><div class="skel"></div></div></div>' +
-    (ME.owner ? '<div class="row end" style="margin-top:14px"><button class="btn sm bad" type="button" data-act="delsent">' + I.trash + 'Delete this application (owner)</button></div>' : '') + '</div>';
+    '<div class="card"><div class="ch"><h3>History</h3></div><div class="hist" id="apHist"><div class="skel"></div></div></div></aside></div></div>';
   TP.fillFiles(V); noteKeep($('#anT'), 'anote_' + A.id);
   // the client sees the status on their dashboard, so a change is confirmed first (and can be undone)
   $('#apSt').addEventListener('change', function(e){
@@ -2832,6 +2919,7 @@ document.addEventListener('click', function(e){
   if(act !== 'memenu' && b.closest('#meMenu')) closeMeMenu();   // a choice in your menu closes it
   switch(act){
     case 'memenu': return meMenu(b);
+    case 'gomark': { var mb = $('[data-act=markapplied]'); if(!mb) return; var rec = $('#ckRec'); if(rec) rec.scrollIntoView({behavior:'smooth', block:'center'}); return markApplied(mb); }   // the header's Mark as applied: the record step, and the same checks
     case 'out': return TP.signOut();
     case 'retry': if(!ME) return location.reload(); if(C){ C.row = null; C.resumes = null; } staleList(); return render();   // only this page loads again; nothing typed elsewhere is touched
     case 'newclient': return newClient();
