@@ -271,6 +271,25 @@ svg.defs{position:absolute;width:0;height:0}
 .row{display:flex;gap:6px;align-items:center;margin-top:6px}
 .row .in{flex:1;min-width:0}
 .row .in.lab{flex:0 0 110px}
+/* suggestions as you type (SUGGEST, from portal.js): the portals' list (portal.css .sgl) at the editor's size, in the
+   panel under the field, never over the next one */
+.sgl{margin-top:6px;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:12px;padding:4px;max-height:248px;overflow-y:auto;overscroll-behavior:contain;
+  box-shadow:0 1px 2px rgba(0,0,0,.04),0 10px 28px rgba(0,0,0,.08);animation:sgIn .14s ease-out}
+@keyframes sgIn{from{opacity:0;transform:translateY(-4px)}}
+.sgl .sgh{padding:6px 9px 3px;font-size:11px;font-weight:600;color:#8a8a8a;letter-spacing:.01em}
+.sgl .sgd{height:1px;background:rgba(0,0,0,.06);margin:4px 7px}
+.sgo{display:flex;align-items:center;gap:9px;min-height:32px;padding:6px 9px;border-radius:8px;font-size:13px;line-height:1.35;color:#404040;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sgo>svg{width:15px;height:15px;flex:none;color:#a3a3a3}
+.sgo span{flex:1;min-width:0;overflow-wrap:anywhere}
+.sgo b{font-weight:600;color:#171717}
+.sgo .sgk{display:inline-flex;flex:none;color:#171717}
+.sgo .sgk svg{width:14px;height:14px}
+.sgo:hover{background:#f7f7f7}
+.sgo[aria-selected=true]{background:#efefef;color:#171717}
+.sgo[aria-selected=true]>svg{color:#525252}
+.sgo.cur{color:#171717;font-weight:500}
+@media (pointer:coarse){ .sgo{min-height:44px;font-size:15px} }
+@media (prefers-reduced-motion:reduce){ .sgl{animation:none} }
 .addsec{display:block;width:100%;padding:12px;border:1px dashed rgba(0,0,0,.15);border-radius:12px;color:#525252;font-weight:500;text-align:center;margin-top:14px;transition:background .15s,border-color .15s,color .15s}
 .addsec:hover{border-color:rgba(0,0,0,.25);background:#fafafa;color:var(--ink)}
 .secmenu{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
@@ -1025,6 +1044,346 @@ function jdYears(t){
 var TSTOP = /\b(senior|sr|junior|jr|staff|principal|lead|head|of|and|the|ii|iii|iv|i|new|grad|associate|intern|remote|us|usa|hybrid|onsite|full|time|contract|f|m|x)\b/gi;
 function tTok(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(TSTOP,' ').split(/\s+/).filter(function(w){ return w.length > 1; }); }
 
+
+/* ==== suggestions as you type: the engine (app.trulyplaced.com's SuggestInput, for these pages) ====
+   A field says what it is with data-sg; sg(kind) writes that, with the keyboard that suits it. Tapped, it offers what
+   suits it at once: a short list's choices, or the page's own answers (picks). Typed, it offers the best matches from a
+   long list (cities, roles, skills: suggest-lists.js, loaded the first time a field needs it), and what was typed, tidied
+   up (a phone number, a LinkedIn address, a salary, an email address).
+   Arrows and Enter pick one, Esc closes the list, a tap fills it in. A list field (roles, places) completes the item being
+   typed and stays open for the next. The list sits in the page under the field, so it never covers the next field or a
+   button.
+   A page adds its own kinds with kind(name, spec), and says what its profile holds with .profile. From here to "end of the
+   suggest engine", the code is copied into the resume editor by editor-build/build.py, so it uses nothing else from this
+   file: rebuild the editor when it changes. */
+var SUGGEST = (function(){
+"use strict";
+var LISTS_V = '2026-10-31.2', LISTS = null, LISTS_P = null;
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function all(sel, root){ return [].slice.call((root || document).querySelectorAll(sel)); }
+function loadLists(){   // null when it couldn't load (offline): tried again half a minute later, not on every key
+  if(LISTS) return Promise.resolve(LISTS);
+  return LISTS_P || (LISTS_P = new Promise(function(res, rej){
+    var s = document.createElement('script'); s.src = '/suggest-lists.js?v=' + LISTS_V; s.async = true;
+    s.onload = function(){ res(LISTS = window.TP_LISTS || {}); }; s.onerror = rej;
+    document.head.appendChild(s);
+  }).catch(function(){ setTimeout(function(){ LISTS_P = null; }, 30000); return null; }));
+}
+// compared without case or accents, with dashes and slashes as spaces ("ui/ux" finds "UI/UX Designer"); one character for one
+var ACCENTS = new RegExp('[' + String.fromCharCode(0x300) + '-' + String.fromCharCode(0x36f) + ']', 'g');
+function fold(s){ return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(ACCENTS, '').replace(/[-–—_\/]/g, ' '); }
+// best matches first: the value starts with what's typed, then a word in it does, then it's anywhere in it (spaces aside)
+function rank(opts, typed, max, skip){
+  var q = fold(typed).trim(); if(!q) return [];
+  var qc = q.replace(/\s+/g, ''), no = {}, found = [], seen = {}, out = [];
+  (skip || []).forEach(function(x){ no[fold(x).trim()] = 1; });
+  opts.forEach(function(o, i){
+    var f = fold(o), at = f.indexOf(q), r;
+    if(f === q || no[f]) return;
+    if(at === 0) r = 0; else if(at > 0) r = /[\s(,.&]/.test(f.charAt(at - 1)) ? 1 : 2;
+    else if(qc.length > 1 && f.replace(/\s+/g, '').indexOf(qc) > -1) r = 3; else return;
+    found.push([r, i, o]);
+  });
+  found.sort(function(a, b){ return a[0] - b[0] || a[1] - b[1]; });
+  for(var j = 0; j < found.length && out.length < (max || 6); j++){ var k = fold(found[j][2]); if(!seen[k]){ seen[k] = 1; out.push(found[j][2]); } }
+  return out;
+}
+function marked(text, typed){   // the part that matches what's typed, in bold
+  var q = fold(typed).trim(), at = q ? fold(text).indexOf(q) : -1;
+  return at < 0 ? esc(text) : esc(text.slice(0, at)) + '<b>' + esc(text.slice(at, at + q.length)) + '</b>' + esc(text.slice(at + q.length));
+}
+// a list as typed in one field: "; " between items when it has any (places carry their own comma), commas otherwise
+function listOf(s){ s = String(s || ''); return s.split(s.indexOf(';') > -1 ? ';' : ',').map(function(x){ return x.trim(); }).filter(Boolean); }
+function hasIn(list, v){ return list.some(function(x){ return x.toLowerCase() === String(v).toLowerCase(); }); }
+// the places in a list, kept with "; " between them since a place has its own comma ("Austin, TX"). A list written with
+// commas only keeps a state or a country with its city.
+var STATE2 = /^(A[LKZR]|C[AOT]|D[EC]|FL|GA|HI|I[DLNA]|K[SY]|LA|M[EDAINSOT]|N[EVHJMYCD]|O[HKR]|PA|PR|RI|S[CD]|T[NX]|UT|V[TA]|W[AVIY]|ON|BC|QC|AB|MB|NS)$/,
+  LAND = /^(usa?|united states|canada|india|uk|united kingdom|ireland|germany|australia|singapore|uae|united arab emirates|netherlands|france|new zealand)$/i;
+function placeParts(s){
+  s = String(s || '');
+  if(s.indexOf(';') > -1) return s.split(';').map(function(x){ return x.trim(); });
+  var out = [];
+  s.split(',').forEach(function(x){ var t = x.trim(), n = out.length; if(n && out[n - 1] && (STATE2.test(t) || LAND.test(t))) out[n - 1] += ', ' + t; else out.push(t); });
+  return out;
+}
+function placeIdeas(places, livesIn){
+  var have = placeParts(places).filter(Boolean), city = String(livesIn || '').trim();
+  return ['US remote', city, city ? 'Hybrid near ' + city.split(',')[0] : '', 'Anywhere in the US'].filter(function(x){ return x && !hasIn(have, x); });
+}
+// a few roles close to the ones named
+var ROLE_NEAR = [[/data analy|analytics|\bbi\b/i, ['Data Analyst', 'BI Analyst', 'Business Analyst', 'Reporting Analyst', 'Analytics Engineer']],
+  [/data scien|machine learning|\bml\b/i, ['Data Scientist', 'Machine Learning Engineer', 'Applied Scientist']], [/data engineer/i, ['Data Engineer', 'Analytics Engineer', 'ETL Developer']],
+  [/software|developer|backend|front.?end|full.?stack/i, ['Software Engineer', 'Backend Engineer', 'Full Stack Engineer', 'Frontend Engineer']],
+  [/product manager|product owner/i, ['Product Manager', 'Product Owner', 'Technical Product Manager']], [/business analyst/i, ['Business Analyst', 'Systems Analyst', 'Product Analyst']],
+  [/devops|cloud|platform|reliability|\bsre\b/i, ['DevOps Engineer', 'Cloud Engineer', 'Site Reliability Engineer']], [/project manager|program manager|scrum/i, ['Project Manager', 'Program Manager', 'Scrum Master']],
+  [/designer|\bux\b|\bui\b/i, ['Product Designer', 'UX Designer', 'UI Designer']], [/\bqa\b|quality|test/i, ['QA Engineer', 'Test Automation Engineer', 'SDET']],
+  [/secur|cyber|\bsoc\b/i, ['Cybersecurity Analyst', 'SOC Analyst', 'Security Engineer']], [/salesforce/i, ['Salesforce Developer', 'Salesforce Administrator']]];
+function roleIdeas(roles){
+  var have = listOf(roles), src = have.join(' '), out = [];
+  ROLE_NEAR.forEach(function(r){ if(r[0].test(src)) r[1].forEach(function(x){ if(!hasIn(out, x) && !hasIn(have, x)) out.push(x); }); });
+  return out.slice(0, 6);
+}
+// what was typed, tidied up
+var LI = 'https://www.linkedin.com/in/';
+function linkedinIdeas(t){
+  t = String(t || '').trim();
+  if(!t || (t.length < LI.length && LI.indexOf(t.toLowerCase()) === 0)) return [LI];   // the start of the address: they type the rest
+  var m = t.match(/linkedin\.com\/(?:mwlite\/)?in\/([^\/?#\s]+)/i);
+  if(m) return LI + m[1] === t.replace(/\/$/, '') ? [] : [LI + m[1]];
+  return /^@?[a-z0-9][a-z0-9\-_%]{2,99}$/i.test(t) ? [LI + t.replace(/^@/, '')] : [];   // just the name: the whole address
+}
+function phoneIdeas(t){
+  t = String(t || '').trim(); var d = t.replace(/\D/g, ''), out = [];
+  var us = function(x){ return '+1 ' + x.slice(0, 3) + ' ' + x.slice(3, 6) + ' ' + x.slice(6); }, ind = function(x){ return '+91 ' + x.slice(0, 5) + ' ' + x.slice(5); };
+  if(d.length === 10){ out.push(us(d)); if(/^[6-9]/.test(d)) out.push(ind(d)); }
+  else if(d.length === 11 && d.charAt(0) === '1') out.push(us(d.slice(1)));
+  else if(d.length === 12 && d.slice(0, 2) === '91') out.push(ind(d.slice(2)));
+  return out.filter(function(x){ return x !== t; });
+}
+function kfmt(n){ return '$' + (n % 1000 ? (n / 1000).toFixed(1) : n / 1000) + 'K'; }
+function usd(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
+function salaryIdeas(t){
+  var s = String(t || '').toLowerCase().replace(/usd|per (year|annum)|a year|annually|\/\s*(yr|year)/g, '').replace(/[$,\s]/g, '');
+  var m = s.match(/^(\d+(?:\.\d+)?)(k)?(?:(?:-|–|—|to)(\d+(?:\.\d+)?)(k)?)?$/); if(!m) return [];
+  var big = function(n, k){ n = +n; return k || n < 1000 ? n * 1000 : n; };
+  var a = big(m[1], m[2] || m[4]), b = m[3] ? big(m[3], m[4]) : 0;
+  if(a < 10000 || a > 2000000) return [];
+  if(b > a) return [kfmt(a) + '–' + kfmt(b) + ' a year', usd(a) + '–' + usd(b) + ' a year'];
+  var out = [usd(a) + ' a year', kfmt(a) + '–' + kfmt(Math.round(a * 1.15 / 5000) * 5000) + ' a year'];
+  if(!m[2] && !m[3] && +m[1] >= 15 && +m[1] <= 200) out.push('$' + m[1] + ' an hour');
+  return out;
+}
+var MAILS = ['gmail.com', 'outlook.com', 'yahoo.com', 'hotmail.com', 'icloud.com', 'live.com', 'aol.com', 'protonmail.com'];
+var MAIL_TYPO = {'gmial.com':'gmail.com', 'gmai.com':'gmail.com', 'gamil.com':'gmail.com', 'gmal.com':'gmail.com', 'gnail.com':'gmail.com', 'gmaill.com':'gmail.com',
+  'gmail.co':'gmail.com', 'gmail.con':'gmail.com', 'gmail.cm':'gmail.com', 'gmail.om':'gmail.com', 'hotmial.com':'hotmail.com', 'hotmai.com':'hotmail.com',
+  'hotmail.co':'hotmail.com', 'yahooo.com':'yahoo.com', 'yaho.com':'yahoo.com', 'yahoo.co':'yahoo.com', 'yahoo.con':'yahoo.com', 'outlok.com':'outlook.com',
+  'outllok.com':'outlook.com', 'outlook.co':'outlook.com', 'iclod.com':'icloud.com', 'icloud.co':'icloud.com'};
+function mailIdeas(t, first){
+  t = String(t || '').trim().toLowerCase(); var at = t.indexOf('@'), doms = (first || []).concat(MAILS);
+  if(at < 1 || t.indexOf('@', at + 1) > -1) return [];
+  var who = t.slice(0, at), dom = t.slice(at + 1);
+  if(MAIL_TYPO[dom]){ var fix = [who + '@' + MAIL_TYPO[dom]]; fix.head = 'Did you mean'; return fix; }   // a login email can't be changed later
+  return doms.filter(function(d){ return d.indexOf(dom) === 0 && d !== dom; }).slice(0, 5).map(function(d){ return who + '@' + d; });
+}
+// a US ZIP code typed where a city goes: the city it belongs to (looked up as the app does)
+var ZIPS = {};
+function zipPlace(z){
+  if(typeof ZIPS[z] === 'string') return ZIPS[z];
+  if(ZIPS[z] === undefined && window.fetch){
+    ZIPS[z] = null;
+    fetch('https://api.zippopotam.us/us/' + z).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+      var p = d && d.places && d.places[0]; ZIPS[z] = p ? p['place name'] + ', ' + p['state abbreviation'] : '';
+      if(SGS.f && SGS.f.value.trim() === z) sgRefresh();
+    }).catch(function(){ ZIPS[z] = ''; });
+  }
+  return '';
+}
+// another name for a place or a school ("nyc", "bangalore", "njit"): typed in full, or its start from three letters on
+function aliasOf(ft, key){
+  var A = LISTS && LISTS[key]; if(!A || !ft) return null;
+  if(A[ft]) return {v:A[ft], exact:true};
+  if(ft.length < 3) return null;
+  for(var k in A) if(k.indexOf(ft) === 0) return {v:A[k], exact:false};
+  return null;
+}
+/* The kinds of field. list: a long list to search; options: a short one; all: every option shown when tapped; picks: the
+   page's own answers (head: what they're called); make: what was typed, tidied; alias: the list's other names; sep: a list
+   field, and what goes between its items; after: once one is picked; dyn: a kind worked out from the field itself. */
+var SG = {
+  place:{list:'places', alias:'placeAliases', icon:'pin', zip:true},
+  job_place:{list:'places', alias:'placeAliases', icon:'pin', options:['Remote', 'Hybrid', 'On-site']},
+  places:{list:'places', alias:'placeAliases', icon:'pin', sep:'; ', picks:function(f, p){ return placeIdeas(f.value, p.location); }},
+  role:{list:'titles', icon:'role'},
+  roles:{list:'titles', icon:'role', sep:', ', picks:function(f){ return roleIdeas(f.value); }},
+  resume_name:{list:'titles', icon:'role', picks:function(f, p){ return listOf(p.target_roles); }},
+  salary:{options:['Open to discuss', 'Negotiable'], all:true, make:salaryIdeas},
+  linkedin:{make:linkedinIdeas},
+  phone:{make:phoneIdeas},
+  email:{make:function(t){ return mailIdeas(t); }},
+  team_email:{make:function(t){ return mailIdeas(t, ['trulyplaced.com']); }},
+  skill:{list:'skills'},
+  skills:{list:'skills', sep:', '}
+};
+var SG_KB = {phone:' type="tel" inputmode="tel"', linkedin:' inputmode="url" autocapitalize="none"', email:' type="email" autocapitalize="none"', team_email:' type="email" autocapitalize="none"'};
+// the attributes for a field that suggests: area for a textarea; ac to let the browser fill it in too (the client's own phone)
+function sg(kind, area, ac){
+  return ' data-sg="' + kind + '" autocomplete="' + (ac || 'off') + '" aria-autocomplete="list" aria-controls="sgList"' + (area ? '' : ' role="combobox" aria-expanded="false"') +
+    (kind === 'answer' || kind === 'question' ? '' : ' autocorrect="off" spellcheck="false"') + (SG_KB[kind] || '');
+}
+var SGI = {pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+  role:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>'};
+var api = {sg:sg, kind:function(name, spec){ SG[name] = spec; }, profile:null, fire:fire, rank:rank, hasIn:hasIn, listOf:listOf, placeParts:placeParts,
+  placeIdeas:placeIdeas, roleIdeas:roleIdeas, salaryIdeas:salaryIdeas, linkedinIdeas:linkedinIdeas, phoneIdeas:phoneIdeas, mailIdeas:mailIdeas,
+  list:function(name){ if(!LISTS) loadLists(); return (LISTS && LISTS[name]) || []; }};
+function sgProfile(){ try{ return (api.profile && api.profile()) || {}; }catch(e){ return {}; } }
+var SGS = {f:null, el:null, at:null, items:[], act:-1, typed:false, base:'', quiet:false, t:0, press:0};
+function sgSpec(f){ var s = SG[f.getAttribute('data-sg')]; return s && s.dyn ? s.dyn(f) : s || null; }
+// a list field: the items already in it, and the one being typed (none when it was only tapped: a pick adds one)
+function sgParts(v, s, fresh){
+  if(!s.sep) return {typed:String(v || '').trim(), chosen:[]};
+  var parts = s.sep === '; ' ? placeParts(v) : String(v || '').split(/[,;]/), typed = fresh ? '' : String(parts.pop() || '').trim();
+  return {typed:typed, chosen:parts.map(function(x){ return x.trim(); }).filter(Boolean)};
+}
+// as above for the field now. Typed into a list since it was tapped, with no comma ("New York" then "Aus", or wherever the
+// cursor landed), it's taken as the next item: a pick adds it as one, and nothing typed changes unless one is picked.
+function sgNow(f, s){
+  var v = f.value, b = SGS.base;
+  if(s.sep && SGS.typed && b && v.length > b.length){
+    var i = 0, j = 0, n = b.length;
+    while(i < n && v.charAt(i) === b.charAt(i)) i++;
+    while(j < n - i && v.charAt(v.length - 1 - j) === b.charAt(n - 1 - j)) j++;
+    var add = v.slice(i, v.length - j);
+    if(i + j === n && add.trim() && !/[,;]/.test(add)) return {typed:add.trim(), chosen:sgParts(b, s, true).chosen};
+  }
+  return sgParts(v, s, !SGS.typed);
+}
+function fire(f){ SGS.quiet = true; try{ f.dispatchEvent(new Event('input', {bubbles:true})); f.dispatchEvent(new Event('change', {bubbles:true})); }finally{ SGS.quiet = false; } }
+function sgEl(){
+  if(SGS.el) return SGS.el;
+  var d = document.createElement('div'); d.className = 'sgl'; d.id = 'sgList'; d.setAttribute('role', 'listbox'); d.setAttribute('aria-label', 'Suggestions');
+  d.addEventListener('mousedown', function(e){ e.preventDefault(); });   // pressing a suggestion keeps the field focused
+  d.addEventListener('pointerdown', function(){ SGS.press = Date.now(); });
+  d.addEventListener('click', function(e){ SGS.press = 0; var o = e.target.closest('[data-i]'); if(o){ e.preventDefault(); sgChoose(+o.getAttribute('data-i')); } });
+  return (SGS.el = d);
+}
+// under the field, in the page: below it in its own box; across the whole row in a row of fields laid out as a grid (a
+// question and its answer, the skills); under a field set in a line with its buttons
+function sgMount(f){
+  var el = sgEl(), p = f.parentNode, cs = p && p.nodeType === 1 ? getComputedStyle(p) : null, d = cs ? cs.display : '';
+  SGS.at = f; el.style.gridColumn = '';
+  if(/grid/.test(d)){ el.style.gridColumn = '1 / -1'; p.appendChild(el); }
+  else if(/flex/.test(d) && !/column/.test(cs.flexDirection)) p.insertAdjacentElement('afterend', el);
+  else f.insertAdjacentElement('afterend', el);
+}
+function sgClose(){
+  var el = SGS.el, f = SGS.f;
+  if(el && el.parentNode) el.parentNode.removeChild(el);
+  SGS.items = []; SGS.act = -1; SGS.at = null;
+  if(f){ if(f.tagName === 'INPUT') f.setAttribute('aria-expanded', 'false'); f.removeAttribute('aria-activedescendant'); }
+}
+function sgRefresh(){
+  var f = SGS.f; if(!f || !f.isConnected || f.readOnly || f.disabled){ sgClose(); return; }
+  var s = sgSpec(f); if(!s){ sgClose(); return; }
+  if(s.list && !LISTS) loadLists().then(function(l){ if(l && SGS.f === f) sgRefresh(); });
+  // tapped, nothing typed yet: what suits the field (a short list's every choice, the page's own answers); typed: what matches
+  var fresh = !SGS.typed, p = sgProfile(), pt = sgNow(f, s), typed = pt.typed, ft = fold(typed).trim(), all = s.all && fresh, cur = fold(f.value).trim();
+  var groups = [], used = pt.chosen.slice();
+  var add = function(head, arr, icon){
+    var out = [];
+    (arr || []).forEach(function(x){ x = String(x || '').trim(); if(x && !hasIn(used, x) && !hasIn(out, x) && (all || fold(x).trim() !== cur)) out.push(x); });
+    if(out.length){ groups.push({head:head, items:out, icon:icon}); used = used.concat(out); }
+  };
+  var picks = s.picks ? s.picks(f, p) : [];
+  if(!fresh) picks = ft ? picks.filter(function(x){ var fx = fold(x).trim(); return fx !== ft && fx.indexOf(ft) > -1; }).slice(0, 3) : picks;
+  add(s.head || 'Suggested', picks.slice(0, 6), s.icon);
+  if(s.make && (!fresh || !typed)){ var made = s.make(typed, f, p) || []; add(made.head || '', made.filter(function(x){ return x !== typed; })); }
+  if(s.zip && !fresh && /^\d{5}$/.test(typed)){ var z = zipPlace(typed); if(z) add('ZIP code ' + typed, [z], 'pin'); }
+  var opts = typeof s.options === 'function' ? s.options(f, p) : (s.options || []), long = s.list && LISTS ? LISTS[s.list] || [] : [];
+  if(all) add(s.optsHead || '', opts.length ? opts : long, s.icon);
+  else if(!fresh && ft){
+    var hits = rank(opts.concat(long), typed, s.max || 6, used), al = s.alias ? aliasOf(ft, s.alias) : null;
+    if(al && !hasIn(used, al.v)){   // its other name in full goes first; just its start, after what matches already (if there's room)
+      var at = hits.indexOf(al.v);
+      if(al.exact){ if(at > -1) hits.splice(at, 1); hits.unshift(al.v); } else if(at < 0) hits.push(al.v);
+      hits = hits.slice(0, s.max || 6);
+    }
+    add('', hits, s.icon);
+  }
+  sgDraw(groups, all ? '' : typed, all ? cur : '');
+}
+function sgDraw(groups, typed, cur){
+  var f = SGS.f, items = [], html = '';
+  groups.forEach(function(g, gi){
+    if(gi) html += '<div class="sgd" aria-hidden="true"></div>';
+    if(g.head) html += '<div class="sgh" aria-hidden="true">' + esc(g.head) + '</div>';
+    g.items.forEach(function(x){
+      var n = items.length, on = cur && fold(x).trim() === cur;
+      html += '<div class="sgo' + (on ? ' cur' : '') + '" role="option" id="sgo' + n + '" data-i="' + n + '" aria-selected="false">' + (g.icon ? SGI[g.icon] : '') +
+        '<span>' + (typed ? marked(x, typed) : esc(x)) + '</span>' + (on ? '<i class="sgk">' + SGI.check + '</i>' : '') + '</div>';
+      items.push(x);
+    });
+  });
+  SGS.items = items; SGS.act = -1;
+  if(!items.length){ sgClose(); return; }
+  var el = sgEl(); if(SGS.at !== f || !el.isConnected) sgMount(f);
+  el.innerHTML = html;
+  if(f.tagName === 'INPUT') f.setAttribute('aria-expanded', 'true');
+  f.removeAttribute('aria-activedescendant');
+  sgInView();
+}
+// the box the field scrolls in (a dialog, the editor's panel), or none when the page itself scrolls
+function scroller(el){
+  for(var p = el.parentElement; p && p !== document.body && p !== document.documentElement; p = p.parentElement){
+    var o = getComputedStyle(p).overflowY; if((o === 'auto' || o === 'scroll') && p.scrollHeight > p.clientHeight + 1) return p;
+  }
+  return null;
+}
+// the list stays in sight: above a phone's keyboard and the save bar at the bottom, inside the box it scrolls in
+function sgInView(){
+  var el = SGS.el, f = SGS.f; if(!el || !f || !el.isConnected) return;
+  var vv = window.visualViewport, top = vv ? vv.offsetTop : 0, bot = vv ? vv.offsetTop + vv.height : window.innerHeight, box = scroller(f);
+  if(box){ var b = box.getBoundingClientRect(); top = Math.max(top, b.top); bot = Math.min(bot, b.bottom); }
+  all('.savebar, .sticky-save').forEach(function(x){ var r = x.getBoundingClientRect(); if(r.height && r.top > top + 120 && r.top < bot) bot = r.top; });
+  var over = el.getBoundingClientRect().bottom + 8 - bot, room = f.getBoundingClientRect().top - top - (box ? 16 : 76);
+  if(over > 0 && room > 0){   // at once, even where the page scrolls smoothly: a click a moment later lands where it was aimed
+    var sc = box || document.scrollingElement || document.documentElement, was = sc.style.scrollBehavior;
+    sc.style.scrollBehavior = 'auto'; sc.scrollTop += Math.min(over, room); sc.style.scrollBehavior = was;
+  }
+}
+function sgActive(){
+  var f = SGS.f;
+  all('[role=option]', SGS.el).forEach(function(o, i){
+    var on = i === SGS.act; o.setAttribute('aria-selected', on ? 'true' : 'false');
+    if(on){ f.setAttribute('aria-activedescendant', o.id); o.scrollIntoView({block:'nearest'}); }
+  });
+}
+function sgChoose(i){
+  var f = SGS.f, v = SGS.items[i]; if(!f || v == null) return;
+  var s = sgSpec(f) || {};
+  if(s.sep){ var pt = sgNow(f, s); pt.chosen.push(v); f.value = pt.chosen.join(s.sep) + s.sep; SGS.base = ''; }   // and on to the next
+  else f.value = v;
+  SGS.typed = false; fire(f);
+  if(s.after) s.after(v, f);
+  // more to type: the next in a list, or the rest of an address ("…/in/")
+  if(s.sep || /\/$/.test(v)){ if(document.activeElement !== f) f.focus(); var L = f.value.length; try{ f.setSelectionRange(L, L); }catch(x){} sgRefresh(); }
+  else sgClose();
+}
+// a list field left: no separator dangling at its end
+function sgTidy(f){ var s = f.isConnected && sgSpec(f); if(s && s.sep && /[\s,;]+$/.test(f.value)){ f.value = f.value.replace(/[\s,;]+$/, ''); fire(f); } }
+document.addEventListener('focusin', function(e){
+  var f = e.target; if(!f || !f.hasAttribute || !f.hasAttribute('data-sg')) return;
+  clearTimeout(SGS.t);
+  if(SGS.f !== f){ var was = SGS.f; sgClose(); if(was) sgTidy(was); SGS.f = f; SGS.typed = false; SGS.base = f.value; }   // straight from another field
+  sgRefresh();
+});
+document.addEventListener('focusout', function(e){
+  var f = e.target; if(f !== SGS.f) return;
+  clearTimeout(SGS.t);
+  // late enough that a tap on a suggestion lands first
+  SGS.t = setTimeout(function leave(){
+    if(Date.now() - SGS.press < 800){ SGS.t = setTimeout(leave, 200); return; }
+    if(document.activeElement === f || SGS.f !== f) return;
+    sgClose(); SGS.f = null; sgTidy(f);
+  }, 200);
+});
+document.addEventListener('input', function(e){ if(SGS.quiet || !SGS.f || e.target !== SGS.f) return; SGS.typed = true; sgRefresh(); });
+// a second tap on a field whose list was closed (a choice made, or Esc) opens it again, like a dropdown
+document.addEventListener('click', function(e){ if(SGS.f && e.target === SGS.f && !SGS.items.length){ SGS.typed = false; sgRefresh(); } });
+document.addEventListener('keydown', function(e){
+  var f = SGS.f; if(!f || e.target !== f || e.isComposing || e.altKey || e.ctrlKey || e.metaKey) return;
+  var n = SGS.items.length;
+  if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){
+    if(!n){ if(e.key === 'ArrowDown' && f.tagName === 'INPUT'){ SGS.typed = false; sgRefresh(); if(SGS.items.length) e.preventDefault(); } return; }
+    e.preventDefault(); SGS.act = e.key === 'ArrowDown' ? (SGS.act + 1) % n : (SGS.act <= 0 ? n - 1 : SGS.act - 1); sgActive(); return;
+  }
+  if(!n) return;
+  if(e.key === 'Enter' && SGS.act >= 0){ e.preventDefault(); e.stopPropagation(); sgChoose(SGS.act); }
+  else if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); sgClose(); }   // closes the list, not the dialog around it
+  else if(e.key === 'Tab' && !e.shiftKey && SGS.act >= 0) sgChoose(SGS.act);
+}, true);
+return api;
+})();
 
 /* ---- match.js ---- */
 /* =====================================================================
@@ -1925,7 +2284,28 @@ function renderPanel() {
   body.scrollTop = sc;
   if (PTAB === 'edit' && FOCUS) { const el = $('#pbody [data-path="' + FOCUS + '"]'); if (el) el.closest('.pc, .entry') && el.closest('.entry, .pc').classList.add('on'); }
 }
-const F = (path, v, ph, cls) => '<input class="in ' + (cls || '') + '" type="text" data-path="' + path + '" value="' + esc(v) + '" placeholder="' + esc(ph || '') + '" autocomplete="off" spellcheck="true">';
+// a field; with a kind, it suggests as it's typed (SUGGEST, below)
+const F = (path, v, ph, cls, kind) => '<input class="in ' + (cls || '') + '" type="text" data-path="' + path + '" value="' + esc(v) + '" placeholder="' + esc(ph || '') + '"' +
+  (kind ? SUGGEST.sg(kind) : ' autocomplete="off" spellcheck="true"') + '>';
+/* Suggestions as you type: the portals' suggest engine (SUGGEST, copied in from portal.js by build.py), with the kinds a
+   resume needs. Job titles, cities, degrees, schools and skills as they're typed, and this job's title for the headline.
+   In the contact line, an email, a phone number or a LinkedIn / GitHub address written out as a resume shows it. */
+SUGGEST.kind('headline', { list: 'titles', icon: 'role', head: 'This job', picks: () => (JOB && JOB.title ? [JOB.title] : []) });
+SUGGEST.kind('contact', { list: 'places', alias: 'placeAliases', icon: 'pin', zip: true, make: (t) => {
+  t = String(t || '').trim();
+  if (t.indexOf('@') > 0) return SUGGEST.mailIdeas(t);
+  const li = t.match(/linkedin\.com\/(?:mwlite\/)?in\/([^\/?#\s]+)/i), gh = t.match(/github\.com\/([^\/?#\s]+)/i);
+  if (li || gh) { const s = li ? 'linkedin.com/in/' + li[1] : 'github.com/' + gh[1]; return s === t ? [] : [s]; }   // the short address
+  const d = t.replace(/\D/g, ''), us = d.length === 10 ? d : d.length === 11 && d[0] === '1' ? d.slice(1) : '';
+  return d.length < 10 ? [] : (us ? ['(' + us.slice(0, 3) + ') ' + us.slice(3, 6) + '-' + us.slice(6)] : []).concat(SUGGEST.phoneIdeas(t));
+} });
+// a degree, then its field: "B.Tech, Comp" → "B.Tech, Computer Science"
+SUGGEST.kind('degree', { list: 'resumeDegrees', make: (t) => {
+  const m = String(t || '').match(/^(.*\S)(\s*,\s*|\s+in\s+)(\S.*)$/i);
+  return m ? SUGGEST.rank(SUGGEST.list('fields'), m[3], 4).map((x) => m[1] + (m[2].indexOf(',') > -1 ? ', ' : ' in ') + x) : [];
+} });
+SUGGEST.kind('school', { list: 'schools', alias: 'schoolAliases' });
+SUGGEST.kind('skill_group', { list: 'skillGroups', all: true });
 const TA = (path, v, ph, rows) => '<textarea class="ta" data-path="' + path + '" rows="' + (rows || 3) + '" placeholder="' + esc(ph || '') + '" spellcheck="true">' + esc(v) + '</textarea>';
 const mini = (a, v, tip, cls, dis) => '<button type="button" class="mb ' + (cls || '') + '" data-a="' + a + '" data-v="' + v + '" aria-label="' + esc(tip) + '" data-tip="' + esc(tip) + '"' + (dis ? ' disabled' : '') + '>' + ({ up: I_UP, dn: I_DN, x: I_X }[cls && cls.split(' ')[0]] || I_X) + '</button>';
 function secTools(s, i, n) {
@@ -1946,9 +2326,9 @@ function editHTML() {
   // contact & headline
   h += '<div class="pc" data-card="head"><div class="pch"><h3>Name &amp; contact</h3></div>' +
     '<label class="lbl">Full name</label>' + F('name', D.name, 'Your name') +
-    '<label class="lbl">Headline <span style="text-transform:none;font-weight:500">(the title under the name)</span></label>' + F('headline', D.headline, 'e.g. Data Analyst') +
+    '<label class="lbl">Headline <span style="text-transform:none;font-weight:500">(the title under the name)</span></label>' + F('headline', D.headline, 'e.g. Data Analyst', '', 'headline') +
     '<label class="lbl">Contact details</label>' +
-    D.contact.map((c, i) => '<div class="row">' + F('contact.' + i, c, 'Email, phone, city, LinkedIn…') + mini('ct-del', String(i), 'Remove', 'x del') + '</div>').join('') +
+    D.contact.map((c, i) => '<div class="row">' + F('contact.' + i, c, 'Email, phone, city, LinkedIn…', '', 'contact') + mini('ct-del', String(i), 'Remove', 'x del') + '</div>').join('') +
     '<div class="addrow"><button type="button" class="addl" data-a="ct-add">' + I_PLUS + 'Add a contact detail</button>' +
       '<button type="button" class="addl" data-a="ln-menu" aria-expanded="false" aria-controls="lnMenu">' + I_LINK + 'Add a link</button></div>' +
     '<div class="lnmenu" id="lnMenu" hidden>' + LINKS.map((l) => '<button type="button" data-a="ln-add" data-v="' + l[0] + '">' + esc(l[1]) + '</button>').join('') + '</div></div>';
@@ -1964,17 +2344,17 @@ function editHTML() {
         const E = B + 'item.' + it.id + '.', warn = dateProblem(it.dates);
         return '<div class="entry" data-item="' + it.id + '"><div class="eh"><b>' + esc(it.title || (ed ? 'New ' + what : 'New ' + what)) + (it.sub ? ' · ' + esc(it.sub) : '') + '</b><span class="mini">' +
           mini('it-up', it.id, 'Move up', 'up', j === 0) + mini('it-dn', it.id, 'Move down', 'dn', j === s.items.length - 1) + mini('it-del', it.id, 'Remove this ' + what, 'x del') + '</span></div>' +
-          '<div class="g2"><div><label class="lbl">' + (ed ? 'Degree' : s.k === 'projects' ? 'Project' : 'Job title') + '</label>' + F(E + 'title', it.title, ed ? 'B.Tech, Computer Science' : 'Data Analyst') + '</div>' +
-          '<div><label class="lbl">' + (ed ? 'School' : s.k === 'projects' ? 'Where / for whom' : 'Company') + '</label>' + F(E + 'sub', it.sub, ed ? 'University' : 'Company') + '</div>' +
+          '<div class="g2"><div><label class="lbl">' + (ed ? 'Degree' : s.k === 'projects' ? 'Project' : 'Job title') + '</label>' + F(E + 'title', it.title, ed ? 'B.Tech, Computer Science' : 'Data Analyst', '', ed ? 'degree' : s.k === 'projects' ? '' : 'role') + '</div>' +
+          '<div><label class="lbl">' + (ed ? 'School' : s.k === 'projects' ? 'Where / for whom' : 'Company') + '</label>' + F(E + 'sub', it.sub, ed ? 'University' : 'Company', '', ed ? 'school' : '') + '</div>' +
           '<div><label class="lbl">Dates</label>' + F(E + 'dates', it.dates, 'Jan 2023 – Present') + (warn ? '<span class="dwarn" data-dw="' + it.id + '">' + warn + '</span>' : '<span class="dwarn" data-dw="' + it.id + '" hidden></span>') + '</div>' +
-          '<div><label class="lbl">Location</label>' + F(E + 'loc', it.loc, 'City, Country') + '</div></div>' +
+          '<div><label class="lbl">Location</label>' + F(E + 'loc', it.loc, 'City, Country', '', ed ? 'place' : 'job_place') + '</div></div>' +
           (ed && !it.bullets.length ? '' : '<label class="lbl">' + (ed ? 'Notes' : 'Bullet points') + '</label><ul class="bl">' + it.bullets.map((b, k) => '<li><textarea class="ta" data-path="' + E + 'b.' + b.id + '" rows="2" placeholder="What you did and the result" spellcheck="true" data-bullet="1">' + esc(b.t) + '</textarea><span class="mini">' +
             mini('b-up', b.id, 'Move bullet up', 'up', k === 0) + mini('b-dn', b.id, 'Move bullet down', 'dn', k === it.bullets.length - 1) + mini('b-del', b.id, 'Remove bullet', 'x del') + '</span></li>').join('') + '</ul>') +
           '<button type="button" class="addl" data-a="b-add" data-v="' + it.id + '">' + I_PLUS + 'Add a bullet</button></div>';
       }).join('');
       add = '<button type="button" class="addl" data-a="it-add" data-v="' + s.id + '">' + I_PLUS + 'Add ' + (ed ? 'a school' : 'a ' + what) + '</button>';
     } else if (s.type === 'skills') {
-      body = s.rows.map((r, j) => '<div class="row">' + F(B + 'row.' + r.id + '.label', r.label, 'Group', 'lab') + F(B + 'row.' + r.id + '.value', r.value, 'Skill, skill, skill') + mini('row-del', r.id, 'Remove line', 'x del') + '</div>').join('') +
+      body = s.rows.map((r, j) => '<div class="row">' + F(B + 'row.' + r.id + '.label', r.label, 'Group', 'lab', 'skill_group') + F(B + 'row.' + r.id + '.value', r.value, 'Skill, skill, skill', '', 'skills') + mini('row-del', r.id, 'Remove line', 'x del') + '</div>').join('') +
         '<p class="hint">Separate skills with commas. Group them (Tools, Methods…) so recruiters scan them fast.</p>';
       add = '<button type="button" class="addl" data-a="row-add" data-v="' + s.id + '">' + I_PLUS + 'Add a line</button>';
     } else {
@@ -1992,7 +2372,7 @@ function editHTML() {
 function coverPanelHTML() {
   const c = DOC.cover || {};
   return '<div class="pc"><div class="pch"><h3>Cover letter</h3></div>' +
-    '<div class="g2"><div><label class="lbl">Role</label>' + F('cover.role', c.role || (JOB && JOB.title) || '', 'Role') + '</div><div><label class="lbl">Company</label>' + F('cover.company', c.company || (JOB && JOB.company) || '', 'Company') + '</div></div>' +
+    '<div class="g2"><div><label class="lbl">Role</label>' + F('cover.role', c.role || (JOB && JOB.title) || '', 'Role', '', 'headline') + '</div><div><label class="lbl">Company</label>' + F('cover.company', c.company || (JOB && JOB.company) || '', 'Company') + '</div></div>' +
     '<label class="lbl">Addressed to</label>' + TA('cover.to', c.to || ('Hiring Team' + (c.company ? '\n' + c.company : '')), 'Hiring Team', 2) +
     '<label class="lbl">Letter</label>' + TA('cover.text', c.text, 'Write your letter here, or ask for a draft.', 14) +
     '<div class="acts"><button type="button" class="btn ai" data-a="cv-write" id="cvWrite"' + (COVER_BUSY ? ' disabled' : '') + '>' + I_SPARK + '<span>' + (COVER_BUSY ? 'Writing…' : c.text ? 'Rewrite it for me' : 'Write it for me') + '</span></button></div>' +

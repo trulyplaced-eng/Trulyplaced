@@ -12,7 +12,7 @@ var CONFIG = {
   SUPPORT_EMAIL: 'hello@trulyplaced.com',
   PLANS: [250, 500, 1000]
 };
-var VERSION = '2026-10-31.1';
+var VERSION = '2026-10-31.2';
 var SBLIB = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
 
 /* ---------- small helpers ---------- */
@@ -332,38 +332,56 @@ document.addEventListener('click', function(e){
 });
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && MOD){ e.preventDefault(); tryClose(); } });
 
-/* ---------- help filling in a client's profile: the same on the team's Profile tab and the client's own ----------
-   The common form questions, each with its answer suggested from what the profile already says (suggestAnswer), and the
-   choices the profile's fields offer as they're filled in (TP.sg, below). */
-var COMMON_Q = ['Are you legally authorized to work in the United States?', 'Will you now or in the future require visa sponsorship (e.g. H-1B)?',
-  'Are you willing to relocate?', 'What are your salary expectations?', 'When can you start?', 'LinkedIn profile', 'How did you hear about this job?',
-  'Gender (voluntary)', 'Race / ethnicity (voluntary)', 'Veteran status (voluntary)', 'Disability status (voluntary)'];
-// more of what forms ask, offered as a question is typed
-var MORE_Q = ['Are you authorized to work in the US without sponsorship?', 'Are you at least 18 years old?', 'Do you have a valid driver’s license?',
-  'Are you willing to work on-site or hybrid?', 'Are you willing to travel?', 'Are you open to contract roles?', 'What is your highest level of education?',
-  'How many years of relevant experience do you have?', 'Current location (city, state)', 'Country of citizenship', 'Languages you speak', 'Notice period',
-  'Earliest start date', 'GitHub profile', 'Website or portfolio', 'Have you worked for this company before?', 'Do you have friends or family who work here?',
-  'Pronouns', 'Are you Hispanic or Latino? (voluntary)'];
-var WORK_AUTH = ['US citizen', 'Green card holder', 'F-1 OPT', 'F-1 STEM OPT — needs H-1B later', 'F-1 CPT', 'H-1B — needs a transfer', 'H-4 EAD', 'L-2 EAD',
-  'Green card pending — EAD', 'TN visa (Canadian or Mexican citizen)', 'E-3 (Australian citizen)', 'O-1', 'Needs H-1B sponsorship'];
-var STARTS = ['Immediately', '1 week’s notice', '2 weeks’ notice', '3 weeks’ notice', '1 month’s notice', '2 months’ notice', '3 months’ notice',
-  'Once my OPT EAD arrives', 'Flexible — open to discuss'];
-// a few roles close to the ones named
-var ROLE_NEAR = [[/data analy|analytics|\bbi\b/i, ['Data Analyst', 'BI Analyst', 'Business Analyst', 'Reporting Analyst', 'Analytics Engineer']],
-  [/data scien|machine learning|\bml\b/i, ['Data Scientist', 'Machine Learning Engineer', 'Applied Scientist']], [/data engineer/i, ['Data Engineer', 'Analytics Engineer', 'ETL Developer']],
-  [/software|developer|backend|front.?end|full.?stack/i, ['Software Engineer', 'Backend Engineer', 'Full Stack Engineer', 'Frontend Engineer']],
-  [/product manager|product owner/i, ['Product Manager', 'Product Owner', 'Technical Product Manager']], [/business analyst/i, ['Business Analyst', 'Systems Analyst', 'Product Analyst']],
-  [/devops|cloud|platform|reliability|\bsre\b/i, ['DevOps Engineer', 'Cloud Engineer', 'Site Reliability Engineer']], [/project manager|program manager|scrum/i, ['Project Manager', 'Program Manager', 'Scrum Master']],
-  [/designer|\bux\b|\bui\b/i, ['Product Designer', 'UX Designer', 'UI Designer']], [/\bqa\b|quality|test/i, ['QA Engineer', 'Test Automation Engineer', 'SDET']],
-  [/secur|cyber|\bsoc\b/i, ['Cybersecurity Analyst', 'SOC Analyst', 'Security Engineer']], [/salesforce/i, ['Salesforce Developer', 'Salesforce Administrator']]];
+/* ==== suggestions as you type: the engine (app.trulyplaced.com's SuggestInput, for these pages) ====
+   A field says what it is with data-sg; sg(kind) writes that, with the keyboard that suits it. Tapped, it offers what
+   suits it at once: a short list's choices, or the page's own answers (picks). Typed, it offers the best matches from a
+   long list (cities, roles, skills: suggest-lists.js, loaded the first time a field needs it), and what was typed, tidied
+   up (a phone number, a LinkedIn address, a salary, an email address).
+   Arrows and Enter pick one, Esc closes the list, a tap fills it in. A list field (roles, places) completes the item being
+   typed and stays open for the next. The list sits in the page under the field, so it never covers the next field or a
+   button.
+   A page adds its own kinds with kind(name, spec), and says what its profile holds with .profile. From here to "end of the
+   suggest engine", the code is copied into the resume editor by editor-build/build.py, so it uses nothing else from this
+   file: rebuild the editor when it changes. */
+var SUGGEST = (function(){
+"use strict";
+var LISTS_V = '2026-10-31.2', LISTS = null, LISTS_P = null;
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function all(sel, root){ return [].slice.call((root || document).querySelectorAll(sel)); }
+function loadLists(){   // null when it couldn't load (offline): tried again half a minute later, not on every key
+  if(LISTS) return Promise.resolve(LISTS);
+  return LISTS_P || (LISTS_P = new Promise(function(res, rej){
+    var s = document.createElement('script'); s.src = '/suggest-lists.js?v=' + LISTS_V; s.async = true;
+    s.onload = function(){ res(LISTS = window.TP_LISTS || {}); }; s.onerror = rej;
+    document.head.appendChild(s);
+  }).catch(function(){ setTimeout(function(){ LISTS_P = null; }, 30000); return null; }));
+}
+// compared without case or accents, with dashes and slashes as spaces ("ui/ux" finds "UI/UX Designer"); one character for one
+var ACCENTS = new RegExp('[' + String.fromCharCode(0x300) + '-' + String.fromCharCode(0x36f) + ']', 'g');
+function fold(s){ return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(ACCENTS, '').replace(/[-–—_\/]/g, ' '); }
+// best matches first: the value starts with what's typed, then a word in it does, then it's anywhere in it (spaces aside)
+function rank(opts, typed, max, skip){
+  var q = fold(typed).trim(); if(!q) return [];
+  var qc = q.replace(/\s+/g, ''), no = {}, found = [], seen = {}, out = [];
+  (skip || []).forEach(function(x){ no[fold(x).trim()] = 1; });
+  opts.forEach(function(o, i){
+    var f = fold(o), at = f.indexOf(q), r;
+    if(f === q || no[f]) return;
+    if(at === 0) r = 0; else if(at > 0) r = /[\s(,.&]/.test(f.charAt(at - 1)) ? 1 : 2;
+    else if(qc.length > 1 && f.replace(/\s+/g, '').indexOf(qc) > -1) r = 3; else return;
+    found.push([r, i, o]);
+  });
+  found.sort(function(a, b){ return a[0] - b[0] || a[1] - b[1]; });
+  for(var j = 0; j < found.length && out.length < (max || 6); j++){ var k = fold(found[j][2]); if(!seen[k]){ seen[k] = 1; out.push(found[j][2]); } }
+  return out;
+}
+function marked(text, typed){   // the part that matches what's typed, in bold
+  var q = fold(typed).trim(), at = q ? fold(text).indexOf(q) : -1;
+  return at < 0 ? esc(text) : esc(text.slice(0, at)) + '<b>' + esc(text.slice(at, at + q.length)) + '</b>' + esc(text.slice(at + q.length));
+}
 // a list as typed in one field: "; " between items when it has any (places carry their own comma), commas otherwise
 function listOf(s){ s = String(s || ''); return s.split(s.indexOf(';') > -1 ? ';' : ',').map(function(x){ return x.trim(); }).filter(Boolean); }
 function hasIn(list, v){ return list.some(function(x){ return x.toLowerCase() === String(v).toLowerCase(); }); }
-function roleIdeas(roles){
-  var have = listOf(roles), src = have.join(' '), out = [];
-  ROLE_NEAR.forEach(function(r){ if(r[0].test(src)) r[1].forEach(function(x){ if(!hasIn(out, x) && !hasIn(have, x)) out.push(x); }); });
-  return out.slice(0, 6);
-}
 // the places in a list, kept with "; " between them since a place has its own comma ("Austin, TX"). A list written with
 // commas only keeps a state or a country with its city.
 var STATE2 = /^(A[LKZR]|C[AOT]|D[EC]|FL|GA|HI|I[DLNA]|K[SY]|LA|M[EDAINSOT]|N[EVHJMYCD]|O[HKR]|PA|PR|RI|S[CD]|T[NX]|UT|V[TA]|W[AVIY]|ON|BC|QC|AB|MB|NS)$/,
@@ -379,6 +397,299 @@ function placeIdeas(places, livesIn){
   var have = placeParts(places).filter(Boolean), city = String(livesIn || '').trim();
   return ['US remote', city, city ? 'Hybrid near ' + city.split(',')[0] : '', 'Anywhere in the US'].filter(function(x){ return x && !hasIn(have, x); });
 }
+// a few roles close to the ones named
+var ROLE_NEAR = [[/data analy|analytics|\bbi\b/i, ['Data Analyst', 'BI Analyst', 'Business Analyst', 'Reporting Analyst', 'Analytics Engineer']],
+  [/data scien|machine learning|\bml\b/i, ['Data Scientist', 'Machine Learning Engineer', 'Applied Scientist']], [/data engineer/i, ['Data Engineer', 'Analytics Engineer', 'ETL Developer']],
+  [/software|developer|backend|front.?end|full.?stack/i, ['Software Engineer', 'Backend Engineer', 'Full Stack Engineer', 'Frontend Engineer']],
+  [/product manager|product owner/i, ['Product Manager', 'Product Owner', 'Technical Product Manager']], [/business analyst/i, ['Business Analyst', 'Systems Analyst', 'Product Analyst']],
+  [/devops|cloud|platform|reliability|\bsre\b/i, ['DevOps Engineer', 'Cloud Engineer', 'Site Reliability Engineer']], [/project manager|program manager|scrum/i, ['Project Manager', 'Program Manager', 'Scrum Master']],
+  [/designer|\bux\b|\bui\b/i, ['Product Designer', 'UX Designer', 'UI Designer']], [/\bqa\b|quality|test/i, ['QA Engineer', 'Test Automation Engineer', 'SDET']],
+  [/secur|cyber|\bsoc\b/i, ['Cybersecurity Analyst', 'SOC Analyst', 'Security Engineer']], [/salesforce/i, ['Salesforce Developer', 'Salesforce Administrator']]];
+function roleIdeas(roles){
+  var have = listOf(roles), src = have.join(' '), out = [];
+  ROLE_NEAR.forEach(function(r){ if(r[0].test(src)) r[1].forEach(function(x){ if(!hasIn(out, x) && !hasIn(have, x)) out.push(x); }); });
+  return out.slice(0, 6);
+}
+// what was typed, tidied up
+var LI = 'https://www.linkedin.com/in/';
+function linkedinIdeas(t){
+  t = String(t || '').trim();
+  if(!t || (t.length < LI.length && LI.indexOf(t.toLowerCase()) === 0)) return [LI];   // the start of the address: they type the rest
+  var m = t.match(/linkedin\.com\/(?:mwlite\/)?in\/([^\/?#\s]+)/i);
+  if(m) return LI + m[1] === t.replace(/\/$/, '') ? [] : [LI + m[1]];
+  return /^@?[a-z0-9][a-z0-9\-_%]{2,99}$/i.test(t) ? [LI + t.replace(/^@/, '')] : [];   // just the name: the whole address
+}
+function phoneIdeas(t){
+  t = String(t || '').trim(); var d = t.replace(/\D/g, ''), out = [];
+  var us = function(x){ return '+1 ' + x.slice(0, 3) + ' ' + x.slice(3, 6) + ' ' + x.slice(6); }, ind = function(x){ return '+91 ' + x.slice(0, 5) + ' ' + x.slice(5); };
+  if(d.length === 10){ out.push(us(d)); if(/^[6-9]/.test(d)) out.push(ind(d)); }
+  else if(d.length === 11 && d.charAt(0) === '1') out.push(us(d.slice(1)));
+  else if(d.length === 12 && d.slice(0, 2) === '91') out.push(ind(d.slice(2)));
+  return out.filter(function(x){ return x !== t; });
+}
+function kfmt(n){ return '$' + (n % 1000 ? (n / 1000).toFixed(1) : n / 1000) + 'K'; }
+function usd(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
+function salaryIdeas(t){
+  var s = String(t || '').toLowerCase().replace(/usd|per (year|annum)|a year|annually|\/\s*(yr|year)/g, '').replace(/[$,\s]/g, '');
+  var m = s.match(/^(\d+(?:\.\d+)?)(k)?(?:(?:-|–|—|to)(\d+(?:\.\d+)?)(k)?)?$/); if(!m) return [];
+  var big = function(n, k){ n = +n; return k || n < 1000 ? n * 1000 : n; };
+  var a = big(m[1], m[2] || m[4]), b = m[3] ? big(m[3], m[4]) : 0;
+  if(a < 10000 || a > 2000000) return [];
+  if(b > a) return [kfmt(a) + '–' + kfmt(b) + ' a year', usd(a) + '–' + usd(b) + ' a year'];
+  var out = [usd(a) + ' a year', kfmt(a) + '–' + kfmt(Math.round(a * 1.15 / 5000) * 5000) + ' a year'];
+  if(!m[2] && !m[3] && +m[1] >= 15 && +m[1] <= 200) out.push('$' + m[1] + ' an hour');
+  return out;
+}
+var MAILS = ['gmail.com', 'outlook.com', 'yahoo.com', 'hotmail.com', 'icloud.com', 'live.com', 'aol.com', 'protonmail.com'];
+var MAIL_TYPO = {'gmial.com':'gmail.com', 'gmai.com':'gmail.com', 'gamil.com':'gmail.com', 'gmal.com':'gmail.com', 'gnail.com':'gmail.com', 'gmaill.com':'gmail.com',
+  'gmail.co':'gmail.com', 'gmail.con':'gmail.com', 'gmail.cm':'gmail.com', 'gmail.om':'gmail.com', 'hotmial.com':'hotmail.com', 'hotmai.com':'hotmail.com',
+  'hotmail.co':'hotmail.com', 'yahooo.com':'yahoo.com', 'yaho.com':'yahoo.com', 'yahoo.co':'yahoo.com', 'yahoo.con':'yahoo.com', 'outlok.com':'outlook.com',
+  'outllok.com':'outlook.com', 'outlook.co':'outlook.com', 'iclod.com':'icloud.com', 'icloud.co':'icloud.com'};
+function mailIdeas(t, first){
+  t = String(t || '').trim().toLowerCase(); var at = t.indexOf('@'), doms = (first || []).concat(MAILS);
+  if(at < 1 || t.indexOf('@', at + 1) > -1) return [];
+  var who = t.slice(0, at), dom = t.slice(at + 1);
+  if(MAIL_TYPO[dom]){ var fix = [who + '@' + MAIL_TYPO[dom]]; fix.head = 'Did you mean'; return fix; }   // a login email can't be changed later
+  return doms.filter(function(d){ return d.indexOf(dom) === 0 && d !== dom; }).slice(0, 5).map(function(d){ return who + '@' + d; });
+}
+// a US ZIP code typed where a city goes: the city it belongs to (looked up as the app does)
+var ZIPS = {};
+function zipPlace(z){
+  if(typeof ZIPS[z] === 'string') return ZIPS[z];
+  if(ZIPS[z] === undefined && window.fetch){
+    ZIPS[z] = null;
+    fetch('https://api.zippopotam.us/us/' + z).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+      var p = d && d.places && d.places[0]; ZIPS[z] = p ? p['place name'] + ', ' + p['state abbreviation'] : '';
+      if(SGS.f && SGS.f.value.trim() === z) sgRefresh();
+    }).catch(function(){ ZIPS[z] = ''; });
+  }
+  return '';
+}
+// another name for a place or a school ("nyc", "bangalore", "njit"): typed in full, or its start from three letters on
+function aliasOf(ft, key){
+  var A = LISTS && LISTS[key]; if(!A || !ft) return null;
+  if(A[ft]) return {v:A[ft], exact:true};
+  if(ft.length < 3) return null;
+  for(var k in A) if(k.indexOf(ft) === 0) return {v:A[k], exact:false};
+  return null;
+}
+/* The kinds of field. list: a long list to search; options: a short one; all: every option shown when tapped; picks: the
+   page's own answers (head: what they're called); make: what was typed, tidied; alias: the list's other names; sep: a list
+   field, and what goes between its items; after: once one is picked; dyn: a kind worked out from the field itself. */
+var SG = {
+  place:{list:'places', alias:'placeAliases', icon:'pin', zip:true},
+  job_place:{list:'places', alias:'placeAliases', icon:'pin', options:['Remote', 'Hybrid', 'On-site']},
+  places:{list:'places', alias:'placeAliases', icon:'pin', sep:'; ', picks:function(f, p){ return placeIdeas(f.value, p.location); }},
+  role:{list:'titles', icon:'role'},
+  roles:{list:'titles', icon:'role', sep:', ', picks:function(f){ return roleIdeas(f.value); }},
+  resume_name:{list:'titles', icon:'role', picks:function(f, p){ return listOf(p.target_roles); }},
+  salary:{options:['Open to discuss', 'Negotiable'], all:true, make:salaryIdeas},
+  linkedin:{make:linkedinIdeas},
+  phone:{make:phoneIdeas},
+  email:{make:function(t){ return mailIdeas(t); }},
+  team_email:{make:function(t){ return mailIdeas(t, ['trulyplaced.com']); }},
+  skill:{list:'skills'},
+  skills:{list:'skills', sep:', '}
+};
+var SG_KB = {phone:' type="tel" inputmode="tel"', linkedin:' inputmode="url" autocapitalize="none"', email:' type="email" autocapitalize="none"', team_email:' type="email" autocapitalize="none"'};
+// the attributes for a field that suggests: area for a textarea; ac to let the browser fill it in too (the client's own phone)
+function sg(kind, area, ac){
+  return ' data-sg="' + kind + '" autocomplete="' + (ac || 'off') + '" aria-autocomplete="list" aria-controls="sgList"' + (area ? '' : ' role="combobox" aria-expanded="false"') +
+    (kind === 'answer' || kind === 'question' ? '' : ' autocorrect="off" spellcheck="false"') + (SG_KB[kind] || '');
+}
+var SGI = {pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+  role:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>'};
+var api = {sg:sg, kind:function(name, spec){ SG[name] = spec; }, profile:null, fire:fire, rank:rank, hasIn:hasIn, listOf:listOf, placeParts:placeParts,
+  placeIdeas:placeIdeas, roleIdeas:roleIdeas, salaryIdeas:salaryIdeas, linkedinIdeas:linkedinIdeas, phoneIdeas:phoneIdeas, mailIdeas:mailIdeas,
+  list:function(name){ if(!LISTS) loadLists(); return (LISTS && LISTS[name]) || []; }};
+function sgProfile(){ try{ return (api.profile && api.profile()) || {}; }catch(e){ return {}; } }
+var SGS = {f:null, el:null, at:null, items:[], act:-1, typed:false, base:'', quiet:false, t:0, press:0};
+function sgSpec(f){ var s = SG[f.getAttribute('data-sg')]; return s && s.dyn ? s.dyn(f) : s || null; }
+// a list field: the items already in it, and the one being typed (none when it was only tapped: a pick adds one)
+function sgParts(v, s, fresh){
+  if(!s.sep) return {typed:String(v || '').trim(), chosen:[]};
+  var parts = s.sep === '; ' ? placeParts(v) : String(v || '').split(/[,;]/), typed = fresh ? '' : String(parts.pop() || '').trim();
+  return {typed:typed, chosen:parts.map(function(x){ return x.trim(); }).filter(Boolean)};
+}
+// as above for the field now. Typed into a list since it was tapped, with no comma ("New York" then "Aus", or wherever the
+// cursor landed), it's taken as the next item: a pick adds it as one, and nothing typed changes unless one is picked.
+function sgNow(f, s){
+  var v = f.value, b = SGS.base;
+  if(s.sep && SGS.typed && b && v.length > b.length){
+    var i = 0, j = 0, n = b.length;
+    while(i < n && v.charAt(i) === b.charAt(i)) i++;
+    while(j < n - i && v.charAt(v.length - 1 - j) === b.charAt(n - 1 - j)) j++;
+    var add = v.slice(i, v.length - j);
+    if(i + j === n && add.trim() && !/[,;]/.test(add)) return {typed:add.trim(), chosen:sgParts(b, s, true).chosen};
+  }
+  return sgParts(v, s, !SGS.typed);
+}
+function fire(f){ SGS.quiet = true; try{ f.dispatchEvent(new Event('input', {bubbles:true})); f.dispatchEvent(new Event('change', {bubbles:true})); }finally{ SGS.quiet = false; } }
+function sgEl(){
+  if(SGS.el) return SGS.el;
+  var d = document.createElement('div'); d.className = 'sgl'; d.id = 'sgList'; d.setAttribute('role', 'listbox'); d.setAttribute('aria-label', 'Suggestions');
+  d.addEventListener('mousedown', function(e){ e.preventDefault(); });   // pressing a suggestion keeps the field focused
+  d.addEventListener('pointerdown', function(){ SGS.press = Date.now(); });
+  d.addEventListener('click', function(e){ SGS.press = 0; var o = e.target.closest('[data-i]'); if(o){ e.preventDefault(); sgChoose(+o.getAttribute('data-i')); } });
+  return (SGS.el = d);
+}
+// under the field, in the page: below it in its own box; across the whole row in a row of fields laid out as a grid (a
+// question and its answer, the skills); under a field set in a line with its buttons
+function sgMount(f){
+  var el = sgEl(), p = f.parentNode, cs = p && p.nodeType === 1 ? getComputedStyle(p) : null, d = cs ? cs.display : '';
+  SGS.at = f; el.style.gridColumn = '';
+  if(/grid/.test(d)){ el.style.gridColumn = '1 / -1'; p.appendChild(el); }
+  else if(/flex/.test(d) && !/column/.test(cs.flexDirection)) p.insertAdjacentElement('afterend', el);
+  else f.insertAdjacentElement('afterend', el);
+}
+function sgClose(){
+  var el = SGS.el, f = SGS.f;
+  if(el && el.parentNode) el.parentNode.removeChild(el);
+  SGS.items = []; SGS.act = -1; SGS.at = null;
+  if(f){ if(f.tagName === 'INPUT') f.setAttribute('aria-expanded', 'false'); f.removeAttribute('aria-activedescendant'); }
+}
+function sgRefresh(){
+  var f = SGS.f; if(!f || !f.isConnected || f.readOnly || f.disabled){ sgClose(); return; }
+  var s = sgSpec(f); if(!s){ sgClose(); return; }
+  if(s.list && !LISTS) loadLists().then(function(l){ if(l && SGS.f === f) sgRefresh(); });
+  // tapped, nothing typed yet: what suits the field (a short list's every choice, the page's own answers); typed: what matches
+  var fresh = !SGS.typed, p = sgProfile(), pt = sgNow(f, s), typed = pt.typed, ft = fold(typed).trim(), all = s.all && fresh, cur = fold(f.value).trim();
+  var groups = [], used = pt.chosen.slice();
+  var add = function(head, arr, icon){
+    var out = [];
+    (arr || []).forEach(function(x){ x = String(x || '').trim(); if(x && !hasIn(used, x) && !hasIn(out, x) && (all || fold(x).trim() !== cur)) out.push(x); });
+    if(out.length){ groups.push({head:head, items:out, icon:icon}); used = used.concat(out); }
+  };
+  var picks = s.picks ? s.picks(f, p) : [];
+  if(!fresh) picks = ft ? picks.filter(function(x){ var fx = fold(x).trim(); return fx !== ft && fx.indexOf(ft) > -1; }).slice(0, 3) : picks;
+  add(s.head || 'Suggested', picks.slice(0, 6), s.icon);
+  if(s.make && (!fresh || !typed)){ var made = s.make(typed, f, p) || []; add(made.head || '', made.filter(function(x){ return x !== typed; })); }
+  if(s.zip && !fresh && /^\d{5}$/.test(typed)){ var z = zipPlace(typed); if(z) add('ZIP code ' + typed, [z], 'pin'); }
+  var opts = typeof s.options === 'function' ? s.options(f, p) : (s.options || []), long = s.list && LISTS ? LISTS[s.list] || [] : [];
+  if(all) add(s.optsHead || '', opts.length ? opts : long, s.icon);
+  else if(!fresh && ft){
+    var hits = rank(opts.concat(long), typed, s.max || 6, used), al = s.alias ? aliasOf(ft, s.alias) : null;
+    if(al && !hasIn(used, al.v)){   // its other name in full goes first; just its start, after what matches already (if there's room)
+      var at = hits.indexOf(al.v);
+      if(al.exact){ if(at > -1) hits.splice(at, 1); hits.unshift(al.v); } else if(at < 0) hits.push(al.v);
+      hits = hits.slice(0, s.max || 6);
+    }
+    add('', hits, s.icon);
+  }
+  sgDraw(groups, all ? '' : typed, all ? cur : '');
+}
+function sgDraw(groups, typed, cur){
+  var f = SGS.f, items = [], html = '';
+  groups.forEach(function(g, gi){
+    if(gi) html += '<div class="sgd" aria-hidden="true"></div>';
+    if(g.head) html += '<div class="sgh" aria-hidden="true">' + esc(g.head) + '</div>';
+    g.items.forEach(function(x){
+      var n = items.length, on = cur && fold(x).trim() === cur;
+      html += '<div class="sgo' + (on ? ' cur' : '') + '" role="option" id="sgo' + n + '" data-i="' + n + '" aria-selected="false">' + (g.icon ? SGI[g.icon] : '') +
+        '<span>' + (typed ? marked(x, typed) : esc(x)) + '</span>' + (on ? '<i class="sgk">' + SGI.check + '</i>' : '') + '</div>';
+      items.push(x);
+    });
+  });
+  SGS.items = items; SGS.act = -1;
+  if(!items.length){ sgClose(); return; }
+  var el = sgEl(); if(SGS.at !== f || !el.isConnected) sgMount(f);
+  el.innerHTML = html;
+  if(f.tagName === 'INPUT') f.setAttribute('aria-expanded', 'true');
+  f.removeAttribute('aria-activedescendant');
+  sgInView();
+}
+// the box the field scrolls in (a dialog, the editor's panel), or none when the page itself scrolls
+function scroller(el){
+  for(var p = el.parentElement; p && p !== document.body && p !== document.documentElement; p = p.parentElement){
+    var o = getComputedStyle(p).overflowY; if((o === 'auto' || o === 'scroll') && p.scrollHeight > p.clientHeight + 1) return p;
+  }
+  return null;
+}
+// the list stays in sight: above a phone's keyboard and the save bar at the bottom, inside the box it scrolls in
+function sgInView(){
+  var el = SGS.el, f = SGS.f; if(!el || !f || !el.isConnected) return;
+  var vv = window.visualViewport, top = vv ? vv.offsetTop : 0, bot = vv ? vv.offsetTop + vv.height : window.innerHeight, box = scroller(f);
+  if(box){ var b = box.getBoundingClientRect(); top = Math.max(top, b.top); bot = Math.min(bot, b.bottom); }
+  all('.savebar, .sticky-save').forEach(function(x){ var r = x.getBoundingClientRect(); if(r.height && r.top > top + 120 && r.top < bot) bot = r.top; });
+  var over = el.getBoundingClientRect().bottom + 8 - bot, room = f.getBoundingClientRect().top - top - (box ? 16 : 76);
+  if(over > 0 && room > 0){   // at once, even where the page scrolls smoothly: a click a moment later lands where it was aimed
+    var sc = box || document.scrollingElement || document.documentElement, was = sc.style.scrollBehavior;
+    sc.style.scrollBehavior = 'auto'; sc.scrollTop += Math.min(over, room); sc.style.scrollBehavior = was;
+  }
+}
+function sgActive(){
+  var f = SGS.f;
+  all('[role=option]', SGS.el).forEach(function(o, i){
+    var on = i === SGS.act; o.setAttribute('aria-selected', on ? 'true' : 'false');
+    if(on){ f.setAttribute('aria-activedescendant', o.id); o.scrollIntoView({block:'nearest'}); }
+  });
+}
+function sgChoose(i){
+  var f = SGS.f, v = SGS.items[i]; if(!f || v == null) return;
+  var s = sgSpec(f) || {};
+  if(s.sep){ var pt = sgNow(f, s); pt.chosen.push(v); f.value = pt.chosen.join(s.sep) + s.sep; SGS.base = ''; }   // and on to the next
+  else f.value = v;
+  SGS.typed = false; fire(f);
+  if(s.after) s.after(v, f);
+  // more to type: the next in a list, or the rest of an address ("…/in/")
+  if(s.sep || /\/$/.test(v)){ if(document.activeElement !== f) f.focus(); var L = f.value.length; try{ f.setSelectionRange(L, L); }catch(x){} sgRefresh(); }
+  else sgClose();
+}
+// a list field left: no separator dangling at its end
+function sgTidy(f){ var s = f.isConnected && sgSpec(f); if(s && s.sep && /[\s,;]+$/.test(f.value)){ f.value = f.value.replace(/[\s,;]+$/, ''); fire(f); } }
+document.addEventListener('focusin', function(e){
+  var f = e.target; if(!f || !f.hasAttribute || !f.hasAttribute('data-sg')) return;
+  clearTimeout(SGS.t);
+  if(SGS.f !== f){ var was = SGS.f; sgClose(); if(was) sgTidy(was); SGS.f = f; SGS.typed = false; SGS.base = f.value; }   // straight from another field
+  sgRefresh();
+});
+document.addEventListener('focusout', function(e){
+  var f = e.target; if(f !== SGS.f) return;
+  clearTimeout(SGS.t);
+  // late enough that a tap on a suggestion lands first
+  SGS.t = setTimeout(function leave(){
+    if(Date.now() - SGS.press < 800){ SGS.t = setTimeout(leave, 200); return; }
+    if(document.activeElement === f || SGS.f !== f) return;
+    sgClose(); SGS.f = null; sgTidy(f);
+  }, 200);
+});
+document.addEventListener('input', function(e){ if(SGS.quiet || !SGS.f || e.target !== SGS.f) return; SGS.typed = true; sgRefresh(); });
+// a second tap on a field whose list was closed (a choice made, or Esc) opens it again, like a dropdown
+document.addEventListener('click', function(e){ if(SGS.f && e.target === SGS.f && !SGS.items.length){ SGS.typed = false; sgRefresh(); } });
+document.addEventListener('keydown', function(e){
+  var f = SGS.f; if(!f || e.target !== f || e.isComposing || e.altKey || e.ctrlKey || e.metaKey) return;
+  var n = SGS.items.length;
+  if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){
+    if(!n){ if(e.key === 'ArrowDown' && f.tagName === 'INPUT'){ SGS.typed = false; sgRefresh(); if(SGS.items.length) e.preventDefault(); } return; }
+    e.preventDefault(); SGS.act = e.key === 'ArrowDown' ? (SGS.act + 1) % n : (SGS.act <= 0 ? n - 1 : SGS.act - 1); sgActive(); return;
+  }
+  if(!n) return;
+  if(e.key === 'Enter' && SGS.act >= 0){ e.preventDefault(); e.stopPropagation(); sgChoose(SGS.act); }
+  else if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); sgClose(); }   // closes the list, not the dialog around it
+  else if(e.key === 'Tab' && !e.shiftKey && SGS.act >= 0) sgChoose(SGS.act);
+}, true);
+return api;
+})();
+/* ==== end of the suggest engine ==== */
+
+/* ---------- help filling in a client's profile: the same on the team's Profile tab and the client's own ----------
+   The common form questions, each with its answer suggested from what the profile already says (suggestAnswer), and the
+   kinds of field only the profile has: work authorization, when they can start, a question and its answer. */
+var listOf = SUGGEST.listOf, hasIn = SUGGEST.hasIn;
+var COMMON_Q = ['Are you legally authorized to work in the United States?', 'Will you now or in the future require visa sponsorship (e.g. H-1B)?',
+  'Are you willing to relocate?', 'What are your salary expectations?', 'When can you start?', 'LinkedIn profile', 'How did you hear about this job?',
+  'Gender (voluntary)', 'Race / ethnicity (voluntary)', 'Veteran status (voluntary)', 'Disability status (voluntary)'];
+// more of what forms ask, offered as a question is typed
+var MORE_Q = ['Are you authorized to work in the US without sponsorship?', 'Are you at least 18 years old?', 'Do you have a valid driver’s license?',
+  'Are you willing to work on-site or hybrid?', 'Are you willing to travel?', 'Are you open to contract roles?', 'What is your highest level of education?',
+  'How many years of relevant experience do you have?', 'Current location (city, state)', 'Country of citizenship', 'Languages you speak', 'Notice period',
+  'Earliest start date', 'GitHub profile', 'Website or portfolio', 'Have you worked for this company before?', 'Do you have friends or family who work here?',
+  'Pronouns', 'Are you Hispanic or Latino? (voluntary)'];
+var WORK_AUTH = ['US citizen', 'Green card holder', 'F-1 OPT', 'F-1 STEM OPT — needs H-1B later', 'F-1 CPT', 'H-1B — needs a transfer', 'H-4 EAD', 'L-2 EAD',
+  'Green card pending — EAD', 'TN visa (Canadian or Mexican citizen)', 'E-3 (Australian citizen)', 'O-1', 'Needs H-1B sponsorship'];
+var STARTS = ['Immediately', '1 week’s notice', '2 weeks’ notice', '3 weeks’ notice', '1 month’s notice', '2 months’ notice', '3 months’ notice',
+  'Once my OPT EAD arrives', 'Flexible — open to discuss'];
 // what a form question asks about; the first that fits wins, so the more particular come first
 var QK = [['auth_nosp', /(authori[sz]ed|eligible|legally able).*without.*sponsor/i], ['sponsor', /sponsor/i],
   ['auth', /authori[sz]ed to work|eligible to work|legally (able|eligible|permitted) to work|right to work|work authori[sz]ation/i], ['relocate', /relocat/i],
@@ -437,106 +748,6 @@ document.addEventListener('click', function(e){
   else f.value = v;
   f.dispatchEvent(new Event('input', {bubbles:true}));
 });
-
-/* ---------- suggestions as you type (app.trulyplaced.com's SuggestInput) ----------
-   A field says what it is with data-sg; TP.sg(kind) writes that, with the keyboard that suits it. Tapped, it offers what
-   suits it at once: a short list's choices (work authorization, when they can start) or the profile's own answers. Typed,
-   it offers the best matches from a long list (cities, roles, skills: suggest-lists.js, loaded the first time a field needs
-   it), and what was typed, tidied up (a phone number, a LinkedIn address, a salary, an email address).
-   Arrows and Enter pick one, Esc closes the list, a tap fills it in. A list field (roles, places) completes the item being
-   typed and stays open for the next. The list sits in the page under the field, so it never covers the next field or a
-   button. */
-var LISTS_V = '2026-10-31.1', LISTS = null, LISTS_P = null;
-function loadLists(){   // null when it couldn't load (offline): tried again half a minute later, not on every key
-  if(LISTS) return Promise.resolve(LISTS);
-  return LISTS_P || (LISTS_P = loadScript('/suggest-lists.js?v=' + LISTS_V).then(function(){ return (LISTS = window.TP_LISTS || {}); },
-    function(){ setTimeout(function(){ LISTS_P = null; }, 30000); return null; }));
-}
-// compared without case or accents, with dashes and slashes as spaces ("ui/ux" finds "UI/UX Designer"); one character for one
-function fold(s){ return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[-–—_\/]/g, ' '); }
-// best matches first: the value starts with what's typed, then a word in it does, then it's anywhere in it (spaces aside)
-function rank(opts, typed, max, skip){
-  var q = fold(typed).trim(); if(!q) return [];
-  var qc = q.replace(/\s+/g, ''), no = {}, found = [], seen = {}, out = [];
-  (skip || []).forEach(function(x){ no[fold(x).trim()] = 1; });
-  opts.forEach(function(o, i){
-    var f = fold(o), at = f.indexOf(q), r;
-    if(f === q || no[f]) return;
-    if(at === 0) r = 0; else if(at > 0) r = /[\s(,.&]/.test(f.charAt(at - 1)) ? 1 : 2;
-    else if(qc.length > 1 && f.replace(/\s+/g, '').indexOf(qc) > -1) r = 3; else return;
-    found.push([r, i, o]);
-  });
-  found.sort(function(a, b){ return a[0] - b[0] || a[1] - b[1]; });
-  for(var j = 0; j < found.length && out.length < (max || 6); j++){ var k = fold(found[j][2]); if(!seen[k]){ seen[k] = 1; out.push(found[j][2]); } }
-  return out;
-}
-function marked(text, typed){   // the part that matches what's typed, in bold
-  var q = fold(typed).trim(), at = q ? fold(text).indexOf(q) : -1;
-  return at < 0 ? esc(text) : esc(text.slice(0, at)) + '<b>' + esc(text.slice(at, at + q.length)) + '</b>' + esc(text.slice(at + q.length));
-}
-// what was typed, tidied up
-var LI = 'https://www.linkedin.com/in/';
-function linkedinIdeas(t){
-  t = String(t || '').trim();
-  if(!t || (t.length < LI.length && LI.indexOf(t.toLowerCase()) === 0)) return [LI];   // the start of the address: they type the rest
-  var m = t.match(/linkedin\.com\/(?:mwlite\/)?in\/([^\/?#\s]+)/i);
-  if(m) return LI + m[1] === t.replace(/\/$/, '') ? [] : [LI + m[1]];
-  return /^@?[a-z0-9][a-z0-9\-_%]{2,99}$/i.test(t) ? [LI + t.replace(/^@/, '')] : [];   // just the name: the whole address
-}
-function phoneIdeas(t){
-  t = String(t || '').trim(); var d = t.replace(/\D/g, ''), out = [];
-  var us = function(x){ return '+1 ' + x.slice(0, 3) + ' ' + x.slice(3, 6) + ' ' + x.slice(6); }, ind = function(x){ return '+91 ' + x.slice(0, 5) + ' ' + x.slice(5); };
-  if(d.length === 10){ out.push(us(d)); if(/^[6-9]/.test(d)) out.push(ind(d)); }
-  else if(d.length === 11 && d.charAt(0) === '1') out.push(us(d.slice(1)));
-  else if(d.length === 12 && d.slice(0, 2) === '91') out.push(ind(d.slice(2)));
-  return out.filter(function(x){ return x !== t; });
-}
-function kfmt(n){ return '$' + (n % 1000 ? (n / 1000).toFixed(1) : n / 1000) + 'K'; }
-function usd(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
-function salaryIdeas(t){
-  var s = String(t || '').toLowerCase().replace(/usd|per (year|annum)|a year|annually|\/\s*(yr|year)/g, '').replace(/[$,\s]/g, '');
-  var m = s.match(/^(\d+(?:\.\d+)?)(k)?(?:(?:-|–|—|to)(\d+(?:\.\d+)?)(k)?)?$/); if(!m) return [];
-  var big = function(n, k){ n = +n; return k || n < 1000 ? n * 1000 : n; };
-  var a = big(m[1], m[2] || m[4]), b = m[3] ? big(m[3], m[4]) : 0;
-  if(a < 10000 || a > 2000000) return [];
-  if(b > a) return [kfmt(a) + '–' + kfmt(b) + ' a year', usd(a) + '–' + usd(b) + ' a year'];
-  var out = [usd(a) + ' a year', kfmt(a) + '–' + kfmt(Math.round(a * 1.15 / 5000) * 5000) + ' a year'];
-  if(!m[2] && !m[3] && +m[1] >= 15 && +m[1] <= 200) out.push('$' + m[1] + ' an hour');
-  return out;
-}
-var MAILS = ['gmail.com', 'outlook.com', 'yahoo.com', 'hotmail.com', 'icloud.com', 'live.com', 'aol.com', 'protonmail.com'];
-var MAIL_TYPO = {'gmial.com':'gmail.com', 'gmai.com':'gmail.com', 'gamil.com':'gmail.com', 'gmal.com':'gmail.com', 'gnail.com':'gmail.com', 'gmaill.com':'gmail.com',
-  'gmail.co':'gmail.com', 'gmail.con':'gmail.com', 'gmail.cm':'gmail.com', 'gmail.om':'gmail.com', 'hotmial.com':'hotmail.com', 'hotmai.com':'hotmail.com',
-  'hotmail.co':'hotmail.com', 'yahooo.com':'yahoo.com', 'yaho.com':'yahoo.com', 'yahoo.co':'yahoo.com', 'yahoo.con':'yahoo.com', 'outlok.com':'outlook.com',
-  'outllok.com':'outlook.com', 'outlook.co':'outlook.com', 'iclod.com':'icloud.com', 'icloud.co':'icloud.com'};
-function mailIdeas(t, first){
-  t = String(t || '').trim().toLowerCase(); var at = t.indexOf('@'), doms = (first || []).concat(MAILS);
-  if(at < 1 || t.indexOf('@', at + 1) > -1) return [];
-  var who = t.slice(0, at), dom = t.slice(at + 1);
-  if(MAIL_TYPO[dom]){ var fix = [who + '@' + MAIL_TYPO[dom]]; fix.head = 'Did you mean'; return fix; }   // the login email can't be changed later
-  return doms.filter(function(d){ return d.indexOf(dom) === 0 && d !== dom; }).slice(0, 5).map(function(d){ return who + '@' + d; });
-}
-// a US ZIP code typed where a city goes: the city it belongs to (looked up as the app does)
-var ZIPS = {};
-function zipPlace(z){
-  if(typeof ZIPS[z] === 'string') return ZIPS[z];
-  if(ZIPS[z] === undefined && window.fetch){
-    ZIPS[z] = null;
-    fetch('https://api.zippopotam.us/us/' + z).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
-      var p = d && d.places && d.places[0]; ZIPS[z] = p ? p['place name'] + ', ' + p['state abbreviation'] : '';
-      if(SGS.f && SGS.f.value.trim() === z) sgRefresh();
-    }).catch(function(){ ZIPS[z] = ''; });
-  }
-  return '';
-}
-// another name for a place ("nyc", "bangalore"): the start of one, from three letters on
-function aliasOf(ft){
-  var A = LISTS && LISTS.placeAliases; if(!A || !ft) return '';
-  if(A[ft]) return A[ft];
-  if(ft.length < 3) return '';
-  for(var k in A) if(k.indexOf(ft) === 0) return A[k];
-  return '';
-}
 // the questions already in the same list of answers
 function qsBeside(f){
   var row = f.closest('.qa'), box = row && row.parentNode;
@@ -545,7 +756,7 @@ function qsBeside(f){
 // a question picked: its answer is suggested from the profile (when it has none yet), and the answer is next
 function askedQ(v, f){
   var row = f.closest('.qa'), a = row && row.querySelector('[data-qa=a]'); if(!a) return;
-  if(!a.value.trim()){ var s = suggestAnswer(v, sgProfile()); if(s){ a.value = s; fire(a); } }
+  if(!a.value.trim()){ var s = suggestAnswer(v, sgProfile()); if(s){ a.value = s; SUGGEST.fire(a); } }
   setTimeout(function(){ if(a.isConnected){ a.focus(); try{ a.setSelectionRange(a.value.length, a.value.length); }catch(e){} } }, 0);
 }
 // an answer offers the usual answers to its question, with the profile's own first
@@ -553,32 +764,16 @@ function answerKind(f){
   var row = f.closest('.qa'), qf = row && row.querySelector('[data-qa=q]'), q = qf ? qf.value : '', k = qKind(q), o = QOPTS[k];
   if(!k) return null;
   var s = {head:'From the profile', picks:function(f2, p){ var a = suggestAnswer(q, p); return a ? [a] : []; }};
-  if(o && o.list){ s.list = o.list; s.all = !!o.all; if(o.list === 'places') s.icon = 'pin'; }
+  if(o && o.list){ s.list = o.list; s.all = !!o.all; if(o.list === 'places'){ s.icon = 'pin'; s.alias = 'placeAliases'; } }
   else { s.options = o || []; s.all = true; }
-  if(k === 'salary') s.make = salaryIdeas;
-  if(k === 'linkedin') s.make = linkedinIdeas;
+  if(k === 'salary') s.make = SUGGEST.salaryIdeas;
+  if(k === 'linkedin') s.make = SUGGEST.linkedinIdeas;
   return s;
 }
-/* The kinds of field. list: a long list to search; options: a short one; all: every option shown when tapped; picks: the
-   profile's own answers; make: what was typed, tidied; sep: a list field, and what goes between its items; after: once picked. */
-var SG = {
-  place:{list:'places', icon:'pin', zip:true},
-  job_place:{list:'places', icon:'pin', options:['Remote', 'Hybrid', 'On-site']},
-  places:{list:'places', icon:'pin', sep:'; ', picks:function(f, p){ return placeIdeas(f.value, p.location); }},
-  role:{list:'titles', icon:'role'},
-  roles:{list:'titles', icon:'role', sep:', ', picks:function(f){ return roleIdeas(f.value); }},
-  resume_name:{list:'titles', icon:'role', picks:function(f, p){ return listOf(p.target_roles); }},
-  work_auth:{options:WORK_AUTH, all:true},
-  notice:{options:STARTS, all:true},
-  salary:{options:['Open to discuss', 'Negotiable'], all:true, make:salaryIdeas},
-  linkedin:{make:linkedinIdeas},
-  phone:{make:phoneIdeas},
-  email:{make:function(t){ return mailIdeas(t); }},
-  team_email:{make:function(t){ return mailIdeas(t, ['trulyplaced.com']); }},
-  skill:{list:'skills'},
-  question:{options:function(f){ var have = qsBeside(f); return COMMON_Q.concat(MORE_Q).filter(function(x){ return !hasIn(have, x); }); }, all:true, optsHead:'Questions forms ask', after:askedQ},
-  answer:{dyn:answerKind}
-};
+SUGGEST.kind('work_auth', {options:WORK_AUTH, all:true});
+SUGGEST.kind('notice', {options:STARTS, all:true});
+SUGGEST.kind('question', {options:function(f){ var have = qsBeside(f); return COMMON_Q.concat(MORE_Q).filter(function(x){ return !hasIn(have, x); }); }, all:true, optsHead:'Questions forms ask', after:askedQ});
+SUGGEST.kind('answer', {dyn:answerKind});
 // the profile's fields, as the page shows them now (both portals use pf_<field>); a page can say better with TP.sgProfile
 var PF_SG = {phone:'phone', linkedin:'linkedin', location:'place', work_auth:'work_auth', salary:'salary', notice:'notice', target_roles:'roles', target_locations:'places'};
 function sgProfile(){
@@ -587,163 +782,7 @@ function sgProfile(){
   p = {}; ['full_name', 'phone', 'linkedin', 'location', 'work_auth', 'salary', 'notice', 'target_roles', 'target_locations'].forEach(function(k){ var x = document.getElementById('pf_' + k); if(x) p[k] = x.value.trim(); });
   return p;
 }
-var SG_KB = {phone:' type="tel" inputmode="tel"', linkedin:' inputmode="url" autocapitalize="none"', email:' type="email" autocapitalize="none"', team_email:' type="email" autocapitalize="none"'};
-// the attributes for a field that suggests: area for a textarea; ac to let the browser fill it in too (the client's own phone)
-function sg(kind, area, ac){
-  return ' data-sg="' + kind + '" autocomplete="' + (ac || 'off') + '" aria-autocomplete="list" aria-controls="sgList"' + (area ? '' : ' role="combobox" aria-expanded="false"') +
-    (kind === 'answer' || kind === 'question' ? '' : ' autocorrect="off" spellcheck="false"') + (SG_KB[kind] || '');
-}
-var SGI = {pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
-  role:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg>'};
-var SGS = {f:null, el:null, at:null, items:[], act:-1, typed:false, base:'', quiet:false, t:0, press:0};
-function sgSpec(f){ var s = SG[f.getAttribute('data-sg')]; return s && s.dyn ? s.dyn(f) : s || null; }
-// a list field: the items already in it, and the one being typed (none when it was only tapped: a pick adds one)
-function sgParts(v, s, fresh){
-  if(!s.sep) return {typed:String(v || '').trim(), chosen:[]};
-  var parts = s.sep === '; ' ? placeParts(v) : String(v || '').split(/[,;]/), typed = fresh ? '' : String(parts.pop() || '').trim();
-  return {typed:typed, chosen:parts.map(function(x){ return x.trim(); }).filter(Boolean)};
-}
-// as above for the field now. Typed into a list since it was tapped, with no comma ("New York" then "Aus", or wherever the
-// cursor landed), it's taken as the next item: a pick adds it as one, and nothing typed changes unless one is picked.
-function sgNow(f, s){
-  var v = f.value, b = SGS.base;
-  if(s.sep && SGS.typed && b && v.length > b.length){
-    var i = 0, j = 0, n = b.length;
-    while(i < n && v.charAt(i) === b.charAt(i)) i++;
-    while(j < n - i && v.charAt(v.length - 1 - j) === b.charAt(n - 1 - j)) j++;
-    var add = v.slice(i, v.length - j);
-    if(i + j === n && add.trim() && !/[,;]/.test(add)) return {typed:add.trim(), chosen:sgParts(b, s, true).chosen};
-  }
-  return sgParts(v, s, !SGS.typed);
-}
-function fire(f){ SGS.quiet = true; try{ f.dispatchEvent(new Event('input', {bubbles:true})); f.dispatchEvent(new Event('change', {bubbles:true})); }finally{ SGS.quiet = false; } }
-function sgEl(){
-  if(SGS.el) return SGS.el;
-  var d = document.createElement('div'); d.className = 'sgl'; d.id = 'sgList'; d.setAttribute('role', 'listbox'); d.setAttribute('aria-label', 'Suggestions');
-  d.addEventListener('mousedown', function(e){ e.preventDefault(); });   // pressing a suggestion keeps the field focused
-  d.addEventListener('pointerdown', function(){ SGS.press = Date.now(); });
-  d.addEventListener('click', function(e){ SGS.press = 0; var o = e.target.closest('[data-i]'); if(o){ e.preventDefault(); sgChoose(+o.getAttribute('data-i')); } });
-  return (SGS.el = d);
-}
-// under the field: inside its .field; in a row of fields (an answer, the skills), across the whole row
-function sgMount(f){
-  var el = sgEl(), p = f.parentNode; SGS.at = f;
-  if(p && p.matches && p.matches('.qa, .skadd')) p.appendChild(el);
-  else if(p && p.classList && p.classList.contains('field')) f.insertAdjacentElement('afterend', el);
-  else if(p) p.insertAdjacentElement('afterend', el);
-}
-function sgClose(){
-  var el = SGS.el, f = SGS.f;
-  if(el && el.parentNode) el.parentNode.removeChild(el);
-  SGS.items = []; SGS.act = -1; SGS.at = null;
-  if(f){ if(f.tagName === 'INPUT') f.setAttribute('aria-expanded', 'false'); f.removeAttribute('aria-activedescendant'); }
-}
-function sgRefresh(){
-  var f = SGS.f; if(!f || !f.isConnected || f.readOnly || f.disabled){ sgClose(); return; }
-  var s = sgSpec(f); if(!s){ sgClose(); return; }
-  if(s.list && !LISTS) loadLists().then(function(l){ if(l && SGS.f === f) sgRefresh(); });
-  // tapped, nothing typed yet: what suits the field (a short list's every choice, the profile's answers); typed: what matches
-  var fresh = !SGS.typed, p = sgProfile(), pt = sgNow(f, s), typed = pt.typed, ft = fold(typed).trim(), all = s.all && fresh, cur = fold(f.value).trim();
-  var groups = [], used = pt.chosen.slice();
-  var add = function(head, arr, icon){
-    var out = [];
-    (arr || []).forEach(function(x){ x = String(x || '').trim(); if(x && !hasIn(used, x) && !hasIn(out, x) && (all || fold(x).trim() !== cur)) out.push(x); });
-    if(out.length){ groups.push({head:head, items:out, icon:icon}); used = used.concat(out); }
-  };
-  var picks = s.picks ? s.picks(f, p) : [];
-  if(!fresh) picks = ft ? picks.filter(function(x){ var fx = fold(x).trim(); return fx !== ft && fx.indexOf(ft) > -1; }).slice(0, 3) : picks;
-  add(s.head || 'Suggested', picks.slice(0, 6), s.icon);
-  if(s.make && (!fresh || !typed)){ var made = s.make(typed, f, p) || []; add(made.head || '', made.filter(function(x){ return x !== typed; })); }
-  if(s.zip && !fresh && /^\d{5}$/.test(typed)){ var z = zipPlace(typed); if(z) add('ZIP code ' + typed, [z], 'pin'); }
-  var opts = typeof s.options === 'function' ? s.options(f, p) : (s.options || []), long = s.list && LISTS ? LISTS[s.list] || [] : [];
-  if(all) add(s.optsHead || '', opts.length ? opts : long, s.icon);
-  else if(!fresh && ft){
-    var hits = rank(opts.concat(long), typed, s.max || 6, used), al = s.list === 'places' ? aliasOf(ft) : '';
-    if(al && !hasIn(used, al)) hits = [al].concat(hits.filter(function(x){ return x !== al; })).slice(0, s.max || 6);
-    add('', hits, s.icon);
-  }
-  sgDraw(groups, all ? '' : typed, all ? cur : '');
-}
-function sgDraw(groups, typed, cur){
-  var f = SGS.f, items = [], html = '';
-  groups.forEach(function(g, gi){
-    if(gi) html += '<div class="sgd" aria-hidden="true"></div>';
-    if(g.head) html += '<div class="sgh" aria-hidden="true">' + esc(g.head) + '</div>';
-    g.items.forEach(function(x){
-      var n = items.length, on = cur && fold(x).trim() === cur;
-      html += '<div class="sgo' + (on ? ' cur' : '') + '" role="option" id="sgo' + n + '" data-i="' + n + '" aria-selected="false">' + (g.icon ? SGI[g.icon] : '') +
-        '<span>' + (typed ? marked(x, typed) : esc(x)) + '</span>' + (on ? '<i class="sgk">' + I.check + '</i>' : '') + '</div>';
-      items.push(x);
-    });
-  });
-  SGS.items = items; SGS.act = -1;
-  if(!items.length){ sgClose(); return; }
-  var el = sgEl(); if(SGS.at !== f || !el.isConnected) sgMount(f);
-  el.innerHTML = html;
-  if(f.tagName === 'INPUT') f.setAttribute('aria-expanded', 'true');
-  f.removeAttribute('aria-activedescendant');
-  sgInView();
-}
-// the list stays in sight: above a phone's keyboard, the save bar at the bottom, or the bottom of a dialog
-function sgInView(){
-  var el = SGS.el, f = SGS.f; if(!el || !f || !el.isConnected) return;
-  var vv = window.visualViewport, top = vv ? vv.offsetTop : 0, bot = vv ? vv.offsetTop + vv.height : window.innerHeight, box = f.closest('.mod');
-  if(box){ var b = box.getBoundingClientRect(); top = Math.max(top, b.top); bot = Math.min(bot, b.bottom); }
-  else $$('.savebar, .sticky-save').forEach(function(x){ var r = x.getBoundingClientRect(); if(r.height && r.top > top + 120 && r.top < bot) bot = r.top; });
-  var over = el.getBoundingClientRect().bottom + 8 - bot, room = f.getBoundingClientRect().top - top - (box ? 16 : 76);
-  if(over > 0 && room > 0) (box || window).scrollBy(0, Math.min(over, room));   // at once: a click a moment later lands where it was aimed
-}
-function sgActive(){
-  var f = SGS.f;
-  $$('[role=option]', SGS.el).forEach(function(o, i){
-    var on = i === SGS.act; o.setAttribute('aria-selected', on ? 'true' : 'false');
-    if(on){ f.setAttribute('aria-activedescendant', o.id); o.scrollIntoView({block:'nearest'}); }
-  });
-}
-function sgChoose(i){
-  var f = SGS.f, v = SGS.items[i]; if(!f || v == null) return;
-  var s = sgSpec(f) || {};
-  if(s.sep){ var pt = sgNow(f, s); pt.chosen.push(v); f.value = pt.chosen.join(s.sep) + s.sep; SGS.base = ''; }   // and on to the next
-  else f.value = v;
-  SGS.typed = false; fire(f);
-  if(s.after) s.after(v, f);
-  // more to type: the next in a list, or the rest of an address ("…/in/")
-  if(s.sep || /\/$/.test(v)){ if(document.activeElement !== f) f.focus(); var L = f.value.length; try{ f.setSelectionRange(L, L); }catch(x){} sgRefresh(); }
-  else sgClose();
-}
-// a list field left: no separator dangling at its end
-function sgTidy(f){ var s = f.isConnected && sgSpec(f); if(s && s.sep && /[\s,;]+$/.test(f.value)){ f.value = f.value.replace(/[\s,;]+$/, ''); fire(f); } }
-document.addEventListener('focusin', function(e){
-  var f = e.target; if(!f || !f.hasAttribute || !f.hasAttribute('data-sg')) return;
-  clearTimeout(SGS.t);
-  if(SGS.f !== f){ var was = SGS.f; sgClose(); if(was) sgTidy(was); SGS.f = f; SGS.typed = false; SGS.base = f.value; }   // straight from another field
-  sgRefresh();
-});
-document.addEventListener('focusout', function(e){
-  var f = e.target; if(f !== SGS.f) return;
-  clearTimeout(SGS.t);
-  // late enough that a tap on a suggestion lands first
-  SGS.t = setTimeout(function leave(){
-    if(Date.now() - SGS.press < 800){ SGS.t = setTimeout(leave, 200); return; }
-    if(document.activeElement === f || SGS.f !== f) return;
-    sgClose(); SGS.f = null; sgTidy(f);
-  }, 200);
-});
-document.addEventListener('input', function(e){ if(SGS.quiet || !SGS.f || e.target !== SGS.f) return; SGS.typed = true; sgRefresh(); });
-// a second tap on a field whose list was closed (a choice made, or Esc) opens it again, like a dropdown
-document.addEventListener('click', function(e){ if(SGS.f && e.target === SGS.f && !SGS.items.length){ SGS.typed = false; sgRefresh(); } });
-document.addEventListener('keydown', function(e){
-  var f = SGS.f; if(!f || e.target !== f || e.isComposing || e.altKey || e.ctrlKey || e.metaKey) return;
-  var n = SGS.items.length;
-  if(e.key === 'ArrowDown' || e.key === 'ArrowUp'){
-    if(!n){ if(e.key === 'ArrowDown' && f.tagName === 'INPUT'){ SGS.typed = false; sgRefresh(); if(SGS.items.length) e.preventDefault(); } return; }
-    e.preventDefault(); SGS.act = e.key === 'ArrowDown' ? (SGS.act + 1) % n : (SGS.act <= 0 ? n - 1 : SGS.act - 1); sgActive(); return;
-  }
-  if(!n) return;
-  if(e.key === 'Enter' && SGS.act >= 0){ e.preventDefault(); e.stopPropagation(); sgChoose(SGS.act); }
-  else if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); sgClose(); }   // closes the list, not the dialog around it
-  else if(e.key === 'Tab' && !e.shiftKey && SGS.act >= 0) sgChoose(SGS.act);
-}, true);
+SUGGEST.profile = sgProfile;
 
 window.TP = {
   CONFIG:CONFIG, VERSION:VERSION, I:I, $:$, $$:$$, esc:esc, debounce:debounce, lsGet:lsGet, lsSet:lsSet, ssGet:ssGet, ssSet:ssSet, uid:uid,
@@ -753,7 +792,7 @@ window.TP = {
   onLeave:onLeave, leaveWhy:leaveWhy,
   upload:upload, fileUrl:fileUrl, fillFiles:fillFiles, shrinkImage:shrinkImage, modal:modal, closeModal:closeModal, tryClose:tryClose, confirmBox:confirmBox,
   isModal:function(){ return !!MOD; },
-  COMMON_Q:COMMON_Q, roleIdeas:roleIdeas, placeIdeas:placeIdeas, placeParts:placeParts, suggestAnswer:suggestAnswer, qKind:qKind, picksHTML:picksHTML,
-  sg:sg, PF_SG:PF_SG, sgKind:function(name, spec){ SG[name] = spec; }
+  COMMON_Q:COMMON_Q, roleIdeas:SUGGEST.roleIdeas, placeIdeas:SUGGEST.placeIdeas, placeParts:SUGGEST.placeParts, suggestAnswer:suggestAnswer, qKind:qKind,
+  picksHTML:picksHTML, sg:SUGGEST.sg, PF_SG:PF_SG, sgKind:SUGGEST.kind
 };
 })();
