@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-10-31.1">
+<link rel="stylesheet" href="/portal.css?v=2026-10-31.2">
 <style>
 /* The shell, laid out like the job board app (app.trulyplaced.com): a left sidebar with the sections, the clients open in
    this browser tab, the client you're working on with their progress, and you. Phones get a top bar and a tab bar. */
@@ -145,7 +145,7 @@
   /* phones and small tablets: no sidebar; a top bar with the client, and their sections along the bottom */
   .ws{display:block}
   .sb{display:none}
-  .top{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:30;height:56px;padding:0 10px 0 14px;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:30;height:56px;padding:0 10px 0 14px;background:rgba(255,255,255,.98);border-bottom:1px solid var(--line)}
   .top .brand svg{width:28px;height:28px}
   .top .tcl{flex:1;min-width:0;display:flex;align-items:center;gap:8px;font-size:14.5px}
   .top .tcl b{color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -153,7 +153,7 @@
   .top .icb{width:36px;height:36px}
   .content .wrap{padding-top:16px;padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
   .phead h1{font-size:20px}
-  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.97);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid var(--line)}
   .tabbar a{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;font-size:11px;font-weight:600;color:var(--muted);text-decoration:none;border-radius:10px}
   .tabbar a span{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .tabbar a.on{color:var(--ink)}
@@ -370,7 +370,7 @@ a.li:hover,button.li:hover{background:var(--hover)}
 /* pages line up under their title, the sidebar runs the full height, and Save sits in a floating bar */
 .content .narrow{margin-left:0!important;margin-right:auto!important}
 @media (min-width:901px){.ws{background:linear-gradient(90deg,var(--sb-bg) 0,var(--sb-bg) calc(var(--side) - 1px),var(--sb-line) calc(var(--side) - 1px),var(--sb-line) var(--side),transparent var(--side))}}
-.sticky-save{position:sticky;bottom:16px;z-index:20;margin-top:14px;padding:10px 12px 10px 16px;background:rgba(255,255,255,.96);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+.sticky-save{position:sticky;bottom:16px;z-index:20;margin-top:14px;padding:10px 12px 10px 16px;background:rgba(255,255,255,.98);   /* no backdrop blur: it was re-blurred on every scroll frame */
   border:1px solid var(--edge);border-radius:16px;box-shadow:var(--sh-float)}
 .sticky-save .saved{flex:1;font-size:13px}
 .sticky-save .saved:empty::before{content:"Changes here are saved with Save changes";color:var(--faint)}
@@ -646,7 +646,7 @@ a.li:hover,button.li:hover{background:var(--hover)}
   .reshd .rbtns{flex-wrap:wrap;margin-left:0}
   .aprec{padding-bottom:56px}
   /* a phone: the resume and Mark as applied stay within reach above the tab bar */
-  .apbar{display:flex;position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom,0px));z-index:35;gap:8px;padding:8px 10px;background:rgba(255,255,255,.97);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+  .apbar{display:flex;position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom,0px));z-index:35;gap:8px;padding:8px 10px;background:#fff;border-top:1px solid var(--line)}
   .apbar .btn{flex:1;justify-content:center;min-height:38px}
   body:has(.apbar) .toast{bottom:calc(136px + env(safe-area-inset-bottom,0px))}
 }
@@ -1292,9 +1292,13 @@ function showTab(){
   if(R.app) return tApp(R.app);
   ({dash:tDash, profile:tProfile, resumes:tResumes, jobs:tJobs, applications:tApps, activity:tActivity}[R.tab])();
 }
-function refreshProgress(){
+// after an application changed here (started, sent, a status, deleted…): the progress is read again — and, unless this
+// tab is itself answering another tab (quiet), the other browser tabs on this client are told, so their Jobs list,
+// Applications, Dashboard and progress follow at once (BC, below)
+function refreshProgress(quiet){
   var c = C; if(!c) return Promise.resolve();
   staleList();
+  if(!quiet && BC) try{ BC.postMessage({client:c.id, apps:true, app:R.app || null}); }catch(e){}
   return q(SB.from('client_progress').select('*').eq('client_id', c.id).maybeSingle()).then(function(p){ if(C === c){ c.prog = p || {}; drawBar(); } }, function(){});
 }
 function switcher(){
@@ -1470,14 +1474,15 @@ function pfSpy(){
   var nav = $('#pfNav'); if(!nav) return;
   var hold = 0;   // a click on the list wins while the page scrolls there
   var mark = function(id){ $$('#pfNav button').forEach(function(b){ var on = b.getAttribute('data-pfs') === id; b.classList.toggle('on', on); if(on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current'); }); };
-  nav.addEventListener('click', function(e){ var b = e.target.closest('[data-pfs]'); if(!b) return; var s = $('#pfs-' + b.getAttribute('data-pfs')); if(s){ s.scrollIntoView({behavior:'smooth', block:'start'}); mark(b.getAttribute('data-pfs')); hold = Date.now() + 1000; } });
+  var last = '';
+  nav.addEventListener('click', function(e){ var b = e.target.closest('[data-pfs]'); if(!b) return; var s = $('#pfs-' + b.getAttribute('data-pfs')); if(s){ s.scrollIntoView({behavior:'smooth', block:'start'}); last = b.getAttribute('data-pfs'); mark(last); hold = Date.now() + 1000; } });
   // the part whose heading has passed the top third is the one you're in; at the very bottom, the last part (it can't reach the top)
   var spy = function(){
     if(!$('#pfNav') || Date.now() < hold) return;
     var secs = $$('.pfsec'), cur = secs[0]; if(!cur) return;
     secs.forEach(function(s){ if(s.getBoundingClientRect().top <= window.innerHeight / 3) cur = s; });
     if(window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) cur = secs[secs.length - 1];
-    mark(cur.id.replace('pfs-', ''));
+    var id = cur.id.replace('pfs-', ''); if(id !== last){ last = id; mark(id); }   // restyle the list only when the part changes, never on every scroll frame
   };
   var raf = 0; PFSPY = function(){ cancelAnimationFrame(raf); raf = requestAnimationFrame(spy); };
   window.addEventListener('scroll', PFSPY, {passive:true});
@@ -1812,7 +1817,7 @@ function reqCount(c){
 // the tailored copies: the applications whose resume has been opened (and so copied) at least once — newest work first
 function loadTailored(c){
   if(c.tailored) drawTailored(c, c.tailored);
-  q(SB.from('applications').select('id,title,company,status,updated_at,applied_at,optimised:resume_doc->meta->optimised').eq('client_id', c.id).not('resume_doc', 'is', null).order('updated_at', {ascending:false}).limit(500))
+  q(SB.from('applications').select('id,title,company,job_url,status,updated_at,applied_at,optimised:resume_doc->meta->optimised').eq('client_id', c.id).not('resume_doc', 'is', null).order('updated_at', {ascending:false}).limit(500))
     .then(function(rows){ c.tailored = rows || []; drawTailored(c, c.tailored); }, function(e){ if(C === c && $('#rlT') && !$('#rlT .li')) $('#rlT').innerHTML = errBox(e); });
 }
 function drawTailored(c, rows){
@@ -1820,7 +1825,8 @@ function drawTailored(c, rows){
   var n = $('#rsN-tailored'); if(n) n.textContent = rows.length;
   $('#rlT').innerHTML = rows.length ? '<div class="list">' + rows.map(function(a){
     var sent = a.status !== 'draft';
-    return '<div class="li"><span class="logo" style="background:' + TP.hue(a.id) + '">' + J.resume.replace('<svg', '<svg width="18" height="18" style="color:#fff"') + '</span>' +
+    // the company's logo, as on the Jobs list and the Application page; the resume glyph only when the job has no company
+    return '<div class="li">' + (a.company ? coLogo(a.company, a.job_url) : '<span class="logo" style="background:' + TP.hue(a.id) + '">' + J.resume.replace('<svg', '<svg width="18" height="18" style="color:#fff"') + '</span>') +
       '<div class="main"><div class="t">' + esc(a.title || 'Role') + (a.company ? ' <span class="muted">at ' + esc(a.company) + '</span>' : '') + '</div>' +
       '<div class="m">' + TP.statusChip(a.status) + ' ' + (sent && a.applied_at ? 'Sent ' + esc(TP.fmtDate(a.applied_at)) : 'Edited ' + esc(TP.ago(a.updated_at))) + '</div>' +
       (a.optimised ? '<div class="m" style="color:var(--ok)">✓ Optimised for this job</div>' : '') + '</div>' +
@@ -2626,7 +2632,7 @@ function lkRow(x){
         '<div class="jcb"><div class="m' + (s === 'sent' || os === 'ready' || os === 'done' ? ' ok' : os === 'fail' ? ' err' : '') + '">' + line + '</div>' + (s === 'gone' ? '' : fitLine(x)) + '</div>' +
       '<div class="jcf">' + (s === 'gone' ? '<span class="st closed">Deleted</span><span class="sp"></span>' + del : TP.statusChip(st) + '<span class="sp"></span>' + del +
         (os === 'ready' ? '<a class="btn sm pri" href="' + esc(edUrl('app', x.app)) + '" target="tp-ed-' + esc(x.app) + '">Review</a>' : os === 'fail' ? '<button class="btn sm pri" type="button" data-act="lkretry" data-id="' + esc(x.id) + '">Retry</button>' : '') +
-        '<a class="btn sm' + (s === 'draft' && os !== 'ready' && os !== 'fail' ? ' pri' : '') + '" href="' + esc(cUrl(C.id, 'app=' + x.app)) + '" data-go>' + (s === 'draft' ? 'Open' : 'View') + '</a>') + '</div></div>';
+        '<a class="btn sm' + (s === 'draft' && os !== 'ready' && os !== 'fail' ? ' pri' : '') + '" href="' + esc(cUrl(C.id, 'app=' + x.app)) + '" target="tp-app-' + esc(x.app) + '" title="Opens in its own browser tab — this list stays here and follows along">' + (s === 'draft' ? 'Open' : 'View') + '</a>') + '</div></div>';   // the tab Start named, so a draft already open comes to the front
   }
   var post = '<a class="lkq" href="' + esc(TP.safeHref(x.url)) + '" target="_blank" rel="noopener" title="Open the posting">Posting' + J.upright + '</a>';
   var err = x.err ? '<div class="m err">Couldn’t start: ' + esc(x.err) + '</div>' : '';
@@ -3136,17 +3142,9 @@ function drawDraft(){
   if(!DS || DS.a !== A) dsStart(A);
   var jd = '<div class="grid3"><div class="field"><label for="apT">Title</label><input id="apT" value="' + esc(A.title) + '"' + TP.sg('role') + '></div><div class="field"><label for="apC">Company</label><input id="apC" value="' + esc(A.company) + '"></div><div class="field"><label for="apL2">Location</label><input id="apL2" value="' + esc(A.location || '') + '"' + TP.sg('job_place') + '></div></div>' +
     '<div class="field"><label for="apJD">Job description <span class="muted" style="font-weight:500">— the resume is tailored to it, and the match and the fit are read from it</span></label><textarea id="apJD" rows="12" placeholder="Paste the whole job description">' + esc(A.jd_text || '') + '</textarea></div>';
-  // a job page: the job's card, its description and analysis, the answers, the cover letter and sending it on the left; the resume on the right
-  V.innerHTML = '<div class="aprec apx"><div class="aptop"><a class="btn sm ghost" href="' + esc(cUrl(C.id, 'applications')) + '" data-go>' + I.back + 'Applications</a><div id="lkNext"></div></div>' +
-    '<div id="apDup"></div><div id="apRec"></div><div class="apgrid"><div class="apmain">' + jobCard() + jobTabs(jd) +
-    '<div class="card"><div class="ch"><h3>Answers for the form</h3><button class="btn sm" type="button" data-act="qaadd2">' + I.plus + 'Add a question</button></div>' +
-      '<p class="hint">From ' + first + '’s standard answers. Copy each into the form; anything this form asks is kept with the application.</p>' +
-      '<div id="apQA">' + (A.answers || []).map(qaRow).join('') + '</div></div>' +
-    '<div class="card" id="apCover"><div class="ch"><h3>Cover letter <span class="muted">(if the form asks)</span></h3><button class="btn sm" type="button" data-act="cpcover">' + I.copy + 'Copy</button></div>' +
-      '<p class="hint">Write it in the editor’s <b>Cover letter</b> tab, or paste it here.</p><textarea class="inp" id="apCL" rows="6">' + esc(A.cover_letter || '') + '</textarea></div>' +
-    // sending it: what's ready, the confirmation and the file, and Mark as applied (permanent, and the client sees it)
-    '<div class="card apsend" id="ckRec"><div class="ch"><h3>Send it</h3><span class="muted">Keeps exactly what went to ' + esc(A.company || 'the company') + '. ' + first + ' sees it on their dashboard.</span></div><div class="ck sendck">' +
-      '<div class="step ckit" id="ckJob"><span class="n' + (A.jd_text ? ' ok' : '') + '">' + (A.jd_text ? I.check : '1') + '</span><div class="bd"><b>Job description</b><small>' + (A.jd_text ? 'Pasted.' : 'Paste it under Job description — the resume is tailored to it.') + '</small></div></div>' +
+  // sending it: what's ready, the confirmation and the file, and Mark as applied (permanent, and the client sees it)
+  var send = '<div class="card apsend" id="ckRec"><div class="ch"><h3>Send it</h3><span class="muted">Keeps exactly what went to ' + esc(A.company || 'the company') + '. ' + first + ' sees it on their dashboard.</span></div><div class="ck sendck">' +
+      '<div class="step ckit" id="ckJob"><span class="n' + (A.jd_text ? ' ok' : '') + '">' + (A.jd_text ? I.check : '1') + '</span><div class="bd"><b>Job description</b><small>' + (A.jd_text ? 'Pasted.' : 'Paste it in the Job description below — the resume is tailored to it.') + '</small></div></div>' +
       '<div class="step ckit" id="ckRes">' + resStep() + '</div>' +
       '<div class="step ckit" id="ckCL"><span class="n' + (A.cover_letter ? ' ok' : '') + '">' + (A.cover_letter ? I.check : '3') + '</span><div class="bd"><b>Cover letter</b><small>' + (A.cover_letter ? 'Written.' : 'Optional — only if the form asks for one.') + '</small></div></div>' +
       '<div class="step ckit" id="ckAns"><span class="n' + (n ? ' ok' : '') + '">' + (n ? I.check : '4') + '</span><div class="bd"><b>Form answers</b><small>' + (n ? n + ' ready to copy into the form.' : 'None yet — add what the form asks.') + '</small></div></div></div>' +
@@ -3156,7 +3154,16 @@ function drawDraft(){
       '<label class="check" style="margin-top:10px"><input type="checkbox" id="noShot"> There was no confirmation screen</label>' +
       '<p class="err" id="mkErr" hidden></p>' +
       '<div class="sendrow"><button class="btn ok" type="button" data-act="markapplied">' + I.check + 'Mark as applied for ' + first + '</button><span class="sp"></span>' +
-        '<button class="btn sm bad" type="button" data-act="deldraft">' + I.trash + 'Delete draft</button></div></div></div>' +
+        '<button class="btn sm bad" type="button" data-act="deldraft">' + I.trash + 'Delete draft</button></div></div>';
+  // a job page: on the left the job's card and, right under it, sending it (the next thing to do); then the description and
+  // analysis, the answers and the cover letter. The resume on the right
+  V.innerHTML = '<div class="aprec apx"><div class="aptop"><a class="btn sm ghost" href="' + esc(cUrl(C.id, 'applications')) + '" data-go>' + I.back + 'Applications</a><div id="lkNext"></div></div>' +
+    '<div id="apDup"></div><div id="apRec"></div><div class="apgrid"><div class="apmain">' + jobCard() + send + jobTabs(jd) +
+    '<div class="card"><div class="ch"><h3>Answers for the form</h3><button class="btn sm" type="button" data-act="qaadd2">' + I.plus + 'Add a question</button></div>' +
+      '<p class="hint">From ' + first + '’s standard answers. Copy each into the form; anything this form asks is kept with the application.</p>' +
+      '<div id="apQA">' + (A.answers || []).map(qaRow).join('') + '</div></div>' +
+    '<div class="card" id="apCover"><div class="ch"><h3>Cover letter <span class="muted">(if the form asks)</span></h3><button class="btn sm" type="button" data-act="cpcover">' + I.copy + 'Copy</button></div>' +
+      '<p class="hint">Write it in the editor’s <b>Cover letter</b> tab, or paste it here.</p><textarea class="inp" id="apCL" rows="6">' + esc(A.cover_letter || '') + '</textarea></div></div>' +
     resPanel() + '</div>' +
     '<div class="apbar">' + resumeBtn(true) + '<button class="btn ok" type="button" data-act="gomark">' + I.check + 'Mark as applied</button></div></div>';
   ['apT', 'apC', 'apL2', 'apJD', 'apCL'].forEach(function(k){ $('#' + k).addEventListener('input', draftChanged); });
@@ -3165,7 +3172,7 @@ function drawDraft(){
   $('#apC').addEventListener('input', function(e){ $('#apCo').textContent = e.target.value.trim(); });
   $('#apL2').addEventListener('input', function(e){ A.location = e.target.value.trim(); redrawJob(); });
   // the checklist follows the form: the job description and cover letter tick off as they're typed, the answers as they're added
-  $('#apJD').addEventListener('input', function(e){ var had = !!A.jd_text; A.jd_text = e.target.value.trim(); ckMark('ckJob', !!A.jd_text, '1', A.jd_text ? 'Pasted.' : 'Paste it under Job description — the resume is tailored to it.'); if(had !== !!A.jd_text) drawRes(); redrawJob(); appFitSoon(); });
+  $('#apJD').addEventListener('input', function(e){ var had = !!A.jd_text; A.jd_text = e.target.value.trim(); ckMark('ckJob', !!A.jd_text, '1', A.jd_text ? 'Pasted.' : 'Paste it in the Job description below — the resume is tailored to it.'); if(had !== !!A.jd_text) drawRes(); redrawJob(); appFitSoon(); });
   $('#apCL').addEventListener('input', function(e){ var v = e.target.value.trim(); ckMark('ckCL', !!v, '3', v ? 'Written.' : 'Optional — only if the form asks for one.'); });
   var ckAns = function(){ var k = readQA($('#apQA')).length; ckMark('ckAns', !!k, '4', k ? k + ' ready to copy into the form.' : 'None yet — add what the form asks.'); };
   $('#apQA').addEventListener('input', function(){ draftChanged(); ckAns(); });
@@ -3488,6 +3495,13 @@ if(BC) BC.onmessage = function(e){
   if(!C || m.client !== C.id) return;
   if(m.app && R.app === m.app) refreshApp();
   if(m.resume){ C.resumes = null; if(R.tab === 'resumes' && !R.app) tResumes(); }
+  if(m.apps){   // an application changed in another browser tab (one opened from the Jobs list, say): this tab follows at once
+    C.idx = null; refreshProgress(true);
+    if(R.app) return;
+    if(R.tab === 'jobs' && $('#lkList')){ var L2 = lkList(C.id); lkFresh(C, L2).then(function(){ if(lkShown(L2)) lkDraw(); }); jobsFresh(C); }
+    else if(R.tab === 'applications' && $('#apL')) loadApps();
+    else if(R.tab === 'dash') tDash();
+  }
 };
 document.addEventListener('visibilitychange', function(){
   if(document.visibilityState !== 'visible') return;

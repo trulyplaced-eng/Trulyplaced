@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-10-31.1">
+<link rel="stylesheet" href="/portal.css?v=2026-10-31.2">
 <style>
 /* The client's workspace, laid out as app.trulyplaced.com is: the sidebar in the app's light grey, a white page, white cards with
    a hairline and a soft shadow, figures in near-black, TrulyPlaced blue for progress and where you are. */
@@ -48,7 +48,7 @@ body{background:#fff}
 .sb-foot svg{width:18px;height:18px;flex:none}
 
 .content{min-width:0;display:flex;flex-direction:column}
-.top{position:sticky;top:0;z-index:20;height:64px;background:rgba(255,255,255,.9);backdrop-filter:saturate(1.5) blur(16px);-webkit-backdrop-filter:saturate(1.5) blur(16px);
+.top{position:sticky;top:0;z-index:20;height:64px;background:rgba(255,255,255,.97);   /* no backdrop blur: a blurred sticky bar is re-rendered on every scroll frame */
   border-bottom:1px solid rgba(0,0,0,.06);display:flex;align-items:center;gap:12px;padding:0 28px}
 .top h1{font-family:var(--ui-d);font-weight:600;font-size:17px;letter-spacing:-.015em;color:var(--ink);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .top .m-brand{display:none}
@@ -212,7 +212,7 @@ body{background:#fff}
 .xb svg{width:16px;height:16px}
 .picks.common{margin-top:12px}
 .savebar{position:sticky;bottom:16px;z-index:10;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 18px;background:rgba(255,255,255,.96);
-  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid var(--edge);border-radius:16px;box-shadow:var(--sh-float)}
+  border:1px solid var(--edge);border-radius:16px;box-shadow:var(--sh-float)}
 .savebar span{flex:1;font-size:13px;color:var(--muted)}
 .savebar span.dirty{color:#b45309;font-weight:500}
 .savebar span:empty::before{content:"Changes here are saved with Save changes";color:#a3a3a3}
@@ -255,7 +255,7 @@ body{background:#fff}
   .tools .seg::-webkit-scrollbar{display:none}
   .tools .seg button{flex:none;padding:0 11px}
   .li .side .when{display:none}
-  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.9);backdrop-filter:saturate(1.5) blur(20px);-webkit-backdrop-filter:saturate(1.5) blur(20px);
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.97);
     border-top:1px solid rgba(0,0,0,.06);box-shadow:0 -1px 12px rgba(0,0,0,.04);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
   .tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;font-size:11px;font-weight:500;letter-spacing:.01em;color:var(--muted);text-decoration:none;border-radius:10px}
   .tabbar a.on{color:var(--ink);font-weight:600}   /* the app's tab bar: the label in ink, the icon in TrulyPlaced blue */

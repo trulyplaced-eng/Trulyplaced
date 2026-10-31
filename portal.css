@@ -23,7 +23,7 @@ h1{font-weight:650}
 :focus-visible{outline:2px solid #2c55e3;outline-offset:2px}
 
 /* ---------- top bar ---------- */
-.ptop{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.9);backdrop-filter:saturate(1.5) blur(16px);-webkit-backdrop-filter:saturate(1.5) blur(16px);
+.ptop{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.97);   /* no backdrop blur: a blurred sticky bar is re-rendered on every scroll frame */
   border-bottom:1px solid rgba(0,0,0,.06)}
 .ptop-in{max-width:1240px;margin:0 auto;height:60px;display:flex;align-items:center;gap:12px;padding:0 20px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:var(--ui-d);font-weight:600;font-size:17px;letter-spacing:-.015em;flex:none}
