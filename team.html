@@ -911,6 +911,13 @@ a{color:var(--blue-d)}
 .li .m{font-size:12.5px}
 a.li:hover,button.li:hover,.tbl a.li:hover,.tbl .li:hover{background:var(--hover)}
 .tbl .thead{height:36px;padding:0 14px;background:#fff;border-bottom:1px solid var(--line);font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--muted)}
+/* long lists keep their column headings in view: the table no longer clips (so the heading can stick), its corners are drawn on the first and last rows instead */
+.tbl{overflow:visible}
+.tbl .thead{position:sticky;top:0;z-index:5;border-radius:var(--r) var(--r) 0 0}
+.tbl.apps.picking .thead{top:56px}   /* under the Select bar, which sticks above it */
+.tbl .li:last-child{border-radius:0 0 var(--r) var(--r)}
+.tbl .li:first-child{border-radius:var(--r) var(--r) 0 0}
+.tbl .thead + .li{border-radius:0}
 .tbl .thead button.on::after{content:"↓";font-size:10px;color:var(--faint)}
 .tbl .li{min-height:var(--row);padding:6px 14px;border-top-color:var(--line)}
 .tbl .td b,.tbl .num b{font-size:13.5px}
@@ -1029,6 +1036,37 @@ pre.txt{border-radius:var(--rc);font-size:13px}
 .toast{border-radius:8px;font-size:13.5px;padding:10px 14px;box-shadow:var(--sh-float)}
 .toast .tbtn{border-radius:4px;font-size:12.5px}
 .netbar{font-size:13px}
+/* Activity: the note box at the top of the history — one line that grows as you type, Save beside it */
+.notebox{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;margin:0 0 12px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.notebox textarea{flex:1 1 240px;min-height:32px;height:32px;padding:6px 10px;line-height:20px;resize:none;overflow:hidden}
+.notebox .btn{flex:none}
+.notebox .rechint{order:3;flex-basis:100%;margin:2px 0 0}   /* the put-back hint sits under the row, after Save */
+/* the sidebar folds to an icon rail ( [ or its button ), remembered in this browser */
+.sbtg{position:absolute;top:13px;right:8px;width:28px;height:28px;border:0;border-radius:var(--rc);background:none;color:var(--sb-muted);display:grid;place-items:center;cursor:pointer;opacity:0;transition:opacity .15s,background-color .15s}
+.sb:hover .sbtg,.sbtg:focus-visible,body.sbmin .sbtg{opacity:1}
+.sbtg:hover{background:var(--sb-hover);color:var(--sb-ink)}
+.sbtg svg{width:16px;height:16px;transition:transform .2s}
+body.sbmin{--side:60px}
+body.sbmin .sbtg{position:static;margin:2px auto 6px}
+body.sbmin .sbtg svg{transform:rotate(180deg)}
+body.sbmin .sb .brand{padding:0;justify-content:center;height:50px}
+body.sbmin .sb .brand span{display:none}
+body.sbmin .navsearch{width:32px;height:32px;margin:0 auto 6px;padding:0;justify-content:center;border-color:transparent;background:none}
+body.sbmin .navsearch span,body.sbmin .navsearch kbd{display:none}
+body.sbmin .nav{padding:0 8px}
+body.sbmin .nav a{justify-content:center;padding:7px 0;position:relative}
+body.sbmin .nav a span{display:none}
+body.sbmin .nav a em{position:absolute;top:1px;right:1px;min-width:14px;line-height:14px;font-size:9px;padding:0 3px}
+body.sbmin .ngl,body.sbmin .otabs{display:none}
+body.sbmin .cb1{padding:0 8px 6px}
+body.sbmin .cb1 .lab,body.sbmin .cbw .who,body.sbmin .cbw .icb{display:none}
+body.sbmin .cbw{justify-content:center;margin-top:2px}
+body.sbmin .pgcard{padding:8px 8px 10px}
+body.sbmin .pgcard .lab,body.sbmin .pgcard .pg{display:none}
+body.sbmin .me{padding:8px 6px;justify-content:center}
+body.sbmin .me .mw,body.sbmin .me .mechev,body.sbmin .me > .icb{display:none}
+body.sbmin .mebtn{flex:none;margin:0;padding:4px}
+body.sbmin .memenu{left:4px;right:auto;width:240px}
 /* phones: thumb-sized controls, figures two by two */
 @media (max-width:760px){
   .btn{height:36px;min-height:36px;font-size:14px}
@@ -1048,6 +1086,7 @@ pre.txt{border-radius:var(--rc);font-size:13px}
 <div class="ws">
   <aside class="sb" aria-label="Team portal">
     <a class="brand" href="/team.html" data-go><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="#0938d5"/><path d="M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z" fill="#fff"/><path d="M205 200l37 36 76-88" fill="none" stroke="#0938d5" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg><span>TrulyPlaced<small>Team</small></span></a>
+    <button class="sbtg" type="button" data-act="sbtoggle" title="Collapse the sidebar ( [ )" aria-label="Collapse the sidebar" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17-5-5 5-5M18 17l-5-5 5-5"/></svg></button>
     <button class="navsearch" type="button" data-act="switch" title="Find a client (Ctrl+K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Find a client</span><kbd>Ctrl K</kbd></button>
     <nav class="nav" id="pnav" aria-label="Main"></nav>
     <div id="cbar"></div>
@@ -1224,9 +1263,9 @@ function draw(){
   R = route();
   $('#me').innerHTML = meHTML();
   var cl = R.page === 'clients', tm = R.page === 'team', md = R.page === 'myday';
-  $('#pnav').innerHTML = '<div class="ngl">Workspace</div><a href="/team.html#myday" data-go class="' + (md ? 'on' : '') + '"' + (md ? ' aria-current="page"' : '') + '>' + J.day + '<span>My day</span></a>' +
-    '<a href="/team.html#clients" data-go class="' + (cl ? 'on' : '') + '"' + (cl ? ' aria-current="page"' : '') + '>' + I.users + '<span>Clients</span></a><div class="otabs" id="otabs" hidden></div>' +
-    (ME.owner ? '<div class="ngl">Organisation</div><a href="/team.html#team" data-go class="' + (tm ? 'on' : '') + '"' + (tm ? ' aria-current="page"' : '') + '>' + I.team + '<span>Team</span></a>' : '');   // the Team page is the owners'
+  $('#pnav').innerHTML = '<div class="ngl">Workspace</div><a href="/team.html#myday" data-go title="My day" class="' + (md ? 'on' : '') + '"' + (md ? ' aria-current="page"' : '') + '>' + J.day + '<span>My day</span></a>' +
+    '<a href="/team.html#clients" data-go title="Clients" class="' + (cl ? 'on' : '') + '"' + (cl ? ' aria-current="page"' : '') + '>' + I.users + '<span>Clients</span></a><div class="otabs" id="otabs" hidden></div>' +
+    (ME.owner ? '<div class="ngl">Organisation</div><a href="/team.html#team" data-go title="Team" class="' + (tm ? 'on' : '') + '"' + (tm ? ' aria-current="page"' : '') + '>' + I.team + '<span>Team</span></a>' : '');   // the Team page is the owners'; the titles name the icons when the sidebar is a rail
   drawOpenTabs();
   if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : md ? vMyDay() : vClients(); }
   vClient();
@@ -1407,7 +1446,7 @@ function vMyDay(){
         .sort(function(a, b){ return left(b) - left(a) || String(a.full_name).localeCompare(String(b.full_name)); });
       $('#mdTodo').innerHTML = todo.length ? '<div class="list">' + todo.slice(0, 12).map(function(c){
         var p = P[c.id] || {};
-        return '<a class="li" href="' + esc(cUrl(c.id)) + '" data-go><span class="av" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span>' +
+        return '<a class="li" href="' + esc(cUrl(c.id, 'jobs')) + '" data-go title="Open ' + esc(c.full_name || c.email) + '’s Jobs tab"><span class="av" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span>' +   // straight to Jobs, where the work starts
           '<div class="main"><div class="t">' + esc(c.full_name || c.email) + '</div><div class="m">' + (c.plan_total ? (p.done || 0) + ' / ' + c.plan_total + ' sent · ' + left(c) + ' left' : (p.done || 0) + ' sent · no plan set') +
           ' · last sent ' + (p.last_applied_at ? esc(TP.ago(p.last_applied_at)) : 'never') + '</div></div>' + I.chev.replace('<svg', '<svg class="chev"') + '</a>';
       }).join('') + '</div>' + (todo.length > 12 ? '<p class="fine" style="margin-top:8px">and ' + (todo.length - 12) + ' more — <a href="/team.html#clients" data-go>see Clients</a> (sorted fewest today first)</p>' : '')
@@ -1528,7 +1567,7 @@ function drawBar(){
       '<button class="icb" type="button" data-act="switch" title="Switch client">' + J.swap + '<span class="sr">Switch client</span></button></div></div>' +
     '<nav class="nav ctabs" aria-label="' + esc(name) + '">' + TABS.map(function(t){
       var on = R.tab === t[0], n = counts[t[0]], ask = t[0] === 'resumes' && C.reqOpen;   // the client is waiting on an answer about their resume
-      return '<a href="' + esc(cUrl(C.id, t[0])) + '" data-go class="' + (on ? 'on' : '') + '"' + (on ? ' aria-current="page"' : '') + '>' + t[2] + '<span>' + t[1] + '</span>' +
+      return '<a href="' + esc(cUrl(C.id, t[0])) + '" data-go title="' + esc(t[1]) + '" class="' + (on ? 'on' : '') + '"' + (on ? ' aria-current="page"' : '') + '>' + t[2] + '<span>' + t[1] + '</span>' +
         (ask ? '<em class="wait" title="' + C.reqOpen + ' request' + (C.reqOpen === 1 ? '' : 's') + ' from ' + esc(name) + ' waiting">' + C.reqOpen + '</em>' : n !== '' && n != null ? '<em>' + n + '</em>' : '') + '</a>';
     }).join('') + '</nav><div class="grow"></div>' +
     '<div class="pgcard" title="Applications sent / plan"><span class="lab">Applications sent</span><div class="pg"><b>' + done.toLocaleString() + '</b>' + (tot ? ' / ' + tot.toLocaleString() + ' · ' + (p.today || 0) + ' today' : ' sent · no plan set') + '</div>' +
@@ -3737,6 +3776,13 @@ function refreshApp(){
     drawRes(); if(moved) reloadView();
   }, function(){});
 }
+// the sidebar as an icon rail: [ or its button, remembered in this browser; the icons keep their names as tooltips
+function sbToggle(on){
+  var min = on == null ? !document.body.classList.contains('sbmin') : !!on;
+  document.body.classList.toggle('sbmin', min); TP.lsSet('tp_sb_min', min);
+  var b = $('.sbtg'); if(b){ b.setAttribute('aria-pressed', String(min)); b.title = (min ? 'Expand' : 'Collapse') + ' the sidebar ( [ )'; b.setAttribute('aria-label', b.title); }
+}
+if(TP.lsGet('tp_sb_min', false)) sbToggle(true);
 var BC = window.BroadcastChannel ? new BroadcastChannel('tp-portal') : null;
 if(BC) BC.onmessage = function(e){
   var m = e.data || {};
@@ -3831,16 +3877,18 @@ function rdLink(c, kind, box){
 function tActivity(){
   var c = C;
   if(ACF.c !== c.id) ACF = {k:'all', by:'', c:c.id};   // each client starts with the whole history
-  V.innerHTML = '<div class="narrow" style="margin:0 auto"><div class="card"><h3>Add a note</h3><p class="hint">Calls, messages, anything the team should know. Only the team sees this page.</p>' +
-    '<textarea class="inp" id="nt" rows="3" placeholder="e.g. Priya asked us to focus on remote roles this week"></textarea><div class="row end" style="margin-top:8px"><button class="btn pri" type="button" data-act="note">Save note</button></div></div>' +
-    '<div id="rdBox"></div>' +
+  // one page: Recently deleted (when there is any), then the history with a one-line note box at its top that grows as you type
+  V.innerHTML = '<div class="narrow" style="margin:0 auto"><div id="rdBox"></div>' +
     '<div class="card"><div class="acbar"><h3>Everything done for ' + esc(c.row.full_name) + '</h3><span class="grow"></span>' +
       '<div class="seg" id="acK">' + AC_K.map(function(k){ return '<button type="button" data-k="' + k[0] + '" class="' + (ACF.k === k[0] ? 'on' : '') + '">' + k[1] + '</button>'; }).join('') + '</div>' +
       '<select class="inp" id="acBy" aria-label="Who"><option value="">Anyone</option>' + TEAMROWS.map(function(t){ return '<option value="' + esc(t.email) + '"' + (ACF.by === t.email ? ' selected' : '') + '>' + esc(t.full_name || t.email) + '</option>'; }).join('') +
         '<option value="system"' + (ACF.by === 'system' ? ' selected' : '') + '>TrulyPlaced (automatic)</option></select></div>' +
+      '<div class="notebox"><textarea class="inp" id="nt" rows="1" placeholder="Add a note — a call, a message, anything the team should know. Only the team sees it." aria-label="Add a note"></textarea><button class="btn pri sm" type="button" data-act="note">Save note</button></div>' +
       '<div class="hist" id="acL"><div class="skel"></div></div><div id="acMore"></div></div></div>';
   loadActivity(c, 100); loadDeleted(c);
   noteKeep($('#nt'), 'note_' + c.id);
+  var nt = $('#nt'), grow = function(){ nt.style.height = 'auto'; nt.style.height = Math.min(240, Math.max(32, nt.scrollHeight)) + 'px'; };   // one line that grows with the note
+  nt.addEventListener('input', grow); setTimeout(grow, 0);
   $('#acK').addEventListener('click', function(e){ var b = e.target.closest('[data-k]'); if(!b) return; ACF.k = b.getAttribute('data-k'); $$('#acK button').forEach(function(x){ x.classList.toggle('on', x === b); }); $('#acL').innerHTML = '<div class="skel"></div>'; loadActivity(c, 100); });
   $('#acBy').addEventListener('change', function(e){ ACF.by = e.target.value; $('#acL').innerHTML = '<div class="skel"></div>'; loadActivity(c, 100); });
 }
@@ -3959,6 +4007,7 @@ document.addEventListener('keydown', function(e){
   var a = document.activeElement, typing = a && (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable);
   if((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 'k'){ e.preventDefault(); switcher(); return; }
   if(e.key === '/' && !typing && !e.ctrlKey && !e.metaKey){ var s = $('#cq') || $('#apQ') || $('#jbQ'); if(s){ e.preventDefault(); s.focus(); s.select(); } }
+  if(e.key === '[' && !typing && !e.ctrlKey && !e.metaKey){ e.preventDefault(); sbToggle(); }   // the sidebar as an icon rail, and back
 });
 
 /* =====================================================================
@@ -3981,6 +4030,7 @@ document.addEventListener('click', function(e){
     case 'retry': if(!ME) return location.reload(); if(C){ C.row = null; C.resumes = null; } staleList(); return render();   // only this page loads again; nothing typed elsewhere is touched
     case 'newclient': return newClient();
     case 'switch': return switcher();
+    case 'sbtoggle': return sbToggle();
     case 'closetab':
       e.preventDefault(); e.stopPropagation();
       return closeTab(b.getAttribute('data-id'));
