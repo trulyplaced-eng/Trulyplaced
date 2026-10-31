@@ -595,6 +595,7 @@ svg.defs{position:absolute;width:0;height:0}
 .omrules .lbl{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 4px}.omrules .lbl small{font-weight:400;color:var(--muted);margin-left:6px}
 .omrules .lbl a{font-weight:500;color:var(--blue);text-decoration:none;margin-left:auto}.omrules .lbl a:hover{text-decoration:underline}
 .omrules p{margin:0;font-size:13px;line-height:1.5;color:var(--ink);white-space:pre-wrap}
+.omrules .omrulehit{margin-top:6px;font-size:12.5px;font-weight:500;color:#b45309}
 .omb2{display:flex;flex-direction:column;align-items:flex-start;gap:2px;height:auto;padding:10px 16px;text-align:left;border-radius:14px}   /* two lines: a rounded box, not a pill */
 .osyn{font-size:13.5px;color:var(--body);line-height:1.55;margin:2px 0 4px}   /* an application's Sync: what it does, in a line */
 .omb2 b{display:flex;align-items:center;gap:6px;font-size:14px}.omb2 small{font-weight:500;color:var(--muted);font-size:12px}
@@ -3264,7 +3265,8 @@ function openOptimise(preset) {   // preset: the team portal opened it - the cli
   const syncB = mode !== 'free' ? '' : '<button class="btn omb2 osyncb" type="button" data-a="opt-sync" id="optSync" title="Everything at once, more deeply: the posting’s words, priorities and title, and each role’s bullets in the order this job cares about. The facts stay as they are."><b>' + I_SPARK + '<span>Sync to this job</span></b><small>Everything, in the job’s words and order</small></button>';
   // the client's Resume rules from their Profile: shown fixed, never typed again, and sent with every run as hard constraints
   const rulesBlock = clientRules() ? '<div class="omrules"><div class="lbl">Resume rules <small>from the Profile — always followed</small>' +
-    (TEAM ? '<a href="' + esc('/team.html?client=' + encodeURIComponent(TEAM.client) + '#profile') + '" target="_blank" rel="noopener">Edit on the Profile</a>' : '') + '</div><p>' + esc(clientRules()) + '</p></div>' : '';
+    (TEAM ? '<a href="' + esc('/team.html?client=' + encodeURIComponent(TEAM.client) + '#profile') + '" target="_blank" rel="noopener">Edit on the Profile</a>' : '') + '</div><p>' + esc(clientRules()) + '</p>' +
+    (ruleHits().length ? '<p class="omrulehit">' + esc(ruleHits().join(', ')) + (ruleHits().length > 1 ? ' are' : ' is') + ' on Skills now — taken off when you run.</p>' : '') + '</div>' : '';
   modalOpen('<div class="om sm opt" role="dialog" aria-modal="true" aria-labelledby="omT"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
     '<div class="omh"><h2 id="omT">' + W.title + '</h2>' + sub + again + '</div>' +
     '<div class="omb">' + (jobOk() || base ? '' : '<div class="omjd">' + (app ? '<p class="fine">This application has no job description yet. Paste it here — it’s kept on the application too.</p>' : '') + '<textarea id="optJd" placeholder="Paste the whole job description here"></textarea></div>') +
@@ -3333,6 +3335,7 @@ function runOptimise(sync) {   // sync: true = "Sync to this job", every part at
   if (!Object.keys(sel).some((k) => sel[k])) { toast('Pick at least one thing to ' + optWord().verb.toLowerCase() + '.'); return; }
   sel.sync = !!OPT.sync;
   if (TEAM) saveVersion(all ? 'Before Sync' : 'Before ' + optWord().ing);   // one click of Restore undoes the whole run
+  const gone = applyRules(); if (gone.length) { structural(); toast(gone.join(', ') + ' taken off Skills — the client’s rules'); }   // before the AI sees the resume
   const keep = {}; if (all) Object.assign(keep, (lsGet(OPT_KEY, {}) || {}).sel || {}); else Object.keys(sel).forEach((k) => { if (k !== 'sync') keep[k] = sel[k] ? 1 : 0; });
   delete keep.sync; lsSet(OPT_KEY, { sel: keep, ins });   // the ticks to remember: a Sync leaves them as they were
   const P = optPlan(sel), nb = P.nb, second = appOpt();
@@ -3451,14 +3454,15 @@ function optCompute(sel, ins, P, step) {
       // Sync: this job's bullet order, as bullet ids - only a real change, using each bullet once
       tg.orderIds = sel.sync && Array.isArray(ord) && ord.length === bl.length && new Set(ord).size === bl.length && ord.some((x, i) => x !== i) && ord.every((x) => bl[x]) ? ord.map((x) => bl[x].id) : null;
     });
-    if (sel.skills) R.skills = (r.skillsFromExperience || []).filter((k) => inText(k, docText().toLowerCase()) && !skills.some((x) => x.toLowerCase() === k.toLowerCase()));
+    const banned = ruleTerms();   // the client's exclusions never come back as suggestions
+    if (sel.skills) R.skills = (r.skillsFromExperience || []).filter((k) => inText(k, docText().toLowerCase()) && !skills.some((x) => x.toLowerCase() === k.toLowerCase()) && !banned.some((t) => skKey(t) === skKey(k)));
     if (sel.sync && sel.skills && Array.isArray(r.skillsOrder)) R.skorder = skillsReorder(r.skillsOrder);
     // the skills the job asks for that the resume doesn't show, each with the Skills line it belongs on, wait under Skills on the
     // page with the ones the bullets prove and the job-first order (a resume-ai from before this list: the job's named skills)
     if (sel.skills) {
       const lowd = docText().toLowerCase();
       R.missing = (Array.isArray(r.missingSkills) ? r.missingSkills : skillsIn(jobText()).map((k) => ({ skill: k, kind: 'basic', req: '', row: '' })))
-        .filter((m) => m && m.skill && !inText(m.skill, lowd) && !(R.skills || []).some((k) => skKey(k) === skKey(m.skill))).slice(0, 10);
+        .filter((m) => m && m.skill && !inText(m.skill, lowd) && !(R.skills || []).some((k) => skKey(k) === skKey(m.skill)) && !banned.some((t) => skKey(t) === skKey(m.skill))).slice(0, 10);
       DOC.meta.rec = { key: recKey(), list: R.missing.map((m) => ({ skill: m.skill, kind: m.kind, req: m.req || '', row: m.row || '' })), proven: R.skills || [], order: R.skorder || null, at: Date.now() };
     }
     done('write', R.mode === 'light' ? 'Light touch — the resume already shows the must-haves' : 'Reworded where the facts support a requirement');
@@ -3717,7 +3721,42 @@ function applyRow(i) {
 }
 // an Optimise suggestion was accepted: this copy is now tailored to the job (the team portal's card says so only from here on)
 function markOptimised() { DOC.meta.optimised = { at: Date.now(), sync: !!(OPT && OPT.sync), job: !JOB ? '' : JOB.roles ? JOB.roles.join(', ') : [cleanTitle(JOB.title), JOB.company].filter(Boolean).join(' at ') }; }
+/* ---------- the client's exclusions, enforced here and not left to the AI: a rule like "do not include Python in the skills",
+   "never list PHP" or "exclude WordPress" names terms that must not be on the resume's Skills. They come off the Skills lines
+   when a run starts (the version saved just before keeps the way back) and never come back as suggested skills. ---------- */
+function ruleTerms() {
+  const rules = clientRules(); if (!rules) return [];
+  const out = [];
+  rules.split(/[.\n;]+/).forEach((s) => {
+    const m = /\b(?:do not|don['’]t|never|no|not|exclude|remove|leave out|drop|avoid|without)\s+(?:include|list|mention|add|show|put|use|write)?\s*(.+)$/i.exec(s.trim());
+    if (!m) return;
+    const t = m[1].replace(/\b(?:in|on|from|under|to|into|within)\s+(?:the\s+|their\s+|his\s+|her\s+)?(?:resume|skills?|summary|bullets?|experience|list|section|headline|title|cv).*$/i, '').replace(/^(?:the|any|all)\s+/i, '').trim();
+    t.split(/\s*(?:,|\/|\bor\b|\band\b)\s*/).map((x) => x.replace(/^["'“”]+|["'“”]+$/g, '').trim()).filter((x) => x && x.length <= 40 && x.split(/\s+/).length <= 4).forEach((x) => out.push(x));
+  });
+  return uniq(out);
+}
+const skCore = (tok) => { const m = /^([^:]{1,40}:)\s*(.*)$/.exec(tok); return { pre: m ? m[1] + ' ' : '', core: (m ? m[2] : tok).trim() }; };
+function ruleHits() {   // the excluded terms that are on the Skills lines now
+  const terms = ruleTerms(), sk = DOC && DOC.sections.find((x) => x.k === 'skills' && !x.hidden); if (!terms.length || !sk) return [];
+  const toks = []; sk.rows.forEach((r) => String(r.value || '').split(/\s*,\s*/).forEach((t) => toks.push(skCore(t).core)));
+  return terms.filter((t) => toks.some((x) => skKey(x) === skKey(t)));
+}
+function applyRules() {   // the excluded terms off the Skills lines; a "Group: term" keeps its group for the next term
+  const hits = ruleHits(); if (!hits.length) return [];
+  const sk = DOC.sections.find((x) => x.k === 'skills' && !x.hidden), gone = [];
+  sk.rows.forEach((r) => {
+    let carry = '';
+    r.value = String(r.value || '').split(/\s*,\s*/).map((tok) => {
+      const { pre, core } = skCore(tok);
+      if (hits.some((h) => skKey(core) === skKey(h))) { gone.push(core); if (pre) carry = pre; return null; }
+      const out = !pre && carry ? carry + tok : tok; carry = ''; return out;
+    }).filter(Boolean).join(', ');
+  });
+  if (sk.rows.length > 1) sk.rows = sk.rows.filter((r) => r.value.trim());
+  return uniq(gone);
+}
 function addSkill(term) {
+  if (ruleTerms().some((t) => skKey(t) === skKey(term))) return;   // the client's rules exclude it
   let s = DOC.sections.find((x) => x.k === 'skills');
   if (!s) { s = newSection('skills'); s.rows.push({ id: uid(), label: 'Skills', value: '' }); const at = DOC.sections.findIndex((x) => x.k === 'education'); DOC.sections.splice(at > -1 ? at + 1 : DOC.sections.length, 0, s); }
   s.hidden = false; let row = s.rows.find((r) => /tech|tool|software|platform|skill/i.test(r.label)) || s.rows[0];
@@ -3961,7 +4000,7 @@ function batchRun() {   // the Jobs list's Sync: this draft to its job, with the
   if (!JOB || String(JOB.text || '').trim().length < 80) return batchTell('fail', { why: 'No job description — paste it in the draft, then Retry' });
   const scores = (V) => ({ before: V && V.before != null ? V.before : null, after: V && V.after != null ? V.after : null });   // the job match now, and once the suggestions are accepted
   if (DOC.meta.optPending) return batchTell('done', Object.assign({ n: pendingCount(DOC.meta.optPending), sk: (DOC.meta.optPending.R.skills || []).length }, scores(DOC.meta.optPending.V)));
-  saveVersion('Before Sync').then(() => optCompute(BATCH.sel, BATCH.ins, optPlan(BATCH.sel))).then((o) => {
+  saveVersion('Before Sync').then(() => { if (applyRules().length) { snap(); persist(); } return optCompute(BATCH.sel, BATCH.ins, optPlan(BATCH.sel)); }).then((o) => {   // the client's exclusions off Skills first
     const P = pendingOf(o, BATCH.sel, BATCH.ins), n = pendingCount(P), sk = (P.R.skills || []).length;
     if (n || sk) DOC.meta.optPending = P;   // nothing to change: no review to wait for
     TEAM_DIRTY = true;
