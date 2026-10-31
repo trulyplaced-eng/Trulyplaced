@@ -590,6 +590,11 @@ svg.defs{position:absolute;width:0;height:0}
 .omins{margin-top:12px}
 .omins textarea{width:100%;border:1px solid var(--fline);background:#fff;border-radius:10px;padding:9px 10px;font-size:13px;resize:vertical;min-height:60px}
 .omins textarea:focus{outline:none;border-color:var(--focus);box-shadow:0 0 0 3px var(--ring)}
+/* the client's Resume rules from their Profile: fixed, above the run's own instructions */
+.omrules{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--blue-soft);border:1px solid var(--line)}
+.omrules .lbl{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 4px}.omrules .lbl small{font-weight:400;color:var(--muted);margin-left:6px}
+.omrules .lbl a{font-weight:500;color:var(--blue);text-decoration:none;margin-left:auto}.omrules .lbl a:hover{text-decoration:underline}
+.omrules p{margin:0;font-size:13px;line-height:1.5;color:var(--ink);white-space:pre-wrap}
 .omb2{display:flex;flex-direction:column;align-items:flex-start;gap:2px;height:auto;padding:10px 16px;text-align:left;border-radius:14px}   /* two lines: a rounded box, not a pill */
 .osyn{font-size:13.5px;color:var(--body);line-height:1.55;margin:2px 0 4px}   /* an application's Sync: what it does, in a line */
 .omb2 b{display:flex;align-items:center;gap:6px;font-size:14px}.omb2 small{font-weight:500;color:var(--muted);font-size:12px}
@@ -2926,7 +2931,7 @@ function bulletProblem(orig, sug, mode) {   // why a rewrite is thrown away ('' 
 const WHY_KEPT = { num: 'used a number from somewhere else', blank: 'added a blank nobody asked for', grade: 'read weaker than the original', long: 'ran too long', buzz: 'added a cliché',
   // an application's own checks, and the second reader's verdicts
   lead: 'made the role sound bigger (“led”, “managed”…)', crowd: 'repeated a keyword already used in this role', stuffed: 'repeated a keyword',
-  overstates: 'made the work sound bigger than it was', unsupported: 'added something the original line doesn’t say', 'off-topic': 'added keywords that don’t fit the work', meaning: 'changed what the line says' };
+  overstates: 'made the work sound bigger than it was', unsupported: 'added something the original line doesn’t say', 'off-topic': 'added keywords that don’t fit the work', meaning: 'changed what the line says', rule: 'breaks one of the client’s resume rules' };
 function keptWhy(list) { const kw = [], other = []; list.forEach((p) => { if (p.k === 'kw') kw.push(...p.terms); else if (WHY_KEPT[p.k] && !other.includes(WHY_KEPT[p.k])) other.push(WHY_KEPT[p.k]); });
   const bits = (kw.length ? ['would have removed ' + termList(uniq(kw))] : []).concat(other); return bits.length > 1 ? bits.slice(0, -1).join(', ') + ' or ' + bits[bits.length - 1] : bits[0] || ''; }
 
@@ -3257,12 +3262,15 @@ function openOptimise(preset) {   // preset: the team portal opened it - the cli
     '. This run builds on what was accepted and works only on what’s still missing.</p>' : '';
   // the public editor's Sync: one click, every part at once and more deeply - the posting's words, priorities and title, and each role's bullets in this job's order
   const syncB = mode !== 'free' ? '' : '<button class="btn omb2 osyncb" type="button" data-a="opt-sync" id="optSync" title="Everything at once, more deeply: the posting’s words, priorities and title, and each role’s bullets in the order this job cares about. The facts stay as they are."><b>' + I_SPARK + '<span>Sync to this job</span></b><small>Everything, in the job’s words and order</small></button>';
+  // the client's Resume rules from their Profile: shown fixed, never typed again, and sent with every run as hard constraints
+  const rulesBlock = clientRules() ? '<div class="omrules"><div class="lbl">Resume rules <small>from the Profile — always followed</small>' +
+    (TEAM ? '<a href="' + esc('/team.html?client=' + encodeURIComponent(TEAM.client) + '#profile') + '" target="_blank" rel="noopener">Edit on the Profile</a>' : '') + '</div><p>' + esc(clientRules()) + '</p></div>' : '';
   modalOpen('<div class="om sm opt" role="dialog" aria-modal="true" aria-labelledby="omT"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
     '<div class="omh"><h2 id="omT">' + W.title + '</h2>' + sub + again + '</div>' +
     '<div class="omb">' + (jobOk() || base ? '' : '<div class="omjd">' + (app ? '<p class="fine">This application has no job description yet. Paste it here — it’s kept on the application too.</p>' : '') + '<textarea id="optJd" placeholder="Paste the whole job description here"></textarea></div>') +
     ('<div class="ohd"><span>' + W.pick + '</span><button type="button" data-a="opt-all">Select all</button></div>' +
         '<div class="orows">' + rows.map((r) => '<button type="button" class="orow" data-a="opt-t" data-v="' + r[0] + '" aria-pressed="false"><span class="ol"><b>' + r[1] + '</b><small>' + esc(what[r[0]] || '') + '</small></span><i class="cb" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i></button>').join('') + '</div>') +
-    '<div class="omins"><label class="lbl" for="optIns">Special instructions (optional)</label><textarea id="optIns" maxlength="400" placeholder="e.g. Keep each bullet under 22 words; don’t touch the first role.">' + esc(pref.ins || '') + '</textarea></div></div>' +
+    rulesBlock + '<div class="omins"><label class="lbl" for="optIns">Special instructions for this run (optional)</label><textarea id="optIns" maxlength="400" placeholder="e.g. Keep each bullet under 22 words; don’t touch the first role.">' + esc(pref.ins || '') + '</textarea></div></div>' +
     '<div class="omf"><button class="btn" type="button" data-a="fact">Fact check only</button><span id="optHint"></span>' + syncB +
       ('<button class="btn omb2 ats" type="button" data-a="opt-go" id="optGo" disabled><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="optGoT">' + W.verb + '</span></b><small>' + W.go + '</small></button>') + '</div></div>');
   if (preset) optPreset();
@@ -3495,7 +3503,7 @@ function secondCheck(o, terms, step) {
   const { R, targets, V } = o, done = step || (() => {}), changes = [];
   targets.forEach((tg) => (tg.res || []).forEach((x) => { if (norm(x.sug) !== norm(x.orig)) changes.push({ id: x.bid, role: [tg.it.title, tg.it.sub].filter(Boolean).join(' at '), was: origLine(x.bid, x.orig), now: x.orig, sug: x.sug }); }));
   if (!changes.length) { V.second = { n: 0, dropped: 0 }; done('verify', 'No bullet reworded — nothing more to check'); return Promise.resolve(o); }
-  return ai({ task: 'verify', jd: jobText().slice(0, 15000), target: cleanTitle(JOB.title), changes, requirements: (R.reqs || []).map((q) => ({ text: q.text, kind: q.kind })), resume: scoreAfter(R, targets, docText()) }, 90000)
+  return ai({ task: 'verify', jd: jobText().slice(0, 15000), target: cleanTitle(JOB.title), rules: clientRules(), changes, requirements: (R.reqs || []).map((q) => ({ text: q.text, kind: q.kind })), resume: scoreAfter(R, targets, docText()) }, 90000)
     .then((v) => {
       if (!v || !Array.isArray(v.changes)) throw 'shape';
       const by = {}, S = V.second = { n: changes.length, dropped: 0, unchecked: 0 }; v.changes.forEach((c) => { by[c.id] = c; });

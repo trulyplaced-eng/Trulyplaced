@@ -1261,6 +1261,12 @@ body{font-size:13px;line-height:1.5}
 .jbl .m{font-size:12px}
 .jbrow .side .btn{min-width:64px}
 .lkrow.skip{padding:6px 12px}
+/* the list in sections (next up · opened · sent): the first row of each carries the label, so the rows stay one list */
+.jc[data-sech]{flex-wrap:wrap}
+.jc[data-sech]::before{content:attr(data-sech);flex:0 0 100%;order:-1;margin:-8px -12px 8px;padding:5px 12px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:var(--hover);border-bottom:1px solid var(--line)}
+.jcb .m .opened{color:var(--blue);font-weight:500}
+.rjbox{margin-top:14px}.rjbox summary{cursor:pointer;font-size:12.5px;color:var(--muted);font-weight:500;list-style:none;display:flex;align-items:center;gap:6px}.rjbox summary::-webkit-details-marker{display:none}
+.rjbox summary svg{width:14px;height:14px}.rjbox .list{margin-top:8px}.rjbox .li .m{font-size:12px}
 /* dialogs and toasts */
 .mod{border-radius:8px;padding:18px 20px}
 .mod h2{font-size:15px}
@@ -1276,6 +1282,7 @@ body{font-size:13px;line-height:1.5}
   .jc:first-child{border-top:1px solid var(--line)}
   .jch{flex:none}.jmeta,.jcb{flex:none}.jcf{margin-top:auto;padding-top:10px}
   .jc .fitw{display:grid}.jc .fitp{flex-direction:column;margin-left:0}.jc .fitp small{display:block}
+  .jc[data-sech]::before{margin:-12px -14px 10px}
 }
 @media (max-width:760px){
   .btn{height:34px;min-height:34px;font-size:13.5px}
@@ -2539,7 +2546,7 @@ function tJobs(){
   V.innerHTML = '<section class="jsec"><div class="card lkpaste"><h3>' + J.link + 'Apply from links</h3>' +
       '<p class="hint">Paste one job link or up to ' + LK_MAX + ' — LinkedIn, Workday, Greenhouse, Lever, a company’s careers page. One per line, or a whole message: the links are picked out.</p>' +
       '<form id="lkF" class="row" novalidate style="align-items:flex-start"><textarea class="inp grow" id="lkIn" rows="1" placeholder="https://…" autocomplete="off" spellcheck="false" aria-label="Job links" style="min-width:220px"></textarea><button class="btn pri" type="submit" id="lkGo">Read link</button></form>' +
-      '<div id="lkOut"></div></div><div id="lkList"></div></section>' +
+      '<div id="lkOut"></div></div><div id="lkList"></div><div id="rjBox"></div></section>' +
     '<section class="jsec"><div class="jsech"><h2>From the TrulyPlaced job board</h2><p class="sub">Fresh roles from the companies on our board and the jobs the team added.</p></div>' +
       '<div class="tools"><input class="inp" id="jbQ" type="search" placeholder="Role, skill or company" value="' + esc(JB.q) + '" autocomplete="off">' +
       '<select class="inp" id="jbR" style="flex:0 0 auto;width:auto" aria-label="Where"><option value="US">United States</option><option value="CA">Canada</option><option value="UK">United Kingdom</option><option value="AU">Australia</option><option value="Remote">Remote</option><option value="">Anywhere</option></select>' +
@@ -2556,22 +2563,23 @@ function tJobs(){
   $('#lkList').addEventListener('input', lkType);
   lkDraw(); lkRead(c, L);
   if(L.items.some(function(x){ return x.app; })) lkFresh(c, L).then(function(){ if(lkShown(L)) lkDraw(); });
-  Promise.all([loadBoard(), loadAppIndex(true)]).then(function(){ if(C === c && R.tab === 'jobs' && !R.app) drawBoard(); }, function(e){ $('#jbL').innerHTML = errBox(e); });
+  Promise.all([loadBoard(), loadAppIndex(true), loadRestricted(c)]).then(function(){ if(C === c && R.tab === 'jobs' && !R.app){ drawBoard(); rjDraw(); } }, function(e){ $('#jbL').innerHTML = errBox(e); });
 }
 function drawBoard(){
   var box = $('#jbL'); if(!box || !BOARD) return;
   var words = String(JB.q || '').toLowerCase().split(/[\s,]+/).filter(function(w){ return w.length > 1; });
-  var min = JB.age ? Date.now() - (+JB.age) * 864e5 : 0;
+  var min = JB.age ? Date.now() - (+JB.age) * 864e5 : 0, hid = 0;
   var rows = BOARD.filter(function(j){
     if(min && j.posted < min) return false;
     if(!inRegion(j, JB.reg)) return false;
+    if(restrictedFor(j)){ hid++; return false; }   // a job the client ruled out
     var hay = (j.title + ' ' + j.company + ' ' + j.dept + ' ' + j.location).toLowerCase();
     return words.every(function(w){ return hay.indexOf(w) > -1; });
   });
   if(!BOARD.length){ box.innerHTML = '<p class="fine">The job board list couldn’t load right now. Paste a link above instead.</p>'; return; }
   if(!rows.length){ box.innerHTML = '<p class="fine">No roles match. Try fewer words, another place, or “Any time”.</p>'; return; }
   // each role as a row of the app's Browse list: the company above the title, where and when in grey, Start on the right
-  box.innerHTML = '<p class="fine" style="margin-bottom:8px">' + rows.length.toLocaleString() + ' role' + (rows.length === 1 ? '' : 's') + '</p><div class="list jbl">' + rows.slice(0, JB.n).map(function(j){
+  box.innerHTML = '<p class="fine" style="margin-bottom:8px">' + rows.length.toLocaleString() + ' role' + (rows.length === 1 ? '' : 's') + (hid ? ' · ' + hid + ' hidden — restricted by the client' : '') + '</p><div class="list jbl">' + rows.slice(0, JB.n).map(function(j){
     var a = already(j);
     return '<div class="li jbrow">' + coLogo(j.company, j.url, j.dom) + '<div class="main"><div class="co">' + esc(j.company) + '</div><div class="t">' + esc(j.title) + '</div>' +
       '<div class="m">' + esc([j.location, j.mode, j.salary, j.posted ? 'Posted ' + TP.ago(j.posted) : '', j.team ? 'added by the team' : ''].filter(Boolean).join(' · ')) + '</div></div>' +
@@ -2735,9 +2743,11 @@ function readLink(raw){
   var it = parseLink(raw), out = $('#lkOut'), b = $('#lkGo');
   if(!it){ out.innerHTML = '<p class="err" style="margin-top:10px">That doesn’t look like a web link. Copy the whole address from the browser (it starts with https://).</p>'; return; }
   b.disabled = true; b.classList.add('busy'); out.innerHTML = '';
-  readJob(it).then(function(j){
+  loadRestricted(C).then(function(){ return readJob(it); }).then(function(j){
     b.disabled = false; b.classList.remove('busy');
     if(!out.isConnected) return;   // moved to another page meanwhile
+    var rj = restrictedFor({key:j.key, url:j.url, company:j.company}) || restrictedFor({url:it.url});   // a job the client ruled out: never started
+    if(rj){ out.innerHTML = '<div class="note warn" style="margin-top:14px"><b>Not started.</b> ' + esc(rjText(rj)) + '. ' + esc((C.row.full_name || '').split(' ')[0] || 'The client') + ' asked us not to apply here, so this job is never added again.</div>'; return; }
     var dup = already({key:j.key, url:j.url}) || already({url:it.url});
     out.innerHTML = '<div class="stack" style="margin-top:14px">' + (j.guessed ? '<div class="note warn">We couldn’t read that page (LinkedIn and some sites block it). Check the title and company, and paste the job description below.</div>' : '<div class="note ok">Read it. Check the details, then start the application.</div>') +
       (dup ? '<div class="note warn">' + esc(C.row.full_name) + ' already has this job: ' + dupNote(dup) + '</div>' : '') +
@@ -2769,7 +2779,8 @@ function draftRow(c, job){
 // Resolves {id, tab}: tab is true when it opened in its own tab.
 function createDraft(job, w){
   var c = C;
-  return Promise.all([loadResumes(), findSame(c, job)]).then(function(rs){
+  return Promise.all([loadResumes(), findSame(c, job), loadRestricted(c)]).then(function(rs){
+    var rj = restrictedFor(job, c); if(rj){ shutTab(w); TP.toast(rjText(rj) + ' — not started'); throw {quiet:true}; }   // the last gate, whoever tries
     if(rs[1]){ shutTab(w); return sameJob(c, rs[1]).then(function(){ throw {quiet:true}; }); }
     return q(SB.from('applications').insert(draftRow(c, job)).select('id').single());
   }).then(function(r){
@@ -2818,7 +2829,7 @@ function fail(e){ if(e && e.quiet) return; TP.toast(TP.errText(e)); }
    read into a list, started together, then opened and sent one by one. The list is kept per client in this browser
    until it's cleared. */
 var LK_MAX = 20, LKS = {}, READING = {};
-var LK_WHY = {applied:'Already applied', draft:'Draft already started', twice:'Pasted twice — kept once', inlist:'Already in your list', same:'The same job as another link in your list', notlink:'Not a web link'};
+var LK_WHY = {applied:'Already applied', draft:'Draft already started', twice:'Pasted twice — kept once', inlist:'Already in your list', same:'The same job as another link in your list', notlink:'Not a web link', restricted:'Restricted by the client — never added'};
 function lkList(cid){
   if(!LKS[cid]){
     var s = TP.lsGet('tp_links_' + cid, null);
@@ -2832,6 +2843,92 @@ function lkSave(L){ try{ if(L.items.length) localStorage.setItem('tp_links_' + L
 var lkSaveSoon = TP.debounce(lkSave, 400);
 function lkShown(L){ return !!(C && C.id === L.cid && R.tab === 'jobs' && !R.app && $('#lkList')); }
 function lkFind(L, key, url, not){ return L.items.filter(function(y){ return y !== not && ((key && y.key === key) || y.url === url || y.from === url); })[0] || null; }
+// The list in sections, so the next job to process is always at the top: next up (nobody has opened its application yet),
+// opened (someone opened it from this list, or its page was shown in a tab of this browser) and sent. The first row of each
+// section carries its label (data-sech, drawn by CSS), so the rows stay one list for the page and its tests.
+function lkSec(x){ return x.app && x.st && x.st !== 'draft' ? 'sent' : x.opened ? 'opened' : 'next'; }
+function lkRows(rows){
+  var G = {next:[], opened:[], sent:[]}, N = {next:'Next up', opened:'Opened', sent:'Sent'};
+  rows.forEach(function(x){ G[lkSec(x)].push(x); });
+  var kinds = ['next', 'opened', 'sent'].filter(function(k){ return G[k].length; }), one = kinds.length < 2;
+  return kinds.map(function(k){ return G[k].map(function(x, i){
+    return lkRow(x).replace('<div class="lkrow jc"', '<div class="lkrow jc" data-sec="' + k + '"' + (i || one ? '' : ' data-sech="' + N[k] + ' · ' + G[k].length + '"'));
+  }).join(''); }).join('');
+}
+// a job's application was opened from this list (Open or Review here, or its page shown in a tab of this browser): it moves to Opened
+function lkOpened(id){
+  var c = C, L = lkList(c.id), x = L.items.filter(function(y){ return y.id === id; })[0]; if(!x || x.opened) return;
+  x.opened = {at:Date.now(), by:ME ? ME.email : ''}; lkSave(L);
+  setTimeout(function(){ if(C === c && lkShown(L)) lkDraw(); }, 250);   // after the click has opened its tab
+}
+/* ---------- jobs the client ruled out (restricted_jobs): never added to a list or started again for them, whoever tries.
+   The team marks one from the list (Restrict) with what the client said and, if they like, every job at that company; the
+   whole team sees it on every device; an owner, or whoever marked it, lifts it. ---------- */
+function loadRestricted(c, force){
+  if(c.rj && !force && Date.now() - (c.rjAt || 0) < 60000) return Promise.resolve(c.rj);
+  return q(SB.from('restricted_jobs').select('*').eq('client_id', c.id).order('created_at', {ascending:false})).then(function(rows){ c.rj = rows || []; c.rjAt = Date.now(); return c.rj; }, function(){ return c.rj || []; });
+}
+// the restriction that covers a job: the same posting (its key or its address), or every job at its company
+function restrictedFor(job, c){
+  c = c || C; var L = (c && c.rj) || [], u = job.url || job.job_url || '', cu = u ? canonUrl(u) : '', key = job.key || job.job_key || '', co = String(job.company || '').trim().toLowerCase();
+  for(var i = 0; i < L.length; i++){
+    var r = L[i];
+    if((key && r.job_key && r.job_key === key) || (cu && r.url && canonUrl(r.url) === cu) || (r.whole_company && co && String(r.company || '').trim().toLowerCase() === co)) return r;
+  }
+  return null;
+}
+function rjText(r){ return 'Restricted by the client ' + TP.ago(r.created_at) + (r.whole_company && r.company ? ' — every job at ' + r.company : '') + (r.reason ? ': ' + r.reason : ''); }
+function lkRestrict(id){
+  var c = C, L = lkList(c.id), x = L.items.filter(function(y){ return y.id === id; })[0]; if(!x) return;
+  var first = (c.row.full_name || '').split(' ')[0] || 'The client', co = String(x.company || '').trim();
+  var m = TP.modal('<h2>Restricted by the client</h2><p>' + esc(first) + ' doesn’t want this job. It comes off the list and is never added or started again for them, even if someone pastes the link again — the whole team sees that.</p>' +
+    '<div class="stack" style="margin-top:14px;gap:10px"><div class="field"><label for="rjWhy">What ' + esc(first) + ' said <span class="muted">(optional)</span></label><input id="rjWhy" maxlength="200" placeholder="e.g. Current employer · No agencies" autocomplete="off"></div>' +
+    (co ? '<label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="rjAll"> Every job at ' + esc(co) + ', not just this one</label>' : '') + '</div>' +
+    '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="button" id="rjGo">Restrict</button></div>', false, {keep:true});
+  $('#rjGo', m).onclick = function(){
+    var btn = this; btn.disabled = true;
+    var row = {client_id:c.id, job_key:x.key || null, url:x.url || x.from || null, company:co || null, title:String(x.title || '').trim() || null, whole_company:!!($('#rjAll', m) && $('#rjAll', m).checked), reason:$('#rjWhy', m).value.trim() || null};
+    q(SB.from('restricted_jobs').insert(row).select('*').single()).then(function(r){
+      TP.closeModal(); c.rj = [r].concat(c.rj || []); c.rjAt = Date.now();
+      var M = lkList(c.id), i = M.items.indexOf(x);
+      if(i > -1){ M.items.splice(i, 1); M.skip.push({why:'restricted', url:x.from || x.url, title:x.title, company:x.company, rj:r}); lkSave(M); }
+      if(lkShown(M)) lkDraw(); drawBoard(); rjDraw(); if(BC) try{ BC.postMessage({client:c.id, restricted:true}); }catch(e){}
+      TP.toast('Restricted — ' + (row.whole_company ? 'every job at ' + co : (x.title || 'this job')) + ' is never added for ' + first + ' again', {undo:function(){
+        rjRemove(c, r, function(){
+          var K = lkList(c.id); K.skip = K.skip.filter(function(s){ return !(s.rj && s.rj.id === r.id); });
+          if(K.items.indexOf(x) < 0) K.items.splice(Math.min(i < 0 ? K.items.length : i, K.items.length), 0, x);
+          lkSave(K); if(lkShown(K)) lkDraw();
+        });
+      }});
+    }, function(e){ btn.disabled = false; TP.toast(TP.errText(e)); });
+  };
+}
+function rjRemove(c, r, then){
+  return q(SB.from('restricted_jobs').delete().eq('id', r.id).select('id')).then(function(rows){
+    if(!(rows || []).length) throw {message:'Only an owner, or whoever restricted it, can lift it'};
+    c.rj = (c.rj || []).filter(function(y){ return y.id !== r.id; }); drawBoard(); rjDraw(); if(BC) try{ BC.postMessage({client:c.id, restricted:true}); }catch(e){}
+    if(then) then();
+  }, function(e){ TP.toast(TP.errText(e)); });
+}
+// the restricted jobs, under the list: what the client said, who marked it and when; Lift for an owner or whoever marked it
+var RJ_OPEN = false;
+function rjDraw(){
+  var box = $('#rjBox'), c = C; if(!box || !c) return; var L = c.rj || [];
+  box.innerHTML = L.length ? '<details class="rjbox"' + (RJ_OPEN ? ' open' : '') + '><summary>' + I.lock + 'Restricted by the client · ' + L.length + ' — never added or started again</summary><div class="list">' + L.map(function(r){
+    var can = ME && (ME.owner || r.by_email === ME.email);
+    return '<div class="li"><div class="main"><div class="t">' + esc(r.title || shortLink(r.url || '')) + (r.company ? ' · ' + esc(r.company) : '') + (r.whole_company ? ' <span class="tag">every job there</span>' : '') + '</div>' +
+      '<div class="m">' + (r.reason ? esc(r.reason) + ' · ' : '') + esc(who(r.by_email)) + ' · ' + esc(TP.ago(r.created_at)) + (r.url ? ' · <a href="' + esc(TP.safeHref(r.url)) + '" target="_blank" rel="noopener">posting</a>' : '') + '</div></div>' +
+      (can ? '<div class="side"><button class="btn sm" type="button" data-act="rjlift" data-id="' + esc(r.id) + '">Lift</button></div>' : '') + '</div>';
+  }).join('') + '</div></details>' : '';
+  var d = $('.rjbox', box); if(d) d.addEventListener('toggle', function(){ RJ_OPEN = d.open; });
+}
+function rjLift(id){
+  var c = C, r = (c.rj || []).filter(function(y){ return y.id === id; })[0]; if(!r) return;
+  rjRemove(c, r, function(){ TP.toast('Lifted — ' + (r.title || 'this job') + ' can be added again', {undo:function(){
+    var again = {client_id:c.id, job_key:r.job_key, url:r.url, company:r.company, title:r.title, whole_company:r.whole_company, reason:r.reason};
+    q(SB.from('restricted_jobs').insert(again).select('*').single()).then(function(n){ c.rj = [n].concat(c.rj || []); drawBoard(); rjDraw(); }, function(e){ TP.toast(TP.errText(e)); });
+  }}); });
+}
 function lkCanStart(x){ return !x.app && (x.state === 'ready' || x.state === 'need') && !!String(x.title || '').trim() && !!String(x.company || '').trim(); }
 function lkDrop(L, x, why, a){ L.items.splice(L.items.indexOf(x), 1); L.skip.push({why:why, url:x.from || x.url, title:x.title, company:x.company, app:a || null}); }
 // fn over a list, a few at a time
@@ -2869,7 +2966,7 @@ function readLinks(text){
   var c = C, L = lkList(c.id);
   $('#lkOut').innerHTML = '';
   b.disabled = true; b.classList.add('busy');
-  loadAppIndex(true).catch(function(){}).then(function(){
+  Promise.all([loadAppIndex(true).catch(function(){}), loadRestricted(c)]).then(function(){
     b.disabled = false; b.classList.remove('busy');
     if(C !== c || !$('#lkIn')) return;
     var seen = {}, skip = [], rest = [], added = 0;
@@ -2880,6 +2977,7 @@ function readLinks(text){
       if(ids.some(function(k){ return seen[k]; })){ skip.push({why:'twice', url:it.url}); return; }
       ids.forEach(function(k){ seen[k] = 1; });
       if(lkFind(L, it.key, it.url)){ skip.push({why:'inlist', url:it.url}); return; }
+      var rj = restrictedFor(it, c); if(rj){ skip.push({why:'restricted', url:it.url, rj:rj}); return; }   // ruled out by the client: never added again
       if((a = already(it, c.idx))){ skip.push({why:a.status === 'draft' ? 'draft' : 'applied', url:it.url, title:a.title, company:a.company, app:a}); return; }
       if(added >= LK_MAX){ rest.push(it.raw); return; }
       L.items.push({id:TP.uid(), raw:it.raw, from:it.url, url:it.url, key:it.key || null, state:'queued'}); added++;
@@ -2906,6 +3004,9 @@ function lkRead(c, L){
 function lkGot(c, L, x, it, j){
   if(L.items.indexOf(x) < 0) return;   // taken off the list while it was read
   Object.assign(x, {title:j.title || '', company:j.company || '', location:j.location || '', jd:j.jd || '', dom:j.dom || '', key:j.key || x.key, url:it.src === 'custom' ? it.url : canonUrl(j.url), guessed:!!j.guessed});
+  // now that the company is known: a job at a company the client ruled out comes off the list
+  var rj = restrictedFor(x, c);
+  if(rj){ L.items.splice(L.items.indexOf(x), 1); L.skip.push({why:'restricted', url:x.from || x.url, title:x.title, company:x.company, rj:rj}); return; }
   // once read, it can still turn out to be a job the client already has, or the same job as another link in the list
   var a = already(x, c.idx), twin = lkFind(L, x.key, x.url, x);
   if(a || twin) lkDrop(L, x, a ? (a.status === 'draft' ? 'draft' : 'applied') : 'same', a);
@@ -2913,6 +3014,8 @@ function lkGot(c, L, x, it, j){
 }
 // the latest status of each application started from the list
 function lkFresh(c, L){
+  // opened in another tab of this browser (the application page marks it): take that over before anything is saved back
+  try{ var st = JSON.parse(localStorage.getItem('tp_links_' + c.id) || 'null'), op = {}; ((st && st.items) || []).forEach(function(y){ if(y.opened) op[y.id] = y.opened; }); L.items.forEach(function(x){ if(!x.opened && op[x.id]) x.opened = op[x.id]; }); }catch(e){}
   var ids = L.items.filter(function(x){ return x.app; }).map(function(x){ return x.app; });
   if(!ids.length) return Promise.resolve();
   return q(SB.from('applications').select('id,status,applied_at').eq('client_id', c.id).in('id', ids)).then(function(rows){
@@ -2922,11 +3025,13 @@ function lkFresh(c, L){
   }, function(){});
 }
 function lkStart(btn){
-  var c = C, L = lkList(c.id), todo = L.items.filter(lkCanStart), made = [], had = 0, bad = 0;
+  var c = C, L = lkList(c.id), todo = L.items.filter(lkCanStart), made = [], had = 0, bad = 0, rst = 0;
   if(!todo.length) return;
   btn.disabled = true; btn.classList.add('busy');
-  Promise.all([loadResumes(), loadAppIndex(true)]).then(function(){
+  Promise.all([loadResumes(), loadAppIndex(true), loadRestricted(c)]).then(function(){
     return each(todo, 3, function(x){
+      var rj = restrictedFor(x, c);   // ruled out by the client meanwhile: never started
+      if(rj){ rst++; lkDrop(L, x, 'restricted'); L.skip[L.skip.length - 1].rj = rj; return; }
       var a = already(x, c.idx) || already({url:x.from}, c.idx);   // a teammate may have started it meanwhile
       if(a){ had++; lkDrop(L, x, a.status === 'draft' ? 'draft' : 'applied', a); return; }
       return q(SB.from('applications').insert(draftRow(c, {job_key:x.key || null, job_url:x.url, title:String(x.title).trim(), company:String(x.company).trim(), location:String(x.location || '').trim() || null, jd_text:x.jd || null})).select('id').single())
@@ -2934,7 +3039,7 @@ function lkStart(btn){
     });
   }).then(function(){
     c.idx = null; lkSave(L); refreshProgress();
-    var n = made.length, msg = [n ? n + ' draft' + (n === 1 ? '' : 's') + ' started' : '', had ? had + (had === 1 ? ' was' : ' were') + ' already started' : '', bad ? bad + ' couldn’t start — try again' : ''].filter(Boolean).join(' · ');
+    var n = made.length, msg = [n ? n + ' draft' + (n === 1 ? '' : 's') + ' started' : '', had ? had + (had === 1 ? ' was' : ' were') + ' already started' : '', rst ? rst + ' restricted by the client — not started' : '', bad ? bad + ' couldn’t start — try again' : ''].filter(Boolean).join(' · ');
     // Undo takes the new drafts away again and puts the jobs back in the list, ready to start
     TP.toast(msg, n ? {undo:function(){
       undoDrafts(c, made.map(function(m){ return m.x.app; })).then(function(gone){
@@ -2991,19 +3096,19 @@ function lkDraw(){
   var keep = f && f.getAttribute && f.getAttribute('data-lk') && box.contains(f) ? [f.getAttribute('data-id'), f.getAttribute('data-lk'), f.selectionStart, f.selectionEnd] : null;
   var rows = lkBest() ? L.items.slice().sort(function(a, b){ return lkRank(b) - lkRank(a); }) : L.items;   // best first: by the fit, then the job match; jobs not scored yet go last
   box.innerHTML = (L.more ? '<div class="note warn" style="margin-top:14px">Up to ' + LK_MAX + ' links are read at a time. The other ' + L.more + ' are still in the box — press <b>Read links</b> again for them.</div>' : '') +
-    (L.items.length ? '<div id="lkHd">' + lkHead(L) + '</div><div class="lkgrid" id="lkRows">' + rows.map(lkRow).join('') + '</div>' : '') +
+    (L.items.length ? '<div id="lkHd">' + lkHead(L) + '</div><div class="lkgrid" id="lkRows">' + lkRows(rows) + '</div>' : '') +
     (L.skip.length ? '<div class="lkskip"><p class="fine"><b>' + L.skip.length + ' skipped</b> — not added to the list</p><div class="list">' + L.skip.map(lkSkipRow).join('') + '</div></div>' : '');
   if(keep){ var g = box.querySelector('[data-id="' + keep[0] + '"][data-lk="' + keep[1] + '"]'); if(g){ g.focus(); try{ g.setSelectionRange(keep[2], keep[3]); }catch(e2){} } }
   setTimeout(function(){ fitRun(c, lkList(c.id)); }, 0);   // the fit for jobs that don't have one yet
 }
 function lkHead(L){
-  var sent = 0, drafts = 0, can = 0, need = 0, reading = 0, gone = 0, opt = 0, busy = 0, ready = 0, scored = 0, strong = 0, fits = 0;
+  var sent = 0, drafts = 0, can = 0, need = 0, reading = 0, gone = 0, opt = 0, busy = 0, ready = 0, scored = 0, strong = 0, fits = 0, opened = 0;
   L.items.forEach(function(x){
     var m = lkMatch(C, x); if(m || fitDone(x)){ scored++; if(m && m.pct >= 75) strong++; }
     if(fitDone(x) && x.fit.verdict === 'strong') fits++;
     if(x.app){
       if(x.st === 'gone') gone++; else if(x.st && x.st !== 'draft') sent++;
-      else { drafts++; var os = x.opt && x.opt.st; if(os === 'wait' || os === 'run') busy++; if(os === 'ready') ready++; if(lkCanOpt(x)) opt++; }
+      else { drafts++; if(x.opened) opened++; var os = x.opt && x.opt.st; if(os === 'wait' || os === 'run') busy++; if(os === 'ready') ready++; if(lkCanOpt(x)) opt++; }
     }
     else if(x.state === 'queued' || x.state === 'reading') reading++;
     else if(lkCanStart(x)) can++; else need++;
@@ -3011,7 +3116,7 @@ function lkHead(L){
   var n = L.items.length - gone, pct = n ? Math.round(sent / n * 100) : 0;
   // the list's heading, then what can be done to all of it: quiet ones first, the main one (graphite) last
   return '<div class="lkbar"><div class="grow"><h2>Your list <span>· ' + n + ' job' + (n === 1 ? '' : 's') + '</span></h2><div class="fine">' +
-      [sent + ' of ' + n + ' sent', drafts ? drafts + ' draft' + (drafts === 1 ? '' : 's') : '', busy ? 'syncing ' + busy + '…' : '', ready ? ready + ' ready to review' : '',
+      [sent + ' of ' + n + ' sent', drafts ? drafts + ' draft' + (drafts === 1 ? '' : 's') : '', opened ? opened + ' opened' : '', busy ? 'syncing ' + busy + '…' : '', ready ? ready + ' ready to review' : '',
         can + need ? (can + need) + ' to start' : '', reading ? 'reading ' + reading + '…' : '', fits ? fits + ' strong fit' + (fits === 1 ? '' : 's') : '',
         strong ? strong + ' strong match' + (strong === 1 ? '' : 'es') + ' (75%+)' : ''].filter(Boolean).join(' · ') + '</div>' +
       (sent ? '<div class="prog' + (sent === n ? ' full' : '') + '"><i style="width:' + pct + '%"></i></div>' : '') + '</div>' +
@@ -3171,18 +3276,19 @@ function lkRow(x){
       : os === 'wait' ? 'Waiting to sync' : os === 'run' ? '<span class="spin" style="width:12px;height:12px;vertical-align:-1px;margin-right:6px"></span>Syncing…'
       : os === 'ready' ? (o.n ? o.n + ' suggested change' + (o.n === 1 ? '' : 's') : 'No wording changes') + (o.sk ? ' · ' + o.sk + ' skill' + (o.sk === 1 ? '' : 's') + ' to tick' : '') + ' — ready to review'
       : os === 'done' ? (o.same ? 'Already a good match — nothing to change' : 'Reviewed — the tailored resume is saved')
-      : os === 'fail' ? 'Couldn’t sync: ' + esc(o.why) : 'Draft started — open it to tailor the resume and apply';
+      : os === 'fail' ? 'Couldn’t sync: ' + esc(o.why) : x.opened ? '<span class="opened">Opened ' + esc(TP.ago(x.opened.at)) + '</span> — tailor the resume and apply' : 'Draft started — open it to tailor the resume and apply';
     return '<div class="lkrow jc" data-state="' + s + '" data-opt="' + os + '">' + head(s === 'gone' ? '' : fitPill(x)) + loc + (pill ? '<div class="jchips">' + pill + '</div>' : '') +
         '<div class="jcb"><div class="m' + (s === 'sent' || os === 'ready' || os === 'done' ? ' ok' : os === 'fail' ? ' err' : '') + '">' + line + '</div>' + (s === 'gone' ? '' : fitLine(x)) + '</div>' +
       '<div class="jcf">' + (s === 'gone' ? '<span class="st closed">Deleted</span><span class="sp"></span>' + del : TP.statusChip(st) + '<span class="sp"></span>' + del +
-        (os === 'ready' ? '<a class="btn sm pri" href="' + esc(edUrl('app', x.app)) + '" target="tp-ed-' + esc(x.app) + '">Review</a>' : os === 'fail' ? '<button class="btn sm pri" type="button" data-act="lkretry" data-id="' + esc(x.id) + '">Retry</button>' : '') +
-        '<a class="btn sm' + (s === 'draft' && os !== 'ready' && os !== 'fail' ? ' pri' : '') + '" href="' + esc(cUrl(C.id, 'app=' + x.app)) + '" target="tp-app-' + esc(x.app) + '" title="Opens in its own browser tab — this list stays here and follows along">' + (s === 'draft' ? 'Open' : 'View') + '</a>') + '</div></div>';   // the tab Start named, so a draft already open comes to the front
+        (os === 'ready' ? '<a class="btn sm pri" href="' + esc(edUrl('app', x.app)) + '" target="tp-ed-' + esc(x.app) + '" data-act="lkopen" data-id="' + esc(x.id) + '">Review</a>' : os === 'fail' ? '<button class="btn sm pri" type="button" data-act="lkretry" data-id="' + esc(x.id) + '">Retry</button>' : '') +
+        '<a class="btn sm' + (s === 'draft' && os !== 'ready' && os !== 'fail' ? ' pri' : '') + '" href="' + esc(cUrl(C.id, 'app=' + x.app)) + '" target="tp-app-' + esc(x.app) + '" data-act="lkopen" data-id="' + esc(x.id) + '" title="Opens in its own browser tab — this list stays here and follows along">' + (s === 'draft' ? 'Open' : 'View') + '</a>') + '</div></div>';   // the tab Start named, so a draft already open comes to the front
   }
   var post = '<a class="lkq" href="' + esc(TP.safeHref(x.url)) + '" target="_blank" rel="noopener" title="Open the posting">Posting' + J.upright + '</a>';
   var err = x.err ? '<div class="m err">Couldn’t start: ' + esc(x.err) + '</div>' : '';
   // no description to match against: paste it here (a page that couldn't be read, or a posting that only gave its title)
   var addJd = mm || x.jd ? '' : '<button class="btn sm" type="button" data-act="lkjd" data-id="' + esc(x.id) + '">Add job description</button>';
-  var foot = '<div class="jcf">' + post + '<span class="sp"></span>' + del + addJd + '</div>';
+  var rst = '<button class="lkq" type="button" data-act="lkrestrict" data-id="' + esc(x.id) + '" title="The client ruled this job out: it comes off the list and is never added or started again">Restrict</button>';
+  var foot = '<div class="jcf">' + post + '<span class="sp"></span>' + del + rst + addJd + '</div>';
   if(x.state === 'need')
     return '<div class="lkrow jc" data-state="need"><div class="jch">' + coLogo(x.company, x.url, x.dom) + '<div class="jct"><div class="m warn">' +
         (x.guessed ? 'Couldn’t read this page — ' + (x.title ? 'check the title and company' : 'type the job title' + (x.company ? '' : ' and company')) : 'Add the ' + (x.title ? 'company' : x.company ? 'job title' : 'job title and company')) + '</div>' +
@@ -3250,7 +3356,7 @@ function optOne(job){
 function lkRetry(id){ var c = C, L = lkList(c.id), x = L.items.filter(function(y){ return y.id === id; })[0], p = optChoices(c.id); if(x) optQueue(c, L, SYNC_SEL, p.ins, x); }
 TP.onLeave(function(){ var n = OQ.run + OQ.jobs.length; return n ? n + ' resume' + (n === 1 ? ' is' : 's are') + ' still syncing in this browser tab — closing it or signing out stops ' + (n === 1 ? 'it' : 'them') + '.' : ''; });
 function lkSkipRow(s){
-  return '<div class="li lkrow skip" data-why="' + s.why + '"><div class="main"><div class="t">' + esc(s.title ? s.title + (s.company ? ' · ' + s.company : '') : shortLink(s.url)) + '</div><div class="m">' + LK_WHY[s.why] + '</div></div>' +
+  return '<div class="li lkrow skip" data-why="' + s.why + '"><div class="main"><div class="t">' + esc(s.title ? s.title + (s.company ? ' · ' + s.company : '') : shortLink(s.url)) + '</div><div class="m">' + (s.rj ? esc(rjText(s.rj)) : LK_WHY[s.why]) + '</div></div>' +
     (s.app ? '<div class="side">' + dupNote(s.app) + '</div>' : '') + '</div>';
 }
 // on an application from the list: how far along the list is, and the next draft to open
@@ -3258,6 +3364,7 @@ function lkNext(){
   var a = A, c = C, box = $('#lkNext'); if(!box || !a || !c) return;
   var L = lkList(c.id), me = L.items.filter(function(x){ return x.app === a.id; })[0];
   if(!me) return;
+  if(!me.opened){ me.opened = {at:Date.now(), by:ME ? ME.email : ''}; lkSave(L); }   // the Jobs tab's list shows it under Opened
   lkFresh(c, L).then(function(){
     if(A !== a || C !== c || !$('#lkNext')) return;
     me.st = a.status;
@@ -4052,6 +4159,7 @@ if(BC) BC.onmessage = function(e){
       C.row = row; staleList(); drawBar(); if(R.app) return; if(R.tab === 'resumes') tResumes(); else if(R.tab === 'profile') tProfile();
     }, function(){});
   }
+  if(m.restricted){ loadRestricted(C, true).then(function(){ if(R.tab === 'jobs' && !R.app){ drawBoard(); rjDraw(); } }); }   // a job restricted or lifted in another tab
   if(m.apps){   // an application changed in another browser tab (one opened from the Jobs list, say): this tab follows at once
     C.idx = null; refreshProgress(true);
     if(R.app) return;
@@ -4331,6 +4439,9 @@ document.addEventListener('click', function(e){
     case 'lkopt': return lkOptimise();
     case 'lkretry': return lkRetry(b.getAttribute('data-id'));
     case 'lkjd': return lkJd(b.getAttribute('data-id'));
+    case 'lkopen': return lkOpened(b.getAttribute('data-id'));   // the link itself opens the tab; the list notes it
+    case 'lkrestrict': return lkRestrict(b.getAttribute('data-id'));
+    case 'rjlift': return rjLift(b.getAttribute('data-id'));
     case 'lksort': TP.lsSet('tp_lk_best', !lkBest()); return lkDraw();
     case 'lkfit': return lkFitRetry(b.getAttribute('data-id'));
     case 'apmore': AP.n += 50; return loadApps();
