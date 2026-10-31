@@ -365,7 +365,7 @@ a.li:hover,button.li:hover{background:var(--hover)}
 .adate{font-size:13px;color:var(--body);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .adate small{display:block;font-size:12px;color:var(--muted)}
 .adate .stale{color:var(--warn);font-weight:500}
-.tbl.team .thead,.tbl.team .li{grid-template-columns:minmax(0,2.4fr) 96px 90px 120px 32px}
+.tbl.team .thead,.tbl.team .li{grid-template-columns:minmax(0,2fr) minmax(150px,1fr) 90px 120px 32px}   /* Role fits a job title */
 .tbl.team .side{display:contents}
 /* pages line up under their title, the sidebar runs the full height, and Save sits in a floating bar */
 .content .narrow{margin-left:0!important;margin-right:auto!important}
@@ -981,7 +981,7 @@ function draw(){
 // phones: a top bar with the client and Switch, and the sections along the bottom
 function drawPhone(c){
   var logo = $('.sb .brand svg').outerHTML;
-  $('#top').innerHTML = '<a class="brand" href="/team.html" data-go aria-label="All clients">' + logo + '</a>' +
+  $('#top').innerHTML = '<a class="brand" href="/team.html#clients" data-go aria-label="All clients">' + logo + '</a>' +
     (c ? '<div class="tcl"><span class="av sm" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span><b>' + esc(c.full_name || c.email) + '</b></div>' +
       '<button class="icb" type="button" data-act="switch" title="Switch client">' + J.swap + '<span class="sr">Switch client</span></button>' : '<span class="grow"></span>') +
     '<button class="icb" type="button" data-act="out" title="Sign out">' + I.out + '<span class="sr">Sign out</span></button>';
@@ -1284,7 +1284,7 @@ function drawBar(){
   // the page's title line: the section, and whose page this is
   var sec = R.app ? null : TABS.filter(function(t){ return t[0] === R.tab; })[0];
   $('#phead').innerHTML = (c.status === 'archived' ? '<div class="note warn archn"><span>' + I.lock + '<b>' + esc(name) + ' is archived</b> — off the team’s lists. Nothing was deleted.</span>' + (ME.owner ? '<button class="btn sm" type="button" data-act="unarchive">Restore</button>' : '') + '</div>' : '') +
-    (sec ? '<div class="phead"><nav class="bc" aria-label="Where you are"><a href="/team.html" data-go>Clients</a><i>/</i><span>' + esc(name) + '</span></nav><h1>' + esc(sec[1]) + '</h1></div>' : '');
+    (sec ? '<div class="phead"><nav class="bc" aria-label="Where you are"><a href="/team.html#clients" data-go>Clients</a><i>/</i><span>' + esc(name) + '</span></nav><h1>' + esc(sec[1]) + '</h1></div>' : '');
   drawPhone(c);
   reqCount(C);
 }
@@ -3650,7 +3650,7 @@ function drawTeam(){
   $('#tmL').innerHTML = rows.length ? '<div class="thead"><span>Person</span><span>Role</span><span>Access</span><span>Today</span><span></span></div>' + rows.map(function(t){
     var n = TODAY ? TODAY[t.email] || 0 : null, fixed = t.role === 'owner';
     return '<div class="li"><div class="cwho"><span class="av sm" style="background:' + TP.hue(t.email) + '">' + esc(TP.initials(t.full_name, t.email)) + '</span><div class="main"><div class="t">' + esc(t.full_name || t.email.split('@')[0]) + (t.email === ME.email ? ' <span class="tag">you</span>' : '') + '</div><div class="m">' + esc(t.email) + '</div></div></div>' +
-      '<div>' + (fixed ? '<span class="st applied">Owner</span>' : '<span class="st">' + esc(t.title || 'Employee') + '</span>') + '</div>' +
+      '<div>' + (fixed ? '<span class="st applied">Owner</span>' : '<span class="st" title="' + esc(t.title || 'Employee') + '">' + esc(t.title || 'Employee') + '</span>') + '</div>' +
       '<div class="tm-acc">' + (t.active ? '<span class="st active">Active</span>' : '<span class="st paused">Off</span>') + '</div>' +
       '<div>' + (n != null && t.active ? '<span class="tday' + (n ? '' : ' zero') + '" title="Applications marked as applied today"><b>' + n + '</b> sent</span>' : '<span class="m">—</span>') + '</div>' +
       '<div>' + (ME.owner && !fixed ? '<button class="icb" type="button" data-act="tmmenu" data-email="' + esc(t.email) + '" title="Change" aria-label="Change ' + esc(t.full_name || t.email) + '">⋯</button>' : '') + '</div></div>';   // the owners are fixed: nothing to change
