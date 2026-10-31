@@ -333,3 +333,16 @@ a.li:hover,button.li:hover{background:#f4f5f7}
   .mod{padding:18px 16px}
   .mod-discard{margin:14px -16px -18px;padding:12px 16px}
 }
+
+/* ==== the TrulyPlaced mark while something starts: the pages' first paint, and the tab a new application opens in (TP.loader) ==== */
+.tpboot{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-height:62vh;color:var(--muted);font-size:13px;line-height:1.5;text-align:center}
+.tpboot.full{min-height:100vh;margin:0}
+.tpboot .tpmark{width:44px;height:44px;display:block}
+.tpboot.full .tpmark{width:56px;height:56px}
+.tpboot .trk{fill:none;stroke:var(--blue-line);stroke-width:26;stroke-linejoin:round}
+.tpboot .run{fill:none;stroke:var(--blue);stroke-width:26;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:.3 .7;animation:tpboot-run 1.4s linear infinite}
+.tpboot .tick{fill:none;stroke:var(--blue);stroke-width:30;stroke-linecap:round;stroke-linejoin:round;animation:tpboot-tick 1.4s ease-in-out infinite}
+.tpboot p{margin:0}
+@keyframes tpboot-run{to{stroke-dashoffset:-1}}
+@keyframes tpboot-tick{0%,100%{opacity:.35}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.tpboot .run,.tpboot .tick{animation:none}.tpboot .run{stroke-dasharray:none}}

@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-10-31.3">
+<link rel="stylesheet" href="/portal.css?v=2026-10-31.4">
 <style>
 /* The shell, laid out like the job board app (app.trulyplaced.com): a left sidebar with the sections, the clients open in
    this browser tab, the client you're working on with their progress, and you. Phones get a top bar and a tab bar. */
@@ -1341,14 +1341,14 @@ body{font-size:13px;line-height:1.5}
   </aside>
   <div class="content">
     <header class="top" id="top"></header>
-    <main class="wrap"><div id="phead"></div><div id="view"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div></main>
+    <main class="wrap"><div id="phead"></div><div id="view"><div class="tpboot" role="status" aria-live="polite" aria-label="Loading"><svg class="tpmark" viewBox="0 0 512 512" width="44" height="44" aria-hidden="true" focusable="false"><path class="trk" d="M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z"/><path class="run" pathLength="1" d="M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z"/><path class="tick" d="M205 200l37 36 76-88"/></svg></div></div></main>
   </div>
 </div>
 <nav class="tabbar" id="tabbar" aria-label="Sections"></nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="modalRoot"></div>
 <input type="file" id="fileIn" hidden>
-<script src="/portal.js?v=2026-10-31.2"></script>
+<script src="/portal.js?v=2026-10-31.3"></script>
 <script src="/match.js?v=2026-10-30.1"></script>
 <script>
 (function(){
@@ -2607,10 +2607,16 @@ function startFromBoard(key, btn){
   }).catch(function(e){ btn.disabled = false; btn.classList.remove('busy'); fail(e); });
 }
 // Every job started from the Jobs tab opens in its own browser tab, like on Scout Better: the list stays where it was, and each
-// tab keeps its own draft and edits. The tab opens on the click and shows "Starting…" until the draft is made.
+// tab keeps its own draft and edits. The tab opens on the click and shows the TrulyPlaced mark, "Starting the application…",
+// until the draft is made - with this page's own rules for the mark written into it (TP.loaderCSS: a tab that starts as
+// about:blank fetches no stylesheet), so it looks like the portal from its first frame.
 function jobTab(){
   var w = null; try{ w = window.open('about:blank', '_blank'); }catch(e){}
-  if(w) try{ w.document.title = 'Starting the application…'; w.document.body.innerHTML = '<p style="font:15px/1.5 system-ui,sans-serif;color:#555;padding:40px">Starting the application…</p>'; }catch(e){}
+  if(w) try{
+    w.document.title = 'Starting the application…';
+    w.document.head.innerHTML = '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>' + TP.loaderCSS() + '</style>';
+    w.document.body.innerHTML = TP.loader('Starting the application…', true);
+  }catch(e){}
   return w;
 }
 function shutTab(w){ if(w && !w.closed) try{ w.close(); }catch(e){} }

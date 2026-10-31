@@ -12,7 +12,7 @@ var CONFIG = {
   SUPPORT_EMAIL: 'hello@trulyplaced.com',
   PLANS: [250, 500, 1000]
 };
-var VERSION = '2026-10-31.2';
+var VERSION = '2026-10-31.3';
 var SBLIB = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
 
 /* ---------- small helpers ---------- */
@@ -784,6 +784,27 @@ function sgProfile(){
 }
 SUGGEST.profile = sgProfile;
 
+// The TrulyPlaced mark while something starts: the pages' first paint (static markup in team.html and portal.html) and the
+// tab a new application opens in (TP.loader, team.html's jobTab). The pin's outline is traced while the tick breathes;
+// .tpboot in portal.css sizes and animates it, and prefers-reduced-motion shows the mark still.
+var MARK = '<svg class="tpmark" viewBox="0 0 512 512" width="44" height="44" aria-hidden="true" focusable="false">' +
+  '<path class="trk" d="M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z"/>' +
+  '<path class="run" pathLength="1" d="M256 410C168 314 138 278 138 206 138 142 191 94 256 94s118 48 118 112c0 72-30 108-118 204z"/>' +
+  '<path class="tick" d="M205 200l37 36 76-88"/></svg>';
+// The mark's own rules and the colour tokens, read from this page's stylesheets, for a document of its own: the tab a new
+// application opens in starts as about:blank, where the browser fetches no stylesheet, so its <style> is written from here.
+function loaderCSS(){
+  var out = [];
+  Array.prototype.forEach.call(document.styleSheets, function(s){
+    var rules; try{ rules = s.cssRules; }catch(e){ return; }   // a stylesheet from another site can't be read
+    Array.prototype.forEach.call(rules || [], function(r){ var t = r.cssText || ''; if(/tpboot/.test(t) || t.indexOf(':root') === 0) out.push(t); });
+  });
+  return 'html,body{margin:0;min-height:100%}body{background:#fff;color:#404040;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}\n' + out.join('\n');
+}
+function loader(label, full){   // full: the whole page (a tab of its own)
+  var t = label ? String(label).replace(/[&<>]/g, function(c){ return {'&':'&amp;', '<':'&lt;', '>':'&gt;'}[c]; }) : '';
+  return '<div class="tpboot' + (full ? ' full' : '') + '" role="status" aria-live="polite"' + (t ? '' : ' aria-label="Loading"') + '>' + MARK + (t ? '<p>' + t + '</p>' : '') + '</div>';
+}
 window.TP = {
   CONFIG:CONFIG, VERSION:VERSION, I:I, $:$, $$:$$, esc:esc, debounce:debounce, lsGet:lsGet, lsSet:lsSet, ssGet:ssGet, ssSet:ssSet, uid:uid,
   toast:toast, busy:busy, copy:copy, fmtDate:fmtDate, fmtDateTime:fmtDateTime, ago:ago, initials:initials, hue:hue, logo:logo,
@@ -793,6 +814,7 @@ window.TP = {
   upload:upload, fileUrl:fileUrl, fillFiles:fillFiles, shrinkImage:shrinkImage, modal:modal, closeModal:closeModal, tryClose:tryClose, confirmBox:confirmBox,
   isModal:function(){ return !!MOD; },
   COMMON_Q:COMMON_Q, roleIdeas:SUGGEST.roleIdeas, placeIdeas:SUGGEST.placeIdeas, placeParts:SUGGEST.placeParts, suggestAnswer:suggestAnswer, qKind:qKind,
-  picksHTML:picksHTML, sg:SUGGEST.sg, PF_SG:PF_SG, sgKind:SUGGEST.kind
+  picksHTML:picksHTML, sg:SUGGEST.sg, PF_SG:PF_SG, sgKind:SUGGEST.kind,
+  loader:loader, loaderCSS:loaderCSS, MARK:MARK
 };
 })();
