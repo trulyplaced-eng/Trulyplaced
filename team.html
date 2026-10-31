@@ -1080,6 +1080,253 @@ body.sbmin .memenu{left:4px;right:auto;width:240px}
   .pageh h1,.phead h1{font-size:20px}
   .mod{padding:18px 16px;border-radius:10px}
 }
+/* =====================================================================
+   The workspace, dense: Linear's density on top of the workspace look. 13px type, 28px controls, 40px rows, a slim page
+   header with a hairline under it, panels that read as sections of one surface, the job list as rows instead of cards,
+   the sidebar as a 220px column of 28px items. Nothing moves in the markup; this block comes after the workspace look.
+   ===================================================================== */
+:root{--side:220px;--row:40px;--r:6px;--rc:5px;--ink:#1f2328;--body:#3a3f4b;--muted:#6e7480;--faint:#9ca3af;--line:#e4e6ea;--line-2:#d4d8df;--bg:#f8f9fa;--hover:#f3f4f6;--head:#fff;
+  --sb-bg:#f8f9fa;--sb-line:#e4e6ea;--sb-text:#454b57;--sb-muted:#7a8190;--sb-hover:rgba(15,23,42,.045);--sb-on:rgba(15,23,42,.08)}
+body{font-size:13px;line-height:1.5}
+/* sidebar: tight and quiet */
+.sb .brand{height:44px;padding:0 14px;gap:8px;font-size:13.5px}
+.sb .brand svg{width:22px;height:22px}
+.sb .brand small{display:none}
+.sbtg{top:9px;right:6px;width:26px;height:26px}
+.navsearch{height:28px;margin:0 10px 6px;padding:0 8px;font-size:12.5px;border-radius:var(--rc)}
+.navsearch svg{width:14px;height:14px}
+.navsearch kbd{font-size:10px}
+.nav{padding:0 8px;gap:1px}
+.nav a{min-height:28px;padding:4px 8px;font-size:13px;gap:8px;border-radius:var(--rc)}
+.nav a svg{width:15px;height:15px}
+.nav a em{font-size:10.5px;line-height:16px;min-width:16px;padding:0 4px}
+.ngl{padding:10px 8px 3px;font-size:10.5px}
+.otabs{margin:1px 0 3px 17px;padding-left:7px}
+.otab{min-height:26px;font-size:12.5px;padding:0 4px 0 7px}
+.otab i{width:7px;height:7px}
+.cbar{margin-top:6px;padding-top:8px}
+.cb1{padding:0 10px 6px 14px}
+.cb1 .lab,.pgcard .lab{font-size:10.5px}
+.cbw{margin-top:4px;gap:8px}
+.cbw .av{width:26px;height:26px;font-size:10.5px}
+.cbw .nm{font-size:13px}
+.cbw small{font-size:11.5px}
+.cbw .icb{width:26px;height:26px}
+.pgcard{padding:10px 14px 12px}
+.pgcard .pg{font-size:11.5px}
+.pgcard .pg b{font-size:17px}
+.me{padding:8px 8px 8px 12px}
+.me .mw b{font-size:13px}
+.me .mw small{font-size:11.5px}
+.me .icb{width:28px;height:28px}
+/* the page: a slim header with a hairline under it, content 24px in */
+.content .wrap{max-width:1360px;padding:14px 24px 48px}
+.bc{font-size:11.5px;margin-bottom:2px}
+.phead{display:flex;flex-direction:column;justify-content:center;min-height:44px;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.pageh{min-height:44px;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line);align-items:center}
+.phead h1,.pageh h1{font-size:16px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
+.pageh .sub,.sub{font-size:12.5px;margin-top:1px}
+.jsech h2,.lkbar h2,.pfsec > h2{font-size:14px;font-weight:600}
+.jsech .sub{font-size:12.5px}
+/* controls: 28px, 12.5px */
+.btn{height:28px;min-height:28px;padding:0 10px;font-size:12.5px;gap:5px;border-radius:var(--rc)}
+.btn svg{width:14px;height:14px}
+.btn.sm{height:26px;min-height:26px;padding:0 8px;font-size:12px}
+.btn.lg{height:32px;min-height:32px;padding:0 14px;font-size:13px}
+.icb{width:26px;height:26px}
+.icb svg{width:14px;height:14px}
+.inp,.field input,.field select,.field textarea{min-height:28px;padding:0 8px;font-size:12.5px;border-radius:var(--rc)}
+.field textarea,textarea.inp{padding:6px 8px;min-height:72px}
+.field{gap:4px}
+.field label,.lbl{font-size:12px}
+.field small{font-size:11.5px}
+.grid2,.grid3,.stack{gap:10px}
+.check{font-size:12.5px}
+.tools{margin:0 0 10px;gap:6px}
+.tools .inp{min-height:28px;max-width:360px}
+.seg{padding:2px;gap:1px}
+.seg button{min-height:22px;height:22px;padding:0 8px;font-size:12px;border-radius:3px}
+.seg b{font-size:11px}
+.picks button{height:24px;padding:0 8px;font-size:11.5px}
+.sgo{min-height:30px;font-size:12.5px}
+/* panels read as sections of one surface: a hairline, 6px corners, 14px in; lists and tables flush */
+.card{border-radius:var(--r);padding:14px 16px}
+.card + .card{margin-top:10px}
+.card h3{font-size:13px;font-weight:600}
+.card .hint{font-size:12px;margin-bottom:8px}
+.ch{margin-bottom:6px}
+.list,.tbl{border-radius:var(--r)}
+.li{padding:8px 12px;gap:10px;min-height:40px}
+.li .t{font-size:13px}
+.li .m{font-size:12px}
+.tbl .thead{height:32px;padding:0 12px;font-size:11.5px}
+.tbl .li{min-height:var(--row);padding:4px 12px}
+.tbl .td b,.tbl .num b{font-size:13px}
+.tbl .m{font-size:12px}
+.tbl.clients .prog{height:3px;margin-top:3px}
+.pgl{font-size:12px}.pgl b{font-size:12.5px}
+.cwho{gap:8px}
+.cwho .av{width:24px;height:24px;font-size:10px}
+.arole .logo{width:24px;height:24px;border-radius:5px}
+.adate{font-size:12.5px}.adate small{font-size:11.5px}
+.logo{border-radius:6px;font-size:12px}
+.chev{width:14px;height:14px}
+/* figures: a slim strip */
+.stats,.stats.s5,.stats.s6{margin-bottom:12px;border-radius:var(--r)}
+.stat{padding:9px 14px 8px}
+.stat b{font-size:17px}
+.stat span{font-size:11.5px}
+.stat .of{font-size:12px}
+.st{font-size:11px;padding:1px 7px;gap:4px}
+.st::before{width:5px;height:5px}
+.tag{font-size:10.5px}
+.mscore{height:20px;font-size:11px}.mscore b{font-size:11px}
+.fitp{height:24px;line-height:24px;font-size:11.5px}.fitp b{font-size:12px}
+.note{font-size:12.5px;padding:8px 10px}
+.empty{padding:28px 16px}
+.empty h3{font-size:14px}.empty p{font-size:12.5px}
+.skel{height:44px}
+.hi{font-size:12.5px;padding:8px 0}
+.hi .tx small{font-size:11.5px}
+.rv{font-size:12.5px;padding:7px 10px}.rv span{font-size:12px}
+.plansum b{font-size:15px}
+/* tabs, the profile's list */
+.jtabbar{gap:16px;margin-bottom:12px}
+.jtabbar button{height:30px;font-size:12.5px}
+.pfnav button{font-size:12.5px;padding:6px 8px}
+.pfnav button small{font-size:11.5px}
+.pfsec + .pfsec{margin-top:20px}
+.pfsec > h2{margin-bottom:8px}
+/* the application page */
+.jcard{padding:14px 16px 12px}
+.jcard .ahead .logo{width:40px;height:40px;border-radius:8px;font-size:15px}
+.jcard .aht h2{font-size:16px}
+.jcard .jco{font-size:11px}
+.jcard .ahm{font-size:12px;margin-top:4px}
+.jfacts{font-size:12px;gap:8px 12px;margin-top:12px;padding-top:12px}
+.jscore{margin-top:12px;padding-top:12px;gap:14px}
+.jscore .ring{width:68px;height:68px}
+.jscore .ring span{font-size:17px}
+.jscore .eyb{font-size:11px}
+.jscore p{font-size:12.5px}
+.jacts{gap:6px;margin-top:12px}
+.jacts .btn{height:30px;min-height:30px;font-size:12.5px}
+.jlinks a,.jlinks button{font-size:12px}
+.apgrid{gap:12px}
+.apmain{gap:10px}
+.reshd{padding:10px 12px;gap:7px}
+.reshd .rh1 > b{font-size:13px}
+.ckit .bd b{font-size:12.5px}
+.ckit .bd small{font-size:11.5px}
+.ck .ckit{padding:8px 0}
+.qa{gap:6px;padding:6px 0}
+.qa .inp,.qa textarea.inp{min-height:28px}
+.sticky-save{padding:6px 8px 6px 12px}
+.sticky-save .saved{font-size:12px}
+.bulk{padding:6px 8px 6px 12px}
+/* the Jobs tab: the paste box as a row, the list as rows, the board as rows */
+.lkpaste{padding:12px 16px}
+.lkpaste h3{font-size:13px}
+.lkpaste .hint{font-size:12px;margin-bottom:8px}
+#lkIn{min-height:30px;height:30px;padding:5px 8px;font-size:12.5px}
+#lkF .btn{height:30px;min-height:30px;padding:0 12px}
+.lkbar{margin:20px 0 10px}
+.lkbar .fine{font-size:12px}
+.lkgrid{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:var(--r);background:#fff;overflow:hidden}
+.jc{flex-direction:row;align-items:center;gap:14px;padding:8px 12px;border:0;border-top:1px solid var(--line);border-radius:0;min-height:48px}
+.jc:first-child{border-top:0}
+.jc:hover{box-shadow:none;background:var(--hover)}
+.jch{flex:1 1 280px;min-width:0;align-items:center;gap:10px}
+.jc .logo{width:28px;height:28px;border-radius:6px;font-size:12px}
+.jc .t{font-size:13px;margin-top:0;-webkit-line-clamp:1}
+.jc .jco{font-size:11px}
+.jc .fitp{flex-direction:row;align-items:center;gap:6px;margin-left:8px}
+.fring{width:26px;height:26px}
+.fring circle{stroke-width:3.5}
+.jc .fitp b{font-size:11px}
+.jc .fitp small{display:none}
+.jmeta{flex:0 1 180px;min-width:0;margin:0;font-size:12px}
+.jchips{flex:none;margin:0}
+.jcb{flex:0 1 260px;min-width:0;margin:0;gap:1px}
+.jcb .m{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}
+.jc .fitw{display:none}
+.jc .lkneed{flex:1 1 320px;margin:0;grid-template-columns:1fr 1fr;gap:6px}
+.jcf{flex:none;margin:0;padding:0;gap:2px}
+.jcf > .lkq:first-child{margin-left:0}
+.lkq{height:26px;padding:0 7px;font-size:12px}
+.jbl .li{padding:8px 12px;gap:10px}
+.jbl .logo{width:28px;height:28px;border-radius:6px;font-size:12px}
+.jbl .co{font-size:11px}
+.jbl .t{font-size:13px}
+.jbl .m{font-size:12px}
+.jbrow .side .btn{min-width:64px}
+.lkrow.skip{padding:6px 12px}
+/* dialogs and toasts */
+.mod{border-radius:8px;padding:18px 20px}
+.mod h2{font-size:15px}
+.mod > p{font-size:12.5px}
+.mod .acts{margin-top:14px;gap:6px}
+.toast{font-size:12.5px;padding:8px 12px}
+.memenu [role=menuitem]{font-size:12.5px;padding:6px 8px}
+.memenu small{font-size:11.5px}
+.mdg{gap:10px}
+@media (max-width:900px){
+  .lkgrid{border:0;background:none;gap:8px}
+  .jc{flex-direction:column;align-items:stretch;border:1px solid var(--line);border-radius:var(--r);padding:12px 14px 8px}
+  .jc:first-child{border-top:1px solid var(--line)}
+  .jch{flex:none}.jmeta,.jcb{flex:none}.jcf{margin-top:auto;padding-top:10px}
+  .jc .fitw{display:grid}.jc .fitp{flex-direction:column;margin-left:0}.jc .fitp small{display:block}
+}
+@media (max-width:760px){
+  .btn{height:34px;min-height:34px;font-size:13.5px}
+  .btn.sm{height:30px;min-height:30px;font-size:12.5px}
+  .inp,.field input,.field select,.field textarea{min-height:36px;font-size:14.5px}
+  .content .wrap{padding:12px 14px calc(96px + env(safe-area-inset-bottom,0px))}
+}
+/* ===== a navy sidebar: the navigation in deep TrulyPlaced navy, the workspace white — the one strong brand surface ===== */
+:root{--sb-bg:#0d1b3f;--sb-line:rgba(255,255,255,.09);--sb-ink:#fff;--sb-text:rgba(255,255,255,.76);--sb-muted:rgba(255,255,255,.5);
+  --sb-hover:rgba(255,255,255,.07);--sb-on:rgba(255,255,255,.13);--sb-ic:rgba(255,255,255,.62);--sb-ic-on:#fff;--client:#9fb6ff}
+.sb{color:var(--sb-text)}
+.sb .brand{color:#fff}
+.sb .brand svg rect{fill:#fff}
+.sb .brand svg path{fill:#0d1b3f;stroke:#fff}
+.sb .brand svg path[fill="#fff"]{fill:#0d1b3f}
+.sb .brand svg path[stroke="#0938d5"]{stroke:#fff;fill:none}
+.navsearch{background:rgba(255,255,255,.08);border-color:transparent;color:var(--sb-muted)}
+.navsearch:hover{background:rgba(255,255,255,.12);border-color:transparent;color:#fff}
+.navsearch kbd{color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.15);background:transparent}
+.ngl{color:rgba(255,255,255,.4)}
+.nav a{color:var(--sb-text)}
+.nav a svg{color:var(--sb-ic)}
+.nav a:hover{background:var(--sb-hover);color:#fff}
+.nav a.on{background:var(--sb-on);color:#fff}
+.nav a.on svg{color:#fff}
+.nav a em{background:rgba(255,255,255,.14);color:#fff}
+.nav a.on em{background:#fff;color:#0d1b3f}
+.nav a em.wait{background:#f59e0b;color:#fff}
+.otabs{border-left-color:rgba(255,255,255,.14)}
+.otab{color:var(--sb-text)}
+.otab:hover{background:var(--sb-hover);color:#fff}
+.otab.on{background:var(--sb-on);color:#fff}
+.otab button{color:var(--sb-muted)}
+.otab button:hover{background:rgba(255,255,255,.14);color:#fff}
+.otab.add{color:#9fb6ff}
+.cbar,.pgcard,.me{border-top-color:var(--sb-line)}
+.cb1 .lab,.pgcard .lab{color:rgba(255,255,255,.45)}
+.cbw .nm,.me .mw b,.pgcard .pg b{color:#fff}
+.cbw small,.me .mw small,.pgcard .pg{color:var(--sb-muted)}
+.cbw .nm .st{background:rgba(255,255,255,.12);color:#fff}
+.cbw .nm .st::before{background:#fff}
+.sb .icb{color:var(--sb-muted)}
+.sb .icb:hover{color:#fff;background:rgba(255,255,255,.1)}
+.pgcard .prog{background:rgba(255,255,255,.12)}
+.pgcard .prog i{background:#9fb6ff}
+.pgcard .prog.full i{background:#34d399}
+.sbtg{color:var(--sb-muted)}
+.sbtg:hover{background:var(--sb-hover);color:#fff}
+.mebtn:hover,.mebtn[aria-expanded=true]{background:var(--sb-on)}
+.mebtn .mechev{color:var(--sb-muted)}
+@media (min-width:901px){.ws{background:linear-gradient(90deg,var(--sb-bg) 0,var(--sb-bg) var(--side),transparent var(--side))}}
 </style>
 </head>
 <body>
