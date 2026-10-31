@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-10-31.2">
+<link rel="stylesheet" href="/portal.css?v=2026-10-31.3">
 <style>
 /* The client's workspace, laid out as app.trulyplaced.com is: the sidebar in the app's light grey, a white page, white cards with
    a hairline and a soft shadow, figures in near-black, TrulyPlaced blue for progress and where you are. */
@@ -265,6 +265,97 @@ body{background:#fff}
 }
 @media (max-width:760px){ .pfgrid{grid-template-columns:minmax(0,1fr)} .qa{grid-template-columns:minmax(0,1fr) auto} .qa textarea.inp{grid-column:1} .qa .xb{grid-row:1;grid-column:2} }
 @media (max-width:420px){ .ring{display:none} }
+/* ===== the workspace look on the client's pages: the same scale and corners as the team portal (portal.css carries the controls) ===== */
+.sb{padding:12px 10px 12px}
+.sb .brand{padding:6px 8px 16px;font-size:15px}
+.sb .brand svg{width:26px;height:26px}
+.nav a{min-height:32px;padding:0 10px;border-radius:var(--rc);font-size:13.5px;gap:10px}
+.nav a svg{width:16px;height:16px}
+.nav a em{font-size:11px;line-height:18px;background:var(--line);color:var(--body)}
+.nav a.on em{background:var(--blue-soft);color:var(--blue-d)}
+.plancard{border-radius:var(--r);box-shadow:none;border-color:var(--line);padding:12px}
+.plancard .lab{font-size:11px;font-weight:600;color:var(--faint)}
+.plancard b{font-size:13.5px}
+.sb-foot a,.sb-foot button{min-height:32px;padding:0 10px;font-size:13.5px;border-radius:var(--rc)}
+.sb-foot svg{width:16px;height:16px}
+.top{height:56px;padding:0 28px}
+.top h1{font-size:15px}
+.who .nm{font-size:12px}
+.who .nm b{font-size:13px}
+.view{max-width:1120px;padding:22px 28px 56px}
+.greet{margin-bottom:16px}
+.greet h2{font-size:22px;font-weight:600;letter-spacing:-.015em}
+.greet p{font-size:13.5px}
+.badge{min-height:28px;padding:0 10px;border-radius:var(--rc);font-size:12.5px;border-color:var(--line-2)}
+.hero{border-radius:var(--r);padding:22px 24px;box-shadow:none;border-color:var(--line);gap:24px}
+.hero .eyebrow{font-size:11.5px}
+.hero .big{margin-top:6px}
+.hero .big b{font-size:clamp(34px,4.4vw,44px);font-weight:600}
+.hero .big span{font-size:15px}
+.hbar{height:5px;margin-top:14px}
+.hfoot{font-size:13px}
+.ring{width:112px;height:112px}
+.ring b{font-size:24px;font-weight:600}
+.kpis{display:flex;gap:0;margin-top:12px;border:1px solid var(--line);border-radius:var(--r);background:#fff;overflow:hidden}
+.kpi{flex:1 1 0;min-width:0;border:0;border-left:1px solid var(--line);border-radius:0;padding:12px 16px 11px;box-shadow:none}
+.kpi:first-child{border-left:0}
+.kpi .ic{display:none}
+.kpi b{font-size:20px;font-weight:600;letter-spacing:-.01em;line-height:1.2}
+.kpi>span:last-child{font-size:12px}
+.duo{gap:12px;margin-top:12px}
+.panel{border-radius:var(--r);padding:16px 20px;box-shadow:none;border-color:var(--line)}
+.panel h3{font-size:14px}
+.panel h3 small{font-size:12px}
+.chart .bar{border-radius:4px 4px 2px 2px}
+.chart .n{font-size:11px}
+.leg button{border-radius:var(--rc);font-size:13px;padding:7px 10px}
+.listhead{margin-top:24px}
+.listhead h2{font-size:16px;font-weight:600}
+.tl{gap:12px}
+.tl .n{width:26px;height:26px;font-size:12px}
+.tl b{font-size:14px}
+.tl p{font-size:13px}
+.ahead h1{font-size:20px;font-weight:600}
+.sent{font-size:12.5px}
+.qa-ro div{font-size:13.5px}
+.sgrid{gap:12px}
+.sgrid .panel p{font-size:13px}
+.kv{font-size:13.5px;gap:8px 16px}
+.planbig .pi{width:40px;height:40px;border-radius:8px}
+.planbig b{font-size:16px;font-weight:600}
+.pwf{gap:8px}
+.rview{border-radius:var(--r);box-shadow:none;border-color:var(--line)}
+.rvhead{padding:12px 16px}
+.rvhead b{font-size:14px}
+.rstats div{border-radius:var(--rc)}
+.rstats b{font-size:22px;font-weight:600}
+.rask b{font-size:14px}
+.rask p{font-size:13px}
+.vers button{border-radius:var(--rc);padding:8px 10px}
+.vers button.on{border-color:var(--blue);background:var(--blue-soft)}
+.vers .vn{border-radius:6px;width:28px;height:28px}
+.vers .vt b{font-size:13.5px}
+.rql li{border-radius:var(--rc)}
+.rqr{border-radius:var(--rc);font-size:13px}
+.kinds label{border-radius:var(--rc);padding:10px 12px}
+.kinds label:has(input:checked){border-color:var(--blue);background:var(--blue-soft)}
+.kinds input{accent-color:var(--blue)}
+.kinds b{font-size:13.5px}
+.pfgrid{gap:12px}
+.qa .inp,.qa textarea.inp{min-height:32px}
+.qa textarea.inp{padding:6px 10px}
+.xb{height:32px;border-radius:var(--rc)}
+.savebar{border-radius:var(--r);box-shadow:var(--sh-float);border-color:var(--line);padding:8px 10px 8px 14px}
+.savebar span{font-size:12.5px}
+@media (max-width:900px){
+  .hero{border-radius:var(--r);padding:18px}
+  .kpis{flex-wrap:wrap}
+  .kpi{flex:1 1 50%;border-top:1px solid var(--line)}
+  .kpi:nth-child(-n+2){border-top:0}
+  .kpi:nth-child(odd){border-left:0}
+  .greet h2{font-size:20px}
+  .tabbar{background:#fff;box-shadow:none}
+}
 </style>
 </head>
 <body>

@@ -253,3 +253,83 @@ button.li:first-child{border-top:0}
   .btn.sm{min-height:40px;font-size:14px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* =====================================================================
+   The TrulyPlaced workspace look, shared: Inter on a 14px scale, charcoal ink with slate-grey support; 6px controls with the
+   one main action in TrulyPlaced blue; 8px panels told apart by hairlines, not shadows; pills only for statuses and people.
+   team.html's own sheet builds on this; portal.html (the client workspace) and login.html take it as it is.
+   ===================================================================== */
+:root{--ui:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;--ui-d:var(--ui);
+  --ink:#1b1d24;--body:#3d4250;--muted:#6b7280;--faint:#9aa1ad;--line:#e6e8ec;--line-2:#d8dbe2;--bg:#f7f8fa;--edge:#e6e8ec;
+  --blue-line:#cfdafc;--sh-card:none;--sh-float:0 1px 2px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.1);--rc:6px;--r:8px}
+body{font-size:14px;line-height:1.5}
+h1,h2,h3{font-family:var(--ui);letter-spacing:-.012em}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.pnav a{border-radius:var(--rc);min-height:32px;font-size:13.5px}
+.btn{min-height:32px;padding:0 12px;border-radius:var(--rc);border-color:var(--line-2);font-size:13px;box-shadow:0 1px 1px rgba(16,24,40,.03)}
+.btn:hover{background:var(--bg);border-color:#c6cad3}
+.btn.pri{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 1px 2px rgba(9,56,213,.22)}
+.btn.pri:hover{background:var(--blue-d);border-color:var(--blue-d)}
+.btn.ok{box-shadow:0 1px 2px rgba(4,120,87,.2)}
+.btn.bad{border-color:#f3c3c3;box-shadow:none}
+.btn.ghost{box-shadow:none}
+.btn.sm{min-height:28px;padding:0 10px;font-size:12.5px;border-radius:var(--rc)}
+.btn.lg{min-height:36px;padding:0 16px;font-size:14px;border-radius:var(--rc)}
+.btn svg{width:15px;height:15px}
+.gbtn{min-height:36px;border-radius:var(--rc);font-size:14px;border-color:var(--line-2)}
+.inp,.field input,.field select,.field textarea{min-height:32px;padding:0 10px;border-radius:var(--rc);border-color:var(--line-2);font-size:13.5px}
+.field textarea,textarea.inp{padding:8px 10px;min-height:88px}
+.inp:focus,.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(9,56,213,.12)}
+.field{gap:5px}
+.field label,.lbl{font-size:12.5px;color:var(--body)}
+.pw button{border-radius:4px}
+.check{font-size:13px}
+.check input{width:15px;height:15px;accent-color:var(--blue)}
+.card{border-radius:var(--r);border-color:var(--line);padding:16px 20px;box-shadow:none}
+.card h3{font-size:14px;font-weight:600}
+.card .hint{font-size:12.5px}
+.hello{font-size:22px;font-weight:600;letter-spacing:-.015em}
+.sub{font-size:13px}
+.note{border-radius:var(--rc);font-size:13px;padding:10px 12px}
+.empty{border-radius:var(--r);border-color:var(--line-2);padding:36px 20px}
+.empty h3{font-size:15px}
+.empty p{font-size:13px}
+.skel{border-radius:var(--r)}
+pre.txt{border-radius:var(--rc);font-size:13px}
+.picks button{height:26px;padding:0 9px;border-radius:4px;font-size:12px;border-color:var(--line-2)}
+.sgl{border-radius:var(--r);box-shadow:var(--sh-float);border-color:var(--line)}
+.sgo{border-radius:4px;font-size:13.5px;min-height:34px}
+.st{font-size:11.5px;padding:2px 8px;gap:5px}
+.st::before{width:5px;height:5px}
+.av{font-weight:600;letter-spacing:0}
+.logo{border-radius:8px;font-size:13px}
+.list{border-radius:var(--r);border-color:var(--line);box-shadow:none}
+.li{padding:10px 14px;gap:10px;border-top-color:var(--line)}
+.li .t{font-size:13.5px;font-weight:500}
+.li .m{font-size:12.5px}
+a.li:hover,button.li:hover{background:#f4f5f7}
+.tools{gap:8px}
+.seg{background:var(--bg);border:1px solid var(--line);border-radius:var(--rc);padding:2px;gap:1px}
+.seg button{min-height:26px;padding:0 10px;border-radius:4px;font-size:12.5px;color:var(--body)}
+.seg button.on{box-shadow:0 0 0 1px var(--line-2),0 1px 2px rgba(16,24,40,.06)}
+.seg b{font-size:11.5px}
+.toast{border-radius:8px;font-size:13.5px;padding:10px 14px;box-shadow:var(--sh-float)}
+.toast .tbtn{border-radius:4px;font-size:12.5px}
+.cfl{font-size:13px}
+.mod{border-radius:10px;padding:22px 24px;border:1px solid var(--line);box-shadow:var(--sh-float)}
+.mod h2{font-size:17px;font-weight:600}
+.mod > p{font-size:13.5px}
+.mod .x{border-radius:var(--rc);width:32px;height:32px;top:10px;right:10px}
+.mod .acts{gap:8px;margin-top:16px}
+.mod-discard{border-radius:0 0 10px 10px}
+.shot,.file{border-radius:var(--rc)}
+.file{font-size:13px;padding:8px 12px}
+@media (max-width:760px){
+  .btn{min-height:36px;font-size:14px}
+  .btn.sm{min-height:32px;font-size:13px}
+  .inp,.field input,.field select,.field textarea{min-height:38px;font-size:15px}
+  .card{padding:14px 16px}
+  .hello{font-size:20px}
+  .mod{padding:18px 16px}
+  .mod-discard{margin:14px -16px -18px;padding:12px 16px}
+}
