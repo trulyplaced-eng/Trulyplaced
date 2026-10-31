@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-10-30.3">
+<link rel="stylesheet" href="/portal.css?v=2026-10-31.1">
 <style>
 /* The client's workspace, laid out as app.trulyplaced.com is: the sidebar in the app's light grey, a white page, white cards with
    a hairline and a soft shadow, figures in near-black, TrulyPlaced blue for progress and where you are. */
@@ -145,6 +145,9 @@ body{background:#fff}
 .planbig .pi svg{width:21px;height:21px}
 .planbig b{display:block;font-family:var(--ui-d);font-size:18px;font-weight:650;letter-spacing:-.02em;color:var(--ink)}
 .planbig span{font-size:13px;color:var(--muted)}
+.bonus{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.bonus b{color:var(--blue);font-weight:650;margin-right:6px}
+.bonus small{color:var(--muted);margin-left:6px}
 .pwf{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-top:14px}
 .pwf .err{grid-column:1/-1}
 .seeall{display:flex;justify-content:center;margin-top:18px}
@@ -287,7 +290,7 @@ body{background:#fff}
 <nav class="tabbar" id="tabbar" aria-label="Sections"></nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="modalRoot"></div>
-<script src="/portal.js?v=2026-10-30.2"></script>
+<script src="/portal.js?v=2026-10-31.1"></script>
 <script>
 (function(){
 "use strict";
@@ -373,7 +376,10 @@ function render(){
   vHome();
 }
 var TITLES = {home:'Dashboard', apps:'Applications', app:'Application', resume:'Your resume', profile:'Profile', settings:'Settings'};
-function planName(){ var t = (CL && CL.plan_total) || 0; return PLAN[t] || (t ? 'Custom plan' : 'Your plan'); }
+function planName(){ var t = (CL && (CL.plan_package || CL.plan_total)) || 0; return PLAN[t] || (t ? 'Custom plan' : 'Your plan'); }   // named by the package; a bonus comes on top
+// extra applications the owners added on top of the package (a referral bonus, say): plan_total = package + extras
+function bonus(){ var ex = CL ? (CL.plan_total || 0) - (CL.plan_package || 0) : 0; return CL && CL.plan_package && ex > 0 ? ex : 0; }
+function planLine(){ var tot = CL.plan_total || 0, ex = bonus(); return tot ? (ex ? (tot - ex).toLocaleString() + ' + ' + ex.toLocaleString() + ' bonus applications' : tot.toLocaleString() + ' applications') : ''; }
 function statusTag(){ var s = (CL && CL.status) || 'active'; return '<span class="tag ' + esc(s) + '">' + ({active:'Active', paused:'Paused', done:'Complete', archived:'Closed'}[s] || esc(s)) + '</span>'; }
 function chrome(){   // the sidebar, the phone tab bar, the page title and the plan card
   var v = view(), cur = v === 'app' ? 'apps' : v;
@@ -386,7 +392,7 @@ function chrome(){   // the sidebar, the phone tab bar, the page title and the p
   var done = PROG.done || 0, tot = CL.plan_total || 0, pct = tot ? Math.min(100, Math.round(done / tot * 100)) : 0, pc = $('#planCard');
   pc.hidden = false;
   pc.innerHTML = '<span class="lab">Your plan</span><div class="pn"><b>' + esc(planName()) + '</b>' + statusTag() + '</div>' +
-    (tot ? '<div class="prog"><i style="width:' + pct + '%"></i></div><small>' + done.toLocaleString() + ' of ' + tot.toLocaleString() + ' applications sent</small>' : '<small>Your plan details are on the way.</small>');
+    (tot ? '<div class="prog"><i style="width:' + pct + '%"></i></div><small>' + done.toLocaleString() + ' of ' + tot.toLocaleString() + ' applications sent' + (bonus() ? ' · ' + bonus().toLocaleString() + ' bonus included' : '') + '</small>' : '<small>Your plan details are on the way.</small>');
 }
 function who(){
   var name = (CL && CL.full_name) || ME.name || '';
@@ -405,7 +411,7 @@ function vHome(){
     : done ? 'We’re applying for you every business day. Here’s everything we’ve sent so far.' : 'Welcome aboard. Your first applications are on the way.';
   V.innerHTML =
     '<div class="greet"><div><h2>' + hello + (first ? ', ' + esc(first) : '') + '</h2><p>' + line + '</p></div>' +
-      '<div class="badges"><span class="badge">' + IC.plan + esc(planName()) + (tot ? ' · ' + tot.toLocaleString() + ' applications' : '') + '</span></div></div>' +
+      '<div class="badges"><span class="badge">' + IC.plan + esc(planName()) + (tot ? ' · ' + planLine() : '') + '</span></div></div>' +
     '<section class="hero" aria-label="Your progress"><div>' +
       '<div class="eyebrow">Your progress</div>' +
       '<div class="big"><b>' + done.toLocaleString() + '</b> <span>' + (tot ? 'of ' + tot.toLocaleString() + ' applications sent' : 'applications sent') + '</span></div>' +
@@ -616,16 +622,21 @@ function askModal(){
 }
 
 /* ---------- Profile: the details the team applies with, kept up to date by the client and the team alike (the same row as
-   the team's Profile tab). Quick picks and suggested answers help fill it in; only what changed is saved. ---------- */
+   the team's Profile tab). Suggestions as they type (TP.sg: cities, roles, the usual answers) and suggested answers help
+   fill it in; only what changed is saved. ---------- */
 var PFF = ['full_name', 'phone', 'linkedin', 'location', 'work_auth', 'salary', 'notice', 'target_roles', 'target_locations', 'apply_notes'], PFOFF = false;
-function pfField(k, label, ph, picks, list, wide){
+function pfField(k, label, ph, wide){
+  // their own browser may fill in their name and phone; the rest suggests from our lists
+  var how = TP.PF_SG[k] ? TP.sg(TP.PF_SG[k], false, k === 'phone' ? 'tel' : '') : ' autocomplete="' + (k === 'full_name' ? 'name' : 'off') + '"';
   return '<div class="field' + (wide ? ' wide' : '') + '"><label for="pf_' + k + '">' + label + '</label>' +
     (k === 'apply_notes' ? '<textarea id="pf_' + k + '" rows="3" maxlength="2000" placeholder="' + esc(ph) + '">' + esc(CL[k] || '') + '</textarea>'
-      : '<input id="pf_' + k + '" value="' + esc(CL[k] || '') + '" maxlength="300" placeholder="' + esc(ph) + '" autocomplete="off">') +
-    TP.picksHTML('pf_' + k, picks, list) + '</div>';
+      : '<input id="pf_' + k + '" value="' + esc(CL[k] || '') + '" maxlength="300" placeholder="' + esc(ph) + '"' + how + '>') + '</div>';
 }
+// what the suggestions read: the Profile as it is on screen (typed but not saved yet included)
+TP.sgProfile = function(){ var o = {}; PFF.forEach(function(k){ var f = $('#pf_' + k); o[k] = f ? f.value.trim() : String((CL || {})[k] || ''); }); return o; };
 function qaRow(a){
-  return '<div class="qa"><input class="inp" data-qa="q" value="' + esc(a.q || '') + '" placeholder="Question" aria-label="Question" maxlength="300"><textarea class="inp" data-qa="a" rows="1" placeholder="Your answer" aria-label="Answer" maxlength="2000">' + esc(a.a || '') + '</textarea>' +
+  return '<div class="qa"><input class="inp" data-qa="q" value="' + esc(a.q || '') + '" placeholder="Question" aria-label="Question" maxlength="300"' + TP.sg('question') + '>' +
+    '<textarea class="inp" data-qa="a" rows="1" placeholder="Your answer" aria-label="Answer" maxlength="2000"' + TP.sg('answer', true) + '>' + esc(a.a || '') + '</textarea>' +
     '<button class="xb" type="button" data-act="qadel" title="Remove" aria-label="Remove">' + I.trash + '</button></div>';
 }
 function readQA(){ return $$('#pfQA .qa').map(function(r){ return {q:$('[data-qa=q]', r).value.trim(), a:$('[data-qa=a]', r).value.trim()}; }).filter(function(x){ return x.q || x.a; }); }
@@ -641,20 +652,23 @@ function vProfile(){
     '<section class="panel"><h3>Contact</h3><p class="hint">How companies and your team reach you.</p><div class="pfgrid">' +
       pfField('full_name', 'Full name', 'e.g. Priya Sharma') + '<div class="field"><label for="pf_email">Email</label><input id="pf_email" value="' + esc(CL.email || ME.email) + '" readonly title="You sign in with this email"><small>You sign in with this. To change it, message your team.</small></div>' +
       pfField('phone', 'Phone / WhatsApp', 'e.g. +1 201 555 0147') + pfField('linkedin', 'LinkedIn', 'linkedin.com/in/…') +
-      pfField('location', 'Where you live', 'e.g. Jersey City, NJ') + '</div></section>' +
-    '<section class="panel"><h3>Work authorization &amp; availability</h3><p class="hint">Most applications ask these — tap one of the suggestions, or type your own.</p><div class="pfgrid">' +
-      pfField('work_auth', 'Work authorization', 'e.g. F-1 STEM OPT — needs H-1B later', TP.PICKS.work_auth, false, true) +
-      pfField('salary', 'Salary expectation', 'e.g. $95K–$110K', TP.PICKS.salary) + pfField('notice', 'When you can start', 'e.g. 2 weeks’ notice', TP.PICKS.notice) + '</div></section>' +
-    '<section class="panel"><h3>Jobs you want</h3><p class="hint">Your team searches and applies from these. The roles and places below are suggestions close to yours — tap to add one.</p><div class="pfgrid">' +
-      pfField('target_roles', 'Roles', 'e.g. Data Analyst, BI Analyst', TP.roleIdeas(CL.target_roles), true, true) +
-      pfField('target_locations', 'Places', 'e.g. US remote, New York', TP.placeIdeas(CL.target_locations, CL.location), true, true) +
-      pfField('apply_notes', 'Anything your team should know', 'e.g. No relocation outside the East Coast. Skip contract roles. I’d love to work in healthcare.', null, false, true) + '</div></section>' +
-    '<section class="panel"><h3>Standard answers</h3><p class="hint">Companies ask these on most applications, and your team uses your answers on every form. Tap a question to add it — the answer is suggested from your profile, so check it says what you mean.</p>' +
+      pfField('location', 'Where you live', 'Start typing your city or ZIP code') + '</div></section>' +
+    '<section class="panel"><h3>Work authorization &amp; availability</h3><p class="hint">Most applications ask these. Tap a field to choose from the usual answers, or type your own.</p><div class="pfgrid">' +
+      pfField('work_auth', 'Work authorization', 'e.g. F-1 STEM OPT — needs H-1B later', true) +
+      pfField('salary', 'Salary expectation', 'e.g. $95K–$110K') + pfField('notice', 'When you can start', 'e.g. 2 weeks’ notice') + '</div></section>' +
+    '<section class="panel"><h3>Jobs you want</h3><p class="hint">Your team searches and applies from these. Start typing a role or a city and pick it from the list — or tap a field for ideas close to yours.</p><div class="pfgrid">' +
+      pfField('target_roles', 'Roles', 'e.g. Data Analyst, BI Analyst', true) +
+      pfField('target_locations', 'Places', 'e.g. US remote; Austin, TX', true) +
+      pfField('apply_notes', 'Anything your team should know', 'e.g. No relocation outside the East Coast. Skip contract roles. I’d love to work in healthcare.', true) + '</div></section>' +
+    '<section class="panel"><h3>Standard answers</h3><p class="hint">Companies ask these on most applications, and your team uses your answers on every form. Tap a question to add it, or type your own — the usual answers come up as you fill them in. Answers are suggested from your profile, so check each says what you mean.</p>' +
       '<div id="pfQA">' + ans.map(qaRow).join('') + '</div>' +
       '<div class="row" style="margin-top:10px"><button class="btn sm" type="button" data-act="qaadd">' + I.plus + 'Add a question</button></div>' +
       '<div class="picks common" id="pfCommon">' + commonHTML() + '</div></section>' +
     '<div class="savebar"><span id="pfMsg"></span><button class="btn pri" type="button" data-act="pfsave" id="pfSave">Save changes</button></div></div>';
-  V.querySelector('.pfwrap').addEventListener('input', pfMark);
+  V.querySelector('.pfwrap').addEventListener('input', function(e){
+    pfMark();
+    if(e.target.matches('[data-qa=q]')) $('#pfCommon').innerHTML = commonHTML();   // a question picked from the list is no longer offered below
+  });
 }
 // what the form would change ({} when nothing)
 function pfPatch(){
@@ -687,8 +701,8 @@ function vSettings(){
   V.innerHTML = '<div class="greet"><div><h2>Settings</h2><p>Your plan, help when you need it, and how you sign in.</p></div></div>' +
     '<div class="sgrid">' +
       '<section class="panel"><h3>Your plan ' + statusTag() + '</h3><div class="planbig"><span class="pi">' + IC.plan + '</span><div><b>' + esc(planName()) + '</b><span>' +
-        (tot ? done.toLocaleString() + ' of ' + tot.toLocaleString() + ' applications sent' : 'Plan details on the way') + (since ? ' · client since ' + esc(since) : '') + '</span></div></div>' +
-        (tot ? '<div class="prog" style="margin-top:14px"><i style="width:' + Math.min(100, Math.round(done / tot * 100)) + '%"></i></div>' : '') + '</section>' +
+        (tot ? done.toLocaleString() + ' of ' + tot.toLocaleString() + ' applications sent' + (bonus() ? ' (' + planLine() + ')' : '') : 'Plan details on the way') + (since ? ' · client since ' + esc(since) : '') + '</span></div></div>' +
+        (tot ? '<div class="prog" style="margin-top:14px"><i style="width:' + Math.min(100, Math.round(done / tot * 100)) + '%"></i></div>' : '') + '<div id="bonusL"></div></section>' +
       '<section class="panel"><h3>Need a hand?</h3><p>Your team replies on WhatsApp, usually within the hour on business days.</p><div class="row" style="margin-top:12px">' +
         '<a class="btn pri" href="' + esc(WA) + '" target="_blank" rel="noopener">' + I.wa + 'WhatsApp us</a><a class="btn" href="mailto:' + esc(MAIL) + '">' + I.mail + 'Email</a></div></section>' +
       '<section class="panel wide"><h3>The details we apply with</h3><p class="hint" style="margin:4px 0 12px">Your contact details, work authorization, the jobs you want and your standard answers are on your Profile — keep them up to date there.</p>' +
@@ -699,6 +713,7 @@ function vSettings(){
         '<button class="btn pri" type="submit" id="pwGo">Change password</button><p class="err" id="pwErr" hidden></p></form>' +
         '<div class="row" style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px"><span class="fine grow">Signing out here keeps your account and everything we’ve sent.</span><button class="btn" type="button" data-act="out">' + I.out + 'Sign out</button></div></section>' +
     '</div>';
+  loadBonus();
   $('#pwF').addEventListener('submit', function(e){
     e.preventDefault();
     var a = $('#pw1').value, b = $('#pw2').value, err = $('#pwErr'), go = $('#pwGo');
@@ -710,6 +725,15 @@ function vSettings(){
       .catch(function(x){ err.textContent = TP.errText(x); err.hidden = false; })
       .then(function(){ go.classList.remove('busy'); go.disabled = false; });
   });
+}
+
+// the extra applications on top of the package, each with its reason (the owners add them; a client reads their own)
+function loadBonus(){
+  if(!$('#bonusL') || !bonus()) return;
+  q(SB.from('plan_adjustments').select('delta,reason,at,undone_at').eq('client_id', ME.id).order('at', {ascending:true}).limit(50)).then(function(rows){
+    rows = (rows || []).filter(function(a){ return !a.undone_at; }); var b = $('#bonusL'); if(!b || !rows.length) return;
+    b.innerHTML = '<ul class="bonus">' + rows.map(function(a){ return '<li><b>' + (a.delta > 0 ? '+' : '') + a.delta.toLocaleString() + '</b>' + esc(a.reason) + '<small>' + esc(TP.fmtDate(a.at)) + '</small></li>'; }).join('') + '</ul>';
+  }, function(){});
 }
 
 document.addEventListener('click', function(e){

@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-10-30.3">
+<link rel="stylesheet" href="/portal.css?v=2026-10-31.1">
 <style>
 /* The shell, laid out like the job board app (app.trulyplaced.com): a left sidebar with the sections, the clients open in
    this browser tab, the client you're working on with their progress, and you. Phones get a top bar and a tab bar. */
@@ -772,6 +772,23 @@ a.li:hover,button.li:hover{background:var(--hover)}
   .lkneed{grid-template-columns:1fr}
   .jbl .li{padding:12px 14px}
 }
+/* the plan (Profile → Plan & account, the owners'): the package, the extra applications with their reasons, Take back */
+.plansum{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:4px}
+.plansum b{font-size:17px;font-weight:650;letter-spacing:-.01em}
+.plansum small{color:var(--muted);font-size:13px}
+.exh{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:18px}
+.exh h4{font-size:14px;font-weight:600;margin:0}
+.adjl{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;margin-top:10px;overflow:hidden}
+.adj{display:flex;align-items:center;gap:12px;padding:10px 12px;border-top:1px solid var(--line)}
+.adj:first-child{border-top:0}
+.adj>b{min-width:48px;font-weight:650;color:var(--blue)}
+.adj.off>b{color:var(--muted);text-decoration:line-through}
+.adj.off .t{color:var(--muted)}
+.adj .main{flex:1;min-width:0}
+.adj .t{font-size:14px}
+.adj .m{font-size:12px;color:var(--muted)}
+/* an employee: the owners' controls never show (and the database refuses them anyway) */
+body.emp [data-act=newclient],body.emp [data-act=archive],body.emp [data-act=unarchive],body.emp [data-act=addextra],body.emp [data-act=undoextra],body.emp [data-act=delsent]{display:none !important}
 </style>
 </head>
 <body>
@@ -792,7 +809,7 @@ a.li:hover,button.li:hover{background:var(--hover)}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="modalRoot"></div>
 <input type="file" id="fileIn" hidden>
-<script src="/portal.js?v=2026-10-30.2"></script>
+<script src="/portal.js?v=2026-10-31.1"></script>
 <script src="/match.js?v=2026-10-30.1"></script>
 <script>
 (function(){
@@ -841,7 +858,7 @@ TP.client().then(function(c){ SB = c; return TP.session(); }).then(function(s){
   if(r0.client) clientData(r0.client).catch(function(){}); else if(r0.page === 'clients') loadList().catch(function(){});
   return TP.whoami().then(function(w){
     if(!w || !w.team){ ME.team = false; return notTeam(w || {}); }
-    ME.owner = !!w.owner;
+    ME.owner = !!w.owner; document.body.classList.toggle('emp', !ME.owner);   // an employee: the owners' controls stay off the page (the database refuses them too)
     names.then(function(){ $('#me').innerHTML = meHTML(); });   // your name in the sidebar
     render();
   });
@@ -858,7 +875,7 @@ function meHTML(){   // you, at the bottom of the sidebar: your name opens your 
   var t = TEAMROWS.filter(function(x){ return x.email === ME.email; })[0] || {};
   return '<button class="mebtn" type="button" data-act="memenu" aria-haspopup="menu" aria-expanded="false" title="Your menu — My day, switch client, sign out">' +
       '<span class="av sm" style="background:' + TP.hue(ME.email) + '">' + esc(TP.initials(t.full_name, ME.email)) + '</span><span class="mw"><b>' + esc(t.full_name || ME.email.split('@')[0]) + '</b>' +
-      '<small>' + (ME.owner ? 'Owner' : 'Team member') + ' · ' + esc(ME.email) + '</small></span>' + I.chev.replace('<svg', '<svg class="mechev"') + '</button>' +
+      '<small>' + (ME.owner ? 'Owner' : esc(t.title || 'Team member')) + ' · ' + esc(ME.email) + '</small></span>' + I.chev.replace('<svg', '<svg class="mechev"') + '</button>' +
     '<button class="icb" type="button" data-act="out" title="Sign out">' + I.out + '<span class="sr">Sign out</span></button>';
 }
 // your menu, just above your name: My day, switching client, the lists and signing out (like the profile menu on Scout Better)
@@ -869,7 +886,7 @@ function meMenu(btn){
   $('#me').insertAdjacentHTML('beforeend', '<div class="memenu" id="meMenu" role="menu" aria-label="Your menu">' +
     it('/team.html#myday', J.day, 'My day', 'Your work, and who still needs an application') +
     '<button role="menuitem" type="button" data-act="switch">' + J.swap + '<span>Switch client<small>Ctrl K</small></span></button>' +
-    it('/team.html', I.users, 'All clients') + it('/team.html#team', I.team, 'Team') +
+    it('/team.html#clients', I.users, 'All clients') + (ME.owner ? it('/team.html#team', I.team, 'Team') : '') +
     '<button role="menuitem" type="button" data-act="out">' + I.out + '<span>Sign out</span></button></div>');
   btn.setAttribute('aria-expanded', 'true');
   var first = $('#meMenu [role=menuitem]'); if(first) first.focus();
@@ -879,7 +896,7 @@ document.addEventListener('click', function(e){ if($('#meMenu') && !(e.target.cl
 function errBox(e, top){
   return '<div class="note bad">' + esc(TP.errText(e)) + (top ? ' <a href="/login.html">Sign in again</a>' : ' <button class="btn sm" type="button" data-act="retry">Try again</button>') + '</div>';
 }
-function loadTeamNames(){ return q(SB.from('team_members').select('email,full_name,role,active')).then(function(r){ TEAMROWS = r || []; }, function(){}); }
+function loadTeamNames(){ return q(SB.from('team_members').select('email,full_name,role,title,active')).then(function(r){ TEAMROWS = r || []; }, function(){}); }
 function who(email){
   if(!email || email === 'system') return 'TrulyPlaced';
   var t = TEAMROWS.filter(function(x){ return x.email === email; })[0];
@@ -893,7 +910,11 @@ function route(){
   var p = new URLSearchParams(location.search), h = location.hash.replace(/^#/, ''), r = {client:null, tab:'applications', app:null, page:null};
   var c = p.get('client');
   if(c && UUID.test(c)) r.client = c.toLowerCase();
-  if(!r.client){ r.page = h === 'team' ? 'team' : h === 'myday' ? 'myday' : 'clients'; return r; }
+  if(!r.client){   // the owners' home is Clients and the Team page is theirs; an employee's home is My day, with Clients at #clients
+    var emp = !!ME && ME.owner === false;
+    r.page = h === 'team' ? (emp ? 'myday' : 'team') : h === 'myday' || (emp && !h) ? 'myday' : 'clients';
+    return r;
+  }
   var m = /^app=([0-9a-f-]{36})$/i.exec(h);
   if(m) r.app = m[1].toLowerCase();
   else if(TABS.some(function(t){ return t[0] === h; })) r.tab = h;
@@ -951,8 +972,8 @@ function draw(){
   $('#me').innerHTML = meHTML();
   var cl = R.page === 'clients', tm = R.page === 'team', md = R.page === 'myday';
   $('#pnav').innerHTML = '<a href="/team.html#myday" data-go class="' + (md ? 'on' : '') + '"' + (md ? ' aria-current="page"' : '') + '>' + J.day + '<span>My day</span></a>' +
-    '<a href="/team.html" data-go class="' + (cl ? 'on' : '') + '"' + (cl ? ' aria-current="page"' : '') + '>' + I.users + '<span>Clients</span></a><div class="otabs" id="otabs" hidden></div>' +
-    '<a href="/team.html#team" data-go class="' + (tm ? 'on' : '') + '"' + (tm ? ' aria-current="page"' : '') + '>' + I.team + '<span>Team</span></a>';
+    '<a href="/team.html#clients" data-go class="' + (cl ? 'on' : '') + '"' + (cl ? ' aria-current="page"' : '') + '>' + I.users + '<span>Clients</span></a><div class="otabs" id="otabs" hidden></div>' +
+    (ME.owner ? '<a href="/team.html#team" data-go class="' + (tm ? 'on' : '') + '"' + (tm ? ' aria-current="page"' : '') + '>' + I.team + '<span>Team</span></a>' : '');   // the Team page is the owners'
   drawOpenTabs();
   if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : md ? vMyDay() : vClients(); }
   vClient();
@@ -965,7 +986,7 @@ function drawPhone(c){
       '<button class="icb" type="button" data-act="switch" title="Switch client">' + J.swap + '<span class="sr">Switch client</span></button>' : '<span class="grow"></span>') +
     '<button class="icb" type="button" data-act="out" title="Sign out">' + I.out + '<span class="sr">Sign out</span></button>';
   var items = c ? TABS.map(function(t){ return [cUrl(c.id, t[0]), t[3] || t[1], t[2], R.tab === t[0]]; })
-    : [['/team.html#myday', 'My day', J.day, R.page === 'myday'], ['/team.html', 'Clients', I.users, R.page === 'clients'], ['/team.html#team', 'Team', I.team, R.page === 'team']];
+    : [['/team.html#myday', 'My day', J.day, R.page === 'myday'], ['/team.html#clients', 'Clients', I.users, R.page === 'clients']].concat(ME.owner ? [['/team.html#team', 'Team', I.team, R.page === 'team']] : []);
   $('#tabbar').innerHTML = items.map(function(n){ return '<a href="' + esc(n[0]) + '" data-go class="' + (n[3] ? 'on' : '') + '"' + (n[3] ? ' aria-current="page"' : '') + '>' + n[2] + '<span>' + n[1] + '</span></a>'; }).join('');
 }
 function setTitle(t, c){
@@ -993,7 +1014,7 @@ function drawOpenTabs(){
   box.innerHTML = l.map(function(x){
     return '<a class="otab' + (R.client === x.id ? ' on' : '') + '" href="' + esc(cUrl(x.id, last[x.id] || '')) + '" data-go title="' + esc(x.name) + ' — Ctrl+click to open in a new browser tab"><i style="background:' + TP.hue(x.id) + '"></i><span>' + esc(x.name) + '</span>' +
       '<button type="button" data-act="closetab" data-id="' + esc(x.id) + '" title="Close this tab — ' + esc(x.name) + ' stays in Clients" aria-label="Close ' + esc(x.name) + '’s tab (they stay in Clients)">' + I.x + '</button></a>';
-  }).join('') + '<a class="otab add" href="/team.html" data-go>' + I.plus.replace('<svg', '<svg width="14" height="14"') + 'Another client</a>';
+  }).join('') + '<a class="otab add" href="/team.html#clients" data-go>' + I.plus.replace('<svg', '<svg width="14" height="14"') + 'Another client</a>';
 }
 // the × on an open client only closes their tab here — nothing about the client changes — and Undo brings it back
 function closeTab(id){
@@ -1007,7 +1028,7 @@ function closeTab(id){
     }});
   };
   if(!here) return shut();
-  go('/team.html').then(function(moved){ if(moved) shut(); });
+  go('/team.html#clients').then(function(moved){ if(moved) shut(); });
 }
 
 /* =====================================================================
@@ -1052,9 +1073,9 @@ document.addEventListener('mouseover', function(e){
 function vClients(){
   setTitle('Clients', null);
   V.innerHTML = '<div class="pageh"><div class="grow"><h1>Clients</h1><div class="sub" id="cSub">Loading clients…</div></div>' +
-      '<button class="btn pri" type="button" data-act="newclient">' + I.plus + 'New client</button></div>' +
+      (ME.owner ? '<button class="btn pri" type="button" data-act="newclient">' + I.plus + 'New client</button>' : '') + '</div>' +   // taking on a client is the owners'
     '<div class="tools"><input class="inp" id="cq" type="search" placeholder="Search name, email, phone or target role" value="' + esc(CL.q) + '" autocomplete="off">' +
-      '<div class="seg" id="cf">' + CL_F.map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (CL.f === f[0] ? 'on' : '') + '">' + f[1] + '<b data-n="' + f[0] + '"></b></button>'; }).join('') + '</div>' +
+      '<div class="seg" id="cf">' + CL_F.filter(function(f){ return ME.owner || f[0] !== 'archived'; }).map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (CL.f === f[0] ? 'on' : '') + '">' + f[1] + '<b data-n="' + f[0] + '"></b></button>'; }).join('') + '</div>' +   // archiving and restoring are the owners'
       '<select class="inp" id="cs" style="flex:0 0 auto;width:auto" aria-label="Sort"><option value="need">Fewest today first</option><option value="name">Name A–Z</option><option value="new">Newest clients</option><option value="left">Most left to do</option></select></div>' +
     '<div id="cl"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>';
   $('#cs').value = CL.sort;
@@ -1082,7 +1103,7 @@ function drawClients(){
     : CL.sort === 'new' ? function(a, b){ return a.created_at < b.created_at ? 1 : -1; }
     : CL.sort === 'left' ? function(a, b){ return left(b) - left(a); }
     : function(a, b){ var pa = P[a.id] || {}, pb = P[b.id] || {}; return (pa.today || 0) - (pb.today || 0) || String(pa.last_applied_at || '').localeCompare(String(pb.last_applied_at || '')); });
-  if(!all.length){ box.innerHTML = '<div class="empty">' + I.users + '<h3>No clients yet</h3><p>Add your first client. They get an email to set their password and can then see every application you send.</p><button class="btn pri" type="button" data-act="newclient">' + I.plus + 'New client</button></div>'; return; }
+  if(!all.length){ box.innerHTML = '<div class="empty">' + I.users + '<h3>No clients yet</h3>' + (ME.owner ? '<p>Add your first client. They get an email to set their password and can then see every application you send.</p><button class="btn pri" type="button" data-act="newclient">' + I.plus + 'New client</button>' : '<p>The owners add clients. Every client they add is here for you to work on.</p>') + '</div>'; return; }
   if(!rows.length){ box.innerHTML = CL.f === 'archived' && !qq ? '<div class="empty"><h3>No archived clients</h3><p>A client removed from the list (Profile → Archive) waits here, with everything kept, until someone restores them.</p></div>'
     : '<div class="empty"><h3>No one matches</h3><p>Try another search or filter.</p></div>'; return; }
   var sortBtn = function(k, label){ return '<button type="button" data-sort="' + k + '" class="' + (CL.sort === k ? 'on' : '') + '">' + label + '</button>'; };
@@ -1137,7 +1158,7 @@ function vMyDay(){
         return '<a class="li" href="' + esc(cUrl(c.id)) + '" data-go><span class="av" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span>' +
           '<div class="main"><div class="t">' + esc(c.full_name || c.email) + '</div><div class="m">' + (c.plan_total ? (p.done || 0) + ' / ' + c.plan_total + ' sent · ' + left(c) + ' left' : (p.done || 0) + ' sent · no plan set') +
           ' · last sent ' + (p.last_applied_at ? esc(TP.ago(p.last_applied_at)) : 'never') + '</div></div>' + I.chev.replace('<svg', '<svg class="chev"') + '</a>';
-      }).join('') + '</div>' + (todo.length > 12 ? '<p class="fine" style="margin-top:8px">and ' + (todo.length - 12) + ' more — <a href="/team.html" data-go>see Clients</a> (sorted fewest today first)</p>' : '')
+      }).join('') + '</div>' + (todo.length > 12 ? '<p class="fine" style="margin-top:8px">and ' + (todo.length - 12) + ' more — <a href="/team.html#clients" data-go>see Clients</a> (sorted fewest today first)</p>' : '')
         : '<div class="note ok">Every active client has an application today.</div>';
     }
     if(rows){
@@ -1173,8 +1194,8 @@ function newClient(){
   var m = TP.modal('<h2>New client</h2><p>We’ll create their login and email them a link to set a password. Nothing else is sent.</p>' +
     '<form id="ncF" class="stack" style="margin-top:16px" novalidate>' +
       '<div class="field"><label for="ncN">Full name</label><input id="ncN" required autocomplete="off" placeholder="e.g. Priya Sharma"></div>' +
-      '<div class="field"><label for="ncE">Email</label><input id="ncE" type="email" required autocomplete="off" placeholder="the email they’ll sign in with"></div>' +
-      '<div class="field"><label for="ncPh">Phone / WhatsApp <span class="muted">(optional)</span></label><input id="ncPh" type="tel" autocomplete="off"></div>' +
+      '<div class="field"><label for="ncE">Email</label><input id="ncE" required placeholder="the email they’ll sign in with"' + TP.sg('email') + '></div>' +
+      '<div class="field"><label for="ncPh">Phone / WhatsApp <span class="muted">(optional)</span></label><input id="ncPh" placeholder="e.g. +1 201 555 0147"' + TP.sg('phone') + '></div>' +
       planSel + '<p class="err" id="ncErr" hidden></p>' +
       '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="ncGo">Check and continue</button></div></form>' +
     '<div id="ncRev" hidden></div>', false, {keep:true});
@@ -1240,7 +1261,7 @@ function vClient(){
   }, function(e){
     if(C !== c) return;
     C = null;
-    V.innerHTML = e && e.message === 'not_found' ? '<div class="empty"><h3>Client not found</h3><p>They may have been removed, or the link is wrong.</p><a class="btn" href="/team.html" data-go>All clients</a></div>' : errBox(e);
+    V.innerHTML = e && e.message === 'not_found' ? '<div class="empty"><h3>Client not found</h3><p>They may have been removed, or the link is wrong.</p><a class="btn" href="/team.html#clients" data-go>All clients</a></div>' : errBox(e);
   });
 }
 function drawBar(){
@@ -1262,7 +1283,7 @@ function drawBar(){
       '<div class="prog' + (tot && done >= tot ? ' full' : '') + '"><i style="width:' + pct + '%"></i></div></div></div>';
   // the page's title line: the section, and whose page this is
   var sec = R.app ? null : TABS.filter(function(t){ return t[0] === R.tab; })[0];
-  $('#phead').innerHTML = (c.status === 'archived' ? '<div class="note warn archn"><span>' + I.lock + '<b>' + esc(name) + ' is archived</b> — off the team’s lists. Nothing was deleted.</span><button class="btn sm" type="button" data-act="unarchive">Restore</button></div>' : '') +
+  $('#phead').innerHTML = (c.status === 'archived' ? '<div class="note warn archn"><span>' + I.lock + '<b>' + esc(name) + ' is archived</b> — off the team’s lists. Nothing was deleted.</span>' + (ME.owner ? '<button class="btn sm" type="button" data-act="unarchive">Restore</button>' : '') + '</div>' : '') +
     (sec ? '<div class="phead"><nav class="bc" aria-label="Where you are"><a href="/team.html" data-go>Clients</a><i>/</i><span>' + esc(name) + '</span></nav><h1>' + esc(sec[1]) + '</h1></div>' : '');
   drawPhone(c);
   reqCount(C);
@@ -1366,52 +1387,61 @@ window.addEventListener('resize', function(){ clearTimeout(DBRS); DBRS = setTime
 var PF = ['full_name', 'phone', 'linkedin', 'location', 'target_roles', 'target_locations', 'work_auth', 'salary', 'notice', 'apply_notes', 'optimise_rules'];
 function tProfile(){
   var c = C.row, ans = Array.isArray(c.answers) ? c.answers : [], first = (c.full_name || '').split(' ')[0] || 'them';
-  // a field, with the same quick picks the client sees on their own Profile (TP.picksHTML: a tap fills it in, or adds to a list)
-  function f(k, label, ph, wide, picks, isList){ return '<div class="field"' + (wide ? ' style="grid-column:1/-1"' : '') + '><label for="pf_' + k + '">' + label + '</label>' +
-    (k === 'apply_notes' || k === 'optimise_rules' ? '<textarea id="pf_' + k + '" rows="3" placeholder="' + esc(ph || '') + '">' + esc(c[k] || '') + '</textarea>' : '<input id="pf_' + k + '" value="' + esc(c[k] || '') + '" placeholder="' + esc(ph || '') + '" autocomplete="off">') +
-    TP.picksHTML('pf_' + k, picks, isList) + '</div>'; }
-  var plan = c.plan_total || '';
+  // a field, with the same suggestions the client gets on their own Profile (TP.sg: cities, roles, the usual answers)
+  function f(k, label, ph, wide){ return '<div class="field"' + (wide ? ' style="grid-column:1/-1"' : '') + '><label for="pf_' + k + '">' + label + '</label>' +
+    (k === 'apply_notes' || k === 'optimise_rules' ? '<textarea id="pf_' + k + '" rows="3" placeholder="' + esc(ph || '') + '">' + esc(c[k] || '') + '</textarea>'
+      : '<input id="pf_' + k + '" value="' + esc(c[k] || '') + '" placeholder="' + esc(ph || '') + '"' + (TP.PF_SG[k] ? TP.sg(TP.PF_SG[k]) : ' autocomplete="off"') + '>') + '</div>'; }
   // three parts on one page, like Settings on Scout Better: the list beside them jumps to each, and nothing typed is ever out of sight
   V.innerHTML = '<div class="pfwrap"><nav class="pfnav" id="pfNav" aria-label="Profile sections">' + PFS.map(function(s, i){ return '<button type="button" data-pfs="' + s[0] + '" class="' + (i ? '' : 'on') + '">' + s[1] + '<small>' + s[2] + '</small></button>'; }).join('') + '</nav>' +
     '<div class="narrow pfmain"><section class="pfsec" id="pfs-profile"><h2>Profile</h2><div id="pfByClient" hidden></div>' +
     '<div class="card"><h3>Contact</h3><p class="hint">Who they are and how to reach them. ' + esc(first) + ' sees these on their Profile in their workspace, and can change them there too.</p><div class="grid2">' +
       f('full_name', 'Full name') + '<div class="field"><label>Login email</label><input value="' + esc(c.email) + '" readonly title="The email they sign in with"></div>' +
-      f('phone', 'Phone / WhatsApp', '+1 …') + f('linkedin', 'LinkedIn', 'linkedin.com/in/…') +
-      f('location', 'Lives in', 'e.g. Jersey City, NJ') + f('work_auth', 'Work authorization', 'e.g. F-1 OPT (STEM) — needs H-1B later', false, TP.PICKS.work_auth) +
-      f('salary', 'Salary expectation', 'e.g. $95K–$110K', false, TP.PICKS.salary) + f('notice', 'Can start', 'e.g. 2 weeks’ notice', false, TP.PICKS.notice) + '</div></div>' +
-    '<div class="card"><h3>Standard answers</h3><p class="hint">Used to pre-fill every new application’s form answers. Tap a common question to add it — its answer is suggested from the profile above.</p>' +
+      f('phone', 'Phone / WhatsApp', 'e.g. +1 201 555 0147') + f('linkedin', 'LinkedIn', 'linkedin.com/in/…') +
+      f('location', 'Lives in', 'Start typing a city or ZIP code') + f('work_auth', 'Work authorization', 'e.g. F-1 OPT (STEM) — needs H-1B later') +
+      f('salary', 'Salary expectation', 'e.g. $95K–$110K') + f('notice', 'Can start', 'e.g. 2 weeks’ notice') + '</div></div>' +
+    '<div class="card"><h3>Standard answers</h3><p class="hint">Used to pre-fill every new application’s form answers. Tap a common question to add it, or type one — the questions forms ask and their usual answers come up as you type, with the answer suggested from the profile above.</p>' +
       '<div id="pfQA">' + ans.map(qaRow).join('') + '</div>' +
       '<div class="row" style="margin-top:10px"><button class="btn sm" type="button" data-act="qaadd">' + I.plus + 'Add a question</button></div>' +
-      '<div class="picks" style="margin-top:10px" id="pfCommon">' + COMMON_Q.filter(function(x){ return !ans.some(function(a){ return a.q === x; }); }).map(function(x){ return '<button type="button" data-act="qacommon" data-q="' + esc(x) + '">+ ' + esc(x) + '</button>'; }).join('') + '</div></div>' +
+      '<div class="picks" style="margin-top:10px" id="pfCommon">' + commonQ(ans) + '</div></div>' +
     '</section><section class="pfsec" id="pfs-prefs"><h2>Preferences</h2>' +
-    '<div class="card"><h3>Jobs to apply for</h3><p class="hint">The Jobs tab starts from the first target role. The suggestions are roles and places close to theirs.</p><div class="grid2">' +
-      f('target_roles', 'Target roles', 'e.g. Data Analyst, BI Analyst', false, TP.roleIdeas(c.target_roles), true) + f('target_locations', 'Target locations', 'e.g. US remote, New York, Toronto', false, TP.placeIdeas(c.target_locations, c.location), true) +
+    '<div class="card"><h3>Jobs to apply for</h3><p class="hint">The Jobs tab starts from the first target role. Type a role or a city to pick it from the list — tap a field for ideas close to theirs.</p><div class="grid2">' +
+      f('target_roles', 'Target roles', 'e.g. Data Analyst, BI Analyst') + f('target_locations', 'Target locations', 'e.g. US remote; Austin, TX') +
       f('apply_notes', 'How to apply for them', 'e.g. No relocation outside the US East Coast. Skip contract roles.', true) + '</div></div>' +
     '<div class="card"><h3>Resume rules</h3><p class="hint">Followed on every Optimise for this client.</p><div class="grid2">' +
       f('optimise_rules', 'Optimisation rules for their resume', 'Followed on every Optimise for this client — e.g. Keep the summary to three lines. Never reword the first role. British spelling.', true) + '</div></div>' +
     skCard(c) +
     '</section><section class="pfsec" id="pfs-plan"><h2>Plan &amp; account</h2>' +
-    '<div class="card"><h3>Plan</h3>' + (ME.owner
-      ? '<p class="hint">Only the owner can change this.</p><div class="grid2"><div class="field"><label for="pf_plan">Applications in their plan</label><select id="pf_plan"><option value="">Not set</option>' +
-          TP.CONFIG.PLANS.map(function(n){ return '<option value="' + n + '"' + (plan === n ? ' selected' : '') + '>' + n + '</option>'; }).join('') +
-          (plan && TP.CONFIG.PLANS.indexOf(plan) < 0 ? '<option value="' + plan + '" selected>' + plan + '</option>' : '') + '<option value="custom">Other number…</option></select></div>' +
-          '<div class="field" id="pfPCw" hidden><label for="pf_planc">Number</label><input id="pf_planc" type="number" min="1" max="100000"></div></div>'
-      : '<p class="hint">' + (plan ? '<b>' + plan + ' applications</b>. ' : 'Not set yet. ') + 'Only the owner can change the plan.</p>') +
-      '<div class="field" style="margin-top:12px;max-width:260px"><label for="pf_status">Status</label><select id="pf_status"' + (c.status === 'archived' ? ' disabled title="Restore them first"' : '') + '><option value="active">Active — we’re applying</option><option value="paused">Paused</option><option value="done">Done</option>' +
-        (c.status === 'archived' ? '<option value="archived">Archived</option>' : '') + '</select></div></div>' +
+    planCardHTML(C) +   // the package, the extra applications and the status are the owners'; an employee reads them
     '<div class="card"><h3>Their login</h3><p class="hint">They sign in at <b>trulyplaced.com/login.html</b> with <b>' + esc(c.email) + '</b> and a password (or Google, if it’s a Gmail address).</p>' +
       '<div class="row"><button class="btn sm" type="button" data-act="resend">' + I.mail + 'Email them the set-password link again</button><span class="fine" id="pfInv"></span></div></div>' +
-    (c.status === 'archived'
+    (!ME.owner ? '' : c.status === 'archived'   // archiving and restoring are the owners'
       ? '<div class="card"><h3>Archived</h3><p class="hint">' + esc(first) + ' is off the team’s lists. Nothing was deleted, and their login and dashboard still work. Restore brings them back.</p><button class="btn sm pri" type="button" data-act="unarchive">Restore ' + esc(first) + '</button></div>'
       : '<div class="card"><h3>Remove from the client list</h3><p class="hint">For a client the team has stopped working for, or one added by mistake. Nothing is deleted: they move to <b>Archived</b>, off the team’s lists and counts, and Restore brings them back.</p><button class="btn sm bad" type="button" data-act="archive">Archive ' + esc(first) + '</button></div>') +
     '</section><div class="sticky-save"><span class="saved" id="pfMsg"></span><button class="btn pri" type="button" data-act="pfsave">Save changes</button></div></div></div>';
-  $('#pf_status').value = c.status;
+  if($('#pf_status')) $('#pf_status').value = c.status;
+  var cc = C; if(ME.owner) loadAdjustments(cc).then(function(){ if(C === cc) drawAdjustments(cc); });   // the extra applications, each with its reason
   skFresh(c); lastInvite(C); byClient(C); pfFresh(C);
   if(ME.owner) $('#pf_plan').addEventListener('change', function(e){ $('#pfPCw').hidden = e.target.value !== 'custom'; });
-  V.querySelector('.narrow').addEventListener('input', function(e){ if(!e.target.closest('#pfRec')) pfMark(); });
+  V.querySelector('.narrow').addEventListener('input', function(e){
+    if(e.target.closest('#pfRec')) return;
+    pfMark();
+    if(e.target.matches('#pfQA [data-qa=q]')) $('#pfCommon').innerHTML = commonQ(readQA($('#pfQA')));   // a question picked from the list is no longer offered below
+  });
   pfRecover(C);
   pfSpy();
 }
+// the common questions not asked yet, each a button that adds it with its answer suggested
+function commonQ(ans){
+  return COMMON_Q.filter(function(x){ return !ans.some(function(a){ return a.q === x; }); }).map(function(x){ return '<button type="button" data-act="qacommon" data-q="' + esc(x) + '">+ ' + esc(x) + '</button>'; }).join('');
+}
+// what the suggestions read: the Profile as it is on screen, or the client's row (an application's answers)
+TP.sgProfile = function(){ if(!C || !C.row) return null; var o = {}; PF.forEach(function(k){ var x = $('#pf_' + k); o[k] = x ? x.value.trim() : String(C.row[k] || ''); }); return o; };
+// "Where they used it" for a skill: the companies on their main resume, and the usual places
+TP.sgKind('skill_where', {all:true, options:function(){
+  var r = C && defaultResume(C), D = r && r.doc && Array.isArray(r.doc.sections) ? r.doc : null, orgs = [];
+  if(D) D.sections.forEach(function(s){ if(s.k === 'experience' && !s.hidden) (s.items || []).forEach(function(it){ var o = String(it.sub || '').split(/\s[·|–—-]\s|,/)[0].trim(); if(o && orgs.indexOf(o) < 0) orgs.push(o); }); });
+  return orgs.slice(0, 6).concat(['MS coursework', 'Academic project', 'Personal project', 'Internship', 'Certification']);
+}});
 // the client can change their own Profile from their workspace: the row is read fresh each time this tab opens. Nothing typed
 // here is touched — with edits in progress they stay, and the page says so (Save writes only the fields changed here)
 function pfFresh(cc){
@@ -1478,7 +1508,7 @@ function skCard(c){
   C.skEdit = c.confirmed_skills.slice();
   return '<div class="card"><h3>Skills for jobs</h3><p class="hint">When a job asks for a skill that isn’t on ' + first + '’s resume, the editor shows it under Skills and you accept it or leave it out. Both are kept here, and the next job that asks for the skill starts the same way. Remove one to start fresh.</p>' +
     '<div id="pfSk">' + skRows() + '</div>' +
-    '<div class="skadd"><input class="inp" id="pfSkN" placeholder="Skill, e.g. C++" aria-label="Skill"><input class="inp" id="pfSkW" placeholder="Where they used it, e.g. MS coursework" aria-label="Where they used it">' +
+    '<div class="skadd"><input class="inp" id="pfSkN" placeholder="Skill, e.g. C++" aria-label="Skill"' + TP.sg('skill') + '><input class="inp" id="pfSkW" placeholder="Where they used it, e.g. MS coursework" aria-label="Where they used it"' + TP.sg('skill_where') + '>' +
       '<input class="inp" id="pfSkT" placeholder="What was done with it (optional)" aria-label="What was done with it"><button class="btn sm" type="button" data-act="skadd">' + I.plus + 'Add</button></div></div>';
 }
 function skFresh(row){   // the editor saves added skills straight to the client’s row, from another tab: read them fresh
@@ -1501,7 +1531,8 @@ function skRows(){
     (no.length ? '<p class="hint" style="margin:12px 0 6px">Left out — start unticked for the next job</p><div class="list">' + no.map(row).join('') + '</div>' : '');
 }
 function qaRow(a){
-  return '<div class="qa"><input class="inp" data-qa="q" value="' + esc(a.q || '') + '" placeholder="Question" aria-label="Question"><textarea class="inp" data-qa="a" rows="1" placeholder="Answer" aria-label="Answer">' + esc(a.a || '') + '</textarea>' +
+  return '<div class="qa"><input class="inp" data-qa="q" value="' + esc(a.q || '') + '" placeholder="Question" aria-label="Question"' + TP.sg('question') + '>' +
+    '<textarea class="inp" data-qa="a" rows="1" placeholder="Answer" aria-label="Answer"' + TP.sg('answer', true) + '>' + esc(a.a || '') + '</textarea>' +
     '<div class="ic"><button class="icb" type="button" data-act="qacopy" title="Copy the answer">' + I.copy + '</button><button class="icb" type="button" data-act="qadel" title="Remove">' + I.trash + '</button></div></div>';
 }
 function readQA(box){
@@ -1529,9 +1560,9 @@ function pfPatch(){
   var c = C.row, patch = {};
   PF.forEach(function(k){ var v = $('#pf_' + k).value.trim(); if(v !== (c[k] || '')) patch[k] = v || (k === 'full_name' ? '' : null); });
   var ans = readQA($('#pfQA')); if(stable(ans) !== stable(c.answers || [])) patch.answers = ans;
-  var st = $('#pf_status').value; if(st !== c.status) patch.status = st;
+  var ss = $('#pf_status'); if(ss && ss.value !== c.status) patch.status = ss.value;   // the owners' control
   if(C.skEdit && Array.isArray(c.confirmed_skills) && stable(C.skEdit) !== stable(c.confirmed_skills)) patch.confirmed_skills = C.skEdit;
-  if(ME.owner && $('#pf_plan')){ var pv = $('#pf_plan').value, pn = pv === 'custom' ? +$('#pf_planc').value : (pv ? +pv : null); if(pv === 'custom' && !(pn > 0)) return null; if((pn || null) !== (c.plan_total || null)) patch.plan_total = pn || null; }
+  if(ME.owner && $('#pf_plan')){ var pv = $('#pf_plan').value, pn = pv === 'custom' ? +$('#pf_planc').value : (pv ? +pv : null); if(pv === 'custom' && !(pn > 0)) return null; if((pn || null) !== (c.plan_package || null)) patch.plan_package = pn || null; }   // the package; the database keeps plan_total = package + the extras
   return patch;
 }
 function pfDirty(){ var p = pfPatch(); return p === null || Object.keys(p).length > 0; }
@@ -1543,7 +1574,7 @@ function pfMark(){
   if(!dirty) bkDel('pf_' + C.id); else if(p) bkSet('pf_' + C.id, p);
 }
 var PF_NAME = {full_name:'Full name', phone:'Phone', linkedin:'LinkedIn', location:'Lives in', target_roles:'Target roles', target_locations:'Target locations', work_auth:'Work authorization',
-  salary:'Salary', notice:'Can start', apply_notes:'How to apply', optimise_rules:'Optimisation rules', answers:'Standard answers', status:'Status', confirmed_skills:'Skills for jobs', plan_total:'Plan'};
+  salary:'Salary', notice:'Can start', apply_notes:'How to apply', optimise_rules:'Optimisation rules', answers:'Standard answers', status:'Status', confirmed_skills:'Skills for jobs', plan_package:'Plan'};
 // opening the Profile: changes typed here before the page closed, not saved, are offered back
 function pfRecover(c){
   var bk = bkGet('pf_' + c.id), v = bk && bk.v, keys = v ? Object.keys(v).filter(function(k){ return PF_NAME[k]; }) : [];
@@ -1556,8 +1587,8 @@ function pfRecover(c){
       var x = v[k];
       if(k === 'answers') $('#pfQA').innerHTML = (x || []).map(qaRow).join('');
       else if(k === 'confirmed_skills'){ if($('#pfSk')){ C.skEdit = (x || []).slice(); $('#pfSk').innerHTML = skRows(); } }
-      else if(k === 'status'){ if(!$('#pf_status').disabled) $('#pf_status').value = x; }
-      else if(k === 'plan_total'){ var ps = $('#pf_plan'); if(ps){ if(x && TP.CONFIG.PLANS.indexOf(x) < 0 && !$('option[value="' + x + '"]', ps)) ps.insertAdjacentHTML('beforeend', '<option value="' + x + '">' + x + '</option>'); ps.value = x ? String(x) : ''; } }
+      else if(k === 'status'){ var ss2 = $('#pf_status'); if(ss2 && !ss2.disabled) ss2.value = x; }
+      else if(k === 'plan_package'){ var ps = $('#pf_plan'); if(ps){ if(x && TP.CONFIG.PLANS.indexOf(x) < 0 && !$('option[value="' + x + '"]', ps)) ps.insertAdjacentHTML('beforeend', '<option value="' + x + '">' + x + '</option>'); ps.value = x ? String(x) : ''; } }
       else if($('#pf_' + k)) $('#pf_' + k).value = x || '';
     });
     else bkDel('pf_' + c.id);
@@ -1588,10 +1619,11 @@ function pfEffects(patch){
   if(patch.status === 'paused') out.push(['warn', '<b>Paused</b> — ' + first + '’s dashboard says the plan is paused, and they leave the Active list.']);
   if(patch.status === 'done') out.push(['warn', '<b>Done</b> — ' + first + '’s dashboard says the plan is complete, and they move to Done.']);
   if(patch.status === 'active') out.push(['ok', '<b>Active</b> — back on the Active list, and the plan shows as running on ' + first + '’s dashboard.']);
-  if('plan_total' in patch){
-    var sent = (C.prog && C.prog.done) || 0;
-    out.push(['info', 'Plan: ' + (c.plan_total ? c.plan_total + ' → ' : '') + (patch.plan_total ? '<b>' + patch.plan_total + ' applications</b>' : '<b>not set</b>') + ' — ' + first + ' sees it on their dashboard.']);
-    if(patch.plan_total && patch.plan_total < sent) out.push(['warn', 'That’s fewer than the ' + sent + ' already sent.']);
+  if('plan_package' in patch){   // the package changes; the extra applications stay on top
+    var sent = (C.prog && C.prog.done) || 0, ex = (c.plan_total || 0) - (c.plan_package || 0), tot = patch.plan_package || ex ? (patch.plan_package || 0) + ex : 0;
+    out.push(['info', 'Package: ' + (c.plan_package ? c.plan_package + ' → ' : '') + (patch.plan_package ? '<b>' + patch.plan_package + ' applications</b>' : '<b>not set</b>') +
+      (ex ? ' — with the ' + (ex > 0 ? '+' : '') + ex + ' extra, ' + first + '’s plan is <b>' + tot + '</b>.' : ' — ' + first + ' sees it on their dashboard.')]);
+    if(tot && tot < sent) out.push(['warn', 'That’s fewer than the ' + sent + ' already sent.']);
   }
   return out;
 }
@@ -1606,11 +1638,94 @@ function saveProfile(){
     return TP.busy(btn, q(SB.from('clients').update(patch).eq('id', c.id).select('*').maybeSingle())).then(function(row){
       if(!row) throw {message:'You don’t have access to that.'};
       C.row = row; staleList(); drawBar(); rememberOpen(row); drawOpenTabs(); bkDel('pf_' + row.id);
+      var ps = $('#planSum'); if(ps) ps.outerHTML = planHeadHTML(C);   // the plan line follows (the database kept the total = package + extras)
       if(C.skEdit && Array.isArray(row.confirmed_skills)) C.skEdit = row.confirmed_skills.slice();
       var s = $('#pfMsg'); if(s) s.textContent = 'Saved ' + new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
       TP.toast('Profile saved');
       return true;
     }).catch(function(e){ TP.toast(TP.errText(e)); return false; });
+  });
+}
+
+/* ---------- the plan (sql/supabase-roles.sql): a package plus extra applications, the owners' ----------
+   clients.plan_package is the package (250 / 500 / 1000 or any number); plan_adjustments are the extra applications on top
+   ("+100 — referral bonus", with a reason, by whom and when; an owner can take one back). The database keeps plan_total,
+   which every page and the client's dashboard use, equal to package + extras. Employees read the plan; only the owners
+   change it, and the database refuses anyone else. */
+// what a client's plan reads as: "1,000 package +100 extra = 1,100 applications"
+function planText(c){
+  var pkg = c.plan_package, tot = c.plan_total, ex = (tot || 0) - (pkg || 0);
+  if(!tot && !pkg) return 'No plan set';
+  return (pkg ? pkg.toLocaleString() + ' package' : 'No package') + (ex ? ' ' + (ex > 0 ? '+' : '') + ex.toLocaleString() + ' extra' : '') + (ex ? ' = ' + tot.toLocaleString() + ' applications' : ' applications');
+}
+function loadAdjustments(c, force){
+  if(c.adj && !force) return Promise.resolve(c.adj);
+  return q(SB.from('plan_adjustments').select('id,delta,reason,by_email,at,undone_at,undone_by').eq('client_id', c.id).order('at', {ascending:false}).limit(100)).then(function(r){ c.adj = r || []; return c.adj; });
+}
+function planHeadHTML(c){
+  var row = c.row, p = c.prog || {}, done = p.done || 0;
+  return '<div class="plansum" id="planSum"><b>' + esc(planText(row)) + '</b><small>' + done.toLocaleString() + ' sent' + (row.plan_total ? ' · ' + Math.max(0, row.plan_total - done).toLocaleString() + ' left' : '') + '</small></div>';
+}
+// the Plan card in Profile → Plan & account: the owners choose the package, add or take back extra applications and set the
+// status; an employee sees the plan and the status, with nothing to change
+function planCardHTML(c){
+  var row = c.row, pkg = row.plan_package || '';
+  if(!ME.owner) return '<div class="card"><h3>Plan</h3>' + planHeadHTML(c) + '<div class="rvs" style="margin-top:10px"><div class="rv"><span>Status</span><b><span class="st ' + esc(row.status) + '">' + (ST_NAME[row.status] || 'Active') + '</span></b></div></div>' +
+    '<p class="hint" style="margin-top:10px">Only the owners change the plan or the status.</p></div>';
+  return '<div class="card" id="planCard"><h3>Plan</h3>' + planHeadHTML(c) +
+    '<div class="grid2" style="margin-top:12px"><div class="field"><label for="pf_plan">Package</label><select id="pf_plan"><option value="">Not set</option>' +
+      TP.CONFIG.PLANS.map(function(n){ return '<option value="' + n + '"' + (pkg === n ? ' selected' : '') + '>' + n + ' applications</option>'; }).join('') +
+      (pkg && TP.CONFIG.PLANS.indexOf(pkg) < 0 ? '<option value="' + pkg + '" selected>' + pkg + ' applications</option>' : '') + '<option value="custom">Other number…</option></select><small class="fine">Upgrade or downgrade here; the extras below stay on top.</small></div>' +
+      '<div class="field" id="pfPCw" hidden><label for="pf_planc">Number of applications</label><input id="pf_planc" type="number" min="1" max="100000" inputmode="numeric"></div></div>' +
+    '<div class="field" style="margin-top:12px;max-width:260px"><label for="pf_status">Status</label><select id="pf_status"' + (row.status === 'archived' ? ' disabled title="Restore them first"' : '') + '><option value="active">Active — we’re applying</option><option value="paused">Paused</option><option value="done">Done</option>' +
+      (row.status === 'archived' ? '<option value="archived">Archived</option>' : '') + '</select></div>' +
+    '<div class="exh"><h4>Extra applications</h4><button class="btn sm" type="button" data-act="addextra">' + I.plus + 'Add extra applications</button></div><div id="pfAdj"><div class="skel"></div></div></div>';
+}
+function drawAdjustments(c){
+  var box = $('#pfAdj'); if(!box) return;
+  var rows = c.adj || [];
+  box.innerHTML = rows.length ? '<div class="adjl">' + rows.map(function(a){
+    return '<div class="adj' + (a.undone_at ? ' off' : '') + '"><b>' + (a.delta > 0 ? '+' : '') + a.delta.toLocaleString() + '</b><div class="main"><div class="t">' + esc(a.reason) + '</div><div class="m">' + esc(who(a.by_email)) + ' · ' + esc(TP.fmtDate(a.at)) +
+      (a.undone_at ? ' · taken back by ' + esc(who(a.undone_by)) + ' ' + esc(TP.fmtDate(a.undone_at)) : '') + '</div></div>' +
+      (a.undone_at ? '' : '<button class="btn sm ghost" type="button" data-act="undoextra" data-id="' + a.id + '">Take back</button>') + '</div>';
+  }).join('') + '</div>' : '<p class="fine" style="margin-top:8px">None yet. A referral bonus, a goodwill top-up, a correction — each is kept here with its reason.</p>';
+}
+// after an adjustment: the database moved the total, so the client's row, the sidebar and the plan line follow
+function planRefresh(c){
+  return Promise.all([loadAdjustments(c, true), q(SB.from('clients').select('*').eq('id', c.id).maybeSingle())]).then(function(rs){
+    if(C !== c) return;
+    if(rs[1]) c.row = rs[1];
+    staleList(); drawBar(); var s = $('#planSum'); if(s) s.outerHTML = planHeadHTML(c); drawAdjustments(c);
+  });
+}
+function addExtra(){
+  var c = C, first = (c.row.full_name || '').split(' ')[0] || 'the client';
+  var m = TP.modal('<h2>Extra applications for ' + esc(first) + '</h2><p>On top of the ' + esc(planText(c.row)) + '. A minus number takes some away. Each one is kept in the history with its reason, and ' + esc(first) + ' sees the new total on their dashboard.</p>' +
+    '<form id="exF" class="stack" style="margin-top:14px" novalidate><div class="grid2"><div class="field"><label for="exN">How many</label><input id="exN" type="number" inputmode="numeric" value="100" min="-100000" max="100000" required></div>' +
+    '<div class="field"><label for="exR">Reason</label><input id="exR" required maxlength="300" placeholder="e.g. Referral bonus — brought Arjun" autocomplete="off"></div></div>' +
+    TP.picksHTML('exR', ['Referral bonus', 'Goodwill top-up', 'Renewal bonus', 'Correction']) +
+    '<p class="err" id="exErr" hidden></p><div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="exGo">Add to the plan</button></div></form>', false, {keep:true});
+  $('#exF', m).addEventListener('submit', function(e){
+    e.preventDefault();
+    var n = Math.round(+$('#exN').value), r = $('#exR').value.trim(), err = $('#exErr');
+    err.hidden = true;
+    if(!n){ err.hidden = false; err.textContent = 'Type how many applications to add (or take away).'; return; }
+    if(!r){ err.hidden = false; err.textContent = 'Say why — it goes in the history, and ' + first + ' may ask.'; return; }
+    TP.busy($('#exGo'), q(SB.from('plan_adjustments').insert({client_id:c.id, delta:n, reason:r}).select('id').single())).then(function(){
+      TP.closeModal(); TP.toast((n > 0 ? '+' : '') + n + ' applications for ' + first);
+      return planRefresh(c);
+    }, function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
+  });
+}
+function undoExtra(id){
+  var c = C, a = (c.adj || []).filter(function(x){ return x.id === id; })[0]; if(!a) return;
+  var first = (c.row.full_name || '').split(' ')[0] || 'the client';
+  TP.confirmBox('Take back ' + (a.delta > 0 ? '+' : '') + a.delta + ' applications?', '“' + a.reason + '” comes off ' + first + '’s plan; the line stays in the history as taken back. This can’t be undone — add them again if needed.', 'Take back', true).then(function(ok){
+    if(!ok) return;
+    q(SB.from('plan_adjustments').update({undone_at:new Date().toISOString()}).eq('id', id).select('id').maybeSingle()).then(function(r){
+      if(!r) throw {message:'You don’t have access to that.'};
+      TP.toast('Taken back'); return planRefresh(c);
+    }, fail);
   });
 }
 
@@ -1732,7 +1847,7 @@ function drawResumes(c, rs, roles){
 }
 function newResume(){
   var m = TP.modal('<h2>New resume</h2><p>Give it a name you’ll recognise when choosing it for a job.</p><form id="nrF" class="stack" style="margin-top:14px">' +
-    '<div class="field"><label for="nrN">Name</label><input id="nrN" required placeholder="e.g. Data Analyst" value="' + esc((C.row.target_roles || '').split(',')[0].trim() || 'Main resume') + '"></div>' +
+    '<div class="field"><label for="nrN">Name</label><input id="nrN" required placeholder="e.g. Data Analyst" value="' + esc((C.row.target_roles || '').split(',')[0].trim() || 'Main resume') + '"' + TP.sg('resume_name') + '></div>' +
     '<div class="field"><label for="nrT">Paste the resume text <span class="muted">(optional — or upload their file in the editor)</span></label><textarea id="nrT" rows="6"></textarea></div>' +
     '<label class="check"><input type="checkbox" id="nrD"' + ((C.resumes || []).length ? '' : ' checked') + '> Use it by default for new applications</label>' +
     '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="nrGo">Create and open the editor</button></div></form>');
@@ -1752,7 +1867,7 @@ function newResume(){
 function resumeMenu(id){
   var r = (C.resumes || []).filter(function(x){ return x.id === id; })[0]; if(!r) return;
   var m = TP.modal('<h2>' + esc(r.name) + '</h2><div class="stack" style="margin-top:14px">' +
-    '<div class="field"><label for="rmN">Rename</label><form class="row" id="rmF"><input class="inp grow" id="rmN" value="' + esc(r.name) + '" maxlength="80"><button class="btn" type="submit" id="rmSave">Save</button></form></div>' +
+    '<div class="field"><label for="rmN">Rename</label><form class="row" id="rmF"><input class="inp grow" id="rmN" value="' + esc(r.name) + '" maxlength="80"' + TP.sg('resume_name') + '><button class="btn" type="submit" id="rmSave">Save</button></form></div>' +
     (r.is_default ? '' : '<button class="btn" type="button" id="rmDef">' + J.star + 'Use by default for new applications</button>') +
     '<button class="btn" type="button" id="rmDup">' + I.copy + 'Make a copy (for another role)</button>' +
     (r.text ? '<button class="btn" type="button" id="rmCopy">' + I.copy + 'Copy the resume text</button>' : '') +
@@ -2076,7 +2191,7 @@ function readLink(raw){
     var dup = already({key:j.key, url:j.url}) || already({url:it.url});
     out.innerHTML = '<div class="stack" style="margin-top:14px">' + (j.guessed ? '<div class="note warn">We couldn’t read that page (LinkedIn and some sites block it). Check the title and company, and paste the job description below.</div>' : '<div class="note ok">Read it. Check the details, then start the application.</div>') +
       (dup ? '<div class="note warn">' + esc(C.row.full_name) + ' already has this job: ' + dupNote(dup) + '</div>' : '') +
-      '<div class="grid3"><div class="field"><label for="lkT">Job title</label><input id="lkT" value="' + esc(j.title || '') + '"></div><div class="field"><label for="lkC">Company</label><input id="lkC" value="' + esc(j.company || '') + '"></div><div class="field"><label for="lkL">Location</label><input id="lkL" value="' + esc(j.location || '') + '"></div></div>' +
+      '<div class="grid3"><div class="field"><label for="lkT">Job title</label><input id="lkT" value="' + esc(j.title || '') + '"' + TP.sg('role') + '></div><div class="field"><label for="lkC">Company</label><input id="lkC" value="' + esc(j.company || '') + '"></div><div class="field"><label for="lkL">Location</label><input id="lkL" value="' + esc(j.location || '') + '"' + TP.sg('job_place') + '></div></div>' +
       '<div class="field"><label for="lkU">Link</label><input id="lkU" value="' + esc(j.url) + '"></div>' +
       '<div class="field"><label for="lkJ">Job description</label><textarea id="lkJ" rows="8" placeholder="Paste the whole job description — the editor tailors the resume to it">' + esc(j.jd || '') + '</textarea><div id="lkM" aria-live="polite"></div></div>' +
       '<div class="row end"><button class="btn pri" type="button" id="lkStart">Start application for ' + esc(C.row.full_name.split(' ')[0] || 'this client') + '</button></div></div>';
@@ -3019,7 +3134,7 @@ function resumeCard(){
 function drawDraft(){
   var first = esc(C.row.full_name.split(' ')[0] || 'them'), n = (A.answers || []).length;
   if(!DS || DS.a !== A) dsStart(A);
-  var jd = '<div class="grid3"><div class="field"><label for="apT">Title</label><input id="apT" value="' + esc(A.title) + '"></div><div class="field"><label for="apC">Company</label><input id="apC" value="' + esc(A.company) + '"></div><div class="field"><label for="apL2">Location</label><input id="apL2" value="' + esc(A.location || '') + '"></div></div>' +
+  var jd = '<div class="grid3"><div class="field"><label for="apT">Title</label><input id="apT" value="' + esc(A.title) + '"' + TP.sg('role') + '></div><div class="field"><label for="apC">Company</label><input id="apC" value="' + esc(A.company) + '"></div><div class="field"><label for="apL2">Location</label><input id="apL2" value="' + esc(A.location || '') + '"' + TP.sg('job_place') + '></div></div>' +
     '<div class="field"><label for="apJD">Job description <span class="muted" style="font-weight:500">— the resume is tailored to it, and the match and the fit are read from it</span></label><textarea id="apJD" rows="12" placeholder="Paste the whole job description">' + esc(A.jd_text || '') + '</textarea></div>';
   // a job page: the job's card, its description and analysis, the answers, the cover letter and sending it on the left; the resume on the right
   V.innerHTML = '<div class="aprec apx"><div class="aptop"><a class="btn sm ghost" href="' + esc(cUrl(C.id, 'applications')) + '" data-go>' + I.back + 'Applications</a><div id="lkNext"></div></div>' +
@@ -3494,26 +3609,30 @@ function loadActivity(c, n){
    ===================================================================== */
 function vTeam(){
   setTitle('Team', null);
-  V.innerHTML = '<div class="narrow" style="margin:0 auto"><div class="pageh"><div class="grow"><h1>Team</h1><div class="sub">Everyone here can open every client, apply for them and see the history. ' + (ME.owner ? 'You’re the owner, so you can add and remove people.' : 'Only the owner can change this list.') + '</div></div></div>' +
-    (ME.owner ? '<div class="card" style="margin-top:16px"><h3>Add someone</h3><p class="hint">They sign in at trulyplaced.com/login.html with this email — with Google, or a password.</p><form id="tmF" class="stack" novalidate><div class="grid3">' +
-      '<div class="field"><label for="tmE">Email</label><input id="tmE" type="email" required autocomplete="off"></div><div class="field"><label for="tmN">Name</label><input id="tmN" autocomplete="off"></div>' +
-      '<div class="field"><label for="tmR">Role</label><select id="tmR"><option value="member">Member</option><option value="owner">Owner</option></select></div></div>' +
+  var owners = TEAMROWS.filter(function(x){ return x.role === 'owner'; }).map(function(x){ return x.full_name || x.email.split('@')[0]; });
+  V.innerHTML = '<div class="narrow" style="margin:0 auto"><div class="pageh"><div class="grow"><h1>Team</h1><div class="sub">Everyone here opens every client, applies for them, optimises resumes and sees the history. ' +
+      (ME.owner ? 'Taking on clients, their plans and statuses, and this list stay with the owners' + (owners.length ? ' — ' + esc(owners.join(' and ')) : '') + '.' : 'Only the owners can change this list.') + '</div></div></div>' +
+    (ME.owner ? '<div class="card" style="margin-top:16px"><h3>Add an employee</h3><p class="hint">They sign in at trulyplaced.com/login.html with this email — with Google, or a password. Everyone added is an employee; the two owners are fixed.</p><form id="tmF" class="stack" novalidate><div class="grid3">' +
+      '<div class="field"><label for="tmE">Email</label><input id="tmE" required' + TP.sg('team_email') + '></div><div class="field"><label for="tmN">Name</label><input id="tmN" autocomplete="off"></div>' +
+      '<div class="field"><label for="tmT">Job title</label><input id="tmT" maxlength="60" autocomplete="off" placeholder="e.g. Application specialist"></div></div>' +
       '<label class="check"><input type="checkbox" id="tmI" checked> If they don’t have a TrulyPlaced login yet, email them a link to set a password</label>' +
       '<div class="row end"><button class="btn pri" type="submit" id="tmGo">Add to the team</button></div></form></div>' : '') +
     '<div class="tbl team" id="tmL" style="margin-top:16px"><div class="skel"></div></div></div>';
   if(ME.owner) $('#tmF').addEventListener('submit', function(e){
     e.preventDefault();
-    var email = $('#tmE').value.trim().toLowerCase(), name = $('#tmN').value.trim(), role = $('#tmR').value, b = $('#tmGo'), invite = $('#tmI').checked;
+    var email = $('#tmE').value.trim().toLowerCase(), name = $('#tmN').value.trim(), title = $('#tmT').value.trim().slice(0, 60), b = $('#tmGo'), invite = $('#tmI').checked;
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return TP.toast('Check the email address');
     var had = TEAMROWS.filter(function(x){ return x.email === email; })[0];
-    if(had && had.active && had.role === role) return TP.toast((had.full_name || email) + ' is already on the team');
-    var items = [['info', '<b>' + esc(name || email) + '</b> (' + esc(email) + ') signs in at trulyplaced.com/login.html'],
-      role === 'owner' ? ['warn', 'As an <b>owner</b> they can add and remove people, set clients’ plans and delete sent applications'] : ['ok', 'As a <b>member</b> they can open every client, apply for them and see the history'],
+    if(had && had.role === 'owner') return TP.toast((had.full_name || email) + ' is an owner already');
+    if(had && had.active && (had.title || '') === title && (had.full_name || '') === (name || had.full_name || '')) return TP.toast((had.full_name || email) + ' is already on the team');
+    var items = [['info', '<b>' + esc(name || email) + '</b>' + (title ? ', ' + esc(title) : '') + ' (' + esc(email) + ') signs in at trulyplaced.com/login.html'],
+      ['ok', 'As an <b>employee</b> they can open every client, apply for them, optimise resumes and see the history'],
+      ['info', 'Taking on clients, plans, statuses and this list stay with the owners'],
       invite ? ['info', 'If they don’t have a TrulyPlaced login yet, they get an email to set a password'] : null];
     TP.confirmBox(had ? 'Update ' + (had.full_name || email) + '?' : 'Add ' + (name || email) + ' to the team?', '', had ? 'Update' : 'Add to the team', false, {items:items}).then(function(ok){
       if(!ok) return;
-      var p = invite ? TP.fn('client-accounts', {action:'invite_member', email:email, full_name:name, role:role})
-        : q(SB.from('team_members').upsert({email:email, full_name:name || null, role:role, active:true}, {onConflict:'email'}));
+      var p = invite ? TP.fn('client-accounts', {action:'invite_member', email:email, full_name:name, title:title})
+        : q(SB.from('team_members').upsert({email:email, full_name:name || null, role:'member', title:title || null, active:true}, {onConflict:'email'}));
       TP.busy(b, p).then(function(r){ TP.toast(r && r.emailed ? 'Added. We emailed ' + email + ' a link to set a password' : 'Added to the team'); loadTeamNames().then(vTeam); }, fail);
     });
   });
@@ -3529,39 +3648,38 @@ var TODAY = null;
 function drawTeam(){
   var rows = TEAMROWS.slice().sort(function(a, b){ return (b.active - a.active) || (a.role === 'owner' ? -1 : b.role === 'owner' ? 1 : 0) || a.email.localeCompare(b.email); });
   $('#tmL').innerHTML = rows.length ? '<div class="thead"><span>Person</span><span>Role</span><span>Access</span><span>Today</span><span></span></div>' + rows.map(function(t){
-    var n = TODAY ? TODAY[t.email] || 0 : null;
+    var n = TODAY ? TODAY[t.email] || 0 : null, fixed = t.role === 'owner';
     return '<div class="li"><div class="cwho"><span class="av sm" style="background:' + TP.hue(t.email) + '">' + esc(TP.initials(t.full_name, t.email)) + '</span><div class="main"><div class="t">' + esc(t.full_name || t.email.split('@')[0]) + (t.email === ME.email ? ' <span class="tag">you</span>' : '') + '</div><div class="m">' + esc(t.email) + '</div></div></div>' +
-      '<div>' + (t.role === 'owner' ? '<span class="st applied">Owner</span>' : '<span class="st">Member</span>') + '</div>' +
+      '<div>' + (fixed ? '<span class="st applied">Owner</span>' : '<span class="st">' + esc(t.title || 'Employee') + '</span>') + '</div>' +
       '<div class="tm-acc">' + (t.active ? '<span class="st active">Active</span>' : '<span class="st paused">Off</span>') + '</div>' +
       '<div>' + (n != null && t.active ? '<span class="tday' + (n ? '' : ' zero') + '" title="Applications marked as applied today"><b>' + n + '</b> sent</span>' : '<span class="m">—</span>') + '</div>' +
-      '<div>' + (ME.owner ? '<button class="icb" type="button" data-act="tmmenu" data-email="' + esc(t.email) + '" title="Change" aria-label="Change ' + esc(t.full_name || t.email) + '">⋯</button>' : '') + '</div></div>';
+      '<div>' + (ME.owner && !fixed ? '<button class="icb" type="button" data-act="tmmenu" data-email="' + esc(t.email) + '" title="Change" aria-label="Change ' + esc(t.full_name || t.email) + '">⋯</button>' : '') + '</div></div>';   // the owners are fixed: nothing to change
   }).join('') : '<p class="fine" style="padding:14px">No one yet.</p>';
 }
-// every change to the team is said out loud first — and doubly so when it's you
+// every change to an employee is said out loud first; the two owners can't be changed from here (the database holds them)
 function teamMenu(email){
-  var t = TEAMROWS.filter(function(x){ return x.email === email; })[0]; if(!t) return;
-  var me = t.email === ME.email, nm = t.full_name || t.email, owners = TEAMROWS.filter(function(x){ return x.role === 'owner' && x.active && x.email !== t.email; }).length;
-  var m = TP.modal('<h2>' + esc(nm) + (me ? ' (you)' : '') + '</h2><p>' + esc(t.email) + '</p><div class="stack" style="margin-top:14px">' +
-    '<button class="btn" type="button" data-v="role">' + (t.role === 'owner' ? 'Make them a member' : 'Make them an owner') + '</button>' +
+  var t = TEAMROWS.filter(function(x){ return x.email === email; })[0]; if(!t || t.role === 'owner') return;
+  var nm = t.full_name || t.email;
+  var m = TP.modal('<h2>' + esc(nm) + '</h2><p>' + esc(t.email) + '</p><div class="stack" style="margin-top:14px">' +
+    '<form id="tmTF" novalidate><div class="field"><label for="tmT2">Job title</label><div class="row"><input class="inp grow" id="tmT2" value="' + esc(t.title || '') + '" maxlength="60" placeholder="e.g. Application specialist" autocomplete="off"><button class="btn" type="submit">Save</button></div></div></form>' +
     '<button class="btn" type="button" data-v="active">' + (t.active ? 'Turn off their access (keeps their history)' : 'Turn their access back on') + '</button>' +
-    '<button class="btn bad" type="button" data-v="del">Remove from the team</button><p class="fine">There must always be at least one owner.</p></div>');
+    '<button class="btn bad" type="button" data-v="del">Remove from the team</button><p class="fine">Employees open every client, apply for them and optimise resumes. Taking on clients, plans, statuses and this list stay with the owners.</p></div>');
+  $('#tmTF', m).addEventListener('submit', function(e){
+    e.preventDefault();
+    var title = $('#tmT2').value.trim().slice(0, 60) || null; if(title === (t.title || null)) return TP.closeModal();
+    q(SB.from('team_members').update({title:title}).eq('email', email)).then(function(){ TP.closeModal(); TP.toast(title ? nm + ' — ' + title : 'Job title removed'); loadTeamNames().then(vTeam); }, fail);
+  });
   m.addEventListener('click', function(e){
     var b = e.target.closest('[data-v]'); if(!b) return;
-    var v = b.getAttribute('data-v'), last = t.role === 'owner' && t.active && !owners && v !== 'role' || (v === 'role' && t.role === 'owner' && !owners);
-    if(last && (v !== 'active' || t.active)) return TP.toast('Keep at least one owner: make someone else an owner first');
-    var conf = v === 'role' ? (t.role === 'owner'
-          ? ['Make ' + nm + ' a member?', me ? 'You won’t be able to manage the team, set plans or delete sent applications any more.' : 'They keep every client, but can’t manage the team, set plans or delete sent applications.', 'Make a member', me]
-          : ['Make ' + nm + ' an owner?', 'Owners can add and remove people, set clients’ plans and delete sent applications.', 'Make an owner', false])
-      : v === 'active' ? (t.active
-          ? ['Turn off ' + (me ? 'your own' : nm + '’s') + ' access?', me ? 'You’ll be locked out of the team portal straight away.' : 'They can’t use the team portal until it’s turned back on. Everything they did stays in the history.', 'Turn off access', true]
+    var v = b.getAttribute('data-v');
+    var conf = v === 'active' ? (t.active
+          ? ['Turn off ' + nm + '’s access?', 'They can’t use the team portal until it’s turned back on. Everything they did stays in the history.', 'Turn off access', true]
           : ['Turn ' + nm + '’s access back on?', 'They can use the team portal again.', 'Turn on', false])
-      : ['Remove ' + (me ? 'yourself' : nm) + ' from the team?', me ? 'You’ll lose access to the team portal straight away.' : 'They lose access straight away. Their name stays on everything they did.', 'Remove', true];
-    TP.confirmBox(conf[0], conf[1], conf[2], conf[3] || v === 'del', me && v !== 'role' ? {type:t.email} : {}).then(function(ok){
+      : ['Remove ' + nm + ' from the team?', 'They lose access straight away. Their name stays on everything they did.', 'Remove', true];
+    TP.confirmBox(conf[0], conf[1], conf[2], conf[3]).then(function(ok){
       if(!ok) return;
-      var p = v === 'role' ? q(SB.from('team_members').update({role:t.role === 'owner' ? 'member' : 'owner'}).eq('email', email))
-        : v === 'active' ? q(SB.from('team_members').update({active:!t.active}).eq('email', email))
-        : q(SB.from('team_members').delete().eq('email', email));
-      p.then(function(){ TP.toast('Updated'); if(me && v !== 'role') return location.reload(); loadTeamNames().then(function(){ if(me && v === 'role') ME.owner = t.role !== 'owner'; vTeam(); }); }, fail);
+      var p = v === 'active' ? q(SB.from('team_members').update({active:!t.active}).eq('email', email)) : q(SB.from('team_members').delete().eq('email', email));
+      p.then(function(){ TP.toast('Updated'); loadTeamNames().then(vTeam); }, fail);
     });
   });
 }
@@ -3621,8 +3739,10 @@ document.addEventListener('click', function(e){
     case 'qadel':
       // an answer taken out: Undo puts it back in the same place (on a draft both are saved straight away)
       var r2 = b.closest('.qa'), qbox = r2.parentNode, qnext = r2.nextSibling, inApp = !!r2.closest('#apQA'), had = $$('[data-qa]', r2).some(function(x){ return x.value.trim(); });
-      r2.remove(); if(inApp) draftChanged(); else pfMark();
-      if(had) TP.toast('Answer removed', {undo:function(){ if(!qbox.isConnected) return; qbox.insertBefore(r2, qnext && qnext.parentNode === qbox ? qnext : null); if(inApp) draftChanged(); else pfMark(); }});
+      // on the Profile, a common question taken out is offered again below
+      var qaDone = function(){ if(inApp) return draftChanged(); pfMark(); var pc = $('#pfCommon'); if(pc && $('#pfQA')) pc.innerHTML = commonQ(readQA($('#pfQA'))); };
+      r2.remove(); qaDone();
+      if(had) TP.toast('Answer removed', {undo:function(){ if(!qbox.isConnected) return; qbox.insertBefore(r2, qnext && qnext.parentNode === qbox ? qnext : null); qaDone(); }});
       return;
     case 'resend': return resendInvite(b);
     case 'newresume': return newResume();
@@ -3696,6 +3816,8 @@ document.addEventListener('click', function(e){
         q(SB.from('client_activity').select('*').eq('application_id', aa.id).order('at', {ascending:true})).then(function(rows){ if(A === aa && $('#apHist')) $('#apHist').innerHTML = (rows || []).map(histRow).join(''); }, function(){});
       }, fail);
     case 'tmmenu': return teamMenu(b.getAttribute('data-email'));
+    case 'addextra': return addExtra();
+    case 'undoextra': return undoExtra(+b.getAttribute('data-id'));
   }
 });
 })();
