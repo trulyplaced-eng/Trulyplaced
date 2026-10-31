@@ -1949,8 +1949,8 @@ function tProfile(){
     '<div class="card"><h3>Jobs to apply for</h3><p class="hint">The Jobs tab starts from the first target role. Type a role or a city to pick it from the list — tap a field for ideas close to theirs.</p><div class="grid2">' +
       f('target_roles', 'Target roles', 'e.g. Data Analyst, BI Analyst') + f('target_locations', 'Target locations', 'e.g. US remote; Austin, TX') +
       f('apply_notes', 'How to apply for them', 'e.g. No relocation outside the US East Coast. Skip contract roles.', true) + '</div></div>' +
-    '<div class="card"><h3>Resume rules</h3><p class="hint">Followed on every Optimise for this client.</p><div class="grid2">' +
-      f('optimise_rules', 'Optimisation rules for their resume', 'Followed on every Optimise for this client — e.g. Keep the summary to three lines. Never reword the first role. British spelling.', true) + '</div></div>' +
+    '<div class="card"><h3>Resume rules</h3><p class="hint">Followed whenever a resume is improved, tailored or synced for this client.</p><div class="grid2">' +
+      f('optimise_rules', 'Rules for their resume','Followed whenever a resume is improved, tailored or synced for this client — e.g. Keep the summary to three lines. Never reword the first role. British spelling.', true) + '</div></div>' +
     skCard(c) +
     '</section><section class="pfsec" id="pfs-plan"><h2>Plan &amp; account</h2>' +
     planCardHTML(C) +   // the package, the extra applications and the status are the owners'; an employee reads them
@@ -2117,7 +2117,7 @@ function pfMark(){
   if(!dirty) bkDel('pf_' + C.id); else if(p) bkSet('pf_' + C.id, p);
 }
 var PF_NAME = {full_name:'Full name', phone:'Phone', linkedin:'LinkedIn', location:'Lives in', target_roles:'Target roles', target_locations:'Target locations', work_auth:'Work authorization',
-  salary:'Salary', notice:'Can start', apply_notes:'How to apply', optimise_rules:'Optimisation rules', answers:'Standard answers', status:'Status', confirmed_skills:'Skills for jobs', plan_package:'Plan'};
+  salary:'Salary', notice:'Can start', apply_notes:'How to apply', optimise_rules:'Resume rules', answers:'Standard answers', status:'Status', confirmed_skills:'Skills for jobs', plan_package:'Plan'};
 // opening the Profile: changes typed here before the page closed, not saved, are offered back
 function pfRecover(c){
   var bk = bkGet('pf_' + c.id), v = bk && bk.v, keys = v ? Object.keys(v).filter(function(k){ return PF_NAME[k]; }) : [];
@@ -2287,7 +2287,7 @@ function tResumes(){
   // two lists, like My Resumes on Scout Better: the main resumes, and every application's own copy tailored to its job;
   // above them, what the client asked about their resume from their workspace
   V.innerHTML = '<div id="rqBox"></div><div class="seg rsseg" id="rsV" role="tablist" aria-label="Which resumes">' + [['main', 'Main resumes'], ['tailored', 'Tailored for jobs']].map(function(o){ return '<button type="button" role="tab" data-rv="' + o[0] + '" class="' + (RSV === o[0] ? 'on' : '') + '" aria-selected="' + (RSV === o[0]) + '">' + o[1] + '<b id="rsN-' + o[0] + '"></b></button>'; }).join('') + '</div>' +
-    '<div id="rsMain"' + (RSV === 'main' ? '' : ' hidden') + '><div class="row"><div class="grow"><div class="sub">Base resumes for ' + esc(c.row.full_name) + '. Optimise each one once' + (roles.length ? ' for ' + esc(roles.join(', ')) + ' roles' : '') + '; every application then gets its own copy, synced to that job, so editing these never changes what was already sent.</div></div>' +
+    '<div id="rsMain"' + (RSV === 'main' ? '' : ' hidden') + '><div class="row"><div class="grow"><div class="sub">Base resumes for ' + esc(c.row.full_name) + '. Improve each one once' + (roles.length ? ' for ' + esc(roles.join(', ')) + ' roles' : ' for their target roles') + '; every application then gets its own copy, tailored to that job, so editing these never changes what was already sent.</div></div>' +
     '<button class="btn pri" type="button" data-act="newresume">' + I.plus + 'New resume</button></div><div id="rl" style="margin-top:14px"><div class="skel"></div></div><div id="rdR"></div></div>' +
     '<div id="rsTail"' + (RSV === 'tailored' ? '' : ' hidden') + '><div class="sub">Each application’s own copy, tailored to that job. Open one to keep working on it — a sent one opens read-only, exactly as it was sent.</div><div id="rlT" style="margin-top:14px"><div class="skel"></div></div></div>';
   $('#rsV').addEventListener('click', function(e){
@@ -2367,7 +2367,7 @@ function drawTailored(c, rows){
     return '<div class="li">' + (a.company ? coLogo(a.company, a.job_url) : '<span class="logo" style="background:' + TP.hue(a.id) + '">' + J.resume.replace('<svg', '<svg width="18" height="18" style="color:#fff"') + '</span>') +
       '<div class="main"><div class="t">' + esc(a.title || 'Role') + (a.company ? ' <span class="muted">at ' + esc(a.company) + '</span>' : '') + '</div>' +
       '<div class="m">' + TP.statusChip(a.status) + ' ' + (sent && a.applied_at ? 'Sent ' + esc(TP.fmtDate(a.applied_at)) : 'Edited ' + esc(TP.ago(a.updated_at))) + '</div>' +
-      (a.optimised ? '<div class="m" style="color:var(--ok)">✓ Optimised for this job</div>' : '') + '</div>' +
+      (a.optimised ? '<div class="m" style="color:var(--ok)">✓ Tailored to this job</div>' : '') + '</div>' +
       '<div class="side"><a class="btn sm' + (sent ? '' : ' pri') + '" href="' + esc(edUrl('app', a.id)) + '" target="tp-ed-' + esc(a.id) + '">' + I.doc + (sent ? 'View in editor' : 'Open in editor') + '</a>' +
         '<a class="btn sm" href="' + esc(cUrl(c.id, 'app=' + a.id)) + '" data-go>Application</a></div></div>';
   }).join('') + '</div>' : '<div class="empty">' + J.resume + '<h3>No tailored resumes yet</h3><p>Each application gets its own copy of a main resume the first time its resume is opened in the editor.</p></div>';
@@ -2382,8 +2382,8 @@ function drawResumes(c, rs, roles){
       return '<div class="li"><span class="logo" style="background:' + TP.hue(r.id) + '">' + J.resume.replace('<svg', '<svg width="18" height="18" style="color:#fff"') + '</span>' +
         '<div class="main"><div class="t">' + esc(r.name) + (r.is_default ? ' <span class="tag" style="color:var(--warn)">' + J.star.replace('<svg', '<svg width="11" height="11"') + ' default</span>' : '') + '</div>' +
         '<div class="m">' + (first ? esc(first) : '<i>Empty — open it to upload or paste the resume</i>') + '</div><div class="m">Edited ' + esc(TP.ago(r.updated_at)) + '</div>' +
-        (om ? '<div class="m" style="color:var(--ok)">✓ Optimised for ' + esc(om.job || 'their target roles') + ' · ' + esc(TP.ago(om.at)) + '</div>' : '') + '</div>' +
-        '<div class="side"><a class="btn sm' + (om ? '' : ' pri') + '" href="' + esc(edUrl('resume', r.id) + '#optimize') + '" target="tp-er-' + esc(r.id) + '" data-opt>' + I.spark + (roles.length ? 'Optimise for target roles' : 'Optimise') + '</a>' +
+        (om ? '<div class="m" style="color:var(--ok)">✓ Improved for ' + esc(om.job || 'their target roles') + ' · ' + esc(TP.ago(om.at)) + '</div>' : '') + '</div>' +
+        '<div class="side"><a class="btn sm' + (om ? '' : ' pri') + '" href="' + esc(edUrl('resume', r.id) + '#optimize') + '" target="tp-er-' + esc(r.id) + '" data-opt>' + I.spark + 'Improve base resume</a>' +
           '<a class="btn sm' + (om ? ' pri' : '') + '" href="' + esc(edUrl('resume', r.id)) + '" target="tp-er-' + esc(r.id) + '">' + I.doc + 'Open in editor</a>' +
           '<button class="icb" type="button" data-act="resmenu" data-id="' + esc(r.id) + '" title="More">⋯</button></div></div>';
     }).join('') + '</div>'
@@ -3165,7 +3165,7 @@ function lkRow(x){
       : os === 'wait' ? 'Waiting to sync' : os === 'run' ? '<span class="spin" style="width:12px;height:12px;vertical-align:-1px;margin-right:6px"></span>Syncing…'
       : os === 'ready' ? (o.n ? o.n + ' suggested change' + (o.n === 1 ? '' : 's') : 'No wording changes') + (o.sk ? ' · ' + o.sk + ' skill' + (o.sk === 1 ? '' : 's') + ' to tick' : '') + ' — ready to review'
       : os === 'done' ? (o.same ? 'Already a good match — nothing to change' : 'Reviewed — the tailored resume is saved')
-      : os === 'fail' ? 'Couldn’t optimise: ' + esc(o.why) : 'Draft started — open it to tailor the resume and apply';
+      : os === 'fail' ? 'Couldn’t sync: ' + esc(o.why) : 'Draft started — open it to tailor the resume and apply';
     return '<div class="lkrow jc" data-state="' + s + '" data-opt="' + os + '">' + head(s === 'gone' ? '' : fitPill(x)) + loc + (pill ? '<div class="jchips">' + pill + '</div>' : '') +
         '<div class="jcb"><div class="m' + (s === 'sent' || os === 'ready' || os === 'done' ? ' ok' : os === 'fail' ? ' err' : '') + '">' + line + '</div>' + (s === 'gone' ? '' : fitLine(x)) + '</div>' +
       '<div class="jcf">' + (s === 'gone' ? '<span class="st closed">Deleted</span><span class="sp"></span>' + del : TP.statusChip(st) + '<span class="sp"></span>' + del +
@@ -3191,7 +3191,7 @@ function lkRow(x){
    It runs in this browser tab, so other tabs and other clients' pages are fine; closing the tab stops it, so the page asks
    first. The suggestions wait on each draft until someone reviews them in the editor. */
 var OPT_LANES = 4, OQ = {jobs:[], run:0, cur:{}};
-// a draft is only ever synced to its own job - every part, in one go - since the main resume was optimised already
+// a draft is only ever synced to its own job - every part, in one go - since the main resume was improved already
 var SYNC_SEL = {summary:1, headline:1, location:1, experience:1, skills:1, sync:1};
 function lkCanOpt(x){ return !!x.app && (x.st || 'draft') === 'draft' && (!x.opt || x.opt.st === 'fail'); }
 function optChoices(cid){ var p = TP.lsGet('tp_opt_c_' + cid, null) || {}; return {sel:p.sel || {summary:1, experience:1, skills:1}, ins:p.ins || ''}; }   // shared with the editor's own Optimise
@@ -3199,7 +3199,7 @@ function lkOptimise(){
   var c = C, L = lkList(c.id), n = L.items.filter(lkCanOpt).length, pref = optChoices(c.id); if(!n) return;
   var m = TP.modal('<h2>Sync ' + n + (n === 1 ? ' resume to its job' : ' resumes to their jobs') + '</h2><p>Each draft moves toward its own job in one go: the summary, the title under the name, every bullet in the posting’s words and order, and the skills. The same fact checks as the editor: no new numbers or tools, no lost keywords, and projects, education and certifications are never touched. Nothing on a resume changes until you review it in the editor.</p>' +
     '<div class="stack" style="margin-top:14px;gap:10px"><div class="field"><label for="boIns">Special instructions <span class="muted">(optional, for all of them)</span></label><textarea id="boIns" rows="2" maxlength="400" placeholder="e.g. Keep each bullet under 22 words">' + esc(pref.ins) + '</textarea></div>' +
-      (c.row.optimise_rules ? '<p class="fine">' + esc((c.row.full_name || '').split(' ')[0] || 'The client') + '’s optimisation rules from the Profile are followed too.</p>' : '') +
+      (c.row.optimise_rules ? '<p class="fine">' + esc((c.row.full_name || '').split(' ')[0] || 'The client') + '’s resume rules from the Profile are followed too.</p>' : '') +
       '<p class="fine">Runs ' + OPT_LANES + ' at a time in this browser tab — keep it open. You can work in other tabs meanwhile.</p></div>' +
     '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="button" id="boGo">' + I.spark + 'Sync ' + n + '</button></div>');
   $('#boGo', m).onclick = function(){
@@ -3559,7 +3559,7 @@ function scoreHTML(){
   if(!m) return '<div class="jscore none"><div class="ring">' + ringSVG(0) + '<span>–</span></div><div class="jsx"><b class="eyb">Resume match score</b><p>' +
     (!a.jd_text ? (sent ? 'No job description was kept with this application, so there’s no match to show.' : 'Add the job description to see how well the resume matches it.')
       : sent ? 'No resume text was kept with this application, so there’s no match to show.' : 'Add a resume to see how well it matches this job.') + '</p></div></div>';
-  var tier = m.pct >= 75 ? ['hi', 'The resume shows most of what this job asks for.'] : m.pct >= 50 ? ['mid', 'The resume partly matches this job. Optimise can bring in more of its words, truthfully.'] : ['lo', 'A low match: look at what’s missing before applying.'];
+  var tier = m.pct >= 75 ? ['hi', 'The resume shows most of what this job asks for.'] : m.pct >= 50 ? ['mid', 'The resume partly matches this job. Tailor to this job can bring in more of its words, truthfully.'] : ['lo', 'A low match: look at what’s missing before applying.'];
   var fit = f && f.score != null ? '<span class="fitp ' + esc(f.verdict) + '" title="' + esc((FVERD[f.verdict] || 'Fit') + ' (' + f.score + '/100)' + f.reasons.map(function(r){ return '\n✓ ' + r; }).join('') + f.concerns.map(function(r){ return '\n! ' + r; }).join('')) + '"><b>' + f.score + '</b><small>' + (FVERD[f.verdict] || 'Fit') + '</small></span>'
     : f && f.wait ? '<span class="fitp wait" role="status"><span class="spin"></span>Checking ' + first + '’s fit…</span>'
     : f && f.err ? '<button class="btn sm" type="button" data-act="apfit" title="' + esc('Couldn’t check the fit: ' + f.err) + '">Check fit</button>' : '';
@@ -3579,7 +3579,7 @@ function drawScore(){
 // the description's own words, in view as they change: the title, the company, the facts and the tags
 function drawFacts(){ var f = $('#apFacts'), g = $('#apTags'); if(f) f.innerHTML = factsHTML(A); if(g) g.innerHTML = tagsHTML(A); }
 var redrawJob = TP.debounce(function(){ if(A && $('#apFacts')){ drawFacts(); drawScore(); } }, 500);
-// the job's analysis: the fit, the requirements as Optimise read them, the keywords on the resume and missing, and what the terms say
+// the job's analysis: the fit, the requirements as Claude read them, the keywords on the resume and missing, and what the terms say
 function analysisHTML(){
   var a = A, m = appMatch(a), f = appFitOf(a), yrs = reqYears(a.jd_text || ''), tags = jobTags(a), first = esc((C.row.full_name || '').split(' ')[0] || 'the client');
   var reqs = (a.resume_doc && a.resume_doc.meta && a.resume_doc.meta.job && a.resume_doc.meta.job.reqs) || [];
@@ -3587,8 +3587,8 @@ function analysisHTML(){
   var sec = function(h, body){ return '<div><h4>' + h + '</h4>' + body + '</div>'; };
   return '<div class="an">' +
     (f && f.score != null ? sec('How well ' + first + ' fits · ' + (FVERD[f.verdict] || 'Fit') + ', ' + f.score + '/100', '<ul class="fitl">' + f.reasons.map(function(r){ return '<li class="ok">' + esc(r) + '</li>'; }).join('') + f.concerns.map(function(r){ return '<li class="gap">' + esc(r) + '</li>'; }).join('') + '</ul>') : '') +
-    (reqs.length ? sec('Requirements, as Optimise read them', '<ul class="reql">' + reqs.map(function(q){ return '<li><span class="rs ' + (q.status === 'shown' ? 'ok' : q.status === 'buried' ? 'blue' : 'mute') + '">' + (q.status === 'shown' ? 'Shown' : q.status === 'buried' ? 'Surfaced' : 'Not on the resume') + '</span><span>' + esc(q.text) + '</span></li>'; }).join('') + '</ul>') : '') +
-    (m ? sec('Missing from the resume' + (m.miss.length ? ' · ' + m.miss.length : ''), m.miss.length ? '<div class="kchips">' + m.miss.map(function(k){ return '<span class="kchip miss">' + esc(k) + '</span>'; }).join('') + '</div><p class="fine" style="margin-top:8px">Only what ' + first + ' really has goes on the resume: the editor’s Optimise asks before adding a skill.</p>' : '<p class="fine">Every keyword of this job is on the resume.</p>') +
+    (reqs.length ? sec('Requirements, as Claude read them', '<ul class="reql">' + reqs.map(function(q){ return '<li><span class="rs ' + (q.status === 'shown' ? 'ok' : q.status === 'buried' ? 'blue' : 'mute') + '">' + (q.status === 'shown' ? 'Shown' : q.status === 'buried' ? 'Surfaced' : 'Not on the resume') + '</span><span>' + esc(q.text) + '</span></li>'; }).join('') + '</ul>') : '') +
+    (m ? sec('Missing from the resume' + (m.miss.length ? ' · ' + m.miss.length : ''), m.miss.length ? '<div class="kchips">' + m.miss.map(function(k){ return '<span class="kchip miss">' + esc(k) + '</span>'; }).join('') + '</div><p class="fine" style="margin-top:8px">Only what ' + first + ' really has goes on the resume: the editor asks before adding a skill.</p>' : '<p class="fine">Every keyword of this job is on the resume.</p>') +
       sec('On the resume · ' + m.hit.length + ' of ' + m.n, '<div class="kchips">' + m.hit.map(function(k){ return '<span class="kchip ok">' + esc(k) + '</span>'; }).join('') + '</div>') : '') +
     ((yrs || tags.length) ? sec('What the description says', '<ul class="fitl">' + (yrs ? '<li class="ok">Asks for ' + yrs + '+ years of experience</li>' : '') + tags.map(function(g){ return '<li class="' + (g[0] === 'bad' ? 'gap' : 'ok') + '">' + esc(g[2]) + '</li>'; }).join('') + '</ul>') : '') + '</div>';
 }
@@ -3627,19 +3627,19 @@ function reloadView(){
 // the resume's state in the checklist, and everything that shows the resume, drawn again together
 function resStep(){
   var d = A.resume_doc, m = (d && d.meta) || {}, pend = !!m.optPending, opt = !pend && optimisedDoc(d);
-  return '<span class="n' + (opt ? ' ok' : '') + '">' + (opt ? I.check : '2') + '</span><div class="bd"><b>Resume</b><small>' + (pend ? 'Suggestions wait in the editor.' : opt ? 'Optimised for this job.' : 'Not optimised for this job yet.') + '</small></div>';
+  return '<span class="n' + (opt ? ' ok' : '') + '">' + (opt ? I.check : '2') + '</span><div class="bd"><b>Resume</b><small>' + (pend ? 'Suggestions wait in the editor.' : opt ? 'Tailored to this job.' : 'Not tailored to this job yet.') + '</small></div>';
 }
 function drawRes(){ if($('#resCard')) $('#resCard').innerHTML = resumeCard(); if($('#ckRes')) $('#ckRes').innerHTML = resStep(); drawScore(); }
-// the resume's one action, in the job's card, above the resume and on a phone: review the list's suggestions, open the tailored copy, or optimise it
+// the resume's one action, in the job's card, above the resume and on a phone: review the list's suggestions, open the tailored copy, or tailor it
 function resumeBtn(hdr){
   var d = A.resume_doc, m = (d && d.meta) || {}, pend = !!m.optPending, opt = !pend && optimisedDoc(d), url = edUrl('app', A.id);
   var cls = hdr === 'act' ? 'btn pri' : 'btn sm' + (!hdr && !opt ? ' pri' : ''), tgt = ' target="tp-ed-' + esc(A.id) + '" data-act="toeditor"';
   if(hdr === 'act') return pend ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + '>' + I.spark + 'Review suggestions</a>'
     : opt ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + '>' + I.doc + 'Open the resume</a>'
-    : '<a class="' + cls + '" href="' + esc(url + '#optimize') + '"' + tgt + '>' + I.spark + 'Optimise resume</a>';
+    : '<a class="' + cls + '" href="' + esc(url + '#optimize') + '"' + tgt + '>' + I.spark + 'Tailor resume</a>';
   return pend ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + '>' + I.spark + 'Review the suggestions</a>'
     : opt ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + '>' + I.doc + (hdr ? 'Open resume' : 'Open the tailored resume') + '</a>'
-    : '<a class="' + cls + '" href="' + esc(url + '#optimize') + '"' + tgt + ' data-opt>' + I.spark + 'Optimise for this job</a>';
+    : '<a class="' + cls + '" href="' + esc(url + '#optimize') + '"' + tgt + ' data-opt>' + I.spark + 'Tailor to this job</a>';
 }
 // a checklist line as the form changes: done (a tick) or not, and what's left to do
 function ckMark(id, ok, num, text){ var el = $('#' + id); if(!el) return; var n = el.querySelector('.n'); n.className = 'n' + (ok ? ' ok' : ''); n.innerHTML = ok ? I.check : num; el.querySelector('small').textContent = text; }
@@ -3666,14 +3666,14 @@ function resumeCard(){
   var d = A.resume_doc, m = (d && d.meta) || {}, saved = !!(d || A.resume_text), pend = !!m.optPending, opt = !pend && optimisedDoc(d);   // pend: the list's Optimise left suggestions to review
   var text = A.resume_text || (base && base.text) || '';
   return '<div class="rh1"><b>Resume for this job</b>' + (pend ? '<span class="rst pend">' + I.spark + '<span><b>Synced in the background</b> — Claude’s suggestions wait in the editor; nothing has changed yet</span></span>'
-      : opt ? '<span class="rst ok">' + I.check + 'Optimised for this job ' + esc(TP.ago((m.optimised && m.optimised.at) || A.updated_at)) + '</span>'
-      : '<span class="rst">' + (saved ? 'A copy of <b>' + bname + '</b>, not optimised for this job yet' : 'Starts from <b>' + bname + '</b>, not optimised for this job yet') + '</span>') + '</div>' +
+      : opt ? '<span class="rst ok">' + I.check + 'Tailored to this job ' + esc(TP.ago((m.optimised && m.optimised.at) || A.updated_at)) + '</span>'
+      : '<span class="rst">' + (saved ? 'A copy of <b>' + bname + '</b>, not tailored to this job yet' : 'Starts from <b>' + bname + '</b>, not tailored to this job yet') + '</span>') + '</div>' +
     (rs.length ? '<div class="rh2"><label class="lbl" for="apBase">Start from</label><select class="inp" id="apBase"' + (saved ? ' disabled title="This job’s copy is already made from it"' : '') + '>' +
         rs.map(function(r){ return '<option value="' + esc(r.id) + '"' + (r.id === A.base_resume_id ? ' selected' : '') + '>' + esc(r.name) + '</option>'; }).join('') + '</select>' +
         '<span class="rbtns">' + resumeBtn(false) + (saved || base ? '<button class="btn sm" type="button" data-act="respdf" title="Download the resume as a PDF">' + J.dl + 'PDF</button>' : '') +
         (text ? '<button class="btn sm" type="button" data-act="cpresume" title="Copy the resume text">' + I.copy + 'Copy text</button>' : '') + '</span></div>'
       : '<div class="note warn">' + esc(C.row.full_name) + ' has no resume yet. <a href="' + esc(cUrl(C.id, 'resumes')) + '" data-go>Add one on the Resumes tab</a>, or open the editor and upload their file there.</div>') +
-    (A.jd_text ? '' : '<span class="fine warnt">Paste the job description first: Optimise tailors the resume to it.</span>');
+    (A.jd_text ? '' : '<span class="fine warnt">Paste the job description first: the resume is tailored to it.</span>');
 }
 function drawDraft(){
   var first = esc(C.row.full_name.split(' ')[0] || 'them'), n = (A.answers || []).length;
@@ -3906,8 +3906,8 @@ function markApplied(btn){
     if(!own && !base && !FILES.res) throw {message:'There’s no resume on this application yet — tailor it in the editor, or attach the file you uploaded.'};
     var first = (c.row.full_name || '').split(' ')[0] || 'The client', saved = a.resume_doc && a.resume_doc.meta && a.resume_doc.meta.saved, n = (a.answers || []).length;
     var items = [
-      own ? (optimisedDoc(a.resume_doc) ? ['ok', 'Resume <b>optimised for this job</b>' + (saved ? ' — last saved in the editor ' + esc(TP.ago(saved)) : '')]
-                                        : ['warn', 'Resume <b>not optimised for this job</b> — it goes as copied from ' + esc(base ? base.name : 'the main resume')])
+      own ? (optimisedDoc(a.resume_doc) ? ['ok', 'Resume <b>tailored to this job</b>' + (saved ? ' — last saved in the editor ' + esc(TP.ago(saved)) : '')]
+                                        : ['warn', 'Resume <b>not tailored to this job</b> — it goes as copied from ' + esc(base ? base.name : 'the main resume')])
           : base ? ['warn', 'Resume <b>not opened for this job</b> — ' + esc(base.name) + ' goes exactly as it is today'] : ['warn', 'Only the attached file is kept as the resume'],
       FILES.shot ? ['ok', 'Confirmation screenshot attached'] : ['warn', 'No confirmation screenshot (“There was no confirmation screen” is ticked)'],
       FILES.res ? ['ok', 'Uploaded resume file attached: ' + esc(FILES.res.name)] : ['warn', 'The resume file you uploaded isn’t attached — recommended, it shows exactly what ' + esc(a.company || 'the company') + ' got'],
@@ -3951,7 +3951,7 @@ function drawSent(){
     '<div class="card"><div class="ch"><h3>Confirmation and record</h3><span class="lock">' + I.lock + 'Sent ' + esc(TP.fmtDateTime(A.applied_at)) + ' — this record can’t be changed</span></div>' +
       '<div class="aprecbox"><div>' + (A.screenshot ? '<a class="shot" data-file="' + esc(A.screenshot) + '" target="_blank" rel="noopener"><img data-file="' + esc(A.screenshot) + '" alt="Confirmation screenshot"></a><p class="fine" style="margin-top:6px">Click to open it full size.</p>' : '<p class="hint">No screenshot was saved.</p>') + '</div>' +
       '<div class="rvs">' + rv('Status', TP.statusChip(A.status)) + rv('Sent by', esc(who(by))) +
-        rv('Resume', opt ? 'Optimised for this job' : (A.resume_doc || A.resume_text) ? 'As copied from the main resume' : A.resume_file ? 'The uploaded file only' : '—') +
+        rv('Resume', opt ? 'Tailored to this job' : (A.resume_doc || A.resume_text) ? 'As copied from the main resume' : A.resume_file ? 'The uploaded file only' : '—') +
         rv('Files', [A.screenshot ? 'Screenshot' : '', A.resume_file ? 'Resume file' : ''].filter(Boolean).join(', ') || 'None') +
         rv('Cover letter', A.cover_letter ? 'Included' : 'None') + rv('Form answers', n ? String(n) : 'None') + '</div></div>' +
       (miss ? '<div style="margin-top:12px"><p class="hint">A file that wasn’t added at the time can be added once. Saved files can’t be replaced.</p><div class="senddrop">' +
@@ -4040,6 +4040,12 @@ if(BC) BC.onmessage = function(e){
   if(!C || m.client !== C.id) return;
   if(m.app && R.app === m.app) refreshApp();
   if(m.resume){ C.resumes = null; if(R.tab === 'resumes' && !R.app) tResumes(); }
+  if(m.profile){   // the editor saved the client's target roles (a base resume asked for them first): this tab's copy of the client follows
+    q(SB.from('clients').select('*').eq('id', C.id).maybeSingle()).then(function(row){
+      if(!row || !C || C.id !== row.id) return; if(R.tab === 'profile' && !R.app && pfDirty()) return;
+      C.row = row; staleList(); drawBar(); if(R.app) return; if(R.tab === 'resumes') tResumes(); else if(R.tab === 'profile') tProfile();
+    }, function(){});
+  }
   if(m.apps){   // an application changed in another browser tab (one opened from the Jobs list, say): this tab follows at once
     C.idx = null; refreshProgress(true);
     if(R.app) return;
@@ -4187,7 +4193,7 @@ function vTeam(){
     if(had && had.role === 'owner') return TP.toast((had.full_name || email) + ' is an owner already');
     if(had && had.active && (had.title || '') === title && (had.full_name || '') === (name || had.full_name || '')) return TP.toast((had.full_name || email) + ' is already on the team');
     var items = [['info', '<b>' + esc(name || email) + '</b>' + (title ? ', ' + esc(title) : '') + ' (' + esc(email) + ') signs in at trulyplaced.com/login.html'],
-      ['ok', 'As an <b>employee</b> they can open every client, apply for them, optimise resumes and see the history'],
+      ['ok', 'As an <b>employee</b> they can open every client, apply for them, tailor resumes and see the history'],
       ['info', 'Taking on clients, plans, statuses and this list stay with the owners'],
       invite ? ['info', 'If they don’t have a TrulyPlaced login yet, they get an email to set a password'] : null];
     TP.confirmBox(had ? 'Update ' + (had.full_name || email) + '?' : 'Add ' + (name || email) + ' to the team?', '', had ? 'Update' : 'Add to the team', false, {items:items}).then(function(ok){
@@ -4224,7 +4230,7 @@ function teamMenu(email){
   var m = TP.modal('<h2>' + esc(nm) + '</h2><p>' + esc(t.email) + '</p><div class="stack" style="margin-top:14px">' +
     '<form id="tmTF" novalidate><div class="field"><label for="tmT2">Job title</label><div class="row"><input class="inp grow" id="tmT2" value="' + esc(t.title || '') + '" maxlength="60" placeholder="e.g. Application specialist" autocomplete="off"><button class="btn" type="submit">Save</button></div></div></form>' +
     '<button class="btn" type="button" data-v="active">' + (t.active ? 'Turn off their access (keeps their history)' : 'Turn their access back on') + '</button>' +
-    '<button class="btn bad" type="button" data-v="del">Remove from the team</button><p class="fine">Employees open every client, apply for them and optimise resumes. Taking on clients, plans, statuses and this list stay with the owners.</p></div>');
+    '<button class="btn bad" type="button" data-v="del">Remove from the team</button><p class="fine">Employees open every client, apply for them and tailor resumes. Taking on clients, plans, statuses and this list stay with the owners.</p></div>');
   $('#tmTF', m).addEventListener('submit', function(e){
     e.preventDefault();
     var title = $('#tmT2').value.trim().slice(0, 60) || null; if(title === (t.title || null)) return TP.closeModal();

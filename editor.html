@@ -470,6 +470,10 @@ svg.defs{position:absolute;width:0;height:0}
 .ohd button{color:var(--blue);font-weight:500;text-transform:none;letter-spacing:0;font-size:12.5px}
 .omjd textarea{width:100%;border:1px solid var(--fline);background:#fff;border-radius:10px;padding:10px;font-size:13.5px;resize:vertical;min-height:110px}
 .omjd textarea:focus{outline:none;background:#fff;border-color:var(--focus);box-shadow:0 0 0 3px var(--ring)}
+.omjd .fine{margin:0 0 6px}
+/* a base resume with no target roles yet: the ask that comes before the choices */
+.omroles .lbl{margin-top:4px}.omroles input{width:100%;font:inherit;font-size:13.5px;border:1px solid var(--fline);background:#fff;border-radius:10px;padding:10px;color:var(--ink)}
+.omroles input:focus{outline:none;border-color:var(--focus);box-shadow:0 0 0 3px var(--ring)}.omroles .fine{margin-top:7px}
 /* the Optimise progress screen: one step worked on at a time, joined by a line that fills as they're done; a bar that keeps moving; ticks that draw in */
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes pop{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
@@ -686,7 +690,7 @@ html.view .vtext pre{margin:0;white-space:pre-wrap;font:13px/1.55 var(--ui);colo
     <span class="hist"><button type="button" class="ib" data-a="undo" id="bUndo" aria-label="Undo (Ctrl+Z)" data-tip="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button><button type="button" class="ib" data-a="redo" id="bRedo" aria-label="Redo (Ctrl+Y)" data-tip="Redo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button></span>
     <button type="button" class="btn savb" data-a="save-now" id="bSave" aria-label="Save now (Ctrl+S)" data-tip="Save now · Ctrl+S"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg><span>Save</span></button>
     <span class="vr" aria-hidden="true"></span>
-    <button type="button" class="btn ai" data-a="optimize" id="bOpt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Optimise for a job</span></button>
+    <button type="button" class="btn ai" data-a="optimize" id="bOpt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Tailor to a job</span></button>
     <div class="dd" id="dlWrap"><button type="button" class="btn pri" data-a="dl-menu" id="bDl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg><span>Download</span><i class="dv" aria-hidden="true"></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
       <div class="menu" id="dlMenu" hidden>
         <button type="button" data-a="dl-pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span><b>PDF</b><small>Best for applying. Choose “Save as PDF” in the print window.</small></span></button>
@@ -1935,14 +1939,24 @@ function startDoc(D) {
   if (BATCH) setTimeout(batchRun, 300);
   else if (TEAM && !READONLY && DOC.meta.optPending) setTimeout(openPending, 400);   // the batch's suggestions, waiting for review
 }
-// a client's main resume has no job: its Optimise tailors it to the target roles on their profile
+// Which task the editor's AI is doing. It decides every label, so each reads as the task in hand (three plain verbs): a client's
+// base resume is *improved* for their target roles — never for one job, never synced; an application's own copy is *tailored* to
+// its one job; the public editor *tailors* to a pasted job description, the one place a paste box belongs. The Jobs list's
+// one-click run of every part at once stays *Sync* (team.html's "Sync 3 to their jobs", and the #sync link).
+const optMode = () => (TEAM && TEAM.app ? 'job' : TEAM ? 'base' : 'free');
+const OPTW = {
+  base: { verb: 'Improve', ing: 'improving', done: 'Improved', btn: 'Improve base resume', title: 'Improve the base resume', pick: 'Choose what to improve', go: 'Improve what you picked for these roles', again: 'Improve again' },
+  job: { verb: 'Tailor', ing: 'tailoring', done: 'Tailored', btn: 'Tailor to this job', title: 'Tailor to this job', pick: 'Choose what to tailor', go: 'Tailor what you picked to this job', again: 'Tailor again' },
+  free: { verb: 'Tailor', ing: 'tailoring', done: 'Tailored', btn: 'Tailor to a job', title: 'Tailor to a job', pick: 'Choose what to tailor', go: 'Tailor what you picked to this job', again: 'Tailor again' } };
+const optWord = () => OPTW[optMode()];
+// a client's base resume has no job: it's improved for the target roles on their profile (asked for first when there are none yet)
 function rolesJob() {
   const r = String((CLIENT && CLIENT.target_roles) || '').split(',').map((x) => x.trim()).filter(Boolean); if (!r.length) return null;
   return { title: r[0], company: '', loc: '', key: 'roles:' + r.join('|'), roles: r,
     text: 'Target roles: ' + r.join('; ') + '.\n\nThis is the candidate’s main resume, used for every application to these roles; there is no single job posting. Tailor it to these roles in general: the experience, skills, tools, methods and results that employers hiring for them look for, in the words their job postings use.' };
 }
 function loadJob() {
-  if (TEAM) return TEAM.app ? TEAM_JOB : (rolesJob() || (DOC.meta.job && DOC.meta.job.text ? DOC.meta.job : null));   // never the team member's own job-board job
+  if (TEAM) return TEAM.app ? TEAM_JOB : rolesJob();   // a base resume: the target roles only, never a pasted job (and never the team member's own job-board job)
   const j = lsGet('tp_ats_job', null);
   const fresh = j && j.text && Date.now() - (j.at || 0) < 21 * 864e5 ? { title: j.title || '', company: j.company || '', text: j.text, key: j.key, loc: j.loc || '' } : null;
   if (EMBED && fresh) return fresh;
@@ -3090,10 +3104,10 @@ function checkHTML() {
     const down = B && M.pct < B.before, lost = down ? (B.hit || []).filter((k) => !M.hit.includes(k)) : [];
     h += '<div class="pc"><div class="score"><div class="ring" style="--v:' + M.pct + ';--c:' + col(M.pct) + '"><span>' + M.pct + '%</span></div><div><b>Job match' + (JOB && JOB.title ? ' · ' + esc(cleanTitle(JOB.title)) : '') + '</b>' +
       '<p>' + M.hit.length + ' of the ' + M.n + ' keywords in this job description are on the resume. Counted the same way every time, so before and after can be compared.</p>' +
-      (B && B.before !== M.pct ? '<p class="mtrend' + (down ? ' down' : ' up') + '">Before Optimise ' + B.before + '% → now <b>' + M.pct + '%</b>' + (down ? ' — lower than before' + (lost.length ? ': ' + esc(lost.slice(0, 4).join(', ')) + (lost.length > 1 ? ' are' : ' is') + ' no longer on the resume' : '') + '.' : '') + '</p>'
-        : B ? '<p class="mtrend">Before Optimise ' + B.before + '% — the same now</p>' : '') + '</div></div>' +
+      (B && B.before !== M.pct ? '<p class="mtrend' + (down ? ' down' : ' up') + '">Before ' + optWord().ing + ' ' + B.before + '% → now <b>' + M.pct + '%</b>' + (down ? ' — lower than before' + (lost.length ? ': ' + esc(lost.slice(0, 4).join(', ')) + (lost.length > 1 ? ' are' : ' is') + ' no longer on the resume' : '') + '.' : '') + '</p>'
+        : B ? '<p class="mtrend">Before ' + optWord().ing + ' ' + B.before + '% — the same now</p>' : '') + '</div></div>' +
       '<div class="kw">' + M.hit.slice(0, 14).map((k) => '<span>' + esc(k) + '</span>').join('') + M.miss.slice(0, 14).map((k) => '<span class="miss">' + esc(k) + '</span>').join('') + '</div>' +
-      '<div class="acts" style="margin-top:10px"><button type="button" class="btn ai" data-a="optimize">' + I_SPARK + '<span>' + (B ? 'Optimise again' : 'Optimise for this job') + '</span></button><button type="button" class="btn sm" data-a="fact">Fact check</button></div></div>';
+      '<div class="acts" style="margin-top:10px"><button type="button" class="btn ai" data-a="optimize">' + I_SPARK + '<span>' + (B ? optWord().again : optWord().btn) + '</span></button><button type="button" class="btn sm" data-a="fact">Fact check</button></div></div>';
   }
   // 2. Writing quality: seven lines counted here, three judged by Claude
   h += '<div class="pc">';
@@ -3127,9 +3141,11 @@ function checkHTML() {
   // the job's requirements, as Optimise found them (an AI reading, so they're shown beside the score, not in it)
   const RQ0 = DOC.meta.job && DOC.meta.job.reqs && DOC.meta.job.reqs.length ? DOC.meta.job.reqs : null;
   if (RQ0) { const met = RQ0.filter((q) => q.status !== 'missing'), basics = RQ0.filter((q) => q.kind === 'basic');
-    h += '<div class="pc"><div class="pch"><h3>The job’s requirements</h3></div><p class="hint">Meets ' + met.length + ' of ' + RQ0.length + ' requirements · ' + basics.filter((q) => q.status !== 'missing').length + ' of ' + basics.length + ' must-haves, as Optimise read the job.</p>' +
+    h += '<div class="pc"><div class="pch"><h3>The job’s requirements</h3></div><p class="hint">Meets ' + met.length + ' of ' + RQ0.length + ' requirements · ' + basics.filter((q) => q.status !== 'missing').length + ' of ' + basics.length + ' must-haves, as Claude read the job.</p>' +
       '<ul class="reql small">' + RQ0.map((q) => '<li><span class="rs ' + (q.status === 'shown' ? 'ok' : q.status === 'buried' ? 'blue' : 'mute') + '">' + (q.status === 'shown' ? 'Shown' : q.status === 'buried' ? 'Surfaced' : 'Not on the resume') + '</span><span>' + esc(q.text) + '</span></li>').join('') + '</ul></div>';
-  } else if (!M) h += '<div class="pc"><div class="pch"><h3>Tailor it to a job</h3></div><p class="hint">Paste a job description and Optimise tailors the summary, bullets and skills to it, keeping every fact — and the Job match shows how far it got.</p><div class="acts"><button type="button" class="btn ai" data-a="optimize">' + I_SPARK + '<span>Optimise for a job</span></button><button type="button" class="btn sm" data-a="fact">Fact check</button></div></div>';
+  } else if (!M) h += optMode() === 'base'   // a base resume with no target roles yet, or a job to paste
+    ? '<div class="pc"><div class="pch"><h3>Improve the base resume</h3></div><p class="hint">Say which roles it’s for, and the summary, bullets and skills are improved for them in general, keeping every fact.</p><div class="acts"><button type="button" class="btn ai" data-a="optimize">' + I_SPARK + '<span>Improve base resume</span></button><button type="button" class="btn sm" data-a="fact">Fact check</button></div></div>'
+    : '<div class="pc"><div class="pch"><h3>Tailor it to a job</h3></div><p class="hint">Paste a job description and the summary, bullets and skills are tailored to it, keeping every fact — and the Job match shows how far it got.</p><div class="acts"><button type="button" class="btn ai" data-a="optimize">' + I_SPARK + '<span>' + optWord().btn + '</span></button><button type="button" class="btn sm" data-a="fact">Fact check</button></div></div>';
   return h;
 }
 function runReview() {
@@ -3186,7 +3202,7 @@ function writeCover() {
 }
 function autoCover() { if (!JOB || COVER_BUSY) return; if (DOC.cover.text && DOC.cover.jobKey === JOB.key) return; DOC.cover.role = JOB.title || ''; DOC.cover.company = JOB.company || ''; writeCover(); }
 
-/* ---------- Optimise for a job: pick what to tailor, review side by side, accept what you like ---------- */
+/* ---------- Improve · Tailor · Sync: pick what to work on, review side by side, accept what you like ---------- */
 let OPT = null;
 const clientRules = () => (TEAM && CLIENT && CLIENT.optimise_rules) ? String(CLIENT.optimise_rules).trim() : '';
 const XI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
@@ -3219,34 +3235,60 @@ function scoreNow() {   // the match score measured again on the resume as it no
   const pct = atsCover(docText(), terms).pct, s = lastScore(); if (s) s.now = pct;
   return { pct, was: s ? s.before : null };
 }
-// Pick what to tailor, then Optimise - like Scout Better. An application (team portal) runs it on the Sync model, which rewords
-// more deeply and puts each role's bullets in this job's order. A client's main resume is tailored to their target roles.
-// The job board's own editor also keeps the one-click Sync beside it.
+// Pick what to work on, then go - like Scout Better. The labels follow the task (optMode): an application's copy is tailored to its
+// job, on the Sync model, which rewords more deeply and puts each role's bullets in this job's order; a client's base resume is
+// improved for their target roles, never for one job. Only the public editor keeps the one-click Sync beside it: the team's Sync
+// is the Jobs list's.
 function openOptimise(preset) {   // preset: the team portal opened it - the client's usual choices come ticked
   if (!DOC || READONLY) return;
   hideSel(); setDocTab('resume');
-  const pref = lsGet(OPT_KEY, {}) || {}, app = !!(TEAM && TEAM.app), roles = !app && JOB && JOB.roles, rows = optRows();
+  const mode = optMode(), W = optWord(), app = mode === 'job', base = mode === 'base';
+  if (base && !(JOB && JOB.roles)) { askRoles(preset); return; }   // no target roles on the client's profile yet: ask first
+  const pref = lsGet(OPT_KEY, {}) || {}, roles = base && JOB.roles, rows = optRows();
   OPT = { sel: {}, sync: false }; rows.forEach((r) => { OPT.sel[r[0]] = false; });
-  const tg = optTargets(), nb = tg.reduce((n, t) => n + t.it.bullets.filter((b) => b.t.trim()).length, 0), to = roles ? ' to these roles' : ' to the job';
+  const tg = optTargets(), nb = tg.reduce((n, t) => n + t.it.bullets.filter((b) => b.t.trim()).length, 0), to = roles ? ' for these roles' : ' to the job';
   const hasSum = DOC.sections.some((x) => x.k === 'summary' && !x.hidden && String(x.text || '').trim()), jt = JOB ? cleanTitle(JOB.title) : '';
   const what = { summary: hasSum ? (roles ? 'Rewrite it for these roles' : 'Rewrite it around this job’s keywords') : 'Write one from the experience — there isn’t one yet', headline: jt ? 'Set the title under the name to “' + jt + '”' : 'Match the title under the name to the job',
-    location: JOB && JOB.loc ? 'Show you’re open to relocating to ' + JOB.loc : 'Show you’re open to relocating', experience: nb ? 'Tailor ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' across ' + tg.length + ' role' + (tg.length > 1 ? 's' : '') + to : 'Add bullets to a role first',
+    location: JOB && JOB.loc ? 'Show you’re open to relocating to ' + JOB.loc : 'Show you’re open to relocating', experience: nb ? (roles ? 'Improve ' : 'Tailor ') + nb + ' bullet' + (nb > 1 ? 's' : '') + ' across ' + tg.length + ' role' + (tg.length > 1 ? 's' : '') + to : 'Add bullets to a role first',
     skills: roles ? 'Find skills these roles ask for that aren’t listed' : 'Find skills the job asks for that aren’t listed' };
-  const sub = roles ? '<p class="omsub"><b>' + esc(roles.join(' · ')) + '</b> — the main resume, used for every job</p>'
+  const sub = roles ? '<p class="omsub">For <b>' + esc(roles.join(' · ')) + '</b> — the resume every application starts from</p>'
     : JOB && JOB.title ? '<p class="omsub"><b>' + esc(jt || 'This job') + '</b>' + (JOB.company ? ' at <b>' + esc(JOB.company) + '</b>' : '') + '</p>' : '<p class="omsub">Paste the job description, then choose what to tailor.</p>';
-  const ls = lastScore(), again = optAgain() ? '<p class="omagain">Optimised for this job before' + (ls && ls.before != null ? ' on ' + new Date(ls.at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) + ' — job match ' + ls.before + '% → ' + (ls.now != null ? ls.now : ls.before) + '%' : '') +
+  const ls = lastScore(), again = optAgain() ? '<p class="omagain">Tailored to this job before' + (ls && ls.before != null ? ' on ' + new Date(ls.at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) + ' — job match ' + ls.before + '% → ' + (ls.now != null ? ls.now : ls.before) + '%' : '') +
     '. This run builds on what was accepted and works only on what’s still missing.</p>' : '';
-  // Sync: one click, every part at once and more deeply - the posting's words, priorities and title, and each role's bullets in this job's order
-  const syncB = '<button class="btn omb2 ' + (app ? 'ats' : 'osyncb') + '" type="button" data-a="opt-sync" id="optSync" title="Everything at once, more deeply: the posting’s words, priorities and title, and each role’s bullets in the order this job cares about. The facts stay as they are."><b>' + I_SPARK + '<span>Sync to this job</span></b><small>Everything, in the job’s words and order</small></button>';
+  // the public editor's Sync: one click, every part at once and more deeply - the posting's words, priorities and title, and each role's bullets in this job's order
+  const syncB = mode !== 'free' ? '' : '<button class="btn omb2 osyncb" type="button" data-a="opt-sync" id="optSync" title="Everything at once, more deeply: the posting’s words, priorities and title, and each role’s bullets in the order this job cares about. The facts stay as they are."><b>' + I_SPARK + '<span>Sync to this job</span></b><small>Everything, in the job’s words and order</small></button>';
   modalOpen('<div class="om sm opt" role="dialog" aria-modal="true" aria-labelledby="omT"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
-    '<div class="omh"><h2 id="omT">' + (app ? 'Optimise for this job' : roles ? 'Optimise for their target roles' : 'Optimise for a job') + '</h2>' + sub + again + '</div>' +
-    '<div class="omb">' + (jobOk() ? '' : '<div class="omjd"><textarea id="optJd" placeholder="Paste the whole job description here"></textarea></div>') +
-    ('<div class="ohd"><span>Choose what to optimise</span><button type="button" data-a="opt-all">Select all</button></div>' +
+    '<div class="omh"><h2 id="omT">' + W.title + '</h2>' + sub + again + '</div>' +
+    '<div class="omb">' + (jobOk() || base ? '' : '<div class="omjd">' + (app ? '<p class="fine">This application has no job description yet. Paste it here — it’s kept on the application too.</p>' : '') + '<textarea id="optJd" placeholder="Paste the whole job description here"></textarea></div>') +
+    ('<div class="ohd"><span>' + W.pick + '</span><button type="button" data-a="opt-all">Select all</button></div>' +
         '<div class="orows">' + rows.map((r) => '<button type="button" class="orow" data-a="opt-t" data-v="' + r[0] + '" aria-pressed="false"><span class="ol"><b>' + r[1] + '</b><small>' + esc(what[r[0]] || '') + '</small></span><i class="cb" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i></button>').join('') + '</div>') +
     '<div class="omins"><label class="lbl" for="optIns">Special instructions (optional)</label><textarea id="optIns" maxlength="400" placeholder="e.g. Keep each bullet under 22 words; don’t touch the first role.">' + esc(pref.ins || '') + '</textarea></div></div>' +
-    '<div class="omf"><button class="btn" type="button" data-a="fact">Fact check only</button><span id="optHint"></span>' + (roles || app ? '' : syncB) +
-      ('<button class="btn omb2 ats" type="button" data-a="opt-go" id="optGo" disabled><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="optGoT">Optimise</span></b><small>Tailor what you picked' + (roles ? ' to these roles' : ' to this job') + '</small></button>') + '</div></div>');
+    '<div class="omf"><button class="btn" type="button" data-a="fact">Fact check only</button><span id="optHint"></span>' + syncB +
+      ('<button class="btn omb2 ats" type="button" data-a="opt-go" id="optGo" disabled><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="optGoT">' + W.verb + '</span></b><small>' + W.go + '</small></button>') + '</div></div>');
   if (preset) optPreset();
+}
+// A base resume whose client has no target roles on their profile yet: ask which roles it's for (the resume's own title is
+// suggested), save them to the profile - the Jobs tab's fit and every later improvement read them there - then go on to the choices.
+let ASK_PRESET = false;
+function askRoles(preset) {
+  ASK_PRESET = !!preset;
+  const exp = DOC.sections.find((s) => s.type === 'entries' && !s.hidden && s.k !== 'education' && s.k !== 'projects'), it = exp && (exp.items || []).find((i) => String(i.title || '').trim());
+  const guess = String(DOC.headline || (it && it.title) || '').trim().slice(0, 120), first = String((CLIENT && CLIENT.full_name) || 'the client').split(' ')[0];
+  modalOpen('<div class="om sm opt" role="dialog" aria-modal="true" aria-labelledby="omT"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
+    '<div class="omh"><h2 id="omT">Improve the base resume</h2><p class="omsub">Which roles is this resume for? It’s improved for them in general — there’s no single job here.</p></div>' +
+    '<div class="omb"><div class="omroles"><label class="lbl" for="optRoles">Target roles</label><input id="optRoles" type="text" maxlength="200" autocomplete="off" placeholder="e.g. Software Engineer, Backend Engineer" value="' + esc(guess) + '">' +
+      '<p class="fine">' + (guess ? 'Suggested from the resume’s own title. ' : '') + 'Separate several with commas. Saved to ' + esc(first) + '’s Profile, where the Jobs tab’s fit and every later improvement read them.</p></div></div>' +
+    '<div class="omf"><span></span><button class="btn omb2 ats" type="button" data-a="opt-roles" id="optRolesGo"' + (guess ? '' : ' disabled') + '><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span>Save and continue</span></b><small>Then choose what to improve</small></button></div></div>');
+  const inp = $('#optRoles'); if (!inp) return;
+  inp.addEventListener('input', () => { $('#optRolesGo').disabled = !inp.value.trim(); });
+  inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); saveRoles(); } });
+  inp.focus(); inp.select();
+}
+function saveRoles() {
+  const v = String(($('#optRoles') || {}).value || '').split(',').map((x) => x.trim()).filter(Boolean).join(', ').slice(0, 200), b = $('#optRolesGo'); if (!v || !b || b.disabled) return;
+  b.disabled = true; b.querySelector('span').textContent = 'Saving…';
+  teamSaveRoles(v).then(() => { JOB = rolesJob(); modalClose(); toast('Target roles saved to the Profile'); openOptimise(ASK_PRESET); })
+    .catch(() => { b.disabled = false; b.querySelector('span').textContent = 'Save and continue'; toast('Couldn’t save the roles — check the connection and try again.'); });
 }
 // an application's one action: Sync to this job, straight away - the team portal's card opens the editor with #sync
 function syncNow() {
@@ -3263,7 +3305,7 @@ function optPreset() {   // the choices last used for this client (the same ones
 function optPick(row, on) {
   const v = row.getAttribute('data-v'); OPT.sel[v] = on; row.classList.toggle('on', on); row.setAttribute('aria-pressed', on ? 'true' : 'false');
   const n = Object.keys(OPT.sel).filter((k) => OPT.sel[k]).length, go = $('#optGo'), all = $('[data-a=opt-all]');
-  if (go) { go.disabled = !n; const gt = $('#optGoT'); if (gt) gt.textContent = n ? 'Optimise · ' + n : 'Optimise'; }
+  if (go) { go.disabled = !n; const gt = $('#optGoT'); if (gt) gt.textContent = n ? optWord().verb + ' · ' + n : optWord().verb; }
   if (all) all.textContent = n === $$('.orows .orow').length ? 'Clear all' : 'Select all';
 }
 function runOptimise(sync) {   // sync: true = "Sync to this job", every part at once (the ticks stay as they were); 'deep' = the ticked parts, on the Sync model
@@ -3274,25 +3316,27 @@ function runOptimise(sync) {   // sync: true = "Sync to this job", every part at
     const first = jd.split(/\n/)[0].trim(), m = /^(.{3,80}?)\s+(?:[—–|@-]|at)\s+(.{2,60})$/.exec(first);
     JOB = DOC.meta.job = JOB && JOB.title ? Object.assign({}, JOB, { text: jd.slice(0, 15000) })   // an application knows its title and company already
       : { title: m ? m[1].trim() : first.length <= 90 ? first : '', company: m ? m[2].trim() : '', text: jd.slice(0, 15000) };
+    if (appOpt()) teamSaveJd(JOB.text);   // the application keeps it too, so the portal's page and checklist agree
   }
   const all = sync === true;
   if (all) OPT.sel = Object.keys(OPT.sel).reduce((o, k) => { o[k] = true; return o; }, {});
   OPT.sync = !!sync;
   const sel = OPT.sel;
-  if (!Object.keys(sel).some((k) => sel[k])) { toast('Pick at least one thing to optimise.'); return; }
+  if (!Object.keys(sel).some((k) => sel[k])) { toast('Pick at least one thing to ' + optWord().verb.toLowerCase() + '.'); return; }
   sel.sync = !!OPT.sync;
-  if (TEAM) saveVersion(all ? 'Before Sync' : 'Before Optimise');   // one click of Restore undoes the whole run
+  if (TEAM) saveVersion(all ? 'Before Sync' : 'Before ' + optWord().ing);   // one click of Restore undoes the whole run
   const keep = {}; if (all) Object.assign(keep, (lsGet(OPT_KEY, {}) || {}).sel || {}); else Object.keys(sel).forEach((k) => { if (k !== 'sync') keep[k] = sel[k] ? 1 : 0; });
   delete keep.sync; lsSet(OPT_KEY, { sel: keep, ins });   // the ticks to remember: a Sync leaves them as they were
   const P = optPlan(sel), nb = P.nb, second = appOpt();
   // each step: its key, what it says, its usual seconds, its share of the bar, what it says when it moves on before the answer, what Claude is doing meanwhile
+  const fw = JOB.roles ? 'for these roles' : 'for the job';   // what it's for, in the steps
   const steps = [['job', JOB.roles ? 'Working out what these roles ask for' : 'Reading the job description and its requirements', 3.5, 10, JOB.roles ? 'Worked out what these roles ask for' : 'Read the job description', ['Picking out the must-haves and the nice-to-haves']],
     ['write', all ? 'Syncing the summary, title' + (nb ? ', ' + nb + ' bullet' + (nb > 1 ? 's' : '') + ' and their order' : '') + ' and skills to the job'
-      : nb ? 'Rewording ' + nb + ' bullet' + (nb > 1 ? 's' : '') + (sel.summary ? ' and the summary' : '') + ' for the job' : 'Tailoring for the job', Math.min(45, Math.max(12, 8 + nb * 0.9)) + (all ? 10 : 0), second ? 56 : 84, '',
+      : nb ? 'Rewording ' + nb + ' bullet' + (nb > 1 ? 's' : '') + (sel.summary ? ' and the summary' : '') + ' ' + fw : (JOB.roles ? 'Improving ' : 'Tailoring ') + fw, Math.min(45, Math.max(12, 8 + nb * 0.9)) + (all ? 10 : 0), second ? 56 : 84, '',
       ['Matching each requirement to the resume’s own lines', 'Rewording bullets in the job’s words', 'Keeping every number, tool and employer as it is'].concat(all ? ['Putting each role’s bullets in this job’s order'] : [])],
     ['check', 'Checking every change against the facts', 1, 6, '', []]]
     .concat(second ? [['verify', 'A second reader checks every change against the original resume and the job', 14, 28, '', ['Comparing each change with the original line', 'Making sure nothing is overstated or invented', 'Marking the requirements again on the new wording']]] : []);
-  const card = runCard((all ? 'Syncing to ' : 'Optimising for ') + (JOB.roles ? JOB.roles.join(' · ') : cleanTitle(JOB.title) || 'this job'), JOB.company ? 'at ' + JOB.company : '', steps);
+  const card = runCard(JOB.roles ? 'Improving the base resume for ' + JOB.roles.join(' · ') : (all ? 'Syncing to ' : 'Tailoring to ') + (cleanTitle(JOB.title) || 'this job'), JOB.company ? 'at ' + JOB.company : '', steps);
   optCompute(sel, ins, P, card.done).then((o) => {
     if (RUN !== card) return;   // stopped meanwhile
     OPT.R = o.R; OPT.targets = o.targets; OPT.terms = P.terms; OPT.cover0 = P.cover0;
@@ -3592,10 +3636,10 @@ function showResults(R, targets, sel, V) {
     (!V.checked && !kept ? '' : S && S.failed ? vrow(false, 'The second check couldn’t run', esc(String(S.failed).replace(/[.\s]*$/, '.')) + ' The word checks ran (numbers, tools, “led”, repeated keywords) — read each change before accepting.')
       : vrow(!kept && !(S && S.unchecked), 'Checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + ' twice', 'Against the candidate’s original lines (numbers, tools, “led” or “managed”, repeated keywords), then by a second reader.' +
         (kept ? ' ' + kept + ' dropped, so the original stays: ' + whyAll.map(esc).join('; ') + '.' : ' Every change holds up.') + (V.fixed ? ' ' + V.fixed + ' had a number that isn’t on the resume — now a [ ] to fill in.' : '') + (S && S.unchecked ? ' ' + S.unchecked + ' weren’t checked by the second reader — they’re marked.' : ''))) +
-    (again ? vrow(true, 'Optimised for this job before', (prev && prev.before != null ? new Date(prev.at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) + ': ' + prev.before + '% → ' + (prev.now != null ? prev.now : prev.before) + '%. ' : '') +
-      'This run built on what was accepted' + (sameN ? ' — ' + sameN + ' line' + (sameN > 1 ? 's' : '') + ' already optimised stayed as ' + (sameN > 1 ? 'they are' : 'it is') : '') + '.') : '');
+    (again ? vrow(true, 'Tailored to this job before', (prev && prev.before != null ? new Date(prev.at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) + ': ' + prev.before + '% → ' + (prev.now != null ? prev.now : prev.before) + '%. ' : '') +
+      'This run built on what was accepted' + (sameN ? ' — ' + sameN + ' line' + (sameN > 1 ? 's' : '') + ' already tailored stayed as ' + (sameN > 1 ? 'they are' : 'it is') : '') + '.') : '');
   modalOpen('<div class="om" role="dialog" aria-modal="true" aria-labelledby="omR"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
-    '<div class="omh"><h2 id="omR">Optimised work experience</h2><p class="omsub">' + (OPT.pending ? 'Made in the background from the team portal — nothing on the resume has changed yet. ' : '') + 'Review each suggestion beside the current bullet. Accept them one by one or all at once; edit a suggestion before accepting if you like.' + (onPage ? ' The title, summary and skills suggestions wait on the resume.' : '') + (/\[/.test(h) ? ' Replace anything in [ ] with the real number.' : '') + '</p></div>' +
+    '<div class="omh"><h2 id="omR">' + optWord().done + ' work experience</h2><p class="omsub">' + (OPT.pending ? 'Made in the background from the team portal — nothing on the resume has changed yet. ' : '') + 'Review each suggestion beside the current bullet. Accept them one by one or all at once; edit a suggestion before accepting if you like.' + (onPage ? ' The title, summary and skills suggestions wait on the resume.' : '') + (/\[/.test(h) ? ' Replace anything in [ ] with the real number.' : '') + '</p></div>' +
     reqCard +
     '<div class="vrep">' + (strict ? strictRep : (V.after != null ? '<div><span class="vi a">' + IC_OK + '</span><span><b>Job match: ' + (V.after > V.before ? V.before + '% → <span class="up">' + V.after + '%</span>' : '<span class="up">' + V.after + '%</span>') + '</b><small>Of the ' + atsTerms().length + ' keywords in this job description, once these changes are accepted. Every change keeps the keywords already there.</small></span></div>' : '') +
       '<div><span class="vi' + (V.fixed + V.removed ? ' w' : ' a') + '">' + (V.fixed + V.removed ? IC_WARN : IC_OK) + '</span><span><b>Fact-checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + '</b><small>' +
@@ -3824,6 +3868,7 @@ function optAction(a, v, t) {
     case 'run-stop': if (RUN) RUN.stop(); return true;   // the run card's Stop: its answer, when it comes, is ignored
     case 'opt-t': optPick(t, t.getAttribute('aria-pressed') !== 'true'); return true;
     case 'opt-sync': runOptimise(true); return true;
+    case 'opt-roles': saveRoles(); return true;   // a base resume's target roles, asked for before the choices
     case 'opt-all': { const rows = $$('.orows .orow'), all = rows.every((r) => r.classList.contains('on')); rows.forEach((r) => optPick(r, !all)); return true; }
     case 'opt-go': runOptimise(TEAM && TEAM.app ? 'deep' : false); return true;   // an application: the Sync model, on what was picked
     case 'r-ok': { const after = matchWatch(); if (applyRow(+v)) { countRows(); structural(); after(); } return true; }
@@ -3903,12 +3948,12 @@ const teamBack = () => '/team.html?client=' + encodeURIComponent(TEAM.client) + 
 function teamCard(title, text, btn) { batchTell('fail', { why: text }); $('#gate').innerHTML = '<div class="card"><h1>' + esc(title) + '</h1><p>' + esc(text) + '</p><div class="acts">' + (btn || '') + '</div></div>'; show('gate'); }
 // batch mode: the team portal's list hears how this draft went (ready to review, or why not)
 function batchTell(act, extra) { if (!BATCH || window.parent === window) return; try { window.parent.postMessage(Object.assign({ tp: 1, batch: 1, act, app: TEAM.app }, extra || {}), location.origin); } catch (e) {} }
-function batchRun() {   // tailor this draft to its job with Optimise's own checks; the suggestions wait on the draft for review
+function batchRun() {   // the Jobs list's Sync: this draft to its job, with the editor's own checks; the suggestions wait on the draft for review
   if (READONLY) return batchTell('fail', { why: 'Already sent' });
   if (!JOB || String(JOB.text || '').trim().length < 80) return batchTell('fail', { why: 'No job description — paste it in the draft, then Retry' });
   const scores = (V) => ({ before: V && V.before != null ? V.before : null, after: V && V.after != null ? V.after : null });   // the job match now, and once the suggestions are accepted
   if (DOC.meta.optPending) return batchTell('done', Object.assign({ n: pendingCount(DOC.meta.optPending), sk: (DOC.meta.optPending.R.skills || []).length }, scores(DOC.meta.optPending.V)));
-  saveVersion('Before Optimise').then(() => optCompute(BATCH.sel, BATCH.ins, optPlan(BATCH.sel))).then((o) => {
+  saveVersion('Before Sync').then(() => optCompute(BATCH.sel, BATCH.ins, optPlan(BATCH.sel))).then((o) => {
     const P = pendingOf(o, BATCH.sel, BATCH.ins), n = pendingCount(P), sk = (P.R.skills || []).length;
     if (n || sk) DOC.meta.optPending = P;   // nothing to change: no review to wait for
     TEAM_DIRTY = true;
@@ -3922,8 +3967,8 @@ function teamPill() {
   const j = $('#cjob'); if (j && TEAM.app && TEAM_JOB) { j.hidden = false; j.innerHTML = '<span class="t">' + esc(TEAM_JOB.title || 'This job') + (TEAM_JOB.company ? ' at ' + esc(TEAM_JOB.company) : '') + '</span><em class="chip' + (READONLY ? ' sent' : '') + '">' + (READONLY ? 'Sent' : 'Draft') + '</em>'; }
   document.title = name + ' · resume — TrulyPlaced';
   const bl = $('#backB'); if (bl) { const t = 'Back to ' + name.split(' ')[0]; bl.href = teamBack(); bl.lastChild.textContent = t; bl.setAttribute('data-tip', t); bl.setAttribute('aria-label', t); }
-  // an application is optimised for its job; a main resume for the client's target roles
-  const ob = $('#bOpt'); if (ob) ob.lastChild.textContent = TEAM.app ? 'Optimise for this job' : rolesJob() ? 'Optimise for target roles' : 'Optimise for a job';
+  // the header's AI button names the task: an application's copy is tailored to its job, a base resume improved for the target roles
+  const ob = $('#bOpt'); if (ob) ob.lastChild.textContent = optWord().btn;
 }
 function teamSync() {   // save to the draft application (only while it's a draft) or to the base resume
   if (!DOC || READONLY || !sb) return Promise.resolve();
@@ -3937,6 +3982,24 @@ function teamSync() {   // save to the draft application (only while it's a draf
     status(TEAM.app ? 'Saved for this application' : 'Saved to ' + ((CLIENT && CLIENT.full_name) || 'the client') + '’s resumes');
     if (TEAM_BC) try { TEAM_BC.postMessage({ client: TEAM.client, app: TEAM.app, resume: TEAM.resume }); } catch (e) {}
   }).catch(() => status('Couldn’t save — check your connection', true));
+}
+// "Save and continue" on a base resume whose client has no target roles yet: they go on the client's profile, as the Profile
+// tab would save them, and the portal's open tabs are told so their copy of the client follows
+function teamSaveRoles(v) {
+  if (!sb || !TEAM) return Promise.reject(new Error('offline'));
+  return sb.from('clients').update({ target_roles: v }).eq('id', TEAM.client).select('id').then((r) => {
+    if (r.error || !(r.data || []).length) throw r.error || new Error('not saved');
+    if (CLIENT) CLIENT.target_roles = v; PROFILE = Object.assign(PROFILE || {}, { target_role: v.split(',')[0].trim() });
+    if (TEAM_BC) try { TEAM_BC.postMessage({ client: TEAM.client, profile: true }); } catch (e) {}
+  });
+}
+// a job description pasted in the editor for an application is the application's too, so the portal's page and checklist agree
+function teamSaveJd(text) {
+  if (!sb || !TEAM || !TEAM.app || READONLY || !text) return;
+  sb.from('applications').update({ jd_text: text }).eq('id', TEAM.app).eq('status', 'draft').then((r) => {
+    if (r.error) toast('The job description couldn’t be saved to the application — paste it there too.');
+    else if (TEAM_BC) try { TEAM_BC.postMessage({ client: TEAM.client, app: TEAM.app, apps: true }); } catch (e) {}
+  }, () => {});
 }
 window.addEventListener('beforeunload', (e) => { if (TEAM && TEAM_DIRTY && !READONLY) { teamSync(); e.preventDefault(); e.returnValue = ''; } });
 function teamBoot() {
@@ -4050,7 +4113,7 @@ function versionsHTML() {
     return '<div class="vh"><div><b>' + esc(v.label || 'Saved') + '</b><span>' + when + (v.by_email ? ' · ' + who(v.by_email) : '') + '</span></div><span>' + (i === 0 ? '<em>Latest</em>' : '') + (READONLY ? '' : '<button type="button" data-a="v-restore" data-v="' + v.id + '">Restore</button>') + '</span></div>';
   }).join('');
   return '<div class="pc"><div class="pch"><h3>Version history</h3></div>' + (READONLY ? '' : '<button type="button" class="btn wide" data-a="v-save">Save a version now</button>') + rows +
-    '<p class="hint" style="margin-top:10px">Saved automatically when the resume opens, before every Optimise, and every 10 minutes while someone edits. Restore saves the current version first, so nothing is ever lost.</p></div>';
+    '<p class="hint" style="margin-top:10px">Saved automatically when the resume opens, before every Improve, Tailor or Sync, and every 10 minutes while someone edits. Restore saves the current version first, so nothing is ever lost.</p></div>';
 }
 if (TEAM) setInterval(() => { if (DOC && !READONLY && Date.now() - VER.at > 10 * 60000) saveVersion('Autosave'); }, 60000);
 
@@ -4225,7 +4288,7 @@ window.addEventListener('scroll', (e) => { if (PGB && !DRAG && (e.target === doc
 document.addEventListener('dragstart', pgDragStart); $('#sheet').addEventListener('dragover', pgDragOver); $('#sheet').addEventListener('drop', pgDrop); document.addEventListener('dragend', pgDragEnd);
 $('#fileIn').addEventListener('change', (e) => { if (e.target.files[0]) readUpload(e.target.files[0]); e.target.value = ''; });
 document.addEventListener('visibilitychange', () => { if (document.hidden && DOC && TEAM && TEAM_DIRTY) teamSync(); });
-// the portal's "Optimise for this job" or "Optimise for target roles" on a tab that's already open only changes the address's #
+// the portal's "Tailor to this job" or "Improve base resume" on a tab that's already open only changes the address's #
 window.addEventListener('hashchange', () => {
   const h = location.hash; if ((h !== '#optimize' && h !== '#sync') || !DOC) return;
   try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
