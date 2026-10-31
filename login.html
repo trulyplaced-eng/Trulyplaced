@@ -56,7 +56,7 @@
     <div class="lcard" id="card" aria-live="polite">
       <div id="view"><div class="spinrow"><span class="spin"></span>Loading…</div></div>
     </div>
-    <div class="lfoot"><a href="/">trulyplaced.com</a><a href="/app.html">Free job board</a><a href="mailto:hello@trulyplaced.com">Help: hello@trulyplaced.com</a></div>
+    <div class="lfoot"><a href="/">trulyplaced.com</a><a href="/#pricing">Plans</a><a href="mailto:hello@trulyplaced.com">Help: hello@trulyplaced.com</a></div>
   </div>
 </main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -180,14 +180,31 @@ function showSetPassword(kind, email){
   };
 }
 
-/* ---------- where to go after signing in ---------- */
+/* ---------- signed in, but this email has no TrulyPlaced account: say so here, plainly ---------- */
+function showNoAccount(email){
+  document.title = 'Sign in | TrulyPlaced';
+  view.innerHTML = '<div id="noacct"><h1>No TrulyPlaced account for this email</h1><p class="lead">You’re signed in as <b>' + esc(email || 'this email') + '</b>, but it isn’t a client or team account.</p>' +
+    '<div class="note" style="margin-top:14px">Clients: sign in with the email you gave us when you joined. Team: ask an owner to add you. Not with us yet? We apply for you — a real specialist tailors your resume and sends 25–30 matched applications every business day.</div>' +
+    '<div class="row" style="margin-top:16px"><a class="btn pri" href="/#pricing">See plans</a><a class="btn" href="' + esc(TP.CONFIG.WHATSAPP) + '" target="_blank" rel="noopener">' + I.wa + 'WhatsApp us</a></div>' +
+    '<p style="margin-top:16px"><button class="lk" type="button" id="outBtn">Sign out and use another email</button></p></div>';
+  $('#outBtn').onclick = function(){
+    TP.client().then(function(c){ return c.auth.signOut(); }).catch(function(){}).then(function(){ try{ localStorage.removeItem('tp_acct'); }catch(x){} location.replace('/login.html?out=1'); });
+  };
+}
+
+/* ---------- where to go after signing in: by who they are ---------- */
 function route(){
   busy('Signing you in…');
   try{ localStorage.removeItem('tp_login_next'); }catch(x){}
-  TP.whoami().catch(function(){ return {}; }).then(function(w){
-    var to = NEXT || (w.team ? '/team.html' : w.client ? '/portal.html' : '/app.html#jobs');
+  Promise.all([TP.session().catch(function(){ return null; }), TP.whoami().catch(function(){ return {}; })]).then(function(rs){
+    var s = rs[0], w = rs[1] || {}, u = s && s.user, email = u ? String(u.email || '').toLowerCase() : '';
+    // the device's note, read by the editor and portal.html to send a client straight to their workspace next time
+    if(u) TP.lsSet('tp_acct', {id:u.id, user:{id:u.id, email:email}, portal:{client:!!w.client, team:!!w.team}, at:Date.now()});
+    var to = NEXT || (w.team ? '/team.html' : w.client ? '/portal.html' : '');   // the team to the portal (owners land on Clients, employees on My day); a client to their workspace
     if(NEXT === '/portal.html' && w.team && !w.client) to = '/team.html';
-    location.replace(to);
+    if(to && !w.team && !w.client && /^\/(team|portal)\.html/.test(to)) to = '';   // not theirs to open
+    if(to) return location.replace(to);
+    showNoAccount(email);
   });
 }
 

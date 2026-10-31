@@ -435,7 +435,7 @@ function notClient(){
   TP.whoami().catch(function(){ return {}; }).then(function(w){
     V.innerHTML = '<div class="empty">' + I.lock + '<h3>This page is for TrulyPlaced clients</h3><p>You’re signed in as <b>' + esc(ME.email) + '</b>, which isn’t a client account yet. ' +
       'If you’ve just joined, use the email you gave us — or message us and we’ll sort it out.</p><div class="row" style="justify-content:center">' +
-      (w.team ? '<a class="btn pri" href="/team.html">Open the team portal</a>' : '<a class="btn pri" href="/#pricing">See plans</a><a class="btn" href="/app.html">Free job board</a>') +
+      (w.team ? '<a class="btn pri" href="/team.html">Open the team portal</a>' : '<a class="btn pri" href="/#pricing">See plans</a>') +
       '<button class="btn" type="button" data-act="out">Sign out</button></div></div>';
   });
 }

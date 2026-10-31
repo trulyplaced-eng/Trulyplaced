@@ -1407,7 +1407,7 @@ function notTeam(w){
   $('#me').innerHTML = meHTML();
   V.innerHTML = '<div class="empty">' + I.lock + '<h3>For the TrulyPlaced team</h3><p>You’re signed in as <b>' + esc(ME.email) + '</b>, which isn’t on the team list. ' +
     'Ask the owner to add you, then sign in again.</p><div class="row" style="justify-content:center">' +
-    (w.client ? '<a class="btn pri" href="/portal.html">Go to my dashboard</a>' : '<a class="btn" href="/app.html">Job board</a>') +
+    (w.client ? '<a class="btn pri" href="/portal.html">Go to my dashboard</a>' : '') +
     '<button class="btn" type="button" data-act="out">Sign out</button></div></div>';
 }
 function meHTML(){   // you, at the bottom of the sidebar: your name opens your menu
