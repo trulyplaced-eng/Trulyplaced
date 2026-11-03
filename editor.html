@@ -181,6 +181,9 @@ svg.defs{position:absolute;width:0;height:0}
 .sheet .skx{place-items:center;width:.95em;height:1.05em;margin:0 0 0 .12em;vertical-align:-.14em;color:var(--faint);cursor:pointer;border-radius:3px;transition:color .12s,background .12s}
 .sheet .skx:hover{background:var(--bad-soft);color:var(--bad)}
 .sheet .skx svg{width:.72em;height:.72em}
+/* a skill tailoring added: its × always in view (never printed; .ro and print hide every .pgx), and marked while Show changes is on */
+.sheet .ski.add .skx{display:inline-grid;color:var(--muted)}
+.sheet .ski.add.mark{background:#dff5e7;border-radius:3px;box-shadow:0 0 0 1px #c3ead1;padding:0 .08em}
 .sheet .skadd{margin-left:.45em;color:var(--blue);font-style:normal;font-weight:500;font-size:.9em;cursor:pointer;white-space:nowrap}
 .sheet .skrm{position:absolute;top:0;right:-8.2em;color:var(--faint);font-style:normal;font-size:.88em;cursor:pointer;white-space:nowrap;transition:color .12s}
 .sheet .skadd:hover{text-decoration:underline;text-underline-offset:2px}.sheet .skrm:hover{color:var(--bad)}
@@ -201,6 +204,72 @@ svg.defs{position:absolute;width:0;height:0}
 .pgbar .pgdel:hover{color:#fca5a5}.pgbar .pgdrag{cursor:grab;color:#8e8e93}
 .pgbar .pgai{color:#c4b8ff;margin-left:4px;position:relative}.pgbar .pgai:hover{color:#e2dcff}.pgbar .pgai::before{content:"";position:absolute;left:-3px;top:6px;bottom:6px;width:1px;background:rgba(255,255,255,.14)}
 .ro .sheet .pgx,.ro .pgbar{display:none!important}
+
+/* ---------- on the page, as the reference editor has it: hovering a bullet, an entry, the header, the summary or the skills
+   draws a box around it with its tools, and the line makes room for them (so the layout moves a little, as it does there) ---------- */
+body:not(.ro) .sheet li[data-b]{position:relative}
+body:not(.ro) .sheet li.pghov{outline:none;padding-right:2.9em}
+body:not(.ro) .sheet li.pghov::after,body:not(.ro) .sheet .en:hover:not(:has(li[data-b]:hover))::after,body:not(.ro) .sheet .ph-h:hover::after,
+body:not(.ro) .sheet .pgsum:hover::after,body:not(.ro) .sheet :is(.ps:hover,.ps.pgon) .sk::after{content:"";position:absolute;border:1px solid #c3c8d0;border-radius:7px;pointer-events:none}
+body:not(.ro) .sheet li.pghov::after{inset:-.3em -.45em -.3em -1.35em}
+.sheet .pgr{position:absolute;right:-.1em;top:50%;transform:translateY(-50%);align-items:center;gap:.3em;z-index:2}
+.sheet li.pghov > .pgr{display:inline-flex}
+.sheet .pgr i{display:grid;place-items:center;width:1.25em;height:1.25em;border-radius:4px;cursor:pointer;font-style:normal}
+.sheet .pgr svg{width:.95em;height:.95em}
+.sheet .pgr [data-a$=ai]{color:#f0a000}.sheet .pgr [data-a$=ai]:hover{background:#fff4d6}
+.sheet .pgr [data-a$=del]{color:#e5484d}.sheet .pgr [data-a$=del]:hover{background:#fdecec}
+.sheet .pgl{position:absolute;left:-2.5em;top:50%;transform:translateY(-50%);width:1em;height:1.3em;place-items:center;color:#a8adb7;cursor:grab}
+.sheet li.pghov > .pgl{display:grid}
+.sheet .pgl svg{width:.95em;height:.95em}
+/* the toolbar on the top edge of a box: white, + green, × red, ✨ gold */
+.pgbar,.sheet .pgtb{background:#fff;border:1px solid #e3e6ea;border-radius:999px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px -6px rgba(16,24,40,.2);padding:2px 5px;gap:3px}
+.pgbar button,.sheet .pgtb i{width:26px;height:26px;display:grid;place-items:center;border-radius:999px;color:#5b6170;cursor:pointer;font-style:normal}
+.pgbar button:hover,.sheet .pgtb i:hover{background:#f3f4f6;color:inherit}
+.pgbar svg,.sheet .pgtb svg{width:16px;height:16px}
+.pgbar .pgadd,.sheet .pgtb [data-a$=add]{color:#16a34a}
+.pgbar .pgdel,.pgbar .pgdel:hover,.sheet .pgtb [data-a$=del]{color:#e5484d}
+.pgbar .pgai,.pgbar .pgai:hover,.sheet .pgtb [data-a$=ai]{color:#f0a000;margin-left:0}.pgbar .pgai::before{display:none}
+/* an entry: its box, the toolbar on its top edge, ✨ × at the right of its first line, a calendar by its dates */
+body:not(.ro) .sheet .en{position:relative}
+body:not(.ro) .sheet .en:hover:not(:has(li[data-b]:hover))::after{inset:-.35em -.45em -.3em -.45em}
+.sheet .pgtb{position:absolute;left:50%;top:.05em;transform:translate(-50%,-100%);z-index:3;align-items:center}   /* on the box's top border, never over the line's words */
+.sheet .en:hover:not(:has(li[data-b]:hover)) > .pgtb,.sheet .en:hover:not(:has(li[data-b]:hover)) > .pger{display:inline-flex}
+body:not(.ro) .sheet .en:hover:not(:has(li[data-b]:hover)){padding-right:2.9em}   /* room for ✨ ×, half-way down at its right, as the reference has it */
+.sheet .rdw{display:inline-flex;align-items:baseline;white-space:nowrap}
+.sheet .en:hover:not(:has(li[data-b]:hover)) .pgcal{display:inline-grid}
+.sheet .pgcal{place-items:center;width:1.15em;height:1.15em;margin-left:.35em;color:#6b7280;cursor:pointer;vertical-align:-.15em}
+.sheet .pgcal svg{width:.95em;height:.95em}
+.sheet .en:hover:not(:has(li[data-b]:hover)) .pgph,.sheet .pgph.pged{display:inline}
+/* the header: its box; "Title" and "Location" when there are none; each link's address, its link mark and ×; + Add Link */
+body:not(.ro) .sheet .ph-h{position:relative}
+body:not(.ro) .sheet .ph-h:hover::after{inset:-.45em -.7em}
+.sheet .pgph{color:#a3a8b2;font-style:italic;font-weight:400;cursor:text}
+.sheet .ph-h:hover .hlt.pgph,.sheet .hlt.pgph.pged{display:block}
+.sheet .hlt.pgph .empty::before{content:"Title"}
+.sheet .ph-h:hover .pgloc{display:inline}
+.sheet .ph-h:hover .lkurl{display:inline;margin-right:.25em}
+.sheet .ph-h:hover .lkic{display:inline-grid;place-items:center;width:1em;margin-right:.25em;color:#4b5563;vertical-align:-.1em}
+.sheet .lkic svg{width:.85em;height:.85em}
+.sheet .ph-h:hover .lkx{display:inline-grid;place-items:center;width:1em;height:1em;margin-left:.3em;color:#e5484d;cursor:pointer;vertical-align:-.12em;border-radius:3px}
+.sheet .lkx:hover{background:#fdecec}.sheet .lkx svg{width:.75em;height:.75em}
+/* the summary: its box, ✨ on its top edge (Improve with AI) */
+body:not(.ro) .sheet .pgsum{position:relative}
+body:not(.ro) .sheet .pgsum:hover::after{inset:-.35em -.45em}
+.sheet .pgsai{position:absolute;left:50%;top:.05em;transform:translate(-50%,-100%);z-index:3;width:1.9em;height:1.9em;place-items:center;border-radius:50%;background:#fff;border:1px solid #e3e6ea;
+  box-shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px -6px rgba(16,24,40,.2);color:#f0a000;cursor:pointer;font-style:normal}
+.sheet .pgsai svg{width:1.05em;height:1.05em}
+.sheet .pgsum:hover > .pgsai{display:grid}
+/* the skills: their box; × red on every skill, + Add Skill blue, Remove Category red, + Add Category under them */
+body:not(.ro) .sheet .sk{position:relative}
+body:not(.ro) .sheet :is(.ps:hover,.ps.pgon) .sk::after{inset:-.35em -.45em -.35em -1.75em}
+.sheet .skx,.sheet .ski.add .skx{color:#e5484d}
+.sheet .skrm{color:#e5484d}
+.sheet .skcat{text-align:center;color:var(--blue);font-style:normal;font-weight:500;font-size:.9em;cursor:pointer;padding:.25em 0 .05em}
+.sheet :is(.ps:hover,.ps.pgon) .skcat{display:block}
+.sheet .skcat:hover{text-decoration:underline;text-underline-offset:2px}
+/* what tailoring changed (Show changes): a changed bullet in yellow, an added skill a yellow pill */
+.sheet li.chg{background:#fdf2c2;border-radius:2px;box-shadow:0 0 0 .14em #fdf2c2}
+.sheet .ski.add.mark{background:#fdf0b5;border-radius:5px;box-shadow:0 0 0 1.5px #f2d36b;padding:0 .12em}
 .sheet .hl{background:rgba(109,77,255,.08);border-radius:3px}
 
 /* ---------- the side panel: what's open on the left, the tool rail on the right ---------- */
@@ -259,11 +328,12 @@ svg.defs{position:absolute;width:0;height:0}
 .lnmenu button{padding:5px 12px;border-radius:999px;border:1px solid #e0e0e0;background:#fff;font-size:12.5px;font-weight:500;color:var(--ink);transition:border-color .15s,background .15s}
 .lnmenu button:hover,.lnmenu button:focus-visible{border-color:#bdbdbd;background:#fafafa;outline:none}
 .sheet .ph-h{position:relative}
-.sheet .pgln{position:absolute;top:0;right:0;display:inline-flex}   /* in the header's corner: it never moves a line, so the page count matches the PDF */
-.sheet .pgln button{display:inline-flex;align-items:center;gap:3px;padding:0 7px;border-radius:999px;border:1px dashed #b9c3e6;background:#fff;color:#4d5fae;font:500 10px/1.7 var(--ui);opacity:.55;transition:opacity .15s,background .15s}
-.sheet .pgln button svg{width:10px;height:10px}
-.sheet .ph-h:hover .pgln button,.sheet .pgln button:focus-visible{opacity:1}
-.sheet .pgln button:hover{background:var(--blue-soft)}
+/* + Add Link: at the end of the contact line, while the header is hovered (as the reference editor has it) */
+.sheet .pgln{position:static;margin-left:.45em;vertical-align:middle}
+.sheet .ph-h:hover .pgln,.sheet .pgln:focus-within{display:inline-flex}
+.sheet .pgln button{display:inline-flex;align-items:center;gap:.2em;padding:.05em .5em;border-radius:4px;border:1px solid #c9ced6;background:#fff;color:#374151;font:400 .82em/1.6 var(--ui)}
+.sheet .pgln button svg{width:.8em;height:.8em}
+.sheet .pgln button:hover{background:#f6f7f9}
 /* Save: everything saves on its own a moment later; this saves now (Ctrl+S) */
 .savb{height:32px;padding:0 11px;gap:6px;font-size:13px}
 .savb svg{width:15px;height:15px}
@@ -670,7 +740,14 @@ html.view .vtext pre{margin:0;white-space:pre-wrap;font:13px/1.55 var(--ui);colo
 /* ---------- quick=1: Quick edit in the team portal's application page — the page, typed on right there, under a slim bar
    (undo, the save, the job's missing skills); the page's own controls stay ---------- */
 .qbar{display:none}
-html.quick .top,html.quick .panel,html.quick .doctabs,html.quick .mswitch,html.quick .banner,html.quick .rocard{display:none!important}
+html.quick .top,html.quick .panel,html.quick .doctabs,html.quick .mswitch,html.quick .banner,html.quick .rocard,html.quick .qbar{display:none!important}
+/* the toolbar is the application page's own now; its Design and Layout open the Format panel here, as a popover */
+.qpoph{display:none}
+html.quick.qpop .panel{display:flex!important;flex-direction:column;position:fixed;top:10px;right:10px;width:min(400px,calc(100% - 20px));max-height:calc(100% - 20px);z-index:60;
+  background:#fff;border:1px solid #e3e6ea;border-radius:12px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 16px 40px -12px rgba(16,24,40,.3);overflow:hidden}
+html.quick.qpop .panel .ptabs{display:none}
+html.quick.qpop .panel .pbody{overflow:auto;padding-top:4px}
+html.quick.qpop .qpoph{display:flex;align-items:center;justify-content:space-between;padding:10px 10px 6px 16px;border-bottom:1px solid #eef0f3;font:600 14px var(--ui);color:#1f2937}
 html.quick .wrap{display:block;min-height:0}
 html.quick .stage{display:flex!important;padding:14px 14px 40px}
 html.quick .frame{max-width:none}
@@ -696,13 +773,108 @@ html.quick.lift,html.quick.lift body{background:transparent!important}
 html.quick.lift{overflow:hidden;overscroll-behavior:contain}
 html.quick.lift .wrap,html.quick.lift .qbar,html.quick.lift .pgbar,html.quick.lift .selbar{visibility:hidden}
 html.quick.lift .modal{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(15,23,42,.36)}
-/* the run's card (runq): at the foot of the panel with no backdrop, the page resting behind it until Claude is done */
-html.quick .modal.runq{background:none;-webkit-backdrop-filter:none;backdrop-filter:none;align-items:flex-end;padding:12px;pointer-events:none;animation:none}
-html.quick .modal.runq .om{pointer-events:auto;width:min(600px,100%);animation:qup .22s ease-out;box-shadow:0 1px 2px rgba(0,0,0,.05),0 14px 40px rgba(15,23,42,.2)}
-html.quick.running .frame,html.quick.running .qbar{opacity:.5;pointer-events:none;transition:opacity .2s}
-html.quick.running .toast{bottom:auto;top:54px}   /* a note during the run shows under the bar, clear of the run's card */
 @keyframes qup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){html.quick .modal.runq .om{animation:none}}
+
+/* ---------- the reference editor's Optimize screens: "Optimise by", the note while it runs, the review window, the suggestions on
+   the page and the notes ---------- */
+.om.opt.sb{width:min(540px,100%);border-radius:16px}
+.om.opt.sb .omh{text-align:center;padding:26px 28px 4px;border:0}
+.om.opt.sb .omh h2{font:600 26px/1.2 var(--ui);color:#1f2937;letter-spacing:-.015em;margin:0}
+.om.opt.sb .omsub{display:inline-flex;align-items:center;gap:7px;margin:8px 0 0;color:#4b5563;font-size:14px}
+.om.opt.sb .oi{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:#dbeafe;color:#2563eb;font:700 10px/1 var(--ui);font-style:normal}
+.om.opt.sb .oreq{color:#ef4444}
+.om.opt.sb .omb{padding:12px 28px 4px}
+.om.opt.sb .orows{display:block}
+.om.opt.sb .orow{width:100%;display:flex;justify-content:space-between;align-items:center;padding:13px 2px;border:0;border-bottom:1px solid #eceef1;border-radius:0;background:none;box-shadow:none;transform:none}
+.om.opt.sb .orow:hover,.om.opt.sb .orow.on{background:none;border-color:#eceef1}
+.om.opt.sb .orow b{font:500 15px var(--ui);color:#1f2937}
+.om.opt.sb .opill{display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;background:#eef0f3;color:#374151;font:500 13px var(--ui);transition:background .15s,color .15s}
+.om.opt.sb .opill .o1{display:none;align-items:center;gap:5px}.om.opt.sb .opill svg{width:13px;height:13px}
+.om.opt.sb .orow.on .opill{background:#d9f3e4;color:#15803d}.om.opt.sb .orow.on .o0{display:none}.om.opt.sb .orow.on .o1{display:inline-flex}
+.om.opt.sb .omins{margin-top:16px}
+.om.opt.sb .omins .lbl{font:500 14px var(--ui);color:#1f2937}.om.opt.sb .oopt{color:#9ca3af;font-weight:400}
+.om.opt.sb .omins textarea{min-height:80px;border-radius:8px;font-size:14px}
+.om.opt.sb .omf{justify-content:center;border:0;background:none;padding:14px 28px 24px}
+.om.opt.sb .oproceed{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 22px;border-radius:999px;background:#111827;border-color:#111827;color:#fff;font:600 15px var(--ui)}
+.om.opt.sb .oproceed svg{width:16px;height:16px}
+.om.opt.sb .oproceed:disabled{opacity:.4}
+/* the run: a small note at the bottom right; the page stays usable meanwhile */
+#modal.runq{background:none!important;-webkit-backdrop-filter:none;backdrop-filter:none;align-items:flex-end;justify-content:flex-end;padding:16px;pointer-events:none;animation:none}
+#modal.runq .om.run{pointer-events:auto;width:auto;padding:13px 20px 13px 16px;border-radius:10px;border:1px solid #eceef1;box-shadow:0 1px 2px rgba(16,24,40,.06),0 12px 28px -10px rgba(16,24,40,.28);animation:qup .22s ease-out}
+#modal.runq .om.run > :not(.runq-t){display:none!important}
+.om.run .runq-t{display:none}
+#modal.runq .om.run .runq-t{display:flex;align-items:center;gap:10px;font:500 14px var(--ui);color:#1f2937}
+#modal.runq .runq-t .spin{width:16px;height:16px;border-width:2px;border-color:#e5e7eb;border-top-color:#6b7280}
+html.running .toast{bottom:86px}
+@media (prefers-reduced-motion:reduce){#modal.runq .om.run{animation:none}}
+/* Optimised Work Experience */
+.om.sb.rev{width:min(920px,100%);border-radius:16px}
+.om.sb.rev .omh{padding:24px 28px 12px}
+.om.sb.rev .omh h2{font:600 22px var(--ui);color:#1f2937}
+.om.sb.rev .omsub{color:#4b5563;font-size:14px}
+.om.sb.rev .omb{padding:4px 28px 16px}
+.om.sb.rev .rc{border:1px solid #e5e7eb;border-radius:10px;padding:14px 16px 0;margin-bottom:14px;overflow:hidden}
+.om.sb.rev .rc h3{font:600 14px var(--ui);color:#1f2937;padding-bottom:10px;border-bottom:1px solid #eef0f3;margin:0 0 10px}
+.om.sb.rev .rh{gap:14px;font:600 11.5px var(--ui);text-transform:uppercase;letter-spacing:.03em}
+.om.sb.rev .rh span:first-child{color:#b91c1c}.om.sb.rev .rh span:last-child{color:#15803d}
+.om.sb.rev .rr{gap:14px;margin-bottom:12px;border:0;padding:0}
+.om.sb.rev .rr .ro,.om.sb.rev .rr .rn{border-radius:8px;padding:12px 14px 12px 28px;position:relative;font-size:14px;line-height:1.6}
+.om.sb.rev .rr .ro{background:#fef1f1;border:1px solid #fbd5d5;color:#b42318}
+.om.sb.rev .rr .rn{background:#effaf3;border:1px solid #c6ecd5;color:#14532d}
+.om.sb.rev .rr .ro::before,.om.sb.rev .rr .rn::before{content:"•";position:absolute;left:13px;top:11px;font-size:16px;line-height:1.4}
+.om.sb.rev .rr .ro::before{color:#dc2626}.om.sb.rev .rr .rn::before{color:#16a34a}
+.om.sb.rev .rr.ord .ro,.om.sb.rev .rr.ord .rn{white-space:pre-line}
+.om.sb.rev .rb{justify-content:flex-end;gap:6px;margin-top:10px}
+.om.sb.rev .rb button{width:28px;height:24px;border-radius:5px;border:0;display:grid;place-items:center;color:#fff}
+.om.sb.rev .rb .ok{background:#16a34a}.om.sb.rev .rb .no{background:#ef4444}
+.om.sb.rev .rb svg{width:14px;height:14px}
+.om.sb.rev .rr.acc .rn{background:#effaf3;padding:12px 14px 12px 28px}.om.sb.rev .rr.rej .rn{opacity:.5}
+.om.sb.rev .rcf{display:flex;justify-content:flex-end;gap:8px;margin:0 -16px;padding:12px 16px;background:#f7f8fa;border-top:1px solid #eef0f3}
+.om.sb.rev .rcf[hidden]{display:none}
+.om.sb.rev .rcf button{height:34px;padding:0 16px;border-radius:6px;border:0;color:#fff;font:600 14px var(--ui);cursor:pointer}
+.om.sb.rev .rcf .ok{background:#16a34a}.om.sb.rev .rcf .no{background:#dc2626}
+.om.sb.rev .rdone{flex-direction:column;justify-content:center;text-align:center;border:0;padding:22px 0 26px;gap:8px}
+.om.sb.rev .rdone>span:first-child{width:34px;height:34px;background:#dcf5e7;color:#16a34a}
+.om.sb.rev .rdone b{font:600 15px var(--ui)}.om.sb.rev .rdone small{font-size:12.5px;color:#6b7280}
+.om.sb.rev .omf{justify-content:flex-end;gap:10px;padding:14px 28px 20px}
+.om.sb.rev #omCount{margin-right:auto;color:#6b7280;font-size:13px}
+.om.sb.rev .rall{height:38px;padding:0 18px;border-radius:6px;background:#16a34a;border-color:#16a34a;color:#fff;font:600 14px var(--ui);display:inline-flex;align-items:center;gap:6px}
+.om.sb.rev .rall.done{background:#dcf5e7;border-color:#dcf5e7;color:#15803d;opacity:1}
+.om.sb.rev .rall svg{width:15px;height:15px}
+/* the suggestions on the page */
+.sheet .pgsug{gap:8px;font:12.5px/1.4 var(--ui)}
+.pgsug .o,.pgsug .n{border-radius:4px;padding:3px 10px;font-weight:400}
+.pgsug .o{background:#fde8e8;color:#c81e1e;border:1px solid #f8c9c9}.pgsug .n{background:#def7e8;color:#057a3a;border:1px solid #bfe9cf}
+.pgsug b{font:600 12.5px var(--ui);text-transform:none;letter-spacing:0;opacity:1;margin-right:2px}
+.pgb button{height:26px;padding:0 12px;border-radius:5px;font:500 12.5px var(--ui)}
+.pgb button.ok{background:#16a34a;border-color:#16a34a}
+.pgb button:not(.ok){background:#e5e7eb;border-color:#e5e7eb;color:#374151}
+.sheet .pgcmp{position:relative;padding:20px 14px 14px;background:#fff;border:1px solid #c3c8d0;border-radius:8px}
+.pgcmp .cmpai{position:absolute;left:50%;top:0;transform:translate(-50%,-55%);width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:#fff;border:1px solid #e3e6ea;
+  box-shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px -6px rgba(16,24,40,.2);color:#f0a000}
+.pgcmp .cmpai svg{width:16px;height:16px}
+.pgcmp .cmp2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pgcmp .co,.pgcmp .cn{border-radius:6px;padding:10px 12px}
+.pgcmp .co{background:#fde8e8;border:1px solid #f8c9c9}.pgcmp .cn{background:#def7e8;border:1px solid #bfe9cf}
+.pgcmp .co b{color:#c81e1e}.pgcmp .cn b{color:#057a3a}
+.pgcmp .cmp2 b{display:block;font:600 12px var(--ui);margin-bottom:4px}
+.pgcmp .cmp2 p{margin:0;font:12.5px/1.6 var(--ui);color:#1f2937;text-align:justify}
+.pgcmp .pga-f{margin-top:12px}
+.sheet .sumq > .sum{display:none}   /* a summary suggestion waiting: on screen the summary is its left half (it still prints) */
+.sheet .pgadd{background:#ecfbf2;border:1px solid #bfe9cf;border-radius:6px;padding:12px 14px}
+.pga-h b{font:700 12px var(--ui);text-transform:uppercase;letter-spacing:.04em;color:#057a3a}
+.pga-r{font:12.5px/1.8 var(--ui);color:#1f2937}.pga-r b{color:#14532d}
+.pga-c{background:none;border:0;padding:0;border-radius:0}
+.pga-c i{display:none}.pga-c:hover i{display:inline-flex}
+.pga-f button{height:26px;padding:0 12px;border-radius:5px;font:500 12.5px var(--ui)}
+.pga-f button.ok{background:#16a34a;border-color:#16a34a}
+.pga-f button:not(.ok){background:#e5e7eb;border-color:#e5e7eb;color:#374151}
+/* the notes: white, at the bottom right, a tick when something went well */
+.toast{left:auto;right:18px;bottom:18px;transform:translateY(16px);background:#fff;color:#1f2937;border:1px solid #eceef1;border-radius:10px;padding:12px 16px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 12px 28px -10px rgba(16,24,40,.28)}
+.toast.on{transform:none}
+.toast .tk{display:inline-grid;width:18px;height:18px;color:#111827;font-style:normal}
+.toast .tk svg{width:18px;height:18px}
+.toast button{color:#1d4ed8;background:#eef2ff}.toast button:hover{background:#e0e7ff;color:#1e40af}
 
 /* ---------- print: only the sheet, unscaled ---------- */
 @media print{
@@ -717,6 +889,10 @@ html.quick.running .toast{bottom:auto;top:54px}   /* a note during the run shows
   .sheet .pgx,.pgbar,.sheet li.pgempty,.sheet .pgin,.sheet .pgui,.sheet .pgln{display:none!important}
   .sheet .sk{padding-right:0!important}
   .sheet li.pghov,.sheet .pged{outline:none!important}
+  .sheet li.pghov,.sheet .en{padding-right:0!important}
+  .sheet li::after,.sheet .en::after,.sheet .ph-h::after,.sheet .pgsum::after,.sheet .sk::after{display:none!important}
+  .sheet li.chg,.sheet .ski.mark{background:none!important;box-shadow:none!important;padding:0!important}
+  .sheet .sumq > .sum{display:block!important}
 }
 
 </style>
@@ -755,6 +931,7 @@ html.quick.running .toast{bottom:auto;top:54px}   /* a note during the run shows
     <div class="frame" id="frame"><div class="sheetwrap" id="sheetwrap"><div class="sheet" id="sheet"></div><div class="breaks" id="breaks"></div></div></div>
   </main>
   <aside class="panel" id="panel">
+    <div class="qpoph" id="qpoph"><b id="qpopT">Design</b><button type="button" class="ib" data-a="q-popx" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <nav class="ptabs" id="ptabs" aria-label="Tools">
       <button type="button" class="on" data-a="ptab" data-v="edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span>Edit</span></button>
       <button type="button" data-a="ptab" data-v="format"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg><span>Format</span></button>
@@ -766,7 +943,7 @@ html.quick.running .toast{bottom:auto;top:54px}   /* a note during the run shows
 </div>
 
 <div id="selbar" class="selbar" hidden></div>
-<div id="pgbar" class="pgbar" hidden role="toolbar" aria-label="This bullet"><button type="button" class="pgadd" data-a="pg-badd" title="Add a bullet below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><button type="button" class="pgdel" data-a="pg-bdel" title="Delete this bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button><span class="pgdrag" draggable="true" title="Drag to move"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01"/></svg></span><button type="button" class="pgai" data-a="pg-bai" title="Improve this bullet with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button></div>
+<div id="pgbar" class="pgbar" hidden role="toolbar" aria-label="This bullet"><button type="button" class="pgadd" data-a="pg-badd" title="Add a bullet below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><button type="button" class="pgdel" data-a="pg-bdel" title="Delete this bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button><button type="button" class="pgai" data-a="pg-bai" title="Improve this bullet with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></button></div>
 <div id="modal" class="modal" hidden></div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <input type="file" id="fileIn" accept=".pdf,.docx,.txt" hidden>
@@ -1489,15 +1666,15 @@ function need(kind) {
   return window.mammoth ? Promise.resolve() : loadScript(MAMMOTH);
 }
 let toastT;
-function toast(msg, act) {
+function toast(msg, act, kind) {   // kind 'ok': a tick before it, as the reference editor's notes have
   const t = $('#toast');
-  t.innerHTML = '<span>' + esc(msg) + '</span>' + (act ? '<button type="button" data-a="' + act.a + '">' + esc(act.label) + '</button>' : '');
+  t.innerHTML = (kind === 'ok' ? '<i class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="currentColor" stroke="none"/><path d="m8 12.3 2.7 2.7L16 9.7" stroke="#fff" stroke-width="2.2"/></svg></i>' : '') + '<span>' + esc(msg) + '</span>' + (act ? '<button type="button" data-a="' + act.a + '">' + esc(act.label) + '</button>' : '');
   t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), act ? act.ms || 6000 : 3200);
 }
 function status(t, busy) {   // a save that went through says when: "Saved for this application · 11:42"
   const s = $('#status'); s.hidden = false; s.classList.toggle('busy', !!busy);
   s.lastChild.textContent = !busy && /^Saved\b/.test(t) ? t + ' · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : t;
-  if (QUICK) quickStatus(s.lastChild.textContent, busy);
+  if (QUICK) { quickStatus(s.lastChild.textContent, busy); quickTell(); }
 }
 
 /* ---------- which mode are we in ---------- */
@@ -1854,6 +2031,7 @@ const STORE_KEY = 'tp_editor_v1';
 function undoState() {
   $('#bUndo').disabled = HI <= 0; $('#bRedo').disabled = HI >= HIST.length - 1;
   const qu = $('#qUndo'), qr = $('#qRedo'); if (qu) { qu.disabled = HI <= 0; qr.disabled = HI >= HIST.length - 1; }   // Quick edit's own bar
+  if (QUICK) quickTell();   // and the application page's toolbar
 }
 function snap(coalesce) {   // one history step; typing in one field keeps extending the last step until a pause
   const j = JSON.stringify(DOC);
@@ -2141,34 +2319,55 @@ function orderedSections(D) {
 
 /* ---------- the page ---------- */
 const linkLabel = (c) => /linkedin\.com/i.test(c) ? 'LinkedIn' : /github\.com/i.test(c) ? 'GitHub' : /^(https?:\/\/|www\.)|\.(com|dev|io|me|site|tech|design|net|org|in)(\/|$)/i.test(c) && !EM1.test(c) ? 'Portfolio' : null;
-function contactHTML(D, f) {
-  const items = [];
+const LOC_RX = /^(remote\b.*|[A-Za-z .'-]{2,40},\s*[A-Za-z .]{2,30})$/i;   // a contact item that's a place: "Jersey City, NJ", "Remote"
+// ed: on screen, hovering the header shows each link's address with a × and the "Location" field when there's none, as the
+// reference editor does (never printed, never in the Word file)
+function contactHTML(D, f, ed) {
+  const items = []; let place = false, lastPlain = -1, insAt = 0;
   D.contact.forEach((c, i) => {
     if (!c || (f.hideContact || []).includes(c)) return;
     // every link and email can be clicked in the PDF and the Word file: shown in full, or as LinkedIn / GitHub / Portfolio
     const kind = linkLabel(c), em = String(c).match(EM1), href = em ? 'mailto:' + em[0] : /^(https?:\/\/)/i.test(c) ? c.trim() : kind ? 'https://' + c.trim().replace(/^\/+/, '') : null;
-    items.push('<span data-path="contact.' + i + '">' + (href ? '<a href="' + esc(href) + '">' + esc(f.linksAsLabels && kind ? kind : c) + '</a>' : esc(c)) + '</span>');
+    const link = href && !em;
+    if (LOC_RX.test(String(c).trim()) && !href) place = true;
+    if (!link) { lastPlain = items.length; insAt = i + 1; }
+    items.push((link && ed ? '<span class="pgx lkurl">' + esc(href) + '</span><i class="pgx lkic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></i>' : '') +
+      '<span data-path="contact.' + i + '">' + (href ? '<a href="' + esc(href) + '">' + esc(f.linksAsLabels && kind ? kind : c) + '</a>' : esc(c)) + '</span>' +
+      (link && ed ? '<i class="pgx lkx" data-a="pg-ctx" data-v="' + i + '" title="Remove this link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></i>' : ''));
   });
+  if (ed && !place) items.splice(lastPlain + 1, 0, '<span class="pgx pgph pgloc" data-path="contact.' + insAt + '" data-ins="' + insAt + '">Location</span>');   // typed right there (editOnPage)
   const pt = prefText(D); if (pt) items.push('<span class="pref">' + esc(pt) + '</span>');
   return items.join('<span class="sep">' + (f.template === 'traditional' || f.oneLine ? '|' : '·') + '</span>');
 }
-let SHOWCHG = false;   // Show changes: the words Optimise changed, marked on the page (never printed or exported)
-const marked = (path, t) => { const pre = SHOWCHG && DOC && DOC.meta.pre ? DOC.meta.pre[path] : undefined; return pre !== undefined && pre !== t && t ? wdiff(pre, t).n : esc(t); };
+let SHOWCHG = false;   // Show changes: what Optimise changed, marked on the page — a changed bullet in yellow, an added skill (never printed or exported)
+const marked = (path, t) => esc(t);   // whole lines are marked now (liHTML, skillRowHTML), never single words
 const P = (path, t, cls, tag) => '<' + (tag || 'span') + ' data-path="' + path + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + (t ? marked(path, t) : '<span class="empty">&nbsp;</span>') + '</' + (tag || 'span') + '>';
-// a bullet line; on screen (ed) an empty one shows too, so it can be typed into on the page (it never prints)
-const liHTML = (path, b, ed) => '<li' + (b.t ? (HL[b.id] && !SHOWCHG ? ' class="hl"' : '') : ' class="pgempty"') + (ed ? ' data-b="' + b.id + '"' : '') + '>' + P(path, b.t) + '</li>';
+// a bullet line; on screen (ed) an empty one shows too, so it can be typed into on the page (it never prints). On hover it gets a
+// box with its tools: + × ✨ above it (#pgbar), ✨ × at its right, and a handle on its left to drag it
+const LI_TOOLS = '<span class="pgx pgr"><i data-a="pg-bai" title="Improve this bullet with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></i><i data-a="pg-bdel" title="Delete this bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></i></span>' +
+  '<i class="pgx pgdrag pgl" draggable="true" title="Drag to move"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01"/></svg></i>';
+const liHTML = (path, b, ed) => {
+  const pre = ed && SHOWCHG && b.t && DOC && DOC.meta.pre ? DOC.meta.pre[path] : undefined, cls = !b.t ? 'pgempty' : pre !== undefined && pre !== b.t ? 'chg' : HL[b.id] && !SHOWCHG ? 'hl' : '';   // on screen only
+  return '<li' + (cls ? ' class="' + cls + '"' : '') + (ed ? ' data-b="' + b.id + '"' : '') + '>' + P(path, b.t) + (ed ? LI_TOOLS : '') + '</li>';
+};
+// an entry's own tools on hover (when no bullet of it is hovered): + another below, × remove it, ✨ tailor its bullets to the job
+const enTools = (s, it) => '<span class="pgx pgtb pget"><i data-a="pg-eadd" data-v="' + it.id + '" title="Add one below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></i><i data-a="pg-edel" data-v="' + it.id + '" title="Remove it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></i>' +
+  (s.k === 'experience' ? '<i data-a="pg-eai" data-v="' + it.id + '" title="Tailor its bullets to the job with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></i>' : '') + '</span>' +
+  '<span class="pgx pgr pger">' + (s.k === 'experience' ? '<i data-a="pg-eai" data-v="' + it.id + '" title="Tailor its bullets to the job with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></i>' : '') + '<i data-a="pg-edel" data-v="' + it.id + '" title="Remove it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></i></span>';
 function entryHTML(s, it, f, ed) {
-  const B = 'sec.' + s.id + '.item.' + it.id + '.', dates = it.dates ? '<span class="r" data-path="' + B + 'dates">' + esc(styleDates(it.dates, f.dates)) + '</span>' : '';
-  const bl = ed ? it.bullets : it.bullets.filter((b) => b.t);
+  const B = 'sec.' + s.id + '.item.' + it.id + '.', cal = ed ? '<i class="pgx pgcal" data-a="pg-dates" data-v="' + B + 'dates" title="Edit the dates"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></i>' : '';
+  const dspan = '<span class="r" data-path="' + B + 'dates">' + esc(styleDates(it.dates, f.dates)) + '</span>';
+  const dates = it.dates ? (ed ? '<span class="rdw">' + dspan + cal + '</span>' : dspan) : ed ? '<span class="r pgx pgph" data-path="' + B + 'dates">Dates</span>' : '';   // on screen the calendar stays with the dates, at the right
+  const bl = ed ? it.bullets : it.bullets.filter((b) => b.t), tools = ed ? enTools(s, it) : '';
   const bullets = bl.length && (ed || it.bullets.some((b) => b.t)) ? '<ul class="bl">' + bl.map((b) => liHTML(B + 'b.' + b.id, b, ed)).join('') + '</ul>' : '';
   if (f.oneLine) {   // Interview format: "Title, Company | Location" on one bold line; a school as "School - Degree"
     const ed = s.k === 'education';
     const head = ed ? (it.sub ? P(B + 'sub', it.sub, 'b1') + (it.title ? '<span class="dash"> - </span>' + P(B + 'title', it.title, 'deg') : '') : P(B + 'title', it.title, 'b1'))
                     : P(B + 'title', it.title, 'b1') + (it.sub ? ', ' + P(B + 'sub', it.sub, 'b1') : '');
     const loc = it.loc ? ' <span class="bar">|</span> ' + P(B + 'loc', it.loc, 'b1') : '';
-    return '<div class="en" data-item="' + it.id + '"><div class="er er1"><span class="l">' + head + loc + '</span>' + dates + '</div>' + bullets + '</div>';
+    return '<div class="en" data-item="' + it.id + '">' + tools + '<div class="er er1"><span class="l">' + head + loc + '</span>' + dates + '</div>' + bullets + '</div>';
   }
-  return '<div class="en" data-item="' + it.id + '"><div class="er er1">' + P(B + 'title', it.title, 'l') + dates + '</div>' +
+  return '<div class="en" data-item="' + it.id + '">' + tools + '<div class="er er1">' + P(B + 'title', it.title, 'l') + dates + '</div>' +
     (it.sub || it.loc ? '<div class="er er2">' + (it.sub ? P(B + 'sub', it.sub, 'l') : '<span class="l"></span>') + (it.loc ? P(B + 'loc', it.loc, 'r') : '') + '</div>' : '') + bullets + '</div>';
 }
 // a certification line "AWS Solutions Architect, AWS": the name bold, the issuer lighter
@@ -2185,17 +2384,25 @@ const skItems = (v) => {   // → the skills, the separator the line uses (comma
 function skillRowHTML(s, r, f, ed) {
   const B = 'sec.' + s.id + '.row.' + r.id, lab = r.label ? '<b data-path="' + B + '.label">' + esc(r.label) + (f.oneLine ? ' :' : ':') + '</b> ' : '';
   if (!ed) return '<div>' + lab + P(B + '.value', r.value) + '</div>';
+  // every skill stays its own item with its ×, Show changes or not. One added by tailoring (meta.added, or new since it with
+  // Show changes on) keeps its × in view, so it can always be taken off again; Show changes also marks it
   const pre = SHOWCHG && DOC && DOC.meta.pre ? DOC.meta.pre[B + '.value'] : undefined, sv = skItems(r.value);
-  const val = (pre !== undefined && pre !== r.value) || !sv.items.length ? P(B + '.value', r.value)   // Show changes marks the line as a whole
-    : '<span data-path="' + B + '.value">' + sv.items.map((x, k) => '<span class="ski">' + esc(x) + '<i class="pgx skx" data-a="pg-skx" data-v="' + r.id + '" data-k="' + k + '" title="Remove ' + esc(x) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></i></span>').join(esc(sv.sep)) + sv.end + '</span>';
+  const was = pre !== undefined ? skItems(pre).items.map(skKey) : null, added = ((DOC && DOC.meta.added) || []).map(skKey);
+  const val = !sv.items.length ? P(B + '.value', r.value)
+    : '<span data-path="' + B + '.value">' + sv.items.map((x, k) => { const n = added.includes(skKey(x)) || !!(was && !was.includes(skKey(x)));
+      return '<span class="ski' + (n ? ' add' + (SHOWCHG ? ' mark' : '') : '') + '">' + esc(x) + '<i class="pgx skx" data-a="pg-skx" data-v="' + r.id + '" data-k="' + k + '" title="Remove ' + esc(x) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></i></span>'; }).join(esc(sv.sep)) + sv.end + '</span>';
   return '<div class="skr" data-row="' + r.id + '"><i class="pgx skdrag" draggable="true" data-row="' + r.id + '" title="Drag to reorder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01"/></svg></i>' + lab + val +
-    '<i class="pgx skadd" data-a="pg-skadd" data-v="' + r.id + '">+ Add skill</i><i class="pgx skrm" data-a="pg-skrm" data-v="' + r.id + '">Remove category</i></div>';
+    '<i class="pgx skadd" data-a="pg-skadd" data-v="' + r.id + '">+ Add Skill</i><i class="pgx skrm" data-a="pg-skrm" data-v="' + r.id + '">Remove Category</i></div>';
 }
 function sectionHTML(s, f, ed) {
   let body = '';
-  if (s.type === 'summary') body = P('sec.' + s.id + '.text', s.text, 'sum' + (HL['sum:' + s.id] && !SHOWCHG ? ' hl' : ''), 'p') + (ed ? sugSumHTML(s.id) : '');
+  // the summary on screen: a box on hover with ✨ on its top edge (Improve with AI)
+  if (s.type === 'summary') { const sg = ed ? sugSumHTML(s.id) : '';   // a suggestion waiting: on screen the summary is its left half (it still prints)
+    body = (ed ? '<div class="pgsum' + (sg ? ' sumq' : '') + '"><i class="pgx pgsai" data-a="sum-ai" data-v="' + s.id + '" title="Improve the summary with AI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></i>' : '') +
+      P('sec.' + s.id + '.text', s.text, 'sum' + (HL['sum:' + s.id] && !SHOWCHG ? ' hl' : ''), 'p') + (ed ? '</div>' + sg : ''); }
   else if (s.type === 'entries') body = s.items.map((it) => entryHTML(s, it, f, ed)).join('');
-  else if (s.type === 'skills') body = '<div class="sk">' + s.rows.filter((r) => r.value || r.label).map((r) => skillRowHTML(s, r, f, ed)).join('') + '</div>' + (ed ? addSkillsHTML() : '');   // the job's missing skills, waiting to be accepted
+  else if (s.type === 'skills') body = '<div class="sk">' + s.rows.filter((r) => r.value || r.label).map((r) => skillRowHTML(s, r, f, ed)).join('') +
+    (ed ? '<i class="pgx skcat" data-a="pg-skcat" data-v="' + s.id + '">+ Add Category</i>' : '') + '</div>' + (ed ? addSkillsHTML() : '');   // the job's missing skills, waiting to be accepted
   else if (f.oneLine && s.k === 'certifications') body = '<div class="certs">' + s.list.filter((b) => b.t).map((b) => '<div>' + certHTML('sec.' + s.id + '.list.' + b.id, b.t) + '</div>').join('') + '</div>';
   else body = '<ul class="bl">' + (ed ? s.list : s.list.filter((b) => b.t)).map((b) => liHTML('sec.' + s.id + '.list.' + b.id, b, ed)).join('') + '</ul>';
   return '<section class="ps" data-sec="' + s.id + '">' + P('sec.' + s.id + '.title', s.title, null, 'h2') + body + '</section>';
@@ -2203,8 +2410,10 @@ function sectionHTML(s, f, ed) {
 // ed: the on-screen page, with the controls for editing on it (the PDF hides them; the Word file never has them)
 function resumeHTML(D, f, ed) {
   D = D || DOC; f = f || fmtOf(D);
-  return '<header class="ph-h">' + P('name', D.name, null, 'h1') + (D.headline ? P('headline', D.headline, 'hlt', 'div') : '') + (ed ? sugHeadHTML() : '') + '<div class="ct">' + contactHTML(D, f) +
-    (ed ? '<span class="pgln"><button type="button" data-a="ln-pg">' + I_PLUS + 'Add link</button></span>' : '') + '</div>' + (ed ? sugLocHTML() : '') + '</header>' +   // + Add link: on screen only, never printed or in the Word file
+  // on screen, hovering the header shows the "Title" field when there's no title, each link's address with a ×, the "Location"
+  // field and "+ Add Link" — never printed, never in the Word file
+  return '<header class="ph-h">' + P('name', D.name, null, 'h1') + (D.headline ? P('headline', D.headline, 'hlt', 'div') : ed ? P('headline', '', 'hlt pgx pgph', 'div') : '') + (ed ? sugHeadHTML() : '') +
+    '<div class="ct">' + contactHTML(D, f, ed) + (ed ? '<span class="pgx pgln"><button type="button" data-a="ln-pg">' + I_PLUS + 'Add Link</button></span>' : '') + '</div>' + (ed ? sugLocHTML() : '') + '</header>' +
     (ed ? sugSumHTML('') : '') +   // Optimise's suggestions wait on the page (never printed or exported)
     orderedSections(D).filter((s) => !s.hidden).map((s) => sectionHTML(s, f, ed)).join('') + (ed && !D.sections.some((s) => s.k === 'skills' && !s.hidden) ? addSkillsHTML() : '');
 }
@@ -2289,7 +2498,7 @@ window.addEventListener('afterprint', () => { if (CHG_WAS) { SHOWCHG = true; ren
 function renderAll() { applyFormat(); renderSheet(); renderPanel(); }
 function setDocTab(v) {
   TAB = v; $$('#doctabs button').forEach((b) => b.classList.toggle('on', b.getAttribute('data-v') === v));
-  FOCUS = null; renderSheet(); if (PTAB === 'edit') renderPanel();
+  FOCUS = null; renderSheet(); if (PTAB === 'edit') renderPanel(); quickTell();
 }
 
 /* ---------- download ---------- */
@@ -2343,7 +2552,7 @@ const I_UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const PHEAD = { edit: ['Edit', 'Every section of the resume. You can also click a line on the page and type.'], cover: ['Cover letter', 'Written for this job, from the resume.'],
   format: ['Format', 'Template, type and spacing for the whole resume.'], check: ['Check', 'How the resume scores, and what to fix first.'], versions: ['Versions', 'Saved copies you can go back to.'] };
 function renderPanel() {
-  if (QUICK) { quickRec(); return; }   // Quick edit has no panel: the job's missing skills sit in its bar
+  if (QUICK && !QPOP) { quickRec(); return; }   // Quick edit has no panel, only the Format popover its page's toolbar opens
   const body = $('#pbody'); if (!DOC || !body) return;
   const sc = body.scrollTop, hd = PHEAD[PTAB === 'edit' && TAB === 'cover' ? 'cover' : PTAB];
   $$('#ptabs button').forEach((b) => b.classList.toggle('on', b.getAttribute('data-v') === PTAB));
@@ -2581,8 +2790,9 @@ let EDIT = null, PGB = null, PGT = 0, PGS = 0, DRAG = null, PGADD = null;   // t
 let PGTYPED = false, PGDOWN = false, PGLATER = false;   // a keystroke the page already shows; a mouse button is down; a redraw waiting for that click to land
 let PGTOUCH = false, PGWAS = null, PGON = null;   // phones: this tap is a touch; the bullet whose toolbar showed before it; the skills section showing its controls
 const PG_TYPE = /\.(b|list)\.[^.]+$|^sec\.[^.]+\.text$|\.row\.[^.]+\.value$/;   // typed on the page: bullets, list lines, the summary, a skills line
-// Quick edit has no panel, so the one-line fields are typed on the page too: a role's title, company, dates and place, a school
-// and its degree, the name, the headline, the contact details and a skills group's name (Enter or Esc finishes the line)
+// the one-line fields are typed on the page too, as the reference editor does (the panel follows along): a role's title, company,
+// dates and place, a school and its degree, the name, the headline, the contact details and a skills group's name (Enter or Esc
+// finishes the line)
 const PG_ONE = /\.item\.[^.]+\.(title|sub|dates|loc)$|^(name|headline)$|^contact\.\d+$|\.row\.[^.]+\.label$/;
 const PG_LIST = /\.(b|list)\.[^.]+$/;
 const pgSib = (path, id) => path.replace(/[^.]+$/, id);   // another line in the same list
@@ -2594,10 +2804,11 @@ function pgLeft() {   // the focus left the line on the page: it's no longer the
 }
 function editOnPage(el, ev) {   // false: this line is edited in the panel instead
   const path = el.getAttribute('data-path');
-  if (READONLY || TAB !== 'resume' || !(PG_TYPE.test(path) || (QUICK && PG_ONE.test(path)))) return false;
+  if (READONLY || TAB !== 'resume' || !(PG_TYPE.test(path) || PG_ONE.test(path))) return false;
   if (EDIT && EDIT.el === el) return true;
   pgEnd();
-  const v = getField(path); let at = -1;
+  if (el.hasAttribute('data-ins')) { DOC.contact.splice(+el.getAttribute('data-ins'), 0, ''); el.removeAttribute('data-ins'); }   // "Location": a new place in the contact line, typed right where it shows
+  const v = getField(path) || ''; let at = -1;
   if (ev && el.textContent === v && document.caretRangeFromPoint) {   // the caret where the click was
     const r = document.caretRangeFromPoint(ev.clientX, ev.clientY);
     if (r && el.contains(r.startContainer)) { const pre = document.createRange(); pre.selectNodeContents(el); pre.setEnd(r.startContainer, r.startOffset); at = pre.toString().length; }
@@ -2664,11 +2875,11 @@ function pgShow(li, x) {
   $$('#sheet li.pghov').forEach((q) => q.classList.remove('pghov')); li.classList.add('pghov');
   PGB = { li, path: sp.getAttribute('data-path'), x }; $('#pgbar').hidden = false; pgPlace();
 }
-function pgPlace() {   // just above the line (below it when there's no room above), near where the pointer came in
+function pgPlace() {   // centred on the line, sitting on its box's top border as the reference editor has it — never over the line's own words (below it when there's no room above)
   if (!PGB) return; if (!PGB.li.isConnected) { pgHide(); return; }
-  const bar = $('#pgbar'), r = PGB.li.getBoundingClientRect(), w = bar.offsetWidth, h = bar.offsetHeight, at = PGB.x == null ? r.left + Math.min(r.width * 0.4, 240) : PGB.x - w / 2;
-  bar.style.left = clamp(clamp(at, r.left, r.right - w), 8, window.innerWidth - w - 8) + window.scrollX + 'px';
-  bar.style.top = (r.top - h < 4 ? r.bottom : r.top - h) + window.scrollY + 'px';
+  const bar = $('#pgbar'), r = PGB.li.getBoundingClientRect(), w = bar.offsetWidth, h = bar.offsetHeight, top = r.top - h + 1;
+  bar.style.left = clamp(r.left + r.width / 2 - w / 2, 8, window.innerWidth - w - 8) + window.scrollX + 'px';
+  bar.style.top = (top < 4 ? r.bottom - 1 : top) + window.scrollY + 'px';
 }
 function pgHideSoon() { clearTimeout(PGT); PGT = setTimeout(pgHide, 260); }
 function pgHide() { clearTimeout(PGT); clearTimeout(PGS); const bar = $('#pgbar'); if (bar) bar.hidden = true; $$('#sheet li.pghov').forEach((q) => q.classList.remove('pghov')); PGB = null; }
@@ -2706,14 +2917,36 @@ function skAddBox(rowId) {
 function pageAction(a, v, t) {
   if (!/^pg-/.test(a)) return false;
   if (READONLY) return true;
-  const pb = PGB; pgLeft(); if (PGADD) PGADD(false);   // finish what was being typed on the page first
+  const li = t && t.closest && t.closest('li[data-b]'), sp0 = li && li.querySelector('[data-path]');
+  const pb = PGB || (sp0 ? { li, path: sp0.getAttribute('data-path') } : null); pgLeft(); if (PGADD) PGADD(false);   // finish what was being typed on the page first
   switch (a) {
+    case 'pg-eadd': case 'pg-edel': case 'pg-eai': {   // an entry's own tools: + another below it, × remove it, ✨ tailor its bullets
+      const s = DOC.sections.find((x) => (x.items || []).some((q) => q.id === v)), it = s && byId(s.items, v); if (!it) return true;
+      pgHide();
+      if (a === 'pg-edel') { s.items.splice(idx(s.items, v), 1); structural(); toast((s.k === 'education' ? 'School' : 'Entry') + ' removed', { a: 'undo', label: 'Undo' }); return true; }
+      if (a === 'pg-eadd') { const ni = newEntry(); if (s.k !== 'education') ni.bullets.push({ id: uid(), t: '' }); s.items.splice(idx(s.items, v) + 1, 0, ni); structural(); pgEditPath('sec.' + s.id + '.item.' + ni.id + '.title', 0); return true; }
+      optimiseRole(v); return true;
+    }
+    case 'pg-dates': { const el = $('#sheet [data-path="' + v + '"]'); if (el) editOnPage(el); return true; }   // the calendar: the dates, typed right there
+    case 'pg-ctx': {   // a link's ×, on the header
+      const i = +v; if (DOC.contact[i] == null) return true;
+      const gone = DOC.contact.splice(i, 1)[0]; structural(); toast('Removed ' + (linkLabel(gone) || 'the link'), { a: 'undo', label: 'Undo' }); return true;
+    }
+    case 'pg-skcat': {   // + Add Category: a new skills line, its name selected to type over
+      const s = secById(v); if (!s) return true;
+      const r = { id: uid(), label: 'New Category', value: '' }; s.rows.push(r); structural();
+      const p = 'sec.' + s.id + '.row.' + r.id + '.label', el = $('#sheet [data-path="' + p + '"]');
+      if (el && editOnPage(el)) { const rg = document.createRange(), sl = window.getSelection(); rg.selectNodeContents(el); sl.removeAllRanges(); sl.addRange(rg); }
+      return true;
+    }
     case 'pg-skx': case 'pg-skadd': case 'pg-skrm': {
       const s = DOC.sections.find((x) => (x.rows || []).some((q) => q.id === v)), row = s && byId(s.rows, v); if (!row) return true;
       if (a === 'pg-skadd') { skAddBox(v); return true; }
       if (a === 'pg-skrm') { s.rows.splice(idx(s.rows, v), 1); structural(); toast('Category removed', { a: 'undo', label: 'Undo' }); return true; }
       const sv = skItems(row.value), gone = sv.items.splice(+t.getAttribute('data-k'), 1)[0];
-      row.value = sv.items.length ? sv.items.join(sv.sep) + sv.end : ''; structural(); toast('Removed ' + (gone || 'the skill'), { a: 'undo', label: 'Undo' }); return true;
+      row.value = sv.items.length ? sv.items.join(sv.sep) + sv.end : '';
+      if (gone && DOC.meta.added) DOC.meta.added = DOC.meta.added.filter((x) => skKey(x) !== skKey(gone));   // no longer one tailoring added
+      structural(); toast('Removed ' + (gone || 'the skill'), { a: 'undo', label: 'Undo' }); return true;
     }
     case 'pg-badd': case 'pg-bdel': case 'pg-bai': {
       if (!pb || !fieldRef(pb.path)) return true;
@@ -2770,16 +3003,38 @@ function quickBar() {
       '<label class="showchg qchg" id="qChg" hidden title="Mark what tailoring reworded"><input type="checkbox" id="qChgOn" data-a="chg"> Show changes</label>' +
       '<button type="button" class="qsk" id="qsk" data-a="q-rec" aria-expanded="false" aria-controls="qrec" hidden></button></div>' +
     '<div class="qrec" id="qrec" hidden></div>';
+  quickTell();
 }
-// Quick edit's dialogs (a question, the choices, the review) show over the whole application page: the page lays this frame over
-// itself while one is open, and the editor's own page steps aside. The run's card stays at the bottom of the panel instead, the
-// page resting behind it, so the job beside it can still be read while Claude works
+// Quick edit's toolbar is the application page's own, as the reference editor has it above the resume: Resume / Cover Letter, undo,
+// redo, design, layout, save, download. It calls in here (quickCmd) and hears back what to show (quickTell)
+let QPOP = '';   // the Format panel, open as a popover from the toolbar: 'design' (template, fonts) or 'layout' (size, spacing, page)
+function quickCmd(cmd, arg) {
+  if (!DOC) return;
+  if (cmd === 'undo') undo();
+  else if (cmd === 'redo') redo();
+  else if (cmd === 'save') saveNow();
+  else if (cmd === 'chg') { SHOWCHG = !SHOWCHG; const c = $('#chgOn'); if (c) c.checked = SHOWCHG; renderSheet(); }
+  else if (cmd === 'tab') setDocTab(arg === 'cover' ? 'cover' : 'resume');   // only switches, as the full editor's tabs do (the job's Cover Letter button writes one)
+  else if (cmd === 'format') {
+    QPOP = QPOP === arg ? '' : arg || 'design'; document.documentElement.classList.toggle('qpop', !!QPOP); $('#qpopT').textContent = QPOP === 'layout' ? 'Layout' : 'Design';
+    if (QPOP) { PTAB = 'format'; renderPanel(); const h = $$('#pbody .fh').find((x) => (QPOP === 'layout' ? /^Size/ : /^Template/).test(x.textContent)); if (h) h.scrollIntoView({ block: 'start' }); }
+  }
+  quickTell();
+}
+function quickTell() {
+  if (!QUICK || window.parent === window || !DOC) return;
+  const s = $('#status');
+  try { window.parent.postMessage({ tp: 'quick', st: { undo: HI > 0, redo: HI < HIST.length - 1, tab: TAB, chg: !!SHOWCHG, canChg: !!DOC.meta.pre, pop: QPOP,
+    status: s && !s.hidden ? s.textContent.trim() : '', busy: !!(s && s.classList.contains('busy')) } }, location.origin); } catch (e) {}
+}
+// The run is a small note at the bottom right ("Optimizing resume…", #modal.runq), not a window: the page stays usable meanwhile, as
+// the reference editor has it. In Quick edit, the dialogs (a question, the choices, the review) show over the whole application
+// page: the page lays this frame over itself while one is open, and the editor's own page steps aside
 let QLIFT = false;
 function quickModal(m) {
-  if (!QUICK) return;
   const run = !m.hidden && !!m.querySelector('.om.run');
   m.classList.toggle('runq', run); document.documentElement.classList.toggle('running', run);
-  quickLift(!m.hidden && !run);
+  if (QUICK) quickLift(!m.hidden && !run);
 }
 function quickLift(on) {
   if (QLIFT === on) return; QLIFT = on; document.documentElement.classList.toggle('lift', on);
@@ -3307,7 +3562,7 @@ function optTargets() { const out = []; DOC.sections.forEach((s) => { if (s.hidd
 function jobFit() { if (!JOB) return null; const low = docText().toLowerCase(), terms = skillsIn(jobText()); const have = terms.filter((k) => inText(k, low)); return { have, miss: terms.filter((k) => !have.includes(k)) }; }
 // what Optimise can tailor: the summary, the title under the name, location (for a job in another city), the bullets and the skills
 function optRows() {
-  const rows = [['summary', 'Summary'], ['headline', 'Job title'], ['experience', 'Work experience'], ['skills', 'Skills']];
+  const rows = [['summary', 'Summary'], ['headline', 'Job title'], ['experience', 'Work Experience'], ['skills', 'Skills']];
   if (JOB && JOB.loc && !/remote|anywhere/i.test(JOB.loc)) rows.splice(2, 0, ['location', 'Location']);
   return rows;
 }
@@ -3348,24 +3603,22 @@ function openOptimise(preset) {   // preset: the team portal opened it - the cli
   const what = { summary: hasSum ? (roles ? 'Rewrite it for these roles' : 'Rewrite it around this job’s keywords') : 'Write one from the experience — there isn’t one yet', headline: jt ? 'Set the title under the name to “' + jt + '”' : 'Match the title under the name to the job',
     location: JOB && JOB.loc ? 'Show you’re open to relocating to ' + JOB.loc : 'Show you’re open to relocating', experience: nb ? (roles ? 'Improve ' : 'Tailor ') + nb + ' bullet' + (nb > 1 ? 's' : '') + ' across ' + tg.length + ' role' + (tg.length > 1 ? 's' : '') + to : 'Add bullets to a role first',
     skills: roles ? 'Find skills these roles ask for that aren’t listed' : 'Find skills the job asks for that aren’t listed' };
-  const sub = roles ? '<p class="omsub">For <b>' + esc(roles.join(' · ')) + '</b> — the resume every application starts from</p>'
-    : JOB && JOB.title ? '<p class="omsub"><b>' + esc(jt || 'This job') + '</b>' + (JOB.company ? ' at <b>' + esc(JOB.company) + '</b>' : '') + '</p>' : '<p class="omsub">Paste the job description, then choose what to tailor.</p>';
-  const ls = lastScore(), again = optAgain() ? '<p class="omagain">Tailored to this job before' + (ls && ls.before != null ? ' on ' + new Date(ls.at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) + ' — job match ' + ls.before + '% → ' + (ls.now != null ? ls.now : ls.before) + '%' : '') +
-    '. This run builds on what was accepted and works only on what’s still missing.</p>' : '';
+  const sub = roles ? '<p class="omsub">For <b>' + esc(roles.join(' · ')) + '</b> — the resume every application starts from</p>' : '';   // a base resume: which roles it's for
   // the public editor's Sync: one click, every part at once and more deeply - the posting's words, priorities and title, and each role's bullets in this job's order
   const syncB = mode !== 'free' ? '' : '<button class="btn omb2 osyncb" type="button" data-a="opt-sync" id="optSync" title="Everything at once, more deeply: the posting’s words, priorities and title, and each role’s bullets in the order this job cares about. The facts stay as they are."><b>' + I_SPARK + '<span>Sync to this job</span></b><small>Everything, in the job’s words and order</small></button>';
   // the client's Resume rules from their Profile: shown fixed, never typed again, and sent with every run as hard constraints
   const rulesBlock = clientRules() ? '<div class="omrules"><div class="lbl">Resume rules <small>from the Profile — always followed</small>' +
     (TEAM ? '<a href="' + esc('/team.html?client=' + encodeURIComponent(TEAM.client) + '#profile') + '" target="_blank" rel="noopener">Edit on the Profile</a>' : '') + '</div><p>' + esc(clientRules()) + '</p>' +
     (ruleHits().length ? '<p class="omrulehit">' + esc(ruleHits().join(', ')) + (ruleHits().length > 1 ? ' are' : ' is') + ' on Skills now — taken off when you run.</p>' : '') + '</div>' : '';
-  modalOpen('<div class="om sm opt" role="dialog" aria-modal="true" aria-labelledby="omT"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
-    '<div class="omh"><h2 id="omT">' + W.title + '</h2>' + sub + again + '</div>' +
+  // "Optimise by", as the reference editor has it: each part with Select / Selected, special instructions, Proceed. What each part
+  // does is its tooltip; the client's Resume rules stay in view (always followed)
+  modalOpen('<div class="om sm opt sb" role="dialog" aria-modal="true" aria-labelledby="omT"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
+    '<div class="omh"><h2 id="omT">Optimise by</h2><p class="omsub"><span class="oi" aria-hidden="true">i</span>Choose pointers you want to optimise <span class="oreq">*</span></p>' + sub + '</div>' +
     '<div class="omb">' + (jobOk() || base ? '' : '<div class="omjd">' + (app ? '<p class="fine">This application has no job description yet. Paste it here — it’s kept on the application too.</p>' : '') + '<textarea id="optJd" placeholder="Paste the whole job description here"></textarea></div>') +
-    ('<div class="ohd"><span>' + W.pick + '</span><button type="button" data-a="opt-all">Select all</button></div>' +
-        '<div class="orows">' + rows.map((r) => '<button type="button" class="orow" data-a="opt-t" data-v="' + r[0] + '" aria-pressed="false"><span class="ol"><b>' + r[1] + '</b><small>' + esc(what[r[0]] || '') + '</small></span><i class="cb" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i></button>').join('') + '</div>') +
-    rulesBlock + '<div class="omins"><label class="lbl" for="optIns">Special instructions for this run (optional)</label><textarea id="optIns" maxlength="400" placeholder="e.g. Keep each bullet under 22 words; don’t touch the first role.">' + esc(pref.ins || '') + '</textarea></div></div>' +
-    '<div class="omf"><button class="btn" type="button" data-a="fact">Fact check only</button><span id="optHint"></span>' + syncB +
-      ('<button class="btn omb2 ats" type="button" data-a="opt-go" id="optGo" disabled><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span id="optGoT">' + W.verb + '</span></b><small>' + W.go + '</small></button>') + '</div></div>');
+    '<div class="orows">' + rows.map((r) => '<button type="button" class="orow" data-a="opt-t" data-v="' + r[0] + '" aria-pressed="false" title="' + esc(what[r[0]] || '') + '"><span class="ol"><b>' + r[1] + '</b></span>' +
+      '<span class="opill"><span class="o0">Select</span><span class="o1">Selected' + IC_OK + '</span></span></button>').join('') + '</div>' +
+    rulesBlock + '<div class="omins"><label class="lbl" for="optIns">Special instructions <span class="oopt">(optional)</span></label><textarea id="optIns" maxlength="400" placeholder="e.g. Keep each bullet under 22 words; don’t touch the first role.">' + esc(pref.ins || '') + '</textarea></div></div>' +
+    '<div class="omf">' + syncB + '<button class="btn oproceed" type="button" data-a="opt-go" id="optGo" disabled>Proceed<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg></button></div></div>');
   if (preset) optPreset();
 }
 // A base resume whose client has no target roles on their profile yet: ask which roles it's for (the resume's own title is
@@ -3399,6 +3652,14 @@ function syncNow() {
   OPT = { sel: {}, sync: false, ins: (lsGet(OPT_KEY, {}) || {}).ins || '' }; optRows().forEach((r) => { OPT.sel[r[0]] = false; });
   runOptimise(true);
 }
+// ✨ on a role on the page: just its bullets, tailored to the job and reviewed in the usual window; nothing else is touched
+function optimiseRole(id) {
+  if (!DOC || READONLY) return;
+  if (!jobOk()) { openOptimise(); return; }   // no job description yet: the dialog asks for it
+  hideSel(); setDocTab('resume');
+  OPT = { sel: {}, sync: false, ins: (lsGet(OPT_KEY, {}) || {}).ins || '', only: id }; optRows().forEach((r) => { OPT.sel[r[0]] = r[0] === 'experience'; });
+  runOptimise(TEAM && TEAM.app ? 'deep' : false);
+}
 function optPreset() {   // the choices last used for this client (the same ones the portal's list uses), else summary, title, experience and skills
   const s = (lsGet(OPT_KEY, {}) || {}).sel || { summary: 1, headline: 1, experience: 1, skills: 1 };
   $$('.orows .orow').forEach((r) => { if (s[r.getAttribute('data-v')]) optPick(r, true); });
@@ -3428,7 +3689,7 @@ function runOptimise(sync) {   // sync: true = "Sync to this job", every part at
   if (TEAM) saveVersion(all ? 'Before Sync' : 'Before ' + optWord().ing);   // one click of Restore undoes the whole run
   const gone = applyRules(); if (gone.length) { structural(); toast(gone.join(', ') + ' taken off Skills — the client’s rules'); }   // before the AI sees the resume
   const keep = {}; if (all) Object.assign(keep, (lsGet(OPT_KEY, {}) || {}).sel || {}); else Object.keys(sel).forEach((k) => { if (k !== 'sync') keep[k] = sel[k] ? 1 : 0; });
-  delete keep.sync; lsSet(OPT_KEY, { sel: keep, ins });   // the ticks to remember: a Sync leaves them as they were
+  delete keep.sync; if (!OPT.only) lsSet(OPT_KEY, { sel: keep, ins });   // the ticks to remember: a Sync, or one role's ✨, leaves them as they were
   const P = optPlan(sel), nb = P.nb, second = appOpt();
   // each step: its key, what it says, its usual seconds, its share of the bar, what it says when it moves on before the answer, what Claude is doing meanwhile
   const fw = JOB.roles ? 'for these roles' : 'for the job';   // what it's for, in the steps
@@ -3450,7 +3711,10 @@ function runOptimise(sync) {   // sync: true = "Sync to this job", every part at
 // after another, and Stop closes it - nothing on the resume changes until a suggestion is accepted.
 let RUN = null;
 function runCard(title, sub, steps) {
-  modalOpen('<div class="om sm run" role="dialog" aria-modal="true" aria-labelledby="runT"><div class="runbar" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="runbar"></i></div>' +
+  // shown as the reference editor's small note at the bottom right ("Optimizing resume…"), the page usable meanwhile (#modal.runq);
+  // the steps stay underneath for the progress and the screen reader
+  modalOpen('<div class="om sm run" role="status" aria-labelledby="runT"><div class="runq-t"><span class="spin" aria-hidden="true"></span><span>Optimizing resume…</span></div>' +
+    '<div class="runbar" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="runbar"></i></div>' +
     '<div class="runhd"><div><h2 id="runT">' + esc(title) + '</h2>' + (sub ? '<p class="omsub">' + esc(sub) + '</p>' : '') + '</div><span class="runmeta" id="runMeta"></span></div>' +
     '<ol class="steps" id="runSteps">' + steps.map((s) => '<li data-st="' + s[0] + '" class="wait"><i aria-hidden="true"></i><div><b>' + esc(s[1]) + '</b><small class="hint"></small></div></li>').join('') + '</ol>' +
     '<p class="runslow" id="runSlow" hidden>Taking a little longer than usual — Claude is still working. A long job description can take up to a minute.</p>' +
@@ -3511,7 +3775,7 @@ function runCard(title, sub, steps) {
 }
 // what Optimise tailors: the roles and their bullets, the job's keywords, and the summary and skills as they are now
 function optPlan(sel) {
-  const targets = sel.experience ? optTargets() : [], terms = atsTerms();
+  const targets = sel.experience ? optTargets().filter((t) => !(OPT && OPT.only) || t.it.id === OPT.only) : [], terms = atsTerms();   // OPT.only: one role's ✨ on the page
   const sm = DOC.sections.find((x) => x.k === 'summary' && !x.hidden), sk = DOC.sections.find((x) => x.k === 'skills' && !x.hidden);
   return { targets, terms, cover0: atsCover(docText(), terms), sm, nb: targets.reduce((n, t) => n + t.it.bullets.filter((b) => b.t.trim()).length, 0),
     skills: sk ? [].concat(...sk.rows.map((r) => r.value.split(/,\s*/).map((x) => x.trim()).filter(Boolean))) : [] };
@@ -3676,17 +3940,21 @@ function validateAll(R, targets, terms, cover0) {
 // one suggestion in the review: the line as it is, Claude's version, accept or keep the original
 function optRow(type, data, orig, sug, note, fc) {
   const i = OPT.rows.length, ord = type === 'order' || type === 'skorder'; OPT.rows.push(Object.assign({ type, st: 'p', orig, sug }, data));   // ord: the same lines in a new order
+  // the reference editor's card: the line as it is in red, the suggestion in green (it can be edited before accepting), ✓ ✗ under it;
+  // only a problem with it says so (a [ ] to fill in), and a new order says it's the same lines
   return '<div class="rr' + (ord ? ' ord' : '') + '" data-r="' + i + '" style="--i:' + i + '"><div class="ro">' + (orig ? esc(orig) : '<i>Not on the resume yet</i>') + '</div><div class="rn"><span' + (ord ? '' : ' contenteditable="true"') + ' data-rs="' + i + '">' + esc(sug) + '</span>' + (note ? '<small>' + esc(note) + '</small>' : '') +
-    (fc ? '<span class="fc fx">' + IC_WARN + ' ' + esc(fc) + '</span>' : '<span class="fc">' + IC_OK + ' ' + (ord ? 'The same ' + (type === 'order' ? 'bullets' : 'skills') + ', in a new order' : OPT.okLabel || 'Fact-checked against the resume') + '</span>') +
+    (fc ? '<span class="fc fx">' + IC_WARN + ' ' + esc(fc) + '</span>' : ord ? '<span class="fc">' + IC_OK + ' The same ' + (type === 'order' ? 'bullets' : 'skills') + ', in a new order</span>' : '') +
     '<div class="rb" id="rb' + i + '"><button type="button" class="ok" data-a="r-ok" data-v="' + i + '" aria-label="Accept">' + IC_OK + '</button><button type="button" class="no" data-a="r-no" data-v="' + i + '" aria-label="Reject">' + IC_X + '</button></div></div></div>';
 }
-const optCard = (title, body, plain, id) => '<section class="rc"' + (id ? ' id="' + id + '"' : '') + '><h3>' + title + '</h3>' + (plain ? '' : '<div class="rh"><span>Original</span><span>Claude’s suggestion</span></div>') + body + '</section>';
+// a role's card: its rows under ORIGINAL / AI SUGGESTION, and Accept or Reject for the whole role at its foot
+const optCard = (title, body, plain, key) => '<section class="rc"><h3>' + title + '</h3>' + (plain ? '' : '<div class="rh"><span>Original</span><span>AI Suggestion</span></div>') + body +
+  (plain || !key ? '' : '<div class="rcf"><button type="button" class="ok" data-a="r-role" data-v="' + esc(key) + '">Accept</button><button type="button" class="no" data-a="r-role-no" data-v="' + esc(key) + '">Reject</button></div>') + '</section>';
 // The results, like Scout Better: the title, summary and location wait on the resume page with Accept or Reject, the skills in
 // the box under Skills, and the work experience in a window, side by side. Nothing on the resume changes until it's accepted.
 function showResults(R, targets, sel, V) {
   OPT.rows = []; OPT.skillsDone = true;   // the skills are in the box on the page now
   // an application: this run's match score is kept (before, expected, and measured again once accepted); the second reader's verdict labels each row
-  const strict = appOpt(), again = strict && optAgain(), prev = lastScore(), S = strict ? V.second || null : null;
+  const strict = appOpt(), S = strict ? V.second || null : null;
   if (strict && V.before != null && !V.logged) { V.logged = 1; DOC.meta.scores = (DOC.meta.scores || []).slice(-9).concat({ at: Date.now(), before: V.before, expect: V.after, now: V.before }); }
   OPT.okLabel = S && !S.failed && S.n ? 'Checked against the original line, twice' : '';
   const sug = { key: recKey(), at: Date.now() };
@@ -3698,7 +3966,7 @@ function showResults(R, targets, sel, V) {
   persist(); renderSheet(); if (PTAB === 'edit') renderPanel();
   const onPage = !!$('#sheet .pgui');
   const row = optRow, card = optCard;
-  const already = '<div class="rdone"><span>' + I_SPARK + '</span><span><b>Already optimised</b><small>This looks right — no changes needed.</small></span></div>';
+  const already = '<div class="rdone"><span>' + I_SPARK + '</span><span><b>Already optimized</b><small>This experience looks great — no changes needed</small></span></div>';
   let h = '';
   const firstWords = (t, n) => { const w = String(t || '').trim().split(/\s+/); return w.slice(0, n).join(' ') + (w.length > n ? '…' : ''); };
   const listOf = (it, ids) => ids.map((id, k) => (k + 1) + '. ' + firstWords((byId(it.bullets, id) || {}).t, 10)).join('\n');
@@ -3706,7 +3974,7 @@ function showResults(R, targets, sel, V) {
     const ch = (tg.res || []).filter((x) => norm(x.sug) !== norm(x.orig)), t = 'Experience at ' + esc(tg.it.sub || tg.it.title || 'this role');
     const keptNote = tg.keptN ? '<p class="rnote">' + tg.keptN + ' rewrite' + (tg.keptN > 1 ? 's' : '') + ' skipped — ' + (tg.keptN > 1 ? 'they' : 'it') + ' ' + esc(keptWhy(tg.why || [])) + ', so the original' + (tg.keptN > 1 ? 's stay' : ' stays') + '.</p>' : '';
     const ord = tg.orderIds ? row('order', { key: tg.key, ids: tg.orderIds }, listOf(tg.it, tg.it.bullets.filter((b) => b.t.trim()).map((b) => b.id)), listOf(tg.it, tg.orderIds), 'The work this job cares about most comes first — recruiters read the top bullets.') : '';
-    h += ch.length || ord ? card(t, ord + ch.map((x) => row('bullet', { bid: x.bid }, x.orig, x.sug, '', x.fc)).join('') + keptNote) : card(t, tg.res ? (tg.keptN ? keptNote : already) : '<div class="rdone"><span>!</span><span><b>Couldn’t rewrite this role</b><small>' + esc(aiMsg(R.err)) + '</small></span></div>', true);
+    h += ch.length || ord ? card(t, ord + ch.map((x) => row('bullet', { bid: x.bid, key: tg.key }, x.orig, x.sug, '', x.fc)).join('') + keptNote, false, tg.key) : card(t, tg.res ? (tg.keptN ? keptNote : already) : '<div class="rdone"><span>!</span><span><b>Couldn’t rewrite this role</b><small>' + esc(aiMsg(R.err)) + '</small></span></div>', true);
   });
   if (!OPT.rows.length) {   // no bullet to review: everything is on the page
     endPending(); modalClose();
@@ -3716,59 +3984,34 @@ function showResults(R, targets, sel, V) {
       : R.summary && R.summary.kept ? 'Kept the summary: the rewrite would have lost words this job looks for' : 'The resume already fits this job — nothing to change');
     return;
   }
-  // the requirements: on an application, as the second reader marked them on the resume as it would read (else as the writer found them)
-  const after = strict && R.reqsAfter, reqs = after || R.reqs || [], met = reqs.filter((q) => q.status !== 'missing'), basics = reqs.filter((q) => q.kind === 'basic'), basicsMet = basics.filter((q) => q.status !== 'missing');
-  const reworded = targets.reduce((n, tg) => n + (tg.res || []).filter((x) => norm(x.sug) !== norm(x.orig)).length, 0) + (sug.summary ? 1 : 0);
-  const RQ = { shown: ['Shown', 'ok', 'The resume states it plainly.'], buried: ['Surfaced', 'blue', 'The facts prove it; a line was reworded to say it in the posting’s words.'], missing: ['Not on the resume', 'mute', 'Nothing was added — say so honestly if asked.'] };
-  const was = {}; (R.reqs || []).forEach((q) => { was[q.text] = q.status; });
-  const rq = (q) => !after ? RQ[q.status] : q.status === 'shown' ? (was[q.text] && was[q.text] !== 'shown' ? ['Surfaced', 'blue', 'Now said in the posting’s words.'] : RQ.shown)
-    : q.status === 'buried' ? ['Not in its words', 'blue', 'The facts prove it, but no line says it the posting’s way yet.'] : RQ.missing;
-  const reqCard = reqs.length ? '<div class="reqs"><button type="button" class="reqh" data-a="reqs-toggle" aria-expanded="false"><span><b>Meets ' + met.length + ' of ' + reqs.length + ' requirements</b><small>' + basicsMet.length + ' of ' + basics.length + ' must-haves · ' + reworded + ' line' + (reworded === 1 ? '' : 's') + ' reworded, facts unchanged' + (after ? ' · re-marked by a second reader' : '') + (R.mode === 'light' ? ' · light touch' : '') + '</small></span>' + I_DN + '</button>' +
-    '<ul class="reql" id="reqList" hidden>' + reqs.map((q) => '<li><span class="rs ' + rq(q)[1] + '">' + rq(q)[0] + '</span><span><b>' + esc(q.text) + '</b>' + (q.kind === 'preferred' ? ' <em>nice to have</em>' : '') + (q.evidence ? '<q>' + esc(String(q.evidence).replace(/^[•▪–-]\s*/, '')) + '</q>' : '<small>' + rq(q)[2] + '</small>') + '</span></li>').join('') + '</ul></div>' : '';
-  // an application: the match score before → after (the same keywords, the same job), the requirements in the job's words, both checks, and the last run
-  const terms = atsTerms(), miss = strict && terms.length ? atsCover(scoreAfter(R, targets, docText()), terms).miss : [];
-  const kept = targets.reduce((n, tg) => n + (tg.keptN || 0), 0) + V.removed, sameN = targets.reduce((n, tg) => n + (tg.sameN || 0), 0);
-  const whyAll = uniq([keptWhy([].concat(...targets.map((tg) => tg.why || [])))].concat(V.notes.map((n) => n.split(' — ')[1] || 'it changed a fact')).filter(Boolean)).slice(0, 3);
-  const vrow = (ok, b, small) => '<div><span class="vi' + (ok ? ' a' : ' w') + '">' + (ok ? IC_OK : IC_WARN) + '</span><span><b>' + b + '</b><small>' + small + '</small></span></div>';
-  const strictRep = !strict ? '' :
-    (V.after != null ? vrow(true, V.after > V.before ? 'Job match ' + V.before + '% → <span class="up">' + V.after + '%</span>' : 'Job match stays at ' + V.after + '%',
-      V.after > V.before ? 'The same ' + terms.length + ' keywords from this job description, once these changes are accepted. It’s measured again after you accept.'
-        : miss.length ? 'Still missing ' + esc(miss.slice(0, 4).join(', ')) + ' — not on the resume, so only the client can confirm ' + (miss.length > 1 ? 'them' : 'it') + ($('#sheet .pgadd') ? '; the ones to ask about wait under Skills.' : '.') : 'Every keyword of this job is already on the resume.') : '') +
-    (after ? vrow(true, 'In the job’s words: ' + (R.reqs || []).filter((q) => q.status === 'shown').length + ' → ' + after.filter((q) => q.status === 'shown').length + ' of ' + after.length + ' requirements',
-      'Re-marked by the second reader on the resume as it would read.' + (after.some((q) => q.status === 'missing') ? ' ' + after.filter((q) => q.status === 'missing').length + ' not on the resume — nothing was added for them.' : '')) : '') +
-    (!V.checked && !kept ? '' : S && S.failed ? vrow(false, 'The second check couldn’t run', esc(String(S.failed).replace(/[.\s]*$/, '.')) + ' The word checks ran (numbers, tools, “led”, repeated keywords) — read each change before accepting.')
-      : vrow(!kept && !(S && S.unchecked), 'Checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + ' twice', 'Against the candidate’s original lines (numbers, tools, “led” or “managed”, repeated keywords), then by a second reader.' +
-        (kept ? ' ' + kept + ' dropped, so the original stays: ' + whyAll.map(esc).join('; ') + '.' : ' Every change holds up.') + (V.fixed ? ' ' + V.fixed + ' had a number that isn’t on the resume — now a [ ] to fill in.' : '') + (S && S.unchecked ? ' ' + S.unchecked + ' weren’t checked by the second reader — they’re marked.' : ''))) +
-    (again ? vrow(true, 'Tailored to this job before', (prev && prev.before != null ? new Date(prev.at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) + ': ' + prev.before + '% → ' + (prev.now != null ? prev.now : prev.before) + '%. ' : '') +
-      'This run built on what was accepted' + (sameN ? ' — ' + sameN + ' line' + (sameN > 1 ? 's' : '') + ' already tailored stayed as ' + (sameN > 1 ? 'they are' : 'it is') : '') + '.') : '');
-  modalOpen('<div class="om" role="dialog" aria-modal="true" aria-labelledby="omR"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
-    '<div class="omh"><h2 id="omR">' + optWord().done + ' work experience</h2><p class="omsub">' + (OPT.pending ? 'Made in the background from the team portal — nothing on the resume has changed yet. ' : '') + 'Review each suggestion beside the current bullet. Accept them one by one or all at once; edit a suggestion before accepting if you like.' + (onPage ? ' The title, summary and skills suggestions wait on the resume.' : '') + (/\[/.test(h) ? ' Replace anything in [ ] with the real number.' : '') + '</p></div>' +
-    reqCard +
-    '<div class="vrep">' + (strict ? strictRep : (V.after != null ? '<div><span class="vi a">' + IC_OK + '</span><span><b>Job match: ' + (V.after > V.before ? V.before + '% → <span class="up">' + V.after + '%</span>' : '<span class="up">' + V.after + '%</span>') + '</b><small>Of the ' + atsTerms().length + ' keywords in this job description, once these changes are accepted. Every change keeps the keywords already there.</small></span></div>' : '') +
-      '<div><span class="vi' + (V.fixed + V.removed ? ' w' : ' a') + '">' + (V.fixed + V.removed ? IC_WARN : IC_OK) + '</span><span><b>Fact-checked ' + V.checked + ' change' + (V.checked === 1 ? '' : 's') + '</b><small>' +
-      (V.fixed + V.removed ? (V.fixed ? V.fixed + ' had a number that isn’t on the resume — now a [ ] to fill in. ' : '') + (V.removed ? V.removed + ' suggestion' + (V.removed > 1 ? 's' : '') + ' dropped, so the original stays: ' + uniq(V.notes.map((n) => n.split(' — ')[1] || 'it changed a fact')).slice(0, 3).map(esc).join('; ') + '.' : '')
-        : 'Every suggestion uses only facts already on the resume — no new numbers, tools or employers.') + '</small></span></div>') + '</div>' +
-    '<div class="omb">' + h + '</div><div class="omf"><span id="omCount"></span><button class="btn pri" type="button" data-a="r-all" id="rAll">✓ Accept all</button><button class="btn" type="button" data-a="opt-done">Done</button></div></div>');
+  // the reference editor's window: one card per role, side by side, Accept All and Done. The checks behind it still run (a problem
+  // shows on its row); the requirements and the match before/after are on the Application page (Job Analysis, the match ring)
+  toast('Resume optimized successfully', null, 'ok');
+  modalOpen('<div class="om sb rev" role="dialog" aria-modal="true" aria-labelledby="omR"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
+    '<div class="omh"><h2 id="omR">Optimised Work Experience</h2><p class="omsub">' + (OPT.pending ? 'Made in the background from the team portal — nothing on the resume has changed yet. ' : '') + 'Review AI suggestions side-by-side with your current bullets. Accept individually or apply all changes at once.' + (/\[/.test(h) ? ' Replace anything in [ ] with the real number.' : '') + '</p></div>' +
+    '<div class="omb">' + h + '</div><div class="omf"><span id="omCount"></span><button class="btn rall" type="button" data-a="r-all" id="rAll">' + IC_OK + ' Accept All</button><button class="btn" type="button" data-a="opt-done">Done</button></div></div>');
   countRows();
 }
 /* ---------- on the page: the title, summary and location suggestions, each with Accept or Reject (never printed or exported) ----------
    Kept on the resume (DOC.meta.sug) until accepted or rejected, so a reload or the team portal's background run doesn't lose them. */
 const sugOn = () => DOC && !READONLY && JOB && DOC.meta.sug && DOC.meta.sug.key === recKey() ? DOC.meta.sug : null;
-const sgBtns = (k) => '<span class="pgb"><button type="button" class="ok" data-a="sg-ok" data-v="' + k + '">' + IC_OK + 'Accept</button><button type="button" data-a="sg-no" data-v="' + k + '">Reject</button></span>';
+// as the reference editor has them: "Original:" in red and "Suggestion:" in green, Accept (green) and Reject (grey); a check's
+// warning is the suggestion's tooltip
+const sgBtns = (k) => '<span class="pgb"><button type="button" class="ok" data-a="sg-ok" data-v="' + k + '">Accept</button><button type="button" data-a="sg-no" data-v="' + k + '">Reject</button></span>';
 function sugHeadHTML() {
   const s = sugOn(); if (!s || !s.headline) return '';
-  return '<div class="pgui pgsug" contenteditable="false"><span class="o"><b>Original</b>' + esc(s.headline.orig || 'No title') + '</span><span class="n"><b>Suggestion</b>' + esc(s.headline.sug) + '</span>' + sgBtns('headline') +
-    (s.headline.fc ? '<small class="w">' + esc(s.headline.fc) + '</small>' : '') + '</div>';
+  return '<div class="pgui pgsug" contenteditable="false"><span class="o"><b>Original:</b>' + (s.headline.orig ? ' ' + esc(s.headline.orig) : '') + '</span><span class="n"' + (s.headline.fc ? ' title="' + esc(s.headline.fc) + '"' : '') + '><b>Suggestion:</b> ' + esc(s.headline.sug) + '</span>' + sgBtns('headline') + '</div>';
 }
 function sugLocHTML() {
   const s = sugOn(); if (!s || !s.loc) return '';
-  return '<div class="pgui pgsug" contenteditable="false"><span class="n"><b>Add</b>Open to relocation</span>' + sgBtns('loc') + '<small>This job is in ' + esc(s.loc.city || 'another city') + '. Accept only if a move is genuinely on.</small></div>';
+  return '<div class="pgui pgsug" contenteditable="false"><span class="n" title="This job is in ' + esc(s.loc.city || 'another city') + '. Accept only if a move is genuinely on."><b>Suggestion:</b> Open to relocation</span>' + sgBtns('loc') + '</div>';
 }
+// the summary: Original Summary (red) beside AI Suggestion (green), Accept / Reject under them, ✨ on the top edge; the summary
+// itself steps aside on screen meanwhile (sectionHTML)
 function sugSumHTML(sid) {   // sid '': a summary written for a resume that has none, shown above the first section
   const s = sugOn(); if (!s || !s.summary || (s.summary.sid || '') !== (sid || '')) return '';
-  return '<div class="pgui pgcmp" contenteditable="false"><div class="pga-h"><b>' + I_SPARK + (s.summary.orig ? 'Suggested summary' : 'A summary, written from the resume') + '</b></div>' +
-    '<p>' + (s.summary.orig ? wdiff(s.summary.orig, s.summary.sug).n : esc(s.summary.sug)) + '</p>' +
-    '<div class="pga-f">' + sgBtns('summary') + '<small>' + esc(s.summary.fc || (s.summary.orig ? 'The changed words are marked. Fact-checked against the resume.' : 'Fact-checked against the resume.')) + '</small></div></div>';
+  return '<div class="pgui pgcmp" contenteditable="false"><span class="cmpai" aria-hidden="true">' + I_SPARK + '</span><div class="cmp2"><div class="co"><b>Original Summary</b><p>' + (s.summary.orig ? esc(s.summary.orig) : '<i>No summary yet</i>') + '</p></div>' +
+    '<div class="cn"' + (s.summary.fc ? ' title="' + esc(s.summary.fc) + '"' : '') + '><b>AI Suggestion</b><p>' + esc(s.summary.sug) + '</p></div></div><div class="pga-f">' + sgBtns('summary') + '</div></div>';
 }
 function sugDone(k, ok) {
   const s = DOC && DOC.meta.sug; if (!s || !s[k]) return;
@@ -3789,7 +4032,8 @@ function sugDone(k, ok) {
 function countRows() {
   const p = OPT.rows.filter((r) => r.st === 'p').length, a = OPT.rows.filter((r) => r.st === 'a').length;
   const c = $('#omCount'); if (c) c.textContent = OPT.rows.length ? (p ? p + ' to review' : 'All reviewed') + (a ? ' · ' + a + ' accepted' : '') : '';
-  const b = $('#rAll'); if (b) { const sk = $$('.rsk input:checked').length; b.disabled = !p && !sk; b.innerHTML = !p && !sk && a ? IC_OK + ' Accepted' : IC_OK + ' Accept all'; }
+  const b = $('#rAll'); if (b) { const sk = $$('.rsk input:checked').length; b.disabled = !p && !sk; b.classList.toggle('done', !p && !sk && !!a); b.innerHTML = !p && !sk && a ? IC_OK + ' Accepted' : IC_OK + ' Accept All'; }
+  $$('.rcf').forEach((f) => { const k = f.querySelector('[data-v]').getAttribute('data-v'); f.hidden = !OPT.rows.some((r) => r.key === k && r.st === 'p'); });   // a role with nothing left to review: no Accept / Reject
 }
 function markRow(i, how) {
   const el = $('.rr[data-r="' + i + '"]'); if (!el) return; el.classList.add(how === 'a' ? 'acc' : 'rej');
@@ -3919,10 +4163,12 @@ function addSkillsHTML() {
   const r = DOC && DOC.meta.rec; if (!r || r.dismissed || !JOB || r.key !== recKey()) return '';   // nothing waiting: skip the work (the page redraws as you type)
   const list = recSync(); if (!REC || !REC.open || !(list.some((m) => m.st) || REC.order)) return '';
   const L = recLift();
-  return '<div class="pgui pgadd" contenteditable="false"><div class="pga-h"><b>' + I_SPARK + 'Add skills this job asks for</b>' + (L && L.z > L.a ? '<span>Keyword match ' + L.a + '% → ' + L.z + '%</span>' : '') + '</div>' +
-    recGroups().map((g) => '<div class="pga-r"><b>' + esc(g.label) + ':</b>' + (g.isNew ? ' <em>new line</em>' : '') + ' ' + g.items.map((y) => '<span class="pga-c">' + esc(y.skill) + (REC.list[y.i].proven ? '<small>in your bullets</small>' : '') + '<i data-a="ask-x" data-v="' + y.i + '" title="Leave out ' + esc(y.skill) + '">' + I_X + '</i></span>').join(' ') + '</div>').join('') +
+  // the reference editor's green box: ADD SKILLS, the skills by the line they go on, Accept / Reject. Each can still be left out (its ×
+  // on hover); the keyword match it brings and the honesty reminder are the box's tooltip
+  return '<div class="pgui pgadd" contenteditable="false" title="' + esc((L && L.z > L.a ? 'Keyword match ' + L.a + '% → ' + L.z + '%. ' : '') + 'Add only what ' + whoHas() + ' can talk about in an interview.') + '"><div class="pga-h"><b>Add Skills</b></div>' +
+    recGroups().map((g) => '<div class="pga-r"><b>' + esc(g.label) + ':</b>' + (g.isNew ? ' <em>new line</em>' : '') + ' ' + g.items.map((y) => '<span class="pga-c">' + esc(y.skill) + (REC.list[y.i].proven ? '<small>in your bullets</small>' : '') + '<i data-a="ask-x" data-v="' + y.i + '" title="Leave out ' + esc(y.skill) + '">' + I_X + '</i></span>').join(', ') + '</div>').join('') +
     (REC.order ? '<button type="button" class="pga-o" data-a="ask-ord" aria-pressed="' + !!REC.orderOn + '">' + (REC.orderOn ? IC_OK : I_PLUS) + 'Put the skills this job asks for first in each line</button>' : '') +
-    '<div class="pga-f"><button type="button" class="ok" data-a="ask-ok">' + IC_OK + 'Accept</button><button type="button" data-a="ask-no">Reject</button><small>Add only what ' + esc(whoHas()) + ' can talk about in an interview.</small></div></div>';
+    '<div class="pga-f"><button type="button" class="ok" data-a="ask-ok">Accept</button><button type="button" data-a="ask-no">Reject</button></div></div>';
 }
 // in the panel: the job's skills, missing (click to include or leave out) and matching, with the keyword match
 function recCardHTML() {
@@ -4011,7 +4257,12 @@ function optAction(a, v, t) {
     case 'opt-go': runOptimise(TEAM && TEAM.app ? 'deep' : false); return true;   // an application: the Sync model, on what was picked
     case 'r-ok': { const after = matchWatch(); if (applyRow(+v)) { countRows(); structural(); after(); } return true; }
     case 'r-no': { const r = OPT.rows[+v]; if (r && r.st === 'p') { r.st = 'r'; markRow(+v, 'r'); if (r.type === 'bullet') { remember(r.bid, r.sug); persist(); } countRows(); } return true; }
-    case 'r-all': { const after = matchWatch(); let n = 0; OPT.rows.forEach((r, i) => { if (applyRow(i)) n++; }); n += applySkills(); countRows(); if (n) { structural(); after(); } return true; }
+    case 'r-all': { const after = matchWatch(); let n = 0; OPT.rows.forEach((r, i) => { if (applyRow(i)) n++; }); n += applySkills(); countRows(); if (n) { structural(); toast('All experience suggestions applied', null, 'ok'); after(); } return true; }
+    case 'r-role': case 'r-role-no': {   // a role's own Accept or Reject: every suggestion of that role still waiting
+      const after = matchWatch(); let n = 0;
+      OPT.rows.forEach((r, i) => { if (r.key !== v || r.st !== 'p') return; if (a === 'r-role') { if (applyRow(i)) n++; } else { r.st = 'r'; markRow(i, 'r'); if (r.type === 'bullet') remember(r.bid, r.sug); } });
+      if (a === 'r-role-no') persist(); countRows(); if (n) { structural(); after(); } return true;
+    }
     case 'ask-in': { const m = REC && REC.list[+v]; if (m) { m.st = m.st ? '' : 'yes'; recRefresh(); } return true; }
     case 'ask-x': { const m = REC && REC.list[+v]; if (m) { m.st = ''; recRefresh(); } return true; }
     case 'ask-ok': recAccept(); return true;
@@ -4383,6 +4634,7 @@ document.addEventListener('click', (e) => {
     case 'redo': return redo();
     case 'save-now': return saveNow();
     case 'q-rec': QREC_OPEN = !QREC_OPEN; return quickRec();
+    case 'q-popx': return quickCmd('format', QPOP);   // the Format popover's ×
     case 'ptab': PTAB = v; renderPanel(); $('#pbody').scrollTop = 0; return;
     case 'doc': return setDocTab(v);
     case 'mob': return setMobile(v);
@@ -4421,7 +4673,7 @@ document.addEventListener('keydown', (e) => {
   if (mod && (e.key === 'y' || e.key === 'Y') && DOC) { e.preventDefault(); redo(); return; }
   if (mod && !e.altKey && !e.shiftKey && (e.key === 's' || e.key === 'S') && DOC) { e.preventDefault(); saveNow(); return; }   // Ctrl+S saves now (never the browser's "Save page"); typing carries on
   if (mod && (e.key === 's' || e.key === 'S') && DOC) { e.preventDefault(); sync(); toast('Saved'); return; }
-  if (e.key === 'Escape') { hideSel(); const dl = $('#dlMenu'); if (dl) dl.hidden = true; if (!$('#modal').hidden) { if (OPT && OPT.rows && $('#rAll')) finishOptimise(); else if (!$('.om.run')) modalClose(); } return; }
+  if (e.key === 'Escape') { hideSel(); const dl = $('#dlMenu'); if (dl) dl.hidden = true; if (!$('#modal').hidden) { if (OPT && OPT.rows && $('#rAll')) finishOptimise(); else if (!$('.om.run')) modalClose(); else if (RUN && RUN.stop) RUN.stop(); } return; }   // the run's note has no Stop on it: Escape stops it
   if (e.target.closest('#pbody')) onFieldKey(e);
 });
 document.addEventListener('paste', (e) => { if (e.target.closest('#pbody')) onFieldPaste(e); });
@@ -4443,8 +4695,9 @@ document.addEventListener('visibilitychange', () => { if (document.hidden && DOC
 // the portal's "Tailor to this job" or "Improve base resume" on a tab that's already open only changes the address's #; so do the
 // application page's Tailor and Review suggestions for its Quick edit panel
 window.addEventListener('hashchange', () => {
-  const h = location.hash; if ((h !== '#optimize' && h !== '#sync' && h !== '#review') || !DOC) return;
+  const h = location.hash; if ((h !== '#optimize' && h !== '#sync' && h !== '#review' && h !== '#cover') || !DOC) return;
   try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  if (h === '#cover') { setDocTab('cover'); autoCover(); return; }   // the application page's Cover Letter: the letter for this job, written if there's none
   if ($('#modal').hidden) { if (h === '#sync') syncNow(); else if (h === '#review') openPending(); else openOptimise(!!TEAM); }
 });
 boot();
