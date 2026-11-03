@@ -603,9 +603,20 @@ a.li:hover,button.li:hover{background:var(--hover)}
 .sendck .ckit{border-top:0;padding:8px 0}
 .senddrop{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .senddrop .drop.sm{margin-top:0}
+.senddrop .shots{grid-column:1/-1}
+/* the confirmation screenshots: thumbnails with a delete on each, a counter, Add more */
+.shotgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;margin-top:8px}
+.shotc{position:relative;margin:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff;aspect-ratio:4/3;display:block}
+.shotc img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;cursor:zoom-in}
+.shotc .x{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(17,17,17,.72);color:#fff;font:600 15px/22px Inter,system-ui,sans-serif;cursor:pointer;padding:0}
+.shotc .x:hover{background:#b91c1c}
+.shotbar{display:flex;align-items:center;gap:10px;margin-top:8px}.shotbar .fine{flex:1}
+.shots .drop.sm.has{display:flex;text-align:left}
+.aprecbox .shotgrid{margin-top:0}.aprecbox .shotgrid .shot img{max-height:none}
+.shotview img{max-width:100%;max-height:76vh;display:block;margin:0 auto;border-radius:8px;border:1px solid var(--line)}
 .sendrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
 .sendrow .sp{flex:1}
-.aprecbox{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:16px;align-items:start}
+.aprecbox{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:16px;align-items:start}
 .aprecbox .shot img{width:100%;max-height:220px;object-fit:cover;object-position:top;border-radius:12px;border:1px solid var(--edge)}
 .aprecbox .rvs .rv{padding:8px 12px;font-size:13px}
 /* the resume, as the editor lays it out (editor.html?view=1): in view beside the job while the page scrolls */
@@ -3800,7 +3811,7 @@ function drawDraft(){
       '<div class="step ckit" id="ckCL"><span class="n' + (A.cover_letter ? ' ok' : '') + '">' + (A.cover_letter ? I.check : '3') + '</span><div class="bd"><b>Cover letter</b><small>' + (A.cover_letter ? 'Written.' : 'Optional — only if the form asks for one.') + '</small></div></div>' +
       '<div class="step ckit" id="ckAns"><span class="n' + (n ? ' ok' : '') + '">' + (n ? I.check : '4') + '</span><div class="bd"><b>Form answers</b><small>' + (n ? n + ' ready to copy into the form.' : 'None yet — add what the form asks.') + '</small></div></div></div>' +
       '<p class="hint" style="margin:6px 0 10px">Apply on their site with the resume on the right (PDF above it), then add the confirmation here.</p>' +
-      '<div class="senddrop"><div class="drop sm" id="dShot" tabindex="0" role="button">' + I.img + '<span><b>Confirmation screenshot</b><span class="fine">Paste (<span class="kbd">Ctrl</span>+<span class="kbd">V</span>), drop, or choose · PNG or JPG</span></span></div>' +
+      '<div class="senddrop">' + shotsHTML('dShot', 'Confirmation screenshots', 'Paste (<span class="kbd">Ctrl</span>+<span class="kbd">V</span>), drop, or choose several · PNG, JPG or WEBP · up to 10') +
         '<div class="drop sm" id="dRes" tabindex="0" role="button">' + I.doc + '<span><b>Resume file you uploaded</b><span class="fine">Recommended · PDF or Word</span></span></div></div>' +
       '<label class="check" style="margin-top:10px"><input type="checkbox" id="noShot"> There was no confirmation screen</label>' +
       '<p class="err" id="mkErr" hidden></p>' +
@@ -3970,31 +3981,76 @@ function askClash(clash, srv, cur){
 }
 TP.onLeave(function(){ return DSALL.some(function(s){ return s.cur || s.p || s.why; }) ? 'Changes to a draft haven’t been saved yet.' : ''; });
 document.addEventListener('tp-online', function(){ DSALL.forEach(function(s){ if(s.cur || s.why){ clearTimeout(s.retry); saveDraft(s); } }); });
-var FILES = {};
-function setupDrop(el, kind, accept){
-  function take(f){
-    if(!f) return;
-    if(kind === 'shot' && !/^image\//.test(f.type)) return TP.toast('The screenshot must be an image (PNG or JPG)');
-    if(kind === 'res' && !/\.(pdf|docx)$/i.test(f.name || '')) return TP.toast('Choose the PDF or Word file you uploaded');
+var FILES = {shots:[]};
+var SHOT_MAX = 10;
+// The confirmation screenshots block: the drop zone (paste, drop or choose several), the thumbnails with a delete on each
+// and a click to see one full size, the counter, and Add more screenshots until the limit. `have` is how many a sent
+// application already keeps, so the limit counts them too.
+function shotsHTML(id, title, fine){
+  return '<div class="shots" id="' + id + 'Box"><div class="drop sm" id="' + id + '" tabindex="0" role="button">' + I.img + '<span><b>' + title + '</b><span class="fine">' + fine + '</span></span></div>' +
+    '<div class="shotgrid" id="' + id + 'Grid" hidden></div><div class="shotbar" id="' + id + 'Bar" hidden><span class="fine" id="' + id + 'N"></span><button class="btn sm" type="button" data-act="shotmore" data-for="' + id + '">' + I.plus + 'Add more screenshots</button></div></div>';
+}
+function shotsDraw(id){
+  var grid = $('#' + id + 'Grid'), bar = $('#' + id + 'Bar'), drop = $('#' + id), nEl = $('#' + id + 'N'); if(!grid) return;
+  var have = +(grid.getAttribute('data-have') || 0), n = FILES.shots.length, total = have + n, full = total >= SHOT_MAX;
+  grid.hidden = !n;
+  grid.innerHTML = FILES.shots.map(function(f, i){
+    if(!f._url) f._url = URL.createObjectURL(f);
+    return '<figure class="shotc"><img src="' + f._url + '" alt="Screenshot ' + (have + i + 1) + '" data-act="shotview" data-for="' + id + '" data-i="' + i + '" title="Click to see it full size">' +
+      '<button type="button" class="x" data-act="shotdel" data-for="' + id + '" data-i="' + i + '" aria-label="Remove screenshot ' + (have + i + 1) + '" title="Remove">×</button></figure>';
+  }).join('');
+  bar.hidden = !n && !have;
+  if(nEl) nEl.textContent = total + '/' + SHOT_MAX + ' screenshot' + (total === 1 ? '' : 's') + (have ? ' (' + have + ' saved' + (n ? ', ' + n + ' new' : '') + ')' : '') + (full ? ' — the limit' : '');
+  var more = $('[data-act=shotmore][data-for="' + id + '"]'); if(more) more.hidden = full || !n;
+  if(drop){ drop.hidden = full; drop.classList.toggle('has', n > 0); }
+}
+function shotDel(id, i){ var f = FILES.shots.splice(i, 1)[0]; if(f && f._url) try{ URL.revokeObjectURL(f._url); }catch(e){} shotsDraw(id); }
+function shotView(id, i){
+  var f = FILES.shots[i]; if(!f) return;
+  TP.modal('<h2>Screenshot ' + (i + 1) + ' of ' + FILES.shots.length + '</h2><div class="shotview"><img src="' + f._url + '" alt="Screenshot ' + (i + 1) + '"></div><p class="fine" style="margin-top:8px">' + esc(f.name || '') + ' · ' + Math.round(f.size / 1024) + ' KB</p>' +
+    '<div class="acts"><button class="btn" type="button" data-mclose="1">Close</button><button class="btn bad" type="button" data-mclose="1" data-act="shotdel" data-for="' + id + '" data-i="' + i + '">Remove</button></div>', true);
+}
+function setupDrop(el, kind, accept, have){
+  function take(list){
+    var fs = Array.prototype.slice.call(list && list.length != null ? list : [list]).filter(Boolean); if(!fs.length) return;
+    if(kind === 'shot'){
+      var grid = $('#' + el.id + 'Grid'); if(grid && have != null) grid.setAttribute('data-have', String(have));
+      var room = SHOT_MAX - ((have || 0) + FILES.shots.length), bad = [], over = [], added = 0;
+      fs.forEach(function(f){
+        if(!/^image\/(png|jpe?g|webp)$/i.test(f.type) && !/\.(png|jpe?g|webp)$/i.test(f.name || '')){ bad.push(f.name || 'file'); return; }
+        if(f.size > 10 * 1048576){ over.push(f.name || 'file'); return; }
+        if(added >= room) return;
+        FILES.shots.push(f); added++;
+      });
+      shotsDraw(el.id);
+      var left = fs.length - bad.length - over.length - added;
+      if(bad.length) TP.toast((bad.length === 1 ? bad[0] + ' isn’t' : bad.length + ' files aren’t') + ' a PNG, JPG or WEBP image — not added');
+      if(over.length) TP.toast((over.length === 1 ? over[0] + ' is' : over.length + ' files are') + ' over 10 MB — not added');
+      if(left > 0) TP.toast('Up to ' + SHOT_MAX + ' screenshots — ' + left + ' not added');
+      return;
+    }
+    var f = fs[0];
+    if(!/\.(pdf|docx)$/i.test(f.name || '')) return TP.toast('Choose the PDF or Word file you uploaded');
     if(f.size > 10 * 1048576) return TP.toast('That file is over 10 MB');
     FILES[kind] = f;
-    if(kind === 'shot'){ var u = URL.createObjectURL(f); el.innerHTML = '<b>Screenshot ready</b><img src="' + u + '" alt="Confirmation screenshot"><span class="fine">Click to change</span>'; }
-    else el.innerHTML = I.doc + '<b>' + esc(f.name) + '</b><span class="fine">' + Math.round(f.size / 1024) + ' KB · click to change</span>';
+    el.innerHTML = I.doc + '<b>' + esc(f.name) + '</b><span class="fine">' + Math.round(f.size / 1024) + ' KB · click to change</span>';
     el.classList.add('has');
   }
   el._take = take;
-  el.addEventListener('click', function(){ var fi = $('#fileIn'); fi.accept = accept; fi.onchange = function(){ take(fi.files[0]); fi.value = ''; }; fi.click(); });
+  el._pick = function(){ var fi = $('#fileIn'); fi.accept = accept; fi.multiple = kind === 'shot'; fi.onchange = function(){ take(fi.files); fi.value = ''; }; fi.click(); };
+  el.addEventListener('click', el._pick);
   el.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); el.click(); } });
   ['dragenter', 'dragover'].forEach(function(ev){ el.addEventListener(ev, function(e){ e.preventDefault(); el.classList.add('over'); }); });
   ['dragleave', 'drop'].forEach(function(ev){ el.addEventListener(ev, function(e){ e.preventDefault(); el.classList.remove('over'); }); });
-  el.addEventListener('drop', function(e){ take(e.dataTransfer.files[0]); });
+  el.addEventListener('drop', function(e){ take(e.dataTransfer.files); });
+  if(kind === 'shot') shotsDraw(el.id);
 }
-// Ctrl+V anywhere on a draft pastes the confirmation screenshot
+// Ctrl+V anywhere on a draft (or a sent one that can still take screenshots) adds the pasted image to the screenshots
 document.addEventListener('paste', function(e){
-  var d = $('#dShot'); if(!d || !A || A.status !== 'draft') return;
+  var d = $('#dShot') || $('#dShot2'); if(!d || !d._take || !A) return;
   var items = (e.clipboardData && e.clipboardData.items) || [];
   for(var i = 0; i < items.length; i++) if(items[i].type && items[i].type.indexOf('image/') === 0){
-    var f = items[i].getAsFile(); if(f){ e.preventDefault(); d._take(new File([f], 'screenshot-' + Date.now() + '.' + (f.type.split('/')[1] || 'png'), {type:f.type})); TP.toast('Screenshot added'); }
+    var f = items[i].getAsFile(); if(f){ e.preventDefault(); var n = FILES.shots.length; d._take([new File([f], 'screenshot-' + Date.now() + '.' + (f.type.split('/')[1] || 'png'), {type:f.type})]); if(FILES.shots.length > n) TP.toast('Screenshot added — ' + FILES.shots.length + ' so far'); }
     return;
   }
 });
@@ -4003,7 +4059,7 @@ function ext(f){ var m = /\.(\w{2,5})$/.exec(f.name || ''); return (m ? m[1] : (
 function markApplied(btn){
   var a = A, c = C, err = $('#mkErr'), noShot = $('#noShot').checked;
   err.hidden = true;
-  if(!FILES.shot && !noShot){ err.hidden = false; err.textContent = 'Add the confirmation screenshot (paste it with Ctrl+V), or tick “There was no confirmation screen”.'; return; }
+  if(!FILES.shots.length && !noShot){ err.hidden = false; err.textContent = 'Add the confirmation screenshot (paste it with Ctrl+V), or tick “There was no confirmation screen”.'; return; }
   var f = draftForm();
   if(!f.title || !f.company){ err.hidden = false; err.textContent = 'Add the job title and company in step 1.'; return; }
   // everything typed is saved first, and the latest the editor saved is read back
@@ -4022,7 +4078,7 @@ function markApplied(btn){
       own ? (optimisedDoc(a.resume_doc) ? ['ok', 'Resume <b>tailored to this job</b>' + (saved ? ' — last saved in the editor ' + esc(TP.ago(saved)) : '')]
                                         : ['warn', 'Resume <b>not tailored to this job</b> — it goes as copied from ' + esc(base ? base.name : 'the main resume')])
           : base ? ['warn', 'Resume <b>not opened for this job</b> — ' + esc(base.name) + ' goes exactly as it is today'] : ['warn', 'Only the attached file is kept as the resume'],
-      FILES.shot ? ['ok', 'Confirmation screenshot attached'] : ['warn', 'No confirmation screenshot (“There was no confirmation screen” is ticked)'],
+      FILES.shots.length ? ['ok', (FILES.shots.length === 1 ? 'Confirmation screenshot' : FILES.shots.length + ' confirmation screenshots') + ' attached'] : ['warn', 'No confirmation screenshot (“There was no confirmation screen” is ticked)'],
       FILES.res ? ['ok', 'Uploaded resume file attached: ' + esc(FILES.res.name)] : ['warn', 'The resume file you uploaded isn’t attached — recommended, it shows exactly what ' + esc(a.company || 'the company') + ' got'],
       a.cover_letter ? ['ok', 'Cover letter included'] : ['info', 'No cover letter'],
       n ? ['ok', n + ' form answer' + (n === 1 ? '' : 's') + ' kept'] : ['info', 'No form answers'],
@@ -4039,22 +4095,31 @@ function doMarkApplied(a, btn){
   var stamp = Date.now(), dir = C.id + '/applications/' + a.id + '/';
   // what goes on the record: the tailored copy, or the base resume exactly as it is today
   var resume = (a.resume_doc || a.resume_text) ? Promise.resolve({}) : base ? q(SB.from('client_resumes').select('doc,text').eq('id', base.id).maybeSingle()).then(function(r){ return r ? {resume_doc:r.doc, resume_text:r.text} : {}; }) : Promise.resolve({});
-  var shot = FILES.shot ? TP.shrinkImage(FILES.shot).then(function(f){ return TP.upload(dir + 'confirmation-' + stamp + '.' + ext(f), f); }) : Promise.resolve(null);
+  var label = btn.innerHTML, shots = uploadShots(dir, stamp, function(i, n){ btn.innerHTML = I.check + 'Uploading screenshot ' + i + ' of ' + n + '…'; });
   var res = FILES.res ? TP.upload(dir + 'resume-' + stamp + '.' + ext(FILES.res), FILES.res) : Promise.resolve(null);
-  Promise.all([resume, shot, res]).then(function(rs){
+  Promise.all([resume, shots, res]).then(function(rs){
+    btn.innerHTML = label;
     if(!rs[0].resume_text && !a.resume_text && !rs[2]){ throw {message:'There’s no resume on this application yet — tailor it in the editor, or attach the file you uploaded.'}; }
-    var up = Object.assign({}, rs[0], {status:'applied', screenshot:rs[1], resume_file:rs[2]});
+    var up = Object.assign({}, rs[0], {status:'applied', screenshots:rs[1], screenshot:rs[1][0] || null, resume_file:rs[2]});
     return q(SB.from('applications').update(up).eq('id', a.id).eq('status', 'draft').select('*').maybeSingle());
   }).then(function(row){
     if(!row) throw {message:'Couldn’t mark it — it may already be marked as applied. Refresh the page.'};
-    FILES = {}; if(DS && DS.a === a){ DS.cur = null; DS.why = ''; } bkDel('app_' + a.id); C.idx = null; C.who = null;
+    FILES = {shots:[]}; if(DS && DS.a === a){ DS.cur = null; DS.why = ''; } bkDel('app_' + a.id); C.idx = null; C.who = null;
     TP.toast('Marked as applied for ' + C.row.full_name);
     refreshProgress().then(function(){ var p = C.prog || {}; if(C.row.plan_total) TP.toast('Marked as applied — ' + (p.done || 0) + ' / ' + C.row.plan_total + ' for ' + C.row.full_name); });
     tApp(a.id);
-  }).catch(function(e){ btn.disabled = false; btn.classList.remove('busy'); err.hidden = false; err.textContent = TP.errText(e); });
+  }).catch(function(e){ btn.disabled = false; btn.classList.remove('busy'); btn.innerHTML = label; err.hidden = false; err.textContent = TP.errText(e); });
 }
+// the screenshots, one after another (each made smaller first), telling the button how far it is; the paths in order
+function uploadShots(dir, stamp, say){
+  var list = FILES.shots.slice(), out = [];
+  return list.reduce(function(p, f, i){
+    return p.then(function(){ if(say) say(i + 1, list.length); return TP.shrinkImage(f).then(function(g){ return TP.upload(dir + 'confirmation-' + stamp + (i ? '-' + (i + 1) : '') + '.' + ext(g), g); }).then(function(path){ out.push(path); }); });
+  }, Promise.resolve()).then(function(){ return out; });
+}
+function appShots(a){ return (a.screenshots && a.screenshots.length) ? a.screenshots : a.screenshot ? [a.screenshot] : []; }
 function drawSent(){
-  var by = C.who && C.who[A.id], miss = !A.screenshot || !A.resume_file, n = (A.answers || []).length, opt = optimisedDoc(A.resume_doc);
+  var by = C.who && C.who[A.id], shots = appShots(A), miss = shots.length < SHOT_MAX || !A.resume_file, n = (A.answers || []).length, opt = optimisedDoc(A.resume_doc);
   var rv = function(k, v){ return '<div class="rv"><span>' + k + '</span><b>' + v + '</b></div>'; };
   var jd = A.jd_text ? '<p class="fine" style="margin:0 0 8px">As it was when we applied.</p><pre class="txt jdtxt">' + esc(A.jd_text) + '</pre>' : '<p class="hint">No job description was kept with this application.</p>';
   // the same job page as a draft: the job's card with its status, its description and analysis, then the confirmation and the
@@ -4062,13 +4127,15 @@ function drawSent(){
   V.innerHTML = '<div class="aprec apx"><div class="aptop"><a class="btn sm ghost" href="' + esc(cUrl(C.id, 'applications')) + '" data-go>' + I.back + 'Applications</a><div id="lkNext"></div></div>' +
     '<div class="apgrid"><div class="apmain">' + jobCard() + jobTabs(jd) +
     '<div class="card"><div class="ch"><h3>Confirmation and record</h3><span class="lock">' + I.lock + 'Sent ' + esc(TP.fmtDateTime(A.applied_at)) + ' — this record can’t be changed</span></div>' +
-      '<div class="aprecbox"><div>' + (A.screenshot ? '<a class="shot" data-file="' + esc(A.screenshot) + '" target="_blank" rel="noopener"><img data-file="' + esc(A.screenshot) + '" alt="Confirmation screenshot"></a><p class="fine" style="margin-top:6px">Click to open it full size.</p>' : '<p class="hint">No screenshot was saved.</p>') + '</div>' +
+      '<div class="aprecbox"><div>' + (shots.length === 1 ? '<a class="shot" data-file="' + esc(shots[0]) + '" target="_blank" rel="noopener"><img data-file="' + esc(shots[0]) + '" alt="Confirmation screenshot"></a><p class="fine" style="margin-top:6px">Click to open it full size.</p>'
+        : shots.length ? '<div class="shotgrid ro">' + shots.map(function(p, i){ return '<a class="shot shotc" data-file="' + esc(p) + '" target="_blank" rel="noopener" title="Screenshot ' + (i + 1) + ' — click to open it full size"><img data-file="' + esc(p) + '" alt="Confirmation screenshot ' + (i + 1) + '"></a>'; }).join('') + '</div><p class="fine" style="margin-top:6px">' + shots.length + ' screenshots · click one to open it full size.</p>'
+        : '<p class="hint">No screenshot was saved.</p>') + '</div>' +
       '<div class="rvs">' + rv('Status', TP.statusChip(A.status)) + rv('Sent by', esc(who(by))) +
         rv('Resume', opt ? 'Tailored to this job' : (A.resume_doc || A.resume_text) ? 'As copied from the main resume' : A.resume_file ? 'The uploaded file only' : '—') +
-        rv('Files', [A.screenshot ? 'Screenshot' : '', A.resume_file ? 'Resume file' : ''].filter(Boolean).join(', ') || 'None') +
+        rv('Files', [shots.length ? (shots.length === 1 ? 'Screenshot' : shots.length + ' screenshots') : '', A.resume_file ? 'Resume file' : ''].filter(Boolean).join(', ') || 'None') +
         rv('Cover letter', A.cover_letter ? 'Included' : 'None') + rv('Form answers', n ? String(n) : 'None') + '</div></div>' +
-      (miss ? '<div style="margin-top:12px"><p class="hint">A file that wasn’t added at the time can be added once. Saved files can’t be replaced.</p><div class="senddrop">' +
-        (A.screenshot ? '' : '<div class="drop sm" id="dShot2" tabindex="0" role="button">' + I.img + '<span><b>Add the confirmation screenshot</b></span></div>') +
+      (miss ? '<div style="margin-top:12px"><p class="hint">' + (shots.length < SHOT_MAX ? 'More screenshots can be added (up to ' + SHOT_MAX + '); a' : 'A') + ' file that wasn’t added at the time can be added once. Saved files can’t be removed or replaced.</p><div class="senddrop">' +
+        (shots.length < SHOT_MAX ? shotsHTML('dShot2', shots.length ? 'Add more screenshots' : 'Add the confirmation screenshot', 'Paste, drop, or choose · ' + (SHOT_MAX - shots.length) + ' more at most') : '') +
         (A.resume_file ? '' : '<div class="drop sm" id="dRes2" tabindex="0" role="button">' + I.doc + '<span><b>Add the resume file that was uploaded</b></span></div>') +
         '</div><div class="row end" style="margin-top:8px"><button class="btn sm" type="button" data-act="addmissing">Save file</button></div></div>' : '') +
       (ME.owner ? '<div class="row end" style="margin-top:12px"><button class="btn sm bad" type="button" data-act="delsent">' + I.trash + 'Delete this application (owner)</button></div>' : '') + '</div>' +
@@ -4086,7 +4153,7 @@ function drawSent(){
     TP.confirmBox('Change the status to ' + TP.statusLabel(to) + '?', 'It shows on ' + first + '’s dashboard straight away. ' + (A.title || 'Role') + (A.company ? ' at ' + A.company : '') + ': ' + TP.statusLabel(from) + ' → ' + TP.statusLabel(to) + '.',
       'Change to ' + TP.statusLabel(to), false).then(function(ok){ if(ok) setStatus(to, from); else if(sel.isConnected) sel.value = from; });
   });
-  if($('#dShot2')) setupDrop($('#dShot2'), 'shot', 'image/png,image/jpeg,image/webp');
+  if($('#dShot2')) setupDrop($('#dShot2'), 'shot', 'image/png,image/jpeg,image/webp', appShots(A).length);
   if($('#dRes2')) setupDrop($('#dRes2'), 'res', '.pdf,.docx');
   var a = A;
   q(SB.from('client_activity').select('*').eq('application_id', a.id).order('at', {ascending:true})).then(function(rows){ if(A === a && $('#apHist')) $('#apHist').innerHTML = (rows || []).map(histRow).join('') || '<p class="fine">No history yet.</p>'; }, function(){});
@@ -4106,13 +4173,15 @@ function setStatus(s, from){
 }
 function addMissing(btn){
   var a = A, dir = C.id + '/applications/' + a.id + '/', stamp = Date.now(), patch = {};
-  if(!FILES.shot && !FILES.res) return TP.toast('Choose a file first');
+  if(!FILES.shots.length && !FILES.res) return TP.toast('Choose a file first');
   btn.disabled = true; btn.classList.add('busy');
-  Promise.all([FILES.shot && !a.screenshot ? TP.shrinkImage(FILES.shot).then(function(f){ return TP.upload(dir + 'confirmation-' + stamp + '.' + ext(f), f); }) : null,
+  var label = btn.innerHTML, have = appShots(a);
+  Promise.all([FILES.shots.length && have.length < SHOT_MAX ? uploadShots(dir, stamp, function(i, n){ btn.innerHTML = 'Uploading ' + i + ' of ' + n + '…'; }) : [],
                FILES.res && !a.resume_file ? TP.upload(dir + 'resume-' + stamp + '.' + ext(FILES.res), FILES.res) : null]).then(function(rs){
-    if(rs[0]) patch.screenshot = rs[0]; if(rs[1]) patch.resume_file = rs[1];
+    if(rs[0].length) patch.screenshots = have.concat(rs[0]).slice(0, SHOT_MAX); if(rs[1]) patch.resume_file = rs[1];
     return q(SB.from('applications').update(patch).eq('id', a.id).select('*').maybeSingle());
-  }).then(function(row){ FILES = {}; TP.toast('File added'); A = row; drawSent(); }, function(e){ btn.disabled = false; btn.classList.remove('busy'); TP.toast(TP.errText(e)); });
+  }).then(function(row){ FILES = {shots:[]}; TP.toast(patch.screenshots ? (rs0(patch) + ' added') : 'File added'); A = row; drawSent(); }, function(e){ btn.disabled = false; btn.classList.remove('busy'); btn.innerHTML = label; TP.toast(TP.errText(e)); });
+  function rs0(p){ var k = p.screenshots.length - have.length; return k === 1 ? 'Screenshot' : k + ' screenshots'; }
 }
 function histRow(h){
   return '<div class="hi"><span class="dot k-' + esc(h.kind) + '"></span><div class="tx"><b>' + esc(h.summary) + '</b><small>' + esc(who(h.by_email)) + (h.by_email && h.by_email !== 'system' ? ' (' + esc(h.by_email) + ')' : '') + ' · <span title="' + esc(TP.fmtDateTime(h.at)) + '">' + esc(TP.ago(h.at)) + '</span></small></div></div>';
@@ -4439,6 +4508,9 @@ document.addEventListener('click', function(e){
     case 'lkopt': return lkOptimise();
     case 'lkretry': return lkRetry(b.getAttribute('data-id'));
     case 'lkjd': return lkJd(b.getAttribute('data-id'));
+    case 'shotmore': { var sd = $('#' + b.getAttribute('data-for')); if(sd && sd._pick) sd._pick(); return; }
+    case 'shotdel': return shotDel(b.getAttribute('data-for'), +b.getAttribute('data-i'));
+    case 'shotview': return shotView(b.getAttribute('data-for'), +b.getAttribute('data-i'));
     case 'lkopen': return lkOpened(b.getAttribute('data-id'));   // the link itself opens the tab; the list notes it
     case 'lkrestrict': return lkRestrict(b.getAttribute('data-id'));
     case 'rjlift': return rjLift(b.getAttribute('data-id'));

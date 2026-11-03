@@ -132,6 +132,8 @@ body{background:#fff}
 .card h3 + .qa-ro{border-top:0}
 .qa-ro b{display:block;font-size:13px;color:var(--ink)}
 .qa-ro div{font-size:14px;white-space:pre-wrap}
+.shotgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}   /* several confirmation screenshots */
+.shotgrid .shot img{max-height:200px;object-fit:cover;object-position:top}
 
 /* ---------- settings ---------- */
 .sgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
@@ -616,15 +618,18 @@ function loadList(){
 /* ---------- one application: exactly what was sent ---------- */
 function vApp(id){
   V.innerHTML = '<div class="skel"></div><div class="skel"></div>';
-  q(SB.from('applications').select('id,status,title,company,location,job_url,jd_text,resume_text,resume_file,cover_letter,answers,screenshot,applied_at,status_at').eq('id', id).maybeSingle()).then(function(a){
+  q(SB.from('applications').select('id,status,title,company,location,job_url,jd_text,resume_text,resume_file,cover_letter,answers,screenshot,screenshots,applied_at,status_at').eq('id', id).maybeSingle()).then(function(a){
     if(appId() !== id) return;
     if(!a){ V.innerHTML = '<div class="empty"><h3>Not found</h3><p>This application isn’t on your account.</p><a class="btn" href="#applications" data-go>All applications</a></div>'; return; }
     A = a; document.title = (a.company || 'Application') + ' | TrulyPlaced';
+    var shots = (a.screenshots && a.screenshots.length) ? a.screenshots : a.screenshot ? [a.screenshot] : [];   // every confirmation screenshot, the old column as a fallback
     V.innerHTML = '<a class="btn sm ghost" href="#applications" data-go>' + I.back + 'All applications</a>' +
       '<div class="card" style="margin-top:10px"><div class="ahead">' + TP.logo(a.company) + '<div style="flex:1;min-width:0"><h1>' + esc(a.title || 'Role') + '</h1><div class="m">' + esc([a.company, a.location].filter(Boolean).join(' · ')) + '</div></div>' + TP.statusChip(a.status) + '</div>' +
         '<div class="sent">' + I.check + '<span>Sent ' + esc(TP.fmtDateTime(a.applied_at)) + ' by ' + TEAM + '</span></div>' +
         '<div class="row" style="margin-top:14px"><a class="btn sm" href="' + esc(TP.safeHref(a.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'View the job posting</a></div></div>' +
-      (a.screenshot ? '<div class="card"><h3>Proof it was sent</h3><p class="hint">The company’s confirmation screen, saved when we applied.</p><a class="shot" data-file="' + esc(a.screenshot) + '" target="_blank" rel="noopener"><img data-file="' + esc(a.screenshot) + '" alt="Confirmation screenshot"></a></div>' : '') +
+      (shots.length ? '<div class="card"><h3>Proof it was sent</h3><p class="hint">The company’s confirmation screen' + (shots.length > 1 ? 's' : '') + ', saved when we applied.' + (shots.length > 1 ? ' Click one to open it full size.' : '') + '</p>' +
+        (shots.length === 1 ? '<a class="shot" data-file="' + esc(shots[0]) + '" target="_blank" rel="noopener"><img data-file="' + esc(shots[0]) + '" alt="Confirmation screenshot"></a>'
+          : '<div class="shotgrid">' + shots.map(function(p, i){ return '<a class="shot" data-file="' + esc(p) + '" target="_blank" rel="noopener"><img data-file="' + esc(p) + '" alt="Confirmation screenshot ' + (i + 1) + '"></a>'; }).join('') + '</div>') + '</div>' : '') +
       '<div class="card"><h3>Your resume, as sent</h3><p class="hint">Tailored for this role by ' + TEAM + '.</p>' +
         (a.resume_file ? '<a class="file" data-file="' + esc(a.resume_file) + '" target="_blank" rel="noopener" style="margin-bottom:10px">' + I.doc + '<span>Open the file we uploaded</span></a>' : '') +
         (a.resume_text ? '<pre class="txt">' + esc(a.resume_text) + '</pre>' : (a.resume_file ? '' : '<p class="fine">Not available for this one.</p>')) + '</div>' +
