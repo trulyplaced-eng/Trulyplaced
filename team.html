@@ -1473,6 +1473,38 @@ body{font-size:13px;line-height:1.5}
 .rtabs [role=tab]{height:34px;padding:0 16px;border-radius:8px;font-size:14px}
 .rmenu button{width:100%}
 @media (max-width:900px){.jscore .ring{width:96px;height:96px}.jscore .ring span{font-size:19px}}
+/* CRM: Leads and Tasks (colour only for meaning: due today blue, overdue red) */
+.ldrow .side{gap:12px}
+.ldnext{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.ldnext.due{color:#1d4ed8;font-weight:500}
+.ldnext.late{color:#b91c1c;font-weight:500}
+.ldnext.none{color:#9aa0aa}
+.ldwho{font-size:12.5px;color:var(--muted);min-width:70px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ldacts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.ldhist{margin-top:20px;border-top:1px solid var(--line);padding-top:14px}
+.ldhist h3{font-size:14px}
+.ldnote{display:flex;gap:8px;align-items:flex-start;margin:8px 0 12px}
+.ldnote textarea{flex:1;min-height:56px}
+.ldh{display:grid;gap:10px;max-height:280px;overflow:auto}
+.ldhi{display:flex;flex-direction:column;gap:2px;font-size:13px}
+.ldhi b{font-weight:500;color:var(--ink)}
+.ldhi.note b{font-weight:400;white-space:pre-wrap}
+.ldhi span{font-size:12px;color:var(--muted)}
+.ldfoot{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-top:14px}
+.tkgrp{margin:18px 0 8px;font-size:13px;font-weight:600;color:var(--ink)}
+.tkgrp:first-child{margin-top:0}
+.tkgrp span{color:var(--muted);font-weight:500;margin-left:4px}
+.tkgrp.late{color:#b91c1c}
+.tk .tkck{width:20px;height:20px;border-radius:50%;border:1.5px solid #b8bdc7;background:#fff;display:grid;place-items:center;flex:none;cursor:pointer;padding:0;color:#fff}
+.tk .tkck:hover{border-color:#16a34a}
+.tk .tkck svg{width:12px;height:12px}
+.tk.done .tkck{background:#16a34a;border-color:#16a34a}
+.tk.done .t{text-decoration:line-through;color:var(--muted)}
+.tk .m a{color:inherit;text-decoration:underline;text-decoration-color:rgba(0,0,0,.25)}
+.tk .m .late{color:#b91c1c;font-weight:500}
+.tk .m .due{color:#1d4ed8;font-weight:500}
+.mdcrm{margin-bottom:16px}
+@media (max-width:760px){ .ldrow .ldwho{display:none} .ldrow .side .st{display:none} }
 </style>
 </head>
 <body>
@@ -1588,7 +1620,7 @@ function meMenu(btn){
   $('#me').insertAdjacentHTML('beforeend', '<div class="memenu" id="meMenu" role="menu" aria-label="Your menu">' +
     it('/team.html#myday', J.day, 'My day', 'Your work, and who still needs an application') +
     '<button role="menuitem" type="button" data-act="switch">' + J.swap + '<span>Switch client<small>Ctrl K</small></span></button>' +
-    it('/team.html#clients', I.users, 'All clients') + (ME.owner ? it('/team.html#team', I.team, 'Team') : '') +
+    it('/team.html#tasks', J.clip, 'Tasks') + it('/team.html#clients', I.users, 'All clients') + (ME.owner ? it('/team.html#leads', J.star, 'Leads') + it('/team.html#team', I.team, 'Team') : '') +
     '<button role="menuitem" type="button" data-act="out">' + I.out + '<span>Sign out</span></button></div>');
   btn.setAttribute('aria-expanded', 'true');
   var first = $('#meMenu [role=menuitem]'); if(first) first.focus();
@@ -1615,7 +1647,7 @@ function route(){
   if(c && UUID.test(c)) r.client = c.toLowerCase();
   if(!r.client){   // the owners' home is Clients and the Team page is theirs; an employee's home is My day, with Clients at #clients
     var emp = !!ME && ME.owner === false;
-    r.page = h === 'team' ? (emp ? 'myday' : 'team') : h === 'myday' || (emp && !h) ? 'myday' : 'clients';
+    r.page = h === 'team' || h === 'leads' ? (emp ? 'myday' : h) : h === 'tasks' ? 'tasks' : h === 'myday' || (emp && !h) ? 'myday' : 'clients';   // Leads are the owners', like Team
     return r;
   }
   var m = /^app=([0-9a-f-]{36})$/i.exec(h);
@@ -1676,12 +1708,14 @@ function draw(){
   if(!ME) return;
   R = route();
   $('#me').innerHTML = meHTML();
-  var cl = R.page === 'clients', tm = R.page === 'team', md = R.page === 'myday';
+  var cl = R.page === 'clients', tm = R.page === 'team', md = R.page === 'myday', tk = R.page === 'tasks', ld = R.page === 'leads';
   $('#pnav').innerHTML = '<div class="ngl">Workspace</div><a href="/team.html#myday" data-go title="My day" class="' + (md ? 'on' : '') + '"' + (md ? ' aria-current="page"' : '') + '>' + J.day + '<span>My day</span></a>' +
+    '<a href="/team.html#tasks" data-go title="Tasks" class="' + (tk ? 'on' : '') + '"' + (tk ? ' aria-current="page"' : '') + '>' + J.clip + '<span>Tasks</span></a>' +
     '<a href="/team.html#clients" data-go title="Clients" class="' + (cl ? 'on' : '') + '"' + (cl ? ' aria-current="page"' : '') + '>' + I.users + '<span>Clients</span></a><div class="otabs" id="otabs" hidden></div>' +
+    (ME.owner ? '<div class="ngl">Sales</div><a href="/team.html#leads" data-go title="Leads" class="' + (ld ? 'on' : '') + '"' + (ld ? ' aria-current="page"' : '') + '>' + J.star + '<span>Leads</span></a>' : '') +
     (ME.owner ? '<div class="ngl">Organisation</div><a href="/team.html#team" data-go title="Team" class="' + (tm ? 'on' : '') + '"' + (tm ? ' aria-current="page"' : '') + '>' + I.team + '<span>Team</span></a>' : '');   // the Team page is the owners'; the titles name the icons when the sidebar is a rail
   drawOpenTabs();
-  if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : md ? vMyDay() : vClients(); }
+  if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : md ? vMyDay() : tk ? vTasks() : ld ? vLeads() : vClients(); }
   vClient();
 }
 // phones: a top bar with the client and Switch, and the sections along the bottom
@@ -1692,7 +1726,7 @@ function drawPhone(c){
       '<button class="icb" type="button" data-act="switch" title="Switch client">' + J.swap + '<span class="sr">Switch client</span></button>' : '<span class="grow"></span>') +
     '<button class="icb" type="button" data-act="out" title="Sign out">' + I.out + '<span class="sr">Sign out</span></button>';
   var items = c ? TABS.map(function(t){ return [cUrl(c.id, t[0]), t[3] || t[1], t[2], R.tab === t[0]]; })
-    : [['/team.html#myday', 'My day', J.day, R.page === 'myday'], ['/team.html#clients', 'Clients', I.users, R.page === 'clients']].concat(ME.owner ? [['/team.html#team', 'Team', I.team, R.page === 'team']] : []);
+    : [['/team.html#myday', 'My day', J.day, R.page === 'myday'], ['/team.html#tasks', 'Tasks', J.clip, R.page === 'tasks'], ['/team.html#clients', 'Clients', I.users, R.page === 'clients']].concat(ME.owner ? [['/team.html#leads', 'Leads', J.star, R.page === 'leads'], ['/team.html#team', 'Team', I.team, R.page === 'team']] : []);
   $('#tabbar').innerHTML = items.map(function(n){ return '<a href="' + esc(n[0]) + '" data-go class="' + (n[3] ? 'on' : '') + '"' + (n[3] ? ' aria-current="page"' : '') + '>' + n[2] + '<span>' + n[1] + '</span></a>'; }).join('');
 }
 function setTitle(t, c){
@@ -1841,7 +1875,7 @@ function vMyDay(){
   var when = now.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long', timeZone:'UTC'});
   V.innerHTML = '<div class="pageh"><div class="grow"><h1>My day</h1><div class="sub">' + (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ', ' + esc(first) + ' · ' + esc(when) + '</div></div>' +
       '<button class="btn" type="button" data-act="switch">' + J.swap + 'Switch client</button></div>' +
-    '<div class="stats s5" id="mdS"></div><div id="mdReq"></div>' +
+    '<div class="stats s5" id="mdS"></div><div id="mdReq"></div><div id="mdCrm"></div>' +
     '<div class="mdg"><div class="card"><h3>Still to do today</h3><p class="hint">Active clients with nothing sent today — the most left on their plan first.</p><div id="mdTodo"><div class="skel"></div></div></div>' +
       '<div class="card"><h3>Clients you worked on this week</h3><p class="hint">From the activity log: the applications you sent and the drafts you started.</p><div id="mdMine"><div class="skel"></div></div></div></div>';
   var draw = function(){
@@ -1876,7 +1910,7 @@ function vMyDay(){
       }).join('') + '</div>' : '<p class="fine">Nothing yet this week. Pick someone from Still to do.</p>';
     }
   };
-  draw();
+  draw(); mdCrm(); mdCrmLoad();
   var me = ME.email;
   Promise.all([loadList(), q(SB.from('client_activity').select('client_id,kind,at').eq('by_email', me).in('kind', ['app_started', 'app_applied']).gte('at', istWeek().toISOString()).order('at', {ascending:false}).limit(3000))])
     .then(function(rs){ MDAY = {at:Date.now(), rows:rs[1] || []}; draw(); }, function(e){ if($('#mdMine')) $('#mdMine').innerHTML = errBox(e); });
@@ -1892,7 +1926,8 @@ function vMyDay(){
   }, function(){});
 }
 
-function newClient(){
+function newClient(pre){
+  pre = pre || {};
   var planSel = ME.owner ? '<div class="field"><label for="ncP">Plan</label><select id="ncP"><option value="">Not set yet</option>' + TP.CONFIG.PLANS.map(function(n){ return '<option value="' + n + '">' + n + ' applications</option>'; }).join('') + '<option value="custom">Other number…</option></select></div>' +
       '<div class="field" id="ncPCw" hidden><label for="ncPC">Number of applications</label><input id="ncPC" type="number" min="1" max="100000" inputmode="numeric"></div>'
     : '<p class="fine">The owner sets the plan (250, 500 or 1000 applications) on the client’s Profile tab.</p>';
@@ -1905,6 +1940,7 @@ function newClient(){
       '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="ncGo">Check and continue</button></div></form>' +
     '<div id="ncRev" hidden></div>', false, {keep:true});
   if(ME.owner) $('#ncP').addEventListener('change', function(e){ $('#ncPCw').hidden = e.target.value !== 'custom'; });
+  if(pre.name){ $('#ncN').value = pre.name; $('#ncE').value = pre.email || ''; $('#ncPh').value = pre.phone || ''; if(ME.owner && pre.plan && TP.CONFIG.PLANS.indexOf(pre.plan) > -1) $('#ncP').value = String(pre.plan); }   // from a lead (Make them a client)
   $('#ncF', m).addEventListener('submit', function(e){
     e.preventDefault();
     var name = $('#ncN').value.trim().replace(/\s+/g, ' '), email = $('#ncE').value.trim().toLowerCase(), phone = $('#ncPh').value.trim(), err = $('#ncErr'), go2 = $('#ncGo');
@@ -1915,7 +1951,7 @@ function newClient(){
     if(pv === 'custom' && !(plan >= 1 && plan <= 100000)){ err.textContent = 'Type the number of applications in their plan.'; return; }
     err.hidden = true;
     // before anything is created: the same person may already be a client
-    TP.busy(go2, loadList()).then(function(L){ ncReview(m, {name:name, email:email, phone:phone, plan:plan || null}, L.rows); }, function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
+    TP.busy(go2, loadList()).then(function(L){ ncReview(m, {name:name, email:email, phone:phone, plan:plan || null, onMade:pre.onMade}, L.rows); }, function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
   });
 }
 function ncReview(m, n, rows){
@@ -1944,6 +1980,7 @@ function ncReview(m, n, rows){
     var er = $('#ncErr2', m); er.hidden = true;
     TP.busy(mk, TP.fn('client-accounts', {action:'create_client', full_name:n.name, email:n.email, phone:n.phone, plan_total:n.plan})).then(function(r){
       TP.closeModal(); staleList();
+      if(n.onMade && !r.already_client) n.onMade(r.client_id);
       TP.toast(r.already_client ? 'They’re already a client — opening them' : 'Client added. Set-password email sent to ' + n.email);
       go(cUrl(r.client_id, 'profile'));
     }, function(e2){ er.hidden = false; er.textContent = e2 && e2.code === 'bad_email' ? 'Check the email address.' : TP.errText(e2); });
@@ -4741,6 +4778,284 @@ function teamMenu(email){
 }
 
 /* =====================================================================
+   CRM: Leads (the owners': people who haven't paid yet) and Tasks (the whole team's to-dos), sql/supabase-crm.sql.
+   A lead moves New → Call booked → Call done → Payment link sent → Won / Lost; their history writes itself in the
+   database (crm_lead_activity) and notes are added here. Times are India time, as on My day.
+   ===================================================================== */
+var LD_STAGES = [['new', 'New', 'draft'], ['call_booked', 'Call booked', 'interview'], ['call_done', 'Call done', 'applied'], ['link_sent', 'Payment link sent', 'wait'], ['won', 'Won', 'offer'], ['lost', 'Lost', 'rejected']];
+var LD_SRC = [['whatsapp', 'WhatsApp'], ['website', 'Website'], ['calendly', 'Calendly'], ['instagram', 'Instagram'], ['linkedin', 'LinkedIn'], ['referral', 'Referral'], ['other', 'Other']];
+var LD_F = [['open', 'Open'], ['new', 'New'], ['call_booked', 'Call booked'], ['call_done', 'Call done'], ['link_sent', 'Link sent'], ['won', 'Won'], ['lost', 'Lost'], ['all', 'All']];
+var LD = {q:'', f:'open', rows:null};
+function ldStage(s){ return LD_STAGES.filter(function(x){ return x[0] === s; })[0] || LD_STAGES[0]; }
+function ldPill(s){ var x = ldStage(s); return '<span class="st ' + x[2] + '">' + x[1] + '</span>'; }
+function ldSrc(s){ var x = LD_SRC.filter(function(y){ return y[0] === s; })[0]; return x ? x[1] : 'Other'; }
+function ldOpen(l){ return l.stage !== 'won' && l.stage !== 'lost'; }
+function istYmd(t){ return new Date(new Date(t).getTime() + 330 * 60000).toISOString().slice(0, 10); }   // the day in India, as YYYY-MM-DD
+function istInput(iso){ return iso ? new Date(new Date(iso).getTime() + 330 * 60000).toISOString().slice(0, 16) : ''; }   // for a datetime-local field, in India time
+function fromIstInput(v){ return v ? new Date(v + ':00+05:30').toISOString() : null; }
+function dayName(ymd){ return new Date(ymd + 'T00:00:00Z').toLocaleDateString('en-GB', {day:'numeric', month:'short', timeZone:'UTC'}); }
+function istTime(iso){ return new Date(iso).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit', timeZone:'Asia/Kolkata'}); }
+// what happens next with a lead: the call, else the follow-up (due today in blue, overdue in red)
+function ldNext(l){
+  var t = istYmd(Date.now());
+  if(l.stage === 'won') return {text:l.client_id ? 'Client' : 'Won', cls:''};
+  if(l.stage === 'lost') return {text:l.lost_reason || 'Lost', cls:''};
+  if(l.call_at && (l.stage === 'new' || l.stage === 'call_booked') && new Date(l.call_at).getTime() > Date.now() - 3 * 3600e3){
+    var d = istYmd(l.call_at);
+    return {text:'Call ' + (d === t ? 'today' : dayName(d)) + ', ' + istTime(l.call_at), cls:d === t ? 'due' : ''};
+  }
+  if(l.follow_up) return {text:'Follow up ' + (l.follow_up === t ? 'today' : dayName(l.follow_up)), cls:l.follow_up < t ? 'late' : l.follow_up === t ? 'due' : ''};
+  return {text:'No next step', cls:'none'};
+}
+function ldRank(l){   // calls today, then overdue and due follow-ups, then the rest by date
+  var t = istYmd(Date.now()), n = ldNext(l);
+  return [n.cls === 'late' ? 0 : n.cls === 'due' ? 1 : n.cls === 'none' ? 3 : 2, l.call_at && l.stage !== 'call_done' ? l.call_at.slice(0, 10) : (l.follow_up || '9999')];
+}
+function loadLeads(){
+  return q(SB.from('crm_leads').select('*').order('updated_at', {ascending:false}).limit(2000)).then(function(r){ LD.rows = r || []; return LD.rows; });
+}
+function vLeads(){
+  setTitle('Leads', null);
+  V.innerHTML = '<div class="pageh"><div class="grow"><h1>Leads</h1><div class="sub" id="ldSub">Loading leads…</div></div>' +
+      '<button class="btn pri" type="button" data-act="newlead">' + I.plus + 'New lead</button></div>' +
+    '<div class="tools"><input class="inp" id="lq" type="search" placeholder="Search name, email, phone or what they want" value="' + esc(LD.q) + '" autocomplete="off">' +
+      '<div class="seg" id="lf">' + LD_F.map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (LD.f === f[0] ? 'on' : '') + '">' + f[1] + '<b data-n="' + f[0] + '"></b></button>'; }).join('') + '</div></div>' +
+    '<div id="ll"><div class="skel"></div><div class="skel"></div></div>';
+  var t; $('#lq').addEventListener('input', function(e){ clearTimeout(t); t = setTimeout(function(){ LD.q = e.target.value; drawLeads(); }, 60); });
+  $('#lf').addEventListener('click', function(e){ var b = e.target.closest('[data-f]'); if(!b) return; LD.f = b.getAttribute('data-f'); $$('#lf button').forEach(function(x){ x.classList.toggle('on', x === b); }); drawLeads(); });
+  if(LD.rows) drawLeads();   // the list as last loaded at once; the fresh one a moment later
+  loadLeads().then(drawLeads, function(e){ if(LD.rows && $('#ll .li')) return TP.toast('Couldn’t refresh the leads — ' + TP.errText(e)); $('#ll').innerHTML = errBox(e); $('#ldSub').textContent = ''; });
+}
+function drawLeads(){
+  var box = $('#ll'); if(!box || !LD.rows) return;
+  var all = LD.rows, qq = LD.q.toLowerCase().trim(), qd = digits(qq), t = istYmd(Date.now());
+  var inF = function(l, f){ return f === 'all' || (f === 'open' ? ldOpen(l) : l.stage === f); };
+  LD_F.forEach(function(f){ var el = $('#lf [data-n="' + f[0] + '"]'); if(el) el.textContent = all.filter(function(l){ return inF(l, f[0]); }).length; });
+  var open = all.filter(ldOpen), calls = open.filter(function(l){ return l.call_at && istYmd(l.call_at) === t; }).length, due = open.filter(function(l){ return l.follow_up && l.follow_up <= t; }).length;
+  $('#ldSub').textContent = all.length ? [open.length + ' open', calls + ' call' + (calls === 1 ? '' : 's') + ' today', due + ' follow-up' + (due === 1 ? '' : 's') + ' due'].join(' · ') : '';
+  var rows = all.filter(function(l){ return inF(l, LD.f); }).filter(function(l){
+    return !qq || [l.full_name, l.email, l.phone, l.interest, ldSrc(l.source)].join(' ').toLowerCase().indexOf(qq) > -1 || (qd.length >= 4 && digits(l.phone).indexOf(qd) > -1);
+  });
+  if(LD.f === 'open') rows.sort(function(a, b){ var x = ldRank(a), y = ldRank(b); return x[0] - y[0] || (x[1] < y[1] ? -1 : x[1] > y[1] ? 1 : 0); });
+  if(!all.length){ box.innerHTML = '<div class="empty">' + I.users + '<h3>No leads yet</h3><p>Add everyone who asks about TrulyPlaced — on WhatsApp, the website or a call — and keep track of them until they pay.</p><button class="btn pri" type="button" data-act="newlead">' + I.plus + 'New lead</button></div>'; return; }
+  if(!rows.length){ box.innerHTML = '<div class="empty"><h3>No one here</h3><p>Try another search or filter.</p></div>'; return; }
+  box.innerHTML = '<div class="list leads">' + rows.map(function(l){
+    var nx = ldNext(l);
+    return '<a class="li ldrow" href="/team.html#leads" data-act="leadopen" data-id="' + esc(l.id) + '"><span class="av" style="background:' + TP.hue(l.id) + '">' + esc(TP.initials(l.full_name, l.email)) + '</span>' +
+      '<div class="main"><div class="t">' + esc(l.full_name) + '</div><div class="m">' + esc([ldSrc(l.source), l.interest, l.phone || l.email].filter(Boolean).join(' · ')) + '</div></div>' +
+      '<div class="side"><span class="ldnext ' + nx.cls + '">' + esc(nx.text) + '</span>' + ldPill(l.stage) + '<span class="ldwho">' + esc(l.owner_email ? who(l.owner_email) : '—') + '</span></div>' +
+      I.chev.replace('<svg', '<svg class="chev"') + '</a>';
+  }).join('') + '</div>';
+}
+function waHref(phone, text){ var d = String(phone || '').replace(/\D/g, ''); if(d.length === 10) d = '1' + d; return d.length >= 8 ? 'https://wa.me/' + d + '?text=' + encodeURIComponent(text) : ''; }   // ten digits: a US number
+function leadOpen(id){
+  var l = id ? (LD.rows || []).filter(function(x){ return x.id === id; })[0] : null;
+  if(id && !l) return TP.toast('That lead isn’t on the list any more — refresh the page.');
+  l = l || {};
+  var me = TEAMROWS.filter(function(x){ return x.email === ME.email; })[0] || {}, first = String(l.full_name || '').split(' ')[0];
+  var owners = TEAMROWS.filter(function(x){ return x.role === 'owner' && x.active !== false; });
+  var opt = function(list, cur){ return list.map(function(o){ return '<option value="' + esc(o[0]) + '"' + (o[0] === cur ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join(''); };
+  var wa = l.id ? waHref(l.phone, 'Hi ' + first + ', this is ' + String(me.full_name || 'the team').split(' ')[0] + ' from TrulyPlaced.') : '';
+  var acts = l.id ? '<div class="ldacts">' + (wa ? '<a class="btn sm" target="_blank" rel="noopener" href="' + esc(wa) + '">' + I.wa + 'WhatsApp</a>' : '') +
+      (l.email ? '<a class="btn sm" href="mailto:' + esc(l.email) + '">' + I.mail + 'Email</a>' : '') +
+      (l.client_id ? '<a class="btn sm" href="' + esc(cUrl(l.client_id, 'profile')) + '" data-go data-mclose="0">' + I.users + 'Open client</a>'
+        : '<button class="btn sm" type="button" data-act="leadclient" data-id="' + esc(l.id) + '">' + I.users + 'Make them a client</button>') + '</div>' : '';
+  var m = TP.modal('<h2>' + (l.id ? esc(l.full_name) : 'New lead') + '</h2>' +
+    (l.id ? '<p>' + ldPill(l.stage) + ' &nbsp;Added ' + esc(TP.ago(l.created_at)) + (l.created_by ? ' by ' + esc(who(l.created_by)) : '') + '</p>' : '<p>Someone who might become a client. Only the owners see leads.</p>') + acts +
+    '<form id="ldF" class="stack" style="margin-top:14px" novalidate>' +
+      '<div class="grid2"><div class="field"><label for="ldN">Name</label><input id="ldN" autocomplete="off" value="' + esc(l.full_name || '') + '" placeholder="e.g. Priya Sharma"></div>' +
+        '<div class="field"><label for="ldS">Came from</label><select id="ldS">' + opt(LD_SRC, l.source || 'whatsapp') + '</select></div></div>' +
+      '<div class="grid2"><div class="field"><label for="ldP">Phone / WhatsApp</label><input id="ldP" value="' + esc(l.phone || '') + '" placeholder="e.g. +1 201 555 0147"' + TP.sg('phone') + '></div>' +
+        '<div class="field"><label for="ldE">Email</label><input id="ldE" value="' + esc(l.email || '') + '" placeholder="optional"' + TP.sg('email') + '></div></div>' +
+      '<div class="grid2"><div class="field"><label for="ldSt">Stage</label><select id="ldSt">' + opt(LD_STAGES, l.stage || 'new') + '</select></div>' +
+        '<div class="field"><label for="ldO">Handled by</label><select id="ldO"><option value="">Nobody yet</option>' + opt(owners.map(function(o){ return [o.email, o.full_name || o.email]; }), l.id ? l.owner_email : ME.email) + '</select></div></div>' +
+      '<div class="field" id="ldLw"' + (l.stage === 'lost' ? '' : ' hidden') + '><label for="ldL">Why they didn’t go ahead</label><input id="ldL" value="' + esc(l.lost_reason || '') + '" placeholder="e.g. price, timing, found a job, no reply"></div>' +
+      '<div class="grid2"><div class="field"><label for="ldC">Call <span class="muted">(India time)</span></label><input id="ldC" type="datetime-local" value="' + esc(istInput(l.call_at)) + '"></div>' +
+        '<div class="field"><label for="ldFu">Follow up on</label><input id="ldFu" type="date" value="' + esc(l.follow_up || '') + '"></div></div>' +
+      '<div class="grid2"><div class="field"><label for="ldI">What they want</label><input id="ldI" value="' + esc(l.interest || '') + '" placeholder="e.g. Data Analyst roles, on OPT"></div>' +
+        '<div class="field"><label for="ldPl">Plan they’re looking at</label><select id="ldPl"><option value="">Not discussed yet</option>' + TP.CONFIG.PLANS.map(function(n){ return '<option value="' + n + '"' + (l.plan_interest === n ? ' selected' : '') + '>' + n + ' applications</option>'; }).join('') + '</select></div></div>' +
+      '<p class="err" id="ldErr" hidden></p>' +
+      '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="ldGo">' + (l.id ? 'Save' : 'Add lead') + '</button></div></form>' +
+    (l.id ? '<div class="ldhist"><h3>History</h3><div class="ldnote"><textarea class="inp" id="ldNt" rows="2" placeholder="Add a note — what was said, what they need"></textarea><button class="btn sm" type="button" data-act="leadnote" data-id="' + esc(l.id) + '">Add note</button></div>' +
+      '<div id="ldH"><div class="skel"></div></div>' +
+      '<div class="ldfoot"><button class="btn sm" type="button" data-act="newtask" data-lead="' + esc(l.id) + '">' + I.plus + 'Task for this lead</button><button class="btn sm ghost" type="button" data-act="leaddel" data-id="' + esc(l.id) + '">' + I.trash + 'Delete lead</button></div></div>' : ''),
+    true, {keep:true});
+  var nt = $('#ldNt', m); if(nt) nt.addEventListener('input', function(e){ e.stopPropagation(); });   // a note is saved on its own, not with the form
+  $('#ldSt', m).addEventListener('change', function(e){ $('#ldLw', m).hidden = e.target.value !== 'lost'; });
+  if(l.id) ldHist(l.id);
+  $('#ldF', m).addEventListener('submit', function(e){
+    e.preventDefault();
+    var v = function(k){ return $('#' + k, m).value.trim(); }, err = $('#ldErr', m);
+    var row = {full_name:v('ldN').replace(/\s+/g, ' '), email:v('ldE').toLowerCase() || null, phone:v('ldP') || null, source:v('ldS'), stage:v('ldSt'),
+      lost_reason:v('ldL') || null, interest:v('ldI') || null, plan_interest:+v('ldPl') || null, call_at:fromIstInput(v('ldC')), follow_up:v('ldFu') || null, owner_email:v('ldO') || null};
+    err.hidden = false;
+    if(!row.full_name){ err.textContent = 'Add their name.'; return; }
+    if(row.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(row.email)){ err.textContent = 'Check the email address.'; return; }
+    err.hidden = true;
+    var p = l.id ? SB.from('crm_leads').update(row).eq('id', l.id).select('*') : SB.from('crm_leads').insert(row).select('*');
+    TP.busy($('#ldGo', m), q(p)).then(function(r){
+      var saved = r && r[0]; if(!saved) throw {message:'Only the owners can change leads.'};
+      LD.rows = [saved].concat((LD.rows || []).filter(function(x){ return x.id !== saved.id; }));
+      TP.closeModal(); drawLeads(); mdCrm();
+      TP.toast(l.id ? 'Saved' : saved.full_name + ' added');
+    }).catch(function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
+  });
+}
+function ldHist(id){
+  q(SB.from('crm_lead_activity').select('*').eq('lead_id', id).order('at', {ascending:false}).limit(200)).then(function(rs){
+    var h = $('#ldH'); if(!h) return;
+    h.innerHTML = (rs || []).length ? '<div class="ldh">' + rs.map(function(x){
+      return '<div class="ldhi' + (x.kind === 'note' ? ' note' : '') + '"><b>' + esc(x.summary) + '</b><span>' + esc(who(x.by_email)) + ' · ' + esc(TP.fmtDateTime(x.at)) + '</span></div>';
+    }).join('') + '</div>' : '<p class="fine">Nothing yet.</p>';
+  }, function(e){ var h = $('#ldH'); if(h) h.innerHTML = errBox(e); });
+}
+function leadNote(b){
+  var id = b.getAttribute('data-id'), box = $('#ldNt'), t = box ? box.value.trim() : ''; if(!t) return box && box.focus();
+  TP.busy(b, q(SB.from('crm_lead_activity').insert({lead_id:id, kind:'note', summary:t}))).then(function(){ if($('#ldNt')) $('#ldNt').value = ''; TP.toast('Note saved'); ldHist(id); }, fail);
+}
+function leadDelete(id){
+  var l = (LD.rows || []).filter(function(x){ return x.id === id; })[0]; if(!l) return;
+  TP.confirmBox('Delete ' + l.full_name + '?', 'Their details and history go for good. To keep a record, set the stage to Lost instead.', 'Delete lead', true, {type:l.full_name}).then(function(ok){
+    if(!ok) return;
+    q(SB.from('crm_leads').delete().eq('id', id).select('id')).then(function(r){
+      if(!r || !r.length) throw {message:'Only the owners can delete leads.'};
+      LD.rows = LD.rows.filter(function(x){ return x.id !== id; }); drawLeads(); mdCrm(); TP.toast(l.full_name + ' deleted');
+    }, fail);
+  });
+}
+// a lead who paid: New client with their details filled in; once the client exists, the lead is Won and linked to them
+function leadToClient(id){
+  var l = (LD.rows || []).filter(function(x){ return x.id === id; })[0]; if(!l) return;
+  newClient({name:l.full_name, email:l.email || '', phone:l.phone || '', plan:l.plan_interest, onMade:function(cid){
+    return q(SB.from('crm_leads').update({stage:'won', client_id:cid}).eq('id', l.id).select('*')).then(function(r){
+      if(r && r[0]) LD.rows = [r[0]].concat(LD.rows.filter(function(x){ return x.id !== l.id; }));
+    }, function(){ TP.toast('The client was created, but the lead couldn’t be marked Won — do it on Leads.'); });
+  }});
+}
+
+/* Tasks: what the team has to do, with who and by when */
+var TK = {f:'mine', rows:null};
+function loadTasks(){
+  var since = new Date(Date.now() - 14 * 864e5).toISOString();
+  return Promise.all([
+    q(SB.from('team_tasks').select('*').is('done_at', null).order('created_at', {ascending:true}).limit(1000)),
+    q(SB.from('team_tasks').select('*').not('done_at', 'is', null).gte('done_at', since).order('done_at', {ascending:false}).limit(300)),
+    ME.owner && !LD.rows ? loadLeads().catch(function(){}) : null,
+    loadList().catch(function(){})
+  ]).then(function(rs){ TK.rows = (rs[0] || []).concat(rs[1] || []); return TK.rows; });
+}
+function tkWhen(t){
+  var d = istYmd(Date.now());
+  if(!t.due) return {text:'', cls:'', grp:3};
+  return {text:t.due === d ? 'Today' : dayName(t.due), cls:t.due < d ? 'late' : t.due === d ? 'due' : '', grp:t.due < d ? 0 : t.due === d ? 1 : 2};
+}
+function tkRow(t){
+  var w = tkWhen(t), done = !!t.done_at, names = {};
+  (LIST ? LIST.rows : []).forEach(function(c){ names[c.id] = c.full_name || c.email; });
+  var lead = t.lead_id && LD.rows ? LD.rows.filter(function(x){ return x.id === t.lead_id; })[0] : null;
+  var bits = [done ? 'Done ' + esc(TP.ago(t.done_at)) + ' by ' + esc(who(t.done_by)) : w.text ? '<span class="' + w.cls + '">' + (w.cls === 'late' ? 'Was due ' : 'Due ') + esc(w.text) + '</span>' : '',
+    t.assignee ? esc(t.assignee === ME.email ? 'You' : who(t.assignee)) : 'Anyone',
+    t.client_id ? '<a href="' + esc(cUrl(t.client_id)) + '" data-go>' + esc(names[t.client_id] || 'A client') + '</a>' : '',
+    lead ? '<a href="/team.html#leads" data-act="leadopen" data-id="' + esc(lead.id) + '">' + esc(lead.full_name) + ' (lead)</a>' : ''].filter(Boolean);
+  var canDel = ME.owner || t.created_by === ME.email;
+  return '<div class="li tk' + (done ? ' done' : '') + '"><button class="tkck" type="button" data-act="taskdone" data-id="' + esc(t.id) + '" aria-pressed="' + done + '" title="' + (done ? 'Not done after all' : 'Mark done') + '" aria-label="' + (done ? 'Mark not done: ' : 'Mark done: ') + esc(t.title) + '">' + (done ? I.check : '') + '</button>' +
+    '<div class="main"><div class="t">' + esc(t.title) + '</div><div class="m">' + bits.join(' · ') + '</div></div>' +
+    (canDel ? '<button class="icb" type="button" data-act="taskdel" data-id="' + esc(t.id) + '" title="Delete task" aria-label="Delete task: ' + esc(t.title) + '">' + I.trash + '</button>' : '') + '</div>';
+}
+function vTasks(){
+  setTitle('Tasks', null);
+  V.innerHTML = '<div class="pageh"><div class="grow"><h1>Tasks</h1><div class="sub" id="tkSub">Loading tasks…</div></div>' +
+      '<button class="btn pri" type="button" data-act="newtask">' + I.plus + 'New task</button></div>' +
+    '<div class="tools"><div class="seg" id="tf">' + [['mine', 'Mine'], ['all', 'Everyone'], ['done', 'Done']].map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (TK.f === f[0] ? 'on' : '') + '">' + f[1] + '<b data-n="' + f[0] + '"></b></button>'; }).join('') + '</div></div>' +
+    '<div id="tl"><div class="skel"></div><div class="skel"></div></div>';
+  $('#tf').addEventListener('click', function(e){ var b = e.target.closest('[data-f]'); if(!b) return; TK.f = b.getAttribute('data-f'); $$('#tf button').forEach(function(x){ x.classList.toggle('on', x === b); }); drawTasks(); });
+  if(TK.rows) drawTasks();
+  loadTasks().then(drawTasks, function(e){ if(TK.rows && $('#tl .tk')) return TP.toast('Couldn’t refresh the tasks — ' + TP.errText(e)); $('#tl').innerHTML = errBox(e); $('#tkSub').textContent = ''; });
+}
+function drawTasks(){
+  var box = $('#tl'); if(!box || !TK.rows) return;
+  var open = TK.rows.filter(function(t){ return !t.done_at; }), mine = open.filter(function(t){ return t.assignee === ME.email; }), done = TK.rows.filter(function(t){ return t.done_at; });
+  var n = {mine:mine.length, all:open.length, done:done.length};
+  Object.keys(n).forEach(function(k){ var el = $('#tf [data-n="' + k + '"]'); if(el) el.textContent = n[k]; });
+  var late = open.filter(function(t){ return tkWhen(t).grp === 0; }).length;
+  $('#tkSub').textContent = open.length + ' open' + (late ? ' · ' + late + ' overdue' : '') + ' · ' + mine.length + ' for you';
+  if(TK.f === 'done'){
+    box.innerHTML = done.length ? '<div class="list">' + done.map(tkRow).join('') + '</div><p class="fine" style="margin-top:8px">The last 14 days.</p>' : '<div class="empty"><h3>Nothing done in the last 14 days</h3></div>';
+    return;
+  }
+  var list = TK.f === 'mine' ? mine : open;
+  if(!list.length){ box.innerHTML = '<div class="empty">' + I.check + '<h3>' + (TK.f === 'mine' ? 'Nothing for you right now' : 'No open tasks') + '</h3><p>Add one for yourself or someone on the team.</p><button class="btn pri" type="button" data-act="newtask">' + I.plus + 'New task</button></div>'; return; }
+  var groups = [['Overdue', 0], ['Today', 1], ['Coming up', 2], ['No date', 3]];
+  box.innerHTML = groups.map(function(g){
+    var rows = list.filter(function(t){ return tkWhen(t).grp === g[1]; }).sort(function(a, b){ return String(a.due || '').localeCompare(String(b.due || '')) || (a.created_at < b.created_at ? -1 : 1); });
+    return rows.length ? '<h3 class="tkgrp' + (g[1] === 0 ? ' late' : '') + '">' + g[0] + ' <span>' + rows.length + '</span></h3><div class="list">' + rows.map(tkRow).join('') + '</div>' : '';
+  }).join('');
+}
+// a new task: for anyone on the team, optionally about a client or (owners) a lead
+function newTask(pre){
+  pre = pre || {};
+  var team = TEAMROWS.filter(function(x){ return x.active !== false; });
+  var clients = (LIST ? LIST.rows : []).filter(function(c){ return c.status !== 'archived'; }).sort(function(a, b){ return String(a.full_name).localeCompare(String(b.full_name)); });
+  var leads = ME.owner && LD.rows ? LD.rows.filter(function(l){ return ldOpen(l) || l.id === pre.lead; }) : [];
+  var m = TP.modal('<h2>New task</h2><form id="tkF" class="stack" style="margin-top:14px" novalidate>' +
+      '<div class="field"><label for="tkT">What needs doing</label><input id="tkT" autocomplete="off" maxlength="300" value="' + esc(pre.title || '') + '" placeholder="e.g. Rewrite Priya’s resume for BI roles"></div>' +
+      '<div class="grid2"><div class="field"><label for="tkD">Due</label><input id="tkD" type="date" value="' + esc(pre.due || istYmd(Date.now())) + '"></div>' +
+        '<div class="field"><label for="tkA">For</label><select id="tkA"><option value="">Anyone</option>' + team.map(function(x){ return '<option value="' + esc(x.email) + '"' + (x.email === ME.email ? ' selected' : '') + '>' + esc(x.email === ME.email ? 'Me' : (x.full_name || x.email)) + '</option>'; }).join('') + '</select></div></div>' +
+      '<div class="grid2"><div class="field"><label for="tkC">About a client <span class="muted">(optional)</span></label><select id="tkC"><option value="">No client</option>' + clients.map(function(c){ return '<option value="' + esc(c.id) + '"' + (c.id === pre.client ? ' selected' : '') + '>' + esc(c.full_name || c.email) + '</option>'; }).join('') + '</select></div>' +
+        (ME.owner ? '<div class="field"><label for="tkL">About a lead <span class="muted">(optional)</span></label><select id="tkL"><option value="">No lead</option>' + leads.map(function(l){ return '<option value="' + esc(l.id) + '"' + (l.id === pre.lead ? ' selected' : '') + '>' + esc(l.full_name) + '</option>'; }).join('') + '</select></div>' : '') + '</div>' +
+      '<p class="err" id="tkErr" hidden></p><div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="tkGo">Add task</button></div></form>', false, {keep:true});
+  $('#tkF', m).addEventListener('submit', function(e){
+    e.preventDefault();
+    var v = function(k){ var el = $('#' + k, m); return el ? el.value.trim() : ''; }, err = $('#tkErr', m);
+    var row = {title:v('tkT').replace(/\s+/g, ' '), due:v('tkD') || null, assignee:v('tkA') || null, client_id:v('tkC') || null, lead_id:v('tkL') || null};
+    if(!row.title){ err.hidden = false; err.textContent = 'Say what needs doing.'; return; }
+    TP.busy($('#tkGo', m), q(SB.from('team_tasks').insert(row).select('*'))).then(function(r){
+      if(r && r[0]) TK.rows = (TK.rows || []).concat(r[0]);
+      TP.closeModal(); drawTasks(); mdCrm();
+      TP.toast('Task added' + (row.assignee && row.assignee !== ME.email ? ' for ' + who(row.assignee) : ''));
+    }, function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
+  });
+}
+function taskDone(id){
+  var t = (TK.rows || []).filter(function(x){ return x.id === id; })[0]; if(!t) return;
+  var was = t.done_at, set = function(v){
+    return q(SB.from('team_tasks').update({done_at:v}).eq('id', id).select('*')).then(function(r){
+      if(r && r[0]) TK.rows = TK.rows.map(function(x){ return x.id === id ? r[0] : x; });
+      drawTasks(); mdCrm();
+    });
+  };
+  set(was ? null : new Date().toISOString()).then(function(){
+    TP.toast(was ? 'Back on the list' : 'Done: ' + t.title, {undo:function(){ set(was ? new Date().toISOString() : null).catch(fail); }});
+  }, fail);
+}
+function taskDel(id){
+  var t = (TK.rows || []).filter(function(x){ return x.id === id; })[0]; if(!t) return;
+  q(SB.from('team_tasks').delete().eq('id', id).select('id')).then(function(r){
+    if(!r || !r.length) throw {message:'Only whoever added it, or an owner, can delete a task.'};
+    TK.rows = TK.rows.filter(function(x){ return x.id !== id; }); drawTasks(); mdCrm();
+    var back = {title:t.title, due:t.due, assignee:t.assignee, client_id:t.client_id, lead_id:t.lead_id};
+    TP.toast('Task deleted', {undo:function(){ q(SB.from('team_tasks').insert(back).select('*')).then(function(r2){ if(r2 && r2[0]) TK.rows.push(r2[0]); drawTasks(); mdCrm(); }, fail); }});
+  }, fail);
+}
+// My day: your tasks due today or overdue, and (owners) today's calls and follow-ups
+function mdCrm(){
+  var el = $('#mdCrm'); if(!el || R.page !== 'myday') return;
+  var d = istYmd(Date.now());
+  var tasks = (TK.rows || []).filter(function(t){ return !t.done_at && t.assignee === ME.email && t.due && t.due <= d; });
+  var leads = ME.owner ? (LD.rows || []).filter(function(l){ return ldOpen(l) && ((l.call_at && istYmd(l.call_at) === d) || (l.follow_up && l.follow_up <= d)); }) : [];
+  if(!tasks.length && !leads.length){ el.innerHTML = ''; return; }
+  el.innerHTML = '<div class="mdg mdcrm">' +
+    (tasks.length ? '<div class="card"><h3>Your tasks for today</h3><p class="hint">Due today or overdue. <a href="/team.html#tasks" data-go>All tasks</a></p><div class="list">' + tasks.map(tkRow).join('') + '</div></div>' : '') +
+    (leads.length ? '<div class="card"><h3>Leads to call or follow up</h3><p class="hint">Calls today, and follow-ups that are due. <a href="/team.html#leads" data-go>All leads</a></p><div class="list">' + leads.sort(function(a, b){ return ldRank(a)[0] - ldRank(b)[0]; }).map(function(l){
+      var nx = ldNext(l);
+      return '<a class="li" href="/team.html#leads" data-act="leadopen" data-id="' + esc(l.id) + '"><span class="av" style="background:' + TP.hue(l.id) + '">' + esc(TP.initials(l.full_name, l.email)) + '</span><div class="main"><div class="t">' + esc(l.full_name) + '</div><div class="m"><span class="ldnext ' + nx.cls + '">' + esc(nx.text) + '</span></div></div>' + ldPill(l.stage) + '</a>';
+    }).join('') + '</div></div>' : '') + '</div>';
+}
+function mdCrmLoad(){
+  Promise.all([loadTasks().catch(function(){}), ME.owner ? loadLeads().catch(function(){}) : null]).then(mdCrm);
+}
+
+/* =====================================================================
    keyboard: Ctrl+K switches client, / goes to the page's search
    ===================================================================== */
 document.addEventListener('keydown', function(e){
@@ -4748,7 +5063,7 @@ document.addEventListener('keydown', function(e){
   if(!ME || ME.team === false || TP.isModal() || e.altKey) return;
   var a = document.activeElement, typing = a && (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable);
   if((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 'k'){ e.preventDefault(); switcher(); return; }
-  if(e.key === '/' && !typing && !e.ctrlKey && !e.metaKey){ var s = $('#cq') || $('#apQ') || $('#jbQ'); if(s){ e.preventDefault(); s.focus(); s.select(); } }
+  if(e.key === '/' && !typing && !e.ctrlKey && !e.metaKey){ var s = $('#cq') || $('#lq') || $('#apQ') || $('#jbQ'); if(s){ e.preventDefault(); s.focus(); s.select(); } }
   if(e.key === '[' && !typing && !e.ctrlKey && !e.metaKey){ e.preventDefault(); sbToggle(); }   // the sidebar as an icon rail, and back
 });
 
@@ -4784,6 +5099,14 @@ document.addEventListener('click', function(e){
     case 'out': return TP.signOut();
     case 'retry': if(!ME) return location.reload(); if(C){ C.row = null; C.resumes = null; } staleList(); return render();   // only this page loads again; nothing typed elsewhere is touched
     case 'newclient': return newClient();
+    case 'newlead': return leadOpen(null);
+    case 'leadopen': e.preventDefault(); return (LD.rows ? Promise.resolve() : loadLeads()).then(function(){ leadOpen(b.getAttribute('data-id')); }, fail);
+    case 'leadnote': return leadNote(b);
+    case 'leaddel': return leadDelete(b.getAttribute('data-id'));
+    case 'leadclient': return leadToClient(b.getAttribute('data-id'));
+    case 'newtask': return newTask({lead:b.getAttribute('data-lead') || null, client:b.getAttribute('data-client') || null});
+    case 'taskdone': return taskDone(b.getAttribute('data-id'));
+    case 'taskdel': return taskDel(b.getAttribute('data-id'));
     case 'switch': return switcher();
     case 'sbtoggle': return sbToggle();
     case 'closetab':
