@@ -4040,17 +4040,15 @@ function drawRes(){
     var pb = $('.apbar [data-act=tailor]'); if(pb) pb.outerHTML = resumeBtn(true);
   }
 }
-// the resume's one action, in the job's card, above the resume and on a phone: review the list's suggestions, edit the tailored
-// copy, or tailor it. Each happens right here, in the resume panel (tailorHere); a Ctrl/⌘-click opens the full editor in its tab
+// the resume's one action, in the job card, above the resume and on a phone: Optimize Resume, as the reference has it — again and again
+// (each run builds on the tailored copy) — or Review suggestions while a Sync's wait. Each happens right here, in the resume panel
+// (tailorHere); a Ctrl/⌘-click opens the full editor in its tab. Editing without a run is the panel's (⋯ → Edit here)
 function resumeBtn(hdr){
   var d = A.resume_doc, m = (d && d.meta) || {}, pend = !!m.optPending, opt = !pend && optimisedDoc(d), url = edUrl('app', A.id);
   var cls = hdr === 'act' ? 'btn pri' : 'btn sm' + (!hdr && !opt ? ' pri' : ''), tgt = ' target="tp-ed-' + esc(A.id) + '" data-act="tailor"';
-  if(hdr === 'act') return pend ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + ' data-v="review">' + I.spark + 'Review suggestions</a>'
-    : opt ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + ' data-v="edit">' + J.edit + 'Edit resume</a>'
-    : '<a class="' + cls + '" href="' + esc(url + '#optimize') + '"' + tgt + ' data-v="optimize" data-opt>' + I.spark + 'Optimize Resume</a>';
-  return pend ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + ' data-v="review">' + I.spark + 'Review the suggestions</a>'
-    : opt ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + ' data-v="edit">' + J.edit + 'Edit resume</a>'
-    : '<a class="' + cls + '" href="' + esc(url + '#optimize') + '"' + tgt + ' data-v="optimize" data-opt>' + I.spark + 'Optimize Resume</a>';
+  var go = '<a class="' + cls + '" href="' + esc(url + '#optimize') + '"' + tgt + ' data-v="optimize" data-opt' + (opt ? ' title="Optimize again: builds on the tailored copy"' : '') + '>' + I.spark + 'Optimize Resume</a>';
+  if(hdr === 'act') return pend ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + ' data-v="review">' + I.spark + 'Review suggestions</a>' : go;
+  return pend ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + ' data-v="review">' + I.spark + 'Review the suggestions</a>' : go;
 }
 // a checklist line as the form changes: done (a tick) or not, and what's left to do
 function ckMark(id, ok, num, text){ var el = $('#' + id); if(!el) return; var n = el.querySelector('.n'); n.className = 'n' + (ok ? ' ok' : ''); n.innerHTML = ok ? I.check : num; el.querySelector('small').textContent = text; }
@@ -4083,6 +4081,7 @@ function resumeCard(){
   var more = '<span class="rmore"><button type="button" class="tbtn" data-act="resmore" aria-haspopup="true" aria-expanded="false" title="More" aria-label="More">' + J.more + '</button><span class="rmenu" id="resMenu" hidden>' +
       (!ed && can ? '<button type="button" data-act="resmode" data-v="edit">' + J.edit + 'Edit here<small>Every line typed on beside the job</small></button>' : '') +
       (can ? '<a href="' + esc(url) + '" target="tp-ed-' + esc(A.id) + '" data-act="toeditor">' + J.upright + 'Advanced editor<small>Format, versions, sections</small></a>' : '') +
+      (saved || base ? '<button type="button" data-act="resprint">' + J.dl + 'Print / Save as PDF<small>The browser’s print window, exact typeface</small></button>' : '') +
       (text ? '<button type="button" data-act="cpresume">' + I.copy + 'Copy resume text</button>' : '') + '</span></span>', dv = '<i class="tdiv" aria-hidden="true"></i>';
   var note = (pend ? '<p class="rnote2">' + I.spark + '<span><b>Synced in the background</b> — Claude’s suggestions wait in the editor; nothing has changed yet</span></p>' : '') +
     (A.jd_text ? '' : '<p class="rnote2 warnt">Paste the job description first: the resume is tailored to it.</p>');
@@ -4843,6 +4842,7 @@ document.addEventListener('click', function(e){
     case 'bkdel': return bulkDelete();
     case 'bkclear': AP.sel = {}; markPicked(); return drawBulk();
     case 'acmore': return loadActivity(C, +b.getAttribute('data-n'));
+    case 'resprint': { var pm = $('#resMenu'), fp = $('#apFrame'); if(pm) pm.hidden = true; try{ if(fp && fp.contentWindow && fp.contentWindow.printPDF){ fp.contentWindow.printPDF(); return; } }catch(ex){} return window.open(edUrl('app', A.id), 'tp-ed-' + A.id); }   // the frame's own Print
     case 'cpresume': return TP.copy(A.resume_text || (((C.resumes || []).filter(function(r){ return r.id === A.base_resume_id; })[0] || {}).text) || '', 'Resume text');
     case 'cpcover': return TP.copy($('#apCL').value, 'Cover letter');
     case 'toeditor': {   // the link opens the editor in its own tab

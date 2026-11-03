@@ -205,20 +205,18 @@ svg.defs{position:absolute;width:0;height:0}
    puts a box round it with its tools. The box is real padding: the lines re-wrap inside it and what's below moves down a little, as
    it does there. Its top edge stays where the line was, so the pointer never falls out of it ---------- */
 body:not(.ro) .sheet :is(li[data-b],.enh,.enx,.ph-h,.pgsum,.sk){position:relative}
-body:not(.ro) .sheet :where(.bl > li.pghov,.enh.pghov,.enx:hover,.ph-h:hover,.pgsum:hover,.ps:hover .sk,.ps.pgon .sk)::after{content:"";position:absolute;inset:0;border:1.5px solid #b3b8c1;border-radius:10px;pointer-events:none}
-/* a bullet: the box takes in its mark, the mark and the words step in, ✨ × at its right */
-body:not(.ro) .sheet .bl > li.pghov{outline:none;margin-left:.55em;padding-top:.42em;padding-bottom:.42em;padding-right:3.1em}
+/* smooth, as the reference: the box grows its padding and its edge fades in over 0.2 s (and back), the toolbar glides between lines */
+body:not(.ro) .sheet :is(.bl > li[data-b],.enh,.enx,.ph-h,.pgsum,.sk){transition:padding .2s cubic-bezier(.2,.7,.3,1),margin .2s cubic-bezier(.2,.7,.3,1)}
+body:not(.ro) .sheet :where(.bl > li[data-b],.enh,.enx,.ph-h,.pgsum,.sk)::after{content:"";position:absolute;inset:0;border:1.5px solid #b3b8c1;border-radius:10px;pointer-events:none;opacity:0;transition:opacity .2s ease,left .2s cubic-bezier(.2,.7,.3,1)}
+body:not(.ro) .sheet :where(.bl > li.pghov,.enh.pghov,.enx:hover,.ph-h:hover,.pgsum:hover,.ps:hover .sk,.ps.pgon .sk)::after{opacity:1}
+/* a bullet: the box takes in its mark, the mark and the words step in */
+body:not(.ro) .sheet .bl > li[data-b]::after{left:-1.25em}
+body:not(.ro) .sheet .bl > li.pghov{outline:none;margin-left:.55em;padding-top:.42em;padding-bottom:.42em;padding-right:.6em}
 body:not(.ro) .sheet .bl > li.pghov::after{left:-1.8em}
 /* a role: its heading and first bullet are one box, with that bullet's tools */
 body:not(.ro) .sheet .enh.pghov{padding:.42em .6em}
-body:not(.ro) .sheet .enh.pghov li.pghov{margin-left:0;padding:0 2.9em 0 .1em}
+body:not(.ro) .sheet .enh.pghov li.pghov{margin-left:0;padding:0 0 0 .1em}
 body:not(.ro) .sheet .enh.pghov li.pghov::after{display:none}
-.sheet .pgr{position:absolute;right:.35em;top:50%;transform:translateY(-50%);align-items:center;gap:.3em;z-index:2}
-.sheet li.pghov > .pgr{display:inline-flex}
-.sheet .pgr i{display:grid;place-items:center;width:1.3em;height:1.3em;border-radius:4px;cursor:pointer;font-style:normal}
-.sheet .pgr svg{width:1em;height:1em}
-.sheet .pgr [data-a$=ai]{color:#f2b100}.sheet .pgr [data-a$=ai]:hover{background:#fff6d6}
-.sheet .pgr [data-a$=del]{color:#e5484d}.sheet .pgr [data-a$=del]:hover{background:#fdecec}
 /* the toolbar on the top edge of a box: white, + green, × red, ✨ gold */
 .pgbar,.sheet .pgtb{background:#fff;border:1px solid #e3e6ea;border-radius:999px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px -6px rgba(16,24,40,.2);padding:2px 5px;gap:3px}
 .pgbar button,.sheet .pgtb i{width:26px;height:26px;display:grid;place-items:center;border-radius:999px;color:#5b6170;cursor:pointer;font-style:normal}
@@ -228,6 +226,10 @@ body:not(.ro) .sheet .enh.pghov li.pghov::after{display:none}
 .pgbar .pgdel,.pgbar .pgdel:hover,.sheet .pgtb [data-a$=del]{color:#e5484d}
 .pgbar .pgai,.pgbar .pgai:hover{color:#f2b100;margin-left:0}.pgbar .pgai::before{display:none}
 .pgbar .pgai svg{width:18px;height:18px}
+.pgbar{transition:left .18s cubic-bezier(.2,.7,.3,1),top .18s cubic-bezier(.2,.7,.3,1)}
+@media (prefers-reduced-motion:reduce){body:not(.ro) .sheet :is(.bl > li[data-b],.enh,.enx,.ph-h,.pgsum,.sk),body:not(.ro) .sheet :is(.bl > li[data-b],.enh,.enx,.ph-h,.pgsum,.sk)::after,.pgbar{transition:none}}
+/* a phone's tap: the box is there at once, so the next tap lands where the finger is */
+body.touch .sheet :is(.bl > li[data-b],.enh,.enx,.ph-h,.pgsum,.sk),body.touch .sheet :is(.bl > li[data-b],.enh,.enx,.ph-h,.pgsum,.sk)::after,body.touch .pgbar{transition:none!important}
 /* a school (no bullets): + × on its top edge, "Field of Study" after a degree with none, "- - -" and the calendar for its dates */
 body:not(.ro) .sheet .enx:hover{padding:.42em .6em}
 .sheet .pgtb{position:absolute;left:50%;top:0;transform:translate(-50%,-58%);z-index:3;align-items:center}
@@ -903,6 +905,7 @@ html.running .toast{bottom:86px}
   .sheet li.pghov,.sheet .pged{outline:none!important}
   .sheet li.pghov,.sheet .en,.sheet .enh,.sheet .ph-h,.sheet .pgsum,.sheet .sk{padding:0!important}
   .sheet .bl > li.pghov{margin-left:0!important;padding-left:.1em!important}
+  .sheet *,.sheet *::after,.sheet *::before{transition:none!important}
   .sheet li::after,.sheet .en::after,.sheet .enh::after,.sheet .ph-h::after,.sheet .pgsum::after,.sheet .sk::after{display:none!important}
   .sheet li.chg,.sheet .sum.chg,.sheet .ski.mark{background:none!important;box-shadow:none!important}
   .sheet li.chg::before,.sheet .sum.chg::before{display:none!important}
@@ -927,8 +930,9 @@ html.running .toast{bottom:86px}
     <button type="button" class="btn ai" data-a="optimize" id="bOpt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.5l-1.8-5L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>Tailor to a job</span></button>
     <div class="dd" id="dlWrap"><button type="button" class="btn pri" data-a="dl-menu" id="bDl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg><span>Download</span><i class="dv" aria-hidden="true"></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
       <div class="menu" id="dlMenu" hidden>
-        <button type="button" data-a="dl-pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span><b>PDF</b><small>Best for applying. Choose “Save as PDF” in the print window.</small></span></button>
+        <button type="button" data-a="dl-pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span><b>PDF</b><small>Best for applying. Downloads straight away.</small></span></button>
         <button type="button" data-a="dl-doc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="m8.5 12 1.2 5 1.8-4 1.8 4 1.2-5"/></svg><span><b>Word (.doc)</b><small>For sites that ask for Word, or to keep editing in Word.</small></span></button>
+        <button type="button" data-a="dl-print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span><b>Print / Save as PDF</b><small>The browser’s print window, in the exact typeface.</small></span></button>
       </div></div>
   </div>
 </header>
@@ -2367,13 +2371,12 @@ let SHOWCHG = false;   // Show changes: what Optimise changed, marked on the pag
 const marked = (path, t) => esc(t);   // whole lines are marked now (liHTML, skillRowHTML), never single words
 const P = (path, t, cls, tag) => '<' + (tag || 'span') + ' data-path="' + path + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + (t ? marked(path, t) : '<span class="empty">&nbsp;</span>') + '</' + (tag || 'span') + '>';
 // a bullet line; on screen (ed) an empty one shows too, so it can be typed into on the page (it never prints). On hover it gets a
-// padded box, as the reference editor has it: + × ✨ on its top border (#pgbar), ✨ × at its right. A suggestion for it from ✨
-// (Improve or Concise) waits under it, the line beside the new wording
-const LI_TOOLS = '<span class="pgx pgr"><i data-a="pg-bai" title="Improve or make concise with AI"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 2.6l2.2 6 6 2.2-6 2.2L11 19l-2.2-6-6-2.2 6-2.2z" fill="currentColor" stroke="rgba(150,90,0,.35)" stroke-width=".8" stroke-linejoin="round"/><path d="M18.6 2.4l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9z" fill="currentColor"/></svg></i><i data-a="pg-bdel" title="Delete this bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></i></span>';
+// padded box with + × ✨ on its top border (#pgbar), the one ✨. A suggestion for it from ✨ (Improve or Concise) waits under it,
+// the line beside the new wording
 const liHTML = (path, b, ed) => {
   const pre = ed && SHOWCHG && b.t && DOC && DOC.meta.pre ? DOC.meta.pre[path] : undefined, ai = ed && b.t && AICHG.get(path) === b.t;   // on screen only
   const cls = !b.t ? 'pgempty' : ai || (pre !== undefined && pre !== b.t) ? 'chg' : HL[b.id] && !SHOWCHG ? 'hl' : '';
-  return '<li' + (cls ? ' class="' + cls + '"' : '') + (ed ? ' data-b="' + b.id + '"' : '') + '>' + P(path, b.t) + (ed ? LI_TOOLS : '') + '</li>' + (ed ? bsugHTML(path) : '');
+  return '<li' + (cls ? ' class="' + cls + '"' : '') + (ed ? ' data-b="' + b.id + '"' : '') + '>' + P(path, b.t) + '</li>' + (ed ? bsugHTML(path) : '');
 };
 // an entry with no bullets (a school) on screen: + another below, × remove it, on its top border
 const enTools = (it) => '<span class="pgx pgtb pget"><i data-a="pg-eadd" data-v="' + it.id + '" title="Add one below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></i><i data-a="pg-edel" data-v="' + it.id + '" title="Remove it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></i></span>';
@@ -2530,6 +2533,7 @@ function renderAll() { applyFormat(); renderSheet(); renderPanel(); }
 function setDocTab(v) {
   TAB = v; $$('#doctabs button').forEach((b) => b.classList.toggle('on', b.getAttribute('data-v') === v));
   FOCUS = null; renderSheet(); if (PTAB === 'edit') renderPanel(); quickTell();
+  if (v === 'cover') coverSoon();   // an application's letter for its job, written when there's none yet
 }
 
 /* ---------- download ---------- */
@@ -2539,12 +2543,100 @@ function checkThen(fn) {
   if (!n) return fn();
   confirmBox(n + ' blank' + (n > 1 ? 's' : '') + ' still to fill in', 'Anything in [ ] is a placeholder — replace it with your real number or detail before you send it.', 'Download anyway', fn);
 }
+// the PDF, made here and saved at once (no print window). A clean copy of the page is laid out off screen exactly as on screen, and
+// each word is drawn where it sits: real text (selectable, read by any ATS) in the PDF's standard faces — Times for serif type,
+// Helvetica for sans, so Times New Roman and Arial come out as they are — the links clickable, the section rules and the bullets
+// drawn too. Pages break on whole lines, with the margins kept on every page. Print (printPDF) keeps the exact typefaces.
+const JSPDF = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
 function downloadPDF() {
   checkThen(() => {
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-    $$('#sheet .sel').forEach((x) => x.classList.remove('sel'));
-    const t = document.title; document.title = fileBase();
-    setTimeout(() => { window.print(); setTimeout(() => { document.title = t; }, 500); }, 60);
+    if (!DOC) return printNow();
+    toast('Making the PDF…', null, 'spin');
+    loadScript(JSPDF).then(() => document.fonts && document.fonts.ready).then(() => {
+      pdfOf().save(fileBase() + '.pdf'); toast('Downloaded ' + fileBase() + '.pdf', null, 'ok');
+    }).catch((e) => { console.error(e); toast('Couldn’t make the PDF here — Print opens instead'); printNow(); });
+  });
+}
+function printPDF() { checkThen(printNow); }   // the browser's own Print / Save as PDF
+function printNow() {
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  $$('#sheet .sel').forEach((x) => x.classList.remove('sel'));
+  const t = document.title; document.title = fileBase();
+  setTimeout(() => { window.print(); setTimeout(() => { document.title = t; }, 500); }, 60);
+}
+const PDF_OK = /[\u0020-\u007e\u00a0-\u00ff\u20ac\u201a\u0192\u201e\u2026\u2020\u2021\u02c6\u2030\u0160\u2039\u0152\u017d\u2018\u2019\u201c\u201d\u2022\u2013\u2014\u02dc\u2122\u0161\u203a\u0153\u017e\u0178]/;
+const PDF_SUB = { '→': '->', '←': '<-', '↔': '<->', '⇒': '=>', '≥': '>=', '≤': '<=', '−': '-', '‐': '-', '‑': '-', '●': '•', '▪': '•', '◦': '•', '·': '·', '\u200b': '', '\u2009': ' ', '\u202f': ' ' };
+const pdfText = (t) => [...t].map((c) => PDF_OK.test(c) ? c : PDF_SUB[c] != null ? PDF_SUB[c] : '').join('');
+function pdfOf() {
+  const f = fmtOf(DOC), pg = PAPERS[f.paper], K = 0.75, M = f.margin * 96;   // CSS px → PDF points; the margins, in px
+  const pdf = new window.jspdf.jsPDF({ unit: 'pt', format: [pg.w * K, pg.h * K], compress: true });
+  pdf.setProperties({ title: fileBase().replace(/_/g, ' '), creator: 'TrulyPlaced' });
+  const box = document.createElement('div'); box.className = 'sheet t-' + f.template; box.setAttribute('aria-hidden', 'true');
+  box.style.cssText = 'position:absolute;left:-30000px;top:0;visibility:hidden;min-height:0;box-shadow:none;transform:none;margin:0';
+  const was = SHOWCHG; SHOWCHG = false; box.innerHTML = TAB === 'cover' ? coverHTML(DOC) : resumeHTML(DOC, f, false); SHOWCHG = was;
+  $$('.empty', box).forEach((x) => x.remove());
+  document.body.appendChild(box);
+  try { pdfDraw(pdf, box, pg, M, K); } finally { box.remove(); }
+  return pdf;
+}
+function pdfDraw(pdf, box, pg, M, K) {
+  const S = box.getBoundingClientRect(), cv = document.createElement('canvas').getContext('2d'), rg = document.createRange(), items = [], firstOf = new Map();
+  const face = (st) => { const fam = st.fontFamily.split(',')[0].replace(/["']/g, '').trim().toLowerCase(); return /mono|courier/.test(fam) ? 'courier' : /times|georgia|garamond|merriweather|serif|cambria|book/.test(fam) && !/sans/.test(fam) ? 'times' : 'helvetica'; };
+  const style = (st) => (parseInt(st.fontWeight, 10) >= 600 ? 'bold' : '') + (/italic|oblique/.test(st.fontStyle) ? 'italic' : '') || 'normal';
+  const rgb = (c) => (String(c).match(/[\d.]+/g) || [0, 0, 0]).slice(0, 3).map(Number);
+  const cased = (t, st) => st.textTransform === 'uppercase' ? t.toUpperCase() : st.textTransform === 'lowercase' ? t.toLowerCase() : st.textTransform === 'capitalize' ? t.replace(/(^|\s)(\S)/g, (m, a, b) => a + b.toUpperCase()) : t;
+  const walk = document.createTreeWalker(box, NodeFilter.SHOW_TEXT);
+  for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+    const t = n.nodeValue; if (!t || !t.trim()) continue;
+    const el = n.parentElement, st = getComputedStyle(el), fs = parseFloat(st.fontSize);
+    cv.font = st.fontStyle + ' ' + st.fontWeight + ' ' + st.fontSize + ' ' + st.fontFamily; const mt = cv.measureText('Hg'), asc = mt.fontBoundingBoxAscent != null ? mt.fontBoundingBoxAscent : fs * 0.8;
+    const F = { face: face(st), style: style(st), size: fs * K, color: rgb(st.color), under: /underline/.test(st.textDecorationLine || '') }, rx = /\S+/g; let m;
+    while ((m = rx.exec(t))) {
+      rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length); const r = rg.getClientRects()[0]; if (!r || !r.width) continue;
+      const it = { k: 't', x: r.left - S.left, y: r.top - S.top, h: r.height, w: r.width, base: r.top - S.top + asc, text: pdfText(cased(m[0], st)), F, hd: !!el.closest('h2, .er') };   // hd: a heading line
+      if (it.text) { items.push(it); if (!firstOf.has(n)) firstOf.set(n, it); }
+    }
+  }
+  $$('li', box).forEach((li) => {
+    const st = getComputedStyle(li), lt = st.listStyleType; if (!lt || lt === 'none') return;
+    const w2 = document.createTreeWalker(li, NodeFilter.SHOW_TEXT); let n = w2.nextNode(); while (n && !firstOf.has(n)) n = w2.nextNode(); if (!n) return;
+    const t0 = firstOf.get(n), lx = li.getBoundingClientRect().left - S.left, fs = parseFloat(st.fontSize);
+    // where the browser draws them: a disc or square 0.3em across, 7px and 0.6em left of the line, 0.3em above its baseline; a text
+    // marker ("–  ", "›  ") ends at the line's edge
+    if (/^(disc|circle|square)$/.test(lt)) { items.push({ k: 's', shape: lt, x: lx - 7 - 0.6 * fs, d: 0.3 * fs, y: t0.y, h: t0.h, base: t0.base - 0.3 * fs, c: rgb(st.color) }); return; }
+    const mk = lt.replace(/^"|"$/g, ''); if (!mk.trim()) return;
+    cv.font = st.fontStyle + ' ' + st.fontWeight + ' ' + st.fontSize + ' ' + st.fontFamily;
+    items.push({ k: 'm', x: lx - cv.measureText(mk).width, y: t0.y, h: t0.h, base: t0.base, text: pdfText(mk.trim()), F: Object.assign({}, t0.F, { style: 'normal', color: rgb(st.color) }) });
+  });
+  $$('*', box).forEach((el) => {
+    const st = getComputedStyle(el), r = el.getBoundingClientRect(); if (!r.width) return;
+    [['Bottom', r.bottom], ['Top', r.top]].forEach(([side, at]) => { const bw = parseFloat(st['border' + side + 'Width']); if (bw > 0 && st['border' + side + 'Style'] !== 'none') items.push({ k: 'l', x: r.left - S.left, w: r.width, y: at - S.top - (side === 'Bottom' ? bw : 0), h: bw, c: rgb(st['border' + side + 'Color']), hd: !!el.closest('h2, .er') }); });
+    if (el.tagName === 'A' && el.getAttribute('href')) [...el.getClientRects()].forEach((q) => items.push({ k: 'a', x: q.left - S.left, y: q.top - S.top, w: q.width, h: q.height, url: el.getAttribute('href') }));
+  });
+  items.sort((a, b) => a.y - b.y || a.x - b.x);
+  const bands = [];   // the lines, in order: what shares a line moves together
+  items.forEach((it) => { const b = bands[bands.length - 1]; if (!b || it.y >= b.end - 1) bands.push({ y: it.y, end: it.y + it.h, its: [it], hd: !!it.hd }); else { b.end = Math.max(b.end, it.y + it.h); b.its.push(it); b.hd = b.hd || !!it.hd; } });
+  let page = 0, shift = 0;
+  bands.forEach((b, i) => {
+    let end = b.end; if (b.hd) { let j = i + 1; while (j < bands.length && bands[j].hd) j++; if (j < bands.length) end = bands[j].end; }   // a heading goes with the line after it
+    const y = b.y + shift; if (y + (end - b.y) > (page + 1) * pg.h - M && y > page * pg.h + M + 1) { page++; shift += page * pg.h + M - y; }
+    b.its.forEach((it) => { it.p = page; it.py = it.y + shift - page * pg.h; it.pb = it.base != null ? it.base + shift - page * pg.h : 0; });
+  });
+  const last = items.reduce((n, it) => Math.max(n, it.p || 0), 0); for (let i = 1; i <= last; i++) pdf.addPage([pg.w * K, pg.h * K]);
+  items.forEach((it) => {
+    pdf.setPage(it.p + 1);
+    if (it.k === 'l') { pdf.setDrawColor(it.c[0], it.c[1], it.c[2]); pdf.setLineWidth(Math.max(0.4, it.h * K)); pdf.line(it.x * K, (it.py + it.h / 2) * K, (it.x + it.w) * K, (it.py + it.h / 2) * K); return; }
+    if (it.k === 'a') { pdf.link(it.x * K, it.py * K, it.w * K, it.h * K, { url: it.url }); return; }
+    if (it.k === 's') {   // a bullet: pb is its centre's height here
+      const r = it.d / 2; pdf.setFillColor(it.c[0], it.c[1], it.c[2]); pdf.setDrawColor(it.c[0], it.c[1], it.c[2]); pdf.setLineWidth(0.5);
+      if (it.shape === 'square') pdf.rect(it.x * K, (it.pb - r) * K, it.d * K, it.d * K, 'F'); else pdf.circle((it.x + r) * K, it.pb * K, r * K, it.shape === 'circle' ? 'S' : 'F');
+      return;
+    }
+    pdf.setFont(it.F.face, it.F.style); pdf.setFontSize(it.F.size); pdf.setTextColor(it.F.color[0], it.F.color[1], it.F.color[2]);
+    const tw = pdf.getTextWidth(it.text), cs = it.k === 't' && it.text.length > 1 ? Math.max(-0.08, Math.min(0.3, (it.w * K - tw) / it.text.length / it.F.size)) * it.F.size : 0;   // each word fills the width it has on the page
+    pdf.text(it.text, it.x * K, it.pb * K, cs ? { charSpace: cs } : undefined);
+    if (it.F.under && it.k === 't') { pdf.setDrawColor(it.F.color[0], it.F.color[1], it.F.color[2]); pdf.setLineWidth(0.5); pdf.line(it.x * K, (it.pb + 1.5) * K, (it.x + it.w) * K, (it.pb + 1.5) * K); }
   });
 }
 function downloadDoc() {
@@ -2899,15 +2991,18 @@ function pgAfterClick() { PGDOWN = false; if (!PGLATER) return; PGLATER = false;
 const pgBox = (li) => (li && li.closest('.enh')) || li;
 function pgOver(li, x) {   // onto another bullet: wait a moment, so the pointer can cross it on its way to the toolbar
   clearTimeout(PGT); if (PGB && PGB.li === li) { clearTimeout(PGS); return; }
-  clearTimeout(PGS); if (PGB) PGS = setTimeout(() => pgShow(li, x), 160); else pgShow(li, x);
+  clearTimeout(PGS); if (PGB) PGS = setTimeout(() => pgShow(li, x), 70); else pgShow(li, x);   // a moment, so a quick pass over a line doesn't open it
 }
 function pgShow(li, x) {
   if (READONLY || DRAG || !li || !li.isConnected || (EDIT && li.contains(EDIT.el))) return;
   const sp = li.querySelector('[data-path]'); if (!sp) return;
   clearTimeout(PGT); clearTimeout(PGS); if (PGB && PGB.li === li) return;
   $$('#sheet .pghov').forEach((q) => q.classList.remove('pghov')); li.classList.add('pghov'); pgBox(li).classList.add('pghov');   // the box grows its padding: the lines re-wrap inside it
-  PGB = { li, path: sp.getAttribute('data-path'), x }; $('#pgbar').hidden = false; pgPlace();
+  PGB = { li, path: sp.getAttribute('data-path'), x }; $('#pgbar').hidden = false; pgPlace(); pgFollow();
 }
+// the box grows over 0.2 s, and the one before shrinks, moving this one up: the toolbar keeps to its top edge meanwhile
+let PGRAF = 0;
+function pgFollow() { cancelAnimationFrame(PGRAF); const end = performance.now() + 260, step = () => { if (!PGB) return; pgPlace(); if (performance.now() < end) PGRAF = requestAnimationFrame(step); }; PGRAF = requestAnimationFrame(step); }
 function pgPlace() {   // centred on the box, across its top border as the reference editor has it (below it when there's no room above)
   if (!PGB) return; if (!PGB.li.isConnected) { pgHide(); return; }
   const bar = $('#pgbar'), b = pgBox(PGB.li), r = b.getBoundingClientRect(), w = bar.offsetWidth, h = bar.offsetHeight, top = r.top - h * (PGTOUCH ? 1.08 : 0.62);   // a phone: just above, so the next tap reaches the line
@@ -2918,7 +3013,7 @@ function pgPlace() {   // centred on the box, across its top border as the refer
 function pgHideSoon() { clearTimeout(PGT); PGT = setTimeout(pgHide, 260); }
 function pgHide() { clearTimeout(PGT); clearTimeout(PGS); const bar = $('#pgbar'); if (bar) bar.hidden = true; $$('#sheet .pghov').forEach((q) => q.classList.remove('pghov')); PGB = null; }
 // phones have no hover: the first tap on a bullet or a skills line brings up the controls, the next tap types there
-function pgPointer(e) { PGTOUCH = e.pointerType === 'touch'; PGWAS = PGB ? PGB.li : null; }
+function pgPointer(e) { PGTOUCH = e.pointerType === 'touch'; document.body.classList.toggle('touch', PGTOUCH); PGWAS = PGB ? PGB.li : null; }
 function pgOn(sid) { PGON = sid; $$('#sheet .ps.pgon').forEach((x) => x.classList.remove('pgon')); const s = sid && $('#sheet .ps[data-sec="' + sid + '"]'); if (s) s.classList.add('pgon'); }
 function pgTap(e) {   // → true when the tap only brought up the controls
   if (!PGTOUCH || READONLY || TAB !== 'resume') return false;
@@ -3314,12 +3409,12 @@ function bulletProblem(orig, sug, mode) {   // why a rewrite is thrown away ('' 
   const figs = (t) => (String(t || '').replace(/\[[^\]]*\]/g, ' ').replace(RANGE, ' ').replace(/\b(19|20)\d{2}\b/g, ' ').match(NUM_RX) || []).map((m) => { const d = digitsOf(m); return d ? d + (/%|percent/i.test(m) ? '%' : /\$/.test(m) ? '$' : '') : ''; }).filter(Boolean);
   const left = figs(orig); if (figs(sug).some((f) => { const i = left.indexOf(f); if (i < 0) return true; left.splice(i, 1); return false; })) return { k: 'num' };
   const bl = (t) => (String(t).match(/\[[^\]\n]{1,40}\]/g) || []).length; if (bl(sug) > bl(orig) && mode !== 'quantify' && mode !== 'expand') return { k: 'blank' };
-  const g0 = gradeBullet({ t: orig }), g1 = gradeBullet({ t: sug }); if (g1.score < g0.score - 8) return { k: 'grade' };
-  if (g1.wc > 34 && g1.wc > g0.wc && mode !== 'expand') return { k: 'long' };
+  const g0 = gradeBullet({ t: orig }), g1 = gradeBullet({ t: sug }); if (g1.score < g0.score - 8 && mode !== 'sized') return { k: 'grade' };
+  if (g1.wc > 34 && g1.wc > g0.wc && mode !== 'expand' && mode !== 'sized') return { k: 'long' };
   if (BUZZ_RX.test(sug) && !BUZZ_RX.test(orig)) return { k: 'buzz' };
   return '';
 }
-const WHY_KEPT = { num: 'used a number from somewhere else', blank: 'added a blank nobody asked for', grade: 'read weaker than the original', long: 'ran too long', buzz: 'added a cliché',
+const WHY_KEPT = { num: 'used a number from somewhere else', blank: 'added a blank nobody asked for', grade: 'read weaker than the original', long: 'ran too long', buzz: 'added a cliché', rule: 'used a term the instructions leave out',
   // an application's own checks, and the second reader's verdicts
   lead: 'made the role sound bigger (“led”, “managed”…)', crowd: 'repeated a keyword already used in this role', stuffed: 'repeated a keyword',
   overstates: 'made the work sound bigger than it was', unsupported: 'added something the original line doesn’t say', 'off-topic': 'added keywords that don’t fit the work', meaning: 'changed what the line says', rule: 'breaks one of the client’s resume rules' };
@@ -3597,6 +3692,13 @@ function writeCover() {
     .catch((e) => toast(aiMsg(e))).then(() => { COVER_BUSY = false; renderPanel(); });
 }
 function autoCover() { if (!JOB || COVER_BUSY) return; if (DOC.cover.text && DOC.cover.jobKey === JOB.key) return; DOC.cover.role = JOB.title || ''; DOC.cover.company = JOB.company || ''; writeCover(); }
+// an application's letter for its job, written by itself (on Optimize, and when the Cover Letter tab opens): only when there's none
+// yet or the one there was written for another job — a letter typed by hand is never replaced
+function coverSoon() {
+  if (!appOpt() || READONLY || !JOB || JOB.roles || !jobOk() || COVER_BUSY) return;
+  const c = DOC.cover; if (String(c.text || '').trim() && !(c.jobKey && c.jobKey !== JOB.key)) return;
+  autoCover();
+}
 
 /* ---------- Improve · Tailor · Sync: pick what to work on, review side by side, accept what you like ---------- */
 let OPT = null;
@@ -3720,6 +3822,7 @@ function runOptimise(sync) {   // sync: true = "Sync to this job", every part at
   sel.sync = !!OPT.sync;
   if (TEAM) saveVersion(all ? 'Before Sync' : 'Before ' + optWord().ing);   // one click of Restore undoes the whole run
   earlySug(sel);
+  coverSoon();   // the job's cover letter is written meanwhile
   const gone = applyRules(); if (gone.length) { structural(); toast(gone.join(', ') + ' taken off Skills — the client’s rules'); }   // before the AI sees the resume
   const keep = {}; if (all) Object.assign(keep, (lsGet(OPT_KEY, {}) || {}).sel || {}); else Object.keys(sel).forEach((k) => { if (k !== 'sync') keep[k] = sel[k] ? 1 : 0; });
   delete keep.sync; lsSet(OPT_KEY, { sel: keep, ins });   // the ticks to remember: a Sync leaves them as they were
@@ -3824,14 +3927,14 @@ function optPlan(sel) {
 // the tailoring itself, for Optimise here and for the team portal's batch: one resume-ai call, then every suggestion goes
 // through the same fact checks (validateAll). Nothing on the resume changes; step(k, label) reports progress.
 function optCompute(sel, ins, P, step) {
-  const { targets, terms, cover0, sm, skills } = P, R = { reqs: [], mode: '' }, done = step || (() => {});
+  const { targets, terms, cover0, sm, skills } = P, R = { reqs: [], mode: '', ins: String(ins || '').trim(), lim: insLimits(ins) }, done = step || (() => {});
   setMatchBase(cover0);   // the job match before any Optimise for this job: what every later run is compared with
   // an application: the whole posting; each bullet's original line where it has changed since, and whether it's already optimised for this job
   const strict = appOpt(), pre = DOC.meta.pre || {}, again = optAgain();
   return ai({ task: 'tailor', jd: jobText().slice(0, strict ? 15000 : 6000), target: cleanTitle(JOB.title), rules: clientRules(), instructions: ins,
     summary: sm ? sm.text : '', headline: DOC.headline || '', skills, skillRows: (DOC.sections.find((x) => x.k === 'skills' && !x.hidden) || { rows: [] }).rows.map((r) => r.label || ''),
     roles: targets.map((tg) => { const bl = tg.it.bullets.filter((b) => b.t.trim()), r = { id: tg.key, title: tg.it.title || '', org: tg.it.sub || '', bullets: bl.map((b) => b.t) };
-      if (strict) { const was = bl.map((b) => { const o = origLine(b.id, b.t); return o !== b.t ? o : ''; }), dn = bl.map((b) => { const p = pre[bPath(tg, b)]; return p !== undefined && p !== b.t; });
+      if (strict) { const was = bl.map((b) => { const o = origLine(b.id, b.t); return o !== b.t ? o : ''; }), dn = R.ins ? [] : bl.map((b) => { const p = pre[bPath(tg, b)]; return p !== undefined && p !== b.t; });   // new instructions: every line is worked again
         if (was.some(Boolean)) r.was = was; if (dn.some(Boolean)) r.done = dn; }
       return r; }),
     touch: { summary: !!sel.summary, headline: !!sel.headline, experience: !!sel.experience, skills: !!sel.skills }, ...(sel.sync ? { sync: true } : {}),
@@ -3861,13 +3964,49 @@ function optCompute(sel, ins, P, step) {
         .filter((m) => m && m.skill && !inText(m.skill, lowd) && !(R.skills || []).some((k) => skKey(k) === skKey(m.skill)) && !banned.some((t) => skKey(t) === skKey(m.skill))).slice(0, 10);
       DOC.meta.rec = { key: recKey(), list: R.missing.map((m) => ({ skill: m.skill, kind: m.kind, req: m.req || '', row: m.row || '' })), proven: R.skills || [], order: R.skorder || null, at: Date.now() };
     }
-    done('write', R.mode === 'light' ? 'Light touch — the resume already shows the must-haves' : 'Reworded where the facts support a requirement');
-    DOC.meta.pre = Object.assign({}, DOC.meta.pre || {}); allFields().forEach((f) => { if (DOC.meta.pre[f.path] === undefined) DOC.meta.pre[f.path] = f.t; });   // what the text was before any Optimise, for Show changes
-    const V = validateAll(R, targets, terms, cover0);
-    DOC.meta.job = Object.assign({}, DOC.meta.job || JOB, { reqs: R.reqs, mode: R.mode });
-    done('check', V.removed ? V.removed + ' suggestion' + (V.removed > 1 ? 's' : '') + ' dropped for changing a fact' : 'Every change checked');
-    const o = { R, targets, V };
-    return strict ? secondCheck(o, terms, done) : o;
+    return fixLengths(R, targets).then(() => {
+      done('write', R.mode === 'light' ? 'Light touch — the resume already shows the must-haves' : 'Reworded where the facts support a requirement');
+      DOC.meta.pre = Object.assign({}, DOC.meta.pre || {}); allFields().forEach((f) => { if (DOC.meta.pre[f.path] === undefined) DOC.meta.pre[f.path] = f.t; });   // what the text was before any Optimise, for Show changes
+      const V = validateAll(R, targets, terms, cover0);
+      DOC.meta.job = Object.assign({}, DOC.meta.job || JOB, { reqs: R.reqs, mode: R.mode });
+      done('check', V.removed ? V.removed + ' suggestion' + (V.removed > 1 ? 's' : '') + ' dropped for changing a fact' : 'Every change checked');
+      const o = { R, targets, V };
+      return strict ? secondCheck(o, terms, done) : o;
+    });
+  });
+}
+// the word counts the special instructions ask for: "each experience bullet point between 22–26 words", "summary 38-42 words", "bullets under
+// 20 words" → {bullet: [min, max], summary: [min, max]}
+function insLimits(ins) {
+  const out = {}, NUM = /(\d{1,3})\s*(?:-|–|—|to)\s*(\d{1,3})\s*words?|(?:under|below|fewer than|less than|at most|max(?:imum)?(?: of)?|no more than|up to|within)\s*(\d{1,3})\s*words?|(?:at least|min(?:imum)?(?: of)?|more than|over)\s*(\d{1,3})\s*words?|\b(?:exactly|about|around|approx(?:imately)?)\s*(\d{1,3})\s*words?/gi;
+  String(ins || '').split(/[.\n;]+/).forEach((cl) => {
+    const subs = []; cl.replace(/\b(summary|profile|bullets?|bullet points?|points?|lines?|experience)\b/gi, (w, x, i) => { subs.push({ i, k: /summary|profile/i.test(w) ? 'summary' : 'bullet' }); return w; });
+    let m; NUM.lastIndex = 0;
+    while ((m = NUM.exec(cl))) {
+      const at = m.index, sb = subs.filter((x) => x.i < at).pop() || subs.find((x) => x.i > at); if (!sb) continue;
+      const r = m[1] ? [+m[1], +m[2]] : m[3] ? [1, +m[3]] : m[4] ? [+m[4], 200] : [+m[5] - 2, +m[5] + 2];
+      if (r[0] > r[1]) r.reverse(); if (r[1] >= 3) out[sb.k] = r;
+    }
+  });
+  return out;
+}
+// held to: the lines outside them go back to Claude once (a role's at a time), every line of the roles worked on, changed or not;
+// what's still off says so on its row
+function fixLengths(R, targets) {
+  const L = R.lim || {}, ok = (t, r) => { const n = wordsIn(t); return n >= r[0] && n <= r[1]; }, mid = (r) => (r[0] + Math.min(r[1], 120)) / 2, jobs = [];
+  const closer = (t, was, r) => !!t && (ok(t, r) || Math.abs(wordsIn(t) - mid(r)) < Math.abs(wordsIn(was) - mid(r)));
+  const base = { target: cleanTitle(JOB.title), jd: jobText().slice(0, 4000), instructions: R.ins, rules: clientRules() };
+  if (L.bullet) targets.forEach((tg) => {
+    const off = (tg.res || []).filter((x) => x.sug && !ok(x.sug, L.bullet)); if (!off.length) return;
+    jobs.push(ai(Object.assign({ task: 'bullets', mode: 'length', min: L.bullet[0], max: L.bullet[1], bullets: off.map((x) => x.sug), role: tg.it.title || '', org: tg.it.sub || '' }, base), 60000)
+      .then((r) => { const got = r && Array.isArray(r.bullets) && r.bullets.length === off.length ? r.bullets : []; off.forEach((x, i) => { const t = String(got[i] || '').trim(); if (closer(t, x.sug, L.bullet)) x.sug = t; }); }, () => {}));
+  });
+  if (L.summary && R.summary && R.summary.sug && !ok(R.summary.sug, L.summary)) jobs.push(ai(Object.assign({ task: 'rewrite', mode: 'length', min: L.summary[0], max: L.summary[1], text: R.summary.sug, field: R.summary.sug }, base), 60000)
+    .then((r) => { const t = String((r && r.text) || '').trim(); if (closer(t, R.summary.sug, L.summary)) R.summary.sug = t; }, () => {}));
+  return Promise.all(jobs).then(() => {
+    const say = (t, r) => wordsIn(t) + ' words — the instructions ask for ' + r[0] + (r[1] >= 200 ? '+' : '–' + r[1]);
+    if (L.bullet) targets.forEach((tg) => (tg.res || []).forEach((x) => { if (x.sug && !ok(x.sug, L.bullet)) x.lenNote = say(x.sug, L.bullet); }));
+    if (L.summary && R.summary && R.summary.sug && !ok(R.summary.sug, L.summary)) R.summary.fc = say(R.summary.sug, L.summary);
   });
 }
 // An application's own checks, before the second reader: nothing the team rejected before, no new "led" or "managed", no line already
@@ -3886,7 +4025,7 @@ function strictChecks(R, targets, V) {
       if (hard.some((k) => termN(k, lowS) > Math.max(1, termN(k, lowO)))) return back('stuffed');
       if (added.some((k) => lines.filter((t, j) => j !== i && inText(k, String(t).toLowerCase())).length >= 2)) return back('crowd');
       const b = byId(tg.it.bullets, x.bid), p = b ? pre[bPath(tg, b)] : undefined;
-      if (p !== undefined && p !== x.orig && !added.length && gradeBullet({ t: x.sug }).score < gradeBullet({ t: x.orig }).score + 5) { tg.sameN = (tg.sameN || 0) + 1; back(''); }   // already optimised: no rewording for its own sake
+      if (!R.ins && p !== undefined && p !== x.orig && !added.length && gradeBullet({ t: x.sug }).score < gradeBullet({ t: x.orig }).score + 5) { tg.sameN = (tg.sameN || 0) + 1; back(''); }   // already optimised: no rewording for its own sake (unless the instructions say what to do)
     });
   });
   if (R.summary && R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig)) {
@@ -3903,7 +4042,7 @@ function secondCheck(o, terms, step) {
   const { R, targets, V } = o, done = step || (() => {}), changes = [];
   targets.forEach((tg) => (tg.res || []).forEach((x) => { if (norm(x.sug) !== norm(x.orig)) changes.push({ id: x.bid, role: [tg.it.title, tg.it.sub].filter(Boolean).join(' at '), was: origLine(x.bid, x.orig), now: x.orig, sug: x.sug }); }));
   if (!changes.length) { V.second = { n: 0, dropped: 0 }; done('verify', 'No bullet reworded — nothing more to check'); return Promise.resolve(o); }
-  return ai({ task: 'verify', jd: jobText().slice(0, 15000), target: cleanTitle(JOB.title), rules: clientRules(), changes, requirements: (R.reqs || []).map((q) => ({ text: q.text, kind: q.kind })), resume: scoreAfter(R, targets, docText()) }, 90000)
+  return ai({ task: 'verify', jd: jobText().slice(0, 15000), target: cleanTitle(JOB.title), rules: clientRules(), instructions: o.R.ins || '', changes, requirements: (R.reqs || []).map((q) => ({ text: q.text, kind: q.kind })), resume: scoreAfter(R, targets, docText()) }, 90000)
     .then((v) => {
       if (!v || !Array.isArray(v.changes)) throw 'shape';
       const by = {}, S = V.second = { n: changes.length, dropped: 0, unchecked: 0 }; v.changes.forEach((c) => { by[c.id] = c; });
@@ -3949,7 +4088,10 @@ function guardAll(R, targets) {   // nothing that would lose a keyword, invent a
     else if (BUZZ_RX.test(R.summary.sug) && !BUZZ_RX.test(R.summary.orig)) { R.summary.sug = R.summary.orig; R.summary.kept = []; R.summary.cliche = 1; }
   }
   if (R.headline && R.headline.orig && lostTerms(R.headline.orig, R.headline.sug, true).length) delete R.headline;
-  targets.forEach((tg) => (tg.res || []).forEach((x) => { if (norm(x.sug) === norm(x.orig)) return; const pb = bulletProblem(x.orig, x.sug, 'tailor'); if (pb) { x.sug = x.orig; (tg.why = tg.why || []).push(pb); tg.keptN = (tg.keptN || 0) + 1; } }));
+  const ban = ruleTerms(), brings = (o, t) => ban.some((k) => inText(k, String(t || '').toLowerCase()) && !inText(k, String(o || '').toLowerCase()));   // a term the rules or instructions leave out
+  if (R.summary && R.summary.sug && brings(R.summary.orig, R.summary.sug)) { R.summary.sug = R.summary.orig; R.summary.kept = []; }
+  if (R.headline && brings(R.headline.orig, R.headline.sug)) delete R.headline;
+  targets.forEach((tg) => (tg.res || []).forEach((x) => { if (norm(x.sug) === norm(x.orig)) return; const pb = brings(x.orig, x.sug) ? { k: 'rule' } : bulletProblem(x.orig, x.sug, R.lim && R.lim.bullet ? 'sized' : 'tailor'); if (pb) { x.sug = x.orig; (tg.why = tg.why || []).push(pb); tg.keptN = (tg.keptN || 0) + 1; } }));
 }
 function validateAll(R, targets, terms, cover0) {
   const pool = docText(), ex = DOC.sections.filter((s) => s.k === 'experience'), yr = totalYears(ranges(ex.map((s) => s.items.map((i) => i.dates).join('\n')).join('\n'))), yrs = yr ? [String(Math.floor(yr)), String(Math.round(yr))] : [];
@@ -4015,7 +4157,7 @@ function showResults(R, targets, sel, V) {
     const ch = (tg.res || []).filter((x) => norm(x.sug) !== norm(x.orig)), t = 'Experience at ' + esc(tg.it.sub || tg.it.title || 'this role');
     const keptNote = tg.keptN ? '<p class="rnote">' + tg.keptN + ' rewrite' + (tg.keptN > 1 ? 's' : '') + ' skipped — ' + (tg.keptN > 1 ? 'they' : 'it') + ' ' + esc(keptWhy(tg.why || [])) + ', so the original' + (tg.keptN > 1 ? 's stay' : ' stays') + '.</p>' : '';
     const ord = tg.orderIds ? row('order', { key: tg.key, ids: tg.orderIds }, listOf(tg.it, tg.it.bullets.filter((b) => b.t.trim()).map((b) => b.id)), listOf(tg.it, tg.orderIds), 'The work this job cares about most comes first — recruiters read the top bullets.') : '';
-    h += ch.length || ord ? card(t, ord + ch.map((x) => row('bullet', { bid: x.bid, key: tg.key }, x.orig, x.sug, '', x.fc)).join('') + keptNote, false, tg.key) : card(t, tg.res ? (tg.keptN ? keptNote : already) : '<div class="rdone"><span>!</span><span><b>Couldn’t rewrite this role</b><small>' + esc(aiMsg(R.err)) + '</small></span></div>', true);
+    h += ch.length || ord ? card(t, ord + ch.map((x) => row('bullet', { bid: x.bid, key: tg.key }, x.orig, x.sug, '', x.fc || x.lenNote)).join('') + keptNote, false, tg.key) : card(t, tg.res ? (tg.keptN ? keptNote : already) : '<div class="rdone"><span>!</span><span><b>Couldn’t rewrite this role</b><small>' + esc(aiMsg(R.err)) + '</small></span></div>', true);
   });
   if (!OPT.rows.length) {   // no bullet to review: everything is on the page
     endPending(); modalClose();
@@ -4177,13 +4319,14 @@ function markOptimised() { DOC.meta.optimised = { at: Date.now(), sync: !!(OPT &
 /* ---------- the client's exclusions, enforced here and not left to the AI: a rule like "do not include Python in the skills",
    "never list PHP" or "exclude WordPress" names terms that must not be on the resume's Skills. They come off the Skills lines
    when a run starts (the version saved just before keeps the way back) and never come back as suggested skills. ---------- */
-function ruleTerms() {
-  const rules = clientRules(); if (!rules) return [];
+const runIns = () => String((OPT && OPT.ins) || (BATCH && BATCH.ins) || '').trim();   // this run's special instructions
+function ruleTerms() {   // the client's Resume rules and this run's special instructions: "don't put Kafka", "do not include these skills: X, Y"
+  const rules = [clientRules(), runIns()].filter(Boolean).join('\n'); if (!rules) return [];
   const out = [];
   rules.split(/[.\n;]+/).forEach((s) => {
-    const m = /\b(?:do not|don['’]t|never|no|not|exclude|remove|leave out|drop|avoid|without)\s+(?:include|list|mention|add|show|put|use|write)?\s*(.+)$/i.exec(s.trim());
-    if (!m) return;
-    const t = m[1].replace(/\b(?:in|on|from|under|to|into|within)\s+(?:the\s+|their\s+|his\s+|her\s+)?(?:resume|skills?|summary|bullets?|experience|list|section|headline|title|cv).*$/i, '').replace(/^(?:the|any|all)\s+/i, '').trim();
+    const m = /\b(?:do not|don['’]?t|never|no|not|exclude|remove|leave out|drop|avoid|without)\s+(?:include|list|mention|add|show|put|use|write|have)?\s*(.+)$/i.exec(s.trim());
+    if (!m || /\b\d+\s*(?:words?|lines?)\b|\b(?:more|less|longer|shorter)\s+than\b|\btouch\b/i.test(m[1])) return;   // a length or "don't touch the first role" isn't a term
+    const t = m[1].replace(/^(?:(?:these|this|those|the following|following|any|all|the)\s+)?(?:skills?|terms?|keywords?|tools?|technologies)\b\s*[:\-–—]?\s*(?:(?:like|such as|as)\s+)?/i, '').replace(/\b(?:in|on|from|under|to|into|within)\s+(?:the\s+|their\s+|his\s+|her\s+)?(?:resume|skills?|summary|bullets?|experience|list|section|headline|title|cv).*$/i, '').replace(/\s+(?:skills?|terms?|keywords?)$/i, '').replace(/^(?:the|any|all)\s+/i, '').trim();
     t.split(/\s*(?:,|\/|\bor\b|\band\b)\s*/).map((x) => x.replace(/^["'“”]+|["'“”]+$/g, '').trim()).filter((x) => x && x.length <= 40 && x.split(/\s+/).length <= 4).forEach((x) => out.push(x));
   });
   return uniq(out);
@@ -4759,6 +4902,7 @@ document.addEventListener('click', (e) => {
     case 'dl-menu': dl.hidden = !dl.hidden; return;
     case 'dl-pdf': dl.hidden = true; return downloadPDF();
     case 'dl-doc': dl.hidden = true; return downloadDoc();
+    case 'dl-print': dl.hidden = true; return printPDF();
     case 'blank': return startDoc(starterDoc());
     case 'upload': return $('#fileIn').click();
     case 'newsrc': $('#banner').hidden = true; if (NEWSRC) fromSource(NEWSRC, true); return;
@@ -4808,7 +4952,7 @@ const pgLi = (t) => { if (!t || !t.closest || t.closest('.pgui')) return null; c
 $('#sheet').addEventListener('mouseover', (e) => { if (PGTOUCH) return; const li = pgLi(e.target); if (li) pgOver(li, e.clientX); });   // a phone's tap: pgTap does it
 $('#sheet').addEventListener('mouseout', (e) => { if (PGTOUCH) return; const li = pgLi(e.target), box = li && pgBox(li); if (box && !box.contains(e.relatedTarget)) { clearTimeout(PGS); pgHideSoon(); } });
 $('#pgbar').addEventListener('mouseenter', () => { clearTimeout(PGT); clearTimeout(PGS); }); $('#pgbar').addEventListener('mouseleave', pgHideSoon);
-window.addEventListener('scroll', (e) => { if (e.target === document || (e.target.contains && e.target.contains($('#sheet')))) { if (PGB && !DRAG) pgPlace(); aiMenuClose(); } }, { passive: true, capture: true });   // the toolbar follows the page; the panel scrolling doesn't touch it
+window.addEventListener('scroll', (e) => { if (e.target === document || (e.target.contains && e.target.contains($('#sheet')))) { if (PGB && !DRAG) { const b = $('#pgbar'); b.style.transition = 'none'; pgPlace(); void b.offsetWidth; b.style.transition = ''; } aiMenuClose(); } }, { passive: true, capture: true });   // the toolbar follows the page; the panel scrolling doesn't touch it
 document.addEventListener('dragstart', pgDragStart); $('#sheet').addEventListener('dragover', pgDragOver); $('#sheet').addEventListener('drop', pgDrop); document.addEventListener('dragend', pgDragEnd);
 $('#fileIn').addEventListener('change', (e) => { if (e.target.files[0]) readUpload(e.target.files[0]); e.target.value = ''; });
 document.addEventListener('visibilitychange', () => { if (document.hidden && DOC && TEAM && TEAM_DIRTY) teamSync(); });
