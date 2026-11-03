@@ -1411,6 +1411,68 @@ body{font-size:13px;line-height:1.5}
 .jdchip.miss{background:#fde4e4;color:#b42318}.jdchip.ok{background:#dcf5e6;color:#11704a}
 .jds .fine{margin-left:26px}
 .jde .jdeft{display:flex;justify-content:flex-end;margin-top:8px}
+/* ---------- the Application page like for like with the reference: the job's card (the company under the title, a big green match
+   ring, Score Breakdown in its own card, rounded actions), the full-width tabs, the skills chips, and the resume panel's header in
+   white cards (Preview Mode, Change Resume, the download; in Edit the toolbar in its groups) ---------- */
+.jcard .ahead .logo{width:64px;height:64px;border-radius:12px;font-size:22px}
+.jcard .ahead .logo img{border-radius:12px}
+.jcard .aht h2{font-size:18px;font-weight:700;letter-spacing:-.01em;color:#1b2a4e}
+.jcard .jco{order:0;margin:4px 0 0;font-size:14.5px;font-weight:600;letter-spacing:0;text-transform:none;color:#1b2a4e}
+.jtag{height:24px;padding:0 10px;border-radius:999px;font-size:12.5px;font-weight:600}
+.jtag.ok{background:#dcf5e7;color:#15803d}.jtag.bad{background:#fde4e4;color:#b91c1c}
+.jfacts{font-size:13.5px;color:#374151}
+.jfacts svg{width:18px;height:18px;color:#4b5563}
+.jscore{gap:22px;margin-top:16px;padding-top:20px}
+.jscore .ring{width:116px;height:116px}
+.jscore .ring circle{stroke-width:3.6}
+.jscore .ring .trk{stroke:#e5e9f0}
+.jscore .ring.hi .arc{stroke:#10b981}.jscore .ring.mid .arc{stroke:#f59e0b}.jscore .ring.lo .arc{stroke:#ef4444}
+.jscore .ring span{font-size:22px;font-weight:700;color:#15803d}
+.jscore .ring.mid span{color:#b45309}.jscore .ring.lo span{color:#b91c1c}.jscore.none .ring span{color:var(--muted)}
+.jscore .eyb{font-size:15px;font-weight:800;letter-spacing:.01em;color:#111}
+.jscore p{margin-top:6px;font-size:14px;line-height:1.65;color:#4b5563}
+.jbreak{margin-top:16px;border:1px solid #e5e7eb;border-radius:14px;padding:0 18px;background:#fff;box-shadow:0 1px 3px rgba(16,24,40,.06)}
+.jbreak summary{padding:17px 0;font-size:13.5px;font-weight:600;color:#374151}
+.jbreak summary > span:first-child{display:inline-flex;align-items:center}
+.jbreak .qhelp{display:inline-grid;margin-left:8px;color:#9ca3af;font-style:normal}.jbreak .qhelp svg{width:16px;height:16px}
+.jbreak .bkw{display:inline-flex;align-items:center;gap:6px;margin-left:auto;margin-right:12px;font-size:12px;font-weight:500;color:var(--muted)}
+.jbreak .bkw .spin{width:12px;height:12px;border-width:1.5px}
+.jacts{gap:10px;margin-top:14px}
+.jacts .btn{height:40px;min-height:40px;border-radius:12px;font-size:14px;font-weight:600}
+.jacts .btn:not(.pri){background:#fff;border:1px solid #e5e7eb;color:#111827}
+.jacts .btn:not(.pri):hover{background:#f9fafb;border-color:#d1d5db}
+.jacts .btn.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.jacts .btn svg{width:17px;height:17px}
+/* the job's tabs: one full-width segmented control */
+.jtabbar{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;margin:0 0 18px;background:#f3f4f6;border:0;border-radius:10px}
+.jtabbar button{height:38px;margin:0;padding:0;border:0;border-radius:8px;background:none;font-size:14.5px;font-weight:500;color:#6b7280}
+.jtabbar button:hover{color:#111827}
+.jtabbar button[aria-selected=true]{background:#fff;color:#111827;border:0;box-shadow:0 1px 3px rgba(16,24,40,.1),0 1px 2px rgba(16,24,40,.06)}
+/* the skills: bigger chips with a shadow, a deeper colour on hover; Missing Skills' tag red, Matching Skills' green */
+.jdchips{gap:10px}
+.jdchip{height:34px;padding:0 16px;font-size:14px;box-shadow:0 1px 2px rgba(16,24,40,.1);transition:background .15s,color .15s,box-shadow .15s;cursor:default}
+.jdchip.miss:hover{background:#fbc9c9;color:#991b1b;box-shadow:0 2px 6px rgba(185,28,28,.18)}
+.jdchip.ok:hover{background:#bdeccf;color:#065f46;box-shadow:0 2px 6px rgba(4,120,87,.18)}
+.jds.miss h4 svg{color:#dc2626}.jds.hit h4 svg{color:#16a34a}
+/* the resume panel's header: white cards on the panel */
+.reshd:has(.rhp),.reshd:has(.rhe){padding:10px 12px;gap:8px;background:#f3f4f6}
+.apside.editing .reshd{background:#f3f4f6}
+.rhp{gap:6px}
+.rhp .pvm{justify-self:start;padding:3px 10px;border-radius:6px;background:#e3eafc;color:#2f55d4;font-size:12.5px;font-weight:500}
+.rhp .rhpr{gap:8px}
+.rhp .chres{height:36px;padding:0 10px 0 14px;border:0;border-radius:10px;background:#fff;box-shadow:0 1px 3px rgba(16,24,40,.12),0 1px 2px rgba(16,24,40,.06);font-size:13.5px}
+.rtools{gap:2px;padding:4px;border:0;border-radius:10px;background:#fff;box-shadow:0 1px 3px rgba(16,24,40,.12),0 1px 2px rgba(16,24,40,.06)}
+.rtools.rtpv + .rtools.rtpv{margin-left:0}
+.rtools.rtpv:empty{display:none}.rtools.rtpv:empty + .rtools.rtpv{margin-left:auto}
+.tbtn{width:36px;height:34px;border-radius:7px;color:#374151}
+.tbtn svg{width:19px;height:19px}
+.tbtn:disabled{opacity:1;color:#c3c7ce;pointer-events:none}
+.tbtn.busy{color:#374151}   /* saving: dark, as unsaved; grey once it's saved */
+.rtools .tdiv{flex:none;width:1px;height:22px;margin:0 4px;background:#e5e7eb}
+.rtabs{padding:4px;border-radius:10px;background:#e7e9ed}
+.rtabs [role=tab]{height:34px;padding:0 16px;border-radius:8px;font-size:14px}
+.rmenu button{width:100%}
+@media (max-width:900px){.jscore .ring{width:96px;height:96px}.jscore .ring span{font-size:19px}}
 </style>
 </head>
 <body>
@@ -1448,6 +1510,7 @@ var J = {
   gift:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8S10 3 7.5 4.5 9 8 12 8zM12 8s2-5 4.5-3.5S15 8 12 8z"/></svg>',
   doc2:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>',
   okc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.3 2.4 2.4 4.6-5"/></svg>',
+  help:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.6M12 17h.01"/></svg>',
   // the resume panel's toolbar, as the reference editor has it
   undo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>',
   redo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg>',
@@ -3689,12 +3752,13 @@ function jobFacts(a){
     || /([$£€])\s?(\d{2,3}(?:\.\d{2})?)\s*(?:-|–|—|to)\s*[$£€]?\s?(\d{2,3}(?:\.\d{2})?)\s*(?:\/\s*|per\s+)(?:hr|hour)\b/i.exec(t)
     || /\b(\d{1,2}(?:\.\d)?)\s*(?:-|–|to)\s*(\d{1,2}(?:\.\d)?)\s*LPA\b/i.exec(t);
   var mode = /\bhybrid\b/i.test(both) ? 'Hybrid' : /\bremote\b/i.test(loc) || /\b(fully|100%)\s+remote\b|\bremote[- ]first\b|\bwork from anywhere\b/i.test(t) ? 'Remote' : /\b(on-?site|in[- ]office|in person)\b/i.test(both) ? 'On-site' : '';
-  var kind = /\bintern(ship)?\b/i.test(String(a.title || '') + ' ' + t.slice(0, 400)) ? 'Internship' : /\b(contract|contractor|temporary)\b/i.test(t) ? 'Contract' : /\bpart[- ]time\b/i.test(t) ? 'Part time' : /\bfull[- ]time\b/i.test(t) ? 'Full time' : '';
+  var kind = /\bintern(ship)?\b/i.test(String(a.title || '') + ' ' + t.slice(0, 400)) ? 'Internship' : /\b(contract|contractor|temporary)\b/i.test(t) ? 'Contract' : /\bpart[- ]time\b/i.test(t) ? 'Part Time' : /\bfull[- ]time\b/i.test(t) ? 'Full Time' : '';
   var yrs = reqYears(t);
   if(loc) out.push([J.pin, loc, 'Location']);
   if(kind) out.push([J.cal, kind, 'Job type']);
   if(mode) out.push([J.globe, mode, 'How it’s worked']);
   if(pay) out.push([J.pay, pay[0].replace(/\s+/g, ' '), 'Pay, as the description states it']);
+  else if(t.trim()) out.push([J.pay, 'Not Disclosed', 'The description doesn’t state the pay']);
   if(yrs) out.push([J.jobs, yrs + '+ years', 'Experience it asks for']);
   return out;
 }
@@ -3717,7 +3781,7 @@ function jobCard(){
   var when = A.applied_at ? 'Applied ' + esc(TP.fmtDateTime(A.applied_at)) : 'Started ' + esc(TP.ago(A.created_at));
   var acts = draft
     ? '<a class="btn" href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Apply</a>' +
-      '<button class="btn ok" type="button" data-act="gomark">' + I.check + 'Mark as applied</button>' + resumeBtn('act') +
+      '<button class="btn" type="button" data-act="gomark">' + J.okc + 'Mark as applied</button>' + resumeBtn('act') +
       '<button class="btn pri" type="button" data-act="gocover">' + J.doc2 + 'Cover Letter</button>'
     : '<a class="btn" href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Job posting</a>' +
       (A.resume_doc ? '<a class="btn" href="' + esc(edUrl('app', A.id)) + '" target="tp-ed-' + esc(A.id) + '">' + I.doc + 'View as sent</a>' : '') +
@@ -3769,16 +3833,15 @@ function scoreHTML(){
   if(!m) return '<div class="jscore none"><div class="ring">' + ringSVG(0) + '<span>–</span></div><div class="jsx"><b class="eyb">Resume match score</b><p>' +
     (!a.jd_text ? (sent ? 'No job description was kept with this application, so there’s no match to show.' : 'Add the job description to see how well the resume matches it.')
       : sent ? 'No resume text was kept with this application, so there’s no match to show.' : 'Add a resume to see how well it matches this job.') + '</p></div></div>';
-  var tier = m.pct >= 75 ? ['hi', 'The resume shows most of what this job asks for.'] : m.pct >= 50 ? ['mid', 'The resume partly matches this job. Tailor to this job can bring in more of its words, truthfully.'] : ['lo', 'A low match: look at what’s missing before applying.'];
-  var fit = f && f.score != null ? '<span class="fitp ' + esc(f.verdict) + '" title="' + esc((FVERD[f.verdict] || 'Fit') + ' (' + f.score + '/100)' + f.reasons.map(function(r){ return '\n✓ ' + r; }).join('') + f.concerns.map(function(r){ return '\n! ' + r; }).join('')) + '"><b>' + f.score + '</b><small>' + (FVERD[f.verdict] || 'Fit') + '</small></span>'
-    : f && f.wait ? '<span class="fitp wait" role="status"><span class="spin"></span>Checking ' + first + '’s fit…</span>'
-    : f && f.err ? '<button class="btn sm" type="button" data-act="apfit" title="' + esc('Couldn’t check the fit: ' + f.err) + '">Check fit</button>' : '';
+  var tier = m.pct >= 75 ? ['hi', 'Your resume aligns well with this job’s requirements. You’re in a strong position to apply.'] : m.pct >= 50 ? ['mid', 'Your resume partly matches this job’s requirements. Optimize it to bring in more of what the job asks for.'] : ['lo', 'Your resume shows little of what this job asks for yet. Look at the missing skills before applying.'];
   return '<div class="jscore"><div class="ring ' + tier[0] + '" role="img" aria-label="Resume match ' + m.pct + '%">' + ringSVG(m.pct) + '<span>' + m.pct + '%</span></div>' +
-      '<div class="jsx"><b class="eyb">Resume match score</b><p>' + tier[1] + '</p>' + (fit ? '<div class="jfit">' + fit + '</div>' : '') + '</div></div>' +
-    '<details class="jbreak" id="apBreak"><summary>Score breakdown</summary><div class="bkd">' +
+      '<div class="jsx"><b class="eyb">Resume match score</b><p>' + tier[1] + '</p></div></div>' +
+    '<details class="jbreak" id="apBreak"><summary><span>Score Breakdown<i class="qhelp" title="The job’s keywords the resume shows, counted as the editor’s Job match counts them">' + J.help + '</i></span>' +
+      (f && f.wait ? '<span class="bkw" role="status"><span class="spin"></span>Checking ' + first + '’s fit…</span>' : '') + '</summary><div class="bkd">' +
       '<div><span class="bkl">On the resume · ' + m.hit.length + ' of the job’s ' + m.n + ' keywords</span><div class="kchips">' + m.hit.map(function(k){ return '<span class="kchip ok">' + esc(k) + '</span>'; }).join('') + '</div></div>' +
       (m.miss.length ? '<div><span class="bkl">Missing from the resume</span><div class="kchips">' + m.miss.map(function(k){ return '<span class="kchip miss">' + esc(k) + '</span>'; }).join('') + '</div></div>' : '') +
-      (f && f.score != null ? '<div><span class="bkl">' + first + '’s fit · ' + (FVERD[f.verdict] || 'Fit') + ', ' + f.score + '/100</span><ul class="fitl">' + f.reasons.map(function(r){ return '<li class="ok">' + esc(r) + '</li>'; }).join('') + f.concerns.map(function(r){ return '<li class="gap">' + esc(r) + '</li>'; }).join('') + '</ul></div>' : '') +
+      (f && f.score != null ? '<div class="bkfit"><span class="bkl">' + first + '’s fit · ' + (FVERD[f.verdict] || 'Fit') + ', ' + f.score + '/100</span><ul class="fitl">' + f.reasons.map(function(r){ return '<li class="ok">' + esc(r) + '</li>'; }).join('') + f.concerns.map(function(r){ return '<li class="gap">' + esc(r) + '</li>'; }).join('') + '</ul></div>'
+        : f && f.err ? '<div><button class="btn sm" type="button" data-act="apfit" title="' + esc('Couldn’t check the fit: ' + f.err) + '">Check ' + first + '’s fit</button></div>' : '') +
       '<p class="fine">The match counts this job’s keywords on the resume, the same way as the editor’s Job match. The fit is app.trulyplaced.com’s: skills, seniority, location and work authorisation.</p></div></details>';
 }
 function drawScore(){
@@ -3808,8 +3871,8 @@ function apTab(v){   // the job's tabs (not jobTab, which opens a started job in
   drawAnalysis();
 }
 function jobTabs(jd){
-  return '<div class="card jtabs"><div class="jtabbar" role="tablist"><button type="button" role="tab" id="tabJd" aria-controls="paneJd" aria-selected="true" data-act="jtab" data-v="jd">Job description</button>' +
-      '<button type="button" role="tab" id="tabAn" aria-controls="paneAn" aria-selected="false" data-act="jtab" data-v="an">Job analysis</button></div>' +
+  return '<div class="card jtabs"><div class="jtabbar" role="tablist"><button type="button" role="tab" id="tabJd" aria-controls="paneJd" aria-selected="true" data-act="jtab" data-v="jd">Job Description</button>' +
+      '<button type="button" role="tab" id="tabAn" aria-controls="paneAn" aria-selected="false" data-act="jtab" data-v="an">Job Analysis</button></div>' +
     '<div class="jpane" id="paneJd" role="tabpanel" aria-labelledby="tabJd">' + jd + '</div><div class="jpane" id="paneAn" role="tabpanel" aria-labelledby="tabAn" hidden><div id="apAn"></div></div></div>';
 }
 // the resume itself, beside its job: Preview (editor.html?view=1, read-only, never saved) or Edit — Quick edit, the editor in this
@@ -3914,16 +3977,14 @@ window.addEventListener('message', function(e){
   if(typeof m.lift === 'boolean') qkLift(m.lift);
   if(m.st){ RS.st = m.st; rsTools(); }   // what the editor in the panel says its toolbar should show
 });
-// the toolbar above the resume follows the editor: undo / redo, which document, the save, Show changes (only what changed is touched)
+// the toolbar above the resume follows the editor: undo / redo, which document, the save (grey once it's saved), 📍 (only what changed
+// is touched)
 function rsTools(){
   var c = $('#resCard'), st = RS.st || {}; if(!c || resMode() !== 'edit') return;
   var set = function(sel, dis){ var x = c.querySelector(sel); if(x) x.disabled = !!dis; };
-  set('[data-v=undo]', !st.undo); set('[data-v=redo]', !st.redo);
+  set('[data-v=undo]', !st.undo); set('[data-v=redo]', !st.redo); set('[data-v=save]', !st.dirty); set('[data-v=loc]', !st.loc);
   $$('#resCard .rtabs [role=tab]').forEach(function(t){ t.setAttribute('aria-selected', String((t.getAttribute('data-arg') === 'cover') === (st.tab === 'cover'))); });
   var sv = c.querySelector('[data-v=save]'); if(sv){ sv.classList.toggle('busy', !!st.busy); sv.title = st.status || 'Save now (Ctrl+S)'; }
-  var mn = $('#resMenu'); if(mn){ var ch = mn.querySelector('[data-v=chg]');
-    if(st.canChg && !ch) mn.insertAdjacentHTML('beforeend', '<button type="button" data-act="qcmd" data-v="chg"></button>');
-    ch = mn.querySelector('[data-v=chg]'); if(ch){ ch.hidden = !st.canChg; ch.setAttribute('aria-pressed', String(!!st.chg)); ch.innerHTML = J.tick + (st.chg ? 'Hide changes' : 'Show changes'); } }
 }
 // The job description as the reference shows it: About the Company, Job Overview, Missing Skills and Matching Skills (the match
 // ring's own count, so they agree), Responsibilities, Qualifications and the posting's other parts, read from its own headings. It
@@ -3953,7 +4014,7 @@ function jdView(){
   var box = $('#apJDview'); if(!box || !A) return;
   var jt = $('#apJD'), text = jt ? jt.value : A.jd_text, secs = jdSections(text), m = appMatch(A), first = secs.filter(function(s){ return s.kind === 'overview'; })[0];
   if(!String(text || '').trim()){ box.innerHTML = '<p class="hint">No job description yet. <button type="button" class="btn sm" data-act="editjob">' + J.edit + 'Add it</button> — the resume is tailored to it, and the match and the fit are read from it.</p>'; return; }
-  var sec = function(icon, head, body){ return '<section class="jds"><h4>' + icon + esc(head) + '</h4>' + body + '</section>'; };
+  var sec = function(icon, head, body, cls){ return '<section class="jds' + (cls ? ' ' + cls : '') + '"><h4>' + icon + esc(head) + '</h4>' + body + '</section>'; };
   var paras = function(s){ return s.paras.map(function(p){ return '<p>' + esc(p) + '</p>'; }).join(''); };
   var list = function(s){ return s.items.length ? '<ul class="jdl">' + s.items.map(function(i){ return '<li>' + J.okc + '<span>' + esc(i) + '</span></li>'; }).join('') + '</ul>' : ''; };
   var chips = function(arr, cls){ return '<div class="jdchips">' + arr.map(function(k){ return '<span class="jdchip ' + cls + '">' + esc(k) + '</span>'; }).join('') + '</div>'; };
@@ -3961,7 +4022,7 @@ function jdView(){
   var order = ['company', 'overview'], h = '';
   void first;
   order.forEach(function(k){ secs.filter(function(s){ return s.kind === k; }).forEach(function(s){ h += sec(ICON[k], JD_HEAD[k], paras(s) + list(s)); }); });
-  if(m) h += sec(J.tag, 'Missing Skills', m.miss.length ? chips(m.miss, 'miss') : '<p class="fine">None — the resume shows every skill this job asks for.</p>') + sec(J.tag, 'Matching Skills', m.hit.length ? chips(m.hit, 'ok') : '<p class="fine">None yet.</p>');
+  if(m) h += sec(J.tag, 'Missing Skills', m.miss.length ? chips(m.miss, 'miss') : '<p class="fine">None — the resume shows every skill this job asks for.</p>', 'miss') + sec(J.tag, 'Matching Skills', m.hit.length ? chips(m.hit, 'ok') : '<p class="fine">None yet.</p>', 'hit');
   ['resp', 'qual', 'benefits'].forEach(function(k){ secs.filter(function(s){ return s.kind === k; }).forEach(function(s){ h += sec(ICON[k], JD_HEAD[k], paras(s) + list(s)); }); });
   secs.filter(function(s){ return !s.kind; }).forEach(function(s){ h += sec(J.doc2, s.head, paras(s) + list(s)); });
   box.innerHTML = h;
@@ -4010,32 +4071,34 @@ function optimisedDoc(d){
   return !!m.pre && Object.keys(m.pre).some(function(p){ var v = docField(d, p); return v != null && v !== m.pre[p]; });
 }
 // above the resume (#resCard), as the reference editor has it. Preview: "Preview Mode", the resume it uses ("Change Resume" until
-// this job has its own copy) and its tools. Edit: Resume / Cover Letter and the toolbar (undo, redo, design, layout, back to
-// Preview, save, download), which the panel's editor answers (quickCmd; it tells back what to show, RS.st). Drawn again whenever
-// the job description, the resume it starts from, the mode or the editor's save changes it
+// this job has its own copy), the download and ⋯ (Edit here, the advanced editor, the text). Edit: Resume / Cover Letter and the
+// toolbar in its groups (undo, redo · design, layout · back to Preview, 📍 the job's location, save, download · ⋯), which the
+// panel's editor answers (quickCmd; it tells back what to show, RS.st). Drawn again whenever the job description, the resume it
+// starts from, the mode or the editor's save changes it
 function resumeCard(){
   var rs = C.resumes || [], base = rs.filter(function(r){ return r.id === A.base_resume_id; })[0], bname = esc(base ? base.name : 'the main resume');
   var d = A.resume_doc, m = (d && d.meta) || {}, saved = !!(d || A.resume_text), pend = !!m.optPending, opt = !pend && optimisedDoc(d);   // pend: the list's Optimise left suggestions to review
   var text = A.resume_text || (base && base.text) || '', ed = resMode() === 'edit', can = saved || !!base, url = edUrl('app', A.id), st = RS.st || {};
   var tb = function(v, icon, title, arg, off){ return '<button type="button" class="tbtn" data-act="qcmd" data-v="' + v + '"' + (arg ? ' data-arg="' + arg + '"' : '') + ' title="' + title + '" aria-label="' + title + '"' + (off ? ' disabled' : '') + '>' + icon + '</button>'; };
   var more = '<span class="rmore"><button type="button" class="tbtn" data-act="resmore" aria-haspopup="true" aria-expanded="false" title="More" aria-label="More">' + J.more + '</button><span class="rmenu" id="resMenu" hidden>' +
+      (!ed && can ? '<button type="button" data-act="resmode" data-v="edit">' + J.edit + 'Edit here<small>Every line typed on beside the job</small></button>' : '') +
       (can ? '<a href="' + esc(url) + '" target="tp-ed-' + esc(A.id) + '" data-act="toeditor">' + J.upright + 'Advanced editor<small>Format, versions, sections</small></a>' : '') +
-      (text ? '<button type="button" data-act="cpresume">' + I.copy + 'Copy resume text</button>' : '') +
-      (ed && st.canChg ? '<button type="button" data-act="qcmd" data-v="chg" aria-pressed="' + !!st.chg + '">' + J.tick + (st.chg ? 'Hide changes' : 'Show changes') + '</button>' : '') + '</span></span>';
+      (text ? '<button type="button" data-act="cpresume">' + I.copy + 'Copy resume text</button>' : '') + '</span></span>', dv = '<i class="tdiv" aria-hidden="true"></i>';
   var note = (pend ? '<p class="rnote2">' + I.spark + '<span><b>Synced in the background</b> — Claude’s suggestions wait in the editor; nothing has changed yet</span></p>' : '') +
     (A.jd_text ? '' : '<p class="rnote2 warnt">Paste the job description first: the resume is tailored to it.</p>');
   if(ed) return '<div class="rhe"><span class="rtabs" role="tablist" aria-label="Document"><button type="button" role="tab" data-act="qcmd" data-v="tab" data-arg="resume" aria-selected="' + (st.tab !== 'cover') + '">Resume</button>' +
       '<button type="button" role="tab" data-act="qcmd" data-v="tab" data-arg="cover" aria-selected="' + (st.tab === 'cover') + '">Cover Letter</button></span>' +
-      '<span class="rtools">' + tb('undo', J.undo, 'Undo (Ctrl+Z)', '', !st.undo) + tb('redo', J.redo, 'Redo (Ctrl+Y)', '', !st.redo) + tb('format', J.palette, 'Design: template, fonts and colours', 'design') + tb('format', J.layout, 'Layout: size, spacing and page', 'layout') +
+      '<span class="rtools">' + tb('undo', J.undo, 'Undo (Ctrl+Z)', '', !st.undo) + tb('redo', J.redo, 'Redo (Ctrl+Y)', '', !st.redo) + dv + tb('format', J.palette, 'Design: template, fonts and colours', 'design') + tb('format', J.layout, 'Layout: size, spacing and page', 'layout') + dv +
         '<button type="button" class="tbtn" data-act="resmode" data-v="view" title="Done editing: back to Preview" aria-label="Done editing: back to Preview">' + J.edit + '</button>' +
-        '<button type="button" class="tbtn' + (st.busy ? ' busy' : '') + '" data-act="qcmd" data-v="save" title="' + esc(st.status || 'Save now (Ctrl+S)') + '" aria-label="Save now">' + J.save + '</button>' +
-        '<button type="button" class="tbtn" data-act="respdf" title="Download the resume as a PDF" aria-label="Download the resume as a PDF">' + J.dl + '</button>' + more + '</span></div>' + note;
+        tb('loc', J.pin, 'The job’s location on the resume: a suggestion to accept or reject', '', !st.loc) +
+        '<button type="button" class="tbtn' + (st.busy ? ' busy' : '') + '" data-act="qcmd" data-v="save" title="' + esc(st.status || 'Save now (Ctrl+S)') + '" aria-label="Save now"' + (st.dirty ? '' : ' disabled') + '>' + J.save + '</button>' +
+        '<button type="button" class="tbtn" data-act="respdf" title="Download the resume as a PDF" aria-label="Download the resume as a PDF">' + J.dl + '</button>' + dv + more + '</span></div>' + note;
   return '<div class="rhp"><span class="pvm">Preview Mode</span><div class="rhpr">' +
       (!rs.length ? '<span class="note warn">' + esc(C.row.full_name) + ' has no resume yet. <a href="' + esc(cUrl(C.id, 'resumes')) + '" data-go>Add one on the Resumes tab</a>, or open the editor and upload their file there.</span>'
         : saved ? '<span class="chres" title="This application’s own copy: every change is saved to it only">Resume: <b>' + (opt ? 'Tailored to this job' : 'A copy of ' + bname) + '</b></span>'
         : '<label class="chres" for="apBase">Change Resume:<select id="apBase">' + rs.map(function(r){ return '<option value="' + esc(r.id) + '"' + (r.id === A.base_resume_id ? ' selected' : '') + '>' + esc(r.name) + '</option>'; }).join('') + '</select></label>') +
-      '<span class="rtools">' + (can ? '<button type="button" class="tbtn" data-act="resmode" data-v="edit" title="Edit the resume right here, beside the job" aria-label="Edit the resume right here">' + J.edit + '</button>' : '') +
-        (saved || base ? '<button type="button" class="tbtn" data-act="respdf" title="Download the resume as a PDF" aria-label="Download the resume as a PDF">' + J.dl + '</button>' : '') + more + '</span></div></div>' + note;
+      '<span class="rtools rtpv">' + (saved || base ? '<button type="button" class="tbtn" data-act="respdf" title="Download the resume as a PDF" aria-label="Download the resume as a PDF">' + J.dl + '</button>' : '') + '</span>' +
+      '<span class="rtools rtpv">' + more + '</span></div></div>' + note;
 }
 function drawDraft(){
   var first = esc(C.row.full_name.split(' ')[0] || 'them'), n = (A.answers || []).length;
