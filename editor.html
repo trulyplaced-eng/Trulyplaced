@@ -667,6 +667,43 @@ html.view .vtext{max-width:760px;margin:0 auto;padding:18px 20px;background:#fff
 html.view .vtext p{margin:0 0 10px;font-size:13px;color:var(--muted)}
 html.view .vtext pre{margin:0;white-space:pre-wrap;font:13px/1.55 var(--ui);color:var(--ink)}
 
+/* ---------- quick=1: Quick edit in the team portal's application page — the page, typed on right there, under a slim bar
+   (undo, the save, the job's missing skills); the page's own controls stay ---------- */
+.qbar{display:none}
+html.quick .top,html.quick .panel,html.quick .doctabs,html.quick .mswitch,html.quick .banner,html.quick .rocard{display:none!important}
+html.quick .wrap{display:block;min-height:0}
+html.quick .stage{display:flex!important;padding:14px 14px 40px}
+html.quick .frame{max-width:none}
+html.quick .qbar:not([hidden]){display:block;position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid var(--line)}
+.qbar .qrow{display:flex;align-items:center;gap:8px;min-height:42px;padding:0 10px 0 6px}
+.qbar .qhist{display:inline-flex;gap:2px}
+.qbar .ib{width:30px;height:30px;border-radius:6px}
+.qbar .qstat{flex:1;min-width:0;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qbar .qstat.busy{color:#525252}
+.qbar .qstat.bad{color:var(--bad);font-weight:500}
+.qbar .qsk{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 9px 0 10px;border-radius:6px;border:1px solid var(--line);background:#fff;font-size:12.5px;font-weight:500;color:var(--ink);white-space:nowrap;transition:border-color .15s,background .15s}
+.qbar .qsk:hover{border-color:var(--line-2);background:#fafafa}
+.qbar .qsk svg{width:14px;height:14px;color:var(--muted);transition:transform .15s}
+.qbar .qsk[aria-expanded=true] svg{transform:rotate(180deg)}
+.qbar .qsk .dot{width:7px;height:7px;border-radius:50%;background:#f59e0b}
+.qbar .qrec{max-height:42vh;overflow:auto;overscroll-behavior:contain;border-top:1px solid var(--line)}
+.qbar .qrec .pc.rec{margin:0;border:0;border-radius:0;padding:10px 14px 12px}
+.qbar .qchg{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;white-space:nowrap;user-select:none}
+.qbar .qchg[hidden]{display:none}
+/* a dialog over the whole application page (quickLift): the page lays this frame over the window and the editor's own page steps
+   aside, so the backdrop dims the job behind it (a frame can't blur what's behind it) */
+html.quick.lift,html.quick.lift body{background:transparent!important}
+html.quick.lift{overflow:hidden;overscroll-behavior:contain}
+html.quick.lift .wrap,html.quick.lift .qbar,html.quick.lift .pgbar,html.quick.lift .selbar{visibility:hidden}
+html.quick.lift .modal{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(15,23,42,.36)}
+/* the run's card (runq): at the foot of the panel with no backdrop, the page resting behind it until Claude is done */
+html.quick .modal.runq{background:none;-webkit-backdrop-filter:none;backdrop-filter:none;align-items:flex-end;padding:12px;pointer-events:none;animation:none}
+html.quick .modal.runq .om{pointer-events:auto;width:min(600px,100%);animation:qup .22s ease-out;box-shadow:0 1px 2px rgba(0,0,0,.05),0 14px 40px rgba(15,23,42,.2)}
+html.quick.running .frame,html.quick.running .qbar{opacity:.5;pointer-events:none;transition:opacity .2s}
+html.quick.running .toast{bottom:auto;top:54px}   /* a note during the run shows under the bar, clear of the run's card */
+@keyframes qup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){html.quick .modal.runq .om{animation:none}}
+
 /* ---------- print: only the sheet, unscaled ---------- */
 @media print{
   body{background:#fff}
@@ -709,6 +746,7 @@ html.view .vtext pre{margin:0;white-space:pre-wrap;font:13px/1.55 var(--ui);colo
 <div id="start" class="center" hidden></div>
 <div id="boot" class="loading"><span class="spin"></span><span>Opening your resume…</span></div>
 <div id="banner" class="banner" hidden></div>
+<div class="qbar" id="qbar" hidden></div>
 
 <div class="wrap" id="wrap" hidden>
   <div class="mswitch" id="mswitch"><button type="button" class="on" data-a="mob" data-v="edit">Edit</button><button type="button" data-a="mob" data-v="preview">Preview</button></div>
@@ -1459,6 +1497,7 @@ function toast(msg, act) {
 function status(t, busy) {   // a save that went through says when: "Saved for this application · 11:42"
   const s = $('#status'); s.hidden = false; s.classList.toggle('busy', !!busy);
   s.lastChild.textContent = !busy && /^Saved\b/.test(t) ? t + ' · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : t;
+  if (QUICK) quickStatus(s.lastChild.textContent, busy);
 }
 
 /* ---------- which mode are we in ---------- */
@@ -1474,10 +1513,14 @@ const BATCH = TEAM && TEAM.app && QS.get('batch') ? { sel: QS.get('batch').split
 // the page only, read-only, never saved (view=1), in a frame: the team portal's application page shows an application's resume
 // this way, and the client workspace's Resume page a client's own main resume
 const VIEW = !!(TEAM && !BATCH && QS.get('view') === '1');
+// Quick edit (quick=1): an application's copy, edited in the team portal's own panel beside its job — the page only, every line
+// typed on right there, with a slim bar (undo, the save, the job's missing skills). It saves as the full editor does.
+const QUICK = !!(TEAM && TEAM.app && !BATCH && !VIEW && QS.get('quick') === '1');
 let CLIENT = null, TEAM_JOB = null, READONLY = false, TEAM_DIRTY = false;
 const OPT_KEY = TEAM ? 'tp_opt_c_' + TEAM.client : 'tp_opt';   // Optimise choices: one set per client, never shared
 if (EMBED) document.documentElement.classList.add('embed');
 if (VIEW) document.documentElement.classList.add('view');
+if (QUICK) document.documentElement.classList.add('quick');
 function tell(m) { if (!EMBED || window.parent === window) return; try { m.tp = 1; window.parent.postMessage(m, location.origin); } catch (e) {} }
 
 /* ---------- Supabase, the signed-in person and their profile ---------- */
@@ -1808,7 +1851,10 @@ function parseDoc(raw, srcName) {
 /* ---------- state, history and saving ---------- */
 let DOC = null, SRC = null, JOB = null, HIST = [], HI = -1, HTYPING = null, PAGES_N = 1, TAB = 'resume', PTAB = 'edit', FOCUS = null;
 const STORE_KEY = 'tp_editor_v1';
-function undoState() { $('#bUndo').disabled = HI <= 0; $('#bRedo').disabled = HI >= HIST.length - 1; }
+function undoState() {
+  $('#bUndo').disabled = HI <= 0; $('#bRedo').disabled = HI >= HIST.length - 1;
+  const qu = $('#qUndo'), qr = $('#qRedo'); if (qu) { qu.disabled = HI <= 0; qr.disabled = HI >= HIST.length - 1; }   // Quick edit's own bar
+}
 function snap(coalesce) {   // one history step; typing in one field keeps extending the last step until a pause
   const j = JSON.stringify(DOC);
   if (HIST[HI] === j) return;
@@ -1818,8 +1864,8 @@ function snap(coalesce) {   // one history step; typing in one field keeps exten
 }
 const endTyping = debounce(() => { HTYPING = null; }, 1200);
 function restoreHist(j) { DOC = JSON.parse(j); HTYPING = null; renderAll(); persist(); undoState(); }
-const undo = () => { if (HI > 0) { HI--; restoreHist(HIST[HI]); } };
-const redo = () => { if (HI < HIST.length - 1) { HI++; restoreHist(HIST[HI]); } };
+const undo = () => { if (HI > 0 && !$('#modal .om.run')) { HI--; restoreHist(HIST[HI]); } };   // never while Claude is tailoring: its answer is for the resume as it was
+const redo = () => { if (HI < HIST.length - 1 && !$('#modal .om.run')) { HI++; restoreHist(HIST[HI]); } };
 const tellResume = debounce(() => { if (DOC) tell({ act: 'resume', text: docText() }); }, 500);
 function persist() {
   DOC.meta.saved = Date.now(); tellResume();
@@ -1931,19 +1977,21 @@ function startDoc(D) {
   JOB = loadJob(); backLink();
   show('wrap'); $('#tbtns').hidden = false; $('#rname').hidden = false; $('#rname').value = DOC.meta.srcName || DOC.name || 'Resume';
   document.body.classList.toggle('ro', READONLY);
-  if (window.innerWidth <= 840 && !document.body.classList.contains('m-preview')) setMobile('edit');
+  if (QUICK) { quickBar(); window.scrollTo(0, 0); }   // the page and its slim bar at any width (a narrow panel never switches to the phone's form view), from the top after the read's check
+  else if (window.innerWidth <= 840 && !document.body.classList.contains('m-preview')) setMobile('edit');
   renderAll(); snap(); persist();
   // a resume just read from a file is fitted to one page the first time, like the ones that got interviews (two pages stay two for long careers)
   if (DOC.meta.read && !DOC.meta.fitted && fmtOf(DOC).oneLine) { DOC.meta.fitted = true; setTimeout(() => { if (PAGES_N === 2 && !longResume()) fitOnePage(true); }, 80); }
   if (TEAM) initVersions();
   tell({ act: 'ready' });
   const h = location.hash;
-  if (h === '#cover' || h === '#optimize' || h === '#sync') try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  if (h === '#cover' || h === '#optimize' || h === '#sync' || h === '#review') try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
   if (h === '#cover') { setDocTab('cover'); autoCover(); }
   else if (h === '#optimize') setTimeout(() => openOptimise(!!TEAM), 300);
   else if (h === '#sync') setTimeout(syncNow, 300);   // an older "Sync to this job" link: it runs straight away
+  else if (h === '#review') setTimeout(openPending, 300);   // the application page's "Review suggestions", in Quick edit
   if (BATCH) setTimeout(batchRun, 300);
-  else if (TEAM && !READONLY && DOC.meta.optPending) setTimeout(openPending, 400);   // the batch's suggestions, waiting for review
+  else if (TEAM && !READONLY && !QUICK && DOC.meta.optPending) setTimeout(openPending, 400);   // the batch's suggestions, waiting for review (in the full editor)
 }
 // Which task the editor's AI is doing. It decides every label, so each reads as the task in hand (three plain verbs): a client's
 // base resume is *improved* for their target roles — never for one job, never synced; an application's own copy is *tailored* to
@@ -2204,6 +2252,7 @@ function renderSheet() {
   if (EDIT && document.activeElement !== EDIT.el) pgLeft();
   EDIT = null; pgHide();
   const keep = FOCUS, chg = $('#showChg'); if (chg) chg.hidden = !(DOC && DOC.meta.pre && TAB === 'resume');
+  const qc = $('#qChg'); if (qc) { qc.hidden = !(DOC && DOC.meta.pre); $('#qChgOn').checked = SHOWCHG; }   // Quick edit's bar has its own
   $('#sheet').innerHTML = TAB === 'cover' ? coverHTML(DOC) : resumeHTML(DOC, null, !READONLY);
   if (keep) { const el = $('#sheet [data-path="' + keep + '"]'); if (el) el.classList.add('sel'); }
   if (PGON) pgOn(PGON);
@@ -2271,10 +2320,10 @@ function downloadDoc() {
 }
 
 /* ---------- small dialogs ---------- */
-function modalOpen(html) { const m = $('#modal'); m.classList.remove('closing'); m.innerHTML = html; m.hidden = false; }
+function modalOpen(html) { const m = $('#modal'); m.classList.remove('closing'); m.innerHTML = html; m.hidden = false; quickModal(m); }
 function modalClose() {   // a short fade out; a dialog opened in the meantime cancels it
   const m = $('#modal'); if (m.hidden) return; m.classList.add('closing');
-  setTimeout(() => { if (m.classList.contains('closing')) { m.hidden = true; m.innerHTML = ''; m.classList.remove('closing'); } }, 140);
+  setTimeout(() => { if (m.classList.contains('closing')) { m.hidden = true; m.innerHTML = ''; m.classList.remove('closing'); quickModal(m); } }, 140);
 }
 function confirmBox(title, text, okLabel, then, cancelLabel) {
   modalOpen('<div class="card" role="dialog" aria-modal="true"><h2>' + esc(title) + '</h2><p>' + esc(text) + '</p><div class="acts"><button class="btn pri" type="button" id="mOk">' + esc(okLabel) + '</button><button class="btn" type="button" id="mNo">' + esc(cancelLabel || 'Cancel') + '</button></div></div>');
@@ -2294,6 +2343,7 @@ const I_UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const PHEAD = { edit: ['Edit', 'Every section of the resume. You can also click a line on the page and type.'], cover: ['Cover letter', 'Written for this job, from the resume.'],
   format: ['Format', 'Template, type and spacing for the whole resume.'], check: ['Check', 'How the resume scores, and what to fix first.'], versions: ['Versions', 'Saved copies you can go back to.'] };
 function renderPanel() {
+  if (QUICK) { quickRec(); return; }   // Quick edit has no panel: the job's missing skills sit in its bar
   const body = $('#pbody'); if (!DOC || !body) return;
   const sc = body.scrollTop, hd = PHEAD[PTAB === 'edit' && TAB === 'cover' ? 'cover' : PTAB];
   $$('#ptabs button').forEach((b) => b.classList.toggle('on', b.getAttribute('data-v') === PTAB));
@@ -2461,6 +2511,7 @@ function focusField(path, caret) {
 // click on the page → the field for that text
 function jumpTo(path) {
   if (!path) return;
+  if (QUICK) { toast('Section titles and the cover letter are edited in the full editor (Advanced editor, above)'); return; }
   const p = path.split('.');
   if (p[0] === 'cover' && TAB !== 'cover') setDocTab('cover');
   if (PTAB !== 'edit') { PTAB = 'edit'; renderPanel(); }
@@ -2530,6 +2581,9 @@ let EDIT = null, PGB = null, PGT = 0, PGS = 0, DRAG = null, PGADD = null;   // t
 let PGTYPED = false, PGDOWN = false, PGLATER = false;   // a keystroke the page already shows; a mouse button is down; a redraw waiting for that click to land
 let PGTOUCH = false, PGWAS = null, PGON = null;   // phones: this tap is a touch; the bullet whose toolbar showed before it; the skills section showing its controls
 const PG_TYPE = /\.(b|list)\.[^.]+$|^sec\.[^.]+\.text$|\.row\.[^.]+\.value$/;   // typed on the page: bullets, list lines, the summary, a skills line
+// Quick edit has no panel, so the one-line fields are typed on the page too: a role's title, company, dates and place, a school
+// and its degree, the name, the headline, the contact details and a skills group's name (Enter or Esc finishes the line)
+const PG_ONE = /\.item\.[^.]+\.(title|sub|dates|loc)$|^(name|headline)$|^contact\.\d+$|\.row\.[^.]+\.label$/;
 const PG_LIST = /\.(b|list)\.[^.]+$/;
 const pgSib = (path, id) => path.replace(/[^.]+$/, id);   // another line in the same list
 function caretAt(el, n) { const t = el.firstChild, r = document.createRange(), s = window.getSelection(); if (t && t.nodeType === 3) r.setStart(t, Math.max(0, Math.min(n, t.length))); else r.selectNodeContents(el); r.collapse(true); s.removeAllRanges(); s.addRange(r); }
@@ -2540,7 +2594,7 @@ function pgLeft() {   // the focus left the line on the page: it's no longer the
 }
 function editOnPage(el, ev) {   // false: this line is edited in the panel instead
   const path = el.getAttribute('data-path');
-  if (READONLY || TAB !== 'resume' || !PG_TYPE.test(path)) return false;
+  if (READONLY || TAB !== 'resume' || !(PG_TYPE.test(path) || (QUICK && PG_ONE.test(path)))) return false;
   if (EDIT && EDIT.el === el) return true;
   pgEnd();
   const v = getField(path); let at = -1;
@@ -2704,6 +2758,43 @@ function pgDrop(e) {
   arr.splice(to, 0, arr.splice(from, 1)[0]); structural();
 }
 function pgDragEnd() { DRAG = null; $$('#sheet .pg-dropb, #sheet .pg-dropa').forEach((x) => x.classList.remove('pg-dropb', 'pg-dropa')); pgHide(); }
+
+/* ---------- Quick edit's bar (quick=1): undo and redo, the save, Show changes after a tailor, and the job's missing skills ---------- */
+const I_UNDO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>', I_REDO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg>', I_CHEV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+let QREC_OPEN = false;   // the "Skills for this job" box under the bar, opened from its button
+function quickBar() {
+  const b = $('#qbar'); if (!b || b.dataset.on) return; b.dataset.on = '1'; b.hidden = false;
+  b.innerHTML = '<div class="qrow"><span class="qhist"><button type="button" class="ib" data-a="undo" id="qUndo" aria-label="Undo (Ctrl+Z)" title="Undo · Ctrl+Z" disabled>' + I_UNDO + '</button>' +
+      '<button type="button" class="ib" data-a="redo" id="qRedo" aria-label="Redo (Ctrl+Y)" title="Redo · Ctrl+Y" disabled>' + I_REDO + '</button></span>' +
+      '<span class="qstat" id="qstat" role="status" aria-live="polite"></span>' +
+      '<label class="showchg qchg" id="qChg" hidden title="Mark what tailoring reworded"><input type="checkbox" id="qChgOn" data-a="chg"> Show changes</label>' +
+      '<button type="button" class="qsk" id="qsk" data-a="q-rec" aria-expanded="false" aria-controls="qrec" hidden></button></div>' +
+    '<div class="qrec" id="qrec" hidden></div>';
+}
+// Quick edit's dialogs (a question, the choices, the review) show over the whole application page: the page lays this frame over
+// itself while one is open, and the editor's own page steps aside. The run's card stays at the bottom of the panel instead, the
+// page resting behind it, so the job beside it can still be read while Claude works
+let QLIFT = false;
+function quickModal(m) {
+  if (!QUICK) return;
+  const run = !m.hidden && !!m.querySelector('.om.run');
+  m.classList.toggle('runq', run); document.documentElement.classList.toggle('running', run);
+  quickLift(!m.hidden && !run);
+}
+function quickLift(on) {
+  if (QLIFT === on) return; QLIFT = on; document.documentElement.classList.toggle('lift', on);
+  try { if (window.parent !== window) window.parent.postMessage({ tp: 'quick', lift: on }, location.origin); } catch (e) {}
+}
+function quickStatus(t, busy) { const s = $('#qstat'); if (!s) return; s.textContent = t; s.classList.toggle('busy', !!busy); s.classList.toggle('bad', /^(Couldn|Not saved)/.test(t)); }
+// the job's skills the resume doesn't show: a count on the bar's button, and the editor's own "Skills for this job" box under it
+function quickRec() {
+  const btn = $('#qsk'), box = $('#qrec'); if (!btn || !box) return;
+  const h = recCardHTML(), n = REC ? REC.list.filter((m) => !m.st).length : 0;   // recCardHTML works REC out first
+  btn.hidden = !h;
+  if (!h) { box.hidden = true; box.innerHTML = ''; return; }
+  btn.innerHTML = (n ? '<i class="dot" aria-hidden="true"></i>' + n + ' skill' + (n === 1 ? '' : 's') + ' this job asks for' : 'Skills for this job') + I_CHEV;
+  btn.setAttribute('aria-expanded', String(QREC_OPEN)); box.hidden = !QREC_OPEN; box.innerHTML = QREC_OPEN ? h : '';
+}
 
 /* ---- format.js ---- */
 /* =====================================================================
@@ -4027,7 +4118,8 @@ function teamSync() {   // save to the draft application (only while it's a draf
     if (!r.data || !r.data.length) { READONLY = true; document.body.classList.add('ro'); pgEnd(); pgHide(); TEAM_DIRTY = false; const ch = $('#cjob .chip'); if (ch) { ch.textContent = 'Sent'; ch.classList.add('sent'); } status('Not saved — already sent', true); toast('This application was marked as applied, so its resume can’t change any more. Reload to see exactly what was sent.'); return; }
     if (DOC.meta.saved === saving) TEAM_DIRTY = false;
     status(TEAM.app ? 'Saved for this application' : 'Saved to ' + ((CLIENT && CLIENT.full_name) || 'the client') + '’s resumes');
-    if (TEAM_BC) try { TEAM_BC.postMessage({ client: TEAM.client, app: TEAM.app, resume: TEAM.resume }); } catch (e) {}
+    // quick: saved by the application page's own panel, which already shows it (the page mustn't reload the panel)
+    if (TEAM_BC) try { TEAM_BC.postMessage({ client: TEAM.client, app: TEAM.app, resume: TEAM.resume, quick: QUICK }); } catch (e) {}
   }).catch(() => status('Couldn’t save — check your connection', true));
 }
 // "Save and continue" on a base resume whose client has no target roles yet: they go on the client's profile, as the Profile
@@ -4048,7 +4140,19 @@ function teamSaveJd(text) {
     else if (TEAM_BC) try { TEAM_BC.postMessage({ client: TEAM.client, app: TEAM.app, apps: true }); } catch (e) {}
   }, () => {});
 }
-window.addEventListener('beforeunload', (e) => { if (TEAM && TEAM_DIRTY && !READONLY) { teamSync(); e.preventDefault(); e.returnValue = ''; } });
+window.addEventListener('beforeunload', (e) => { if (TEAM && TEAM_DIRTY && !READONLY) { teamSync(); if (!QUICK) { e.preventDefault(); e.returnValue = ''; } } });   // in Quick edit the application page saves it first
+// Quick edit: what the application page around it asks before it switches the panel or leaves (function declarations are the
+// frame's window's own, so the page can call them)
+function quickState() { return { ready: !!DOC, dirty: !!TEAM_DIRTY, readonly: !!READONLY, busy: !!$('#modal .om.run') }; }   // busy: Claude is tailoring it
+// One editor at a time on an application: the full editor says it's open, and answers when asked, so the application page's
+// Quick edit steps aside instead of both saving over each other (saves don't check what the other one wrote)
+function fullHere() {
+  if (!TEAM_BC || !TEAM.app || QUICK || VIEW || BATCH || READONLY) return;
+  const say = (state) => { try { TEAM_BC.postMessage({ client: TEAM.client, app: TEAM.app, full: state }); } catch (e) {} };
+  TEAM_BC.addEventListener('message', (e) => { const m = e.data || {}; if (m.ping === TEAM.app && !READONLY) say('open'); });
+  window.addEventListener('pagehide', () => say('closed'));
+  say('open');
+}
 function teamBoot() {
   const signIn = '<a class="btn pri" href="/login.html?next=' + encodeURIComponent(location.pathname + location.search) + '">Sign in</a>';
   if (!LIVE || !SESSION0) return teamCard('Sign in to the team portal', 'This page opens a client’s resume for the TrulyPlaced team.', signIn);
@@ -4071,7 +4175,7 @@ function teamBoot() {
         if (row.status !== 'draft') TEAM_SENT = { at: row.applied_at, company: row.company };
       }
       if (VIEW) { READONLY = true; document.body.classList.add('ro'); }
-      teamPill(); $('#ptVersions').hidden = READONLY;
+      teamPill(); $('#ptVersions').hidden = READONLY; fullHere();
       if (BATCH && READONLY) return batchTell('fail', { why: 'Already sent' });
       if (TEAM.app && row.resume_doc && row.resume_doc.sections) return startDoc(row.resume_doc);
       // the page only: a resume that was never laid out shows as its text, and nothing is read by Claude or saved
@@ -4278,6 +4382,7 @@ document.addEventListener('click', (e) => {
     case 'undo': return undo();
     case 'redo': return redo();
     case 'save-now': return saveNow();
+    case 'q-rec': QREC_OPEN = !QREC_OPEN; return quickRec();
     case 'ptab': PTAB = v; renderPanel(); $('#pbody').scrollTop = 0; return;
     case 'doc': return setDocTab(v);
     case 'mob': return setMobile(v);
@@ -4335,11 +4440,12 @@ window.addEventListener('scroll', (e) => { if (PGB && !DRAG && (e.target === doc
 document.addEventListener('dragstart', pgDragStart); $('#sheet').addEventListener('dragover', pgDragOver); $('#sheet').addEventListener('drop', pgDrop); document.addEventListener('dragend', pgDragEnd);
 $('#fileIn').addEventListener('change', (e) => { if (e.target.files[0]) readUpload(e.target.files[0]); e.target.value = ''; });
 document.addEventListener('visibilitychange', () => { if (document.hidden && DOC && TEAM && TEAM_DIRTY) teamSync(); });
-// the portal's "Tailor to this job" or "Improve base resume" on a tab that's already open only changes the address's #
+// the portal's "Tailor to this job" or "Improve base resume" on a tab that's already open only changes the address's #; so do the
+// application page's Tailor and Review suggestions for its Quick edit panel
 window.addEventListener('hashchange', () => {
-  const h = location.hash; if ((h !== '#optimize' && h !== '#sync') || !DOC) return;
+  const h = location.hash; if ((h !== '#optimize' && h !== '#sync' && h !== '#review') || !DOC) return;
   try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
-  if ($('#modal').hidden) { if (h === '#sync') syncNow(); else openOptimise(!!TEAM); }
+  if ($('#modal').hidden) { if (h === '#sync') syncNow(); else if (h === '#review') openPending(); else openOptimise(!!TEAM); }
 });
 boot();
 

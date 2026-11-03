@@ -1345,6 +1345,39 @@ body{font-size:13px;line-height:1.5}
 .mebtn:hover,.mebtn[aria-expanded=true]{background:var(--sb-on)}
 .mebtn .mechev{color:var(--sb-muted)}
 @media (min-width:901px){.ws{background:linear-gradient(90deg,var(--sb-bg) 0,var(--sb-bg) var(--side),transparent var(--side))}}
+
+/* ---------- the application page's resume: Preview or Edit (Quick edit: the editor in the panel, typed on right there). While
+   editing the resume takes the wider side, wears a blue edge, and the description beside it marks the job's keywords ---------- */
+.reshd .rh1 .rjob{font-size:12.5px;color:var(--muted);min-width:0}
+.reshd .rh1 .rjob b{color:var(--ink);font-weight:500}
+.reshd .rmode{flex:none}
+.reshd .rmode button{display:inline-flex;align-items:center;gap:5px;height:24px;min-height:24px;padding:0 10px}
+.reshd .rmode button svg{width:13px;height:13px}
+.reshd .rhint{flex:1 1 0;min-width:0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.reshd .rh3{display:flex;align-items:center;gap:6px}
+.reshd .rh3 .lbl{font-size:12.5px;margin:0}
+.reshd .rh3 .inp{width:auto;max-width:220px;min-width:0;height:30px;min-height:30px;padding:0 26px 0 9px;font-size:13px}
+.reshd .btn.ico{width:28px;padding:0;justify-content:center}
+.reshd .btn.ico svg{margin:0}
+.reshd .btn svg{width:14px;height:14px}
+.apside.editing{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+.apside.editing .reshd{background:var(--blue-soft)}
+@media (min-width:1181px){.apgrid:has(.apside.editing){grid-template-columns:minmax(0,.78fr) minmax(0,1.32fr)}}
+@media (min-width:901px) and (max-width:1180px){.apgrid:has(.apside.editing){grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)}}
+@media (max-width:900px){.reshd .rbtns > a.btn:not(.ghost){display:none}}   /* a phone: the resume's own action is in the bar at the bottom (.apbar) */
+/* a dialog of the panel's editor, over the whole page (qkLift): its frame is laid over the window — see-through, with only the
+   dialog and its backdrop drawn — until the dialog closes; the panel keeps its place behind */
+.apside.lifted{z-index:2000}
+.apside.lifted #apFrame{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;z-index:2000}
+.jdread{border:1px solid var(--line);border-radius:8px;background:#fff;overflow:hidden}
+.jdread .jdkey{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:5px 6px 5px 12px;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted);background:#fafbfc}
+.jdread .jdkey i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.jdread .jdkey i.ok{background:#d6f0de}.jdread .jdkey i.miss{background:#fde3a7}
+.jdread .jdkey .btn{margin-left:auto}
+.jdread .jdtext{padding:10px 12px;white-space:pre-wrap;word-wrap:break-word;font-size:13px;line-height:1.65;color:var(--ink);max-height:64vh;overflow:auto}
+.jdread mark{border-radius:3px;padding:0 1px;color:inherit}
+.jdread mark.ok{background:#d6f0de}
+.jdread mark.miss{background:#fde3a7;box-shadow:inset 0 -1.5px 0 #f59e0b}
 </style>
 </head>
 <body>
@@ -1495,16 +1528,19 @@ window.addEventListener('popstate', function(){
   history.pushState(null, '', HERE);   // back on the page with the unsaved work while we ask
   go(to);
 });
-// what can't be left without asking: Profile edits not saved, a note being written
+// what can't be left without asking: Profile edits not saved, a note being written; Quick edit's last change is saved first
 function askWhy(){
   if(pfDirty()) return 'profile';
+  if(qkBusy()) return 'tailor';
+  if(qkDirty()) return 'resume';
   var n = $('#nt') || $('#anT'); return n && n.value.trim() ? 'note' : '';
 }
 function leaveOK(){
-  return flushDraft().then(function(saved){
+  return qkFlush().then(function(q){ return flushDraft().then(function(s){ return s && q; }); }).then(function(saved){
     if(!saved) return TP.confirmBox('Leave this page?', 'A draft’s latest changes haven’t saved yet (' + (DS && DS.why || 'no connection') + '). They keep trying in the background while this browser tab is open.', 'Leave anyway', true);
     var w = askWhy();
     if(w === 'profile') return pfAsk();
+    if(w === 'tailor') return TP.confirmBox('Claude is still tailoring this resume', 'Leaving this page stops it, and nothing it wrote is kept.', 'Stop and leave', true, {cancel:'Stay'});
     if(w === 'note') return TP.confirmBox('Discard your note?', 'It hasn’t been saved.', 'Discard note', true, {cancel:'Keep writing'}).then(function(ok){
       if(ok){ if(C) bkDel('note_' + C.id); if(A) bkDel('anote_' + A.id); }
       return ok;
@@ -3726,10 +3762,11 @@ function jobTabs(jd){
       '<button type="button" role="tab" id="tabAn" aria-controls="paneAn" aria-selected="false" data-act="jtab" data-v="an">Job analysis</button></div>' +
     '<div class="jpane" id="paneJd" role="tabpanel" aria-labelledby="tabJd">' + jd + '</div><div class="jpane" id="paneAn" role="tabpanel" aria-labelledby="tabAn" hidden><div id="apAn"></div></div></div>';
 }
-// the resume itself, as the editor lays it out (editor.html?view=1: read-only, never saved), with its actions above it
+// the resume itself, beside its job: Preview (editor.html?view=1, read-only, never saved) or Edit — Quick edit, the editor in this
+// panel (editor.html?quick=1), every line typed on right there and saved to this application's copy
 function resPanel(){
   var sent = A.status !== 'draft';
-  return '<aside class="apside" aria-label="Resume">' + (sent
+  return '<aside class="apside' + (resMode() === 'edit' ? ' editing' : '') + '" aria-label="Resume">' + (sent
       ? '<div class="reshd"><div class="rh1"><b>Resume sent</b><span class="rst ok">' + I.lock + 'Exactly what went to ' + esc(A.company || 'the company') + '</span></div></div>'
       : '<div class="reshd" id="resCard">' + resumeCard() + '</div>') +
     '<div class="resview" id="apView">' + viewInner() + '</div></aside>';
@@ -3740,30 +3777,141 @@ function viewInner(){
   if(!own && sent && A.resume_file && /\.pdf$/i.test(A.resume_file)) return '<iframe id="apFile" title="The resume file that was uploaded" data-src="' + esc(A.resume_file) + '"></iframe>';
   if(!own && (sent || !base)) return '<div class="resnone"><div><b>' + (sent ? 'No resume copy kept' : 'No resume yet') + '</b>' + (!sent ? 'Pick the one it starts from above, or add one on the <a href="' + esc(cUrl(C.id, 'resumes')) + '" data-go>Resumes</a> tab.'
     : A.resume_file ? 'Only the file that was uploaded: <a data-file="' + esc(A.resume_file) + '" target="_blank" rel="noopener">open it</a>.' : 'This application was sent without a resume copy on record.') + '</div></div>';
-  return '<iframe id="apFrame" title="The resume, as it goes to ' + esc(A.company || 'the company') + '" src="' + esc(edUrl('app', A.id) + '&view=1') + '"></iframe>';
+  var job = esc((A.title || 'this job') + (A.company ? ' at ' + A.company : '')), go = RS.hash || ''; RS.hash = '';   // go: what the editor opens with (#optimize, #review), once
+  return resMode() === 'edit'
+    ? '<iframe id="apFrame" title="The resume for ' + job + ': click any line to edit it" src="' + esc(edUrl('app', A.id) + '&quick=1' + go) + '"></iframe>'
+    : '<iframe id="apFrame" title="The resume, as it goes to ' + esc(A.company || 'the company') + '" src="' + esc(edUrl('app', A.id) + '&view=1') + '"></iframe>';
 }
-// the preview again, after the editor saved or the resume it starts from changed
+// the preview again, after the editor saved or the resume it starts from changed. Never while editing here: the panel is the
+// editor itself, already showing its own last save
 function reloadView(){
-  var f = $('#apFrame'), v = $('#apView'); if(!v) return;
+  var f = $('#apFrame'), v = $('#apView'); if(!v || resMode() === 'edit') return;
   if(f){ try{ f.contentWindow.location.reload(); }catch(e){ f.src = f.src; } }
   else v.innerHTML = viewInner();
+}
+// Preview or Edit, for the application on screen (a sent one is always Preview). jd: the description's own box is open while
+// editing, instead of its marked reading view
+var RS = {app:null, mode:'view', jd:false, hash:''};
+function resMode(){ return A && A.status === 'draft' && RS.app === A.id ? RS.mode : 'view'; }
+function setResMode(v, hash){
+  var a = A; if(!a || a.status !== 'draft' || v === resMode()) return Promise.resolve(false);
+  if(v === 'edit') return fullOpen(a).then(function(open){
+    if(A !== a) return false;
+    // one editor at a time: the full editor already has it in another tab, and the two would save over each other
+    if(open) return TP.confirmBox('This resume is open in the full editor', 'Edit it in that tab, or close the tab and come back to edit here. Two editors on one resume would save over each other.', 'Go to that tab', false, {cancel:'Stay here'})
+      .then(function(ok){ if(ok) window.open('', 'tp-ed-' + a.id); return false; });
+    RS = {app:a.id, mode:'edit', jd:false, hash:hash || ''}; resModeDraw(true); return true;
+  });
+  // Claude tailoring it right now: going back to Preview drops the frame, and with it the run
+  return (qkBusy() ? TP.confirmBox('Claude is still tailoring this resume', 'Switching to Preview stops it, and nothing it wrote is kept.', 'Stop and switch', true, {cancel:'Keep tailoring'}) : Promise.resolve(true)).then(function(go){
+    return go && qkFlush().then(function(saved){
+      return saved || TP.confirmBox('Leave Edit without the last change?', 'The resume’s last change hasn’t saved yet (no connection). Stay in Edit and it keeps trying.', 'Leave without it', true, {cancel:'Stay in Edit'});
+    });
+  }).then(function(ok){
+    if(!ok || A !== a) return false;
+    RS = {app:a.id, mode:'view', jd:false, hash:''}; resModeDraw(false); refreshApp(); return true;
+  });
+}
+// Tailor, Review suggestions and Edit resume, right here: the panel's editor opens the choices or the review (its #optimize and
+// #review, read once it's loaded or on its hashchange), and its dialogs show over the whole page (qkLift)
+function tailorHere(v){
+  var a = A; if(!a || a.status !== 'draft') return;
+  saveDraft();
+  var hash = v === 'optimize' || v === 'review' ? '#' + v : '';
+  if(resMode() !== 'edit') return setResMode('edit', hash);
+  var w = qkWin(); if(!hash) return;
+  if(w){ try{ w.location.hash = hash; }catch(e){} return; }
+  RS.hash = hash; var vw = $('#apView'); if(vw) vw.innerHTML = viewInner();   // still opening: again, with it
+}
+function resModeDraw(entering){
+  var s = $('.apside'); if(!s) return;
+  qkLift(false);   // a new frame: nothing of the old one is laid over the page
+  s.classList.toggle('editing', resMode() === 'edit');
+  if($('#resCard')) $('#resCard').innerHTML = resumeCard();
+  var v = $('#apView'); if(v) v.innerHTML = viewInner();
+  jdMarks();
+  // the job's description beside the resume: brought up when it's further down the page
+  var t = entering && $('.jtabs'); if(t && t.getBoundingClientRect().top > window.innerHeight * 0.55) t.scrollIntoView({block:'start', behavior:'smooth'});
+}
+// is this resume open in the full editor in another tab? It answers on the portal's channel (fullHere in the editor)
+function fullOpen(a){
+  return new Promise(function(res){
+    if(!BC){ res(false); return; }
+    var on = function(e){ var m = e.data || {}; if(m.full === 'open' && m.app === a.id){ BC.removeEventListener('message', on); res(true); } };
+    BC.addEventListener('message', on);
+    try{ BC.postMessage({client:C.id, ping:a.id}); }catch(e){}
+    setTimeout(function(){ BC.removeEventListener('message', on); res(false); }, 300);
+  });
+}
+// the editor in the panel while editing: what it holds, and saving its last change before the panel changes or the page goes
+function qkWin(){ var f = $('#apFrame'); try{ return f && /[?&]quick=1/.test(f.src) && f.contentWindow && f.contentWindow.quickState ? f.contentWindow : null; }catch(e){ return null; } }
+function qkDirty(){ var w = qkWin(); try{ return !!(w && w.quickState().dirty); }catch(e){ return false; } }
+function qkBusy(){ var w = qkWin(); try{ return !!(w && w.quickState().busy); }catch(e){ return false; } }   // Claude is tailoring it
+function qkFlush(){
+  var w = qkWin(); if(!w || !qkDirty()) return Promise.resolve(true);
+  return Promise.resolve(w.saveNow()).then(function(){ return !qkDirty(); }, function(){ return false; });
+}
+TP.onLeave(function(){ return qkBusy() ? 'Claude is still tailoring the resume.' : qkDirty() ? 'The resume’s last change is still saving.' : ''; });
+// a dialog in the panel's editor (the choices, the review, a question) shows over the whole page: the editor says so, and its frame
+// is laid over the window until the dialog closes (the editor hides its own page, so its backdrop dims this one)
+function qkLift(on){
+  var s = $('.apside'); if(s) s.classList.toggle('lifted', !!on);
+  document.documentElement.classList.toggle('qklift', !!on);
+}
+window.addEventListener('message', function(e){
+  var m = e.data || {}, f = $('#apFrame');
+  if(e.origin !== location.origin || m.tp !== 'quick' || typeof m.lift !== 'boolean' || !f || e.source !== f.contentWindow) return;
+  qkLift(m.lift);
+});
+// while editing, the description reads with the job's keywords marked — green on the resume, amber missing (TPMatch, the same
+// count as the match ring) — and follows each save; "Edit the description" opens its own box again
+function jdMarks(){
+  var ta = $('#apJD'); if(!ta || !A) return;
+  var box = $('#apJDread'), on = resMode() === 'edit' && !RS.jd && String(A.jd_text || '').trim();
+  if(!on){ if(box) box.remove(); ta.hidden = false; return; }
+  if(!box){ box = document.createElement('div'); box.id = 'apJDread'; box.className = 'jdread'; ta.parentNode.insertBefore(box, ta); }
+  ta.hidden = true;
+  var m = appMatch(A);
+  box.innerHTML = '<div class="jdkey"><span><i class="ok"></i>On the resume' + (m ? ' · ' + m.hit.length : '') + '</span><span><i class="miss"></i>Missing' + (m ? ' · ' + m.miss.length : '') + '</span>' +
+    '<button type="button" class="btn sm ghost" data-act="jdedit">' + J.edit + 'Edit the description</button></div><div class="jdtext">' + jdMarked(A.jd_text, m) + '</div>';
+}
+function jdMarked(text, m){
+  text = String(text || ''); if(!m) return esc(text);
+  var terms = m.hit.map(function(k){ return [k, 'ok']; }).concat(m.miss.map(function(k){ return [k, 'miss']; })).filter(function(t){ return t[0]; }).sort(function(x, y){ return y[0].length - x[0].length; });
+  if(!terms.length) return esc(text);
+  var cls = {}; terms.forEach(function(t){ cls[String(t[0]).toLowerCase()] = t[1]; });
+  var rx = new RegExp('(^|[^A-Za-z0-9+#])(' + terms.map(function(t){ return String(t[0]).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|') + ')(?![A-Za-z0-9+#])', 'gi');
+  var out = '', at = 0, mm;
+  while((mm = rx.exec(text))){
+    var s = mm.index + mm[1].length, k = mm[2];
+    out += esc(text.slice(at, s)) + '<mark class="' + (cls[k.toLowerCase()] || 'ok') + '">' + esc(k) + '</mark>';
+    at = s + k.length;
+  }
+  return out + esc(text.slice(at));
 }
 // the resume's state in the checklist, and everything that shows the resume, drawn again together
 function resStep(){
   var d = A.resume_doc, m = (d && d.meta) || {}, pend = !!m.optPending, opt = !pend && optimisedDoc(d);
   return '<span class="n' + (opt ? ' ok' : '') + '">' + (opt ? I.check : '2') + '</span><div class="bd"><b>Resume</b><small>' + (pend ? 'Suggestions wait in the editor.' : opt ? 'Tailored to this job.' : 'Not tailored to this job yet.') + '</small></div>';
 }
-function drawRes(){ if($('#resCard')) $('#resCard').innerHTML = resumeCard(); if($('#ckRes')) $('#ckRes').innerHTML = resStep(); drawScore(); }
-// the resume's one action, in the job's card, above the resume and on a phone: review the list's suggestions, open the tailored copy, or tailor it
+function drawRes(){
+  if($('#resCard')) $('#resCard').innerHTML = resumeCard(); if($('#ckRes')) $('#ckRes').innerHTML = resStep(); drawScore(); jdMarks();
+  if(A && A.status === 'draft'){   // the resume's own action in the job's card and the phone's bar follows too (Tailor → Edit resume)
+    var ja = $('.jcard [data-act=tailor]'); if(ja) ja.outerHTML = resumeBtn('act');
+    var pb = $('.apbar [data-act=tailor]'); if(pb) pb.outerHTML = resumeBtn(true);
+  }
+}
+// the resume's one action, in the job's card, above the resume and on a phone: review the list's suggestions, edit the tailored
+// copy, or tailor it. Each happens right here, in the resume panel (tailorHere); a Ctrl/⌘-click opens the full editor in its tab
 function resumeBtn(hdr){
   var d = A.resume_doc, m = (d && d.meta) || {}, pend = !!m.optPending, opt = !pend && optimisedDoc(d), url = edUrl('app', A.id);
-  var cls = hdr === 'act' ? 'btn pri' : 'btn sm' + (!hdr && !opt ? ' pri' : ''), tgt = ' target="tp-ed-' + esc(A.id) + '" data-act="toeditor"';
-  if(hdr === 'act') return pend ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + '>' + I.spark + 'Review suggestions</a>'
-    : opt ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + '>' + I.doc + 'Open the resume</a>'
-    : '<a class="' + cls + '" href="' + esc(url + '#optimize') + '"' + tgt + '>' + I.spark + 'Tailor resume</a>';
-  return pend ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + '>' + I.spark + 'Review the suggestions</a>'
-    : opt ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + '>' + I.doc + (hdr ? 'Open resume' : 'Open the tailored resume') + '</a>'
-    : '<a class="' + cls + '" href="' + esc(url + '#optimize') + '"' + tgt + ' data-opt>' + I.spark + 'Tailor to this job</a>';
+  var cls = hdr === 'act' ? 'btn pri' : 'btn sm' + (!hdr && !opt ? ' pri' : ''), tgt = ' target="tp-ed-' + esc(A.id) + '" data-act="tailor"';
+  if(hdr === 'act') return pend ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + ' data-v="review">' + I.spark + 'Review suggestions</a>'
+    : opt ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + ' data-v="edit">' + J.edit + 'Edit resume</a>'
+    : '<a class="' + cls + '" href="' + esc(url + '#optimize') + '"' + tgt + ' data-v="optimize">' + I.spark + 'Tailor resume</a>';
+  return pend ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + ' data-v="review">' + I.spark + 'Review the suggestions</a>'
+    : opt ? '<a class="' + cls + '" href="' + esc(url) + '"' + tgt + ' data-v="edit">' + J.edit + 'Edit resume</a>'
+    : '<a class="' + cls + '" href="' + esc(url + '#optimize') + '"' + tgt + ' data-v="optimize" data-opt>' + I.spark + 'Tailor to this job</a>';
 }
 // a checklist line as the form changes: done (a tick) or not, and what's left to do
 function ckMark(id, ok, num, text){ var el = $('#' + id); if(!el) return; var n = el.querySelector('.n'); n.className = 'n' + (ok ? ' ok' : ''); n.innerHTML = ok ? I.check : num; el.querySelector('small').textContent = text; }
@@ -3783,19 +3931,25 @@ function optimisedDoc(d){
   var m = d && d.meta; if(!m) return false; if(m.optimised) return true;
   return !!m.pre && Object.keys(m.pre).some(function(p){ var v = docField(d, p); return v != null && v !== m.pre[p]; });
 }
-// above the resume (#resCard): what it is, the one it starts from, and its actions - drawn again whenever the job description,
-// the resume it starts from or the editor's save changes it
+// above the resume (#resCard): whose resume for which job, its state, Preview or Edit, and its actions - drawn again whenever the
+// job description, the resume it starts from, the mode or the editor's save changes it
 function resumeCard(){
   var rs = C.resumes || [], base = rs.filter(function(r){ return r.id === A.base_resume_id; })[0], bname = esc(base ? base.name : 'the main resume');
   var d = A.resume_doc, m = (d && d.meta) || {}, saved = !!(d || A.resume_text), pend = !!m.optPending, opt = !pend && optimisedDoc(d);   // pend: the list's Optimise left suggestions to review
-  var text = A.resume_text || (base && base.text) || '';
-  return '<div class="rh1"><b>Resume for this job</b>' + (pend ? '<span class="rst pend">' + I.spark + '<span><b>Synced in the background</b> — Claude’s suggestions wait in the editor; nothing has changed yet</span></span>'
+  var text = A.resume_text || (base && base.text) || '', ed = resMode() === 'edit', can = saved || !!base, url = edUrl('app', A.id);
+  var job = '<span class="rjob" title="Every change here is saved to this application only">for <b>' + esc(A.title || 'this job') + '</b>' + (A.company ? ' · ' + esc(A.company) : '') + '</span>';
+  var mode = can ? '<span class="seg rmode" role="group" aria-label="Show the resume as"><button type="button" data-act="resmode" data-v="view" class="' + (ed ? '' : 'on') + '" aria-pressed="' + !ed + '">Preview</button>' +
+      '<button type="button" data-act="resmode" data-v="edit" class="' + (ed ? 'on' : '') + '" aria-pressed="' + ed + '" title="Edit the resume right here, beside the job">' + J.edit + 'Edit</button></span>' : '';
+  var adv = can ? '<a class="btn sm ghost" href="' + esc(url) + '" target="tp-ed-' + esc(A.id) + '" data-act="toeditor" title="The full editor in a new tab: format, templates, versions, sections and the cover letter">Advanced editor' + J.upright + '</a>' : '';
+  var tools = (saved || base ? '<button class="btn sm ico" type="button" data-act="respdf" title="Download the resume as a PDF" aria-label="Download the resume as a PDF">' + J.dl + '</button>' : '') +
+    (text ? '<button class="btn sm ico" type="button" data-act="cpresume" title="Copy the resume text" aria-label="Copy the resume text">' + I.copy + '</button>' : '');
+  return '<div class="rh1"><b>Resume for this job</b>' + job + (pend ? '<span class="rst pend">' + I.spark + '<span><b>Synced in the background</b> — Claude’s suggestions wait in the editor; nothing has changed yet</span></span>'
       : opt ? '<span class="rst ok">' + I.check + 'Tailored to this job ' + esc(TP.ago((m.optimised && m.optimised.at) || A.updated_at)) + '</span>'
       : '<span class="rst">' + (saved ? 'A copy of <b>' + bname + '</b>, not tailored to this job yet' : 'Starts from <b>' + bname + '</b>, not tailored to this job yet') + '</span>') + '</div>' +
-    (rs.length ? '<div class="rh2"><label class="lbl" for="apBase">Start from</label><select class="inp" id="apBase"' + (saved ? ' disabled title="This job’s copy is already made from it"' : '') + '>' +
-        rs.map(function(r){ return '<option value="' + esc(r.id) + '"' + (r.id === A.base_resume_id ? ' selected' : '') + '>' + esc(r.name) + '</option>'; }).join('') + '</select>' +
-        '<span class="rbtns">' + resumeBtn(false) + (saved || base ? '<button class="btn sm" type="button" data-act="respdf" title="Download the resume as a PDF">' + J.dl + 'PDF</button>' : '') +
-        (text ? '<button class="btn sm" type="button" data-act="cpresume" title="Copy the resume text">' + I.copy + 'Copy text</button>' : '') + '</span></div>'
+    (rs.length ? '<div class="rh2">' + mode + (ed ? '<span class="rhint" title="Click any line on the page to edit it. Changes save on their own.">Click any line to edit it</span>' : '') +
+        '<span class="rbtns">' + (opt && !pend ? '' : resumeBtn(false)) + adv + tools + '</span></div>' +
+        (saved ? '' : '<div class="rh3"><label class="lbl" for="apBase">Start from</label><select class="inp" id="apBase">' +
+          rs.map(function(r){ return '<option value="' + esc(r.id) + '"' + (r.id === A.base_resume_id ? ' selected' : '') + '>' + esc(r.name) + '</option>'; }).join('') + '</select></div>')
       : '<div class="note warn">' + esc(C.row.full_name) + ' has no resume yet. <a href="' + esc(cUrl(C.id, 'resumes')) + '" data-go>Add one on the Resumes tab</a>, or open the editor and upload their file there.</div>') +
     (A.jd_text ? '' : '<span class="fine warnt">Paste the job description first: the resume is tailored to it.</span>');
 }
@@ -4220,7 +4374,9 @@ if(BC) BC.onmessage = function(e){
     if(x){ x.opt = {st:'done', at:Date.now()}; lkSave(L); if(lkShown(L)) lkDraw(); }
   }
   if(!C || m.client !== C.id) return;
-  if(m.app && R.app === m.app) refreshApp();
+  // the full editor opened this resume in another tab while it's being edited here: the panel saves and steps back to Preview
+  if(m.full === 'open' && R.app === m.app && resMode() === 'edit') setResMode('view').then(function(ok){ if(ok) TP.toast('Opened in the full editor: this panel is back to Preview'); });
+  if(m.app && R.app === m.app && !m.full) refreshApp();
   if(m.resume){ C.resumes = null; if(R.tab === 'resumes' && !R.app) tResumes(); }
   if(m.profile){   // the editor saved the client's target roles (a base resume asked for them first): this tab's copy of the client follows
     q(SB.from('clients').select('*').eq('id', C.id).maybeSingle()).then(function(row){
@@ -4456,6 +4612,8 @@ document.addEventListener('click', function(e){
   switch(act){
     case 'memenu': return meMenu(b);
     case 'jtab': return apTab(b.getAttribute('data-v'));
+    case 'resmode': return setResMode(b.getAttribute('data-v'));   // the resume beside the job: Preview, or Edit right there
+    case 'jdedit': RS.jd = true; jdMarks(); var jt = $('#apJD'); if(jt) jt.focus(); return;
     case 'gocover': { var cv = $('#apCover'); if(!cv) return; cv.scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(function(){ var t = $('#apCL'); if(t) t.focus({preventScroll:true}); }, 350); return; }
     case 'editjob': { apTab('jd'); var jt = $('#apT'); if(jt){ jt.scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(function(){ jt.focus({preventScroll:true}); jt.select(); }, 350); } return; }
     // the PDF of the resume in view: the editor's own download, from the preview; if it can't (not laid out yet), the editor opens
@@ -4525,7 +4683,20 @@ document.addEventListener('click', function(e){
     case 'acmore': return loadActivity(C, +b.getAttribute('data-n'));
     case 'cpresume': return TP.copy(A.resume_text || (((C.resumes || []).filter(function(r){ return r.id === A.base_resume_id; })[0] || {}).text) || '', 'Resume text');
     case 'cpcover': return TP.copy($('#apCL').value, 'Cover letter');
-    case 'toeditor': saveDraft(); return;   // the link opens the editor in its own tab
+    case 'toeditor': {   // the link opens the editor in its own tab
+      saveDraft(); if(resMode() !== 'edit') return;
+      // being edited here: its last change is saved and the panel goes back to Preview first, so the full editor opens the latest
+      // and the two never edit at once (the tab opens on the click itself, which pop-up blockers allow; the address follows)
+      e.preventDefault(); var href = b.getAttribute('href'), tg = b.getAttribute('target'), w = window.open('', tg);
+      setResMode('view').then(function(ok){
+        if(!ok){ try{ if(w && w.location.href === 'about:blank') w.close(); }catch(ex){} return; }   // stayed in Edit (Claude still at it, or a change not saved): no second editor
+        if(w) w.location.href = href; else window.open(href, tg);
+      });
+      return;
+    }
+    case 'tailor':   // the resume's own action (Tailor, Review suggestions, Edit resume), in the panel; a Ctrl/⌘/Shift-click opens the full editor
+      if(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey){ saveDraft(); return; }
+      e.preventDefault(); return tailorHere(b.getAttribute('data-v'));
     case 'markapplied': return markApplied(b);
     case 'deldraft':
       var da = A, dc = C;
