@@ -165,6 +165,10 @@ body{background:#fff}
 .rvhead small{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
 .rframe{flex:1;min-height:0;background:var(--bg)}
 .rframe iframe{display:block;width:100%;height:100%;border:0}
+/* one application's resume, as sent: the page in a frame, its PDF beside the title */
+.ashead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.apframe{height:min(1000px,80vh);min-height:480px;background:var(--bg);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.apframe iframe{display:block;width:100%;height:100%;border:0}
 .rsum{grid-area:sum}.rvers{grid-area:vers}.rreq{grid-area:req}
 .rstats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .rstats div{background:var(--bg);border-radius:12px;padding:12px 14px}
@@ -618,11 +622,12 @@ function loadList(){
 /* ---------- one application: exactly what was sent ---------- */
 function vApp(id){
   V.innerHTML = '<div class="skel"></div><div class="skel"></div>';
-  q(SB.from('applications').select('id,status,title,company,location,job_url,jd_text,resume_text,resume_file,cover_letter,answers,screenshot,screenshots,applied_at,status_at').eq('id', id).maybeSingle()).then(function(a){
+  q(SB.from('applications').select('id,status,title,company,location,job_url,jd_text,resume_doc,resume_text,resume_file,cover_letter,answers,screenshot,screenshots,applied_at,status_at').eq('id', id).maybeSingle()).then(function(a){
     if(appId() !== id) return;
     if(!a){ V.innerHTML = '<div class="empty"><h3>Not found</h3><p>This application isn’t on your account.</p><a class="btn" href="#applications" data-go>All applications</a></div>'; return; }
     A = a; document.title = (a.company || 'Application') + ' | TrulyPlaced';
     var shots = (a.screenshots && a.screenshots.length) ? a.screenshots : a.screenshot ? [a.screenshot] : [];   // every confirmation screenshot, the old column as a fallback
+    var page = !!(a.resume_doc && a.resume_doc.sections);
     V.innerHTML = '<a class="btn sm ghost" href="#applications" data-go>' + I.back + 'All applications</a>' +
       '<div class="card" style="margin-top:10px"><div class="ahead">' + TP.logo(a.company) + '<div style="flex:1;min-width:0"><h1>' + esc(a.title || 'Role') + '</h1><div class="m">' + esc([a.company, a.location].filter(Boolean).join(' · ')) + '</div></div>' + TP.statusChip(a.status) + '</div>' +
         '<div class="sent">' + I.check + '<span>Sent ' + esc(TP.fmtDateTime(a.applied_at)) + ' by ' + TEAM + '</span></div>' +
@@ -630,9 +635,14 @@ function vApp(id){
       (shots.length ? '<div class="card"><h3>Proof it was sent</h3><p class="hint">The company’s confirmation screen' + (shots.length > 1 ? 's' : '') + ', saved when we applied.' + (shots.length > 1 ? ' Click one to open it full size.' : '') + '</p>' +
         (shots.length === 1 ? '<a class="shot" data-file="' + esc(shots[0]) + '" target="_blank" rel="noopener"><img data-file="' + esc(shots[0]) + '" alt="Confirmation screenshot"></a>'
           : '<div class="shotgrid">' + shots.map(function(p, i){ return '<a class="shot" data-file="' + esc(p) + '" target="_blank" rel="noopener"><img data-file="' + esc(p) + '" alt="Confirmation screenshot ' + (i + 1) + '"></a>'; }).join('') + '</div>') + '</div>' : '') +
-      '<div class="card"><h3>Your resume, as sent</h3><p class="hint">Tailored for this role by ' + TEAM + '.</p>' +
+      // the resume as a page (the editor's read-only view, as on the Resume tab) with its PDF; a copy never laid out shows as its text
+      (page ? '<div class="card"><div class="ashead"><div><h3>Your resume, as sent</h3><p class="hint">Tailored for this role by ' + TEAM + '.</p></div>' +
+          '<button class="btn sm" type="button" data-act="pdf" data-f="apF">' + I.doc + 'Download PDF</button></div>' +
         (a.resume_file ? '<a class="file" data-file="' + esc(a.resume_file) + '" target="_blank" rel="noopener" style="margin-bottom:10px">' + I.doc + '<span>Open the file we uploaded</span></a>' : '') +
-        (a.resume_text ? '<pre class="txt">' + esc(a.resume_text) + '</pre>' : (a.resume_file ? '' : '<p class="fine">Not available for this one.</p>')) + '</div>' +
+        '<div class="apframe"><iframe id="apF" title="Your resume, as sent" src="/editor.html?client=' + encodeURIComponent(ME.id) + '&amp;app=' + encodeURIComponent(a.id) + '&amp;view=1"></iframe></div></div>'
+      : '<div class="card"><h3>Your resume, as sent</h3><p class="hint">Tailored for this role by ' + TEAM + '.</p>' +
+        (a.resume_file ? '<a class="file" data-file="' + esc(a.resume_file) + '" target="_blank" rel="noopener" style="margin-bottom:10px">' + I.doc + '<span>Open the file we uploaded</span></a>' : '') +
+        (a.resume_text ? '<pre class="txt">' + esc(a.resume_text) + '</pre>' : (a.resume_file ? '' : '<p class="fine">Not available for this one.</p>')) + '</div>') +
       (a.cover_letter ? '<div class="card"><h3>Cover letter</h3><pre class="txt">' + esc(a.cover_letter) + '</pre></div>' : '') +
       ((a.answers || []).length ? '<div class="card"><h3>Answers on the application</h3>' + a.answers.map(function(x){ return '<div class="qa-ro"><b>' + esc(x.q) + '</b><div>' + esc(x.a) + '</div></div>'; }).join('') + '</div>' : '') +
       (a.jd_text ? '<div class="card"><details><summary style="cursor:pointer"><h3 style="display:inline">The job description</h3> <span class="fine">as it was when we applied</span></summary><pre class="txt" style="margin-top:10px">' + esc(a.jd_text) + '</pre></details></div>' : '');
@@ -840,7 +850,7 @@ document.addEventListener('click', function(e){
   if(act === 'out') return TP.signOut();
   if(act === 'more'){ F.n += 50; loadList(); }
   if(act === 'ask') askModal();
-  if(act === 'pdf'){ var fw = $('#rvF'); try{ if(fw && fw.contentWindow && fw.contentWindow.downloadPDF){ fw.contentWindow.downloadPDF(); return; } }catch(x){} TP.toast('One moment — the resume is still opening'); }
+  if(act === 'pdf'){ var fw = $('#' + (b.getAttribute('data-f') || 'rvF')); try{ if(fw && fw.contentWindow && fw.contentWindow.downloadPDF){ fw.contentWindow.downloadPDF(); return; } }catch(x){} TP.toast('One moment — the resume is still opening'); }
   if(act === 'pfsave') pfSave(b);
   if(act === 'qaadd'){ $('#pfQA').insertAdjacentHTML('beforeend', qaRow({q:'', a:''})); $('#pfQA .qa:last-child [data-qa=q]').focus(); pfMark(); }
   if(act === 'qacommon'){
