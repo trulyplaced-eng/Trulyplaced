@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>/* never inside another site's page (clickjacking): our own pages may frame it, nothing else */(function(){try{if(top===self||top.location.origin===location.origin)return}catch(e){}document.documentElement.style.display='none';try{top.location.replace(location.href)}catch(e){}})()</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Resume Editor | TrulyPlaced</title>
 <meta name="description" content="Edit your resume with AI suggestions, tailor it to a job, and download a clean PDF.">
@@ -972,7 +973,8 @@ var BUL = '•●▪◦‣∙·*–—\\-➢➤►✓✔◆■□○';
 var BUL_RX = new RegExp('^\\s*[' + BUL + ']\\s*');
 
 function readPDF(buf){
-  return pdfjsLib.getDocument({data:buf}).promise.then(function(pdf){
+  // isEvalSupported:false — pdf.js 3.x would otherwise build font code from the file, and a crafted PDF can run script that way (CVE-2024-4367)
+  return pdfjsLib.getDocument({data:buf, isEvalSupported:false}).promise.then(function(pdf){
     var jobs = [];
     for(var i=1;i<=pdf.numPages;i++) jobs.push(pdf.getPage(i).then(readPage));
     return Promise.all(jobs).then(function(pages){ return {pdf:pdf, pages:pages}; });

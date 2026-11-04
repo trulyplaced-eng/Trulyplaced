@@ -664,7 +664,8 @@ var BUL = '•●▪◦‣∙·*–—\\-➢➤►✓✔◆■□○';
 var BUL_RX = new RegExp('^\\s*[' + BUL + ']\\s*');
 
 function readPDF(buf){
-  return pdfjsLib.getDocument({data:buf}).promise.then(function(pdf){
+  // isEvalSupported:false — pdf.js 3.x would otherwise build font code from the file, and a crafted PDF can run script that way (CVE-2024-4367)
+  return pdfjsLib.getDocument({data:buf, isEvalSupported:false}).promise.then(function(pdf){
     var jobs = [];
     for(var i=1;i<=pdf.numPages;i++) jobs.push(pdf.getPage(i).then(readPage));
     return Promise.all(jobs).then(function(pages){ return {pdf:pdf, pages:pages}; });
