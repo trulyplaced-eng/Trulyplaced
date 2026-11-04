@@ -20,6 +20,7 @@
 <!-- Real icon files (not data: URIs) so Google can show the logo beside the site in results. -->
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-96.png" type="image/png" sizes="96x96">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://trulyplaced.com/">
@@ -38,9 +39,11 @@
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
+  "@id": "https://trulyplaced.com/#website",
   "name": "TrulyPlaced",
   "alternateName": ["Truly Placed", "trulyplaced.com"],
-  "url": "https://trulyplaced.com/"
+  "url": "https://trulyplaced.com/",
+  "publisher": {"@id": "https://trulyplaced.com/#organization"}
 }
 </script>
 <!-- The FAQ section below, for search engines and AI answers. Keep it word for word with the page. -->
@@ -64,6 +67,7 @@
 {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": "https://trulyplaced.com/#organization",
   "name": "TrulyPlaced",
   "alternateName": "Truly Placed",
   "legalName": "RepoReserve Technologies Private Limited",
@@ -97,7 +101,7 @@
   "serviceType": "Job application service",
   "description": "A career specialist rewrites your resume and applies to 25-30 matched roles for you every business day, tailoring each application. Every application is tracked in a client portal.",
   "url": "https://trulyplaced.com/",
-  "provider": {"@type": "Organization", "name": "TrulyPlaced", "url": "https://trulyplaced.com/"},
+  "provider": {"@id": "https://trulyplaced.com/#organization"},
   "areaServed": ["US", "GB", "CA", "AU"],
   "offers": [
     {"@type": "Offer", "name": "Starter: 250 applications", "price": "299", "priceCurrency": "USD", "url": "https://trulyplaced.com/#pricing"},
@@ -752,7 +756,7 @@ header.nav,header.nav .nav-in,header.nav .nav-links a,header.nav .brand *{transi
     <div class="hero-copy">
       <span class="eyebrow">Founder-led · Expert-crafted · Results-driven</span>
       <h1>The job hunt, <span class="accent">truly handled.</span></h1>
-      <p class="hero-sub">Done-for-you job applications: a career specialist rewrites your resume and applies to 25–30 matched roles for you every business day.</p>
+      <p class="hero-sub">TrulyPlaced is a done-for-you job application service: a career specialist rewrites your resume and applies to 25–30 matched roles for you every business day.</p>
       <ul class="checklist">
         <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2"><path d="M20 6 9 17l-5-5"/></svg></span>Expert-crafted, FAANG-style resumes</li>
         <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2"><path d="M20 6 9 17l-5-5"/></svg></span>Fresh roles found before they hit job boards</li>
