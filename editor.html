@@ -3982,14 +3982,14 @@ function optPlan(sel) {
 // the tailoring itself, for Optimise here and for the team portal's batch: one resume-ai call, then every suggestion goes
 // through the same fact checks (validateAll). Nothing on the resume changes; step(k, label) reports progress.
 function optCompute(sel, ins, P, step) {
-  const { targets, terms, cover0, sm, skills } = P, R = { reqs: [], mode: '', ins: String(ins || '').trim(), lim: insLimits(ins), brief: isBrief(ins) }, done = step || (() => {});
+  const { targets, terms, cover0, sm, skills } = P, R = { reqs: [], mode: '', ins: String(ins || '').trim(), lim: insLimits(ins), brief: isBrief(ins), one: !!sel.only }, done = step || (() => {});   // one: a role asked for by itself (optRole) is worked again in full
   setMatchBase(cover0);   // the job match before any Optimise for this job: what every later run is compared with
   // an application: the whole posting; each bullet's original line where it has changed since, and whether it's already optimised for this job
   const strict = appOpt(), pre = DOC.meta.pre || {}, again = optAgain();
   return ai({ task: 'tailor', jd: jobText().slice(0, strict ? 15000 : 6000), target: cleanTitle(JOB.title), rules: clientRules(), instructions: ins,
     summary: sm ? sm.text : '', headline: DOC.headline || '', skills, skillRows: (DOC.sections.find((x) => x.k === 'skills' && !x.hidden) || { rows: [] }).rows.map((r) => r.label || ''),
     roles: targets.map((tg) => { const bl = tg.it.bullets.filter((b) => b.t.trim()), r = { id: tg.key, title: tg.it.title || '', org: tg.it.sub || '', bullets: bl.map((b) => b.t) };
-      if (strict) { const was = bl.map((b) => { const o = origLine(b.id, b.t); return o !== b.t ? o : ''; }), dn = R.ins ? [] : bl.map((b) => { const p = pre[bPath(tg, b)]; return p !== undefined && p !== b.t; });   // new instructions: every line is worked again
+      if (strict) { const was = bl.map((b) => { const o = origLine(b.id, b.t); return o !== b.t ? o : ''; }), dn = R.ins || R.one ? [] : bl.map((b) => { const p = pre[bPath(tg, b)]; return p !== undefined && p !== b.t; });   // new instructions, or this one role asked for: every line is worked again
         if (was.some(Boolean)) r.was = was; if (dn.some(Boolean)) r.done = dn; }
       return r; }),
     touch: { summary: !!sel.summary, headline: !!sel.headline, experience: !!sel.experience, skills: !!sel.skills }, ...(sel.sync ? { sync: true } : {}),
@@ -4081,7 +4081,7 @@ function strictChecks(R, targets, V) {
       if (hard.some((k) => termN(k, lowS) > Math.max(1, termN(k, lowO)))) return back('stuffed');
       if (added.some((k) => lines.filter((t, j) => j !== i && inText(k, String(t).toLowerCase())).length >= 2)) return back('crowd');
       const b = byId(tg.it.bullets, x.bid), p = b ? pre[bPath(tg, b)] : undefined;
-      if (!R.ins && p !== undefined && p !== x.orig && !added.length && gradeBullet({ t: x.sug }).score < gradeBullet({ t: x.orig }).score + 5) { tg.sameN = (tg.sameN || 0) + 1; back(''); }   // already optimised: no rewording for its own sake (unless the instructions say what to do)
+      if (!R.ins && !R.one && p !== undefined && p !== x.orig && !added.length && gradeBullet({ t: x.sug }).score < gradeBullet({ t: x.orig }).score + 5) { tg.sameN = (tg.sameN || 0) + 1; back(''); }   // already optimised: no rewording for its own sake (unless the instructions say what to do)
     });
   });
   if (R.summary && R.summary.sug && norm(R.summary.sug) !== norm(R.summary.orig)) {
@@ -4216,7 +4216,7 @@ function showResults(R, targets, sel, V) {
     const ord = tg.orderIds ? row('order', { key: tg.key, ids: tg.orderIds }, listOf(tg.it, tg.it.bullets.filter((b) => b.t.trim()).map((b) => b.id)), listOf(tg.it, tg.orderIds), 'The work this job cares about most comes first — recruiters read the top bullets.') : '';
     h += ch.length || ord ? card(t, ord + ch.map((x) => row('bullet', { bid: x.bid, key: tg.key }, x.orig, x.sug, '', x.fc || x.lenNote)).join('') + keptNote, false, tg.key) : card(t, tg.res ? (tg.keptN ? keptNote : already) : '<div class="rdone"><span>!</span><span><b>Couldn’t rewrite this role</b><small>' + esc(aiMsg(R.err)) + '</small></span></div>', true);
   });
-  if (!OPT.rows.length) {   // no bullet to review: everything is on the page
+  if (!OPT.rows.length && !sel.only) {   // no bullet to review: everything is on the page (one role asked for by itself still gets its card: "Already optimized")
     endPending(); modalClose();
     const first = $('#sheet .pgui'); if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
     const c = strict && !onPage && atsTerms().length ? atsCover(docText(), atsTerms()) : null;   // an application with nothing left to change says where it stands
@@ -4226,7 +4226,7 @@ function showResults(R, targets, sel, V) {
   }
   // the reference editor's window: one card per role, side by side, Accept All and Done. The checks behind it still run (a problem
   // shows on its row); the requirements and the match before/after are on the Application page (Job Analysis, the match ring)
-  toast('Resume optimized successfully', null, 'ok');
+  if (OPT.rows.length) toast('Resume optimized successfully', null, 'ok');
   modalOpen('<div class="om sb rev" role="dialog" aria-modal="true" aria-labelledby="omR"><button type="button" class="mx" data-a="m-close" aria-label="Close">' + XI + '</button>' +
     '<div class="omh"><h2 id="omR">Optimised Work Experience</h2><p class="omsub">' + (OPT.pending ? 'Made in the background from the team portal — nothing on the resume has changed yet. ' : '') + 'Review AI suggestions side-by-side with your current bullets. Accept individually or apply all changes at once.' + (/\[/.test(h) ? ' Replace anything in [ ] with the real number.' : '') + '</p></div>' +
     '<div class="omb">' + h + '</div><div class="omf"><span></span><button class="btn rall" type="button" data-a="r-all" id="rAll">' + IC_OK + ' Accept All</button><button class="btn" type="button" data-a="opt-done">Done</button></div></div>');
