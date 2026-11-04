@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Resume X-Ray | Free ATS Resume Checker | TrulyPlaced</title>
-<meta name="description" content="X-ray your resume the way an applicant tracking system reads it: see what it extracts and what it drops, get every bullet graded, check your match against a job, and get a prioritised fix list. Free, and your resume never leaves your device.">
+<meta name="description" content="Free ATS resume checker: see what an applicant tracking system pulls from your resume, what it drops, every bullet graded, and your match to a job.">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0938d5">
 <link rel="canonical" href="https://trulyplaced.com/ats-check.html">
@@ -361,6 +361,16 @@ h1,h2,h3{text-wrap:balance}
 .ctac.one .btn{background:#fff;color:var(--ink);border-color:#fff}
 .note{font-size:12.5px;color:var(--muted);margin-top:28px;text-align:center;max-width:80ch;margin-inline:auto}
 
+.help{padding-block:56px;background:#fff;border-top:1px solid var(--line)}
+.help-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:18px}
+.help h3{font-family:Poppins;font-size:17px;color:var(--ink);margin-bottom:8px}
+.help p{font-size:14.5px;line-height:1.65;margin-bottom:10px;max-width:64ch}
+.help-h{font-family:Poppins;font-size:20px;color:var(--ink);margin-top:36px}
+.help-faq{margin-top:10px;max-width:80ch}
+.help-faq dt{font-weight:600;color:var(--ink);margin-top:16px}
+.help-faq dd{font-size:14.5px;line-height:1.6;margin-top:4px}
+.help-faq a{color:var(--blue)}
+@media(max-width:760px){.help-grid{grid-template-columns:1fr}}
 footer{background:var(--ink);color:rgba(255,255,255,.6);font-size:13px;padding-block:26px}
 footer .row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 footer a{color:rgba(255,255,255,.8);text-decoration:none}
@@ -478,14 +488,13 @@ footer a:hover{color:#fff}
     TrulyPlaced
   </a>
   <a class="nl" href="/">Done-for-you service</a>
-  <a class="nl" href="/app.html#jobs">Job board</a>
-  <a class="nl cta" id="topSign" href="/app.html?next=%2Fats-check.html#signin">Sign in</a>
+  <a class="nl cta" id="topSign" href="/login.html?next=%2Fats-check.html">Sign in</a>
 </div></div>
 
 <section class="hero" id="top">
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow"><i></i>Free resume X-ray</span>
+      <span class="eyebrow"><i></i>Free ATS resume checker</span>
       <h1>See your resume <em>the way the robots do.</em></h1>
       <p class="lede">Most resumes are filtered by software before a person reads them. Upload yours and see exactly what an applicant tracking system pulls out, what it drops, and what to fix first.</p>
       <ul class="gets">
@@ -624,9 +633,9 @@ footer a:hover{color:#fff}
 
     <div class="ctas">
       <div class="ctac one">
-        <h3>See your match on live jobs</h3>
-        <p>Your resume is ready to go. Open the TrulyPlaced job board and every role shows how well you match — fresh postings from top US companies, updated live.</p>
-        <a class="btn" href="/app.html#jobs" id="toJobs">Show me matching jobs →</a>
+        <h3>Fix it in the free resume editor</h3>
+        <p>Your resume opens in the editor with this X-ray’s text: edit any line on the page, get AI suggestions for a bullet, and download a clean PDF.</p>
+        <a class="btn" href="/editor.html" id="toJobs">Open the resume editor →</a>
       </div>
       <div class="ctac two">
         <h3>Rather have a recruiter fix it — and apply for you?</h3>
@@ -637,6 +646,38 @@ footer a:hover{color:#fff}
     <p class="note">This X-ray simulates how common applicant tracking systems read resumes. Every system is a little different, and scores here are our own measure — not a prediction of any employer’s decision. Your resume stays on your device.</p>
   </div>
 </main>
+
+<!-- What the tool does, as text search engines can read (word for word true to the tool; no claims beyond it) -->
+<section class="help" id="about">
+  <div class="wrap">
+    <div class="sh"><div><div class="k">About this tool</div><h2>How this free ATS resume checker works</h2></div></div>
+    <div class="help-grid">
+      <div>
+        <h3>It reads your file the way hiring software does</h3>
+        <p>Most companies run applications through an applicant tracking system (ATS) before a recruiter sees them. The ATS turns your resume into text and fills in a candidate record: your name and contact details, each job with its dates, your education and your skills. Anything it can’t read is a blank field, and a recruiter’s search can’t find you there.</p>
+        <p>The X-ray opens the exact PDF or Word file you send employers, shows every line the parser catches, and builds the record an ATS would make from it, with the gaps marked.</p>
+      </div>
+      <div>
+        <h3>Then it tells you what to fix first</h3>
+        <p>Every bullet is graded A to D, with a rewrite to try. Rewrites leave blanks like __% for your real numbers; they never make one up. Paste a job description and you see your match to it, the must-have skills first. The fix list puts the changes in order of how much each one matters.</p>
+        <p>Choose where you’re applying (US, UK, Canada or Australia): each expects different things, such as leaving a photo or a date of birth off.</p>
+      </div>
+    </div>
+    <h2 class="help-h">Questions</h2>
+    <dl class="help-faq">
+      <dt>Is the ATS resume checker free?</dt>
+      <dd>Yes. Sign in with Google and check as many versions of your resume as you like.</dd>
+      <dt>Is my resume uploaded anywhere?</dt>
+      <dd>No. It’s read in your browser, on your device.</dd>
+      <dt>Which files can I check?</dt>
+      <dd>A PDF or a Word (.docx) file, or your resume pasted as text. Check the file you actually send, since its layout is what the software reads.</dd>
+      <dt>Does a high score mean I’ll get interviews?</dt>
+      <dd>No. The X-ray simulates how common applicant tracking systems read resumes, and the score is our own measure. Every system is a little different, and hiring decisions are the employer’s.</dd>
+      <dt>Can someone fix my resume and apply for me?</dt>
+      <dd>Yes. That’s our <a href="/">done-for-you job application service</a>: a career specialist rewrites your resume and applies to 25–30 matched roles for you every business day.</dd>
+    </dl>
+  </div>
+</section>
 
 <div id="printRep"></div>
 
@@ -1601,7 +1642,7 @@ function stepAt(n){   // n = position among the steps being shown; everything be
 }
 function stepResult(n, text){ var el = $$('#steps li')[n]; if(!el || !text) return; el.querySelector('.rs').textContent = text; el.classList.add('has'); }
 function go(){
-  if(GATED){ location.href = '/app.html?next=%2Fats-check.html#signin'; return; }
+  if(GATED){ location.href = '/login.html?next=%2Fats-check.html'; return; }
   fail('');
   if(!S.buf){ if($('paste').value.trim().length < 80){ fail('Add your resume first — upload the file, or paste at least a few lines.'); return; } S.kind = 'paste'; S.name = ''; }
   if(S.kind === 'pdf' && !window.pdfjsLib){ fail('The PDF reader didn’t load — check your connection, or paste your resume as text.'); return; }
@@ -1758,12 +1799,12 @@ if(GATED){
   var g = document.createElement('div'); g.className = 'agate';
   g.innerHTML = '<span class="glk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>'+
     '<h2>Sign in to X-ray your resume</h2><p>Free with your Google account. You’ll come straight back here.</p>'+
-    '<ul>'+['The full ATS X-ray of your actual file','Every bullet graded, with a rewrite to try','Your match to any job description','Your resume saved for the job board too — upload once'].map(function(t){ return '<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'+t+'</li>'; }).join('')+'</ul>'+
-    '<a class="gbtn" href="/app.html?next=%2Fats-check.html#signin"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2c-2 1.5-4.5 2.4-7.2 2.4-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 38.2 44 33 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Continue with Google</a>'+
+    '<ul>'+['The full ATS X-ray of your actual file','Every bullet graded, with a rewrite to try','Your match to any job description','Your resume carried into the free resume editor — upload once'].map(function(t){ return '<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'+t+'</li>'; }).join('')+'</ul>'+
+    '<a class="gbtn" href="/login.html?next=%2Fats-check.html"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2c-2 1.5-4.5 2.4-7.2 2.4-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 38.2 44 33 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Continue with Google</a>'+
     '<p class="fine">By continuing you agree to our <a href="/terms.html">Terms</a> and <a href="/privacy.html">Privacy Policy</a>. Your resume is read on your device and never uploaded.</p>';
   ik.appendChild(g);
 } else {
-  var ts = $('topSign'); if(ts){ ts.textContent = 'My jobs'; ts.href = '/app.html#jobs'; }
+  var ts = $('topSign'); if(ts) ts.remove();   // signed in: there's no account page for the free tools
 }
 /* ---------- first-visit tour: spotlight + card, skippable, keyboard friendly ---------- */
 var TOUR = (function(){
@@ -1951,12 +1992,6 @@ function afterReport(){
   var ed = document.createElement('a'); ed.className = 'btn edbtn'; ed.id = 'toEditor'; ed.href = '/editor.html';
   ed.textContent = '✨ Fix it in the resume editor';
   var acts0 = document.querySelector('.sumacts'); if(acts0) acts0.insertBefore(ed, acts0.firstChild);
-  if(JOBCTX){
-    var a = document.createElement('a'); a.className = 'btn backjob'; a.id = 'backJob';
-    a.href = '/app.html#job=' + encodeURIComponent(JOBCTX.key);
-    a.textContent = 'Back to ' + JOBCTX.company + ' — apply →';
-    var acts = document.querySelector('.sumacts'); if(acts) acts.insertBefore(a, acts.firstChild);
-  }
 }
 var fromBoard = location.hash === '#mine';
 if(fromBoard) try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
