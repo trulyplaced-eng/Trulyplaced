@@ -122,6 +122,7 @@
 .hi .dot{flex:none;width:10px;height:10px;border-radius:50%;margin-top:6px;background:var(--blue-line)}
 .hi .dot.k-app_applied{background:var(--blue)}
 .hi .dot.k-app_status{background:var(--violet)}
+.hi .dot.k-app_failed{background:var(--bad)}.hi .dot.k-app_confirmed{background:var(--ok)}.hi .dot.k-assigned{background:#64748b}
 .hi .dot.k-note{background:var(--warn)}
 .hi .dot.k-client_created,.hi .dot.k-invite_sent,.hi .dot.k-app_restored,.hi .dot.k-resume_restored,.hi .dot.k-client_restored{background:var(--ok)}
 .hi .dot.k-app_deleted,.hi .dot.k-resume_deleted,.hi .dot.k-client_archived{background:var(--bad)}
@@ -1506,6 +1507,72 @@ body{font-size:13px;line-height:1.5}
 .tk .m .due{color:#1d4ed8;font-weight:500}
 .mdcrm{margin-bottom:16px}
 @media (max-width:760px){ .ldrow .ldwho{display:none} .ldrow .side .st{display:none} }
+
+/* ===== the work figures: My day's own work, Operations (sql/supabase-employee-work.sql) ===== */
+.wkhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:20px 0 10px}
+.wkhead h2{font-size:14px;font-weight:600;margin:0}
+.wrbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.wrbar .seg button{min-height:26px;padding:0 10px;font-size:12.5px}
+.wrc{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+.wrc input,.tlf select,.tlf input,.asel{height:28px;min-height:28px;padding:0 8px;font-size:12.5px;border:1px solid var(--line-2);border-radius:var(--rc);background:#fff;color:var(--ink)}
+.tlf input[type=search]{width:190px}
+.asel{max-width:100%;width:100%}
+.tlf{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.stat.bad b{color:#b91c1c}.stat.warn b{color:#b45309}
+.st.failed{background:#fef2f2;color:#b91c1c}.st.failed::before{background:#ef4444}
+.bad{color:#b91c1c}
+small.bad{font-size:11.5px;font-weight:500}
+.num{font-variant-numeric:tabular-nums;color:var(--ink)}
+.card.flush{padding:0;overflow:hidden}
+.card.flush > .ch{padding:10px 16px;margin:0;border-bottom:1px solid var(--line);min-height:46px}
+.card.flush > .tbl{border:0;border-radius:0}
+.card.flush .tbl .thead{background:var(--head)}
+.wkx{overflow-x:auto}
+button.li{width:100%;text-align:left;background:none;border:0;border-top:1px solid rgba(0,0,0,.055);font:inherit;color:inherit;cursor:pointer}
+.tbl .thead + button.li{border-top:0}
+.tbl .li.on{background:var(--blue-soft);box-shadow:inset 2px 0 0 var(--blue)}
+.cwho.lnk{background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px;min-width:0}
+.cwho.lnk:hover .t{text-decoration:underline}
+.tbl .li .main,.tbl .li .t,.tbl .li .t2,.tbl .li .m{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbl .li .main{display:flex;flex-direction:column}
+.tbl .li .t2{color:var(--ink)}
+.tbl.wkcl .thead,.tbl.wkcl .li{grid-template-columns:minmax(0,2fr) 64px 80px 70px minmax(96px,.9fr) 130px}
+.tbl.wkcl.ep .thead,.tbl.wkcl.ep .li{grid-template-columns:minmax(0,1.8fr) 52px 56px 64px 76px 64px 80px 84px minmax(150px,1fr)}
+.tbl.wktl .thead,.tbl.wktl .li{grid-template-columns:132px minmax(0,1fr) minmax(0,1fr) minmax(0,1.4fr) 150px minmax(0,1fr)}
+.tbl.wktl.who .thead,.tbl.wktl.who .li{grid-template-columns:132px minmax(0,1fr) minmax(0,1fr) minmax(0,1.3fr) 90px 150px minmax(0,1fr)}
+.tbl.wkemp .thead,.tbl.wkemp .li{grid-template-columns:minmax(0,1.8fr) 60px 56px 56px 70px minmax(120px,1.3fr) 70px 100px}
+.tbl.occl .thead,.tbl.occl .li{grid-template-columns:minmax(0,1.5fr) 160px minmax(0,1fr) 92px 64px minmax(0,1.3fr) minmax(0,1.3fr) 96px}
+.share{display:flex;align-items:center;gap:8px;min-width:0}
+.share i{display:block;height:6px;border-radius:3px;background:var(--blue);min-width:2px;flex:none;max-width:calc(100% - 40px)}
+.share b{font-weight:500;font-variant-numeric:tabular-nums;color:var(--ink)}
+.chip{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 4px 0 9px;border:1px solid var(--blue-line);background:var(--blue-soft);border-radius:999px;font-size:12px;color:var(--ink)}
+.chip button{border:0;background:none;padding:2px;display:grid;place-items:center;cursor:pointer;color:var(--muted)}
+.chip button svg{width:12px;height:12px}
+.optabs{display:inline-flex}
+.optabs a{display:inline-flex;align-items:center;min-height:26px;padding:0 12px;font-size:12.5px;font-weight:500;color:var(--muted);border-radius:calc(var(--rc) - 1px);text-decoration:none}
+.optabs a.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.seg.sm button{min-height:24px;padding:0 9px;font-size:12px}
+.wkch{font-size:12.5px;color:var(--muted);margin:0 0 6px}
+.wksvg .b1{fill:var(--blue)}.wksvg .b2{fill:#a9b9ef}.wksvg .b3{fill:#ef4444}
+.wksvg .col.on rect:not(.hit),.wksvg .col:focus rect:not(.hit){opacity:.85}
+.wkkey{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:6px}
+.wkkey i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.wkkey i.b1{background:var(--blue)}.wkkey i.b2{background:#a9b9ef}.wkkey i.b3{background:#ef4444}
+.nrdot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#f59e0b;margin-left:6px;vertical-align:middle}
+.apsub{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--muted)}
+.apsub input{height:28px;padding:0 8px;font-size:12.5px;border:1px solid var(--line-2);border-radius:var(--rc);width:200px}
+@media (max-width:900px){
+  /* the wide tables scroll inside their card on a phone, headings included; the page itself never scrolls sideways */
+  .card.flush > .tbl.wkcl,.card.flush > .tbl.wktl,.card.flush > .tbl.wkemp,.card.flush > .tbl.occl{overflow-x:auto}
+  .tbl.wkcl .thead,.tbl.wktl .thead,.tbl.wkemp .thead,.tbl.occl .thead{display:grid}
+  .tbl.wkcl .thead,.tbl.wkcl .li{min-width:620px}
+  .tbl.wkcl.ep .thead,.tbl.wkcl.ep .li{min-width:860px}
+  .tbl.wktl .thead,.tbl.wktl .li{min-width:820px}
+  .tbl.wkemp .thead,.tbl.wkemp .li{min-width:760px}
+  .tbl.occl .thead,.tbl.occl .li{min-width:960px}
+  .wkhead{margin-top:16px}
+  .tlf input[type=search]{width:100%}
+}
 </style>
 </head>
 <body>
@@ -1534,6 +1601,7 @@ body{font-size:13px;line-height:1.5}
 "use strict";
 var $ = TP.$, $$ = TP.$$, esc = TP.esc, I = TP.I, q = TP.q;
 var J = {
+  ops:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15v2M11 11v6M15 8v9M19 5v12"/></svg>',   // Operations
   // the job description's sections, as the reference shows them
   build:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M9 21v-4h6v4M8 7h2M14 7h2M8 11h2M14 11h2"/></svg>',
   bag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg>',
@@ -1621,7 +1689,7 @@ function meMenu(btn){
   $('#me').insertAdjacentHTML('beforeend', '<div class="memenu" id="meMenu" role="menu" aria-label="Your menu">' +
     it('/team.html#myday', J.day, 'My day', 'Your work, and who still needs an application') +
     '<button role="menuitem" type="button" data-act="switch">' + J.swap + '<span>Switch client<small>Ctrl K</small></span></button>' +
-    it('/team.html#tasks', J.clip, 'Tasks') + it('/team.html#clients', I.users, 'All clients') + (ME.owner ? it('/team.html#leads', J.star, 'Leads') + it('/team.html#team', I.team, 'Team') : '') +
+    it('/team.html#tasks', J.clip, 'Tasks') + it('/team.html#clients', I.users, 'All clients') + (ME.owner ? it('/team.html#leads', J.star, 'Leads') + it('/team.html#ops', J.ops, 'Operations') + it('/team.html#team', I.team, 'Team') : '') +
     '<button role="menuitem" type="button" data-act="out">' + I.out + '<span>Sign out</span></button></div>');
   btn.setAttribute('aria-expanded', 'true');
   var first = $('#meMenu [role=menuitem]'); if(first) first.focus();
@@ -1647,8 +1715,9 @@ function route(){
   var c = p.get('client');
   if(c && UUID.test(c)) r.client = c.toLowerCase();
   if(!r.client){   // the owners' home is Clients and the Team page is theirs; an employee's home is My day, with Clients at #clients
-    var emp = !!ME && ME.owner === false;
-    r.page = h === 'team' || h === 'leads' ? (emp ? 'myday' : h) : h === 'tasks' ? 'tasks' : h === 'myday' || (emp && !h) ? 'myday' : 'clients';   // Leads are the owners', like Team
+    var emp = !!ME && ME.owner === false, oe = /^ops\/emp=(.+)$/.exec(h);
+    if(oe){ r.page = emp ? 'myday' : 'opsemp'; try{ r.emp = decodeURIComponent(oe[1]).toLowerCase(); }catch(e){ r.page = 'ops'; } return r; }   // one employee on Operations
+    r.page = h === 'team' || h === 'leads' || h === 'ops' || h === 'opsclients' ? (emp ? 'myday' : h) : h === 'tasks' ? 'tasks' : h === 'myday' || (emp && !h) ? 'myday' : 'clients';   // Leads, Operations and Team are the owners'
     return r;
   }
   var m = /^app=([0-9a-f-]{36})$/i.exec(h);
@@ -1709,14 +1778,14 @@ function draw(){
   if(!ME) return;
   R = route();
   $('#me').innerHTML = meHTML();
-  var cl = R.page === 'clients', tm = R.page === 'team', md = R.page === 'myday', tk = R.page === 'tasks', ld = R.page === 'leads';
+  var cl = R.page === 'clients', tm = R.page === 'team', md = R.page === 'myday', tk = R.page === 'tasks', ld = R.page === 'leads', op = /^ops/.test(R.page || '');
   $('#pnav').innerHTML = '<div class="ngl">Workspace</div><a href="/team.html#myday" data-go title="My day" class="' + (md ? 'on' : '') + '"' + (md ? ' aria-current="page"' : '') + '>' + J.day + '<span>My day</span></a>' +
     '<a href="/team.html#tasks" data-go title="Tasks" class="' + (tk ? 'on' : '') + '"' + (tk ? ' aria-current="page"' : '') + '>' + J.clip + '<span>Tasks</span></a>' +
     '<a href="/team.html#clients" data-go title="Clients" class="' + (cl ? 'on' : '') + '"' + (cl ? ' aria-current="page"' : '') + '>' + I.users + '<span>Clients</span></a><div class="otabs" id="otabs" hidden></div>' +
     (ME.owner ? '<div class="ngl">Sales</div><a href="/team.html#leads" data-go title="Leads" class="' + (ld ? 'on' : '') + '"' + (ld ? ' aria-current="page"' : '') + '>' + J.star + '<span>Leads</span></a>' : '') +
-    (ME.owner ? '<div class="ngl">Organisation</div><a href="/team.html#team" data-go title="Team" class="' + (tm ? 'on' : '') + '"' + (tm ? ' aria-current="page"' : '') + '>' + I.team + '<span>Team</span></a>' : '');   // the Team page is the owners'; the titles name the icons when the sidebar is a rail
+    (ME.owner ? '<div class="ngl">Organisation</div><a href="/team.html#ops" data-go title="Operations" class="' + (op ? 'on' : '') + '"' + (op ? ' aria-current="page"' : '') + '>' + J.ops + '<span>Operations</span></a><a href="/team.html#team" data-go title="Team" class="' + (tm ? 'on' : '') + '"' + (tm ? ' aria-current="page"' : '') + '>' + I.team + '<span>Team</span></a>' : '');   // the Team page is the owners'; the titles name the icons when the sidebar is a rail
   drawOpenTabs();
-  if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : md ? vMyDay() : tk ? vTasks() : ld ? vLeads() : vClients(); }
+  if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : md ? vMyDay() : tk ? vTasks() : ld ? vLeads() : R.page === 'ops' ? vOps() : R.page === 'opsemp' ? vOpsEmp(R.emp) : R.page === 'opsclients' ? vOpsClients() : vClients(); }
   vClient();
 }
 // phones: a top bar with the client and Switch, and the sections along the bottom
@@ -1727,7 +1796,7 @@ function drawPhone(c){
       '<button class="icb" type="button" data-act="switch" title="Switch client">' + J.swap + '<span class="sr">Switch client</span></button>' : '<span class="grow"></span>') +
     '<button class="icb" type="button" data-act="out" title="Sign out">' + I.out + '<span class="sr">Sign out</span></button>';
   var items = c ? TABS.map(function(t){ return [cUrl(c.id, t[0]), t[3] || t[1], t[2], R.tab === t[0]]; })
-    : [['/team.html#myday', 'My day', J.day, R.page === 'myday'], ['/team.html#tasks', 'Tasks', J.clip, R.page === 'tasks'], ['/team.html#clients', 'Clients', I.users, R.page === 'clients']].concat(ME.owner ? [['/team.html#leads', 'Leads', J.star, R.page === 'leads'], ['/team.html#team', 'Team', I.team, R.page === 'team']] : []);
+    : [['/team.html#myday', 'My day', J.day, R.page === 'myday'], ['/team.html#tasks', 'Tasks', J.clip, R.page === 'tasks'], ['/team.html#clients', 'Clients', I.users, R.page === 'clients']].concat(ME.owner ? [['/team.html#leads', 'Leads', J.star, R.page === 'leads'], ['/team.html#ops', 'Operations', J.ops, /^ops/.test(R.page || '')], ['/team.html#team', 'Team', I.team, R.page === 'team']] : []);
   $('#tabbar').innerHTML = items.map(function(n){ return '<a href="' + esc(n[0]) + '" data-go class="' + (n[3] ? 'on' : '') + '"' + (n[3] ? ' aria-current="page"' : '') + '>' + n[2] + '<span>' + n[1] + '</span></a>'; }).join('');
 }
 function setTitle(t, c){
@@ -1877,18 +1946,18 @@ function vMyDay(){
   V.innerHTML = '<div class="pageh"><div class="grow"><h1>My day</h1><div class="sub">' + (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ', ' + esc(first) + ' · ' + esc(when) + '</div></div>' +
       '<button class="btn" type="button" data-act="switch">' + J.swap + 'Switch client</button></div>' +
     '<div class="stats s5" id="mdS"></div><div id="mdReq"></div><div id="mdCrm"></div>' +
-    '<div class="mdg"><div class="card"><h3>Still to do today</h3><p class="hint">Active clients with nothing sent today — the most left on their plan first.</p><div id="mdTodo"><div class="skel"></div></div></div>' +
-      '<div class="card"><h3>Clients you worked on this week</h3><p class="hint">From the activity log: the applications you sent and the drafts you started.</p><div id="mdMine"><div class="skel"></div></div></div></div>';
+    '<div class="card"><h3>Still to do today</h3><p class="hint">' + (ME.owner ? 'Active clients' : 'Your active clients') + ' with nothing sent today — the most left on their plan first.</p><div id="mdTodo"><div class="skel"></div></div></div>' +
+    '<div class="wkhead"><h2>Your work</h2>' + wrBar() + '</div><div class="stats s5" id="mdR"></div>' +
+    '<div class="card flush"><div class="ch"><h3>Your clients</h3><span class="fine">Pick one to see only your applications for them</span></div><div class="tbl wkcl" id="mdMine"><div class="skel"></div></div></div>' +
+    '<div class="card flush"><div class="ch"><h3>Your applications</h3>' + tlFilters('md') + '</div><div class="tbl wktl" id="mdTl"><div class="skel"></div></div></div>';
   var draw = function(){
     if(R.page !== 'myday' || !$('#mdS')) return;
-    var today = istDay().getTime(), rows = (MDAY && MDAY.rows) || null, mine = rows || [];
-    var isToday = function(r){ return new Date(r.at).getTime() >= today; };
-    var sentT = mine.filter(function(r){ return r.kind === 'app_applied' && isToday(r); }).length, sentW = mine.filter(function(r){ return r.kind === 'app_applied'; }).length;
-    var teamT = LIST ? LIST.rows.reduce(function(s, c){ return s + ((LIST.prog[c.id] || {}).today || 0); }, 0) : null;
-    var n = function(v){ return rows ? v : '–'; };
-    // the three figures people act on; the clients and drafts of the day are in the lists below
-    $('#mdS').innerHTML = [[n(sentT), 'sent by you today'], [n(sentW), 'sent by you this week'], [teamT == null ? '–' : teamT, 'sent by the whole team today']]
+    var W = MDAY, S = W && W.sum, n = function(v){ return S ? v.toLocaleString() : '–'; }, tot = wkTotals(S || []);
+    var mine = (S || []).filter(function(r){ return r.assigned; }).length;
+    // the four figures that don't depend on the dates; the chosen dates' are under "Your work"
+    $('#mdS').innerHTML = [[n(tot.sent_today), 'sent by you today'], [n(tot.sent_week), 'sent by you this week'], [n(tot.sent_total), 'sent by you in total'], [S ? mine : '–', ME.owner ? 'clients assigned to you' : 'your clients']]
       .map(function(s){ return '<div class="stat"><b>' + s[0] + '</b><span>' + s[1] + '</span></div>'; }).join('');
+    $('#mdR').innerHTML = S ? rangeStats(tot) : '';
     if(LIST){
       var P = LIST.prog, left = function(c){ return c.plan_total ? c.plan_total - ((P[c.id] || {}).done || 0) : -1; };
       var todo = LIST.rows.filter(function(c){ return c.status === 'active' && !(P[c.id] || {}).today; })
@@ -1899,22 +1968,22 @@ function vMyDay(){
           '<div class="main"><div class="t">' + esc(c.full_name || c.email) + '</div><div class="m">' + (c.plan_total ? (p.done || 0) + ' / ' + c.plan_total + ' sent · ' + left(c) + ' left' : (p.done || 0) + ' sent · no plan set') +
           ' · last sent ' + (p.last_applied_at ? esc(TP.ago(p.last_applied_at)) : 'never') + '</div></div>' + I.chev.replace('<svg', '<svg class="chev"') + '</a>';
       }).join('') + '</div>' + (todo.length > 12 ? '<p class="fine" style="margin-top:8px">and ' + (todo.length - 12) + ' more — <a href="/team.html#clients" data-go>see Clients</a> (sorted fewest today first)</p>' : '')
-        : '<div class="note ok">Every active client has an application today.</div>';
+        : LIST.rows.length ? '<div class="note ok">Every active client has an application today.</div>'
+        : '<p class="fine">No clients are assigned to you yet. An owner assigns them on Operations.</p>';
     }
-    if(rows){
-      var by = {}, names = {}; (LIST ? LIST.rows : []).forEach(function(c){ names[c.id] = c.full_name || c.email; });
-      mine.forEach(function(r){ if(!r.client_id) return; var x = by[r.client_id] = by[r.client_id] || {id:r.client_id, sent:0, started:0, at:r.at}; if(r.kind === 'app_applied') x.sent++; if(r.kind === 'app_started') x.started++; if(r.at > x.at) x.at = r.at; });
-      var list = Object.keys(by).map(function(k){ return by[k]; }).sort(function(a, b){ return a.at < b.at ? 1 : -1; });
-      $('#mdMine').innerHTML = list.length ? '<div class="list">' + list.map(function(x){
-        return '<a class="li" href="' + esc(cUrl(x.id)) + '" data-go><span class="av" style="background:' + TP.hue(x.id) + '">' + esc(TP.initials(names[x.id] || '?', '')) + '</span>' +
-          '<div class="main"><div class="t">' + esc(names[x.id] || 'A client') + '</div><div class="m">' + [x.sent ? x.sent + ' sent' : '', x.started ? x.started + ' started' : '', 'last ' + esc(TP.ago(x.at))].filter(Boolean).join(' · ') + '</div></div>' + I.chev.replace('<svg', '<svg class="chev"') + '</a>';
-      }).join('') + '</div>' : '<p class="fine">Nothing yet this week. Pick someone from Still to do.</p>';
+    if(S){
+      var rows = S.slice().sort(function(a, b){ return (b.assigned - a.assigned) || (b.sent - a.sent) || String(a.client_name).localeCompare(String(b.client_name)); });
+      $('#mdMine').innerHTML = rows.length ? '<div class="thead"><span>Client</span><span>Today</span><span>This week</span><span>Total</span><span>' + esc(wrRange().short) + '</span><span>Status</span></div>' + rows.map(function(r){
+        var on = MDF.client === r.client_id;
+        return '<button type="button" class="li' + (on ? ' on' : '') + '" data-act="wkcl" data-id="' + esc(r.client_id) + '" aria-pressed="' + on + '"><span class="cwho"><span class="av sm" style="background:' + TP.hue(r.client_id) + '">' + esc(TP.initials(r.client_name, '')) + '</span><span class="main"><span class="t">' + esc(r.client_name || 'A client') + '</span></span></span>' +
+          '<span class="num">' + r.sent_today + '</span><span class="num">' + r.sent_week + '</span><span class="num">' + r.sent_total + '</span><span class="num">' + r.sent + (r.failed ? ' <small class="bad">· ' + r.failed + ' failed</small>' : '') + '</span>' +
+          '<span>' + (r.assigned ? '<span class="st ' + esc(r.client_status) + '">' + (ST_NAME[r.client_status] || 'Active') + '</span>' : '<span class="st closed" title="Moved to someone else — your work on them still counts for you">No longer yours</span>') + '</span></button>';
+      }).join('') : '<p class="fine" style="padding:14px 16px">No clients yet. Once an owner assigns you clients, they’re listed here with what you sent for each.</p>';
     }
+    drawTimeline('md', W && W.tl, false);
   };
   draw(); mdCrm(); mdCrmLoad();
-  var me = ME.email;
-  Promise.all([loadList(), q(SB.from('client_activity').select('client_id,kind,at').eq('by_email', me).in('kind', ['app_started', 'app_applied']).gte('at', istWeek().toISOString()).order('at', {ascending:false}).limit(3000))])
-    .then(function(rs){ MDAY = {at:Date.now(), rows:rs[1] || []}; draw(); }, function(e){ if($('#mdMine')) $('#mdMine').innerHTML = errBox(e); });
+  Promise.all([loadList(), wkLoad(ME.email)]).then(function(rs){ MDAY = rs[1]; draw(); }, function(e){ if($('#mdMine')) $('#mdMine').innerHTML = errBox(e); });
   // clients waiting on an answer about their resume (asked from their workspace), oldest first
   Promise.all([loadList().catch(function(){}), SB.from('resume_requests').select('id,client_id,kind,message,created_at').eq('status', 'open').order('created_at', {ascending:true}).limit(50)]).then(function(rs){
     var r = rs[1], el = $('#mdReq'); if(!r || r.error || !el || R.page !== 'myday') return;
@@ -1927,6 +1996,371 @@ function vMyDay(){
   }, function(){});
 }
 
+/* =====================================================================
+   The work figures (sql/supabase-employee-work.sql): an employee's own work on My day, and the owners' Operations
+   pages — #ops (the organisation and each employee), #ops/emp=<email> (one employee) and #opsclients (every client).
+   Every number comes from the database (work_summary, work_daily, work_timeline, team_last_active): an employee only
+   ever gets their own work, whatever the page asks, and an application counts for whoever sent it (a draft or a
+   failed try for whoever started it). Days are India days, as everywhere on the team page.
+   ===================================================================== */
+var WR_F = [['today', 'Today'], ['yday', 'Yesterday'], ['7d', '7 days'], ['30d', '30 days'], ['month', 'This month'], ['custom', 'Custom']];
+var WR = TP.lsGet('tp_wr', null);
+if(!WR || !WR_F.some(function(x){ return x[0] === WR.f; })) WR = {f:'7d', from:'', to:''};
+var MDF = {client:'', st:''}, OPF = {client:'', st:'', q:'', emp:''}, EPF = {client:'', st:'', by:'day'}, OPS = null, OPD = null;
+function istMonth(back){ var d = new Date(Date.now() + 330 * 60000); return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() - (back || 0), 1) - 330 * 60000); }   // the 1st, in India
+function istDate(s){ var p = /^(\d{4})-(\d\d)-(\d\d)$/.exec(s || ''); return p ? new Date(Date.UTC(+p[1], +p[2] - 1, +p[3]) - 330 * 60000) : null; }   // midnight in India on that date
+function ymd(t){ return new Date(new Date(t).getTime() + 330 * 60000).toISOString().slice(0, 10); }
+function dShort(t){ return new Date(new Date(t).getTime() + 330 * 60000).toLocaleDateString('en-GB', {day:'numeric', month:'short', timeZone:'UTC'}); }
+// the chosen dates: from (inclusive) and to (exclusive, null = now), and how to say them
+function wrRange(){
+  var f = WR.f, a, b = null, L = {today:'Today', yday:'Yesterday', '7d':'Last 7 days', '30d':'Last 30 days', month:'This month'};
+  if(f === 'today') a = istDay();
+  else if(f === 'yday'){ a = istDay(1); b = istDay(); }
+  else if(f === '30d') a = istDay(29);
+  else if(f === 'month') a = istMonth();
+  else if(f === 'custom'){
+    a = istDate(WR.from) || istDay(6); b = istDate(WR.to); b = b ? new Date(b.getTime() + 864e5) : null;
+    if(b && b <= a) b = new Date(a.getTime() + 864e5);
+  } else a = istDay(6);
+  var label = L[f] || (dShort(a) + ' – ' + dShort(b ? b.getTime() - 864e5 : Date.now()));
+  return {from:a, to:b, label:label, short:f === 'custom' ? 'Dates chosen' : {today:'Today', yday:'Yesterday', '7d':'7 days', '30d':'30 days', month:'This month'}[f]};
+}
+function wrBar(){
+  return '<div class="wrbar"><div class="seg" role="group" aria-label="Dates">' + WR_F.map(function(x){ return '<button type="button" data-act="wkrange" data-v="' + x[0] + '" class="' + (WR.f === x[0] ? 'on' : '') + '" aria-pressed="' + (WR.f === x[0]) + '">' + x[1] + '</button>'; }).join('') + '</div>' +
+    (WR.f === 'custom' ? '<span class="wrc"><label class="sr" for="wrFrom">From</label><input type="date" id="wrFrom" value="' + esc(WR.from || ymd(istDay(6))) + '" max="' + ymd(Date.now()) + '"><span>–</span><label class="sr" for="wrTo">To</label><input type="date" id="wrTo" value="' + esc(WR.to || ymd(Date.now())) + '" max="' + ymd(Date.now()) + '"></span>' : '') + '</div>';
+}
+function rpc(name, args){ return q(SB.rpc(name, args)); }
+function wkArgs(emp){ var r = wrRange(); return {p_from:r.from.toISOString(), p_to:r.to ? r.to.toISOString() : null, p_employee:emp || null}; }
+// one person's (or, for the owners, everyone's: emp null) figures for the chosen dates and their applications in them
+function wkLoad(emp){
+  var a = wkArgs(emp);
+  return Promise.all([rpc('work_summary', a), rpc('work_timeline', {p_from:a.p_from, p_to:a.p_to, p_employee:a.p_employee, p_client:null, p_status:null, p_limit:2000})])
+    .then(function(rs){ return {at:Date.now(), sum:rs[0] || [], tl:rs[1] || []}; });
+}
+var WK_N = ['sent_today', 'sent_week', 'sent_month', 'sent_total', 'sent', 'submitted', 'needs_review', 'failed', 'in_progress', 'not_started'];
+function wkTotals(rows){ var t = {}; WK_N.forEach(function(k){ t[k] = 0; }); rows.forEach(function(r){ WK_N.forEach(function(k){ t[k] += r[k] || 0; }); }); return t; }
+// only a confirmed submission counts as a success; a try that failed counts against
+function rate(t){ var n = t.sent + t.failed; return n ? Math.round(t.submitted / n * 100) + '%' : '–'; }
+function rangeStats(t){
+  return [[t.sent.toLocaleString(), 'sent · ' + esc(wrRange().label.toLowerCase())], [t.submitted.toLocaleString(), 'submitted (confirmed)'], [t.needs_review.toLocaleString(), 'needs review (no confirmation yet)'],
+    [t.failed.toLocaleString(), 'failed tries'], [rate(t), 'success rate']]
+    .map(function(s, i){ return '<div class="stat' + (i === 3 && t.failed ? ' bad' : i === 2 && t.needs_review ? ' warn' : '') + '"><b>' + s[0] + '</b><span>' + s[1] + '</span></div>'; }).join('');
+}
+var SUB = {submitted:['applied', 'Submitted'], needs_review:['wait', 'Needs review'], failed:['failed', 'Failed'], in_progress:['draft', 'In progress']};
+function subPill(s){ var x = SUB[s] || SUB.in_progress; return '<span class="st ' + x[0] + '">' + x[1] + '</span>'; }
+function confText(a){
+  var bits = [];
+  if(a.confirmations) bits.push(a.confirmations + ' screenshot' + (a.confirmations === 1 ? '' : 's'));
+  if(a.submit_ref) bits.push('Ref ' + a.submit_ref);
+  if(!bits.length && a.submit_status === 'failed' && a.fail_reason) return '<span class="bad" title="' + esc(a.fail_reason) + '">' + esc(a.fail_reason) + '</span>';
+  return bits.length ? esc(bits.join(' · ')) : '<span class="muted">—</span>';
+}
+function tlFilters(k){
+  var F = k === 'md' ? MDF : k === 'op' ? OPF : EPF;
+  return '<div class="tlf"><label class="sr" for="' + k + 'St">Status</label><select id="' + k + 'St" data-wkf="' + k + '" data-k="st"><option value="">Every status</option>' +
+    Object.keys(SUB).map(function(s){ return '<option value="' + s + '"' + (F.st === s ? ' selected' : '') + '>' + SUB[s][1] + '</option>'; }).join('') + '</select>' +
+    '<span id="' + k + 'Cl"></span></div>';
+}
+// the applications themselves, newest first: when, client, company, job, (who, for the owners), status, confirmation
+function drawTimeline(k, tl, withWho){
+  var box = $('#' + k + 'Tl'); if(!box) return;
+  if(!tl){ box.innerHTML = '<div class="skel"></div>'; return; }
+  var F = k === 'md' ? MDF : k === 'op' ? OPF : EPF, names = {};
+  tl.forEach(function(a){ names[a.client_id] = a.client_name; });
+  var cl = $('#' + k + 'Cl');
+  if(cl) cl.innerHTML = F.client ? '<span class="chip on">' + esc(names[F.client] || 'One client') + '<button type="button" data-act="wkclx" data-k="' + k + '" aria-label="Show every client">' + I.x + '</button></span>' : '';
+  var rows = tl.filter(function(a){ return (!F.client || a.client_id === F.client) && (!F.st || a.submit_status === F.st) && (!F.emp || F.emp === '-' || a.employee === F.emp); });
+  var cap = F.n || 50, more = rows.length > cap;   // 50 at a time: Show more adds 100
+  box.classList.toggle('who', !!withWho);
+  box.innerHTML = rows.length ? '<div class="thead"><span>When</span><span>Client</span><span>Company</span><span>Job title</span>' + (withWho ? '<span>By</span>' : '') + '<span>Status</span><span>Confirmation</span></div>' +
+    rows.slice(0, cap).map(function(a){
+      return '<a class="li" href="' + esc(cUrl(a.client_id, 'app=' + a.id)) + '" data-go><span class="m" title="' + esc(TP.fmtDateTime(a.at)) + '">' + esc(TP.fmtDateTime(a.at)) + '</span>' +
+        '<span class="t">' + esc(a.client_name || '') + '</span><span>' + esc(a.company || '—') + '</span><span class="t2">' + esc(a.title || 'Role') + '</span>' +
+        (withWho ? '<span>' + esc(who(a.employee)) + '</span>' : '') + '<span>' + subPill(a.submit_status) + (a.status === 'interview' || a.status === 'offer' ? ' <span class="st ' + a.status + '">' + (a.status === 'offer' ? 'Offer' : 'Interview') + '</span>' : '') + '</span>' +
+        '<span class="m">' + confText(a) + '</span></a>';
+    }).join('') + (more ? '<div class="row" style="justify-content:center;padding:10px 16px;gap:10px"><span class="fine">' + cap.toLocaleString() + ' of ' + rows.length.toLocaleString() + '</span><button class="btn sm" type="button" data-act="wkmore" data-k="' + k + '">Show more</button></div>' : '')
+    : '<p class="fine" style="padding:14px 16px">Nothing ' + esc(wrRange().label.toLowerCase()) + (F.client || F.st ? ' with these filters' : '') + '.</p>';
+}
+
+// ---- a bar chart of sent applications (submitted and needing review) and failed tries, by day, week or month ----
+function wkBins(daily, by, who){
+  var n = by === 'month' ? 12 : by === 'week' ? 12 : 30, bins = [];
+  for(var i = n - 1; i >= 0; i--){
+    var from = by === 'month' ? istMonth(i) : by === 'week' ? new Date(istWeek().getTime() - i * 7 * 864e5) : istDay(i);
+    bins.push({from:from.getTime(), sub:0, nr:0, fl:0});
+  }
+  (daily || []).forEach(function(d){
+    if(who && d.employee !== who) return;
+    var t = istDate(d.day).getTime(), k = -1;
+    for(var j = bins.length - 1; j >= 0; j--) if(t >= bins[j].from){ k = j; break; }
+    if(k < 0) return;
+    bins[k].sub += d.submitted; bins[k].nr += d.needs_review; bins[k].fl += d.failed;
+  });
+  return bins;
+}
+function wkChart(el, bins, by){
+  if(!el) return;
+  var lab = function(b){ var d = new Date(b.from + 330 * 60000); return by === 'month' ? d.toLocaleDateString('en-GB', {month:'long', year:'numeric', timeZone:'UTC'}) : by === 'week' ? 'Week of ' + dShort(b.from) : d.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short', timeZone:'UTC'}); };
+  var tick = function(b){ var d = new Date(b.from + 330 * 60000); return by === 'month' ? d.toLocaleDateString('en-GB', {month:'short', timeZone:'UTC'}) : by === 'week' ? dShort(b.from) : String(d.getUTCDate()); };
+  var n = bins.length, max = Math.max.apply(null, bins.map(function(b){ return b.sub + b.nr + b.fl; }).concat([0]));
+  var total = bins.reduce(function(s, b){ return s + b.sub + b.nr; }, 0), fl = bins.reduce(function(s, b){ return s + b.fl; }, 0);
+  var unit = max > 40 ? 20 : 10, top = max <= 4 ? 4 : Math.ceil(max / unit) * unit, W = Math.max(300, Math.round(el.clientWidth || 700)), H = 180, padL = 34, padB = 22, plotH = H - padB - 8, slot = (W - padL) / n, bw = Math.min(22, slot - 3);
+  var y = function(v){ return 8 + plotH - v / top * plotH; };
+  var head = total ? total.toLocaleString() + ' sent' + (fl ? ' · ' + fl + ' failed tries' : '') + ' in the last ' + (by === 'month' ? '12 months' : by === 'week' ? '12 weeks' : '30 days') : 'Nothing sent in the last ' + (by === 'month' ? '12 months' : by === 'week' ? '12 weeks' : '30 days') + '.';
+  var svg = '<svg class="dbsvg wksvg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(head) + '">' +
+    [0, top / 2, top].map(function(v){ return '<line x1="' + padL + '" x2="' + W + '" y1="' + y(v) + '" y2="' + y(v) + '" class="gl"/><text x="' + (padL - 6) + '" y="' + (y(v) + 4) + '" class="ax" text-anchor="end">' + v + '</text>'; }).join('') +
+    bins.map(function(b, k){
+      var x = padL + k * slot + (slot - bw) / 2, base = 8 + plotH, out = '';
+      [['sub', 'b1'], ['nr', 'b2'], ['fl', 'b3']].forEach(function(p){ var v = b[p[0]]; if(!v) return; var h = Math.max(2, v / top * plotH); base -= h; out += '<rect class="' + p[1] + '" x="' + x + '" y="' + base + '" width="' + bw + '" height="' + h + '"/>'; });
+      var tk = (by === 'day' ? k % 5 === 4 || k === n - 1 : k % 2 === 1 || k === n - 1) ? '<text x="' + (x + bw / 2) + '" y="' + (H - 6) + '" class="ax" text-anchor="middle">' + esc(tick(b)) + '</text>' : '';
+      return '<g class="col" tabindex="0" data-k="' + k + '"><rect class="hit" x="' + (padL + k * slot) + '" y="0" width="' + slot + '" height="' + (8 + plotH) + '"/>' + out + '</g>' + tk;
+    }).join('') + '</svg>';
+  el.innerHTML = '<p class="wkch">' + esc(head) + '</p><div class="dbwrap">' + svg + '<div class="dbtip" hidden><b></b><span></span></div></div>' +
+    '<div class="wkkey"><span><i class="b1"></i>Submitted</span><span><i class="b2"></i>Needs review</span><span><i class="b3"></i>Failed tries</span></div>' +
+    '<table class="sr"><caption>Applications per ' + by + '</caption><thead><tr><th>' + by + '</th><th>Submitted</th><th>Needs review</th><th>Failed tries</th></tr></thead><tbody>' +
+      bins.map(function(b){ return '<tr><th>' + esc(lab(b)) + '</th><td>' + b.sub + '</td><td>' + b.nr + '</td><td>' + b.fl + '</td></tr>'; }).join('') + '</tbody></table>';
+  var tip = $('.dbtip', el), wrap = $('.dbwrap', el);
+  var show = function(g){
+    var b = bins[+g.getAttribute('data-k')]; $$('.col.on', el).forEach(function(x){ x.classList.remove('on'); }); g.classList.add('on');
+    tip.firstChild.textContent = (b.sub + b.nr) + ' sent · ' + b.sub + ' submitted' + (b.fl ? ' · ' + b.fl + ' failed' : ''); tip.lastChild.textContent = lab(b); tip.hidden = false;
+    var r = g.getBoundingClientRect(), w = wrap.getBoundingClientRect();
+    tip.style.left = Math.min(Math.max(0, r.left - w.left + r.width / 2 - tip.offsetWidth / 2), w.width - tip.offsetWidth) + 'px';
+  };
+  var hide = function(){ tip.hidden = true; $$('.col.on', el).forEach(function(x){ x.classList.remove('on'); }); };
+  $$('.col', el).forEach(function(g){ g.addEventListener('pointerenter', function(){ show(g); }); g.addEventListener('focus', function(){ show(g); }); g.addEventListener('blur', hide); });
+  wrap.addEventListener('pointerleave', hide);
+}
+function bySeg(k, by){ return '<div class="seg sm" role="group" aria-label="Group by">' + [['day', 'Daily'], ['week', 'Weekly'], ['month', 'Monthly']].map(function(x){ return '<button type="button" data-act="wkby" data-k="' + k + '" data-v="' + x[0] + '" class="' + (by === x[0] ? 'on' : '') + '" aria-pressed="' + (by === x[0]) + '">' + x[1] + '</button>'; }).join('') + '</div>'; }
+
+// ---- Operations (owners): the organisation, every employee, every client ----
+function opsLoad(force){
+  if(OPS && !force && Date.now() - OPS.at < 30000 && OPS.key === JSON.stringify(wkArgs(null))) return Promise.resolve(OPS);
+  var key = JSON.stringify(wkArgs(null));
+  return Promise.all([wkLoad(null), rpc('work_daily', {p_from:istMonth(11).toISOString(), p_to:null, p_employee:null}), rpc('team_last_active', {}),
+      q(SB.from('client_assignments').select('id,client_id,employee,assigned_at,assigned_by,ended_at,ended_by,end_reason').order('assigned_at', {ascending:false}).limit(5000)), loadList(), loadTeamNames()])
+    .then(function(rs){
+      var last = {}; (rs[2] || []).forEach(function(r){ last[r.employee] = r.last_at; });
+      OPS = {at:Date.now(), key:key, sum:rs[0].sum, tl:rs[0].tl, daily:rs[1] || [], last:last, asg:rs[3] || []};
+      return OPS;
+    });
+}
+function opsCrumb(rest){ return '<nav class="bc" aria-label="Where you are">' + (rest ? '<a href="/team.html#ops" data-go>Operations</a><i>/</i><span>' + rest + '</span>' : '<span>Organisation</span>') + '</nav>'; }
+function opsTabs(on){ return '<div class="seg optabs">' + [['ops', 'Employees'], ['opsclients', 'Client activity']].map(function(x){ return '<a href="/team.html#' + x[0] + '" data-go class="' + (on === x[0] ? 'on' : '') + '"' + (on === x[0] ? ' aria-current="page"' : '') + '>' + x[1] + '</a>'; }).join('') + '</div>'; }
+function openAsg(asg){ return asg.filter(function(a){ return !a.ended_at; }); }
+function empOf(cid){ var a = OPS && openAsg(OPS.asg).filter(function(x){ return x.client_id === cid; })[0]; return a ? a.employee : ''; }
+function quiet(email){ var t = OPS && OPS.last[email]; return !t || Date.now() - new Date(t).getTime() > 2 * 864e5; }
+function vOps(){
+  setTitle('Operations', null);
+  V.innerHTML = '<div class="pageh"><div class="grow">' + opsCrumb() + '<h1>Operations</h1><div class="sub">Every employee’s work and every client, from the applications themselves.</div></div>' + opsTabs('ops') + '</div>' +
+    '<div class="stats s6" id="opS"></div><div class="wkhead"><h2>Results</h2>' + wrBar() + '</div><div class="stats s5" id="opR"></div>' +
+    '<div class="card"><div class="ch"><h3>Trend</h3>' + bySeg('op', EPF.by) + '</div><div id="opC"><div class="skel"></div></div></div>' +
+    '<div class="card flush"><div class="ch"><h3>Employees</h3><span class="fine">Share of what was sent ' + esc(wrRange().label.toLowerCase()) + ' · quiet = nothing in 2 days</span></div><div class="tbl wkemp" id="opE"><div class="skel"></div></div></div>' +
+    '<div id="opU"></div>';
+  var draw = function(D){
+    if(R.page !== 'ops' || !$('#opS')) return;
+    var emps = TEAMROWS.filter(function(t){ return t.role !== 'owner'; }), act = emps.filter(function(t){ return t.active; });
+    var clients = LIST ? LIST.rows.filter(function(c){ return c.status === 'active'; }) : [], tot = wkTotals(D.sum);
+    var assigned = {}; openAsg(D.asg).forEach(function(a){ assigned[a.client_id] = a.employee; });
+    var un = clients.filter(function(c){ return !assigned[c.id]; });
+    $('#opS').innerHTML = [[act.length, 'active employees'], [clients.length, 'active clients'], [un.length, 'without an employee', un.length ? 'warn' : ''], [tot.sent_today, 'sent today'], [tot.sent_week, 'sent this week'], [tot.sent_total.toLocaleString(), 'sent in total']]
+      .map(function(s){ return '<div class="stat' + (s[2] ? ' ' + s[2] : '') + '"><b>' + s[0] + '</b><span>' + s[1] + '</span></div>'; }).join('');
+    $('#opR').innerHTML = rangeStats(tot);
+    wkChart($('#opC'), wkBins(D.daily, EPF.by), EPF.by);
+    // one row per employee (and an owner who sent any): their clients, today, the week, all time, the dates' share and success
+    var by = {}; D.sum.forEach(function(r){ var x = by[r.employee] = by[r.employee] || []; x.push(r); });
+    var people = emps.map(function(t){ return t.email; }).concat(Object.keys(by).filter(function(e){ return !emps.some(function(t){ return t.email === e; }); }));
+    var most = Math.max.apply(null, people.map(function(e){ return wkTotals(by[e] || []).sent; }).concat([1]));
+    $('#opE').innerHTML = people.length ? '<div class="thead"><span>Employee</span><span>Clients</span><span>Today</span><span>Week</span><span>Total</span><span>' + esc(wrRange().short) + '</span><span>Success</span><span>Last active</span></div>' + people.map(function(e){
+      var t = TEAMROWS.filter(function(x){ return x.email === e; })[0] || {email:e}, s = wkTotals(by[e] || []), n = openAsg(D.asg).filter(function(a){ return a.employee === e; }).length;
+      var flag = t.active === false ? '<span class="st paused">Access off</span>' : t.role !== 'owner' && quiet(e) ? '<span class="st wait" title="Nothing done in the portal for 2 days">Quiet</span>' : '';
+      return '<a class="li" href="/team.html#ops/emp=' + encodeURIComponent(e) + '" data-go><span class="cwho"><span class="av sm" style="background:' + TP.hue(e) + '">' + esc(TP.initials(t.full_name, e)) + '</span><span class="main"><span class="t">' + esc(t.full_name || e.split('@')[0]) + ' ' + flag + '</span><span class="m">' + esc(t.role === 'owner' ? 'Owner' : t.title || 'Employee') + '</span></span></span>' +
+        '<span class="num">' + n + '</span><span class="num">' + s.sent_today + '</span><span class="num">' + s.sent_week + '</span><span class="num">' + s.sent_total.toLocaleString() + '</span>' +
+        '<span class="share"><i style="width:' + Math.round(s.sent / most * 100) + '%"></i><b>' + s.sent + '</b></span><span class="num">' + rate(s) + '</span>' +
+        '<span class="m">' + (D.last[e] ? esc(TP.ago(D.last[e])) : 'never') + '</span></a>';
+    }).join('') : '<p class="fine" style="padding:14px 16px">No employees yet. Add them on the Team page.</p>';
+    $('#opU').innerHTML = un.length ? '<div class="card"><h3>Clients without an employee <span class="st wait">' + un.length + '</span></h3><p class="hint">Only the owners reach them until someone is assigned.</p><div class="list">' + un.map(function(c){
+      return '<div class="li"><span class="av" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span><div class="main"><div class="t"><a href="' + esc(cUrl(c.id)) + '" data-go>' + esc(c.full_name || c.email) + '</a></div><div class="m">' + esc(c.target_roles || '') + '</div></div>' + assignSel(c.id, '') + '</div>';
+    }).join('') + '</div></div>' : '';
+  };
+  if(OPS) draw(OPS);
+  opsLoad(true).then(draw, function(e){ if($('#opE')) $('#opE').innerHTML = errBox(e); });
+}
+// the employee picker beside a client: changing it assigns, moves or takes them off, after saying so
+function assignSel(cid, cur, id){
+  var emps = TEAMROWS.filter(function(t){ return t.role !== 'owner' && (t.active || t.email === cur); });
+  return '<select class="asel" data-asg="' + esc(cid) + '" data-cur="' + esc(cur || '') + '"' + (id ? ' id="' + id + '"' : '') + ' aria-label="Employee for this client"><option value="">' + (cur ? 'Nobody (owners only)' : 'Assign to…') + '</option>' +
+    emps.map(function(t){ return '<option value="' + esc(t.email) + '"' + (t.email === cur ? ' selected' : '') + '>' + esc(t.full_name || t.email) + (t.active ? '' : ' (access off)') + '</option>'; }).join('') + '</select>';
+}
+function assignTo(cid, emp, name, sel){
+  var cur = sel ? sel.getAttribute('data-cur') : empOf(cid);
+  if((cur || '') === (emp || '')) return Promise.resolve(false);
+  var to = emp ? who(emp) : '', from = cur ? who(cur) : '';
+  var items = emp ? [['ok', '<b>' + esc(to) + '</b> works on ' + esc(name) + ' from now on: their profile, resumes, Jobs and applications'],
+      cur ? ['info', esc(from) + ' no longer reaches ' + esc(name) + '. Everything ' + esc(from) + ' already sent still counts as theirs'] : null, ['info', 'Kept in the client’s history and the assignment history']]
+    : [['info', 'Only the owners reach ' + esc(name) + ' until someone is assigned'], ['info', 'Everything ' + esc(from) + ' sent still counts as theirs']];
+  return TP.confirmBox(emp ? (cur ? 'Move ' + name + ' to ' + to + '?' : 'Assign ' + name + ' to ' + to + '?') : 'Take ' + name + ' off ' + from + '?', '', emp ? (cur ? 'Move' : 'Assign') : 'Take off', !emp, {items:items.filter(Boolean)}).then(function(ok){
+    if(!ok){ if(sel) sel.value = cur || ''; return false; }
+    return rpc('assign_client', {p_client:cid, p_employee:emp || null}).then(function(){
+      TP.toast(emp ? name + ' → ' + to : name + ' has no employee now'); OPS && (OPS.at = 0); staleList();
+      return true;
+    }, function(e){ if(sel) sel.value = cur || ''; fail(e); return false; });
+  });
+}
+document.addEventListener('change', function(e){
+  var s = e.target;
+  if(s.matches && s.matches('select[data-asg]')){
+    var cid = s.getAttribute('data-asg'), c = LIST && LIST.rows.filter(function(x){ return x.id === cid; })[0];
+    var name = (c && (c.full_name || c.email)) || (C && C.id === cid && C.row.full_name) || 'this client';
+    assignTo(cid, s.value, name, s).then(function(ok){ if(!ok) return; if(s.id === 'pfAsg') empCard(C); else render(); });   // on a Profile, nothing typed there is lost
+    return;
+  }
+  if(s.id === 'wrFrom' || s.id === 'wrTo'){ WR.from = $('#wrFrom').value; WR.to = $('#wrTo').value; TP.lsSet('tp_wr', WR); OPS = null; MDAY = null; render(); return; }
+  var k = s.getAttribute && s.getAttribute('data-wkf');
+  if(k){ var F = k === 'md' ? MDF : k === 'op' ? OPF : EPF; F[s.getAttribute('data-k')] = s.value; wkRedraw(k); }
+});
+document.addEventListener('input', function(e){ if(e.target.id === 'ocQ'){ OPF.q = e.target.value; ocDraw(); } });
+function wkRedraw(k){
+  if(k === 'md') drawTimeline('md', MDAY && MDAY.tl, false);
+  else if(k === 'op') ocDraw();
+  else if(OPD) drawTimeline('ep', OPD.tl, false);
+}
+document.addEventListener('click', function(e){
+  var b = e.target.closest && e.target.closest('[data-act^=wk]'); if(!b) return;
+  var act = b.getAttribute('data-act'), k = b.getAttribute('data-k');
+  if(act === 'wkrange'){ WR.f = b.getAttribute('data-v'); TP.lsSet('tp_wr', WR); OPS = null; MDAY = null; OPD = null; render(); }
+  else if(act === 'wkby'){ EPF.by = b.getAttribute('data-v'); render(); }
+  else if(act === 'wkcl'){ var id = b.getAttribute('data-id'); MDF.client = MDF.client === id ? '' : id; $$('#mdMine .li').forEach(function(x){ var on = x.getAttribute('data-id') === MDF.client; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); }); drawTimeline('md', MDAY && MDAY.tl, false); var tl = $('#mdTl'); if(MDF.client && tl) tl.scrollIntoView({block:'nearest', behavior:'smooth'}); }
+  else if(act === 'wkclx'){ (k === 'md' ? MDF : k === 'op' ? OPF : EPF).client = ''; if(k === 'md') $$('#mdMine .li.on').forEach(function(x){ x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); }); wkRedraw(k); }
+  else if(act === 'wkmore'){ var FM = k === 'md' ? MDF : k === 'op' ? OPF : EPF; FM.n = (FM.n || 50) + 100; wkRedraw(k); }
+  else if(act === 'wkfail') appFail();
+  else if(act === 'wkref') appRef(b);
+  else if(act === 'wkepcl'){ EPF.client = EPF.client === b.getAttribute('data-id') ? '' : b.getAttribute('data-id'); drawTimeline('ep', OPD && OPD.tl, false); }
+});
+
+// a draft the form wouldn't take: kept as a failed try with the reason (the database counts the try and logs it); Undo
+// sets it back to in progress
+function appFail(){
+  var a = A, c = C; if(!a || a.status !== 'draft') return;
+  var m = TP.modal('<h2>Couldn’t submit it?</h2><p>It stays a draft, marked as a failed try, so it can be tried again. The reason goes in the history.</p>' +
+    '<form id="afF" class="stack" style="margin-top:14px" novalidate><div class="field"><label for="afR">What went wrong</label><textarea id="afR" rows="3" maxlength="1000" placeholder="e.g. Workday kept timing out at the last step · The posting closed · They need a US phone number">' + esc(a.submit_status === 'failed' ? a.fail_reason || '' : '') + '</textarea></div>' +
+    '<p class="err" id="afErr" hidden></p><div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit">Keep as a failed try</button></div></form>', false, {keep:true});
+  $('#afR', m).focus();
+  $('#afF', m).addEventListener('submit', function(e){
+    e.preventDefault();
+    var why = $('#afR', m).value.trim(), er = $('#afErr', m);
+    if(!why){ er.hidden = false; er.textContent = 'Say what went wrong, so the next try can avoid it.'; return; }
+    TP.busy($('#afF button[type=submit]', m), flushDraft().then(function(){ return q(SB.from('applications').update({submit_status:'failed', fail_reason:why}).eq('id', a.id).select('id').single()); })).then(function(){
+      TP.closeModal(); OPS = null; MDAY = null;
+      TP.toast('Kept as a failed try', {undo:function(){
+        q(SB.from('applications').update({submit_status:'in_progress'}).eq('id', a.id)).then(function(){ if(C === c && A && A.id === a.id) tApp(a.id); }, fail);
+      }});
+      if(C === c && A && A.id === a.id) tApp(a.id);
+    }, function(e2){ er.hidden = false; er.textContent = TP.errText(e2); });
+  });
+}
+// the employer's reference for a sent application: it confirms the submission, and once saved it stays as it is
+function appRef(btn){
+  var a = A, c = C, v = ($('#apRef') || {}).value || ''; v = v.trim();
+  if(!a || a.status === 'draft') return;
+  if(!v) return TP.toast('Type the reference first');
+  TP.confirmBox('Save this reference?', '', 'Save', false, {items:[['info', '<b>' + esc(v) + '</b> is kept with what was sent'], ['ok', 'The application counts as submitted (confirmed)'], ['info', 'It can’t be changed afterwards']]}).then(function(ok){
+    if(!ok) return;
+    TP.busy(btn, q(SB.from('applications').update({submit_ref:v}).eq('id', a.id))).then(function(){ OPS = null; MDAY = null; TP.toast('Reference saved — submitted'); if(C === c && A && A.id === a.id) tApp(a.id); }, fail);
+  });
+}
+
+// one employee: their figures, productivity, clients and workload, assignment history and recent work
+function vOpsEmp(email){
+  var t = TEAMROWS.filter(function(x){ return x.email === email; })[0] || {email:email}, nm = t.full_name || email.split('@')[0];
+  setTitle(nm + ' · Operations', null);
+  V.innerHTML = '<div class="pageh"><div class="grow">' + opsCrumb(esc(nm)) + '<h1>' + esc(nm) + (t.active === false ? ' <span class="st paused">Access off</span>' : '') + '</h1><div class="sub">' + esc((t.role === 'owner' ? 'Owner' : t.title || 'Employee') + ' · ' + email) + '</div></div>' + opsTabs('') + '</div>' +
+    '<div class="stats s5" id="epS"></div><div class="wkhead"><h2>Results</h2>' + wrBar() + '</div><div class="stats s5" id="epR"></div>' +
+    '<div class="card"><div class="ch"><h3>Productivity</h3>' + bySeg('ep', EPF.by) + '</div><div id="epC"><div class="skel"></div></div></div>' +
+    '<div class="card flush"><div class="ch"><h3>Clients and workload</h3><span class="row" style="gap:8px"><label class="sr" for="epAdd">Assign a client</label><select id="epAdd"><option value="">Assign a client…</option></select></span></div><div class="tbl wkcl ep" id="epL"><div class="skel"></div></div></div>' +
+    '<div class="card flush"><div class="ch"><h3>Recent work</h3>' + tlFilters('ep') + '</div><div class="tbl wktl" id="epTl"><div class="skel"></div></div></div>' +
+    '<div class="card"><h3>Assignment history</h3><div id="epH"><div class="skel"></div></div></div>';
+  var draw = function(D){
+    if(R.page !== 'opsemp' || !$('#epS')) return;
+    var S = D.sum.filter(function(r){ return r.employee === email; }), tot = wkTotals(S), mine = openAsg(D.asg).filter(function(a){ return a.employee === email; });
+    $('#epS').innerHTML = [[tot.sent_today, 'sent today'], [tot.sent_week, 'sent this week'], [tot.sent_month, 'sent this month'], [tot.sent_total.toLocaleString(), 'sent in total'], [mine.length, 'clients now']]
+      .map(function(s){ return '<div class="stat"><b>' + s[0] + '</b><span>' + s[1] + '</span></div>'; }).join('');
+    $('#epR').innerHTML = rangeStats(tot);
+    wkChart($('#epC'), wkBins(D.daily, EPF.by, email), EPF.by);
+    var rows = S.slice().sort(function(a, b){ return (b.assigned - a.assigned) || (b.sent_total - a.sent_total); });
+    $('#epL').innerHTML = rows.length ? '<div class="thead"><span>Client</span><span>Today</span><span>Week</span><span>Total</span><span>' + esc(wrRange().short) + '</span><span>Success</span><span>In progress</span><span>Not started</span><span>Employee</span></div>' + rows.map(function(r){
+      return '<div class="li"><button type="button" class="cwho lnk" data-act="wkepcl" data-id="' + esc(r.client_id) + '" title="Show only their work for ' + esc(r.client_name) + '"><span class="av sm" style="background:' + TP.hue(r.client_id) + '">' + esc(TP.initials(r.client_name, '')) + '</span><span class="main"><span class="t">' + esc(r.client_name) + '</span><span class="m">' + (r.assigned ? '<span class="st ' + esc(r.client_status) + '">' + (ST_NAME[r.client_status] || 'Active') + '</span>' : 'No longer theirs') + '</span></span></button>' +
+        '<span class="num">' + r.sent_today + '</span><span class="num">' + r.sent_week + '</span><span class="num">' + r.sent_total + '</span><span class="num">' + r.sent + '</span><span class="num">' + rate(r) + '</span><span class="num">' + r.in_progress + '</span><span class="num">' + r.not_started + '</span>' +
+        '<span>' + assignSel(r.client_id, empOf(r.client_id)) + '</span></div>';
+    }).join('') : '<p class="fine" style="padding:14px 16px">No clients yet — assign one above.</p>';
+    var add = $('#epAdd'), have = {}; mine.forEach(function(a){ have[a.client_id] = 1; });
+    if(add) add.innerHTML = '<option value="">Assign a client…</option>' + (LIST ? LIST.rows : []).filter(function(c){ return !have[c.id] && c.status !== 'archived'; })
+      .sort(function(a, b){ return (!!empOf(a.id) - !!empOf(b.id)) || String(a.full_name).localeCompare(String(b.full_name)); })
+      .map(function(c){ var e = empOf(c.id); return '<option value="' + esc(c.id) + '">' + esc(c.full_name || c.email) + (e ? ' — now ' + esc(who(e)) : ' — nobody yet') + '</option>'; }).join('');
+    var hist = D.asg.filter(function(a){ return a.employee === email; });
+    var names = {}; (LIST ? LIST.rows : []).forEach(function(c){ names[c.id] = c.full_name || c.email; });
+    $('#epH').innerHTML = hist.length ? '<div class="adjl">' + hist.map(function(a){
+      return '<div class="adj' + (a.ended_at ? ' off' : '') + '"><b>' + esc(names[a.client_id] || 'A client') + '</b><div class="main"><div class="m">Assigned ' + esc(TP.fmtDate(a.assigned_at)) + ' by ' + esc(who(a.assigned_by)) +
+        (a.ended_at ? ' · ' + esc(a.end_reason === 'reassigned' ? 'moved to someone else' : a.end_reason === 'left the team' ? 'left the team' : 'taken off') + ' ' + esc(TP.fmtDate(a.ended_at)) + ' by ' + esc(who(a.ended_by)) : ' · still theirs') + '</div></div></div>';
+    }).join('') + '</div>' : '<p class="fine">Never assigned a client.</p>';
+    OPD = {tl:D.tl.filter(function(a){ return a.employee === email; })};
+    drawTimeline('ep', OPD.tl, false);
+  };
+  if(OPS) draw(OPS);
+  opsLoad(true).then(draw, function(e){ if($('#epL')) $('#epL').innerHTML = errBox(e); });
+  $('#epAdd').addEventListener('change', function(e){
+    var cid = e.target.value; if(!cid) return;
+    var c = LIST && LIST.rows.filter(function(x){ return x.id === cid; })[0];
+    assignTo(cid, email, (c && (c.full_name || c.email)) || 'this client', null).then(function(ok){ e.target.value = ''; if(ok) render(); });
+  });
+}
+
+// every client: who works on them, who has, what was sent in the chosen dates, where, and how it went
+function vOpsClients(){
+  setTitle('Client activity', null);
+  V.innerHTML = '<div class="pageh"><div class="grow">' + opsCrumb('Client activity') + '<h1>Client activity</h1><div class="sub">Every client: who works on them, and what was sent for them.</div></div>' + opsTabs('opsclients') + '</div>' +
+    '<div class="wkhead"><div class="tlf"><label class="sr" for="ocQ">Find a client</label><input id="ocQ" type="search" placeholder="Find a client" value="' + esc(OPF.q) + '" autocomplete="off">' +
+      '<label class="sr" for="opEmp">Employee</label><select id="opEmp" data-wkf="op" data-k="emp"><option value="">Every employee</option><option value="-"' + (OPF.emp === '-' ? ' selected' : '') + '>Nobody assigned</option>' +
+        TEAMROWS.filter(function(t){ return t.role !== 'owner'; }).map(function(t){ return '<option value="' + esc(t.email) + '"' + (OPF.emp === t.email ? ' selected' : '') + '>' + esc(t.full_name || t.email) + '</option>'; }).join('') + '</select>' +
+      tlFilters('op').replace('<div class="tlf">', '').replace(/<\/div>$/, '') + '</div>' + wrBar() + '</div>' +
+    '<div class="stats s5" id="ocR"></div><div class="card flush"><div class="tbl occl" id="ocL"><div class="skel"></div></div></div>' +
+    '<div class="card flush"><div class="ch"><h3>Applications</h3><span class="fine">' + esc(wrRange().label) + '</span></div><div class="tbl wktl who" id="opTl"><div class="skel"></div></div></div>';
+  if(OPS) ocDraw();
+  opsLoad(true).then(ocDraw, function(e){ if($('#ocL')) $('#ocL').innerHTML = errBox(e); });
+}
+function ocDraw(){
+  var D = OPS; if(!D || R.page !== 'opsclients' || !$('#ocL')) return;
+  var qq = OPF.q.trim().toLowerCase(), now = {}; openAsg(D.asg).forEach(function(a){ now[a.client_id] = a.employee; });
+  var tl = D.tl.filter(function(a){ return !OPF.st || a.submit_status === OPF.st; });
+  var by = {}; tl.forEach(function(a){
+    var x = by[a.client_id] = by[a.client_id] || {sent:0, submitted:0, needs_review:0, failed:0, co:{}, ti:{}, who:{}, last:null};
+    if(a.applied_at){ x.sent++; if(a.submit_status === 'submitted') x.submitted++; if(a.submit_status === 'needs_review') x.needs_review++; }
+    if(a.submit_status === 'failed') x.failed++;
+    if(a.company) x.co[a.company] = (x.co[a.company] || 0) + 1;
+    if(a.title) x.ti[a.title] = (x.ti[a.title] || 0) + 1;
+    x.who[a.employee] = 1; if(!x.last || a.at > x.last) x.last = a.at;
+  });
+  var top = function(o){ return Object.keys(o).sort(function(a, b){ return o[b] - o[a]; }); };
+  var rows = (LIST ? LIST.rows : []).filter(function(c){
+    var e = now[c.id] || '';
+    return c.status !== 'archived' && (!qq || String(c.full_name + ' ' + c.email).toLowerCase().indexOf(qq) > -1) &&
+      (!OPF.emp || (OPF.emp === '-' ? !e : e === OPF.emp || (by[c.id] && by[c.id].who[OPF.emp]))) && (!OPF.st || by[c.id]);
+  }).sort(function(a, b){ var x = by[a.id], y = by[b.id]; return ((y ? y.sent + y.failed : -1) - (x ? x.sent + x.failed : -1)) || String(a.full_name).localeCompare(String(b.full_name)); });
+  var tot = {sent:0, submitted:0, needs_review:0, failed:0}; rows.forEach(function(c){ var x = by[c.id]; if(x) Object.keys(tot).forEach(function(k){ tot[k] += x[k]; }); });
+  $('#ocR').innerHTML = [[rows.length, 'clients'], [tot.sent.toLocaleString(), 'sent · ' + esc(wrRange().label.toLowerCase())], [tot.submitted.toLocaleString(), 'submitted (confirmed)'], [tot.failed, 'failed tries'], [rate(tot), 'success rate']]
+    .map(function(s){ return '<div class="stat"><b>' + s[0] + '</b><span>' + s[1] + '</span></div>'; }).join('');
+  $('#ocL').innerHTML = rows.length ? '<div class="thead"><span>Client</span><span>Employee</span><span>Worked by</span><span>Sent</span><span>Success</span><span>Companies</span><span>Job titles</span><span>Last activity</span></div>' + rows.map(function(c){
+    var x = by[c.id] || {sent:0, submitted:0, failed:0, co:{}, ti:{}, who:{}, last:null}, co = top(x.co), ti = top(x.ti), w = Object.keys(x.who);
+    return '<div class="li"><a class="cwho" href="' + esc(cUrl(c.id)) + '" data-go><span class="av sm" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span><span class="main"><span class="t">' + esc(c.full_name || c.email) + '</span><span class="m"><span class="st ' + esc(c.status) + '">' + (ST_NAME[c.status] || 'Active') + '</span></span></span></a>' +
+      '<span>' + assignSel(c.id, now[c.id] || '') + '</span><span class="m">' + (w.length ? esc(w.map(who).join(', ')) : '—') + '</span>' +
+      '<span class="num">' + x.sent + (x.failed ? ' <small class="bad">· ' + x.failed + ' failed</small>' : '') + '</span><span class="num">' + rate(x) + '</span>' +
+      '<span class="m" title="' + esc(co.join(', ')) + '">' + (co.length ? co.length + ' · ' + esc(co.slice(0, 2).join(', ')) : '—') + '</span>' +
+      '<span class="m" title="' + esc(ti.join(', ')) + '">' + (ti.length ? esc(ti.slice(0, 2).join(', ')) + (ti.length > 2 ? ' +' + (ti.length - 2) : '') : '—') + '</span>' +
+      '<span class="m">' + (x.last ? esc(TP.ago(x.last)) : '—') + '</span></div>';
+  }).join('') : '<p class="fine" style="padding:14px 16px">No clients match.</p>';
+  var keep = {}; rows.forEach(function(c){ keep[c.id] = 1; });
+  drawTimeline('op', D.tl.filter(function(a){ return keep[a.client_id]; }), true);
+}
+
 function newClient(pre){
   pre = pre || {};
   var planSel = ME.owner ? '<div class="field"><label for="ncP">Plan</label><select id="ncP"><option value="">Not set yet</option>' + TP.CONFIG.PLANS.map(function(n){ return '<option value="' + n + '">' + n + ' applications</option>'; }).join('') + '<option value="custom">Other number…</option></select></div>' +
@@ -1937,7 +2371,7 @@ function newClient(pre){
       '<div class="field"><label for="ncN">Full name</label><input id="ncN" required autocomplete="off" placeholder="e.g. Priya Sharma"></div>' +
       '<div class="field"><label for="ncE">Email</label><input id="ncE" required placeholder="the email they’ll sign in with"' + TP.sg('email') + '></div>' +
       '<div class="field"><label for="ncPh">Phone / WhatsApp <span class="muted">(optional)</span></label><input id="ncPh" placeholder="e.g. +1 201 555 0147"' + TP.sg('phone') + '></div>' +
-      planSel + '<p class="err" id="ncErr" hidden></p>' +
+      planSel + (ME.owner ? '<div class="field"><label for="ncA">Employee <span class="muted">(optional)</span></label>' + assignSel('', '', 'ncA').replace(' data-asg=""', '') + '</div>' : '') + '<p class="err" id="ncErr" hidden></p>' +
       '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="ncGo">Check and continue</button></div></form>' +
     '<div id="ncRev" hidden></div>', false, {keep:true});
   if(ME.owner) $('#ncP').addEventListener('change', function(e){ $('#ncPCw').hidden = e.target.value !== 'custom'; });
@@ -1952,7 +2386,7 @@ function newClient(pre){
     if(pv === 'custom' && !(plan >= 1 && plan <= 100000)){ err.textContent = 'Type the number of applications in their plan.'; return; }
     err.hidden = true;
     // before anything is created: the same person may already be a client
-    TP.busy(go2, loadList()).then(function(L){ ncReview(m, {name:name, email:email, phone:phone, plan:plan || null, onMade:pre.onMade}, L.rows); }, function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
+    TP.busy(go2, loadList()).then(function(L){ ncReview(m, {name:name, email:email, phone:phone, plan:plan || null, emp:ME.owner ? $('#ncA').value : '', onMade:pre.onMade}, L.rows); }, function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
   });
 }
 function ncReview(m, n, rows){
@@ -1966,7 +2400,7 @@ function ncReview(m, n, rows){
   var rv = $('#ncRev', m); rv.hidden = false;
   rv.innerHTML = '<h3 style="margin-top:14px">Check before we create the login</h3>' +
     '<div class="rvs">' + row('Name', esc(n.name)) + row('Login email', esc(n.email), 'They sign in with it, and it can’t be changed later.') +
-      row('Phone', n.phone ? esc(n.phone) : '<span class="muted">—</span>') + (ME.owner ? row('Plan', n.plan ? n.plan + ' applications' : 'Not set yet') : '') + '</div>' +
+      row('Phone', n.phone ? esc(n.phone) : '<span class="muted">—</span>') + (ME.owner ? row('Plan', n.plan ? n.plan + ' applications' : 'Not set yet') + row('Employee', n.emp ? esc(who(n.emp)) : 'Nobody yet', n.emp ? '' : 'Only the owners reach them until someone is assigned.') : '') + '</div>' +
     (same ? '<div class="note warn" style="margin-top:12px">' + who(same) + ' already uses this email. Nothing new is created — open them instead.</div>'
       : '<p class="fine" style="margin-top:12px">We’ll email <b>' + esc(n.email) + '</b> a link to set their password.</p>') +
     named.concat(phoned).map(function(c){ return '<div class="note warn" style="margin-top:8px">' + (named.indexOf(c) > -1 ? 'Another client has the same name: ' : 'Another client has this phone number: ') + who(c) + '. Check it isn’t the same person.</div>'; }).join('') +
@@ -1982,6 +2416,7 @@ function ncReview(m, n, rows){
     TP.busy(mk, TP.fn('client-accounts', {action:'create_client', full_name:n.name, email:n.email, phone:n.phone, plan_total:n.plan})).then(function(r){
       TP.closeModal(); staleList();
       if(n.onMade && !r.already_client) n.onMade(r.client_id);
+      if(n.emp && !r.already_client) rpc('assign_client', {p_client:r.client_id, p_employee:n.emp}).then(function(){ OPS = null; }, function(e3){ TP.toast('Client added, but not assigned: ' + TP.errText(e3)); });
       TP.toast(r.already_client ? 'They’re already a client — opening them' : 'Client added. Set-password email sent to ' + n.email);
       go(cUrl(r.client_id, 'profile'));
     }, function(e2){ er.hidden = false; er.textContent = e2 && e2.code === 'bad_email' ? 'Check the email address.' : TP.errText(e2); });
@@ -2159,6 +2594,7 @@ function tProfile(){
     skCard(c) +
     '</section><section class="pfsec" id="pfs-plan"><h2>Plan &amp; account</h2>' +
     planCardHTML(C) +   // the package, the extra applications and the status are the owners'; an employee reads them
+    '<div class="card" id="pfEmp"><h3>Employee</h3><div id="pfEmpB"><div class="skel"></div></div></div>' +   // who works on them: the owners assign (empCard)
     '<div class="card"><h3>Their login</h3><p class="hint">They sign in at <b>trulyplaced.com/login.html</b> with <b>' + esc(c.email) + '</b> and a password (or Google, if it’s a Gmail address).</p>' +
       '<div class="row"><button class="btn sm" type="button" data-act="resend">' + I.mail + 'Email them the set-password link again</button><span class="fine" id="pfInv"></span></div></div>' +
     (!ME.owner ? '' : c.status === 'archived'   // archiving and restoring are the owners'
@@ -2167,15 +2603,31 @@ function tProfile(){
     '</section><div class="sticky-save"><span class="saved" id="pfMsg"></span><button class="btn pri" type="button" data-act="pfsave">Save changes</button></div></div></div>';
   if($('#pf_status')) $('#pf_status').value = c.status;
   var cc = C; if(ME.owner) loadAdjustments(cc).then(function(){ if(C === cc) drawAdjustments(cc); });   // the extra applications, each with its reason
-  skFresh(c); lastInvite(C); byClient(C); pfFresh(C);
+  skFresh(c); lastInvite(C); byClient(C); pfFresh(C); empCard(C);
   if(ME.owner) $('#pf_plan').addEventListener('change', function(e){ $('#pfPCw').hidden = e.target.value !== 'custom'; });
   V.querySelector('.narrow').addEventListener('input', function(e){
-    if(e.target.closest('#pfRec')) return;
+    if(e.target.closest('#pfRec') || e.target.closest('#pfEmp')) return;
     pfMark();
     if(e.target.matches('#pfQA [data-qa=q]')) $('#pfCommon').innerHTML = commonQ(readQA($('#pfQA')));   // a question picked from the list is no longer offered below
   });
   pfRecover(C);
   pfSpy();
+}
+// who works on this client now, and who did before. The owners assign, move or take them off here (or on Operations);
+// an employee sees that the client is theirs.
+function empCard(c){
+  return q(SB.from('client_assignments').select('employee,assigned_at,assigned_by,ended_at,ended_by,end_reason').eq('client_id', c.id).order('assigned_at', {ascending:false}).limit(50)).then(function(rows){
+    var box = $('#pfEmpB'); if(C !== c || !box) return;
+    rows = rows || [];
+    var cur = rows.filter(function(r){ return !r.ended_at; })[0], first = (c.row.full_name || '').split(' ')[0] || 'them';
+    box.innerHTML = (ME.owner
+        ? '<p class="hint">Only the employee assigned here (and the owners) can open ' + esc(first) + ' — their profile, resumes, Jobs and applications. What someone already sent stays theirs if ' + esc(first) + ' moves to someone else.</p><div class="field" style="max-width:300px"><label for="pfAsg">Works on ' + esc(first) + '</label>' + assignSel(c.id, cur ? cur.employee : '', 'pfAsg') + '</div>'
+        : '<p class="hint">' + (cur && cur.employee === ME.email ? esc(first) + ' is your client. ' : '') + 'Only the owners change who works on a client.</p>') +
+      (rows.length ? '<div class="adjl" style="margin-top:10px">' + rows.map(function(r){
+        return '<div class="adj' + (r.ended_at ? ' off' : '') + '"><b>' + esc(who(r.employee)) + '</b><div class="main"><div class="m">From ' + esc(TP.fmtDate(r.assigned_at)) + ' (' + esc(who(r.assigned_by)) + ')' +
+          (r.ended_at ? ' to ' + esc(TP.fmtDate(r.ended_at)) + ' — ' + esc(r.end_reason === 'reassigned' ? 'moved on' : r.end_reason) : ' · now') + '</div></div></div>';
+      }).join('') + '</div>' : ME.owner ? '<p class="fine" style="margin-top:8px">Nobody yet — only the owners reach ' + esc(first) + ' until someone is assigned.</p>' : '');
+  }, function(e){ var box = $('#pfEmpB'); if(box) box.innerHTML = errBox(e); });
 }
 // the common questions not asked yet, each a button that adds it with its answer suggested
 function commonQ(ans){
@@ -2760,7 +3212,7 @@ function tJobs(){
   $('#lkF').addEventListener('submit', function(e){ e.preventDefault(); readLinks(lin.value); });
   $('#lkList').addEventListener('input', lkType);
   lkDraw(); lkRead(c, L);
-  if(L.items.some(function(x){ return x.app; })) lkFresh(c, L).then(function(){ if(lkShown(L)) lkDraw(); });
+  if(!L.items.length || L.items.some(function(x){ return x.app; })) lkFresh(c, L).then(function(){ if(lkShown(L)) lkDraw(); });   // an empty list here may be waiting in the database
   Promise.all([loadBoard(), loadAppIndex(true), loadRestricted(c)]).then(function(){ if(C === c && R.tab === 'jobs' && !R.app){ drawBoard(); rjDraw(); } }, function(e){ $('#jbL').innerHTML = errBox(e); });
 }
 function drawBoard(){
@@ -3037,7 +3489,37 @@ function lkList(cid){
   }
   return LKS[cid];
 }
-function lkSave(L){ try{ if(L.items.length) localStorage.setItem('tp_links_' + L.cid, JSON.stringify({at:Date.now(), items:L.items})); else localStorage.removeItem('tp_links_' + L.cid); }catch(e){} }
+function lkSave(L){ try{ if(L.items.length) localStorage.setItem('tp_links_' + L.cid, JSON.stringify({at:Date.now(), items:L.items})); else localStorage.removeItem('tp_links_' + L.cid); }catch(e){} lkSync(L); }
+// the list is kept in the database too (job_queue, sql/supabase-employee-work.sql): it is yours alone, it follows you to
+// another browser, and the owners see what's lined up ("Not started" on Operations). A moment after the last change,
+// quietly: the copy in this browser is still the one this page works from.
+var LKQ = {};
+function lkSync(L){ clearTimeout(LKQ[L.cid]); LKQ[L.cid] = setTimeout(function(){ lkPush(L); }, 1200); }
+function lkPush(L){
+  if(!ME || !ME.email || ME.team === false) return Promise.resolve();
+  var cut = function(v, n){ v = String(v || '').trim(); return v ? v.slice(0, n) : null; };
+  var rows = L.items.filter(function(x){ return /^https?:\/\//i.test(x.url || '') && /^[\w-]{1,80}$/.test(String(x.id)); }).map(function(x){
+    return {client_id:L.cid, item_id:String(x.id), url:String(x.url).slice(0, 2000), job_key:cut(x.key, 300), title:cut(x.title, 300), company:cut(x.company, 300), location:cut(x.location, 300),
+      opened_at:x.opened && x.opened.at ? new Date(x.opened.at).toISOString() : null, application_id:x.app || null};
+  });
+  var del = SB.from('job_queue').delete().eq('client_id', L.cid).eq('added_by', ME.email);
+  if(rows.length) del = del.not('item_id', 'in', '(' + rows.map(function(r){ return r.item_id; }).join(',') + ')');
+  return (rows.length ? q(SB.from('job_queue').upsert(rows, {onConflict:'client_id,item_id'})) : Promise.resolve()).then(function(){ return q(del); }).catch(function(){});
+}
+// a browser with no list for this client yet: the one kept in the database comes back (yours only)
+function lkPull(c, L){
+  if(L.pulled || L.items.length) return Promise.resolve(false);
+  L.pulled = true;
+  return q(SB.from('job_queue').select('item_id,url,job_key,title,company,location,opened_at,application_id').eq('client_id', c.id).eq('added_by', ME.email).order('added_at', {ascending:true}).limit(LK_MAX * 5)).then(function(rows){
+    if(!rows || !rows.length || L.items.length) return false;
+    L.items = rows.map(function(r){
+      return {id:r.item_id, raw:r.url, from:r.url, url:r.url, key:r.job_key, title:r.title || '', company:r.company || '', location:r.location || '', app:r.application_id || null,
+        opened:r.opened_at ? {at:new Date(r.opened_at).getTime(), by:ME.email} : null, state:r.application_id ? 'started' : r.title && r.company ? 'ready' : 'need'};
+    });
+    try{ localStorage.setItem('tp_links_' + L.cid, JSON.stringify({at:Date.now(), items:L.items})); }catch(e){}
+    return true;
+  }, function(){ return false; });
+}
 var lkSaveSoon = TP.debounce(lkSave, 400);
 function lkShown(L){ return !!(C && C.id === L.cid && R.tab === 'jobs' && !R.app && $('#lkList')); }
 function lkFind(L, key, url, not){ return L.items.filter(function(y){ return y !== not && ((key && y.key === key) || y.url === url || y.from === url); })[0] || null; }
@@ -3212,6 +3694,7 @@ function lkGot(c, L, x, it, j){
 }
 // the latest status of each application started from the list
 function lkFresh(c, L){
+  if(!L.pulled && !L.items.length) return lkPull(c, L).then(function(got){ if(got && lkShown(L)) lkDraw(); return got ? lkFresh(c, L) : null; });
   // opened in another tab of this browser (the application page marks it): take that over before anything is saved back
   try{ var st = JSON.parse(localStorage.getItem('tp_links_' + c.id) || 'null'), op = {}; ((st && st.items) || []).forEach(function(y){ if(y.opened) op[y.id] = y.opened; }); L.items.forEach(function(x){ if(!x.opened && op[x.id]) x.opened = op[x.id]; }); }catch(e){}
   var ids = L.items.filter(function(x){ return x.app; }).map(function(x){ return x.app; });
@@ -3641,7 +4124,7 @@ function loadApps(){
   if(c.apCache[key] && box){ box.innerHTML = c.apCache[key]; markPicked(); }
   (AP.mine ? mineIds(c) : Promise.resolve(null)).then(function(ids){
     AP.mineIds = ids;
-    return q(apQuery(c, 'id,status,title,company,location,job_url,applied_at,created_at,status_at').order('applied_at', {ascending:false, nullsFirst:true}).order('created_at', {ascending:false}).range(0, AP.n));   // drafts first, then newest sent
+    return q(apQuery(c, 'id,status,title,company,location,job_url,applied_at,created_at,status_at,submit_status').order('applied_at', {ascending:false, nullsFirst:true}).order('created_at', {ascending:false}).range(0, AP.n));   // drafts first, then newest sent
   }).then(function(rows){ rows = rows || []; return whoOf(c, rows.slice(0, AP.n).map(function(a){ return a.id; })).then(function(){ return rows; }); }).then(function(rows){
     if(C !== c || !$('#apL')) return;
     var more = rows.length > AP.n; rows = rows.slice(0, AP.n);
@@ -3653,7 +4136,7 @@ function loadApps(){
       var by = c.who[a.id], old = !a.applied_at && Date.now() - new Date(a.created_at) > 2 * 864e5;
       var cells = '<div class="arole">' + coLogo(a.company, a.job_url) + '<div class="main"><div class="t">' + esc(a.title || 'Role') + '</div><div class="m">' + esc(a.company || '') + '</div></div></div>' +
         '<div class="m aloc">' + esc(a.location || '—') + '</div>' +
-        '<div class="ast">' + TP.statusChip(a.status) + '</div>' +
+        '<div class="ast">' + (a.submit_status === 'failed' ? subPill('failed') : TP.statusChip(a.status)) + (a.submit_status === 'needs_review' ? '<span class="nrdot" title="Needs review: nothing confirms it was submitted yet" aria-label="Needs review"></span>' : '') + '</div>' +
         '<div class="adate"' + (a.applied_at ? ' title="' + esc(TP.fmtDateTime(a.applied_at)) + '"' : '') + '>' + (a.applied_at ? esc(TP.fmtDateTime(a.applied_at)) : '<span' + (old ? ' class="stale" title="A draft for more than 2 days"' : '') + '>Started ' + esc(TP.ago(a.created_at)) + '</span>') + '</div>' +
         '<div class="m aby">' + (by ? esc(who(by)) : '—') + '</div>';
       return picking ? '<div class="li arow" data-pick="' + esc(a.id) + '" data-st="' + esc(a.status) + '" role="checkbox" aria-checked="false" tabindex="0"><span class="apick"><input type="checkbox" tabindex="-1" aria-hidden="true"></span>' + cells + '</div>'
@@ -3739,22 +4222,22 @@ function exportCsv(btn){
     TP.toast(rows.length + ' application' + (rows.length === 1 ? '' : 's') + ' exported');
   }, fail);
 }
-// who started / sent just these applications (only the ones not known yet: a short question, not the whole history)
+// who sent each application, or started it while it's a draft (application_team, written by the database; never shown to
+// clients). Only the ones not known yet: a short question, not the whole list.
 function whoOf(c, ids){
   c.who = c.who || {};
   var need = ids.filter(function(id){ return !(id in c.who); });
   if(!need.length) return Promise.resolve(c.who);
-  return q(SB.from('client_activity').select('application_id,kind,by_email,at').in('application_id', need).in('kind', ['app_started', 'app_applied']).order('at', {ascending:true}).limit(need.length * 4 + 10)).then(function(rows){
+  return q(SB.from('application_team').select('application_id,started_by,applied_by').in('application_id', need)).then(function(rows){
     need.forEach(function(id){ c.who[id] = null; });
-    (rows || []).forEach(function(r){ if(r.kind === 'app_applied' || !c.who[r.application_id]) c.who[r.application_id] = r.by_email; });
+    (rows || []).forEach(function(r){ c.who[r.application_id] = r.applied_by || r.started_by; });
     return c.who;
   }, function(){ return c.who; });
 }
-// who started / sent each application (from the history; never shown to clients)
 function loadWho(c, force){
   if(c.who && !force) return Promise.resolve(c.who);
-  return q(SB.from('client_activity').select('application_id,kind,by_email').eq('client_id', c.id).in('kind', ['app_started', 'app_applied']).order('at', {ascending:true}).limit(10000)).then(function(rows){
-    var w = {}; (rows || []).forEach(function(r){ if(r.application_id && (r.kind === 'app_applied' || !w[r.application_id])) w[r.application_id] = r.by_email; });
+  return q(SB.from('application_team').select('application_id,started_by,applied_by').eq('client_id', c.id).limit(20000)).then(function(rows){
+    var w = {}; (rows || []).forEach(function(r){ w[r.application_id] = r.applied_by || r.started_by; });
     c.who = w; return w;
   }, function(){ c.who = {}; return c.who; });
 }
@@ -4156,7 +4639,9 @@ function drawDraft(){
         '<div class="drop sm" id="dRes" tabindex="0" role="button">' + I.doc + '<span><b>Resume file you uploaded</b><span class="fine">Recommended · PDF or Word</span></span></div></div>' +
       '<label class="check" style="margin-top:10px"><input type="checkbox" id="noShot"> There was no confirmation screen</label>' +
       '<p class="err" id="mkErr" hidden></p>' +
+      (A.submit_status === 'failed' ? '<div class="note bad" id="apFailed" style="margin-top:10px"><b>Couldn’t submit</b> (try ' + (A.attempts || 1) + '): ' + esc(A.fail_reason || '') + ' — ' + esc(TP.ago(A.attempted_at)) + '. Mark as applied once it goes through.</div>' : '') +
       '<div class="sendrow"><button class="btn ok" type="button" data-act="markapplied">' + I.check + 'Mark as applied for ' + first + '</button><span class="sp"></span>' +
+        '<button class="btn sm" type="button" data-act="wkfail" title="The form wouldn’t take it — say why, and it’s kept as a failed try">Couldn’t submit</button>' +
         '<button class="btn sm bad" type="button" data-act="deldraft">' + I.trash + 'Delete draft</button></div></div>';
   // a job page: on the left the job's card and, right under it, sending it (the next thing to do); then the description and
   // analysis, the answers and the cover letter. The resume on the right
@@ -4473,6 +4958,7 @@ function drawSent(){
         : shots.length ? '<div class="shotgrid ro">' + shots.map(function(p, i){ return '<a class="shot shotc" data-file="' + esc(p) + '" target="_blank" rel="noopener" title="Screenshot ' + (i + 1) + ' — click to open it full size"><img data-file="' + esc(p) + '" alt="Confirmation screenshot ' + (i + 1) + '"></a>'; }).join('') + '</div><p class="fine" style="margin-top:6px">' + shots.length + ' screenshots · click one to open it full size.</p>'
         : '<p class="hint">No screenshot was saved.</p>') + '</div>' +
       '<div class="rvs">' + rv('Status', TP.statusChip(A.status)) + rv('Sent by', esc(who(by))) +
+        rv('Submission', subPill(A.submit_status) + (A.submit_ref ? ' <span class="m">Ref ' + esc(A.submit_ref) + '</span>' : '')) +
         rv('Resume', opt ? 'Tailored to this job' : (A.resume_doc || A.resume_text) ? 'As copied from the main resume' : A.resume_file ? 'The uploaded file only' : '—') +
         rv('Files', [shots.length ? (shots.length === 1 ? 'Screenshot' : shots.length + ' screenshots') : '', A.resume_file ? 'Resume file' : ''].filter(Boolean).join(', ') || 'None') +
         rv('Cover letter', A.cover_letter ? 'Included' : 'None') + rv('Form answers', n ? String(n) : 'None') + '</div></div>' +
@@ -4480,6 +4966,7 @@ function drawSent(){
         (shots.length < SHOT_MAX ? shotsHTML('dShot2', shots.length ? 'Add more screenshots' : 'Add the confirmation screenshot', 'Paste, drop, or choose · ' + (SHOT_MAX - shots.length) + ' more at most') : '') +
         (A.resume_file ? '' : '<div class="drop sm" id="dRes2" tabindex="0" role="button">' + I.doc + '<span><b>Add the resume file that was uploaded</b></span></div>') +
         '</div><div class="row end" style="margin-top:8px"><button class="btn sm" type="button" data-act="addmissing">Save file</button></div></div>' : '') +
+      (A.submit_ref ? '' : '<div class="apsub"><span>' + (A.submit_status === 'needs_review' ? 'Nothing confirms this one yet. A screenshot above or the employer’s reference makes it Submitted:' : 'Employer’s reference, if they gave one:') + '</span><label class="sr" for="apRef">Submission reference</label><input id="apRef" maxlength="200" placeholder="e.g. WD-48213 or the confirmation email’s subject" autocomplete="off"><button class="btn sm" type="button" data-act="wkref">Save reference</button></div>') +
       (ME.owner ? '<div class="row end" style="margin-top:12px"><button class="btn sm bad" type="button" data-act="delsent">' + I.trash + 'Delete this application (owner)</button></div>' : '') + '</div>' +
     (n ? '<div class="card"><div class="ch"><h3>Answers given</h3><span class="muted">' + n + '</span></div>' + A.answers.map(function(x){ return '<div class="qa-ro"><b>' + esc(x.q) + '</b><div>' + esc(x.a) + '</div></div>'; }).join('') + '</div>' : '') +
     (A.cover_letter ? '<div class="card"><div class="ch"><h3>Cover letter</h3></div><pre class="txt">' + esc(A.cover_letter) + '</pre></div>' : '') +
@@ -4675,8 +5162,8 @@ function tActivity(){
 // the history, narrowed to one kind of thing, or to one person
 var ACF = {k:'all', by:''};
 var AC_K = [['all', 'All'], ['note', 'Notes'], ['apps', 'Applications'], ['status', 'Status'], ['profile', 'Profile & resumes']];
-var AC_KINDS = {note:['note'], apps:['app_started', 'app_applied', 'app_deleted', 'app_restored', 'app_edited'], status:['app_status'],
-  profile:['profile_updated', 'plan_changed', 'resume_added', 'resume_updated', 'resume_deleted', 'resume_restored', 'client_created', 'invite_sent', 'client_archived', 'client_restored']};
+var AC_KINDS = {note:['note'], apps:['app_started', 'app_applied', 'app_deleted', 'app_restored', 'app_edited', 'app_failed', 'app_confirmed'], status:['app_status'],
+  profile:['profile_updated', 'plan_changed', 'resume_added', 'resume_updated', 'resume_deleted', 'resume_restored', 'client_created', 'invite_sent', 'client_archived', 'client_restored', 'assigned']};
 // a note being written is kept in this browser until it's saved, and put back if the page closed first
 function noteKeep(el, key){
   if(!el) return;
@@ -4704,7 +5191,7 @@ function loadActivity(c, n){
 function vTeam(){
   setTitle('Team', null);
   var owners = TEAMROWS.filter(function(x){ return x.role === 'owner'; }).map(function(x){ return x.full_name || x.email.split('@')[0]; });
-  V.innerHTML = '<div class="narrow" style="margin:0 auto"><div class="pageh"><div class="grow"><h1>Team</h1><div class="sub">Everyone here opens every client, applies for them, optimises resumes and sees the history. ' +
+  V.innerHTML = '<div class="narrow" style="margin:0 auto"><div class="pageh"><div class="grow"><h1>Team</h1><div class="sub">Employees open the clients assigned to them (on Operations, or a client’s Profile), apply for them, optimise resumes and see their history. ' +
       (ME.owner ? 'Taking on clients, their plans and statuses, and this list stay with the owners' + (owners.length ? ' — ' + esc(owners.join(' and ')) : '') + '.' : 'Only the owners can change this list.') + '</div></div></div>' +
     (ME.owner ? '<div class="card" style="margin-top:16px"><h3>Add an employee</h3><p class="hint">They sign in at trulyplaced.com/login.html with this email — with Google, or a password. Everyone added is an employee; the two owners are fixed.</p><form id="tmF" class="stack" novalidate><div class="grid3">' +
       '<div class="field"><label for="tmE">Email</label><input id="tmE" required' + TP.sg('team_email') + '></div><div class="field"><label for="tmN">Name</label><input id="tmN" autocomplete="off"></div>' +
@@ -4720,7 +5207,7 @@ function vTeam(){
     if(had && had.role === 'owner') return TP.toast((had.full_name || email) + ' is an owner already');
     if(had && had.active && (had.title || '') === title && (had.full_name || '') === (name || had.full_name || '')) return TP.toast((had.full_name || email) + ' is already on the team');
     var items = [['info', '<b>' + esc(name || email) + '</b>' + (title ? ', ' + esc(title) : '') + ' (' + esc(email) + ') signs in at trulyplaced.com/login.html'],
-      ['ok', 'As an <b>employee</b> they can open every client, apply for them, tailor resumes and see the history'],
+      ['ok', 'As an <b>employee</b> they open the clients you assign them, apply for them, tailor resumes and see their history'],
       ['info', 'Taking on clients, plans, statuses and this list stay with the owners'],
       invite ? ['info', 'If they don’t have a TrulyPlaced login yet, they get an email to set a password'] : null];
     TP.confirmBox(had ? 'Update ' + (had.full_name || email) + '?' : 'Add ' + (name || email) + ' to the team?', '', had ? 'Update' : 'Add to the team', false, {items:items}).then(function(ok){
@@ -4757,7 +5244,7 @@ function teamMenu(email){
   var m = TP.modal('<h2>' + esc(nm) + '</h2><p>' + esc(t.email) + '</p><div class="stack" style="margin-top:14px">' +
     '<form id="tmTF" novalidate><div class="field"><label for="tmT2">Job title</label><div class="row"><input class="inp grow" id="tmT2" value="' + esc(t.title || '') + '" maxlength="60" placeholder="e.g. Application specialist" autocomplete="off"><button class="btn" type="submit">Save</button></div></div></form>' +
     '<button class="btn" type="button" data-v="active">' + (t.active ? 'Turn off their access (keeps their history)' : 'Turn their access back on') + '</button>' +
-    '<button class="btn bad" type="button" data-v="del">Remove from the team</button><p class="fine">Employees open every client, apply for them and tailor resumes. Taking on clients, plans, statuses and this list stay with the owners.</p></div>');
+    '<button class="btn bad" type="button" data-v="del">Remove from the team</button><p class="fine">Employees open the clients assigned to them, apply for them and tailor resumes. Taking on clients, assigning them, plans, statuses and this list stay with the owners. Removing someone hands their clients back to the owners; turning access off keeps them assigned.</p></div>');
   $('#tmTF', m).addEventListener('submit', function(e){
     e.preventDefault();
     var title = $('#tmT2').value.trim().slice(0, 60) || null; if(title === (t.title || null)) return TP.closeModal();
