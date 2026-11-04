@@ -82,7 +82,7 @@ function logo(company, domain){
   var img = domain ? '<img src="https://www.google.com/s2/favicons?domain=' + encodeURIComponent(domain) + '&amp;sz=128" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '';
   return '<span class="logo" style="background:' + hue(company) + '" aria-hidden="true">' + esc(String(company || '?').charAt(0).toUpperCase()) + img + '</span>';
 }
-var STATUS = [['draft','Draft'],['applied','Applied'],['interview','Interview'],['offer','Offer'],['rejected','Not selected'],['closed','Closed']];
+var STATUS = [['draft','Draft'],['applied','Applied'],['interview','Interview'],['offer','Offer'],['rejected','Not selected'],['closed','Closed'],['withdrawn','Withdrawn']];
 function statusLabel(s){ for(var i = 0; i < STATUS.length; i++) if(STATUS[i][0] === s) return STATUS[i][1]; return s || ''; }
 function statusChip(s){ return '<span class="st ' + esc(s) + '">' + esc(statusLabel(s)) + '</span>'; }
 // the address of a job without tracking bits, so the same job pasted twice is spotted

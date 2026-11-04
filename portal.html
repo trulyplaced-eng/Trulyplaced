@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-10-31.4">
+<link rel="stylesheet" href="/portal.css?v=2026-11-04.1">
 <style>
 /* The client's workspace, laid out as app.trulyplaced.com is: the sidebar in the app's light grey, a white page, white cards with
    a hairline and a soft shadow, figures in near-black, TrulyPlaced blue for progress and where you are. */
@@ -128,6 +128,7 @@ body{background:#fff}
 .ahead h1{font-size:21px}
 .ahead .m{font-size:13.5px;color:var(--muted);margin-top:3px}
 .sent{display:flex;align-items:flex-start;gap:8px;margin:10px 0 0 48px;font-size:13px;line-height:1.45;color:var(--ok);font-weight:600}
+.note.wdn{margin:10px 0 0 48px}
 .sent svg{width:15px;height:15px;flex:none;margin-top:1px}
 .qa-ro{padding:10px 0;border-top:1px solid var(--line)}
 .card h3 + .qa-ro{border-top:0}
@@ -257,7 +258,7 @@ body{background:#fff}
   .kv{grid-template-columns:1fr;gap:2px}
   .kv dd{margin-bottom:8px}
   .pwf{grid-template-columns:1fr}
-  .sent{margin-left:0}
+  .sent,.note.wdn{margin-left:0}
   .tools .seg{flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none}   /* the five filters stay on one line */
   .tools .seg::-webkit-scrollbar{display:none}
   .tools .seg button{flex:none;padding:0 11px}
@@ -388,7 +389,7 @@ body{background:#fff}
 <nav class="tabbar" id="tabbar" aria-label="Sections"></nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="modalRoot"></div>
-<script src="/portal.js?v=2026-10-31.3"></script>
+<script src="/portal.js?v=2026-11-04.1"></script>
 <script>
 (function(){
 "use strict";
@@ -417,7 +418,7 @@ var KINDS = [['no_interviews', 'I’m not getting interviews', 'Applications are
   ['change', 'I’d like something changed', 'Something to add, take out or say differently'], ['other', 'Something else', 'Anything else about your resume']];
 var KLABEL = {no_interviews:'Not getting interviews', wrong:'Something on it is wrong', change:'A change to make', other:'Something else'};   // as the history says it
 var STS = [['applied', 'Applied', '#10b981'], ['interview', 'Interview', '#0ea5e9'], ['offer', 'Offer', '#047857'], ['rejected', 'Not selected', '#d4d4d4'], ['closed', 'Closed', '#e5e5e5']];   // the status pills' own dots
-var FILTERS = [['all', 'All'], ['applied', 'Applied'], ['interview', 'Interview'], ['offer', 'Offer'], ['rejected', 'Not selected']];
+var FILTERS = [['all', 'All'], ['applied', 'Applied'], ['interview', 'Interview'], ['offer', 'Offer'], ['rejected', 'Not selected'], ['withdrawn', 'Withdrawn']];
 
 $('#sideFoot').innerHTML = '<a href="' + esc(WA) + '" target="_blank" rel="noopener">' + I.wa + 'WhatsApp your team</a><a href="mailto:' + esc(MAIL) + '">' + I.mail + 'Support</a>' +
   '<button type="button" data-act="out">' + I.out + 'Sign out</button>';
@@ -530,7 +531,7 @@ function vApps(){
   V.innerHTML = '<div class="greet" id="listTop"><div><h2>Applications</h2><p>' + (done ? 'Everything we’ve sent for you, newest first. Open one to see the job, your resume as sent and the company’s confirmation.' : 'Your first applications are on the way — each appears here the moment it’s sent.') +
       '</p></div><span class="ct" id="alc"></span></div>' +
     (done ? '<div class="tools"><input class="inp" id="aq" type="search" placeholder="Search role or company" value="' + esc(F.q) + '" autocomplete="off" aria-label="Search your applications">' +
-        '<div class="seg" id="af">' + FILTERS.map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (F.f === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div></div>' +
+        '<div class="seg" id="af">' + FILTERS.map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (F.f === f[0] ? 'on' : '') + '"' + (f[0] === 'withdrawn' && F.f !== 'withdrawn' ? ' hidden' : '') + '>' + f[1] + '</button>'; }).join('') + '</div></div>' +
       '<div id="al"><div class="skel"></div><div class="skel"></div></div>'
      : '<div class="empty">' + IC.apps + '<h3>Nothing sent yet</h3><p>We start applying as soon as your resume is ready. You’ll see every application here, with exactly what was sent.</p></div>');
   if(!done) return;
@@ -590,7 +591,7 @@ function loadStats(){
   var count = function(qb){ return qb.then(function(r){ if(r.error) throw r.error; return r.count || 0; }); };
   var base = function(){ return SB.from('applications').select('id', {count:'exact', head:true}).eq('client_id', ME.id).neq('status', 'draft'); };
   var ws = weekStarts();
-  var jobs = STS.map(function(s){ return count(base().eq('status', s[0])); }).concat(ws.map(function(s){ var e = new Date(s); e.setDate(e.getDate() + 7); return count(base().gte('applied_at', s.toISOString()).lt('applied_at', e.toISOString())); }));
+  var jobs = STS.map(function(s){ return count(base().eq('status', s[0])); }).concat(ws.map(function(s){ var e = new Date(s); e.setDate(e.getDate() + 7); return count(base().neq('status', 'withdrawn').gte('applied_at', s.toISOString()).lt('applied_at', e.toISOString())); }));
   Promise.all(jobs).then(function(n){
     STATS = {}; STS.forEach(function(s, i){ STATS[s[0]] = n[i]; });
     WEEKS = ws.map(function(s, i){ return {start:s, n:n[STS.length + i]}; });
@@ -608,7 +609,9 @@ function loadList(){
     if(r.error) throw r.error;
     if(seq !== LSEQ || $('#al') !== box) return;   // a newer search, or the page moved on
     var rows = r.data || [], more = rows.length > F.n, c = $('#alc'); rows = rows.slice(0, F.n);
-    if(c) c.textContent = r.count != null ? (F.f === 'all' && !qq ? r.count.toLocaleString() + ' sent' : r.count.toLocaleString() + ' found') : '';
+    // the count: what was sent, the withdrawn ones apart (they don't count); the Withdrawn filter shows once there's one
+    var wd = F.f === 'all' && !qq && r.count != null ? Math.max(0, r.count - (PROG.done || 0)) : 0, wb = $('#af [data-f=withdrawn]'); if(wb && wd) wb.hidden = false;
+    if(c) c.textContent = r.count != null ? (F.f === 'all' && !qq ? (PROG.done || 0).toLocaleString() + ' sent' + (wd ? ' · ' + wd.toLocaleString() + ' withdrawn' : '') : r.count.toLocaleString() + ' found') : '';
     if(!rows.length){
       box.innerHTML = '<div class="empty"><h3>Nothing here</h3><p>' + (qq ? 'No application matches “' + esc(qq) + '”.' : 'No applications with this status yet.') + '</p></div>';
       return;
@@ -623,7 +626,7 @@ function loadList(){
 /* ---------- one application: exactly what was sent ---------- */
 function vApp(id){
   V.innerHTML = '<div class="skel"></div><div class="skel"></div>';
-  q(SB.from('applications').select('id,status,title,company,location,job_url,jd_text,resume_doc,resume_text,resume_file,cover_letter,answers,screenshot,screenshots,applied_at,status_at').eq('id', id).maybeSingle()).then(function(a){
+  q(SB.from('applications').select('id,status,title,company,location,job_url,jd_text,resume_doc,resume_text,resume_file,cover_letter,answers,screenshot,screenshots,applied_at,status_at,withdrawn_at,withdraw_reason').eq('id', id).maybeSingle()).then(function(a){
     if(appId() !== id) return;
     if(!a){ V.innerHTML = '<div class="empty"><h3>Not found</h3><p>This application isn’t on your account.</p><a class="btn" href="#applications" data-go>All applications</a></div>'; return; }
     A = a; document.title = (a.company || 'Application') + ' | TrulyPlaced';
@@ -632,6 +635,7 @@ function vApp(id){
     V.innerHTML = '<a class="btn sm ghost" href="#applications" data-go>' + I.back + 'All applications</a>' +
       '<div class="card" style="margin-top:10px"><div class="ahead">' + TP.logo(a.company) + '<div style="flex:1;min-width:0"><h1>' + esc(a.title || 'Role') + '</h1><div class="m">' + esc([a.company, a.location].filter(Boolean).join(' · ')) + '</div></div>' + TP.statusChip(a.status) + '</div>' +
         '<div class="sent">' + I.check + '<span>Sent ' + esc(TP.fmtDateTime(a.applied_at)) + ' by ' + TEAM + '</span></div>' +
+        (a.status === 'withdrawn' ? '<div class="note wdn"><b>Withdrawn' + (a.withdrawn_at ? ' on ' + esc(TP.fmtDate(a.withdrawn_at)) : '') + '</b>' + (a.withdraw_reason ? ' — ' + esc(a.withdraw_reason) : '') + '. It doesn’t count toward your plan.</div>' : '') +
         '<div class="row" style="margin-top:14px"><a class="btn sm" href="' + esc(TP.safeHref(a.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'View the job posting</a></div></div>' +
       (shots.length ? '<div class="card"><h3>Proof it was sent</h3><p class="hint">The company’s confirmation screen' + (shots.length > 1 ? 's' : '') + ', saved when we applied.' + (shots.length > 1 ? ' Click one to open it full size.' : '') + '</p>' +
         (shots.length === 1 ? '<a class="shot" data-file="' + esc(shots[0]) + '" target="_blank" rel="noopener"><img data-file="' + esc(shots[0]) + '" alt="Confirmation screenshot"></a>'
@@ -662,7 +666,7 @@ function loadRes(){
       .then(function(r){ return r.error ? null : (r.data || []); }, function(){ return null; })
   ]).then(function(rs){
     var use = {};
-    (rs[1] || []).forEach(function(a){ if(!a.base_resume_id) return; var u = use[a.base_resume_id] = use[a.base_resume_id] || {n:0, iv:0};
+    (rs[1] || []).forEach(function(a){ if(!a.base_resume_id || a.status === 'withdrawn') return; var u = use[a.base_resume_id] = use[a.base_resume_id] || {n:0, iv:0};
       u.n++; if(a.status === 'interview' || a.status === 'offer') u.iv++; });
     var list = rs[0] || []; list.forEach(function(r, i){ r.v = i + 1; r.use = use[r.id] || {n:0, iv:0}; });
     RES = {list:list, reqs:rs[2]};

@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-10-31.4">
+<link rel="stylesheet" href="/portal.css?v=2026-11-04.1">
 <style>
 /* The shell, laid out like the job board app (app.trulyplaced.com): a left sidebar with the sections, the clients open in
    this browser tab, the client you're working on with their progress, and you. Phones get a top bar and a tab bar. */
@@ -318,8 +318,8 @@ a.li:hover,button.li:hover{background:var(--hover)}
 .st.applied::before,.st.offer::before,.st.active::before,.st.done::before{background:#10b981}
 .st.interview{background:#f0f9ff;color:#0369a1}.st.interview::before{background:#0ea5e9}
 .st.paused{background:#fffbeb;color:#b45309}.st.paused::before{background:#f59e0b}
-.st.rejected,.st.closed,.st.archived{background:#f5f5f5;color:#737373}
-.st.rejected::before,.st.closed::before,.st.archived::before{background:#d4d4d4}
+.st.rejected,.st.closed,.st.archived,.st.withdrawn{background:#f5f5f5;color:#737373}
+.st.rejected::before,.st.closed::before,.st.archived::before,.st.withdrawn::before{background:#d4d4d4}
 .step .n{background:#fff;color:var(--ink);border:1px solid #e0e0e0;font-weight:600;font-size:12.5px}
 .step .n.ok{background:#ecfdf5;color:#047857;border-color:transparent}
 .ahead h2{font-size:20px;font-weight:650}
@@ -361,7 +361,18 @@ a.li:hover,button.li:hover{background:var(--hover)}
 .pgl b{font-size:13.5px;color:var(--ink);font-variant-numeric:tabular-nums}
 .tbl.clients .prog{height:5px;margin-top:5px}
 .tbl.clients .td.zero b{color:var(--warn)}
-.tbl.apps .thead,.tbl.apps .li{grid-template-columns:minmax(0,2.6fr) minmax(0,1.3fr) 108px minmax(0,1.2fr) minmax(0,.9fr)}
+.tbl.apps .thead,.tbl.apps .li{grid-template-columns:minmax(0,2.6fr) minmax(0,1.3fr) 108px minmax(0,1.2fr) minmax(0,.9fr) 30px}
+/* a row's ⋯ (Withdraw, Undo withdrawal, Delete) and its menu, laid over the page beside it */
+.tbl.apps .amore{display:flex;justify-content:flex-end}
+.amb{width:26px;height:26px;display:grid;place-items:center;border:0;border-radius:5px;background:none;color:var(--muted);cursor:pointer;padding:0}
+.amb:hover,.amb[aria-expanded=true]{background:#eef0f3;color:var(--ink)}.amb svg{width:15px;height:15px}
+.rmenu.aprm{position:fixed;right:auto;min-width:200px}
+.rmenu button.bad{color:var(--bad,#b42318)}
+.rmenu button svg{width:14px;height:14px}
+.wdq{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.wdq button{height:26px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px;color:var(--ink);cursor:pointer}
+.wdq button:hover{border-color:#c9cdd4;background:#f7f8fa}
+.note.wdn{margin-top:10px;font-size:12.5px}
 .arole{display:flex;align-items:center;gap:12px;min-width:0}
 .arole .logo{width:30px;height:30px;border-radius:8px}
 .adate{font-size:13px;color:var(--body);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -418,7 +429,7 @@ a.li:hover,button.li:hover{background:var(--hover)}
   .tbl.clients .cwho{grid-area:who}.tbl.clients .pgc{grid-area:pg;width:auto}.tbl.clients .ctoday{grid-area:today}.tbl.clients .cst{grid-area:st}
   .tbl.clients .cdrafts,.tbl.clients .clast,.tbl.clients .chev{display:none}
   .tbl.clients .ctoday::after{content:" today";font-size:12px;color:var(--muted)}
-  .tbl.apps .li{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"role st" "date date";row-gap:4px}
+  .tbl.apps .li{grid-template-columns:minmax(0,1fr) auto 28px;grid-template-areas:"role st mo" "date date mo";row-gap:4px}.tbl.apps .amore{grid-area:mo;align-items:center}
   .tbl.apps .arole{grid-area:role}.tbl.apps .ast{grid-area:st}.tbl.apps .adate{grid-area:date;padding-left:42px}
   .tbl.apps .aloc,.tbl.apps .aby{display:none}
   .tbl.team .li{grid-template-columns:minmax(0,1fr) auto auto}
@@ -614,6 +625,10 @@ a.li:hover,button.li:hover{background:var(--hover)}
 .shotc .x:hover{background:#b91c1c}
 .shotbar{display:flex;align-items:center;gap:10px;margin-top:8px}.shotbar .fine{flex:1}
 .shots .drop.sm.has{display:flex;text-align:left}
+.shot1{position:relative}.shot1 .x,.shotgrid.ro .shotc .x{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(17,17,17,.72);color:#fff;font:600 15px/22px Inter,system-ui,sans-serif;cursor:pointer;padding:0;opacity:0;transition:opacity .15s}
+.shot1:hover .x,.shot1 .x:focus-visible,.shotgrid.ro .shotc:hover .x,.shotgrid.ro .shotc .x:focus-visible{opacity:1}.shot1 .x:hover,.shotgrid.ro .shotc .x:hover{background:#b91c1c}
+.shotgrid.ro .shotc .shot{display:block;height:100%}
+@media (hover:none){.shot1 .x,.shotgrid.ro .shotc .x{opacity:1}}
 .aprecbox .shotgrid{margin-top:0}.aprecbox .shotgrid .shot img{max-height:none}
 .shotview img{max-width:100%;max-height:76vh;display:block;margin:0 auto;border-radius:8px;border:1px solid var(--line)}
 .sendrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
@@ -1594,7 +1609,7 @@ button.li{width:100%;text-align:left;background:none;border:0;border-top:1px sol
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="modalRoot"></div>
 <input type="file" id="fileIn" hidden>
-<script src="/portal.js?v=2026-10-31.3"></script>
+<script src="/portal.js?v=2026-11-04.1"></script>
 <script src="/match.js?v=2026-10-30.1"></script>
 <script>
 (function(){
@@ -2232,6 +2247,7 @@ document.addEventListener('click', function(e){
   else if(act === 'wkcl'){ var id = b.getAttribute('data-id'); MDF.client = MDF.client === id ? '' : id; $$('#mdMine .li').forEach(function(x){ var on = x.getAttribute('data-id') === MDF.client; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); }); drawTimeline('md', MDAY && MDAY.tl, false); var tl = $('#mdTl'); if(MDF.client && tl) tl.scrollIntoView({block:'nearest', behavior:'smooth'}); }
   else if(act === 'wkclx'){ (k === 'md' ? MDF : k === 'op' ? OPF : EPF).client = ''; if(k === 'md') $$('#mdMine .li.on').forEach(function(x){ x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); }); wkRedraw(k); }
   else if(act === 'wkmore'){ var FM = k === 'md' ? MDF : k === 'op' ? OPF : EPF; FM.n = (FM.n || 50) + 100; wkRedraw(k); }
+  else if(act === 'wkshotx') sentShotDel(+b.getAttribute('data-i'));
   else if(act === 'wkfail') appFail();
   else if(act === 'wkref') appRef(b);
   else if(act === 'wkepcl'){ EPF.client = EPF.client === b.getAttribute('data-id') ? '' : b.getAttribute('data-id'); drawTimeline('ep', OPD && OPD.tl, false); }
@@ -2256,6 +2272,26 @@ function appFail(){
       }});
       if(C === c && A && A.id === a.id) tApp(a.id);
     }, function(e2){ er.hidden = false; er.textContent = TP.errText(e2); });
+  });
+}
+// a sent application's screenshot that isn't this job's (added by mistake): said first, taken off the list (the database logs
+// it with the file's path; the file stays in storage), and Undo puts it back at the end
+function sentShotDel(i){
+  var a = A, c = C; if(!a || a.status === 'draft') return;
+  var list = appShots(a).slice(), p = list[i]; if(!p) return;
+  var left = list.filter(function(x, k){ return k !== i; }), last = !left.length && !a.submit_ref;
+  TP.confirmBox('Remove screenshot ' + (i + 1) + '?', '', 'Remove', true, {items:[['info', 'For a screenshot that isn’t this job’s confirmation — added by mistake'],
+      ['info', esc((c.row.full_name || 'The client').split(' ')[0]) + ' no longer sees it on their dashboard; ' + (left.length ? left.length + ' stay' + (left.length === 1 ? 's' : '') : 'none are left')],
+      last ? ['warn', 'With no screenshot or reference left, this application goes back to Needs review'] : null,
+      ['ok', 'Kept in the history (who and when), and Undo puts it back']].filter(Boolean)}).then(function(ok){
+    if(!ok) return;
+    q(SB.from('applications').update({screenshots:left}).eq('id', a.id).select('*').maybeSingle()).then(function(row){
+      OPS = null; MDAY = null; if(row && A && A.id === a.id){ A = row; drawSent(); }
+      TP.toast('Screenshot removed', {undo:function(){
+        var now = appShots(A && A.id === a.id ? A : row); if(now.indexOf(p) > -1) return;
+        q(SB.from('applications').update({screenshots:now.concat([p]).slice(0, SHOT_MAX)}).eq('id', a.id).select('*').maybeSingle()).then(function(r2){ if(r2 && A && A.id === a.id){ A = r2; drawSent(); } TP.toast('Screenshot put back'); }, fail);
+      }});
+    }, fail);
   });
 }
 // the employer's reference for a sent application: it confirms the submission, and once saved it stays as it is
@@ -2510,7 +2546,7 @@ function tDash(){
     '<div class="card"><div class="row"><h3 class="grow">Latest applications</h3><a class="btn sm" href="' + esc(cUrl(c.id, 'applications')) + '" data-go>All applications</a></div><div id="dbL" style="margin-top:8px"><div class="skel"></div></div></div>';
   $('#dbBy').addEventListener('click', function(e){ var b = e.target.closest('[data-by]'); if(!b) return; DB.by = b.getAttribute('data-by'); $$('#dbBy button').forEach(function(x){ x.classList.toggle('on', x === b); }); if(c.dash) dashChart(c); });
   if(c.dash) dashDraw(c);   // what was loaded last shows at once
-  q(SB.from('applications').select('id,status,title,company,applied_at').eq('client_id', c.id).not('applied_at', 'is', null).order('applied_at', {ascending:false}).limit(5000))
+  q(SB.from('applications').select('id,status,title,company,applied_at').eq('client_id', c.id).not('applied_at', 'is', null).neq('status', 'withdrawn').order('applied_at', {ascending:false}).limit(5000))
     .then(function(rows){ c.dash = rows || []; if(C === c && R.tab === 'dash' && !R.app) dashDraw(c); }, function(e){ if($('#dbC')) $('#dbC').innerHTML = errBox(e); });
 }
 function dashStats(c, rows){
@@ -4074,7 +4110,7 @@ function tApps(){
   V.innerHTML = '<div class="stats"><div class="stat"><b>' + (p.done || 0) + (c.row.plan_total ? ' <span style="font-size:14px;color:var(--muted)">/ ' + c.row.plan_total + '</span>' : '') + '</b><span>applications sent</span></div>' +
       '<div class="stat"><b>' + (p.today || 0) + '</b><span>sent today</span></div><div class="stat"><b>' + (p.drafts || 0) + '</b><span>drafts in progress</span></div><div class="stat"><b>' + (p.interviews || 0) + '</b><span>interviews and offers</span></div></div>' +
     '<div class="tools" style="margin-top:0"><input class="inp" id="apQ" type="search" placeholder="Search role or company" value="' + esc(AP.q) + '" autocomplete="off">' +
-      '<div class="seg" id="apF">' + [['all','All'],['draft','Drafts'],['applied','Applied'],['interview','Interview'],['offer','Offer'],['rejected','Not selected'],['closed','Closed']].map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (AP.f === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div></div>' +
+      '<div class="seg" id="apF">' + [['all','All'],['draft','Drafts'],['applied','Applied'],['interview','Interview'],['offer','Offer'],['rejected','Not selected'],['closed','Closed'],['withdrawn','Withdrawn']].map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (AP.f === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div></div>' +
     '<div class="tools apt2"><select class="inp" id="apW" aria-label="When">' + AP_W.map(function(w){ return '<option value="' + w[0] + '"' + (AP.w === w[0] ? ' selected' : '') + '>' + w[1] + '</option>'; }).join('') + '</select>' +
       '<label class="check apmine"><input type="checkbox" id="apMine"' + (AP.mine ? ' checked' : '') + '> Only mine</label><span class="grow"></span>' +
       '<button class="btn" type="button" data-act="apsel">' + (AP.sel ? 'Done selecting' : 'Select') + '</button>' +
@@ -4124,7 +4160,7 @@ function loadApps(){
   if(c.apCache[key] && box){ box.innerHTML = c.apCache[key]; markPicked(); }
   (AP.mine ? mineIds(c) : Promise.resolve(null)).then(function(ids){
     AP.mineIds = ids;
-    return q(apQuery(c, 'id,status,title,company,location,job_url,applied_at,created_at,status_at,submit_status').order('applied_at', {ascending:false, nullsFirst:true}).order('created_at', {ascending:false}).range(0, AP.n));   // drafts first, then newest sent
+    return q(apQuery(c, 'id,status,title,company,location,job_url,applied_at,created_at,status_at,submit_status,withdrawn_from').order('applied_at', {ascending:false, nullsFirst:true}).order('created_at', {ascending:false}).range(0, AP.n));   // drafts first, then newest sent
   }).then(function(rows){ rows = rows || []; return whoOf(c, rows.slice(0, AP.n).map(function(a){ return a.id; })).then(function(){ return rows; }); }).then(function(rows){
     if(C !== c || !$('#apL')) return;
     var more = rows.length > AP.n; rows = rows.slice(0, AP.n);
@@ -4132,7 +4168,8 @@ function loadApps(){
       box.innerHTML = c.apCache[key] = AP.f === 'all' && !qq && !AP.w && !AP.mine ? '<div class="empty">' + J.apps + '<h3>No applications yet</h3><p>Find a job on the Jobs tab — from the job board or any link — and start the first one.</p><a class="btn pri" href="' + esc(cUrl(c.id, 'jobs')) + '" data-go>Find a job</a></div>' : '<div class="empty"><h3>Nothing here</h3><p>Try another filter or search.</p></div>';
       return;
     }
-    box.innerHTML = c.apCache[key] = '<div class="tbl apps' + (picking ? ' picking' : '') + '"><div class="thead">' + (picking ? '<span><input type="checkbox" data-pickall aria-label="Select all shown"></span>' : '') + '<span>Role</span><span>Location</span><span>Status</span><span>Sent / started</span><span>By</span></div>' + rows.map(function(a){
+    box.innerHTML = c.apCache[key] = '<div class="tbl apps' + (picking ? ' picking' : '') + '"><div class="thead">' + (picking ? '<span><input type="checkbox" data-pickall aria-label="Select all shown"></span>' : '') + '<span>Role</span><span>Location</span><span>Status</span><span>Sent / started</span><span>By</span>' + (picking ? '' : '<span></span>') + '</div>' + rows.map(function(a){
+      (c.apRows = c.apRows || {})[a.id] = a;
       var by = c.who[a.id], old = !a.applied_at && Date.now() - new Date(a.created_at) > 2 * 864e5;
       var cells = '<div class="arole">' + coLogo(a.company, a.job_url) + '<div class="main"><div class="t">' + esc(a.title || 'Role') + '</div><div class="m">' + esc(a.company || '') + '</div></div></div>' +
         '<div class="m aloc">' + esc(a.location || '—') + '</div>' +
@@ -4140,7 +4177,7 @@ function loadApps(){
         '<div class="adate"' + (a.applied_at ? ' title="' + esc(TP.fmtDateTime(a.applied_at)) + '"' : '') + '>' + (a.applied_at ? esc(TP.fmtDateTime(a.applied_at)) : '<span' + (old ? ' class="stale" title="A draft for more than 2 days"' : '') + '>Started ' + esc(TP.ago(a.created_at)) + '</span>') + '</div>' +
         '<div class="m aby">' + (by ? esc(who(by)) : '—') + '</div>';
       return picking ? '<div class="li arow" data-pick="' + esc(a.id) + '" data-st="' + esc(a.status) + '" role="checkbox" aria-checked="false" tabindex="0"><span class="apick"><input type="checkbox" tabindex="-1" aria-hidden="true"></span>' + cells + '</div>'
-        : '<a class="li arow" href="' + esc(cUrl(c.id, 'app=' + a.id)) + '" data-go>' + cells + '</a>';
+        : '<a class="li arow" href="' + esc(cUrl(c.id, 'app=' + a.id)) + '" data-go>' + cells + '<span class="amore"><button type="button" class="amb" data-act="aprow" data-id="' + esc(a.id) + '" aria-haspopup="menu" aria-expanded="false" title="More" aria-label="More for ' + esc((a.title || 'Role') + (a.company ? ' at ' + a.company : '')) + '">' + J.more + '</button></span></a>';
     }).join('') + '</div>' + (more ? '<div class="row" style="justify-content:center;margin-top:12px"><button class="btn" type="button" data-act="apmore">Show more</button></div>' : '');
     markPicked();
   }, function(e){ if($('#apL') && !c.apCache[key]) box.innerHTML = errBox(e); else TP.toast('Couldn’t refresh the list — ' + TP.errText(e)); });
@@ -4167,7 +4204,7 @@ function bulkStatus(){
   ids.forEach(function(id){ prev[id] = AP.sel[id]; });
   var first = (c.row.full_name || '').split(' ')[0] || 'The client', n = ids.length;
   var m = TP.modal('<h2>Change the status of ' + n + ' application' + (n === 1 ? '' : 's') + '</h2><p>Each change shows on ' + esc(first) + '’s dashboard straight away and is kept in the history.</p>' +
-    '<div class="field" style="margin-top:14px"><label for="bsS">New status</label><select id="bsS">' + TP.STATUS.filter(function(s){ return s[0] !== 'draft'; }).map(function(s){ return '<option value="' + s[0] + '">' + s[1] + '</option>'; }).join('') + '</select></div>' +
+    '<div class="field" style="margin-top:14px"><label for="bsS">New status</label><select id="bsS">' + TP.STATUS.filter(function(s){ return s[0] !== 'draft' && s[0] !== 'withdrawn'; }).map(function(s){ return '<option value="' + s[0] + '">' + s[1] + '</option>'; }).join('') + '</select></div>' +
     '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="button" id="bsGo">Change ' + n + '</button></div>');
   $('#bsGo', m).onclick = function(){
     var st = $('#bsS', m).value;
@@ -4313,7 +4350,8 @@ function jobCard(){
         '<div class="ahm">' + TP.statusChip(A.status) + '<span>' + when + (by ? ' by ' + esc(who(by)) : '') + ' · for <b style="color:var(--client)">' + esc(C.row.full_name) + '</b></span>' + (draft ? '<span class="saved" id="apSaved"></span>' : '') + '</div>' +
         '<div class="jtags" id="apTags">' + tagsHTML(A) + '</div>' +
         (draft ? '<div class="jlinks"><button type="button" data-act="editjob">' + J.edit + 'Edit job</button><a href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Job posting</a></div>'
-          : '<div class="jlinks"><label class="stsel" for="apSt">Status<select class="inp" id="apSt">' + TP.STATUS.filter(function(s){ return s[0] !== 'draft'; }).map(function(s){ return '<option value="' + s[0] + '"' + (s[0] === A.status ? ' selected' : '') + '>' + s[1] + '</option>'; }).join('') + '</select></label></div>') + '</div></div>' +
+          : A.status === 'withdrawn' ? '<div class="jlinks"><button type="button" data-act="unwithdraw">' + I.back + 'Undo withdrawal</button></div>' + wdNote(A)
+          : '<div class="jlinks"><label class="stsel" for="apSt">Status<select class="inp" id="apSt">' + TP.STATUS.filter(function(s){ return s[0] !== 'draft' && s[0] !== 'withdrawn'; }).map(function(s){ return '<option value="' + s[0] + '"' + (s[0] === A.status ? ' selected' : '') + '>' + s[1] + '</option>'; }).join('') + '</select></label></div>') + '</div></div>' +
     '<div class="jfacts" id="apFacts">' + factsHTML(A) + '</div>' +
     '<div id="apScore">' + scoreHTML() + '</div>' +
     '<div class="jacts">' + acts + '</div></div>';
@@ -4401,7 +4439,9 @@ function jobTabs(jd){
 function resPanel(){
   var sent = A.status !== 'draft';
   return '<aside class="apside' + (resMode() === 'edit' ? ' editing' : '') + '" aria-label="Resume">' + (sent
-      ? '<div class="reshd"><div class="rh1"><b>Resume sent</b><span class="rst ok">' + I.lock + 'Exactly what went to ' + esc(A.company || 'the company') + '</span></div></div>'
+      ? '<div class="reshd"><div class="rh1"><b>Resume sent</b><span class="rst ok">' + I.lock + 'Exactly what went to ' + esc(A.company || 'the company') + '</span>' +   // what was sent, to keep: the PDF of the copy (the frame's own downloadPDF), and the file uploaded, if any
+          '<span class="grow"></span>' + (A.resume_doc || A.resume_text ? '<button class="btn sm" type="button" data-act="respdf" id="apSentPdf" title="Download the resume that was sent, as a PDF">' + J.dl + 'Download PDF</button>' : '') +
+          (A.resume_file ? '<a class="btn sm" data-file="' + esc(A.resume_file) + '" target="_blank" rel="noopener" title="The exact file uploaded to the employer">' + I.doc + 'Uploaded file</a>' : '') + '</div></div>'
       : '<div class="reshd" id="resCard">' + resumeCard() + '</div>') +
     '<div class="resview" id="apView">' + viewInner() + '</div></aside>';
 }
@@ -4946,28 +4986,28 @@ function uploadShots(dir, stamp, say){
 }
 function appShots(a){ return (a.screenshots && a.screenshots.length) ? a.screenshots : a.screenshot ? [a.screenshot] : []; }
 function drawSent(){
-  var by = C.who && C.who[A.id], shots = appShots(A), miss = shots.length < SHOT_MAX || !A.resume_file, n = (A.answers || []).length, opt = optimisedDoc(A.resume_doc);
+  var by = C.who && C.who[A.id], shots = appShots(A), miss = shots.length < SHOT_MAX, n = (A.answers || []).length, opt = optimisedDoc(A.resume_doc);
   var rv = function(k, v){ return '<div class="rv"><span>' + k + '</span><b>' + v + '</b></div>'; };
   var jd = A.jd_text ? '<p class="fine" style="margin:0 0 8px">As it was when we applied.</p><pre class="txt jdtxt">' + esc(A.jd_text) + '</pre>' : '<p class="hint">No job description was kept with this application.</p>';
   // the same job page as a draft: the job's card with its status, its description and analysis, then the confirmation and the
   // record, the answers, the cover letter, notes and the history on the left; the resume that went, on the right
   V.innerHTML = '<div class="aprec apx"><div class="aptop"><a class="btn sm ghost" href="' + esc(cUrl(C.id, 'applications')) + '" data-go>' + I.back + 'Applications</a><div id="lkNext"></div></div>' +
     '<div class="apgrid"><div class="apmain">' + jobCard() + jobTabs(jd) +
-    '<div class="card"><div class="ch"><h3>Confirmation and record</h3><span class="lock">' + I.lock + 'Sent ' + esc(TP.fmtDateTime(A.applied_at)) + ' — this record can’t be changed</span></div>' +
-      '<div class="aprecbox"><div>' + (shots.length === 1 ? '<a class="shot" data-file="' + esc(shots[0]) + '" target="_blank" rel="noopener"><img data-file="' + esc(shots[0]) + '" alt="Confirmation screenshot"></a><p class="fine" style="margin-top:6px">Click to open it full size.</p>'
-        : shots.length ? '<div class="shotgrid ro">' + shots.map(function(p, i){ return '<a class="shot shotc" data-file="' + esc(p) + '" target="_blank" rel="noopener" title="Screenshot ' + (i + 1) + ' — click to open it full size"><img data-file="' + esc(p) + '" alt="Confirmation screenshot ' + (i + 1) + '"></a>'; }).join('') + '</div><p class="fine" style="margin-top:6px">' + shots.length + ' screenshots · click one to open it full size.</p>'
+    '<div class="card"><div class="ch"><h3>Confirmation and record</h3><span class="lock">' + I.lock + 'Sent ' + esc(TP.fmtDateTime(A.applied_at)) + ' — what was sent can’t be changed</span></div>' +
+      '<div class="aprecbox"><div>' + (shots.length === 1 ? '<div class="shot1">' + [0].map(function(i){ return '<a class="shot" data-file="' + esc(shots[0]) + '" target="_blank" rel="noopener"><img data-file="' + esc(shots[0]) + '" alt="Confirmation screenshot"></a>' + '<button type="button" class="x" data-act="wkshotx" data-i="' + i + '" aria-label="Remove screenshot ' + (i + 1) + '" title="Not this job’s? Remove it">×</button>'; })[0] + '</div><p class="fine" style="margin-top:6px">Click to open it full size · × takes off one that isn’t this job’s.</p>'
+        : shots.length ? '<div class="shotgrid ro">' + shots.map(function(p, i){ return '<div class="shotc"><a class="shot" data-file="' + esc(p) + '" target="_blank" rel="noopener" title="Screenshot ' + (i + 1) + ' — click to open it full size"><img data-file="' + esc(p) + '" alt="Confirmation screenshot ' + (i + 1) + '"></a>' + '<button type="button" class="x" data-act="wkshotx" data-i="' + i + '" aria-label="Remove screenshot ' + (i + 1) + '" title="Not this job’s? Remove it">×</button>' + '</div>'; }).join('') + '</div><p class="fine" style="margin-top:6px">' + shots.length + ' screenshots · click one to open it full size · × takes off one that isn’t this job’s.</p>'
         : '<p class="hint">No screenshot was saved.</p>') + '</div>' +
       '<div class="rvs">' + rv('Status', TP.statusChip(A.status)) + rv('Sent by', esc(who(by))) +
         rv('Submission', subPill(A.submit_status) + (A.submit_ref ? ' <span class="m">Ref ' + esc(A.submit_ref) + '</span>' : '')) +
         rv('Resume', opt ? 'Tailored to this job' : (A.resume_doc || A.resume_text) ? 'As copied from the main resume' : A.resume_file ? 'The uploaded file only' : '—') +
         rv('Files', [shots.length ? (shots.length === 1 ? 'Screenshot' : shots.length + ' screenshots') : '', A.resume_file ? 'Resume file' : ''].filter(Boolean).join(', ') || 'None') +
         rv('Cover letter', A.cover_letter ? 'Included' : 'None') + rv('Form answers', n ? String(n) : 'None') + '</div></div>' +
-      (miss ? '<div style="margin-top:12px"><p class="hint">' + (shots.length < SHOT_MAX ? 'More screenshots can be added (up to ' + SHOT_MAX + '); a' : 'A') + ' file that wasn’t added at the time can be added once. Saved files can’t be removed or replaced.</p><div class="senddrop">' +
-        (shots.length < SHOT_MAX ? shotsHTML('dShot2', shots.length ? 'Add more screenshots' : 'Add the confirmation screenshot', 'Paste, drop, or choose · ' + (SHOT_MAX - shots.length) + ' more at most') : '') +
-        (A.resume_file ? '' : '<div class="drop sm" id="dRes2" tabindex="0" role="button">' + I.doc + '<span><b>Add the resume file that was uploaded</b></span></div>') +
-        '</div><div class="row end" style="margin-top:8px"><button class="btn sm" type="button" data-act="addmissing">Save file</button></div></div>' : '') +
+      (miss ? '<div style="margin-top:12px"><p class="hint">More screenshots can be added (up to ' + SHOT_MAX + '). Saved screenshots can’t be removed or replaced.</p><div class="senddrop">' +
+        shotsHTML('dShot2', shots.length ? 'Add more screenshots' : 'Add the confirmation screenshot', 'Paste, drop, or choose · ' + (SHOT_MAX - shots.length) + ' more at most') +
+        '</div><div class="row end" style="margin-top:8px"><button class="btn sm" type="button" data-act="addmissing">Save screenshots</button></div></div>' : '') +   // the uploaded resume file is added only when it's marked as applied
       (A.submit_ref ? '' : '<div class="apsub"><span>' + (A.submit_status === 'needs_review' ? 'Nothing confirms this one yet. A screenshot above or the employer’s reference makes it Submitted:' : 'Employer’s reference, if they gave one:') + '</span><label class="sr" for="apRef">Submission reference</label><input id="apRef" maxlength="200" placeholder="e.g. WD-48213 or the confirmation email’s subject" autocomplete="off"><button class="btn sm" type="button" data-act="wkref">Save reference</button></div>') +
-      (ME.owner ? '<div class="row end" style="margin-top:12px"><button class="btn sm bad" type="button" data-act="delsent">' + I.trash + 'Delete this application (owner)</button></div>' : '') + '</div>' +
+      '<div class="row end" style="margin-top:12px">' + (A.status !== 'withdrawn' ? '<button class="btn sm" type="button" data-act="withdraw">' + I.x + 'Withdraw application</button>' : '') +
+        (ME.owner ? '<button class="btn sm bad" type="button" data-act="delsent">' + I.trash + 'Delete this application (owner)</button>' : '') + '</div></div>' +
     (n ? '<div class="card"><div class="ch"><h3>Answers given</h3><span class="muted">' + n + '</span></div>' + A.answers.map(function(x){ return '<div class="qa-ro"><b>' + esc(x.q) + '</b><div>' + esc(x.a) + '</div></div>'; }).join('') + '</div>' : '') +
     (A.cover_letter ? '<div class="card"><div class="ch"><h3>Cover letter</h3></div><pre class="txt">' + esc(A.cover_letter) + '</pre></div>' : '') +
     '<div class="card"><div class="ch"><h3>Notes</h3></div><p class="hint">Interview times, recruiter replies. Only the team sees them; they go into the history.</p>' +
@@ -4977,13 +5017,12 @@ function drawSent(){
   TP.fillFiles(V); noteKeep($('#anT'), 'anote_' + A.id);
   var pf = $('#apFile'); if(pf) TP.fileUrl(pf.getAttribute('data-src')).then(function(u){ if(pf.isConnected) pf.src = u; }, function(){});   // the uploaded resume, in view
   // the client sees the status on their dashboard, so a change is confirmed first (and can be undone)
-  $('#apSt').addEventListener('change', function(e){
+  if($('#apSt')) $('#apSt').addEventListener('change', function(e){
     var sel = e.target, to = sel.value, from = A.status, first = (C.row.full_name || '').split(' ')[0] || 'the client';
     TP.confirmBox('Change the status to ' + TP.statusLabel(to) + '?', 'It shows on ' + first + '’s dashboard straight away. ' + (A.title || 'Role') + (A.company ? ' at ' + A.company : '') + ': ' + TP.statusLabel(from) + ' → ' + TP.statusLabel(to) + '.',
       'Change to ' + TP.statusLabel(to), false).then(function(ok){ if(ok) setStatus(to, from); else if(sel.isConnected) sel.value = from; });
   });
   if($('#dShot2')) setupDrop($('#dShot2'), 'shot', 'image/png,image/jpeg,image/webp', appShots(A).length);
-  if($('#dRes2')) setupDrop($('#dRes2'), 'res', '.pdf,.docx');
   var a = A;
   q(SB.from('client_activity').select('*').eq('application_id', a.id).order('at', {ascending:true})).then(function(rows){ if(A === a && $('#apHist')) $('#apHist').innerHTML = (rows || []).map(histRow).join('') || '<p class="fine">No history yet.</p>'; }, function(){});
   lkNext();
@@ -5002,7 +5041,7 @@ function setStatus(s, from){
 }
 function addMissing(btn){
   var a = A, dir = C.id + '/applications/' + a.id + '/', stamp = Date.now(), patch = {};
-  if(!FILES.shots.length && !FILES.res) return TP.toast('Choose a file first');
+  if(!FILES.shots.length) return TP.toast('Add a screenshot first');
   btn.disabled = true; btn.classList.add('busy');
   var label = btn.innerHTML, have = appShots(a);
   Promise.all([FILES.shots.length && have.length < SHOT_MAX ? uploadShots(dir, stamp, function(i, n){ btn.innerHTML = 'Uploading ' + i + ' of ' + n + '…'; }) : [],
@@ -5104,6 +5143,107 @@ function setClientStatus(c, st, b){
 }
 // Recently deleted is there once the safeguards SQL has run; until then a delete says it can't be undone
 var TRASH = null;
+/* ---------- withdrawing or deleting a sent application ----------
+   Withdraw: the client still sees it on their list, marked Withdrawn with the reason, and it stops counting toward the plan
+   (sql/supabase-withdraw.sql keeps when, why and the status it had, so Undo withdrawal puts that back; who is in the history).
+   Delete: only for one marked by mistake; it comes off the client's list too (owners only, Recently deleted for 30 days). */
+var WD_WHY = ['Client got another offer', 'Client asked us to', 'Wrong location', 'Not the right role', 'Applied by mistake'];
+function wdNote(a){
+  var first = (C.row.full_name || '').split(' ')[0] || 'the client';
+  return '<div class="note wdn"><b>Withdrawn' + (a.withdrawn_at ? ' ' + esc(TP.fmtDateTime(a.withdrawn_at)) : '') + '</b>' +
+    (a.withdraw_reason ? ' — ' + esc(a.withdraw_reason) : '') + '. It doesn’t count toward ' + esc(first) + '’s plan; ' + esc(first) + ' sees it marked Withdrawn.</div>';
+}
+// where the change shows: the application page if it's open, else the list
+function wdAfter(c, row){
+  if(C !== c) return;
+  if(A && R.app === row.id){ A = Object.assign(A, row); drawSent(); var n = $('.note.wdn') || $('#apH'); if(n) n.scrollIntoView({block:'center'}); }   // its button was further down: show what changed
+  else if(R.tab === 'applications' && !R.app) loadApps();
+}
+function withdrawApp(a, c){
+  var first = (c.row.full_name || '').split(' ')[0] || 'The client', p = c.prog || {}, tot = c.row.plan_total || 0, why = '';
+  var pr = TP.confirmBox('Withdraw this application?', (a.title || 'Role') + (a.company ? ' at ' + a.company : '') + '.', 'Withdraw it', true, {
+    items:[['info', esc(first) + ' still sees it on their list, marked Withdrawn, with the reason below.'],
+           ['ok', 'It stops counting toward the plan' + (tot && p.done ? ' (' + Math.max(0, p.done - 1).toLocaleString() + ' of ' + tot.toLocaleString() + ' sent after this)' : '') + '.'],
+           ['info', 'It goes into the history, and Undo withdrawal puts it back.']],
+    html:'<div class="field" style="margin-top:12px"><label for="wdR">Reason <span class="muted">(' + esc(first) + ' sees it)</span></label><input id="wdR" maxlength="500" placeholder="e.g. Client got another offer" autocomplete="off">' +
+      '<div class="wdq">' + WD_WHY.map(function(w){ return '<button type="button" data-wd="' + esc(w) + '">' + esc(w) + '</button>'; }).join('') + '</div></div>'});
+  var r = $('#wdR');
+  if(r){ r.addEventListener('input', function(){ why = r.value; });
+    $('.wdq').addEventListener('click', function(e){ var w = e.target.closest('[data-wd]'); if(w){ r.value = why = w.getAttribute('data-wd'); r.focus(); } }); }
+  return pr.then(function(ok){
+    if(!ok) return;
+    return q(SB.from('applications').update({status:'withdrawn', withdraw_reason:why.trim() || null}).eq('id', a.id).eq('client_id', c.id).neq('status', 'draft').select('*').maybeSingle()).then(function(row){
+      if(!row) throw {message:'It isn’t a sent application any more, or it isn’t yours to change — refresh the page.'};
+      refreshProgress(); wdAfter(c, row);
+      TP.toast('Withdrawn — it no longer counts toward ' + first + '’s plan', {undo:function(){ unwithdrawApp(row, c); }});
+    });
+  }).catch(fail);
+}
+function unwithdrawApp(a, c){
+  var to = a.withdrawn_from && a.withdrawn_from !== 'withdrawn' && a.withdrawn_from !== 'draft' ? a.withdrawn_from : 'applied';
+  return q(SB.from('applications').update({status:to}).eq('id', a.id).eq('client_id', c.id).eq('status', 'withdrawn').select('*').maybeSingle()).then(function(row){
+    if(!row) throw {message:'It isn’t withdrawn any more — refresh the page.'};
+    refreshProgress(); wdAfter(c, row); TP.toast('Back as ' + TP.statusLabel(to) + ' — it counts again');
+  }, fail);
+}
+function delSentApp(sa, sc){
+  return trashReady().then(function(kept){
+    return TP.confirmBox('Delete this sent application?', 'Only for one marked by mistake. It comes off ' + sc.row.full_name + '’s list, count and dashboard. ' +
+      (kept ? 'It stays in Recently deleted for 30 days, and only the owner can restore it.' : 'This can’t be undone.') + ' To keep it on record instead, Withdraw it.', 'Delete it', true, {type:sa.company || 'delete'}).then(function(ok){
+      if(!ok) return;
+      q(SB.from('applications').delete().eq('id', sa.id).select('id')).then(function(r){
+        if(!r || !r.length) throw {message:'Only the owner can delete a sent application.'};
+        sc.idx = null; refreshProgress();
+        if(C === sc){ if(R.app === sa.id) go(cUrl(sc.id, 'applications'), true); else if(R.tab === 'applications' && !R.app) loadApps(); }
+        TP.toast('Deleted', kept ? {undo:function(){ restoreItem(sa.id).then(function(){ sc.idx = null; refreshProgress(); TP.toast('Restored'); if(C === sc && R.tab === 'applications' && !R.app) loadApps(); }, fail); }} : null);
+      }, fail);
+    });
+  });
+}
+function delDraftRow(da, dc){
+  return trashReady().then(function(kept){
+    return TP.confirmBox('Delete this draft?', (da.title || 'Role') + (da.company ? ' at ' + da.company : '') + '. Nothing was sent, so nothing else changes.' +
+      (kept ? ' It stays in Recently deleted for 30 days.' : ' This can’t be undone.'), 'Delete draft', true).then(function(ok){
+      if(!ok) return;
+      bkDel('app_' + da.id);
+      q(SB.from('applications').delete().eq('id', da.id).eq('status', 'draft').select('id')).then(function(r){
+        if(!r || !r.length) throw {message:'It was already marked as applied, or deleted — refresh the page.'};
+        dc.idx = null; refreshProgress(); if(C === dc && R.tab === 'applications' && !R.app) loadApps();
+        TP.toast('Draft deleted', kept ? {undo:function(){ restoreItem(da.id).then(function(){ dc.idx = null; refreshProgress(); TP.toast('Draft restored'); if(C === dc && R.tab === 'applications' && !R.app) loadApps(); }, fail); }} : null);
+      }, fail);
+    });
+  });
+}
+// the ⋯ at the end of a row on Applications: what can be done to that one without opening it
+function apRowClose(){ var m = $('#apRowMenu'); if(!m) return; var b = $('.amb[aria-expanded=true]'); if(b) b.setAttribute('aria-expanded', 'false'); m.remove(); }
+function apRowMenu(btn){
+  var id = btn.getAttribute('data-id'), was = $('#apRowMenu'), open = was && was.getAttribute('data-for') === id;
+  apRowClose(); if(open) return;
+  var c = C, a = c.apRows && c.apRows[id]; if(!a) return;
+  var it = function(v, icon, label, cls){ return '<button type="button" role="menuitem" data-act="aprm" data-v="' + v + '" data-id="' + esc(id) + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + icon + '<span>' + label + '</span></button>'; };
+  var m = document.createElement('div'); m.id = 'apRowMenu'; m.className = 'rmenu aprm'; m.setAttribute('role', 'menu'); m.setAttribute('data-for', id);
+  m.innerHTML = it('open', I.ext, 'Open') +
+    (a.status === 'draft' ? it('deldraft', I.trash, 'Delete draft', 'bad')
+      : (a.status === 'withdrawn' ? it('unwithdraw', I.back, 'Undo withdrawal') : it('withdraw', I.x, 'Withdraw…')) + (ME.owner ? it('delsent', I.trash, 'Delete…', 'bad') : ''));
+  document.body.appendChild(m);
+  var r = btn.getBoundingClientRect(), h = m.offsetHeight, w = m.offsetWidth;
+  m.style.left = Math.max(8, Math.min(r.right - w, innerWidth - w - 8)) + 'px';
+  m.style.top = (r.bottom + 4 + h > innerHeight - 8 ? Math.max(8, r.top - 4 - h) : r.bottom + 4) + 'px';
+  btn.setAttribute('aria-expanded', 'true');
+  var f = $('button', m); if(f) f.focus({preventScroll:true});
+}
+function apRowPick(b){
+  var c = C, id = b.getAttribute('data-id'), v = b.getAttribute('data-v'), a = c.apRows && c.apRows[id]; apRowClose(); if(!a) return;
+  if(v === 'open') return go(cUrl(c.id, 'app=' + id));
+  if(v === 'withdraw') return withdrawApp(a, c);
+  if(v === 'unwithdraw') return unwithdrawApp(a, c);
+  if(v === 'delsent') return delSentApp(a, c);
+  if(v === 'deldraft') return delDraftRow(a, c);
+}
+document.addEventListener('click', function(e){ var m = $('#apRowMenu'); if(m && !(e.target.closest && (e.target.closest('#apRowMenu') || e.target.closest('.amb[aria-expanded=true]')))) apRowClose(); }, true);
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && $('#apRowMenu')){ var b = $('.amb[aria-expanded=true]'); apRowClose(); if(b) b.focus(); } });
+window.addEventListener('scroll', function(){ if($('#apRowMenu')) apRowClose(); }, {passive:true, capture:true});
+window.addEventListener('resize', function(){ if($('#apRowMenu')) apRowClose(); }, {passive:true});
 function trashReady(){
   if(TRASH !== null) return Promise.resolve(TRASH);
   return Promise.resolve(SB.from('deleted_items').select('id', {count:'exact', head:true}).limit(1)).then(function(r){ return (TRASH = !(r && r.error)); }, function(){ return false; });
@@ -5344,7 +5484,8 @@ function leadOpen(id){
   var owners = TEAMROWS.filter(function(x){ return x.role === 'owner' && x.active !== false; });
   var opt = function(list, cur){ return list.map(function(o){ return '<option value="' + esc(o[0]) + '"' + (o[0] === cur ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join(''); };
   var wa = l.id ? waHref(l.phone, 'Hi ' + first + ', this is ' + String(me.full_name || 'the team').split(' ')[0] + ' from TrulyPlaced.') : '';
-  var acts = l.id ? '<div class="ldacts">' + (wa ? '<a class="btn sm" target="_blank" rel="noopener" href="' + esc(wa) + '">' + I.wa + 'WhatsApp</a>' : '') +
+  var acts = l.id ? '<div class="ldacts">' + (l.call_link && l.call_at ? '<a class="btn sm pri" id="ldJoin" target="_blank" rel="noopener" href="' + esc(TP.safeHref(l.call_link)) + '" title="' + esc((l.call_event ? l.call_event + ' · ' : '') + 'booked on Calendly') + '">' + I.ext + 'Join call</a>' : '') +   // the meeting link from Calendly (sql/supabase-calendly.sql)
+      (wa ? '<a class="btn sm" target="_blank" rel="noopener" href="' + esc(wa) + '">' + I.wa + 'WhatsApp</a>' : '') +
       (l.email ? '<a class="btn sm" href="mailto:' + esc(l.email) + '">' + I.mail + 'Email</a>' : '') +
       (l.client_id ? '<a class="btn sm" href="' + esc(cUrl(l.client_id, 'profile')) + '" data-go data-mclose="0">' + I.users + 'Open client</a>'
         : '<button class="btn sm" type="button" data-act="leadclient" data-id="' + esc(l.id) + '">' + I.users + 'Make them a client</button>') + '</div>' : '';
@@ -5685,19 +5826,11 @@ document.addEventListener('click', function(e){
           }, fail);
         });
       });
-    case 'delsent':
-      var sa = A, sc = C;
-      return trashReady().then(function(kept){
-        return TP.confirmBox('Delete this sent application?', 'Only for one marked by mistake. It comes off ' + sc.row.full_name + '’s count and dashboard. ' +
-          (kept ? 'It stays in Recently deleted for 30 days, and only the owner can restore it.' : 'This can’t be undone.'), 'Delete it', true, {type:sa.company || 'delete'}).then(function(ok){
-          if(!ok) return;
-          q(SB.from('applications').delete().eq('id', sa.id).select('id')).then(function(r){
-            if(!r || !r.length) throw {message:'Only the owner can delete a sent application.'};
-            sc.idx = null; refreshProgress(); if(C === sc) go(cUrl(sc.id, 'applications'), true);
-            TP.toast('Deleted', kept ? {undo:function(){ restoreItem(sa.id).then(function(){ sc.idx = null; refreshProgress(); TP.toast('Restored'); if(C === sc) go(cUrl(sc.id, 'app=' + sa.id)); }, fail); }} : null);
-          }, fail);
-        });
-      });
+    case 'delsent': return delSentApp(A, C);
+    case 'withdraw': return withdrawApp(A, C);
+    case 'unwithdraw': return unwithdrawApp(A, C);
+    case 'aprow': return apRowMenu(b);
+    case 'aprm': return apRowPick(b);
     case 'rdrestore':
       var rdId = +b.getAttribute('data-id'), rdKind = b.getAttribute('data-kind'), rdc = C;
       return TP.busy(b, q(SB.rpc('restore_deleted', {p_id:rdId}))).then(function(){
