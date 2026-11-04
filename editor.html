@@ -192,6 +192,13 @@ svg.defs{position:absolute;width:0;height:0}
 .sheet li.pgempty{display:none}.sheet li.pgempty:has(.pged){display:list-item}   /* a new, empty bullet shows only while it's typed into */
 .sheet .pged:empty::before{content:'Type here…';color:var(--faint)}.sheet li .pged:empty::before{content:'Type the new bullet…'}
 .sheet .pg-dropb{box-shadow:0 -2px 0 var(--blue)}.sheet .pg-dropa{box-shadow:0 2px 0 var(--blue)}
+/* an entry's handle: at its left, outside its box, on every entry while the section is hovered (as the skills' are: a handle that hid
+   as the pointer left its entry would stop the drag before it began), darker on the entry under the pointer; drag it up or down */
+body:not(.ro) .sheet .en{position:relative}
+.sheet .endrag{position:absolute;left:-1.55em;top:.25em;z-index:3;width:1.15em;height:1.35em;place-items:center;border-radius:4px;color:#a8adb7;cursor:grab}
+.sheet :is(.ps:hover,.ps.pgon,.ps:has(.pghov)) .en > .endrag{display:grid}.sheet :is(.en:hover,.en:has(.pghov)) > .endrag{color:#7b818d}.sheet .endrag:hover{color:#4b5563;background:#f1f2f4}.sheet .endrag:active{cursor:grabbing}
+.sheet .endrag svg{width:1em;height:1em}
+.sheet .en.pg-dropb{box-shadow:0 -3px 0 var(--blue)}.sheet .en.pg-dropa{box-shadow:0 3px 0 var(--blue)}
 .pgbar{position:absolute;z-index:45;display:flex;align-items:center;gap:1px;padding:3px;background:#1d1d1f;border:1px solid rgba(255,255,255,.07);border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.16),0 14px 30px -12px rgba(0,0,0,.5);animation:pgin .12s ease-out}
 @keyframes pgin{from{opacity:0}to{opacity:1}}   /* a fade only: the toolbar sits exactly where it belongs from the first frame */
 .pgbar[hidden]{display:none}
@@ -205,19 +212,17 @@ svg.defs{position:absolute;width:0;height:0}
 /* ---------- on the page, as the reference editor has it: hovering a bullet, a role, a school, the header, the summary or the skills
    puts a box round it with its tools. The box is real padding: the lines re-wrap inside it and what's below moves down a little, as
    it does there. Its top edge stays where the line was, so the pointer never falls out of it ---------- */
-body:not(.ro) .sheet :is(li[data-b],.enh,.enx,.ph-h,.pgsum,.sk){position:relative}
+body:not(.ro) .sheet :is(li[data-b],.en,.ph-h,.pgsum,.sk){position:relative}
 /* smooth, as the reference: the box grows its padding and its edge fades in over 0.2 s (and back), the toolbar glides between lines */
-body:not(.ro) .sheet :is(.bl > li[data-b],.enh,.enx,.ph-h,.pgsum,.sk){transition:padding .2s cubic-bezier(.2,.7,.3,1),margin .2s cubic-bezier(.2,.7,.3,1)}
-body:not(.ro) .sheet :where(.bl > li[data-b],.enh,.enx,.ph-h,.pgsum,.sk)::after{content:"";position:absolute;inset:0;border:1.5px solid #b3b8c1;border-radius:10px;pointer-events:none;opacity:0;transition:opacity .2s ease,left .2s cubic-bezier(.2,.7,.3,1)}
-body:not(.ro) .sheet :where(.bl > li.pghov,.enh.pghov,.enx:hover,.ph-h:hover,.pgsum:hover,.ps:hover .sk,.ps.pgon .sk)::after{opacity:1}
+body:not(.ro) .sheet :is(.bl > li[data-b],.en,.ph-h,.pgsum,.sk){transition:padding .2s cubic-bezier(.2,.7,.3,1),margin .2s cubic-bezier(.2,.7,.3,1)}
+body:not(.ro) .sheet :where(.bl > li[data-b],.en,.ph-h,.pgsum,.sk)::after{content:"";position:absolute;inset:0;border:1.5px solid #b3b8c1;border-radius:10px;pointer-events:none;opacity:0;transition:opacity .2s ease,left .2s cubic-bezier(.2,.7,.3,1)}
+body:not(.ro) .sheet :where(.bl > li.pghov,.en.pghov,.enx:hover,.ph-h:hover,.pgsum:hover,.ps:hover .sk,.ps.pgon .sk)::after{opacity:1}
 /* a bullet: the box takes in its mark, the mark and the words step in */
 body:not(.ro) .sheet .bl > li[data-b]::after{left:-1.25em}
 body:not(.ro) .sheet .bl > li.pghov{outline:none;margin-left:.55em;padding-top:.42em;padding-bottom:.42em;padding-right:.6em}
 body:not(.ro) .sheet .bl > li.pghov::after{left:-1.8em}
-/* a role: its heading and first bullet are one box, with that bullet's tools */
-body:not(.ro) .sheet .enh.pghov{padding:.42em .6em}
-body:not(.ro) .sheet .enh.pghov li.pghov{margin-left:0;padding:0 0 0 .1em}
-body:not(.ro) .sheet .enh.pghov li.pghov::after{display:none}
+/* a role: hovering its heading, the whole role is the box (heading and every bullet), with ✨ Optimize this role */
+body:not(.ro) .sheet .en.pghov{padding:.42em .6em}
 /* the toolbar on the top edge of a box: white, + green, × red, ✨ gold */
 .pgbar,.sheet .pgtb{background:#fff;border:1px solid #e3e6ea;border-radius:999px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 6px 16px -6px rgba(16,24,40,.2);padding:2px 5px;gap:3px}
 .pgbar button,.sheet .pgtb i{width:26px;height:26px;display:grid;place-items:center;border-radius:999px;color:#5b6170;cursor:pointer;font-style:normal}
@@ -227,19 +232,23 @@ body:not(.ro) .sheet .enh.pghov li.pghov::after{display:none}
 .pgbar .pgdel,.pgbar .pgdel:hover,.sheet .pgtb [data-a$=del]{color:#e5484d}
 .pgbar .pgai,.pgbar .pgai:hover{color:#f2b100;margin-left:0}.pgbar .pgai::before{display:none}
 .pgbar .pgai svg{width:18px;height:18px}
+/* the role's toolbar: just ✨ Optimize this role, in words */
+.pgbar.role :is(.pgadd,.pgdel,.pgai),.pgbar:not(.role) .pgrai{display:none}
+.pgbar .pgrai{width:auto;display:flex;align-items:center;gap:6px;padding:0 11px 0 8px;color:#1f2328;font-size:12.5px;font-weight:600;white-space:nowrap}
+.pgbar .pgrai svg{width:16px;height:16px;color:#f2b100}
 .pgbar{transition:left .18s cubic-bezier(.2,.7,.3,1),top .18s cubic-bezier(.2,.7,.3,1)}
-@media (prefers-reduced-motion:reduce){body:not(.ro) .sheet :is(.bl > li[data-b],.enh,.enx,.ph-h,.pgsum,.sk),body:not(.ro) .sheet :is(.bl > li[data-b],.enh,.enx,.ph-h,.pgsum,.sk)::after,.pgbar{transition:none}}
+@media (prefers-reduced-motion:reduce){body:not(.ro) .sheet :is(.bl > li[data-b],.en,.ph-h,.pgsum,.sk),body:not(.ro) .sheet :is(.bl > li[data-b],.en,.ph-h,.pgsum,.sk)::after,.pgbar{transition:none}}
 /* a phone's tap: the box is there at once, so the next tap lands where the finger is */
-body.touch .sheet :is(.bl > li[data-b],.enh,.enx,.ph-h,.pgsum,.sk),body.touch .sheet :is(.bl > li[data-b],.enh,.enx,.ph-h,.pgsum,.sk)::after,body.touch .pgbar{transition:none!important}
+body.touch .sheet :is(.bl > li[data-b],.en,.ph-h,.pgsum,.sk),body.touch .sheet :is(.bl > li[data-b],.en,.ph-h,.pgsum,.sk)::after,body.touch .pgbar{transition:none!important}
 /* a school (no bullets): + × on its top edge, "Field of Study" after a degree with none, "- - -" and the calendar for its dates */
 body:not(.ro) .sheet .enx:hover{padding:.42em .6em}
 .sheet .pgtb{position:absolute;left:50%;top:0;transform:translate(-50%,-58%);z-index:3;align-items:center}
 .sheet .enx:hover > .pgtb{display:inline-flex}
 .sheet .rdw{display:inline-flex;align-items:baseline;white-space:nowrap}
-.sheet :is(.enh.pghov,.enx:hover) .pgcal{display:inline-grid}
+.sheet :is(.en.pghov,.enx:hover) .pgcal{display:inline-grid}
 .sheet .pgcal{place-items:center;width:1.15em;height:1.15em;margin-left:.45em;color:#6b7280;cursor:pointer;vertical-align:-.15em}
 .sheet .pgcal svg{width:.95em;height:.95em}
-.sheet :is(.enh.pghov,.enx:hover) .pgph,.sheet .pgph.pged{display:inline}
+.sheet :is(.en.pghov,.enx:hover) .pgph,.sheet .pgph.pged{display:inline}
 .sheet .pgph{color:#a3a8b2;font-style:italic;font-weight:400;cursor:text}
 .sheet .pgfos{color:#8fa6cc;cursor:pointer}
 .sheet .rdw .pgph{letter-spacing:.12em}
@@ -963,7 +972,7 @@ html.running .toast{bottom:86px}
 </div>
 
 <div id="selbar" class="selbar" hidden></div>
-<div id="pgbar" class="pgbar" hidden role="toolbar" aria-label="This bullet"><button type="button" class="pgadd" data-a="pg-badd" title="Add a bullet below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><button type="button" class="pgdel" data-a="pg-bdel" title="Delete this bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button><button type="button" class="pgai" data-a="pg-bai" title="Improve or make concise with AI"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 2.6l2.2 6 6 2.2-6 2.2L11 19l-2.2-6-6-2.2 6-2.2z" fill="currentColor" stroke="rgba(150,90,0,.35)" stroke-width=".8" stroke-linejoin="round"/><path d="M18.6 2.4l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9z" fill="currentColor"/></svg></button></div>
+<div id="pgbar" class="pgbar" hidden role="toolbar" aria-label="This bullet"><button type="button" class="pgadd" data-a="pg-badd" title="Add a bullet below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><button type="button" class="pgdel" data-a="pg-bdel" title="Delete this bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button><button type="button" class="pgai" data-a="pg-bai" title="Improve or make concise with AI"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 2.6l2.2 6 6 2.2-6 2.2L11 19l-2.2-6-6-2.2 6-2.2z" fill="currentColor" stroke="rgba(150,90,0,.35)" stroke-width=".8" stroke-linejoin="round"/><path d="M18.6 2.4l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9z" fill="currentColor"/></svg></button><button type="button" class="pgrai" data-a="pg-rai" title="Optimize this role’s bullets"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 2.6l2.2 6 6 2.2-6 2.2L11 19l-2.2-6-6-2.2 6-2.2z" fill="currentColor" stroke="rgba(150,90,0,.35)" stroke-width=".8" stroke-linejoin="round"/><path d="M18.6 2.4l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9z" fill="currentColor"/></svg><span>Optimize this role</span></button></div>
 <div id="modal" class="modal" hidden></div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <input type="file" id="fileIn" accept=".pdf,.docx,.txt" hidden>
@@ -2382,8 +2391,10 @@ const liHTML = (path, b, ed) => {
 };
 // an entry with no bullets (a school) on screen: + another below, × remove it, on its top border
 const enTools = (it) => '<span class="pgx pgtb pget"><i data-a="pg-eadd" data-v="' + it.id + '" title="Add one below"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></i><i data-a="pg-edel" data-v="' + it.id + '" title="Remove it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></i></span>';
-// An entry. On screen (ed), as the reference editor has it: its heading and first bullet are one hover box (.enh) with that
-// bullet's tools, the calendar by the dates ("- - -" when there are none); a school's degree with no field gets "Field of Study"
+// on screen, an entry's handle at its left (when its section has more than one): drag it to move the entry in its section
+const enDrag = (s, it) => s.items.length > 1 ? '<i class="pgx endrag" draggable="true" data-item="' + it.id + '" title="Drag to move it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01"/></svg></i>' : '';
+// An entry. On screen (ed): hovering its heading (.enh) makes the whole role the box, with ✨ Optimize this role; each bullet, the
+// first too, keeps its own box and tools. The calendar by the dates ("- - -" when there are none); a school's degree with no field gets "Field of Study"
 function entryHTML(s, it, f, ed) {
   const B = 'sec.' + s.id + '.item.' + it.id + '.', cal = ed ? '<i class="pgx pgcal" data-a="pg-dates" data-v="' + B + 'dates" title="Edit the dates"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></i>' : '';
   const dspan = '<span class="r" data-path="' + B + 'dates">' + esc(styleDates(it.dates, f.dates)) + '</span>';
@@ -2401,8 +2412,8 @@ function entryHTML(s, it, f, ed) {
       (it.sub || it.loc ? '<div class="er er2">' + (it.sub ? P(B + 'sub', it.sub, 'l') : '<span class="l"></span>') + (it.loc ? P(B + 'loc', it.loc, 'r') : '') + '</div>' : '');
   }
   if (!ed) return '<div class="en" data-item="' + it.id + '">' + head + (bl.length ? '<ul class="bl">' + bl.map(li).join('') + '</ul>' : '') + '</div>';
-  if (!bl.length) return '<div class="en enx" data-item="' + it.id + '">' + enTools(it) + head + '</div>';
-  return '<div class="en" data-item="' + it.id + '"><div class="enh">' + head + '<ul class="bl">' + li(bl[0]) + '</ul></div>' +
+  if (!bl.length) return '<div class="en enx" data-item="' + it.id + '">' + enDrag(s, it) + enTools(it) + head + '</div>';
+  return '<div class="en" data-item="' + it.id + '">' + enDrag(s, it) + '<div class="enh">' + head + '<ul class="bl">' + li(bl[0]) + '</ul></div>' +
     (bl.length > 1 ? '<ul class="bl bl2">' + bl.slice(1).map(li).join('') + '</ul>' : '') + '</div>';
 }
 // a certification line "AWS Solutions Architect, AWS": the name bold, the issuer lighter
@@ -2988,26 +2999,33 @@ function onPageBlur(e) {
   }, 0);
 }
 function pgAfterClick() { PGDOWN = false; if (!PGLATER) return; PGLATER = false; const s = window.getSelection(); if (!EDIT && (!s || s.isCollapsed)) renderSheet(); }
-// the bullet toolbar on the top border of the line's box: + a bullet below, × delete, ✨ Improve or Concise (no drag handle, as the
-// reference editor has none). A role's first bullet shares its box with the role's heading (.enh): hovering either is hovering that bullet
-const pgBox = (li) => (li && li.closest('.enh')) || li;
+// the toolbar on the top border of a box. A bullet (every one, the first too): + a bullet below, × delete, ✨ Improve or Concise (no
+// drag handle, as the reference editor has none). A role's heading (.enh, the lines above its bullets): the whole role (.en) is the
+// box, with ✨ Optimize this role (optRole: its bullets only, the same run and review as Optimize)
 function pgOver(li, x) {   // onto another bullet: wait a moment, so the pointer can cross it on its way to the toolbar
   clearTimeout(PGT); if (PGB && PGB.li === li) { clearTimeout(PGS); return; }
   clearTimeout(PGS); if (PGB) PGS = setTimeout(() => pgShow(li, x), 70); else pgShow(li, x);   // a moment, so a quick pass over a line doesn't open it
 }
 function pgShow(li, x) {
-  if (READONLY || DRAG || !li || !li.isConnected || (EDIT && li.contains(EDIT.el))) return;
+  const role = !!(li && li.matches && li.matches('.en'));   // a role: its heading is what's typed in, not its bullets
+  if (READONLY || DRAG || !li || !li.isConnected || (EDIT && (role ? li.querySelector('.enh') : li).contains(EDIT.el))) return;
   const sp = li.querySelector('[data-path]'); if (!sp) return;
   clearTimeout(PGT); clearTimeout(PGS); if (PGB && PGB.li === li) return;
-  $$('#sheet .pghov').forEach((q) => q.classList.remove('pghov')); li.classList.add('pghov'); pgBox(li).classList.add('pghov');   // the box grows its padding: the lines re-wrap inside it
-  PGB = { li, path: sp.getAttribute('data-path'), x }; $('#pgbar').hidden = false; pgPlace(); pgFollow();
+  $$('#sheet .pghov').forEach((q) => q.classList.remove('pghov')); li.classList.add('pghov');   // the box grows its padding: the lines re-wrap inside it
+  const bar = $('#pgbar'); bar.classList.toggle('role', role); bar.setAttribute('aria-label', role ? 'This role' : 'This bullet');
+  if (role) {
+    const b = bar.querySelector('.pgrai'), n = $$('li[data-b]', li).filter((q) => q.textContent.trim()).length;
+    b.setAttribute('data-v', li.getAttribute('data-item'));
+    b.title = (optMode() === 'base' ? 'Improve its ' : 'Tailor its ') + n + ' bullet' + (n === 1 ? '' : 's') + (optMode() === 'base' ? ' for the target roles' : ' to the job') + ' — nothing else on the resume';
+  }
+  PGB = { li, path: sp.getAttribute('data-path'), x, role }; bar.hidden = false; pgPlace(); pgFollow();
 }
 // the box grows over 0.2 s, and the one before shrinks, moving this one up: the toolbar keeps to its top edge meanwhile
 let PGRAF = 0;
 function pgFollow() { cancelAnimationFrame(PGRAF); const end = performance.now() + 260, step = () => { if (!PGB) return; pgPlace(); if (performance.now() < end) PGRAF = requestAnimationFrame(step); }; PGRAF = requestAnimationFrame(step); }
 function pgPlace() {   // centred on the box, across its top border as the reference editor has it (below it when there's no room above)
   if (!PGB) return; if (!PGB.li.isConnected) { pgHide(); return; }
-  const bar = $('#pgbar'), b = pgBox(PGB.li), r = b.getBoundingClientRect(), w = bar.offsetWidth, h = bar.offsetHeight, top = r.top - h * (PGTOUCH ? 1.08 : 0.62);   // a phone: just above, so the next tap reaches the line
+  const bar = $('#pgbar'), b = PGB.li, r = b.getBoundingClientRect(), w = bar.offsetWidth, h = bar.offsetHeight, top = r.top - h * (PGTOUCH ? 1.08 : 0.62);   // a phone: just above, so the next tap reaches the line
   const ul = b.matches('li') && b.closest('ul'), L = ul ? ul.getBoundingClientRect().left : r.left;   // a bullet's box takes in its mark, out to the list's edge
   bar.style.left = clamp((L + r.right) / 2 - w / 2, 8, window.innerWidth - w - 8) + window.scrollX + 'px';
   bar.style.top = (top < 4 ? r.bottom - h * 0.38 : top) + window.scrollY + 'px';
@@ -3019,11 +3037,14 @@ function pgPointer(e) { PGTOUCH = e.pointerType === 'touch'; document.body.class
 function pgOn(sid) { PGON = sid; $$('#sheet .ps.pgon').forEach((x) => x.classList.remove('pgon')); const s = sid && $('#sheet .ps[data-sec="' + sid + '"]'); if (s) s.classList.add('pgon'); }
 function pgTap(e) {   // → true when the tap only brought up the controls
   if (!PGTOUCH || READONLY || TAB !== 'resume') return false;
-  const li = e.target.closest('li[data-b]'), row = !li && e.target.closest('.skr'), sid = row ? row.closest('.ps').getAttribute('data-sec') : null, it = li || row;
+  const li = e.target.closest('li[data-b]'), en = !li && e.target.closest('.enh') && e.target.closest('.en'), row = !li && !en && e.target.closest('.skr');
+  const sid = row ? row.closest('.ps').getAttribute('data-sec') : null, it = li || en || row;
   if (sid !== PGON) pgOn(null);
-  if (!it || (EDIT && it.contains(EDIT.el)) || (li ? PGWAS === li : sid === PGON)) return false;
+  if (!it || (EDIT && (en ? en.querySelector('.enh') : it).contains(EDIT.el)) || (li || en ? PGWAS === it : sid === PGON)) return false;
   if (EDIT) { pgLeft(); renderSheet(); }
-  if (li) { pgHide(); pgShow($('#sheet li[data-b="' + li.getAttribute('data-b') + '"]')); } else pgOn(sid);
+  if (li) { pgHide(); pgShow($('#sheet li[data-b="' + li.getAttribute('data-b') + '"]')); }
+  else if (en) { pgHide(); pgShow($('#sheet .en[data-item="' + en.getAttribute('data-item') + '"]')); }   // a role's heading: the role's tools
+  else pgOn(sid);
   return true;
 }
 // "+ Add skill": a little box right on the line; Enter adds (commas add several) and opens the next one, Escape closes it
@@ -3067,6 +3088,7 @@ function pageAction(a, v, t) {
       if (String(getField(path) || '').trim().length < 3) { toast('Type it first.'); return true; }
       aiMenu(ar, path); return true;
     }
+    case 'pg-rai': pgHide(); optRole(v); return true;   // ✨ on a role's heading: that role's bullets only
     case 'pg-aim': { const m = $('#aimenu'), path = m && m.dataset.path; aiMenuClose(); if (path) lineAI(path, v); return true; }
     case 'pg-bsok': case 'pg-bsno': return bsugDone(a === 'pg-bsok'), true;
     case 'pg-ctx': {   // a link's ×, on the header
@@ -3101,8 +3123,9 @@ function pageAction(a, v, t) {
 }
 // drag a skills line (its handle) or a bullet (the toolbar's handle) to a new place in the same list
 function pgDragStart(e) {
-  const h = e.target.closest && e.target.closest('.skdrag, .pgdrag'); if (!h || READONLY) return;
+  const h = e.target.closest && e.target.closest('.skdrag, .pgdrag, .endrag'); if (!h || READONLY) return;
   if (h.classList.contains('skdrag')) DRAG = { kind: 'row', id: h.getAttribute('data-row') };
+  else if (h.classList.contains('endrag')) { DRAG = { kind: 'en', id: h.getAttribute('data-item') }; setTimeout(() => { $('#pgbar').hidden = true; }, 0); }
   else if (PGB) DRAG = { kind: 'b', path: PGB.path, id: PGB.path.split('.').pop() };
   else return;
   e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', DRAG.id); } catch (er) {}
@@ -3110,9 +3133,10 @@ function pgDragStart(e) {
 }
 function pgTarget(e) {   // the line being dragged over, and whether the drop goes after it
   if (!DRAG) return null;
-  const el = DRAG.kind === 'row' ? e.target.closest && e.target.closest('#sheet .skr') : e.target.closest && e.target.closest('#sheet li[data-b]'); if (!el) return null;
+  const el = !e.target.closest ? null : DRAG.kind === 'row' ? e.target.closest('#sheet .skr') : DRAG.kind === 'en' ? e.target.closest('#sheet .en[data-item]') : e.target.closest('#sheet li[data-b]'); if (!el) return null;
   let ok = false;
-  if (DRAG.kind === 'row') { const s = DOC.sections.find((x) => (x.rows || []).some((q) => q.id === DRAG.id)); ok = !!(s && byId(s.rows, el.getAttribute('data-row'))); }
+  if (DRAG.kind === 'en') { const s = enSec(DRAG.id); ok = !!(s && byId(s.items, el.getAttribute('data-item'))); }   // an entry moves within its own section
+  else if (DRAG.kind === 'row') { const s = DOC.sections.find((x) => (x.rows || []).some((q) => q.id === DRAG.id)); ok = !!(s && byId(s.rows, el.getAttribute('data-row'))); }
   else { const sp = el.querySelector('[data-path]'); ok = !!sp && arrOf(sp.getAttribute('data-path')) === arrOf(DRAG.path); }
   if (!ok) return null;
   const r = el.getBoundingClientRect(); return { el, after: e.clientY > r.top + r.height / 2 };
@@ -3124,12 +3148,14 @@ function pgDragOver(e) {
 function pgDrop(e) {
   const T = pgTarget(e); if (!T) return; e.preventDefault();
   let arr, from, to;
-  if (DRAG.kind === 'row') { arr = DOC.sections.find((x) => (x.rows || []).some((q) => q.id === DRAG.id)).rows; from = idx(arr, DRAG.id); to = idx(arr, T.el.getAttribute('data-row')); }
+  if (DRAG.kind === 'en') { arr = enSec(DRAG.id).items; from = idx(arr, DRAG.id); to = idx(arr, T.el.getAttribute('data-item')); }
+  else if (DRAG.kind === 'row') { arr = DOC.sections.find((x) => (x.rows || []).some((q) => q.id === DRAG.id)).rows; from = idx(arr, DRAG.id); to = idx(arr, T.el.getAttribute('data-row')); }
   else { arr = arrOf(DRAG.path); from = idx(arr, DRAG.id); to = idx(arr, T.el.getAttribute('data-b')); }
   if (T.after) to++; if (from < to) to--;
   DRAG = null; if (from < 0 || to < 0 || from === to) { renderSheet(); return; }
   arr.splice(to, 0, arr.splice(from, 1)[0]); structural();
 }
+const enSec = (id) => DOC.sections.find((x) => (x.items || []).some((q) => q.id === id));
 function pgDragEnd() { DRAG = null; $$('#sheet .pg-dropb, #sheet .pg-dropa').forEach((x) => x.classList.remove('pg-dropb', 'pg-dropa')); pgHide(); }
 
 /* ---------- Quick edit's bar (quick=1): undo and redo, the save, Show changes after a tailor, and the job's missing skills ---------- */
@@ -3806,6 +3832,23 @@ function syncNow() {
   OPT = { sel: {}, sync: false, ins: (lsGet(OPT_KEY, {}) || {}).ins || '' }; optRows().forEach((r) => { OPT.sel[r[0]] = false; });
   runOptimise(true);
 }
+// ✨ on a role's heading: that role's bullets, as Optimize does them (the same run, checks, second reader and review), nothing else on
+// the resume. The remembered ticks stay as they were. No job yet (or no target roles): the dialog first, with only Work Experience
+// ticked, still for this one role
+function optRole(iid) {
+  if (!DOC || READONLY) return;
+  const tg = optTargets().find((t) => t.it.id === iid); if (!tg) { toast('Add a bullet to this role first.'); return; }
+  const base = optMode() === 'base';
+  if (base && !(JOB && JOB.roles)) { askRoles(); return; }
+  if (!base && !jobOk()) {
+    openOptimise(); if (!OPT) return; OPT.only = iid;
+    const r = $('.orows .orow[data-v="experience"]'); if (r) { optPick(r, true); r.title = 'Tailor this role’s bullets to the job: ' + (tg.it.title || 'this role'); }
+    return;
+  }
+  hideSel(); setDocTab('resume');
+  OPT = { sel: {}, sync: false, only: iid, ins: (lsGet(OPT_KEY, {}) || {}).ins || '' }; optRows().forEach((r) => { OPT.sel[r[0]] = false; }); OPT.sel.experience = true;
+  runOptimise(false);
+}
 function optPreset() {   // the choices last used for this client (the same ones the portal's list uses), else summary, title, experience and skills
   const s = (lsGet(OPT_KEY, {}) || {}).sel || { summary: 1, headline: 1, location: 1, experience: 1, skills: 1 };
   $$('.orows .orow').forEach((r) => { if (s[r.getAttribute('data-v')]) optPick(r, true); });
@@ -3831,13 +3874,13 @@ function runOptimise(sync) {   // sync: true = "Sync to this job", every part at
   OPT.sync = !!sync;
   const sel = OPT.sel;
   if (!Object.keys(sel).some((k) => sel[k])) { toast('Pick at least one thing to ' + optWord().verb.toLowerCase() + '.'); return; }
-  sel.sync = !!OPT.sync;
+  sel.sync = !!OPT.sync; sel.only = OPT.only || null;   // only: one role (optRole)
   if (TEAM) saveVersion(all ? 'Before Sync' : 'Before ' + optWord().ing);   // one click of Restore undoes the whole run
   earlySug(sel);
   coverSoon();   // the job's cover letter is written meanwhile
   const gone = applyRules(); if (gone.length) { structural(); toast(gone.join(', ') + ' taken off Skills — the client’s rules'); }   // before the AI sees the resume
-  const keep = {}; if (all) Object.assign(keep, (lsGet(OPT_KEY, {}) || {}).sel || {}); else Object.keys(sel).forEach((k) => { if (k !== 'sync') keep[k] = sel[k] ? 1 : 0; });
-  delete keep.sync; lsSet(OPT_KEY, { sel: keep, ins });   // the ticks to remember: a Sync leaves them as they were
+  const keep = {}; if (all || sel.only) Object.assign(keep, (lsGet(OPT_KEY, {}) || {}).sel || {}); else Object.keys(sel).forEach((k) => { if (k !== 'sync' && k !== 'only') keep[k] = sel[k] ? 1 : 0; });
+  delete keep.sync; lsSet(OPT_KEY, { sel: keep, ins });   // the ticks to remember: a Sync or one role leaves them as they were
   const P = optPlan(sel), nb = P.nb, second = appOpt();
   // each step: its key, what it says, its usual seconds, its share of the bar, what it says when it moves on before the answer, what Claude is doing meanwhile
   const fw = JOB.roles ? 'for these roles' : 'for the job';   // what it's for, in the steps
@@ -3931,7 +3974,7 @@ function runCard(title, sub, steps) {
 }
 // what Optimise tailors: the roles and their bullets, the job's keywords, and the summary and skills as they are now
 function optPlan(sel) {
-  const targets = sel.experience ? optTargets() : [], terms = atsTerms();
+  const targets = sel.experience ? optTargets().filter((t) => !sel.only || t.it.id === sel.only) : [], terms = atsTerms();
   const sm = DOC.sections.find((x) => x.k === 'summary' && !x.hidden), sk = DOC.sections.find((x) => x.k === 'skills' && !x.hidden);
   return { targets, terms, cover0: atsCover(docText(), terms), sm, nb: targets.reduce((n, t) => n + t.it.bullets.filter((b) => b.t.trim()).length, 0),
     skills: sk ? [].concat(...sk.rows.map((r) => r.value.split(/,\s*/).map((x) => x.trim()).filter(Boolean))) : [] };
@@ -4968,9 +5011,9 @@ document.addEventListener('pointerdown', pgPointer);
 $('#sheet').addEventListener('click', (e) => { if (e.target.closest('a[href]')) e.preventDefault();   // a link on the page opens its field here; in the PDF it opens the page
   if (e.target.closest('[data-a], .pgin') || pgTap(e)) return; const el = e.target.closest('[data-path]'); if (el && DOC && !selFrom() && !editOnPage(el, e)) jumpTo(el.getAttribute('data-path')); });
 $('#sheet').addEventListener('focusout', onPageBlur);
-const pgLi = (t) => { if (!t || !t.closest || t.closest('.pgui')) return null; const li = t.closest('li[data-b]'), h = !li && t.closest('.enh'); return li || (h ? h.querySelector('li[data-b]') : null); };
+const pgLi = (t) => { if (!t || !t.closest || t.closest('.pgui')) return null; const li = t.closest('li[data-b]'), h = !li && t.closest('.enh'); return li || (h ? h.closest('.en') : null); };   // a bullet, or a role (its heading)
 $('#sheet').addEventListener('mouseover', (e) => { if (PGTOUCH) return; const li = pgLi(e.target); if (li) pgOver(li, e.clientX); });   // a phone's tap: pgTap does it
-$('#sheet').addEventListener('mouseout', (e) => { if (PGTOUCH) return; const li = pgLi(e.target), box = li && pgBox(li); if (box && !box.contains(e.relatedTarget)) { clearTimeout(PGS); pgHideSoon(); } });
+$('#sheet').addEventListener('mouseout', (e) => { if (PGTOUCH) return; const box = pgLi(e.target); if (box && !box.contains(e.relatedTarget)) { clearTimeout(PGS); pgHideSoon(); } });
 $('#pgbar').addEventListener('mouseenter', () => { clearTimeout(PGT); clearTimeout(PGS); }); $('#pgbar').addEventListener('mouseleave', pgHideSoon);
 window.addEventListener('scroll', (e) => { if (e.target === document || (e.target.contains && e.target.contains($('#sheet')))) { if (PGB && !DRAG) { const b = $('#pgbar'); b.style.transition = 'none'; pgPlace(); void b.offsetWidth; b.style.transition = ''; } aiMenuScrolled(); } }, { passive: true, capture: true });   // the toolbar follows the page; the panel scrolling doesn't touch it
 document.addEventListener('dragstart', pgDragStart); $('#sheet').addEventListener('dragover', pgDragOver); $('#sheet').addEventListener('drop', pgDrop); document.addEventListener('dragend', pgDragEnd);
