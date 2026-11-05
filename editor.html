@@ -2781,7 +2781,7 @@ function lnBox(i, kind, at) {   // at: what it opens under (an element, or where
   lnBoxClose(); pgEnd(); pgHide();
   const cur = i == null ? '' : String(DOC.contact[i] || ''), k = kind || (/linkedin\.com/i.test(cur) ? 'linkedin' : /github\.com/i.test(cur) ? 'github' : 'other');
   const L = LINKS.find((x) => x[0] === k) || LINKS[3], bare = cur.replace(/^https?:\/\//i, '');
-  const val = !cur || bare === L[2].replace(/^https?:\/\//, '') ? '' : cur;   // only the start ("linkedin.com/in/") counts as empty
+  const val = !cur || LN_WORD.test(cur.trim()) || bare === L[2].replace(/^https?:\/\//, '') ? '' : cur;   // only the start ("linkedin.com/in/") or the bare word counts as empty
   const b = document.createElement('div'); b.id = 'lnbox'; b.className = 'lnbox'; b.setAttribute('role', 'dialog'); b.setAttribute('aria-label', L[1] + ' link');
   b.innerHTML = '<label for="lnIn">' + esc(L[1]) + '</label><input id="lnIn" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="Paste your link here" value="' + esc(val) + '">' +
     '<p class="lnerr" id="lnErr" hidden></p><div class="lnacts"><button type="button" data-a="ln-cancel">Cancel</button><button type="button" class="ok" data-a="ln-save">Save</button></div>';
@@ -2793,6 +2793,7 @@ function lnBox(i, kind, at) {   // at: what it opens under (an element, or where
   inp.addEventListener('input', () => { $('#lnErr').hidden = true; });   // what was wrong goes as soon as it's changed
 }
 let LNB = null;   // the box open now
+const LN_WORD = /^(linkedin|github|portfolio|website)(?:\s+profile)?$/i, LN_KIND = { linkedin: 'linkedin', github: 'github', portfolio: 'portfolio', website: 'portfolio' };
 function lnBoxClose() { const b = $('#lnbox'); if (b) b.remove(); LNB = null; }
 function lnSave() {
   if (!LNB) return;
@@ -3020,7 +3021,10 @@ function editOnPage(el, ev) {   // false: this line is edited in the panel inste
   const path = el.getAttribute('data-path');
   if (READONLY || TAB !== 'resume' || !(PG_TYPE.test(path) || PG_ONE.test(path))) return false;
   if (EDIT && EDIT.el === el) return true;
-  if (/^contact\.\d+$/.test(path) && el.querySelector('a') && !EM1.test(getField(path) || '')) { lnBox(+path.split('.')[1], null, el); return true; }   // a link: the box to paste it into
+  if (/^contact\.\d+$/.test(path)) {   // a link, or just the word for one ("LinkedIn" from a PDF without its address): the box to paste it into
+    const cv = String(getField(path) || '').trim(), word = LN_WORD.exec(cv);
+    if (word || (el.querySelector('a') && !EM1.test(cv))) { lnBox(+path.split('.')[1], word ? LN_KIND[word[1].toLowerCase()] : null, el); return true; }
+  }
   pgEnd();
   if (el.hasAttribute('data-ins')) { DOC.contact.splice(+el.getAttribute('data-ins'), 0, ''); el.removeAttribute('data-ins'); }   // "Location": a new place in the contact line, typed right where it shows
   const v = getField(path) || ''; let at = -1;
@@ -3603,7 +3607,8 @@ function selFrom() {
     const t = ae.value.slice(ae.selectionStart, ae.selectionEnd); if (t.trim().length < 3) return null;
     const r = ae.getBoundingClientRect(); return { path: ae.getAttribute('data-path'), start: ae.selectionStart, end: ae.selectionEnd, text: t, x: r.left, y: r.bottom };
   }
-  const s = window.getSelection(); if (!s || s.isCollapsed || !s.rangeCount) return null;
+  return null;   // words highlighted on the page bring up nothing (5 Nov: the bar there confused people); ✨ on the line does it
+  const s = window.getSelection(); if (!s || s.isCollapsed || !s.rangeCount) return null;   // (kept for the panel's own use below)
   const rg = s.getRangeAt(0), el = rg.commonAncestorContainer.nodeType === 1 ? rg.commonAncestorContainer.closest('[data-path]') : rg.commonAncestorContainer.parentNode.closest('[data-path]');
   if (!el || !el.closest('#sheet')) return null;
   const pre = document.createRange(); pre.selectNodeContents(el); pre.setEnd(rg.startContainer, rg.startOffset);
