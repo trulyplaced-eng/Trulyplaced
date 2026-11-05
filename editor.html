@@ -287,6 +287,23 @@ body:not(.ro) .sheet :is(.ps:hover,.ps.pgon) .sk,body:not(.ro) .sheet .sk:has(.a
 .aimenu button{display:flex;align-items:center;gap:9px;height:36px;padding:0 12px;border-radius:7px;font:500 14px var(--ui);color:#1f2937;text-align:left;cursor:pointer}
 .aimenu button:hover,.aimenu button:focus-visible{background:#f4f5f7;outline:none}
 .aimenu svg{width:16px;height:16px;color:#f2b100;flex:none}
+/* the calendar's date range picker: start, end or Present; Save writes "Jun 2021 - Nov 2022" */
+.dpick{position:absolute;z-index:60;width:320px;padding:14px;background:#fff;border:1px solid #e3e6ea;border-radius:12px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 14px 32px -10px rgba(16,24,40,.32);font:13px var(--ui);color:#1f2937;animation:pgin .12s ease-out}
+.dpick .dpr{display:grid;gap:6px;margin-bottom:10px}
+.dpick .dpr b{font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.04em}
+.dpick .dpf{display:grid;grid-template-columns:1fr 96px;gap:8px}
+.dpick .dpf.off{opacity:.45}
+.dpick select{height:34px;padding:0 8px;border:1px solid #d9dde3;border-radius:8px;background:#fff;font:14px var(--ui);color:#1f2937;cursor:pointer}
+.dpick select:focus-visible{outline:2px solid #0938d5;outline-offset:1px}
+.dpick .dpcur{display:flex;align-items:center;gap:8px;margin:2px 0 4px;font-size:13px;cursor:pointer}
+.dpick .dpcur input{width:16px;height:16px;accent-color:#0938d5}
+.dpick .dperr{margin:6px 0 0;font-size:12.5px;color:#d92d20}
+.dpick .dpft{display:flex;align-items:center;gap:8px;margin-top:12px}
+.dpick .dpft span{flex:1}
+.dpick .dpft button{height:32px;padding:0 14px;border:1px solid #d9dde3;border-radius:999px;background:#fff;font:500 13px var(--ui);color:#1f2937;cursor:pointer}
+.dpick .dpft button.ok{background:#0938d5;border-color:#0938d5;color:#fff}
+.dpick .dpft .dplk{height:auto;padding:0;border:0;background:none;color:#6b7280;font-weight:500;text-decoration:underline;text-underline-offset:3px}
+.ro .dpick{display:none}
 
 /* ---------- the side panel: what's open on the left, the tool rail on the right ---------- */
 .panel{background:#fff;border-left:1px solid var(--line);position:sticky;top:var(--top);height:calc(100vh - var(--top));display:grid;grid-template-columns:minmax(0,1fr) 64px;min-width:0}
@@ -3066,6 +3083,50 @@ function skAddBox(rowId) {
   inp.addEventListener('keydown', (e) => { if (e.isComposing) return; if (e.key === 'Enter') { e.preventDefault(); commit(true); } else if (e.key === 'Escape') { e.preventDefault(); done = true; PGADD = null; renderSheet(); } });
   inp.addEventListener('blur', () => setTimeout(() => commit(false), 0));
 }
+/* ---------- the calendar by a role's or a school's dates: a little date range picker (start month and year, end month and year
+   or Present), written back as "Jun 2021 - Nov 2022" / "Jun 2021 - Present"; the template styles it when drawn (styleDates).
+   "Type them instead" puts the caret in the dates on the page, as before ---------- */
+function dpParse(t) {   // the first two dates in what's there now: [{m, y}, {m, y} | 'present' | null]
+  const s = String(t || ''), out = [], rx = /\b(?:(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?,?\s+'?((?:19|20)\d{2})|(0?[1-9]|1[0-2])\s*[\/.\-]\s*((?:19|20)\d{2})|((?:19|20)\d{2}))\b|\b(present|current|now|today)\b/gi;
+  let m; while ((m = rx.exec(s)) && out.length < 2) {
+    if (m[6]) { out.push('present'); continue; }
+    out.push({ m: m[1] ? MSHORT.findIndex((x) => x.toLowerCase() === m[1].toLowerCase()) : m[3] ? parseInt(m[3], 10) - 1 : -1, y: +(m[2] || m[4] || m[5]) });
+  }
+  return out;
+}
+function dpClose() { const p = $('#dpick'); if (p) p.remove(); }
+function dpOpen(path, r) {
+  dpClose(); if (!r || !fieldRef(path)) return;
+  const edu = /^sec\.([^.]+)\./.test(path) && (secById(path.split('.')[1]) || {}).k === 'education';
+  const [a, b] = dpParse(getField(path)), now = new Date().getFullYear(), years = [];
+  for (let y = now + 6; y >= 1960; y--) years.push(y);
+  const mSel = (id, v) => '<select id="' + id + '" aria-label="Month"><option value="-1">Month</option>' + MSHORT.map((x, i) => '<option value="' + i + '"' + (v === i ? ' selected' : '') + '>' + MLONG[i] + '</option>').join('') + '</select>';
+  const ySel = (id, v) => '<select id="' + id + '" aria-label="Year"><option value="">Year</option>' + years.map((y) => '<option' + (v === y ? ' selected' : '') + '>' + y + '</option>').join('') + '</select>';
+  const s = a && a !== 'present' ? a : { m: -1, y: 0 }, e = b && b !== 'present' ? b : { m: -1, y: 0 }, cur = b === 'present' || a === 'present';
+  const p = document.createElement('div'); p.id = 'dpick'; p.className = 'dpick'; p.setAttribute('role', 'dialog'); p.setAttribute('aria-label', 'Dates'); p.dataset.path = path;
+  p.innerHTML = '<div class="dpr"><b>Start</b><div class="dpf">' + mSel('dpSm', s.m) + ySel('dpSy', s.y) + '</div></div>' +
+    '<div class="dpr"><b>End</b><div class="dpf' + (cur ? ' off' : '') + '" id="dpEnd">' + mSel('dpEm', e.m) + ySel('dpEy', e.y) + '</div></div>' +
+    '<label class="dpcur"><input type="checkbox" id="dpCur"' + (cur ? ' checked' : '') + '> ' + (edu ? 'Still studying here (Present)' : 'I currently work here (Present)') + '</label>' +
+    '<p class="dperr" id="dpErr" hidden></p>' +
+    '<div class="dpft"><button type="button" class="dplk" data-a="pg-dptype">Type them instead</button><span></span><button type="button" data-a="pg-dpno">Cancel</button><button type="button" class="ok" data-a="pg-dpok">Save</button></div>';
+  document.body.appendChild(p);
+  const cb = $('#dpCur'); cb.addEventListener('change', () => { $('#dpEnd').classList.toggle('off', cb.checked); $$('#dpEnd select').forEach((x) => { x.disabled = cb.checked; }); });
+  if (cur) $$('#dpEnd select').forEach((x) => { x.disabled = true; });
+  p.addEventListener('change', () => { $('#dpErr').hidden = true; });   // a date changed: the warning waits for the next Save
+  const w = p.offsetWidth, h = p.offsetHeight, top = r.bottom + 6 + h > window.innerHeight ? Math.max(4, r.top - h - 6) : r.bottom + 6;
+  p.style.left = clamp(r.right - w, 8, window.innerWidth - w - 8) + window.scrollX + 'px'; p.style.top = top + window.scrollY + 'px';
+  $('#dpSm').focus({ preventScroll: true });
+}
+function dpSave() {
+  const p = $('#dpick'); if (!p) return; const path = p.dataset.path, err = $('#dpErr');
+  const one = (mi, yi) => { const m = +$(mi).value, y = $(yi).value; return y ? (m >= 0 ? MSHORT[m] + ' ' : '') + y : ''; };
+  const st = one('#dpSm', '#dpSy'), cur = $('#dpCur').checked, en = cur ? 'Present' : one('#dpEm', '#dpEy');
+  if (!st && !en) { err.textContent = 'Pick a start date.'; err.hidden = false; return; }
+  const v = st && en ? st + ' - ' + en : st || en, pr = dateProblem(v);
+  if (pr) { err.textContent = pr + ' — check the years.'; err.hidden = false; return; }
+  dpClose();
+  if (setField(path, v)) { structural(); noteSaving(); }   // one Undo step
+}
 function pageAction(a, v, t) {
   if (!/^pg-/.test(a)) return false;
   if (READONLY) return true;
@@ -3078,7 +3139,10 @@ function pageAction(a, v, t) {
       if (a === 'pg-edel') { s.items.splice(idx(s.items, v), 1); structural(); toast((s.k === 'education' ? 'School' : 'Entry') + ' removed', { a: 'undo', label: 'Undo' }); return true; }
       const ni = newEntry(); if (s.k !== 'education') ni.bullets.push({ id: uid(), t: '' }); s.items.splice(idx(s.items, v) + 1, 0, ni); structural(); pgEditPath('sec.' + s.id + '.item.' + ni.id + '.title', 0); return true;
     }
-    case 'pg-dates': { const el = $('#sheet [data-path="' + v + '"]'); if (el) editOnPage(el); return true; }   // the calendar: the dates, typed right there
+    case 'pg-dates': dpOpen(v, ar); return true;   // the calendar: a date range picker
+    case 'pg-dpok': dpSave(); return true;
+    case 'pg-dpno': dpClose(); return true;
+    case 'pg-dptype': { const p = $('#dpick'), path = p && p.dataset.path; dpClose(); const el = path && $('#sheet [data-path="' + path + '"]'); if (el) editOnPage(el); return true; }   // the dates, typed right there
     case 'pg-fos': {   // "Field of Study" after a degree that has none: the degree, typed on with ", " and the caret at its end
       const val = getField(v); if (val == null) return true;
       setField(v, val.replace(/[\s,]+$/, '') + ', '); changed(v); renderSheet(); pgEditPath(v, getField(v).length); return true;
@@ -4949,6 +5013,7 @@ document.addEventListener('click', (e) => {
   const t = e.target.closest('[data-a]');
   const dl = $('#dlMenu'); if (dl && !dl.hidden && !e.target.closest('#dlWrap')) dl.hidden = true;
   if (!e.target.closest('#aimenu')) aiMenuClose();   // the ✨ menu: a click anywhere else closes it
+  if (!e.target.closest('#dpick, [data-a=pg-dates]')) dpClose();   // the dates picker too
   if (!e.target.closest('#selbar') && !$('#selbar').hidden && !(t && /^sel-/.test(t.getAttribute('data-a') || ''))) { if (!selFrom()) hideSel(); }
   if (!t) return;
   const a = t.getAttribute('data-a'), v = t.getAttribute('data-v');
@@ -4999,6 +5064,8 @@ document.addEventListener('keydown', (e) => {
   if (mod && !e.altKey && !e.shiftKey && (e.key === 's' || e.key === 'S') && DOC) { e.preventDefault(); saveNow(); return; }   // Ctrl+S saves now (never the browser's "Save page"); typing carries on
   if (mod && (e.key === 's' || e.key === 'S') && DOC) { e.preventDefault(); sync(); toast('Saved'); return; }
   if (e.key === 'Escape' && $('#aimenu')) { aiMenuClose(); return; }
+  if (e.key === 'Escape' && $('#dpick')) { dpClose(); return; }
+  if (e.key === 'Enter' && e.target.closest && e.target.closest('#dpick') && e.target.tagName !== 'BUTTON') { e.preventDefault(); dpSave(); return; }
   if (e.key === 'Escape') { hideSel(); const dl = $('#dlMenu'); if (dl) dl.hidden = true; if (!$('#modal').hidden) { if (OPT && OPT.rows && $('#rAll')) finishOptimise(); else if (!$('.om.run')) modalClose(); else if (RUN && RUN.stop) RUN.stop(); } return; }   // the run's note has no Stop on it: Escape stops it
   if (e.target.closest('#pbody')) onFieldKey(e);
 });

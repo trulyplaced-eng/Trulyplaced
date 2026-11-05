@@ -4728,7 +4728,7 @@ function drawDraft(){
       '<div class="step ckit" id="ckAns"><span class="n' + (n ? ' ok' : '') + '">' + (n ? I.check : '4') + '</span><div class="bd"><b>Form answers</b><small>' + (n ? n + ' ready to copy into the form.' : 'None yet — add what the form asks.') + '</small></div></div></div>' +
       '<p class="hint" style="margin:6px 0 10px">Apply on their site with the resume on the right (PDF above it), then add the confirmation here.</p>' +
       '<div class="senddrop">' + shotsHTML('dShot', 'Confirmation screenshots', 'Paste (<span class="kbd">Ctrl</span>+<span class="kbd">V</span>), drop, or choose several · PNG, JPG or WEBP · up to 10') +
-        '<div class="drop sm" id="dRes" tabindex="0" role="button">' + I.doc + '<span><b>Resume file you uploaded</b><span class="fine">Recommended · PDF or Word</span></span></div></div>' +
+        '</div>' +   // the resume that went is kept by itself (the tailored copy, or the main resume as it was): nothing to upload
       '<label class="check" style="margin-top:10px"><input type="checkbox" id="noShot"> There was no confirmation screen</label>' +
       '<p class="err" id="mkErr" hidden></p>' +
       (A.submit_status === 'failed' ? '<div class="note bad" id="apFailed" style="margin-top:10px"><b>Couldn’t submit</b> (try ' + (A.attempts || 1) + '): ' + esc(A.fail_reason || '') + ' — ' + esc(TP.ago(A.attempted_at)) + '. Mark as applied once it goes through.</div>' : '') +
@@ -4761,7 +4761,6 @@ function drawDraft(){
   $('#resCard').addEventListener('change', function(e){ if(e.target.id !== 'apBase') return; var a = A; A.base_resume_id = e.target.value; draftChanged(); drawRes(); flushDraft().then(function(){ if(A === a) reloadView(); }); });
   ['apT', 'apC'].forEach(function(k){ $('#' + k).addEventListener('change', dupCheck); });
   setupDrop($('#dShot'), 'shot', 'image/png,image/jpeg,image/webp');
-  setupDrop($('#dRes'), 'res', '.pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document');
   jdView();   // the job description's reading view, from the start
   lkNext(); dupCheck(); apRecover(A); appFitRun(A);
 }
@@ -4991,14 +4990,13 @@ function markApplied(btn){
     Object.assign(a, row);
     if(A !== a) return;
     var base = (c.resumes || []).filter(function(r){ return r.id === a.base_resume_id; })[0], own = !!(a.resume_doc || a.resume_text);
-    if(!own && !base && !FILES.res) throw {message:'There’s no resume on this application yet — tailor it in the editor, or attach the file you uploaded.'};
+    if(!own && !a.base_resume_id) throw {message:'There’s no resume on this application yet — pick the one it starts from on the right, or tailor it in the editor.'};
     var first = (c.row.full_name || '').split(' ')[0] || 'The client', saved = a.resume_doc && a.resume_doc.meta && a.resume_doc.meta.saved, n = (a.answers || []).length;
     var items = [
       own ? (optimisedDoc(a.resume_doc) ? ['ok', 'Resume <b>tailored to this job</b>' + (saved ? ' — last saved in the editor ' + esc(TP.ago(saved)) : '')]
                                         : ['warn', 'Resume <b>not tailored to this job</b> — it goes as copied from ' + esc(base ? base.name : 'the main resume')])
-          : base ? ['warn', 'Resume <b>not opened for this job</b> — ' + esc(base.name) + ' goes exactly as it is today'] : ['warn', 'Only the attached file is kept as the resume'],
+          : ['warn', 'Resume <b>not opened for this job</b> — ' + esc(base ? base.name : 'the main resume') + ' goes exactly as it is today'],
       FILES.shots.length ? ['ok', (FILES.shots.length === 1 ? 'Confirmation screenshot' : FILES.shots.length + ' confirmation screenshots') + ' attached'] : ['warn', 'No confirmation screenshot (“There was no confirmation screen” is ticked)'],
-      FILES.res ? ['ok', 'Uploaded resume file attached: ' + esc(FILES.res.name)] : ['warn', 'The resume file you uploaded isn’t attached — recommended, it shows exactly what ' + esc(a.company || 'the company') + ' got'],
       a.cover_letter ? ['ok', 'Cover letter included'] : ['info', 'No cover letter'],
       n ? ['ok', n + ' form answer' + (n === 1 ? '' : 's') + ' kept'] : ['info', 'No form answers'],
       a.jd_text ? ['ok', 'Job description kept'] : ['warn', 'No job description kept']
@@ -5013,12 +5011,13 @@ function doMarkApplied(a, btn){
   var base = (C.resumes || []).filter(function(r){ return r.id === a.base_resume_id; })[0];
   var stamp = Date.now(), dir = C.id + '/applications/' + a.id + '/';
   // what goes on the record: the tailored copy, or the base resume exactly as it is today
-  var resume = (a.resume_doc || a.resume_text) ? Promise.resolve({}) : base ? q(SB.from('client_resumes').select('doc,text').eq('id', base.id).maybeSingle()).then(function(r){ return r ? {resume_doc:r.doc, resume_text:r.text} : {}; }) : Promise.resolve({});
+  // (read by the draft's own link to it, so a tab that hasn't loaded the client's resumes yet keeps it too)
+  var resume = (a.resume_doc || a.resume_text) ? Promise.resolve({}) : a.base_resume_id ? q(SB.from('client_resumes').select('doc,text').eq('id', a.base_resume_id).maybeSingle()).then(function(r){ return r ? {resume_doc:r.doc, resume_text:r.text} : {}; }) : Promise.resolve({});
   var label = btn.innerHTML, shots = uploadShots(dir, stamp, function(i, n){ btn.innerHTML = I.check + 'Uploading screenshot ' + i + ' of ' + n + '…'; });
   var res = FILES.res ? TP.upload(dir + 'resume-' + stamp + '.' + ext(FILES.res), FILES.res) : Promise.resolve(null);
   Promise.all([resume, shots, res]).then(function(rs){
     btn.innerHTML = label;
-    if(!rs[0].resume_text && !a.resume_text && !rs[2]){ throw {message:'There’s no resume on this application yet — tailor it in the editor, or attach the file you uploaded.'}; }
+    if(!rs[0].resume_text && !rs[0].resume_doc && !a.resume_text && !a.resume_doc && !rs[2]){ throw {message:'There’s no resume on this application yet — pick the one it starts from on the right, or tailor it in the editor.'}; }
     var up = Object.assign({}, rs[0], {status:'applied', screenshots:rs[1], screenshot:rs[1][0] || null, resume_file:rs[2]});
     return q(SB.from('applications').update(up).eq('id', a.id).eq('status', 'draft').select('*').maybeSingle());
   }).then(function(row){
@@ -5058,7 +5057,7 @@ function drawSent(){
         shotsHTML('dShot2', shots.length ? 'Add more screenshots' : 'Add the confirmation screenshot', 'Paste, drop, or choose · ' + (SHOT_MAX - shots.length) + ' more at most') +
         '</div><div class="row end" style="margin-top:8px"><button class="btn sm" type="button" data-act="addmissing">Save screenshots</button></div></div>' : '') +   // the uploaded resume file is added only when it's marked as applied
       (A.submit_ref ? '' : '<div class="apsub"><span>' + (A.submit_status === 'needs_review' ? 'Nothing confirms this one yet. A screenshot above or the employer’s reference makes it Submitted:' : 'Employer’s reference, if they gave one:') + '</span><label class="sr" for="apRef">Submission reference</label><input id="apRef" maxlength="200" placeholder="e.g. WD-48213 or the confirmation email’s subject" autocomplete="off"><button class="btn sm" type="button" data-act="wkref">Save reference</button></div>') +
-      '<div class="row end" style="margin-top:12px">' + (A.status !== 'withdrawn' ? '<button class="btn sm" type="button" data-act="withdraw">' + I.x + 'Withdraw application</button>' : '') +
+      '<div class="row end" style="margin-top:12px">' +
         (!A.mistake_at ? '<button class="btn sm" type="button" data-act="mistake">' + I.x + 'Applied by mistake</button>' : '') +
         (ME.owner ? '<button class="btn sm bad" type="button" data-act="delsent">' + I.trash + 'Delete this application (owner)</button>' : '') + '</div></div>' +
     (n ? '<div class="card"><div class="ch"><h3>Answers given</h3><span class="muted">' + n + '</span></div>' + A.answers.map(function(x){ return '<div class="qa-ro"><b>' + esc(x.q) + '</b><div>' + esc(x.a) + '</div></div>'; }).join('') + '</div>' : '') +
@@ -5312,7 +5311,7 @@ function apRowMenu(btn){
   m.innerHTML = it('open', I.ext, 'Open') +
     (a.status === 'draft' ? it('deldraft', I.trash, 'Delete draft', 'bad')
       : a.mistake_at ? (ME.owner ? it('unmistake', I.back, 'Put back (not a mistake)') : '') + (ME.owner ? it('delsent', I.trash, 'Delete…', 'bad') : '')
-      : (a.status === 'withdrawn' ? it('unwithdraw', I.back, 'Undo withdrawal') : it('withdraw', I.x, 'Withdraw…')) + it('mistake', I.x, 'Applied by mistake…') + (ME.owner ? it('delsent', I.trash, 'Delete…', 'bad') : ''));
+      : (a.status === 'withdrawn' ? it('unwithdraw', I.back, 'Undo withdrawal') : '') + it('mistake', I.x, 'Applied by mistake…')   /* no Withdraw (5 Nov): Applied by mistake is the one way to take one back; ones withdrawn before keep Undo withdrawal */ + (ME.owner ? it('delsent', I.trash, 'Delete…', 'bad') : ''));
   document.body.appendChild(m);
   var r = btn.getBoundingClientRect(), h = m.offsetHeight, w = m.offsetWidth;
   m.style.left = Math.max(8, Math.min(r.right - w, innerWidth - w - 8)) + 'px';
