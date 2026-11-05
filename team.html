@@ -372,6 +372,14 @@ a.li:hover,button.li:hover{background:var(--hover)}
 .wdq{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .wdq button{height:26px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px;color:var(--ink);cursor:pointer}
 .wdq button:hover{border-color:#c9cdd4;background:#f7f8fa}
+.mod button.wdmk{display:inline-block;width:auto;height:auto;min-height:0;margin-top:10px;padding:0;border:0;border-radius:0;background:none;box-shadow:none;font-size:12.5px;font-weight:500;color:var(--blue);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.mod button.wdmk:hover{background:none;color:#0a2fb0}
+/* Operations → Applied by mistake */
+.tbl.mkemp .thead,.tbl.mkemp .li{grid-template-columns:minmax(0,1fr) 100px 140px}
+.tbl.mkemp .li.on{background:#f5f7ff}
+.tbl.mkl .thead,.tbl.mkl .li{grid-template-columns:132px minmax(0,1fr) minmax(0,1fr) minmax(0,1.3fr) minmax(0,.9fr) minmax(0,.9fr) minmax(0,1.3fr) 104px}
+.tbl.mkl .li .m{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:900px){ .card.flush > .tbl.mkl{overflow-x:auto} .tbl.mkl .thead{display:grid} .tbl.mkl .thead,.tbl.mkl .li{min-width:980px} }
 .note.wdn{margin-top:10px;font-size:12.5px}
 .arole{display:flex;align-items:center;gap:12px;min-width:0}
 .arole .logo{width:30px;height:30px;border-radius:8px}
@@ -1732,7 +1740,7 @@ function route(){
   if(!r.client){   // the owners' home is Clients and the Team page is theirs; an employee's home is My day, with Clients at #clients
     var emp = !!ME && ME.owner === false, oe = /^ops\/emp=(.+)$/.exec(h);
     if(oe){ r.page = emp ? 'myday' : 'opsemp'; try{ r.emp = decodeURIComponent(oe[1]).toLowerCase(); }catch(e){ r.page = 'ops'; } return r; }   // one employee on Operations
-    r.page = h === 'team' || h === 'leads' || h === 'ops' || h === 'opsclients' ? (emp ? 'myday' : h) : h === 'tasks' ? 'tasks' : h === 'myday' || (emp && !h) ? 'myday' : 'clients';   // Leads, Operations and Team are the owners'
+    r.page = h === 'team' || h === 'leads' || h === 'ops' || h === 'opsclients' || h === 'opsmistakes' ? (emp ? 'myday' : h) : h === 'tasks' ? 'tasks' : h === 'myday' || (emp && !h) ? 'myday' : 'clients';   // Leads, Operations and Team are the owners'
     return r;
   }
   var m = /^app=([0-9a-f-]{36})$/i.exec(h);
@@ -1800,7 +1808,7 @@ function draw(){
     (ME.owner ? '<div class="ngl">Sales</div><a href="/team.html#leads" data-go title="Leads" class="' + (ld ? 'on' : '') + '"' + (ld ? ' aria-current="page"' : '') + '>' + J.star + '<span>Leads</span></a>' : '') +
     (ME.owner ? '<div class="ngl">Organisation</div><a href="/team.html#ops" data-go title="Operations" class="' + (op ? 'on' : '') + '"' + (op ? ' aria-current="page"' : '') + '>' + J.ops + '<span>Operations</span></a><a href="/team.html#team" data-go title="Team" class="' + (tm ? 'on' : '') + '"' + (tm ? ' aria-current="page"' : '') + '>' + I.team + '<span>Team</span></a>' : '');   // the Team page is the owners'; the titles name the icons when the sidebar is a rail
   drawOpenTabs();
-  if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : md ? vMyDay() : tk ? vTasks() : ld ? vLeads() : R.page === 'ops' ? vOps() : R.page === 'opsemp' ? vOpsEmp(R.emp) : R.page === 'opsclients' ? vOpsClients() : vClients(); }
+  if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : md ? vMyDay() : tk ? vTasks() : ld ? vLeads() : R.page === 'ops' ? vOps() : R.page === 'opsemp' ? vOpsEmp(R.emp) : R.page === 'opsclients' ? vOpsClients() : R.page === 'opsmistakes' ? vOpsMistakes() : vClients(); }
   vClient();
 }
 // phones: a top bar with the client and Switch, and the sections along the bottom
@@ -2160,7 +2168,7 @@ function opsLoad(force){
     });
 }
 function opsCrumb(rest){ return '<nav class="bc" aria-label="Where you are">' + (rest ? '<a href="/team.html#ops" data-go>Operations</a><i>/</i><span>' + rest + '</span>' : '<span>Organisation</span>') + '</nav>'; }
-function opsTabs(on){ return '<div class="seg optabs">' + [['ops', 'Employees'], ['opsclients', 'Client activity']].map(function(x){ return '<a href="/team.html#' + x[0] + '" data-go class="' + (on === x[0] ? 'on' : '') + '"' + (on === x[0] ? ' aria-current="page"' : '') + '>' + x[1] + '</a>'; }).join('') + '</div>'; }
+function opsTabs(on){ return '<div class="seg optabs">' + [['ops', 'Employees'], ['opsclients', 'Client activity'], ['opsmistakes', 'Applied by mistake']].map(function(x){ return '<a href="/team.html#' + x[0] + '" data-go class="' + (on === x[0] ? 'on' : '') + '"' + (on === x[0] ? ' aria-current="page"' : '') + '>' + x[1] + '</a>'; }).join('') + '</div>'; }
 function openAsg(asg){ return asg.filter(function(a){ return !a.ended_at; }); }
 function empOf(cid){ var a = OPS && openAsg(OPS.asg).filter(function(x){ return x.client_id === cid; })[0]; return a ? a.employee : ''; }
 function quiet(email){ var t = OPS && OPS.last[email]; return !t || Date.now() - new Date(t).getTime() > 2 * 864e5; }
@@ -2231,12 +2239,13 @@ document.addEventListener('change', function(e){
   }
   if(s.id === 'wrFrom' || s.id === 'wrTo'){ WR.from = $('#wrFrom').value; WR.to = $('#wrTo').value; TP.lsSet('tp_wr', WR); OPS = null; MDAY = null; render(); return; }
   var k = s.getAttribute && s.getAttribute('data-wkf');
-  if(k){ var F = k === 'md' ? MDF : k === 'op' ? OPF : EPF; F[s.getAttribute('data-k')] = s.value; wkRedraw(k); }
+  if(k){ var F = k === 'md' ? MDF : k === 'op' ? OPF : k === 'mk' ? MKF : EPF; F[s.getAttribute('data-k')] = s.value; wkRedraw(k); }
 });
 document.addEventListener('input', function(e){ if(e.target.id === 'ocQ'){ OPF.q = e.target.value; ocDraw(); } });
 function wkRedraw(k){
   if(k === 'md') drawTimeline('md', MDAY && MDAY.tl, false);
   else if(k === 'op') ocDraw();
+  else if(k === 'mk') mkDraw();
   else if(OPD) drawTimeline('ep', OPD.tl, false);
 }
 document.addEventListener('click', function(e){
@@ -2396,6 +2405,48 @@ function ocDraw(){
   var keep = {}; rows.forEach(function(c){ keep[c.id] = 1; });
   drawTimeline('op', D.tl.filter(function(a){ return keep[a.client_id]; }), true);
 }
+
+// Applied by mistake (owners): every application the team marked as sent by mistake in the chosen dates — hidden from the client,
+// counted nowhere — with who sent it, who marked it and the note (mistakes_list, sql/supabase-mistakes.sql). Put back undoes one.
+var MKF = {emp:''}, MKD = null;
+function vOpsMistakes(){
+  setTitle('Applied by mistake', null);
+  V.innerHTML = '<div class="pageh"><div class="grow">' + opsCrumb('Applied by mistake') + '<h1>Applied by mistake</h1><div class="sub">Applications the team marked as sent by mistake. The client never sees these, and they count nowhere.</div></div>' + opsTabs('opsmistakes') + '</div>' +
+    '<div class="wkhead"><div class="tlf"><label class="sr" for="mkEmp">Sent by</label><select id="mkEmp" data-wkf="mk" data-k="emp"><option value="">Every employee</option>' +
+      TEAMROWS.map(function(t){ return '<option value="' + esc(t.email) + '"' + (MKF.emp === t.email ? ' selected' : '') + '>' + esc(t.full_name || t.email) + '</option>'; }).join('') + '</select></div>' + wrBar() + '</div>' +
+    '<div class="stats s3" id="mkS"></div><div class="card flush"><div class="ch"><h3>By employee</h3><span class="fine">Who sent them · ' + esc(wrRange().label.toLowerCase()) + '</span></div><div class="tbl mkemp" id="mkE"><div class="skel"></div></div></div>' +
+    '<div class="card flush"><div class="ch"><h3>Mistakes</h3><span class="fine">Newest first</span></div><div class="tbl mkl" id="mkL"><div class="skel"></div></div></div>';
+  var r = wrRange();
+  rpc('mistakes_list', {p_from:r.from.toISOString(), p_to:r.to ? r.to.toISOString() : null, p_employee:null}).then(function(rows){ MKD = rows || []; mkDraw(); }, function(e){ if($('#mkL')) $('#mkL').innerHTML = errBox(e); if($('#mkE')) $('#mkE').innerHTML = ''; });
+}
+function mkDraw(){
+  if(R.page !== 'opsmistakes' || !$('#mkL') || !MKD) return;
+  var rows = MKD.filter(function(a){ return !MKF.emp || (a.sent_by || '').toLowerCase() === MKF.emp; });
+  var by = {}; MKD.forEach(function(a){ var e = a.sent_by || '-', x = by[e] = by[e] || {n:0, last:null}; x.n++; if(!x.last || a.mistake_at > x.last) x.last = a.mistake_at; });
+  var cl = {}; rows.forEach(function(a){ cl[a.client_id] = 1; });
+  $('#mkS').innerHTML = [[rows.length.toLocaleString(), 'mistakes · ' + esc(wrRange().label.toLowerCase())], [Object.keys(by).filter(function(e){ return e !== '-'; }).length, 'employees with one'], [Object.keys(cl).length, 'clients affected']]
+    .map(function(s){ return '<div class="stat"><b>' + s[0] + '</b><span>' + s[1] + '</span></div>'; }).join('');
+  var emps = Object.keys(by).sort(function(a, b){ return by[b].n - by[a].n; });
+  $('#mkE').innerHTML = emps.length ? '<div class="thead"><span>Employee</span><span>Mistakes</span><span>Last one</span></div>' + emps.map(function(e){
+    return '<div class="li' + (MKF.emp === e ? ' on' : '') + '"><span class="cwho"><span class="av sm" style="background:' + TP.hue(e) + '">' + esc(TP.initials(who(e), e)) + '</span><span class="t">' + esc(e === '-' ? 'Not recorded' : who(e)) + '</span></span>' +
+      '<span class="num">' + by[e].n + '</span><span class="m">' + esc(TP.ago(by[e].last)) + '</span></div>';
+  }).join('') : '<p class="fine" style="padding:14px 16px">No mistakes ' + esc(wrRange().label.toLowerCase()) + '.</p>';
+  $('#mkL').innerHTML = rows.length ? '<div class="thead"><span>Marked</span><span>Client</span><span>Company</span><span>Job title</span><span>Sent by</span><span>Marked by</span><span>Note</span><span></span></div>' + rows.map(function(a){
+    return '<div class="li"><span class="m" title="' + esc(TP.fmtDateTime(a.mistake_at)) + '">' + esc(TP.fmtDateTime(a.mistake_at)) + '</span>' +
+      '<a class="t" href="' + esc(cUrl(a.client_id, 'app=' + a.id)) + '" data-go>' + esc(a.client_name || '') + '</a><span>' + esc(a.company || '—') + '</span><span class="t2">' + esc(a.title || 'Role') + '</span>' +
+      '<span>' + esc(a.sent_by ? who(a.sent_by) : '—') + '</span><span>' + esc(a.mistake_by ? who(a.mistake_by) : '—') + '</span><span class="m" title="' + esc(a.mistake_note || '') + '">' + esc(a.mistake_note || '—') + '</span>' +
+      '<span><button class="btn sm ghost" type="button" data-act="mkback" data-id="' + esc(a.id) + '">' + I.back + 'Put back</button></span></div>';
+  }).join('') : '<p class="fine" style="padding:14px 16px">Nothing ' + esc(wrRange().label.toLowerCase()) + (MKF.emp ? ' for ' + esc(who(MKF.emp)) : '') + '.</p>';
+}
+document.addEventListener('click', function(e){
+  var b = e.target.closest && e.target.closest('[data-act=mkback]'); if(!b || !MKD) return;
+  var a = MKD.filter(function(x){ return x.id === b.getAttribute('data-id'); })[0]; if(!a) return;
+  TP.confirmBox('Put it back?', (a.title || 'Role') + (a.company ? ' at ' + a.company : '') + ' for ' + (a.client_name || 'the client') + '.', 'Put it back', false, {
+    items:[['info', 'It becomes ' + TP.statusLabel(a.withdrawn_from && a.withdrawn_from !== 'withdrawn' ? a.withdrawn_from : 'applied') + ' again: ' + esc((a.client_name || 'the client').split(' ')[0]) + ' sees it and it counts toward the plan.'], ['info', 'Only do this if it wasn’t a mistake after all.']]}).then(function(ok){
+    if(!ok) return;
+    unmistakeApp(a, {id:a.client_id, row:{full_name:a.client_name || ''}}).then(function(){ MKD = MKD.filter(function(x){ return x.id !== a.id; }); mkDraw(); });
+  });
+});
 
 function newClient(pre){
   pre = pre || {};
@@ -4160,7 +4211,7 @@ function loadApps(){
   if(c.apCache[key] && box){ box.innerHTML = c.apCache[key]; markPicked(); }
   (AP.mine ? mineIds(c) : Promise.resolve(null)).then(function(ids){
     AP.mineIds = ids;
-    return q(apQuery(c, 'id,status,title,company,location,job_url,applied_at,created_at,status_at,submit_status,withdrawn_from').order('applied_at', {ascending:false, nullsFirst:true}).order('created_at', {ascending:false}).range(0, AP.n));   // drafts first, then newest sent
+    return q(apQuery(c, 'id,status,title,company,location,job_url,applied_at,created_at,status_at,submit_status,withdrawn_from,mistake_at,mistake_note').order('applied_at', {ascending:false, nullsFirst:true}).order('created_at', {ascending:false}).range(0, AP.n));   // drafts first, then newest sent
   }).then(function(rows){ rows = rows || []; return whoOf(c, rows.slice(0, AP.n).map(function(a){ return a.id; })).then(function(){ return rows; }); }).then(function(rows){
     if(C !== c || !$('#apL')) return;
     var more = rows.length > AP.n; rows = rows.slice(0, AP.n);
@@ -4173,7 +4224,7 @@ function loadApps(){
       var by = c.who[a.id], old = !a.applied_at && Date.now() - new Date(a.created_at) > 2 * 864e5;
       var cells = '<div class="arole">' + coLogo(a.company, a.job_url) + '<div class="main"><div class="t">' + esc(a.title || 'Role') + '</div><div class="m">' + esc(a.company || '') + '</div></div></div>' +
         '<div class="m aloc">' + esc(a.location || '—') + '</div>' +
-        '<div class="ast">' + (a.submit_status === 'failed' ? subPill('failed') : TP.statusChip(a.status)) + (a.submit_status === 'needs_review' ? '<span class="nrdot" title="Needs review: nothing confirms it was submitted yet" aria-label="Needs review"></span>' : '') + '</div>' +
+        '<div class="ast">' + (a.submit_status === 'failed' ? subPill('failed') : stChip(a)) + (a.submit_status === 'needs_review' ? '<span class="nrdot" title="Needs review: nothing confirms it was submitted yet" aria-label="Needs review"></span>' : '') + '</div>' +
         '<div class="adate"' + (a.applied_at ? ' title="' + esc(TP.fmtDateTime(a.applied_at)) + '"' : '') + '>' + (a.applied_at ? esc(TP.fmtDateTime(a.applied_at)) : '<span' + (old ? ' class="stale" title="A draft for more than 2 days"' : '') + '>Started ' + esc(TP.ago(a.created_at)) + '</span>') + '</div>' +
         '<div class="m aby">' + (by ? esc(who(by)) : '—') + '</div>';
       return picking ? '<div class="li arow" data-pick="' + esc(a.id) + '" data-st="' + esc(a.status) + '" role="checkbox" aria-checked="false" tabindex="0"><span class="apick"><input type="checkbox" tabindex="-1" aria-hidden="true"></span>' + cells + '</div>'
@@ -4347,9 +4398,10 @@ function jobCard(){
       (A.resume_text ? '<button class="btn" type="button" data-act="cpresume">' + I.copy + 'Copy resume text</button>' : '');
   return '<div class="card jcard"><div class="ahead">' + coLogo(A.company, A.job_url) +
       '<div class="aht"><h2 id="apH">' + esc(A.title || 'Role') + '</h2><div class="jco" id="apCo">' + esc(A.company || '') + '</div>' +
-        '<div class="ahm">' + TP.statusChip(A.status) + '<span>' + when + (by ? ' by ' + esc(who(by)) : '') + ' · for <b style="color:var(--client)">' + esc(C.row.full_name) + '</b></span>' + (draft ? '<span class="saved" id="apSaved"></span>' : '') + '</div>' +
+        '<div class="ahm">' + stChip(A) + '<span>' + when + (by ? ' by ' + esc(who(by)) : '') + ' · for <b style="color:var(--client)">' + esc(C.row.full_name) + '</b></span>' + (draft ? '<span class="saved" id="apSaved"></span>' : '') + '</div>' +
         '<div class="jtags" id="apTags">' + tagsHTML(A) + '</div>' +
         (draft ? '<div class="jlinks"><button type="button" data-act="editjob">' + J.edit + 'Edit job</button><a href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Job posting</a></div>'
+          : A.mistake_at ? (ME.owner ? '<div class="jlinks"><button type="button" data-act="unmistake">' + I.back + 'Put back (not a mistake)</button></div>' : '') + wdNote(A)
           : A.status === 'withdrawn' ? '<div class="jlinks"><button type="button" data-act="unwithdraw">' + I.back + 'Undo withdrawal</button></div>' + wdNote(A)
           : '<div class="jlinks"><label class="stsel" for="apSt">Status<select class="inp" id="apSt">' + TP.STATUS.filter(function(s){ return s[0] !== 'draft' && s[0] !== 'withdrawn'; }).map(function(s){ return '<option value="' + s[0] + '"' + (s[0] === A.status ? ' selected' : '') + '>' + s[1] + '</option>'; }).join('') + '</select></label></div>') + '</div></div>' +
     '<div class="jfacts" id="apFacts">' + factsHTML(A) + '</div>' +
@@ -5007,6 +5059,7 @@ function drawSent(){
         '</div><div class="row end" style="margin-top:8px"><button class="btn sm" type="button" data-act="addmissing">Save screenshots</button></div></div>' : '') +   // the uploaded resume file is added only when it's marked as applied
       (A.submit_ref ? '' : '<div class="apsub"><span>' + (A.submit_status === 'needs_review' ? 'Nothing confirms this one yet. A screenshot above or the employer’s reference makes it Submitted:' : 'Employer’s reference, if they gave one:') + '</span><label class="sr" for="apRef">Submission reference</label><input id="apRef" maxlength="200" placeholder="e.g. WD-48213 or the confirmation email’s subject" autocomplete="off"><button class="btn sm" type="button" data-act="wkref">Save reference</button></div>') +
       '<div class="row end" style="margin-top:12px">' + (A.status !== 'withdrawn' ? '<button class="btn sm" type="button" data-act="withdraw">' + I.x + 'Withdraw application</button>' : '') +
+        (!A.mistake_at ? '<button class="btn sm" type="button" data-act="mistake">' + I.x + 'Applied by mistake</button>' : '') +
         (ME.owner ? '<button class="btn sm bad" type="button" data-act="delsent">' + I.trash + 'Delete this application (owner)</button>' : '') + '</div></div>' +
     (n ? '<div class="card"><div class="ch"><h3>Answers given</h3><span class="muted">' + n + '</span></div>' + A.answers.map(function(x){ return '<div class="qa-ro"><b>' + esc(x.q) + '</b><div>' + esc(x.a) + '</div></div>'; }).join('') + '</div>' : '') +
     (A.cover_letter ? '<div class="card"><div class="ch"><h3>Cover letter</h3></div><pre class="txt">' + esc(A.cover_letter) + '</pre></div>' : '') +
@@ -5147,9 +5200,16 @@ var TRASH = null;
    Withdraw: the client still sees it on their list, marked Withdrawn with the reason, and it stops counting toward the plan
    (sql/supabase-withdraw.sql keeps when, why and the status it had, so Undo withdrawal puts that back; who is in the history).
    Delete: only for one marked by mistake; it comes off the client's list too (owners only, Recently deleted for 30 days). */
-var WD_WHY = ['Client got another offer', 'Client asked us to', 'Wrong location', 'Not the right role', 'Applied by mistake'];
+var WD_WHY = ['Client got another offer', 'Client asked us to', 'Wrong location', 'Not the right role'];
+// Applied by mistake (sql/supabase-mistakes.sql): withdrawn and hidden from the client altogether — not on their list, counts or
+// dashboard, no reason shown. The note is the team's; the owners have every one under Operations → Applied by mistake, and only
+// they put one back.
+var MK_CHIP = '<span class="st withdrawn">Applied by mistake</span>';
+function stChip(a){ return a.mistake_at ? MK_CHIP : TP.statusChip(a.status); }
 function wdNote(a){
   var first = (C.row.full_name || '').split(' ')[0] || 'the client';
+  if(a.mistake_at) return '<div class="note wdn"><b>Applied by mistake · ' + esc(TP.fmtDateTime(a.mistake_at)) + '</b>' + (a.mistake_note ? ' — ' + esc(a.mistake_note) : '') +
+    '. Hidden from ' + esc(first) + ': it isn’t on their list, counts or dashboard, and nothing tells them why.' + (ME.owner ? '' : ' Only an owner can put it back.') + '</div>';
   return '<div class="note wdn"><b>Withdrawn' + (a.withdrawn_at ? ' ' + esc(TP.fmtDateTime(a.withdrawn_at)) : '') + '</b>' +
     (a.withdraw_reason ? ' — ' + esc(a.withdraw_reason) : '') + '. It doesn’t count toward ' + esc(first) + '’s plan; ' + esc(first) + ' sees it marked Withdrawn.</div>';
 }
@@ -5166,18 +5226,45 @@ function withdrawApp(a, c){
            ['ok', 'It stops counting toward the plan' + (tot && p.done ? ' (' + Math.max(0, p.done - 1).toLocaleString() + ' of ' + tot.toLocaleString() + ' sent after this)' : '') + '.'],
            ['info', 'It goes into the history, and Undo withdrawal puts it back.']],
     html:'<div class="field" style="margin-top:12px"><label for="wdR">Reason <span class="muted">(' + esc(first) + ' sees it)</span></label><input id="wdR" maxlength="500" placeholder="e.g. Client got another offer" autocomplete="off">' +
-      '<div class="wdq">' + WD_WHY.map(function(w){ return '<button type="button" data-wd="' + esc(w) + '">' + esc(w) + '</button>'; }).join('') + '</div></div>'});
-  var r = $('#wdR');
+      '<div class="wdq">' + WD_WHY.map(function(w){ return '<button type="button" data-wd="' + esc(w) + '">' + esc(w) + '</button>'; }).join('') + '</div>' +
+      '<button type="button" class="lk wdmk" data-no="1" data-wdmk="1">Sent by mistake? Hide it from ' + esc(first) + ' instead</button></div>'});
+  var r = $('#wdR'), toMk = false, mk = $('[data-wdmk]');
+  if(mk) mk.addEventListener('click', function(){ toMk = true; });   // closes this one (data-no), then the mistake's own dialog
   if(r){ r.addEventListener('input', function(){ why = r.value; });
     $('.wdq').addEventListener('click', function(e){ var w = e.target.closest('[data-wd]'); if(w){ r.value = why = w.getAttribute('data-wd'); r.focus(); } }); }
   return pr.then(function(ok){
-    if(!ok) return;
+    if(!ok){ if(toMk) return mistakeApp(a, c); return; }
     return q(SB.from('applications').update({status:'withdrawn', withdraw_reason:why.trim() || null}).eq('id', a.id).eq('client_id', c.id).neq('status', 'draft').select('*').maybeSingle()).then(function(row){
       if(!row) throw {message:'It isn’t a sent application any more, or it isn’t yours to change — refresh the page.'};
       refreshProgress(); wdAfter(c, row);
       TP.toast('Withdrawn — it no longer counts toward ' + first + '’s plan', {undo:function(){ unwithdrawApp(row, c); }});
     });
   }).catch(fail);
+}
+function mistakeApp(a, c){
+  var first = (c.row.full_name || '').split(' ')[0] || 'The client', p = c.prog || {}, tot = c.row.plan_total || 0, note = '';
+  var counted = a.status !== 'withdrawn';
+  var pr = TP.confirmBox('Applied by mistake?', (a.title || 'Role') + (a.company ? ' at ' + a.company : '') + '.', 'Mark it', true, {
+    items:[['ok', esc(first) + ' never sees it: it comes off their list, their counts and their dashboard, and nothing tells them why.'],
+           counted ? ['ok', 'It stops counting toward the plan' + (tot && p.done ? ' (' + Math.max(0, p.done - 1).toLocaleString() + ' of ' + tot.toLocaleString() + ' sent after this)' : '') + '.'] : null,
+           ['info', 'The owners see it under Operations → Applied by mistake, with who sent it and your note.' + (ME.owner ? ' You can put it back from there.' : ' Only an owner can put it back.')]],
+    html:'<div class="field" style="margin-top:12px"><label for="mkN">What went wrong <span class="muted">(team only — ' + esc(first) + ' never sees it)</span></label><input id="mkN" maxlength="500" placeholder="e.g. Wrong client, or a duplicate" autocomplete="off"></div>'});
+  var n = $('#mkN'); if(n){ n.addEventListener('input', function(){ note = n.value; }); setTimeout(function(){ if(n.isConnected) n.focus(); }, 60); }
+  return pr.then(function(ok){
+    if(!ok) return;
+    return q(SB.from('applications').update({mistake_at:new Date().toISOString(), mistake_note:note.trim() || null}).eq('id', a.id).eq('client_id', c.id).neq('status', 'draft').is('mistake_at', null).select('*').maybeSingle()).then(function(row){
+      if(!row) throw {message:'It isn’t a sent application any more, it’s marked already, or it isn’t yours to change — refresh the page.'};
+      refreshProgress(); wdAfter(c, row);
+      TP.toast('Marked as applied by mistake — ' + first + ' won’t see it', ME.owner ? {undo:function(){ unmistakeApp(row, c); }} : null);
+    });
+  }).catch(fail);
+}
+function unmistakeApp(a, c){   // the owners only (the database refuses anyone else)
+  return q(SB.from('applications').update({mistake_at:null}).eq('id', a.id).eq('client_id', c.id).not('mistake_at', 'is', null).select('*').maybeSingle()).then(function(row){
+    if(!row) throw {message:'It isn’t marked as a mistake any more — refresh the page.'};
+    var first = (c.row.full_name || '').split(' ')[0] || 'The client';
+    refreshProgress(); wdAfter(c, row); TP.toast('Back as ' + TP.statusLabel(row.status) + ' — ' + first + ' sees it again, and it counts');
+  }, fail);
 }
 function unwithdrawApp(a, c){
   var to = a.withdrawn_from && a.withdrawn_from !== 'withdrawn' && a.withdrawn_from !== 'draft' ? a.withdrawn_from : 'applied';
@@ -5224,7 +5311,8 @@ function apRowMenu(btn){
   var m = document.createElement('div'); m.id = 'apRowMenu'; m.className = 'rmenu aprm'; m.setAttribute('role', 'menu'); m.setAttribute('data-for', id);
   m.innerHTML = it('open', I.ext, 'Open') +
     (a.status === 'draft' ? it('deldraft', I.trash, 'Delete draft', 'bad')
-      : (a.status === 'withdrawn' ? it('unwithdraw', I.back, 'Undo withdrawal') : it('withdraw', I.x, 'Withdraw…')) + (ME.owner ? it('delsent', I.trash, 'Delete…', 'bad') : ''));
+      : a.mistake_at ? (ME.owner ? it('unmistake', I.back, 'Put back (not a mistake)') : '') + (ME.owner ? it('delsent', I.trash, 'Delete…', 'bad') : '')
+      : (a.status === 'withdrawn' ? it('unwithdraw', I.back, 'Undo withdrawal') : it('withdraw', I.x, 'Withdraw…')) + it('mistake', I.x, 'Applied by mistake…') + (ME.owner ? it('delsent', I.trash, 'Delete…', 'bad') : ''));
   document.body.appendChild(m);
   var r = btn.getBoundingClientRect(), h = m.offsetHeight, w = m.offsetWidth;
   m.style.left = Math.max(8, Math.min(r.right - w, innerWidth - w - 8)) + 'px';
@@ -5237,6 +5325,8 @@ function apRowPick(b){
   if(v === 'open') return go(cUrl(c.id, 'app=' + id));
   if(v === 'withdraw') return withdrawApp(a, c);
   if(v === 'unwithdraw') return unwithdrawApp(a, c);
+  if(v === 'mistake') return mistakeApp(a, c);
+  if(v === 'unmistake') return unmistakeApp(a, c);
   if(v === 'delsent') return delSentApp(a, c);
   if(v === 'deldraft') return delDraftRow(a, c);
 }
@@ -5829,6 +5919,8 @@ document.addEventListener('click', function(e){
     case 'delsent': return delSentApp(A, C);
     case 'withdraw': return withdrawApp(A, C);
     case 'unwithdraw': return unwithdrawApp(A, C);
+    case 'mistake': return mistakeApp(A, C);
+    case 'unmistake': return unmistakeApp(A, C);
     case 'aprow': return apRowMenu(b);
     case 'aprm': return apRowPick(b);
     case 'rdrestore':
