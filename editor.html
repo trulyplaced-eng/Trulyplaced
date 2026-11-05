@@ -305,6 +305,18 @@ body:not(.ro) .sheet :is(.ps:hover,.ps.pgon) .sk,body:not(.ro) .sheet .sk:has(.a
 .dpick .dpft button{height:32px;padding:0 14px;border:1px solid #d9dde3;border-radius:999px;background:#fff;font:500 13px var(--ui);color:#1f2937;cursor:pointer}
 .dpick .dpft button.ok{background:#0938d5;border-color:#0938d5;color:#fff}
 .dpick .dpft .dplk{height:auto;padding:0;border:0;background:none;color:#6b7280;font-weight:500;text-decoration:underline;text-underline-offset:3px}
+/* a link on the page: the box to paste it into, and + Add Link's choices (edit.js lnBox, ln-pg) — on screen only */
+.lnbox{position:absolute;z-index:60;width:300px;padding:12px;background:#fff;border:1px solid #e3e6ea;border-radius:12px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 14px 32px -10px rgba(16,24,40,.32);font:13px var(--ui);color:#1f2937;animation:pgin .12s ease-out}
+.lnbox label{display:block;font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.lnbox input{width:100%;height:34px;padding:0 10px;border:1px solid #d9dde3;border-radius:8px;background:#fff;font:14px var(--ui);color:#1f2937;outline:none;box-sizing:border-box}
+.lnbox input:focus{border-color:#0938d5;box-shadow:0 0 0 3px rgba(9,56,213,.14)}
+.lnbox .lnerr{margin:6px 0 0;font-size:12.5px;color:#d92d20}
+.lnbox .lnacts{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+.lnbox .lnacts button{height:30px;padding:0 14px;border:1px solid #d9dde3;border-radius:999px;background:#fff;font:500 13px var(--ui);color:#1f2937;cursor:pointer}
+.lnbox .lnacts button.ok{background:#0938d5;border-color:#0938d5;color:#fff}
+.lnpick{width:auto;min-width:160px;padding:6px;display:grid;gap:2px}
+.lnpick button{height:32px;padding:0 10px;border:0;border-radius:8px;background:none;text-align:left;font:500 13px var(--ui);color:#1f2937;cursor:pointer}
+.lnpick button:hover,.lnpick button:focus-visible{background:#f2f4f7;outline:none}
 .ro .dpick{display:none}
 
 /* ---------- the side panel: what's open on the left, the tool rail on the right ---------- */
@@ -920,7 +932,7 @@ html.running .toast{bottom:86px}
 .toast button{color:#1d4ed8;background:#eef2ff}.toast button:hover{background:#e0e7ff;color:#1e40af}
 
 /* ---------- print: only the sheet, unscaled ---------- */
-@media print{
+@media print{#lnbox,#lnpick{display:none!important}
   body{background:#fff}
   .top,.panel,.doctabs,.breaks,.mswitch,.banner,.toast,.selbar,.modal,#boot{display:none!important}
   .wrap{display:block;min-height:0}
@@ -2755,6 +2767,48 @@ function addLink(kind) {
   structural(); focusField(FOCUS, -1);
   toast('Finish the ' + L[1] + ' address — it’s a link in the PDF and the Word file');
 }
+// on the page: a link (LinkedIn, GitHub…) clicked, or picked from + Add Link, opens a small box under it to paste the address
+// into ("Paste your link here"). Save (Enter) writes it, tidied the way a resume shows it; Escape or Cancel leaves it as it was.
+// i: the contact item; null with kind: a new link of that kind
+function lnTidy(v, kind) {
+  let s = String(v || '').trim().replace(/\s+/g, '');
+  if (kind === 'linkedin' || kind === 'github' || /linkedin\.com|github\.com/i.test(s)) s = s.replace(/^https?:\/\//i, '').replace(/^www\./i, '').replace(/[?#].*$/, '').replace(/\/+$/, '');
+  return s;
+}
+function lnBox(i, kind, at) {   // at: what it opens under (an element, or where it was: a rect)
+  if (READONLY || !DOC) return;
+  const r = at && at.getBoundingClientRect ? at.getBoundingClientRect() : at && at.bottom != null ? at : { left: innerWidth / 2 - 150, bottom: 80 };   // before anything is redrawn
+  lnBoxClose(); pgEnd(); pgHide();
+  const cur = i == null ? '' : String(DOC.contact[i] || ''), k = kind || (/linkedin\.com/i.test(cur) ? 'linkedin' : /github\.com/i.test(cur) ? 'github' : 'other');
+  const L = LINKS.find((x) => x[0] === k) || LINKS[3], bare = cur.replace(/^https?:\/\//i, '');
+  const val = !cur || bare === L[2].replace(/^https?:\/\//, '') ? '' : cur;   // only the start ("linkedin.com/in/") counts as empty
+  const b = document.createElement('div'); b.id = 'lnbox'; b.className = 'lnbox'; b.setAttribute('role', 'dialog'); b.setAttribute('aria-label', L[1] + ' link');
+  b.innerHTML = '<label for="lnIn">' + esc(L[1]) + '</label><input id="lnIn" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="Paste your link here" value="' + esc(val) + '">' +
+    '<p class="lnerr" id="lnErr" hidden></p><div class="lnacts"><button type="button" data-a="ln-cancel">Cancel</button><button type="button" class="ok" data-a="ln-save">Save</button></div>';
+  document.body.appendChild(b);
+  b.style.left = Math.max(8, Math.min(r.left + scrollX, scrollX + innerWidth - b.offsetWidth - 8)) + 'px'; b.style.top = (r.bottom + scrollY + 6) + 'px';
+  LNB = { i, k, L };
+  const inp = $('#lnIn'); inp.focus(); inp.select();
+  inp.addEventListener('keydown', (e) => { if (e.isComposing) return; if (e.key === 'Enter') { e.preventDefault(); lnSave(); } else if (e.key === 'Escape') { e.preventDefault(); lnBoxClose(); } });
+  inp.addEventListener('input', () => { $('#lnErr').hidden = true; });   // what was wrong goes as soon as it's changed
+}
+let LNB = null;   // the box open now
+function lnBoxClose() { const b = $('#lnbox'); if (b) b.remove(); LNB = null; }
+function lnSave() {
+  if (!LNB) return;
+  const v = lnTidy($('#lnIn').value, LNB.k), err = $('#lnErr');
+  const bad = !v ? 'Paste the link first.' : LNB.k === 'linkedin' && !/linkedin\.com\//i.test(v) ? 'That isn’t a LinkedIn link — it should have linkedin.com/ in it.'
+    : LNB.k === 'github' && !/github\.com\//i.test(v) ? 'That isn’t a GitHub link — it should have github.com/ in it.'
+    : !/^[^\s@]+\.[a-z]{2,}(\/|$)/i.test(v.replace(/^https?:\/\//i, '')) ? 'That doesn’t look like a web address.' : '';
+  if (bad) { err.textContent = bad; err.hidden = false; $('#lnIn').focus(); return; }
+  if (LNB.i == null) DOC.contact.push(v); else DOC.contact[LNB.i] = v;
+  const name = LNB.L[1]; lnBoxClose(); structural();
+  toast(name + ' link saved — it’s a link in the PDF and the Word file', null, 'ok');
+}
+document.addEventListener('mousedown', (e) => {   // a click elsewhere closes the box (unchanged) and the choices
+  const inside = e.target.closest && e.target.closest('#lnbox, #lnpick, .pgln');
+  if (!inside) { if (LNB) lnBoxClose(); const p = $('#lnpick'); if (p) p.remove(); }
+}, true);
 function editHTML() {
   const D = DOC; let h = recCardHTML();   // the skills this job asks for that the resume doesn't show, first
   // contact & headline
@@ -2905,14 +2959,19 @@ function editAction(a, v, t) {
     case 'ct-add': D.contact.push(''); FOCUS = 'contact.' + (D.contact.length - 1); structural(); focusField(FOCUS, -1); return true;
     case 'ln-menu': { const m = $('#lnMenu'); if (m) { m.hidden = !m.hidden; t.setAttribute('aria-expanded', String(!m.hidden)); if (!m.hidden) m.querySelector('button').focus(); } return true; }
     case 'ln-add': addLink(v); return true;
-    case 'ln-pg': {   // + Add link on the page: the choices open in the panel, where the address is typed
+    case 'ln-pg': {   // + Add link on the page: LinkedIn, GitHub, Portfolio or Other right under it, then the box to paste it into
       if (READONLY) return true;
-      if (document.body.classList.contains('m-preview')) setMobile('edit');
-      if (PTAB !== 'edit' || TAB !== 'resume') { PTAB = 'edit'; if (TAB !== 'resume') setDocTab('resume'); renderPanel(); }
-      const m = $('#lnMenu'), b = $('[data-a=ln-menu]'); if (!m) return true;
-      m.hidden = false; if (b) b.setAttribute('aria-expanded', 'true');
-      m.scrollIntoView({ block: 'center', behavior: 'smooth' }); m.querySelector('button').focus(); return true;
+      lnBoxClose();
+      const old = $('#lnpick'); if (old) { old.remove(); return true; }
+      const p = document.createElement('div'); p.id = 'lnpick'; p.className = 'lnbox lnpick'; p.setAttribute('role', 'menu');
+      p.innerHTML = LINKS.map((l) => '<button type="button" role="menuitem" data-a="ln-pick" data-v="' + l[0] + '">' + esc(l[1]) + '</button>').join('');
+      document.body.appendChild(p);
+      const r = t.getBoundingClientRect(); p.style.left = Math.max(8, Math.min(r.left + scrollX, scrollX + innerWidth - p.offsetWidth - 8)) + 'px'; p.style.top = (r.bottom + scrollY + 4) + 'px';
+      p.querySelector('button').focus(); return true;
     }
+    case 'ln-pick': { const p = $('#lnpick'), r = p ? p.getBoundingClientRect() : null; if (p) p.remove(); lnBox(null, v, r ? { left: r.left, bottom: r.top - 4 } : null); return true; }   // where the choices were
+    case 'ln-save': lnSave(); return true;
+    case 'ln-cancel': lnBoxClose(); return true;
     case 'ct-del': D.contact.splice(+v, 1); structural(); return true;
     case 'sec-menu': { const m = $('#secMenu'); if (m) m.hidden = !m.hidden; return true; }
     case 'sec-add': {
@@ -2961,6 +3020,7 @@ function editOnPage(el, ev) {   // false: this line is edited in the panel inste
   const path = el.getAttribute('data-path');
   if (READONLY || TAB !== 'resume' || !(PG_TYPE.test(path) || PG_ONE.test(path))) return false;
   if (EDIT && EDIT.el === el) return true;
+  if (/^contact\.\d+$/.test(path) && el.querySelector('a') && !EM1.test(getField(path) || '')) { lnBox(+path.split('.')[1], null, el); return true; }   // a link: the box to paste it into
   pgEnd();
   if (el.hasAttribute('data-ins')) { DOC.contact.splice(+el.getAttribute('data-ins'), 0, ''); el.removeAttribute('data-ins'); }   // "Location": a new place in the contact line, typed right where it shows
   const v = getField(path) || ''; let at = -1;
