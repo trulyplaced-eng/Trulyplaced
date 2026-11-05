@@ -4574,19 +4574,17 @@ function addSkillsTo(rid, label, list) {
 /* ---------- skills the job asks for that the resume doesn't show ----------
    A Sync or Optimise lists them, each with the Skills line it belongs on. The page shows them waiting under Skills, grouped
    by line, with Accept or Reject (never printed or exported); the panel shows them as chips beside the skills that match,
-   with the keyword match. You decide: drop any one, or reject the lot. What was added or left out is kept (the client's
-   profile in the team portal; this resume for a member's own), so the next job starts from those choices. */
+   with the keyword match. You decide: drop any one, or reject the lot. For a client (the team portal) nothing is kept: what
+   was added stays on this application's resume, and the next job starts fresh. A member's own resume keeps its choices. */
 const skKey = (t) => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim();
-function haveList(all) { const L = TEAM && CLIENT && Array.isArray(CLIENT.confirmed_skills) ? CLIENT.confirmed_skills : DOC && DOC.meta.have; return (Array.isArray(L) ? L : []).filter((x) => x && (all || x.has !== false)); }
+function haveList(all) { const L = TEAM ? [] : DOC && DOC.meta.have; return (Array.isArray(L) ? L : []).filter((x) => x && (all || x.has !== false)); }
 function saveHave(answers) {   // [{skill, has}]: added, or left out
   const at = new Date().toISOString(), by = (USER && USER.email) || '', L0 = haveList(true);
   const L = L0.filter((x) => !answers.some((m) => skKey(m.skill) === skKey(x.skill)));
   answers.forEach((m) => { const was = L0.find((x) => skKey(x.skill) === skKey(m.skill) && x.has !== false);
     L.push({ skill: m.skill, has: !!m.has, where: m.has ? (was && was.where) || 'Skills list' : '', key: '', note: m.has && was ? was.note || '' : '', by, at }); });
-  if (TEAM && CLIENT && Array.isArray(CLIENT.confirmed_skills)) {   // the client's profile (sql/supabase-team-portal.sql adds the column)
-    CLIENT.confirmed_skills = L;
-    if (sb && !READONLY) sb.from('clients').update({ confirmed_skills: L }).eq('id', CLIENT.id).then((r) => { if (r.error) toast('Couldn’t save the skills to the client’s profile'); }, () => {});
-  } else if (DOC) { DOC.meta.have = L; persist(); }
+  if (TEAM) return;   // a client's job-specific skills stay on that application: never saved to their profile, never carried to the next job
+  if (DOC) { DOC.meta.have = L; persist(); }
 }
 const whoHas = () => TEAM && CLIENT ? (String(CLIENT.full_name || '').split(' ')[0] || 'the client') : 'you';
 const recKey = () => !JOB ? '' : JOB.key || [cleanTitle(JOB.title), JOB.company || ''].join('|');
@@ -4652,7 +4650,7 @@ function recShow(on) {   // Reject hides the box for this job; the panel's butto
 }
 function recAccept() {   // the included skills go onto their lines, marked; one Undo takes them back
   if (!REC) return; const inc = REC.list.filter((m) => m.st), out = REC.list.filter((m) => !m.st && !m.proven), ord = REC.orderOn && REC.order;
-  if (!inc.length && !ord) { saveHave(out.map((m) => ({ skill: m.skill, has: false }))); recShow(false); toast('Nothing added — the skills you left out are remembered'); return; }
+  if (!inc.length && !ord) { saveHave(out.map((m) => ({ skill: m.skill, has: false }))); recShow(false); toast(TEAM ? 'Nothing added' : 'Nothing added — the skills you left out are remembered'); return; }
   const after = matchWatch(), groups = recGroups(), pre = DOC.meta.pre, sk = DOC.sections.find((x) => x.k === 'skills' && !x.hidden);   // after a Sync or Optimise, Show changes marks them
   if (pre) allFields().forEach((f) => { if (pre[f.path] === undefined) pre[f.path] = f.t; });
   if (ord && sk) ord.forEach((q) => { const w = byId(sk.rows, q.id); if (w && w.value === q.orig) w.value = q.sug; });   // the job-first order, before anything is added

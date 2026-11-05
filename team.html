@@ -205,8 +205,12 @@
 @media (max-width:760px){.rv{grid-template-columns:1fr}.rv small{grid-column:1}.tday{display:none}}
 /* Profile: skills added or left out for jobs */
 .skr.no .t{color:var(--muted);text-decoration:line-through}
-.skadd{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr) minmax(0,1.6fr) auto;gap:8px;margin-top:12px}
-@media (max-width:760px){.skadd{grid-template-columns:1fr}}
+/* Skills for jobs: the main resume's Skills lines, each skill a quiet chip */
+.skb{display:flex;gap:10px;align-items:baseline;padding:6px 0;border-top:1px solid var(--line)}.skb:first-of-type{border-top:0}
+.skbl{flex:none;min-width:110px;font-size:12.5px;font-weight:600;color:var(--ink)}
+.skbi{display:flex;flex-wrap:wrap;gap:5px}
+.chip.ro{padding:0 9px;background:#f5f6f8;border-color:var(--line)}
+@media (max-width:760px){.skb{flex-direction:column;gap:4px}}
 
 /* =====================================================================
    The app's look (app.trulyplaced.com, its globals.css): a calm, Apple-like canvas. San Francisco on Apple devices and
@@ -2920,34 +2924,34 @@ function resendInvite(b){
     }, function(e2){ TP.toast(TP.errText(e2)); });
   });
 }
-// skills a job asked for that the team added to this client’s resumes or left out (the editor recommends; both are kept here)
+// Skills for jobs: the skills on the client's main resume (its Skills section), read from it each time the Profile opens.
+// Nothing job-specific comes here: a skill added on one application stays on that application's resume.
 function skCard(c){
-  if(!Array.isArray(c.confirmed_skills)) return '';   // the column arrives with the 29 Oct line in sql/supabase-team-portal.sql
   var first = esc((c.full_name || '').split(' ')[0] || 'the client');
-  C.skEdit = c.confirmed_skills.slice();
-  return '<div class="card"><h3>Skills for jobs</h3><p class="hint">When a job asks for a skill that isn’t on ' + first + '’s resume, the editor shows it under Skills and you accept it or leave it out. Both are kept here, and the next job that asks for the skill starts the same way. Remove one to start fresh.</p>' +
-    '<div id="pfSk">' + skRows() + '</div>' +
-    '<div class="skadd"><input class="inp" id="pfSkN" placeholder="Skill, e.g. C++" aria-label="Skill"' + TP.sg('skill') + '><input class="inp" id="pfSkW" placeholder="Where they used it, e.g. MS coursework" aria-label="Where they used it"' + TP.sg('skill_where') + '>' +
-      '<input class="inp" id="pfSkT" placeholder="What was done with it (optional)" aria-label="What was done with it"><button class="btn sm" type="button" data-act="skadd">' + I.plus + 'Add</button></div></div>';
+  return '<div class="card"><h3>Skills for jobs</h3><p class="hint">The skills on ' + first + '’s main resume. They follow it: edit the main resume to change them. A skill added while tailoring one application stays on that application only.</p>' +
+    '<div id="pfSk"><div class="skel"></div></div></div>';
 }
-function skFresh(row){   // the editor saves added skills straight to the client’s row, from another tab: read them fresh
-  var cc = C; if(!Array.isArray(row.confirmed_skills)) return;
-  q(SB.from('clients').select('confirmed_skills').eq('id', row.id).maybeSingle()).then(function(r){
-    if(C !== cc || !r || !$('#pfSk')) return;
-    var untouched = stable(C.skEdit) === stable(row.confirmed_skills);
-    row.confirmed_skills = Array.isArray(r.confirmed_skills) ? r.confirmed_skills : [];
-    if(untouched){ C.skEdit = row.confirmed_skills.slice(); $('#pfSk').innerHTML = skRows(); }
-  }, function(){});
+function skFresh(row){
+  var cc = C;
+  loadResumes().then(function(){ if(C === cc && $('#pfSk')) $('#pfSk').innerHTML = skBase(cc); }, function(e){ if(C === cc && $('#pfSk')) $('#pfSk').innerHTML = errBox(e); });
 }
-function skRows(){
-  var L = C.skEdit || [], row = function(x){ var i = L.indexOf(x);
-    return '<div class="li skr' + (x.has === false ? ' no' : '') + '"><div class="main"><div class="t">' + esc(x.skill) + (x.has !== false && x.where ? ' <span class="muted">· ' + esc(x.where) + '</span>' : '') + '</div>' +
-      (x.note ? '<div class="m">' + esc(x.note) + '</div>' : '') + '<div class="m">' + (x.by ? esc(x.by.split('@')[0]) + ' · ' : '') + esc(x.at ? TP.ago(x.at) : '') + '</div></div>' +
-      '<button class="icb" type="button" data-act="skdel" data-i="' + i + '" title="Remove — the editor starts fresh for this skill">' + I.trash + '</button></div>'; };
-  var has = L.filter(function(x){ return x.has !== false; }), no = L.filter(function(x){ return x.has === false; });
-  if(!L.length) return '<p class="hint" style="margin:0">Nothing yet. Skills added or left out in the editor appear here.</p>';
-  return (has.length ? '<div class="list">' + has.map(row).join('') + '</div>' : '') +
-    (no.length ? '<p class="hint" style="margin:12px 0 6px">Left out — start unticked for the next job</p><div class="list">' + no.map(row).join('') + '</div>' : '');
+// the main resume's Skills lines, each skill on its own (commas inside brackets stay with their skill)
+function skBase(c){
+  var r = defaultResume(c), first = esc((c.row.full_name || '').split(' ')[0] || 'the client');
+  if(!r) return '<p class="hint" style="margin:0">' + first + ' has no resume yet. Add one on the Resumes tab; its skills show here.</p>';
+  var D = r.doc && Array.isArray(r.doc.sections) ? r.doc : null;
+  var lines = D ? [].concat.apply([], D.sections.filter(function(s){ return s.k === 'skills' && !s.hidden; }).map(function(s){ return s.rows || []; }))
+      .map(function(w){ return {label:String(w.label || '').trim(), items:skSplit(w.value)}; }).filter(function(w){ return w.items.length; }) : [];
+  var head = '<p class="fine" style="margin:0 0 8px">From <b>' + esc(r.name || 'Main resume') + '</b> · <a href="' + esc(cUrl(c.id, 'resumes')) + '" data-go>Resumes</a></p>';
+  if(!lines.length) return head + '<p class="hint" style="margin:0">' + (D ? 'The main resume has no Skills section.' : 'The main resume hasn’t been laid out in the editor yet, so its skills can’t be read. Open it in the editor once.') + '</p>';
+  return head + lines.map(function(w){ return '<div class="skb">' + (w.label ? '<span class="skbl">' + esc(w.label) + '</span>' : '') + '<span class="skbi">' + w.items.map(function(x){ return '<span class="chip ro">' + esc(x) + '</span>'; }).join('') + '</span></div>'; }).join('');
+}
+function skSplit(v){
+  var out = [], cur = '', depth = 0; String(v || '').replace(/\.$/, '').split('').forEach(function(ch){
+    if(ch === '(' || ch === '[') depth++; else if((ch === ')' || ch === ']') && depth) depth--;
+    if(!depth && /[,;|•·]/.test(ch)){ out.push(cur); cur = ''; } else cur += ch;
+  });
+  out.push(cur); return out.map(function(x){ return x.trim(); }).filter(Boolean);
 }
 function qaRow(a){
   return '<div class="qa"><input class="inp" data-qa="q" value="' + esc(a.q || '') + '" placeholder="Question" aria-label="Question"' + TP.sg('question') + '>' +
@@ -2980,7 +2984,6 @@ function pfPatch(){
   PF.forEach(function(k){ var v = $('#pf_' + k).value.trim(); if(v !== (c[k] || '')) patch[k] = v || (k === 'full_name' ? '' : null); });
   var ans = readQA($('#pfQA')); if(stable(ans) !== stable(c.answers || [])) patch.answers = ans;
   var ss = $('#pf_status'); if(ss && ss.value !== c.status) patch.status = ss.value;   // the owners' control
-  if(C.skEdit && Array.isArray(c.confirmed_skills) && stable(C.skEdit) !== stable(c.confirmed_skills)) patch.confirmed_skills = C.skEdit;
   if(ME.owner && $('#pf_plan')){ var pv = $('#pf_plan').value, pn = pv === 'custom' ? +$('#pf_planc').value : (pv ? +pv : null); if(pv === 'custom' && !(pn > 0)) return null; if((pn || null) !== (c.plan_package || null)) patch.plan_package = pn || null; }   // the package; the database keeps plan_total = package + the extras
   return patch;
 }
@@ -3005,7 +3008,6 @@ function pfRecover(c){
     if(b.getAttribute('data-rec') === 'put') keys.forEach(function(k){
       var x = v[k];
       if(k === 'answers') $('#pfQA').innerHTML = (x || []).map(qaRow).join('');
-      else if(k === 'confirmed_skills'){ if($('#pfSk')){ C.skEdit = (x || []).slice(); $('#pfSk').innerHTML = skRows(); } }
       else if(k === 'status'){ var ss2 = $('#pf_status'); if(ss2 && !ss2.disabled) ss2.value = x; }
       else if(k === 'plan_package'){ var ps = $('#pf_plan'); if(ps){ if(x && TP.CONFIG.PLANS.indexOf(x) < 0 && !$('option[value="' + x + '"]', ps)) ps.insertAdjacentHTML('beforeend', '<option value="' + x + '">' + x + '</option>'); ps.value = x ? String(x) : ''; } }
       else if($('#pf_' + k)) $('#pf_' + k).value = x || '';
@@ -3058,7 +3060,6 @@ function saveProfile(){
       if(!row) throw {message:'You don’t have access to that.'};
       C.row = row; staleList(); drawBar(); rememberOpen(row); drawOpenTabs(); bkDel('pf_' + row.id);
       var ps = $('#planSum'); if(ps) ps.outerHTML = planHeadHTML(C);   // the plan line follows (the database kept the total = package + extras)
-      if(C.skEdit && Array.isArray(row.confirmed_skills)) C.skEdit = row.confirmed_skills.slice();
       var s = $('#pfMsg'); if(s) s.textContent = 'Saved ' + new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
       TP.toast('Profile saved');
       return true;
@@ -4043,16 +4044,14 @@ function fitCandidate(c){
   var secs = function(k){ return D ? D.sections.filter(function(s){ return s.k === k && !s.hidden; }) : []; };
   var items = function(k){ return [].concat.apply([], secs(k).map(function(s){ return s.items || []; })); };
   var roles = items('experience').map(function(it){ var d = fitDates(it.dates); return {title:it.title || '', company:it.sub || '', start:d[0], end:d[1], bullets:(it.bullets || []).map(function(b){ return b.t; }).filter(Boolean).slice(0, 4)}; });
-  var conf = Array.isArray(row.confirmed_skills) ? row.confirmed_skills : [], seen = {};
+  var seen = {};
   var skills = [].concat.apply([], secs('skills').map(function(s){ return (s.rows || []).map(function(w){ return String(w.value || ''); }); })).join(', ').split(/\s*[,;|]\s*/)
-    .concat(conf.filter(function(s){ return s && s.has === true; }).map(function(s){ return s.skill; }))
     .map(function(s){ return String(s || '').replace(/\.$/, '').trim(); }).filter(function(s){ var k = s.toLowerCase(); if(!s || seen[k]) return false; seen[k] = 1; return true; });
   var locs = fitList(row.target_locations), sp = fitSponsor(row.work_auth);
   var o = {headline:(D && D.headline) || fitList(row.target_roles)[0] || '', location:row.location || '', experience:roles,
     education:items('education').map(function(it){ return [it.title, it.sub].filter(Boolean).join(', '); }), skills:skills.slice(0, 60),
     authorizedCountries:fitAuth(row.work_auth), workAuthNotes:row.work_auth || '',
-    preferences:{targetRoles:fitList(row.target_roles), locations:locs, workType:locs.length && locs.every(function(l){ return /\bremote\b/i.test(l); }) ? 'remote' : 'any', minSalary:row.salary || ''},
-    missingSkills:conf.filter(function(s){ return s && s.has === false; }).map(function(s){ return s.skill; })};
+    preferences:{targetRoles:fitList(row.target_roles), locations:locs, workType:locs.length && locs.every(function(l){ return /\bremote\b/i.test(l); }) ? 'remote' : 'any', minSalary:row.salary || ''}};
   if(sp !== null) o.requiresSponsorship = sp;
   if(!roles.length && r) o.resumeText = String(r.text || '').slice(0, 6000);   // a resume that was never laid out: its text
   return o;
@@ -5906,15 +5905,6 @@ document.addEventListener('click', function(e){
       return closeTab(b.getAttribute('data-id'));
     case 'pfsave': return saveProfile();
     case 'qaadd': $('#pfQA').insertAdjacentHTML('beforeend', qaRow({})); $$('#pfQA [data-qa=q]').pop().focus(); return;
-    case 'skadd':
-      var skn = $('#pfSkN').value.trim(); if(!skn) return $('#pfSkN').focus();
-      C.skEdit = (C.skEdit || []).filter(function(x){ return x.skill.toLowerCase() !== skn.toLowerCase(); });
-      C.skEdit.push({skill:skn, has:true, where:$('#pfSkW').value.trim(), key:'', note:$('#pfSkT').value.trim(), by:ME.email, at:new Date().toISOString()});
-      $('#pfSk').innerHTML = skRows(); $('#pfSkN').value = $('#pfSkW').value = $('#pfSkT').value = ''; pfMark(); return;
-    case 'skdel':
-      var si = +b.getAttribute('data-i'), sk = C.skEdit[si], skc = C; if(!sk) return;
-      C.skEdit.splice(si, 1); $('#pfSk').innerHTML = skRows(); pfMark();
-      return TP.toast('Removed ' + sk.skill + ' — Save changes to keep it that way', {undo:function(){ if(C !== skc || !$('#pfSk')) return; C.skEdit.splice(Math.min(si, C.skEdit.length), 0, sk); $('#pfSk').innerHTML = skRows(); pfMark(); }});
     case 'qacommon': {   // its answer suggested from what the Profile says now (typed but not saved yet included)
       var qq = b.getAttribute('data-q'), form = {}; PF.forEach(function(k){ var fl = $('#pf_' + k); form[k] = fl ? fl.value.trim() : C.row[k]; });
       $('#pfQA').insertAdjacentHTML('beforeend', qaRow({q:qq, a:TP.suggestAnswer(qq, form)})); b.remove();
