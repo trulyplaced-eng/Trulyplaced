@@ -1584,6 +1584,32 @@ button.li{width:100%;text-align:left;background:none;border:0;border-top:1px sol
 .nrdot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#f59e0b;margin-left:6px;vertical-align:middle}
 .apsub{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--muted)}
 .apsub input{height:28px;padding:0 8px;font-size:12.5px;border:1px solid var(--line-2);border-radius:var(--rc);width:200px}
+/* the Applications section: a month of work, by client (amHTML) */
+.amhead .ammon{display:inline-flex;align-items:center;gap:4px;margin-left:auto}
+.amhead .ammon b{min-width:118px;text-align:center;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.amhead .ammon .btn{width:26px;padding:0;justify-content:center;font-size:15px}
+.amhead select{height:28px;font-size:12.5px;padding:0 8px;border:1px solid var(--line-2);border-radius:var(--rc);background:#fff}
+.stats.s4{display:flex}
+.amkey{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted);margin-top:8px}
+.amkey button{display:inline-flex;align-items:center;gap:6px;border:0;background:none;padding:2px 0;font:inherit;color:inherit;cursor:pointer}
+.amkey button:hover,.amkey button.on{color:var(--ink)}.amkey button.off{opacity:.45}
+.amkey i,.amtip i,.amcl .amdot{display:inline-block;width:9px;height:9px;border-radius:2px;flex:none}
+.amkey b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.dbtip .amtip{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink);line-height:1.6}
+.dbtip .amtip em{font-style:normal;font-weight:600;margin-left:auto;padding-left:14px;font-variant-numeric:tabular-nums}
+.dbtip .amsub{display:block;margin-bottom:2px}
+.tbl.amcl .thead,.tbl.amcl .li{grid-template-columns:minmax(0,2fr) 80px 90px 70px 120px 70px}
+.tbl.amcl .li{cursor:pointer}.tbl.amcl .li.on{background:var(--blue-soft)}
+.tbl.amcl .cn{display:flex;align-items:center;gap:8px;min-width:0}.tbl.amcl .cn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbl.amtl .thead,.tbl.amtl .li{grid-template-columns:132px minmax(0,1fr) minmax(0,1.4fr) minmax(0,1fr) 110px}
+.amfil{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);margin:-4px 0 12px}
+@media (max-width:900px){
+  .card.flush > .tbl.amcl,.card.flush > .tbl.amtl{overflow-x:auto}
+  .tbl.amcl .thead,.tbl.amtl .thead{display:grid}
+  .tbl.amcl .thead,.tbl.amcl .li{min-width:600px}
+  .tbl.amtl .thead,.tbl.amtl .li{min-width:700px}
+  .amhead .ammon{margin-left:0}
+}
 @media (max-width:900px){
   /* the wide tables scroll inside their card on a phone, headings included; the page itself never scrolls sideways */
   .card.flush > .tbl.wkcl,.card.flush > .tbl.wktl,.card.flush > .tbl.wkemp,.card.flush > .tbl.occl{overflow-x:auto}
@@ -1960,6 +1986,125 @@ function drawClients(){
    ===================================================================== */
 function istDay(back){ var d = new Date(Date.now() + 330 * 60000); d.setUTCHours(0, 0, 0, 0); return new Date(d.getTime() - 330 * 60000 - (back || 0) * 864e5); }   // midnight in India, N days back
 function istWeek(){ return istDay((new Date(Date.now() + 330 * 60000).getUTCDay() + 6) % 7); }   // this Monday
+/* ---------- Applications: a month of work (sql/supabase-apps-month.sql's apps_month). On My day your own; on Operations the
+   whole team or one employee. The month's figures, each day's applications split by client (hover a day: who got how many),
+   then By client and By status. A month is India time; sent counts the month it was sent, interviews the month it first moved
+   to Interview or Offer, applied by mistake the month it was marked. ---------- */
+var AM = {m:'', emp:'', client:'', st:'all', n:10, team:false, data:{}};
+var AM_COL = ['#0938d5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#0ea5e9', '#ec4899', '#84cc16', '#f97316', '#14b8a6', '#6366f1', '#a16207', '#64748b', '#be123c', '#0f766e', '#7c3aed'];
+var AM_ST = [['all', 'All'], ['applied', 'Applied'], ['interview', 'Interview'], ['offer', 'Offer'], ['rejected', 'Not selected'], ['closed', 'Closed'], ['withdrawn', 'Withdrawn']];
+function amNow(){ var d = new Date(Date.now() + 330 * 60000); return d.getUTCFullYear() + '-' + String(d.getUTCMonth() + 1).padStart(2, '0'); }
+function amShift(m, k){ var d = new Date(Date.UTC(+m.slice(0, 4), +m.slice(5, 7) - 1 + k, 1)); return d.getUTCFullYear() + '-' + String(d.getUTCMonth() + 1).padStart(2, '0'); }
+function amMonth(m){
+  var y = +m.slice(0, 4), mo = +m.slice(5, 7) - 1;
+  return {from:new Date(Date.UTC(y, mo, 1) - 330 * 60000), to:new Date(Date.UTC(y, mo + 1, 1) - 330 * 60000), y:y, mo:mo,
+          days:new Date(Date.UTC(y, mo + 1, 0)).getUTCDate(), label:new Date(Date.UTC(y, mo, 1)).toLocaleDateString('en-GB', {month:'long', year:'numeric', timeZone:'UTC'})};
+}
+function amStart(team){
+  var box = $('#amBox'); if(!box) return;
+  if(!AM.m) AM.m = amNow();
+  if(AM.team !== team){ AM.team = team; AM.client = ''; AM.st = 'all'; AM.emp = ''; }
+  var emps = TEAMROWS.slice().sort(function(a, b){ return String(a.full_name || a.email).localeCompare(String(b.full_name || b.email)); });
+  box.innerHTML = '<div class="wkhead amhead"><h2>Applications</h2>' +
+      (team ? '<label class="sr" for="amE">Whose work</label><select id="amE"><option value="">The whole team</option>' + emps.map(function(t){ return '<option value="' + esc(t.email) + '"' + (AM.emp === t.email ? ' selected' : '') + '>' + esc(t.full_name || t.email) + '</option>'; }).join('') + '</select>' : '') +
+      '<div class="ammon" role="group" aria-label="Month"><button class="btn sm ghost" type="button" data-am="-1" aria-label="Previous month">‹</button><b id="amM" aria-live="polite"></b><button class="btn sm ghost" type="button" data-am="1" aria-label="Next month">›</button></div></div>' +
+    '<div id="amFil"></div><div class="stats s4" id="amS"></div>' +
+    '<div class="card"><div class="ch"><h3>Sent each day, by client</h3><span class="fine">Hover a day to see how many went to each client</span></div><div id="amC"><div class="skel" style="height:190px"></div></div></div>' +
+    '<div class="card flush"><div class="ch"><h3>By client</h3><span class="fine">Pick one to see only theirs</span></div><div class="tbl amcl" id="amL"><div class="skel"></div></div></div>' +
+    '<div class="card flush"><div class="ch"><h3>By status</h3><div class="seg sm" id="amF" role="group" aria-label="Status"></div></div><div class="tbl amtl" id="amT"><div class="skel"></div></div></div>';
+  box.addEventListener('click', function(e){
+    var b = e.target.closest('[data-am]');
+    if(b){ var m = amShift(AM.m, +b.getAttribute('data-am')); if(m > amNow()) return; AM.m = m; AM.n = 10; return amLoad(); }
+    var c = e.target.closest('[data-amc]');
+    if(c && !e.target.closest('a[href]')){ var id = c.getAttribute('data-amc'); AM.client = AM.client === id ? '' : id; AM.n = 10; return amDraw(); }
+    if(e.target.closest('[data-amx]')){ AM.client = ''; return amDraw(); }
+    var st = e.target.closest('[data-ams]'); if(st){ AM.st = st.getAttribute('data-ams'); AM.n = 10; return amDraw(); }
+    if(e.target.closest('[data-ammore]')){ AM.n += 25; return amDraw(); }
+  });
+  box.addEventListener('keydown', function(e){ var c = e.target.closest('[data-amc]'); if(c && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); c.click(); } });
+  var es = $('#amE'); if(es) es.addEventListener('change', function(){ AM.emp = es.value; AM.client = ''; AM.n = 10; amLoad(); });
+  amLoad();
+}
+function amKey(){ return AM.m + '|' + (AM.team ? AM.emp : ME.email); }
+function amLoad(){
+  var key = amKey(), M = amMonth(AM.m);
+  amDraw();   // what was loaded last for this month shows at once
+  q(SB.rpc('apps_month', {p_from:M.from.toISOString(), p_to:M.to.toISOString(), p_employee:AM.team ? (AM.emp || null) : ME.email})).then(function(rows){
+    AM.data[key] = rows || []; if(amKey() === key) amDraw();
+  }, function(e){ if(amKey() === key && $('#amC') && !AM.data[key]) $('#amC').innerHTML = errBox(e); });
+}
+function amDraw(){
+  if(!$('#amBox') || !$('#amM')) return;
+  var M = amMonth(AM.m), rows = AM.data[amKey()];
+  $('#amM').textContent = M.label; var nx = $('#amBox [data-am="1"]'); if(nx) nx.disabled = AM.m >= amNow();
+  if(!rows){ $('#amS').innerHTML = [0, 1, 2, 3].map(function(){ return '<div class="stat"><b>–</b><span>&nbsp;</span></div>'; }).join(''); return; }
+  // every client of the month, the busiest first, each with its own colour in the chart, the key and the table
+  var by = {}; rows.forEach(function(r){ var x = by[r.client_id] = by[r.client_id] || {id:r.client_id, name:r.client_name || 'Client', sent:0, interview:0, mistake:0, offer:0}; x[r.kind]++; if(r.kind === 'sent' && r.status === 'offer') x.offer++; });
+  var cl = Object.keys(by).map(function(k){ return by[k]; }).sort(function(a, b){ return b.sent - a.sent || b.interview - a.interview || a.name.localeCompare(b.name); });
+  cl.forEach(function(x, i){ x.col = AM_COL[i % AM_COL.length]; });
+  if(AM.client && !by[AM.client]) AM.client = '';
+  var pick = AM.client ? by[AM.client] : null, mine = rows.filter(function(r){ return !pick || r.client_id === pick.id; });
+  var sent = mine.filter(function(r){ return r.kind === 'sent'; }), n = function(k){ return mine.filter(function(r){ return r.kind === k; }).length; };
+  $('#amFil').innerHTML = pick ? '<div class="amfil"><i class="amdot" style="width:9px;height:9px;border-radius:2px;background:' + pick.col + '"></i>Only ' + esc(pick.name) + ' · <button class="btn sm ghost" type="button" data-amx>Show every client</button></div>' : '';
+  var who = AM.team ? (AM.emp ? (TEAMROWS.filter(function(t){ return t.email === AM.emp; })[0] || {}).full_name || AM.emp : 'the team') : 'you';
+  $('#amS').innerHTML = [[pick ? 1 : cl.filter(function(x){ return x.sent; }).length, pick ? 'client' : 'clients worked for'], [sent.length.toLocaleString(), 'applications sent'], [n('interview'), 'interviews'], [n('mistake'), 'applied by mistake', 'Hidden from the client and counted nowhere else']]
+    .map(function(s){ return '<div class="stat"' + (s[2] ? ' title="' + esc(s[2]) + '"' : '') + '><b>' + s[0] + '</b><span>' + s[1] + '</span></div>'; }).join('');
+  amChart($('#amC'), M, cl, sent, who);
+  // By client: each one's month
+  $('#amL').innerHTML = cl.length ? '<div class="thead"><span>Client</span><span>Sent</span><span>Interviews</span><span>Offers</span><span>Applied by mistake</span><span></span></div>' + cl.map(function(x){
+    return '<div class="li' + (AM.client === x.id ? ' on' : '') + '" data-amc="' + esc(x.id) + '" role="button" tabindex="0" aria-pressed="' + (AM.client === x.id) + '"><span class="cn"><i class="amdot" style="background:' + x.col + '"></i><span>' + esc(x.name) + '</span></span>' +
+      '<span class="num">' + x.sent + '</span><span class="num">' + x.interview + '</span><span class="num">' + x.offer + '</span><span class="num">' + x.mistake + '</span>' +
+      '<a class="fine" href="' + esc(cUrl(x.id, 'dash')) + '" data-go title="Open ' + esc(x.name) + '">Open</a></div>';
+  }).join('') : '<p class="fine" style="padding:12px 14px">Nothing sent by ' + esc(who) + ' in ' + esc(M.label) + '.</p>';
+  // By status: what the month's applications are now
+  var cnt = {all:sent.length}; sent.forEach(function(r){ cnt[r.status] = (cnt[r.status] || 0) + 1; });
+  if(AM.st !== 'all' && !cnt[AM.st]) AM.st = 'all';
+  $('#amF').innerHTML = AM_ST.filter(function(x){ return x[0] === 'all' || cnt[x[0]] || x[0] !== 'withdrawn'; }).map(function(x){
+    return '<button type="button" data-ams="' + x[0] + '" class="' + (AM.st === x[0] ? 'on' : '') + '"' + (AM.st === x[0] ? ' aria-pressed="true"' : '') + '>' + x[1] + ' <span class="muted">' + (cnt[x[0]] || 0) + '</span></button>';
+  }).join('');
+  var list = sent.filter(function(r){ return AM.st === 'all' || r.status === AM.st; });
+  $('#amT').innerHTML = list.length ? '<div class="thead"><span>Sent</span><span>Client</span><span>Role</span><span>Company</span><span>Status</span></div>' + list.slice(0, AM.n).map(function(r){
+    return '<a class="li" href="' + esc(cUrl(r.client_id, 'app=' + r.app_id)) + '" data-go><span class="m">' + esc(TP.fmtDateTime(r.applied_at)) + '</span><span class="cn"><span>' + esc(r.client_name || '') + '</span></span>' +
+      '<span class="t">' + esc(r.title || 'Role') + '</span><span class="m">' + esc(r.company || '') + '</span><span>' + TP.statusChip(r.status) + '</span></a>';
+  }).join('') + (list.length > AM.n ? '<div class="row" style="justify-content:center;padding:10px"><button class="btn sm" type="button" data-ammore>Show more</button></div>' : '')
+    : '<p class="fine" style="padding:12px 14px">' + (sent.length ? 'None with this status.' : 'Nothing sent in ' + esc(M.label) + '.') + '</p>';
+}
+// one column per day of the month, each split into the clients it went to (the busiest at the bottom); a day's tip lists them
+function amChart(el, M, cl, sent, who){
+  if(!el) return;
+  var bins = []; for(var i = 0; i < M.days; i++) bins.push({d:i + 1, by:{}, n:0});
+  sent.forEach(function(r){ var k = new Date(new Date(r.applied_at).getTime() + 330 * 60000).getUTCDate() - 1; if(bins[k]){ bins[k].by[r.client_id] = (bins[k].by[r.client_id] || 0) + 1; bins[k].n++; } });
+  var max = Math.max.apply(null, bins.map(function(b){ return b.n; }).concat([0])), top = max <= 4 ? 4 : Math.ceil(max / (max > 40 ? 20 : 10)) * (max > 40 ? 20 : 10);
+  var W = Math.max(300, Math.round(el.clientWidth || 700)), H = 190, padL = 34, padB = 22, plotH = H - padB - 8, slot = (W - padL) / M.days, bw = Math.max(3, Math.min(18, slot - 3));
+  var y = function(v){ return 8 + plotH - v / top * plotH; };
+  var day = function(b){ return new Date(Date.UTC(M.y, M.mo, b.d)).toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short', timeZone:'UTC'}); };
+  var head = sent.length ? sent.length.toLocaleString() + ' sent by ' + who + ' in ' + M.label + ', to ' + cl.filter(function(x){ return sent.some(function(r){ return r.client_id === x.id; }); }).length + ' client' + (cl.length === 1 ? '' : 's') : 'Nothing sent by ' + who + ' in ' + M.label;
+  var svg = '<svg class="dbsvg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(head) + '">' +
+    [0, top / 2, top].map(function(v){ return '<line x1="' + padL + '" x2="' + W + '" y1="' + y(v) + '" y2="' + y(v) + '" class="gl"/><text x="' + (padL - 6) + '" y="' + (y(v) + 4) + '" class="ax" text-anchor="end">' + v + '</text>'; }).join('') +
+    bins.map(function(b, k){
+      var x = padL + k * slot + (slot - bw) / 2, base = 8 + plotH, out = '';
+      cl.forEach(function(c){ var v = b.by[c.id]; if(!v) return; var h = Math.max(2, v / top * plotH); base -= h; out += '<rect x="' + x + '" y="' + base + '" width="' + bw + '" height="' + h + '" fill="' + c.col + '"/>'; });
+      var tk = b.d === 1 || b.d % 5 === 0 || b.d === M.days ? '<text x="' + (x + bw / 2) + '" y="' + (H - 6) + '" class="ax" text-anchor="middle">' + b.d + '</text>' : '';
+      return '<g class="col" tabindex="0" data-k="' + k + '"><rect class="hit" x="' + (padL + k * slot) + '" y="0" width="' + slot + '" height="' + (8 + plotH) + '"/>' + out + '</g>' + tk;
+    }).join('') + '</svg>';
+  var tot = {}; sent.forEach(function(r){ tot[r.client_id] = (tot[r.client_id] || 0) + 1; });
+  el.innerHTML = '<p class="wkch">' + esc(head) + '</p><div class="dbwrap">' + svg + '<div class="dbtip" hidden></div></div>' +
+    (cl.length ? '<div class="amkey">' + cl.filter(function(c){ return tot[c.id]; }).map(function(c){ return '<button type="button" data-amc="' + esc(c.id) + '" class="' + (AM.client === c.id ? 'on' : AM.client ? 'off' : '') + '"><i style="background:' + c.col + '"></i>' + esc(c.name) + ' <b>' + tot[c.id] + '</b></button>'; }).join('') + '</div>' : '') +
+    '<table class="sr"><caption>Applications sent each day of ' + esc(M.label) + ', by client</caption><thead><tr><th>Day</th><th>Sent</th><th>By client</th></tr></thead><tbody>' +
+      bins.filter(function(b){ return b.n; }).map(function(b){ return '<tr><th>' + esc(day(b)) + '</th><td>' + b.n + '</td><td>' + esc(cl.filter(function(c){ return b.by[c.id]; }).map(function(c){ return c.name + ' ' + b.by[c.id]; }).join(', ')) + '</td></tr>'; }).join('') + '</tbody></table>';
+  var tip = $('.dbtip', el), wrap = $('.dbwrap', el);
+  var show = function(g){
+    var b = bins[+g.getAttribute('data-k')]; $$('.col.on', el).forEach(function(x){ x.classList.remove('on'); }); g.classList.add('on');
+    var lines = cl.filter(function(c){ return b.by[c.id]; }).sort(function(p, q2){ return b.by[q2.id] - b.by[p.id]; });
+    tip.innerHTML = '<b>' + b.n + ' sent</b><span class="amsub">' + esc(day(b)) + '</span>' + lines.map(function(c){ return '<span class="amtip"><i style="background:' + c.col + '"></i>' + esc(c.name) + '<em>' + b.by[c.id] + '</em></span>'; }).join('');
+    tip.hidden = false;
+    var r = g.getBoundingClientRect(), w = wrap.getBoundingClientRect();
+    tip.style.left = Math.min(Math.max(0, r.left - w.left + r.width / 2 - tip.offsetWidth / 2), w.width - tip.offsetWidth) + 'px';
+  };
+  var hide = function(){ tip.hidden = true; $$('.col.on', el).forEach(function(x){ x.classList.remove('on'); }); };
+  $$('.col', el).forEach(function(g){ g.addEventListener('pointerenter', function(){ show(g); }); g.addEventListener('focus', function(){ show(g); }); g.addEventListener('blur', hide); });
+  wrap.addEventListener('pointerleave', hide);
+}
 var MDAY = null;   // your activity this week, as last loaded: shows at once next time, then refreshes
 function vMyDay(){
   setTitle('My day', null);
@@ -1970,9 +2115,11 @@ function vMyDay(){
       '<button class="btn" type="button" data-act="switch">' + J.swap + 'Switch client</button></div>' +
     '<div class="stats s5" id="mdS"></div><div id="mdReq"></div><div id="mdCrm"></div>' +
     '<div class="card"><h3>Still to do today</h3><p class="hint">' + (ME.owner ? 'Active clients' : 'Your active clients') + ' with nothing sent today — the most left on their plan first.</p><div id="mdTodo"><div class="skel"></div></div></div>' +
+    '<div id="amBox"></div>' +
     '<div class="wkhead"><h2>Your work</h2>' + wrBar() + '</div><div class="stats s5" id="mdR"></div>' +
     '<div class="card flush"><div class="ch"><h3>Your clients</h3><span class="fine">Pick one to see only your applications for them</span></div><div class="tbl wkcl" id="mdMine"><div class="skel"></div></div></div>' +
     '<div class="card flush"><div class="ch"><h3>Your applications</h3>' + tlFilters('md') + '</div><div class="tbl wktl" id="mdTl"><div class="skel"></div></div></div>';
+  amStart(false);
   var draw = function(){
     if(R.page !== 'myday' || !$('#mdS')) return;
     var W = MDAY, S = W && W.sum, n = function(v){ return S ? v.toLocaleString() : '–'; }, tot = wkTotals(S || []);
@@ -2177,8 +2324,10 @@ function vOps(){
   V.innerHTML = '<div class="pageh"><div class="grow">' + opsCrumb() + '<h1>Operations</h1><div class="sub">Every employee’s work and every client, from the applications themselves.</div></div>' + opsTabs('ops') + '</div>' +
     '<div class="stats s6" id="opS"></div><div class="wkhead"><h2>Results</h2>' + wrBar() + '</div><div class="stats s5" id="opR"></div>' +
     '<div class="card"><div class="ch"><h3>Trend</h3>' + bySeg('op', EPF.by) + '</div><div id="opC"><div class="skel"></div></div></div>' +
+    '<div id="amBox"></div>' +
     '<div class="card flush"><div class="ch"><h3>Employees</h3><span class="fine">Share of what was sent ' + esc(wrRange().label.toLowerCase()) + ' · quiet = nothing in 2 days</span></div><div class="tbl wkemp" id="opE"><div class="skel"></div></div></div>' +
     '<div id="opU"></div>';
+  amStart(true);
   var draw = function(D){
     if(R.page !== 'ops' || !$('#opS')) return;
     var emps = TEAMROWS.filter(function(t){ return t.role !== 'owner'; }), act = emps.filter(function(t){ return t.active; });
