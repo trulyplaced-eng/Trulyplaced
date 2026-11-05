@@ -217,6 +217,8 @@ body:not(.ro) .sheet :is(li[data-b],.en,.ph-h,.pgsum,.sk){position:relative}
 body:not(.ro) .sheet :is(.bl > li[data-b],.en,.ph-h,.pgsum,.sk){transition:padding .2s cubic-bezier(.2,.7,.3,1),margin .2s cubic-bezier(.2,.7,.3,1)}
 body:not(.ro) .sheet :where(.bl > li[data-b],.en,.ph-h,.pgsum,.sk)::after{content:"";position:absolute;inset:0;border:1.5px solid #b3b8c1;border-radius:10px;pointer-events:none;opacity:0;transition:opacity .2s ease,left .2s cubic-bezier(.2,.7,.3,1)}
 body:not(.ro) .sheet :where(.bl > li.pghov,.en.pghov,.enx:hover,.ph-h:hover,.pgsum:hover,.ps:hover .sk,.ps.pgon .sk)::after{opacity:1}
+/* the line ✨ is working on (aiMark): a gold edge while its menu is open and Claude writes */
+body:not(.ro) .sheet :is(.bl > li.aitgt,.pgsum.aitgt)::after{opacity:1;border-color:#f2b100}
 /* a bullet: the box takes in its mark, the mark and the words step in */
 body:not(.ro) .sheet .bl > li[data-b]::after{left:-1.25em}
 body:not(.ro) .sheet .bl > li.pghov{outline:none;margin-left:.55em;padding-top:.42em;padding-bottom:.42em;padding-right:.6em}
@@ -3019,9 +3021,18 @@ function pgAfterClick() { PGDOWN = false; if (!PGLATER) return; PGLATER = false;
 // the toolbar on the top border of a box. A bullet (every one, the first too): + a bullet below, × delete, ✨ Improve or Concise (no
 // drag handle, as the reference editor has none). A role's heading (.enh, the lines above its bullets): the whole role (.en) is the
 // box, with ✨ Optimize this role (optRole: its bullets only, the same run and review as Optimize)
-function pgOver(li, x) {   // onto another bullet: wait a moment, so the pointer can cross it on its way to the toolbar
+// The bar sits across the top edge of its line's box, over the line above: to reach it the pointer crosses that line. That crossing
+// never moves the bar (pgToBar: the pointer is between the bar and its line), so ✨, + and × always act on the line they were shown for.
+let PGXY = null;   // where the pointer is now (the sheet's mousemove)
+function pgToBar(x, y) {
+  const b = $('#pgbar'); if (!PGB || !b || b.hidden || x == null || y == null || !PGB.li.isConnected) return false;
+  const r = b.getBoundingClientRect(), box = PGB.li.getBoundingClientRect();
+  return x >= r.left - 28 && x <= r.right + 28 && y >= Math.min(r.top - 8, box.top) && y <= Math.max(r.bottom + 8, box.top + 4);
+}
+function pgOver(li, x, y) {   // onto another bullet: wait a moment, so the pointer can cross it on its way to the toolbar
   clearTimeout(PGT); if (PGB && PGB.li === li) { clearTimeout(PGS); return; }
-  clearTimeout(PGS); if (PGB) PGS = setTimeout(() => pgShow(li, x), 70); else pgShow(li, x);   // a moment, so a quick pass over a line doesn't open it
+  clearTimeout(PGS); if (pgToBar(x, y)) return;   // on its way up to the bar: the bar stays with its line
+  if (PGB) PGS = setTimeout(() => { if (PGXY && pgToBar(PGXY[0], PGXY[1])) return; pgShow(li, x); }, 70); else pgShow(li, x);   // a moment, so a quick pass over a line doesn't open it
 }
 function pgShow(li, x) {
   const role = !!(li && li.matches && li.matches('.en'));   // a role: its heading is what's typed in, not its bullets
@@ -4367,8 +4378,11 @@ function aiMenu(r, path) {   // r: where the ✨ was
   const w = m.offsetWidth, h = m.offsetHeight, top = r.bottom + 6 + h > window.innerHeight ? r.top - h - 6 : r.bottom + 6;
   m.style.left = clamp(r.left + r.width / 2 - w / 2, 8, window.innerWidth - w - 8) + window.scrollX + 'px'; m.style.top = Math.max(4, top) + window.scrollY + 'px';
   m.querySelector('button').focus({ preventScroll: true }); AIM_AT = performance.now();
+  aiMark(path);
 }
-function aiMenuClose() { const m = $('#aimenu'); if (m) m.remove(); }
+// the line ✨ works on keeps its edge while the menu is open and Claude writes, so there's no doubt which one it is
+function aiMark(path) { $$('#sheet .aitgt').forEach((x) => x.classList.remove('aitgt')); const t = path && $('#sheet [data-path="' + path + '"]'), box = t && (t.closest('li[data-b]') || t.closest('.pgsum')); if (box) box.classList.add('aitgt'); }
+function aiMenuClose() { const m = $('#aimenu'); if (m) { m.remove(); $$('#sheet .aitgt').forEach((x) => x.classList.remove('aitgt')); } }
 // the page scrolled: the menu goes — but not for the nudge the line's box gives as it shrinks back when the menu opens
 let AIM_AT = 0;
 function aiMenuScrolled() { if (performance.now() - AIM_AT > 500) aiMenuClose(); }
@@ -4388,7 +4402,7 @@ function lineAI(path, mode) {
   const T = con ? Math.max(1, fit.n - 1) : Math.min(fit.n + 1, cap), full = Math.round(fit.wpl * (T - 0.15));   // the last line most of the way
   const words = con ? Math.max(4, fit.n > 1 ? Math.min(full, now - 2) : Math.min(now - 3, Math.round(fit.wpl * 0.7))) : fit.n < cap ? Math.max(full, now + 3) : Math.min(now, full);
   const p = path.split('.'), it = p[2] === 'item' ? byId((secById(p[1]) || {}).items || [], p[3]) : null;
-  BSUG = null; toast(con ? 'Making it concise…' : 'Improving with AI…', null, 'spin');
+  BSUG = null; toast(con ? 'Making it concise…' : 'Improving with AI…', null, 'spin'); aiMark(path);
   ai({ task: 'rewrite', text, field: text, mode: con ? 'concise' : 'lengthen', words, lines: T, role: it ? it.title : '', org: it ? it.sub : '', target: targetRole(), jd: jobText().slice(0, 3000) }).then((r) => {
     if (!r || !r.text) throw 'shape';
     if (String(getField(path) || '').trim() !== text) throw { msg: 'The line changed meanwhile — use ✨ again.' };
@@ -4398,7 +4412,7 @@ function lineAI(path, mode) {
     BSUG = { path, orig: text, sug: c.text, mode, fc: c.fixed.length ? '“' + c.fixed[0] + '” isn’t on the resume, so it became a [ ] to fill in.' : '' };
     if ($('#toast .tsp')) $('#toast').classList.remove('on');
     renderSheet(); const b = $('#sheet .bcmp, #sheet .pgcmp.bsum'); if (b) b.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }).catch((e) => toast(e && e.msg ? e.msg : aiMsg(e)));
+  }).catch((e) => { aiMark(null); toast(e && e.msg ? e.msg : aiMsg(e)); });
 }
 function bsugHTML(path) {   // a bullet's: a line of its own under the bullet; the summary's: in the summary's place (sectionHTML)
   const S = BSUG; if (!S || S.path !== path || READONLY) return '';
@@ -5079,7 +5093,8 @@ $('#sheet').addEventListener('click', (e) => { if (e.target.closest('a[href]')) 
   if (e.target.closest('[data-a], .pgin') || pgTap(e)) return; const el = e.target.closest('[data-path]'); if (el && DOC && !selFrom() && !editOnPage(el, e)) jumpTo(el.getAttribute('data-path')); });
 $('#sheet').addEventListener('focusout', onPageBlur);
 const pgLi = (t) => { if (!t || !t.closest || t.closest('.pgui')) return null; const li = t.closest('li[data-b]'), h = !li && t.closest('.enh'); return li || (h ? h.closest('.en') : null); };   // a bullet, or a role (its heading)
-$('#sheet').addEventListener('mouseover', (e) => { if (PGTOUCH) return; const li = pgLi(e.target); if (li) pgOver(li, e.clientX); });   // a phone's tap: pgTap does it
+$('#sheet').addEventListener('mouseover', (e) => { if (PGTOUCH) return; const li = pgLi(e.target); if (li) pgOver(li, e.clientX, e.clientY); });   // a phone's tap: pgTap does it
+document.addEventListener('mousemove', (e) => { PGXY = [e.clientX, e.clientY]; }, { passive: true });
 $('#sheet').addEventListener('mouseout', (e) => { if (PGTOUCH) return; const box = pgLi(e.target); if (box && !box.contains(e.relatedTarget)) { clearTimeout(PGS); pgHideSoon(); } });
 $('#pgbar').addEventListener('mouseenter', () => { clearTimeout(PGT); clearTimeout(PGS); }); $('#pgbar').addEventListener('mouseleave', pgHideSoon);
 window.addEventListener('scroll', (e) => { if (e.target === document || (e.target.contains && e.target.contains($('#sheet')))) { if (PGB && !DRAG) { const b = $('#pgbar'); b.style.transition = 'none'; pgPlace(); void b.offsetWidth; b.style.transition = ''; } aiMenuScrolled(); } }, { passive: true, capture: true });   // the toolbar follows the page; the panel scrolling doesn't touch it

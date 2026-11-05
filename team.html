@@ -5275,7 +5275,7 @@ function unwithdrawApp(a, c){
 function delSentApp(sa, sc){
   return trashReady().then(function(kept){
     return TP.confirmBox('Delete this sent application?', 'Only for one marked by mistake. It comes off ' + sc.row.full_name + '’s list, count and dashboard. ' +
-      (kept ? 'It stays in Recently deleted for 30 days, and only the owner can restore it.' : 'This can’t be undone.') + ' To keep it on record instead, Withdraw it.', 'Delete it', true, {type:sa.company || 'delete'}).then(function(ok){
+      (kept ? 'It stays in Recently deleted for 30 days, and only the owner can restore it.' : 'This can’t be undone.') + ' Sent by mistake? Mark it Applied by mistake instead: it leaves the client’s list but stays on record for the owners.', 'Delete it', true, {type:sa.company || 'delete'}).then(function(ok){
       if(!ok) return;
       q(SB.from('applications').delete().eq('id', sa.id).select('id')).then(function(r){
         if(!r || !r.length) throw {message:'Only the owner can delete a sent application.'};
