@@ -5437,7 +5437,10 @@ function sbLoad(c){
 }
 function sbErr(e){
   return e && e.code === 'not_configured' ? 'The secure browser isn’t set up in Supabase yet: the Kernel key goes into the function’s secrets first.'
-    : e && e.code === 'owner_only' ? 'Only an owner sets up a client’s secure browser.' : e && e.status === 409 ? 'It’s already open in another tab.' : TP.errText(e);
+    : e && e.code === 'owner_only' ? 'Only an owner sets up a client’s secure browser.'
+    : e && e.code === 'prefill_not_configured' ? 'Form filling isn’t set up yet: AUTOPILOT_URL and TEAM_PREFILL_SECRET go into the function’s secrets.'
+    : e && e.code === 'not_open' ? 'The secure browser isn’t open — open it first.' : e && e.code === 'no_job_url' ? 'This draft has no job link.'
+    : e && e.status === 409 ? 'It’s already open in another tab.' : TP.errText(e);
 }
 function sbOpen(c, btn){
   var w = window.open('about:blank', 'tp-sb-' + c.id);   // on the click, so the pop-up blocker lets it through
@@ -5445,32 +5448,58 @@ function sbOpen(c, btn){
   return TP.busy(btn, sbFn(c, 'open', url ? {url:url} : {})).then(function(r){
     var s = (r && r.session) || {}; SBS[c.id] = {id:s.id, live_view_url:s.live_view_url, started_at:new Date().toISOString()};
     if(w && !w.closed) w.location.href = s.live_view_url; else window.open(s.live_view_url, '_blank');
-    if(R.app && A) sbPanel(); else if(R.tab === 'profile') sbCard(c);
+    if(R.app && A){ sbPanel(); sbPush(c, null, !!(r && r.reopened)); }   // a browser already open goes to this job's page; a new one opened on it. Then the résumé goes in
+    else if(R.tab === 'profile') sbCard(c);
   }, function(e){ if(w && !w.closed) w.close(); TP.toast(sbErr(e)); });
 }
 function sbClose(c, btn){
   return TP.busy(btn, sbFn(c, 'close')).then(function(){ SBS[c.id] = null; TP.toast('Secure browser closed'); if(R.app && A) sbPanel(); else if(R.tab === 'profile') sbCard(c); }, function(e){ TP.toast(sbErr(e)); });
 }
-// the open browser goes to this job's page (otherwise its window stays wherever the specialist left it)
-function sbGoto(c, btn){
-  var a = A; if(!(a && a.job_url)) return TP.toast('This draft has no job link');
-  return TP.busy(btn, sbFn(c, 'goto', {url:String(a.job_url)})).then(function(){ TP.toast('Its window is on the job page'); }, function(e){ TP.toast(sbErr(e)); });
+// this job's page and this draft's résumé, into the open browser (what Open does by itself; the button does it again)
+function sbPush(c, btn, nav){
+  var a = A; if(!a) return Promise.resolve();
+  var steps = Promise.resolve();
+  if(nav !== false && a.job_url) steps = steps.then(function(){ return sbFn(c, 'goto', {url:String(a.job_url)}); }).catch(function(e){ TP.toast(sbErr(e)); });
+  steps = steps.then(function(){ return sbResume(c, a); });
+  return btn ? TP.busy(btn, steps) : steps;
 }
-// the résumé into the browser: the PDF (the file that was uploaded, or the editor's PDF of the resume in view) lands on the
-// browser's Desktop, where the site's "Upload file" dialog finds it — the file never has to be on the specialist's machine
-function sbResume(c, btn){
-  var a = A; if(!a) return;
-  var get = a.resume_file
+// the résumé into the browser: the PDF (the file that was uploaded, or the editor's PDF of the resume in view) lands in the
+// browser's home folder — the first folder the site's "Upload file" dialog shows. The file never has to be on the specialist's machine
+// the draft's résumé as a file: the one uploaded, or the editor's PDF of the resume in view (laid out once)
+function sbPdf(a){
+  return a.resume_file
     ? TP.fileUrl(a.resume_file).then(function(u){ return fetch(u); }).then(function(r){ if(!r.ok) throw {message:'Couldn’t read the uploaded file'}; return r.blob(); }).then(function(bl){ return {blob:bl, name:String(a.resume_file).split('/').pop()}; })
     : Promise.resolve().then(function(){
         var fw = $('#apFrame'), W = fw && fw.contentWindow;
         if(!(W && W.pdfOf && W.DOC)) throw {message:'Open the resume in the editor once so it’s laid out as a page — then it can be sent as a PDF.'};
         return W.loadScript(W.JSPDF).then(function(){ return W.document.fonts && W.document.fonts.ready; }).then(function(){ return {blob:W.pdfOf().output('blob'), name:W.fileBase() + '.pdf'}; });
       });
-  return TP.busy(btn, get.then(function(f){
-    return new Promise(function(res, rej){ var rd = new FileReader(); rd.onload = function(){ res(String(rd.result).split(',')[1]); }; rd.onerror = function(){ rej({message:'Couldn’t read the PDF'}); }; rd.readAsDataURL(f.blob); })
-      .then(function(b64){ return sbFn(c, 'file', {name:f.name, data_b64:b64}); }).then(function(r){ return r && r.name || f.name; });
-  })).then(function(name){ TP.toast('Resume is in its window: in the site’s Upload dialog choose Desktop → ' + name, {ms:9000}); var el = $('#apSBfile'); if(el) el.textContent = 'On its Desktop: ' + name; }, function(e){ TP.toast(sbErr(e)); });
+}
+function sbB64(blob){ return new Promise(function(res, rej){ var rd = new FileReader(); rd.onload = function(){ res(String(rd.result).split(',')[1]); }; rd.onerror = function(){ rej({message:'Couldn’t read the PDF'}); }; rd.readAsDataURL(blob); }); }
+// Fill the form: the employer's form is filled inside its window from this draft (answers, the client's details, the résumé)
+// by Autopilot's engine; nothing is submitted — the specialist checks it there and presses Submit
+function sbFill(c, btn){
+  var a = A; if(!a) return;
+  var box = $('#apSBfill'); if(box) box.textContent = 'Filling the form in its window — a minute or so…';
+  var pdf = a.resume_file ? Promise.resolve(null) : sbPdf(a).then(function(f){ return sbB64(f.blob).then(function(b64){ return {name:f.name, data_b64:b64}; }); }).catch(function(){ return null; });   // no PDF: the résumé box is left for the specialist
+  return TP.busy(btn, pdf.then(function(p){ return sbFn(c, 'fill', Object.assign({application_id:a.id}, p || {}), 150000); })).then(function(r){
+    box = $('#apSBfill'); if(!box) return;
+    if(r && r.status === 'unsupported'){ box.textContent = 'This form can’t be filled by code (only Greenhouse, Lever, Ashby and Workable forms can) — apply in its window.'; return; }
+    var filled = (r && r.filled) || [], empty = (r && r.empty) || [];
+    box.innerHTML = '<b>' + filled.length + ' field' + (filled.length === 1 ? '' : 's') + ' filled.</b> ' + (empty.length ? 'Left for you: ' + esc(empty.map(function(x){ return x.label + (x.required ? ' (required)' : ''); }).join(', ')) + '. ' : '') + 'Check the form in its window, then press Submit there yourself.';
+    TP.toast('Form filled — check it in its window and press Submit yourself', {ms:8000});
+  }, function(e){ box = $('#apSBfill'); if(box) box.textContent = 'Couldn’t fill it: ' + sbErr(e); TP.toast(sbErr(e), {ms:8000}); });
+}
+function sbResume(c, a){
+  var fine = $('#apSBfile');
+  var get = sbPdf(a);
+  if(fine) fine.textContent = 'Putting the resume into it…';
+  return get.then(function(f){
+    return sbB64(f.blob).then(function(b64){ return sbFn(c, 'file', {name:f.name, data_b64:b64}); }).then(function(r){ return r && r.name || f.name; });
+  }).then(function(name){
+    TP.toast('Resume is in its window: the site’s Upload dialog opens on it — ' + name, {ms:8000});
+    fine = $('#apSBfile'); if(fine) fine.innerHTML = 'In it, as <b>' + esc(name) + '</b>: the site’s Upload file dialog opens on the folder it’s in.';
+  }, function(e){ TP.toast(sbErr(e), {ms:8000}); fine = $('#apSBfile'); if(fine) fine.textContent = 'Resume not in it yet — ' + sbErr(e); });
 }
 // proof in one click: the browser's current page, kept as this application's confirmation screenshot
 function sbShot(c, btn){
@@ -5502,8 +5531,9 @@ function sbPanel(){
   box.innerHTML = '<b>' + first + '’s secure browser</b> ' + sbStatusHTML(c) +
     (st === 'ready' ? (open
         ? '<p class="fine">Open ' + (open.started_at ? esc(TP.ago(open.started_at)) : 'now') + '. Apply inside its window; capture the proof before you close it.</p><div class="row">' +
-          '<a class="btn sm pri" href="' + esc(open.live_view_url || '#') + '" target="tp-sb-' + esc(c.id) + '" rel="noopener">' + I.ext + 'Its window</a>' + (a.job_url ? '<button class="btn sm" type="button" data-act="sbgoto" title="Send its window to this job’s page">Job page</button>' : '') + '<button class="btn sm" type="button" data-act="sbshot">' + I.img + 'Capture proof</button><button class="btn sm ghost" type="button" data-act="sbclose">Close</button></div>' +
-          '<div class="row"><button class="btn sm" type="button" data-act="sbresume" title="The resume PDF goes onto its Desktop, where the site’s Upload file dialog finds it">' + I.doc + 'Resume into it</button><span class="fine" id="apSBfile">Then, in the site’s Upload dialog: Desktop → the PDF.</span></div>'
+          '<a class="btn sm pri" href="' + esc(open.live_view_url || '#') + '" target="tp-sb-' + esc(c.id) + '" rel="noopener">' + I.ext + 'Its window</a>' + (a.job_url ? '<button class="btn sm" type="button" data-act="sbfill" title="Fills the employer’s form inside its window from this draft — you check it and press Submit">' + I.spark + 'Fill the form</button>' : '') + '<button class="btn sm" type="button" data-act="sbpush" title="Send its window to this job’s page and put this draft’s resume in it again">Job page + resume</button><button class="btn sm" type="button" data-act="sbshot">' + I.img + 'Capture proof</button><button class="btn sm ghost" type="button" data-act="sbclose">Close</button></div>' +
+          '<p class="fine" id="apSBfile">It opened on the job’s page with the resume inside: the site’s Upload file dialog opens on the folder it’s in.</p>' +
+          '<p class="fine" id="apSBfill">Fill the form puts this draft’s answers, ' + first + '’s details and the resume into the employer’s form for you. Submit stays yours.</p>'
         : '<div class="row" style="margin-top:6px"><button class="btn sm pri" type="button" data-act="sbopen">' + I.ext + 'Open secure browser</button></div>')
       : '<p class="fine">' + (st === 'paused' ? 'Paused by an owner.' : 'An owner sets it up on the Profile (Plan &amp; account).') + '</p>') +
     ((a._storedShots || []).length ? '<p class="fine ok">' + (a._storedShots.length === 1 ? 'Proof captured' : a._storedShots.length + ' proofs captured') + ' — kept with the application when it’s marked as applied.</p>' : '') +
@@ -6554,8 +6584,8 @@ document.addEventListener('click', function(e){
     case 'sbopen': return sbOpen(C, b);
     case 'sbclose': return sbClose(C, b);
     case 'sbshot': return sbShot(C, b);
-    case 'sbgoto': return sbGoto(C, b);
-    case 'sbresume': return sbResume(C, b);
+    case 'sbpush': return sbPush(C, b);
+    case 'sbfill': return sbFill(C, b);
     case 'sbsetup': return sbSetup(C, b);
     case 'sbpause': return sbPause(C, b);
     case 'dupallow': return dupAllow(b);
