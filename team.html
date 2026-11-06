@@ -5470,9 +5470,13 @@ function sbPdf(a){
   return a.resume_file
     ? TP.fileUrl(a.resume_file).then(function(u){ return fetch(u); }).then(function(r){ if(!r.ok) throw {message:'Couldn’t read the uploaded file'}; return r.blob(); }).then(function(bl){ return {blob:bl, name:String(a.resume_file).split('/').pop()}; })
     : Promise.resolve().then(function(){
-        var fw = $('#apFrame'), W = fw && fw.contentWindow;
-        if(!(W && W.pdfOf && W.DOC)) throw {message:'Open the resume in the editor once so it’s laid out as a page — then it can be sent as a PDF.'};
-        return W.loadScript(W.JSPDF).then(function(){ return W.document.fonts && W.document.fonts.ready; }).then(function(){ return {blob:W.pdfOf().output('blob'), name:W.fileBase() + '.pdf'}; });
+        var fw = $('#apFrame'), W = fw && fw.contentWindow, notLaidOut = {message:'Open the resume in the editor once so it’s laid out as a page — then it can be sent as a PDF.'};
+        if(!(W && W.pdfOf && W.loadScript)) throw notLaidOut;
+        return W.loadScript(W.JSPDF || 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js').then(function(){ return W.document.fonts && W.document.fonts.ready; }).then(function(){   // the editor's own jsPDF (its URL is a const inside the frame)
+          var pdf; try{ pdf = W.pdfOf(); }catch(e){ throw notLaidOut; }   // a resume never laid out has no page to draw
+          if(!pdf) throw notLaidOut;
+          return {blob:pdf.output('blob'), name:W.fileBase() + '.pdf'};
+        });
       });
 }
 function sbB64(blob){ return new Promise(function(res, rej){ var rd = new FileReader(); rd.onload = function(){ res(String(rd.result).split(',')[1]); }; rd.onerror = function(){ rej({message:'Couldn’t read the PDF'}); }; rd.readAsDataURL(blob); }); }
