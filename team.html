@@ -5441,7 +5441,8 @@ function sbErr(e){
 }
 function sbOpen(c, btn){
   var w = window.open('about:blank', 'tp-sb-' + c.id);   // on the click, so the pop-up blocker lets it through
-  return TP.busy(btn, sbFn(c, 'open')).then(function(r){
+  var url = A && A.job_url ? String(A.job_url) : null;      // the browser opens on the job's own page
+  return TP.busy(btn, sbFn(c, 'open', url ? {url:url} : {})).then(function(r){
     var s = (r && r.session) || {}; SBS[c.id] = {id:s.id, live_view_url:s.live_view_url, started_at:new Date().toISOString()};
     if(w && !w.closed) w.location.href = s.live_view_url; else window.open(s.live_view_url, '_blank');
     if(R.app && A) sbPanel(); else if(R.tab === 'profile') sbCard(c);
@@ -5449,6 +5450,11 @@ function sbOpen(c, btn){
 }
 function sbClose(c, btn){
   return TP.busy(btn, sbFn(c, 'close')).then(function(){ SBS[c.id] = null; TP.toast('Secure browser closed'); if(R.app && A) sbPanel(); else if(R.tab === 'profile') sbCard(c); }, function(e){ TP.toast(sbErr(e)); });
+}
+// the open browser goes to this job's page (otherwise its window stays wherever the specialist left it)
+function sbGoto(c, btn){
+  var a = A; if(!(a && a.job_url)) return TP.toast('This draft has no job link');
+  return TP.busy(btn, sbFn(c, 'goto', {url:String(a.job_url)})).then(function(){ TP.toast('Its window is on the job page'); }, function(e){ TP.toast(sbErr(e)); });
 }
 // proof in one click: the browser's current page, kept as this application's confirmation screenshot
 function sbShot(c, btn){
@@ -5480,7 +5486,7 @@ function sbPanel(){
   box.innerHTML = '<b>' + first + '’s secure browser</b> ' + sbStatusHTML(c) +
     (st === 'ready' ? (open
         ? '<p class="fine">Open ' + (open.started_at ? esc(TP.ago(open.started_at)) : 'now') + '. Apply inside its window; capture the proof before you close it.</p><div class="row">' +
-          '<a class="btn sm pri" href="' + esc(open.live_view_url || '#') + '" target="_blank" rel="noopener">' + I.ext + 'Its window</a><button class="btn sm" type="button" data-act="sbshot">' + I.img + 'Capture proof</button><button class="btn sm ghost" type="button" data-act="sbclose">Close</button></div>'
+          '<a class="btn sm pri" href="' + esc(open.live_view_url || '#') + '" target="tp-sb-' + esc(c.id) + '" rel="noopener">' + I.ext + 'Its window</a>' + (a.job_url ? '<button class="btn sm" type="button" data-act="sbgoto" title="Send its window to this job’s page">Job page</button>' : '') + '<button class="btn sm" type="button" data-act="sbshot">' + I.img + 'Capture proof</button><button class="btn sm ghost" type="button" data-act="sbclose">Close</button></div>'
         : '<div class="row" style="margin-top:6px"><button class="btn sm pri" type="button" data-act="sbopen">' + I.ext + 'Open secure browser</button></div>')
       : '<p class="fine">' + (st === 'paused' ? 'Paused by an owner.' : 'An owner sets it up on the Profile (Plan &amp; account).') + '</p>') +
     ((a._storedShots || []).length ? '<p class="fine ok">' + (a._storedShots.length === 1 ? 'Proof captured' : a._storedShots.length + ' proofs captured') + ' — kept with the application when it’s marked as applied.</p>' : '') +
@@ -6531,6 +6537,7 @@ document.addEventListener('click', function(e){
     case 'sbopen': return sbOpen(C, b);
     case 'sbclose': return sbClose(C, b);
     case 'sbshot': return sbShot(C, b);
+    case 'sbgoto': return sbGoto(C, b);
     case 'sbsetup': return sbSetup(C, b);
     case 'sbpause': return sbPause(C, b);
     case 'dupallow': return dupAllow(b);
