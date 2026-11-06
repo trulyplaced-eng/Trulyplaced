@@ -5456,6 +5456,22 @@ function sbGoto(c, btn){
   var a = A; if(!(a && a.job_url)) return TP.toast('This draft has no job link');
   return TP.busy(btn, sbFn(c, 'goto', {url:String(a.job_url)})).then(function(){ TP.toast('Its window is on the job page'); }, function(e){ TP.toast(sbErr(e)); });
 }
+// the résumé into the browser: the PDF (the file that was uploaded, or the editor's PDF of the resume in view) lands on the
+// browser's Desktop, where the site's "Upload file" dialog finds it — the file never has to be on the specialist's machine
+function sbResume(c, btn){
+  var a = A; if(!a) return;
+  var get = a.resume_file
+    ? TP.fileUrl(a.resume_file).then(function(u){ return fetch(u); }).then(function(r){ if(!r.ok) throw {message:'Couldn’t read the uploaded file'}; return r.blob(); }).then(function(bl){ return {blob:bl, name:String(a.resume_file).split('/').pop()}; })
+    : Promise.resolve().then(function(){
+        var fw = $('#apFrame'), W = fw && fw.contentWindow;
+        if(!(W && W.pdfOf && W.DOC)) throw {message:'Open the resume in the editor once so it’s laid out as a page — then it can be sent as a PDF.'};
+        return W.loadScript(W.JSPDF).then(function(){ return W.document.fonts && W.document.fonts.ready; }).then(function(){ return {blob:W.pdfOf().output('blob'), name:W.fileBase() + '.pdf'}; });
+      });
+  return TP.busy(btn, get.then(function(f){
+    return new Promise(function(res, rej){ var rd = new FileReader(); rd.onload = function(){ res(String(rd.result).split(',')[1]); }; rd.onerror = function(){ rej({message:'Couldn’t read the PDF'}); }; rd.readAsDataURL(f.blob); })
+      .then(function(b64){ return sbFn(c, 'file', {name:f.name, data_b64:b64}); }).then(function(r){ return r && r.name || f.name; });
+  })).then(function(name){ TP.toast('Resume is in its window: in the site’s Upload dialog choose Desktop → ' + name, {ms:9000}); var el = $('#apSBfile'); if(el) el.textContent = 'On its Desktop: ' + name; }, function(e){ TP.toast(sbErr(e)); });
+}
 // proof in one click: the browser's current page, kept as this application's confirmation screenshot
 function sbShot(c, btn){
   var a = A; if(!a) return;
@@ -5486,7 +5502,8 @@ function sbPanel(){
   box.innerHTML = '<b>' + first + '’s secure browser</b> ' + sbStatusHTML(c) +
     (st === 'ready' ? (open
         ? '<p class="fine">Open ' + (open.started_at ? esc(TP.ago(open.started_at)) : 'now') + '. Apply inside its window; capture the proof before you close it.</p><div class="row">' +
-          '<a class="btn sm pri" href="' + esc(open.live_view_url || '#') + '" target="tp-sb-' + esc(c.id) + '" rel="noopener">' + I.ext + 'Its window</a>' + (a.job_url ? '<button class="btn sm" type="button" data-act="sbgoto" title="Send its window to this job’s page">Job page</button>' : '') + '<button class="btn sm" type="button" data-act="sbshot">' + I.img + 'Capture proof</button><button class="btn sm ghost" type="button" data-act="sbclose">Close</button></div>'
+          '<a class="btn sm pri" href="' + esc(open.live_view_url || '#') + '" target="tp-sb-' + esc(c.id) + '" rel="noopener">' + I.ext + 'Its window</a>' + (a.job_url ? '<button class="btn sm" type="button" data-act="sbgoto" title="Send its window to this job’s page">Job page</button>' : '') + '<button class="btn sm" type="button" data-act="sbshot">' + I.img + 'Capture proof</button><button class="btn sm ghost" type="button" data-act="sbclose">Close</button></div>' +
+          '<div class="row"><button class="btn sm" type="button" data-act="sbresume" title="The resume PDF goes onto its Desktop, where the site’s Upload file dialog finds it">' + I.doc + 'Resume into it</button><span class="fine" id="apSBfile">Then, in the site’s Upload dialog: Desktop → the PDF.</span></div>'
         : '<div class="row" style="margin-top:6px"><button class="btn sm pri" type="button" data-act="sbopen">' + I.ext + 'Open secure browser</button></div>')
       : '<p class="fine">' + (st === 'paused' ? 'Paused by an owner.' : 'An owner sets it up on the Profile (Plan &amp; account).') + '</p>') +
     ((a._storedShots || []).length ? '<p class="fine ok">' + (a._storedShots.length === 1 ? 'Proof captured' : a._storedShots.length + ' proofs captured') + ' — kept with the application when it’s marked as applied.</p>' : '') +
@@ -6538,6 +6555,7 @@ document.addEventListener('click', function(e){
     case 'sbclose': return sbClose(C, b);
     case 'sbshot': return sbShot(C, b);
     case 'sbgoto': return sbGoto(C, b);
+    case 'sbresume': return sbResume(C, b);
     case 'sbsetup': return sbSetup(C, b);
     case 'sbpause': return sbPause(C, b);
     case 'dupallow': return dupAllow(b);
