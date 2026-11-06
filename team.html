@@ -5475,7 +5475,8 @@ function sbPdf(a){
         return W.loadScript(W.JSPDF || 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js').then(function(){ return W.document.fonts && W.document.fonts.ready; }).then(function(){   // the editor's own jsPDF (its URL is a const inside the frame)
           var pdf; try{ pdf = W.pdfOf(); }catch(e){ throw notLaidOut; }   // a resume never laid out has no page to draw
           if(!pdf) throw notLaidOut;
-          return {blob:pdf.output('blob'), name:W.fileBase() + '.pdf'};
+          var base = ((C && C.row && C.row.full_name) || 'Resume').replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '_') || 'Resume';   // named as the editor names a download (its fileBase is a const inside the frame)
+          return {blob:pdf.output('blob'), name:base + '_Resume.pdf'};
         });
       });
 }
