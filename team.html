@@ -5442,13 +5442,18 @@ function sbErr(e){
     : e && e.code === 'not_open' ? 'The secure browser isn’t open — open it first.' : e && e.code === 'no_job_url' ? 'This draft has no job link.'
     : e && e.status === 409 ? 'It’s already open in another tab.' : TP.errText(e);
 }
-function sbOpen(c, btn){
+// Open, and "Its window": the function hands back the browser still open, or starts a new one (a browser ends by itself
+// after 45 idle minutes; the page only learns that by asking). The live view opens in the same named tab either way
+function sbOpen(c, btn, again){
   var w = window.open('about:blank', 'tp-sb-' + c.id);   // on the click, so the pop-up blocker lets it through
   var url = A && A.job_url ? String(A.job_url) : null;      // the browser opens on the job's own page
   return TP.busy(btn, sbFn(c, 'open', url ? {url:url} : {})).then(function(r){
-    var s = (r && r.session) || {}; SBS[c.id] = {id:s.id, live_view_url:s.live_view_url, started_at:new Date().toISOString()};
+    var s = (r && r.session) || {}, same = !!(r && r.reopened);
+    SBS[c.id] = {id:s.id, live_view_url:s.live_view_url, started_at:s.started_at || new Date().toISOString()};
     if(w && !w.closed) w.location.href = s.live_view_url; else window.open(s.live_view_url, '_blank');
-    if(R.app && A){ sbPanel(); sbPush(c, null, !!(r && r.reopened)); }   // a browser already open goes to this job's page; a new one opened on it. Then the résumé goes in
+    if(again && same) return;   // Its window: the same browser, still open — nothing else to do
+    if(again) TP.toast('Its window had closed — a new one opened on the job’s page, with the resume', {ms:7000});
+    if(R.app && A){ sbPanel(); sbPush(c, null, same); }   // a browser already open goes to this job's page; a new one opened on it. Then the résumé goes in
     else if(R.tab === 'profile') sbCard(c);
   }, function(e){ if(w && !w.closed) w.close(); TP.toast(sbErr(e)); });
 }
@@ -5536,7 +5541,7 @@ function sbPanel(){
   box.innerHTML = '<b>' + first + '’s secure browser</b> ' + sbStatusHTML(c) +
     (st === 'ready' ? (open
         ? '<p class="fine">Open ' + (open.started_at ? esc(TP.ago(open.started_at)) : 'now') + '. Apply inside its window; capture the proof before you close it.</p><div class="row">' +
-          '<a class="btn sm pri" href="' + esc(open.live_view_url || '#') + '" target="tp-sb-' + esc(c.id) + '" rel="noopener">' + I.ext + 'Its window</a>' + (a.job_url ? '<button class="btn sm" type="button" data-act="sbfill" title="Fills the employer’s form inside its window from this draft — you check it and press Submit">' + I.spark + 'Fill the form</button>' : '') + '<button class="btn sm" type="button" data-act="sbpush" title="Send its window to this job’s page and put this draft’s resume in it again">Job page + resume</button><button class="btn sm" type="button" data-act="sbshot">' + I.img + 'Capture proof</button><button class="btn sm ghost" type="button" data-act="sbclose">Close</button></div>' +
+          '<button class="btn sm pri" type="button" data-act="sbwin" title="Its live view — a new browser on the job’s page if this one has ended">' + I.ext + 'Its window</button>' + (a.job_url ? '<button class="btn sm" type="button" data-act="sbfill" title="Fills the employer’s form inside its window from this draft — you check it and press Submit">' + I.spark + 'Fill the form</button>' : '') + '<button class="btn sm" type="button" data-act="sbpush" title="Send its window to this job’s page and put this draft’s resume in it again">Job page + resume</button><button class="btn sm" type="button" data-act="sbshot">' + I.img + 'Capture proof</button><button class="btn sm ghost" type="button" data-act="sbclose">Close</button></div>' +
           '<p class="fine" id="apSBfile">It opened on the job’s page with the resume inside: the site’s Upload file dialog opens on the folder it’s in.</p>' +
           '<p class="fine" id="apSBfill">Fill the form puts this draft’s answers, ' + first + '’s details and the resume into the employer’s form for you. Submit stays yours.</p>'
         : '<div class="row" style="margin-top:6px"><button class="btn sm pri" type="button" data-act="sbopen">' + I.ext + 'Open secure browser</button></div>')
@@ -6587,6 +6592,7 @@ document.addEventListener('click', function(e){
     case 'eligunconfirm': return eligConfirm(b, true);
     case 'eligfill': return eligFromResume(C);
     case 'sbopen': return sbOpen(C, b);
+    case 'sbwin': return sbOpen(C, b, true);
     case 'sbclose': return sbClose(C, b);
     case 'sbshot': return sbShot(C, b);
     case 'sbpush': return sbPush(C, b);
