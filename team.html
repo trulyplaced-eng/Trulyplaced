@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-11-04.1">
+<link rel="stylesheet" href="/portal.css?v=2026-11-06.1">
 <style>
 /* The shell, laid out like the job board app (app.trulyplaced.com): a left sidebar with the sections, the clients open in
    this browser tab, the client you're working on with their progress, and you. Phones get a top bar and a tab bar. */
@@ -372,9 +372,21 @@ a.li:hover,button.li:hover{background:var(--hover)}
 .rmenu.aprm{position:fixed;right:auto;min-width:200px}
 .rmenu button.bad{color:var(--bad,#b42318)}
 .rmenu button svg{width:14px;height:14px}
-.wdq{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.wdq button{height:26px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px;color:var(--ink);cursor:pointer}
-.wdq button:hover{border-color:#c9cdd4;background:#f7f8fa}
+/* the client's Gmail: the Profile card, and the employer's emails on an application */
+.mbrow{display:flex;align-items:flex-start;gap:10px}
+.mbrow .main{min-width:0}.mbrow .m{font-size:12.5px;color:var(--muted);margin-top:2px}
+.mbdot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex:none;background:#16a34a}.mbdot.bad{background:#e5484d}
+#apMail .card{margin-bottom:16px}
+.mbcode{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 12px;margin-bottom:12px;border:1px solid #bfd0ff;border-radius:8px;background:#f3f6ff}
+.mbcode span{font-size:12.5px;color:var(--muted)}.mbcode b{font:600 20px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.08em;color:var(--ink)}
+.mbl{display:grid;gap:0}
+.mbe{padding:10px 0;border-top:1px solid var(--line)}.mbe:first-child{border-top:0;padding-top:2px}
+.mbh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.mbh b{font-weight:600;font-size:13px}.mbh .m{font-size:12px;color:var(--muted)}
+.mbs{margin-top:4px;font-size:13px;color:var(--ink)}
+.mbe details{margin-top:4px}.mbe summary{font-size:12px;color:var(--muted);cursor:pointer}
+.mbt{margin-top:4px;font-size:12.5px;color:var(--muted);white-space:pre-wrap}
+.mba{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+.mbo{font-size:12.5px;color:var(--muted)}.mbo.ok{color:#15803d;font-weight:500}
 .mod button.wdmk{display:inline-block;width:auto;height:auto;min-height:0;margin-top:10px;padding:0;border:0;border-radius:0;background:none;box-shadow:none;font-size:12.5px;font-weight:500;color:var(--blue);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .mod button.wdmk:hover{background:none;color:#0a2fb0}
 /* Operations → Applied by mistake */
@@ -1606,6 +1618,44 @@ button.li{width:100%;text-align:left;background:none;border:0;border-top:1px sol
   .wkhead{margin-top:16px}
   .tlf input[type=search]{width:100%}
 }
+/* background runs: the pill above your name, and its panel */
+.runpill{display:block;margin:0 10px 8px}
+.runpill[hidden]{display:none}
+.runpill button{display:flex;align-items:center;gap:8px;width:100%;height:30px;padding:0 10px;border:1px solid var(--sb-line,rgba(255,255,255,.12));border-radius:6px;background:rgba(255,255,255,.06);color:var(--sb-ink,#e6e9f2);font:inherit;font-size:12.5px;cursor:pointer;text-align:left}
+.runpill button:hover{background:rgba(255,255,255,.11)}
+.runpill .spin{width:12px;height:12px;flex:none}
+.runpill .rdot{width:8px;height:8px;border-radius:50%;background:#22c55e;flex:none}
+body.sbmin .runpill span{display:none}
+.rpanel{display:grid;gap:0;margin-top:10px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.rprow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;align-items:center;padding:10px 12px;border-top:1px solid var(--line)}
+.rprow:first-child{border-top:0}
+.rprow .t{font-size:13px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rprow .m{font-size:12px;color:var(--muted)}.rprow .m.err{color:var(--bad,#b42318)}.rprow .m.ok{color:#15803d}
+.rprow .acts2{display:flex;gap:6px;grid-row:span 2;align-self:center}
+/* phones: the sidebar is hidden, so a copy of the pill floats above the tab bar */
+.runpill.rpm{display:none}
+@media (max-width:900px){.runpill.rpm:not([hidden]){display:block;position:fixed;right:12px;bottom:76px;z-index:60;margin:0}.runpill.rpm button{width:auto;background:#0d1b3f;color:#fff;border-color:#0d1b3f;box-shadow:var(--sh-float)}body.sbmin .runpill.rpm span{display:inline}}
+/* the fit gate: the three checks before an application goes, the eligibility sheet, the secure browser */
+.gate3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:4px}
+@media (max-width:1100px){.gate3{grid-template-columns:1fr}}
+.gcol{border:1px solid var(--line);border-radius:var(--rc);padding:12px 14px;font-size:13px;min-width:0}
+.gcol>b{display:inline-block;font-size:13.5px;margin-bottom:6px}
+.gcol .field{margin-top:8px}.gcol .field label{font-size:12px}.gcol .check{margin-top:8px}
+.gcol .inp{margin-top:6px;width:100%}
+.gpill{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;vertical-align:middle;margin-left:4px;background:var(--bg);color:#404040}
+.gpill.ok{background:#ecfdf5;color:#065f46}.gpill.warn{background:#fffbeb;color:#92400e}.gpill.bad{background:#fef2f2;color:#991b1b}
+.gsheet{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 10px;margin:8px 0 0;font-size:12.5px}
+.gsheet dt{color:var(--muted)}.gsheet dd{margin:0;overflow-wrap:anywhere}
+.gsheet.gid{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.gsheet .lk{font:inherit;font-size:12px;color:var(--blue);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}
+.reqs{margin:0 0 4px;padding-left:18px;font-size:12.5px;color:#404040}.reqs li{margin:2px 0}
+.gatefit{margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--bg)}
+.gfrom{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin-top:10px}.gfrom .check{margin:0}
+.fine.bad{color:#b42318}.fine.ok{color:#15803d}
+.sbl{list-style:none;margin:6px 0 0;padding:0;font-size:12.5px}.sbl li{padding:5px 0;border-top:1px solid var(--line)}.sbl li:first-child{border-top:0}
+.sop{padding-left:20px;font-size:13.5px}.sop li{margin:8px 0}
+.bdt .thead,.bdt .li{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) repeat(5,minmax(0,.7fr))}
+.elgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px}@media (max-width:700px){.elgrid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -1616,6 +1666,7 @@ button.li{width:100%;text-align:left;background:none;border:0;border-top:1px sol
     <button class="navsearch" type="button" data-act="switch" title="Find a client (Ctrl+K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Find a client</span><kbd>Ctrl K</kbd></button>
     <nav class="nav" id="pnav" aria-label="Main"></nav>
     <div id="cbar"></div>
+    <div class="runpill" id="runPill" hidden></div>
     <div class="me" id="me"></div>
   </aside>
   <div class="content">
@@ -1624,10 +1675,11 @@ button.li{width:100%;text-align:left;background:none;border:0;border-top:1px sol
   </div>
 </div>
 <nav class="tabbar" id="tabbar" aria-label="Sections"></nav>
+<div class="runpill rpm" id="runPillM" hidden></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="modalRoot"></div>
 <input type="file" id="fileIn" hidden>
-<script src="/portal.js?v=2026-11-04.1"></script>
+<script src="/portal.js?v=2026-11-06.1"></script>
 <script src="/match.js?v=2026-10-30.1"></script>
 <script>
 (function(){
@@ -1696,7 +1748,7 @@ TP.client().then(function(c){ SB = c; return TP.session(); }).then(function(s){
     if(!w || !w.team){ ME.team = false; return notTeam(w || {}); }
     ME.owner = !!w.owner; document.body.classList.toggle('emp', !ME.owner);   // an employee: the owners' controls stay off the page (the database refuses them too)
     names.then(function(){ $('#me').innerHTML = meHTML(); });   // your name in the sidebar
-    render();
+    render(); runStart();
   });
 }).catch(function(e){ V.innerHTML = errBox(e, true); });
 
@@ -1723,6 +1775,7 @@ function meMenu(btn){
     it('/team.html#myday', J.day, 'My day', 'Your work, and who still needs an application') +
     '<button role="menuitem" type="button" data-act="switch">' + J.swap + '<span>Switch client<small>Ctrl K</small></span></button>' +
     it('/team.html#tasks', J.clip, 'Tasks') + it('/team.html#clients', I.users, 'All clients') + (ME.owner ? it('/team.html#leads', J.star, 'Leads') + it('/team.html#ops', J.ops, 'Operations') + it('/team.html#team', I.team, 'Team') : '') +
+    '<button role="menuitem" type="button" data-act="sop">' + J.help + '<span>How we apply<small>The rules for every application</small></span></button>' +
     '<button role="menuitem" type="button" data-act="out">' + I.out + '<span>Sign out</span></button></div>');
   btn.setAttribute('aria-expanded', 'true');
   var first = $('#meMenu [role=menuitem]'); if(first) first.focus();
@@ -2074,8 +2127,8 @@ function amChart(el, M, cl, sent, who){
   var tot = {}; sent.forEach(function(r){ tot[r.client_id] = (tot[r.client_id] || 0) + 1; });
   el.innerHTML = '<p class="wkch">' + esc(head) + '</p><div class="dbwrap">' + svg + '<div class="dbtip" hidden></div></div>' +
     (cl.length ? '<div class="amkey">' + cl.filter(function(c){ return tot[c.id]; }).map(function(c){ return '<button type="button" data-amc="' + esc(c.id) + '" class="' + (AM.client === c.id ? 'on' : AM.client ? 'off' : '') + '"><i style="background:' + c.col + '"></i>' + esc(c.name) + ' <b>' + tot[c.id] + '</b></button>'; }).join('') + '</div>' : '') +
-    '<table class="sr"><caption>Applications sent each day of ' + esc(M.label) + ', by client</caption><thead><tr><th>Day</th><th>Sent</th><th>By client</th></tr></thead><tbody>' +
-      bins.filter(function(b){ return b.n; }).map(function(b){ return '<tr><th>' + esc(day(b)) + '</th><td>' + b.n + '</td><td>' + esc(cl.filter(function(c){ return b.by[c.id]; }).map(function(c){ return c.name + ' ' + b.by[c.id]; }).join(', ')) + '</td></tr>'; }).join('') + '</tbody></table>';
+    '<div class="sr"><table><caption>Applications sent each day of ' + esc(M.label) + ', by client</caption><thead><tr><th>Day</th><th>Sent</th><th>By client</th></tr></thead><tbody>' +
+      bins.filter(function(b){ return b.n; }).map(function(b){ return '<tr><th>' + esc(day(b)) + '</th><td>' + b.n + '</td><td>' + esc(cl.filter(function(c){ return b.by[c.id]; }).map(function(c){ return c.name + ' ' + b.by[c.id]; }).join(', ')) + '</td></tr>'; }).join('') + '</tbody></table></div>';
   var tip = $('.dbtip', el), wrap = $('.dbwrap', el);
   var show = function(g){
     var b = bins[+g.getAttribute('data-k')]; $$('.col.on', el).forEach(function(x){ x.classList.remove('on'); }); g.classList.add('on');
@@ -2099,7 +2152,7 @@ function vMyDay(){
       '<button class="btn" type="button" data-act="switch">' + J.swap + 'Switch client</button></div>' +
     '<div class="stats s5" id="mdS"></div><div id="mdReq"></div><div id="mdCrm"></div>' +
     '<div class="card"><h3>Still to do today</h3><p class="hint">' + (ME.owner ? 'Active clients' : 'Your active clients') + ' with nothing sent today — the most left on their plan first.</p><div id="mdTodo"><div class="skel"></div></div></div>' +
-    '<div id="amBox"></div>' +
+    '<div id="amBox"></div>' + (ME.owner ? '<div id="mdBoard"><div class="skel"></div></div>' : '') +
     '<div class="wkhead"><h2>Your work</h2>' + wrBar() + '</div><div class="stats s5" id="mdR"></div>' +
     '<div class="card flush"><div class="ch"><h3>Your clients</h3><span class="fine">Pick one to see only your applications for them</span></div><div class="tbl wkcl" id="mdMine"><div class="skel"></div></div></div>' +
     '<div class="card flush"><div class="ch"><h3>Your applications</h3>' + tlFilters('md') + '</div><div class="tbl wktl" id="mdTl"><div class="skel"></div></div></div>';
@@ -2137,6 +2190,7 @@ function vMyDay(){
     drawTimeline('md', W && W.tl, false);
   };
   draw(); mdCrm(); mdCrmLoad();
+  if(ME.owner){ loadGate().then(boardDraw); nudgeOnce(); }
   Promise.all([loadList(), wkLoad(ME.email)]).then(function(rs){ MDAY = rs[1]; draw(); }, function(e){ if($('#mdMine')) $('#mdMine').innerHTML = errBox(e); });
   // clients waiting on an answer about their resume (asked from their workspace), oldest first
   Promise.all([loadList().catch(function(){}), SB.from('resume_requests').select('id,client_id,kind,message,created_at').eq('status', 'open').order('created_at', {ascending:true}).limit(50)]).then(function(rs){
@@ -2271,8 +2325,8 @@ function wkChart(el, bins, by){
     }).join('') + '</svg>';
   el.innerHTML = '<p class="wkch">' + esc(head) + '</p><div class="dbwrap">' + svg + '<div class="dbtip" hidden><b></b><span></span></div></div>' +
     '<div class="wkkey"><span><i class="b1"></i>Submitted</span><span><i class="b2"></i>Needs review</span><span><i class="b3"></i>Failed tries</span></div>' +
-    '<table class="sr"><caption>Applications per ' + by + '</caption><thead><tr><th>' + by + '</th><th>Submitted</th><th>Needs review</th><th>Failed tries</th></tr></thead><tbody>' +
-      bins.map(function(b){ return '<tr><th>' + esc(lab(b)) + '</th><td>' + b.sub + '</td><td>' + b.nr + '</td><td>' + b.fl + '</td></tr>'; }).join('') + '</tbody></table>';
+    '<div class="sr"><table><caption>Applications per ' + by + '</caption><thead><tr><th>' + by + '</th><th>Submitted</th><th>Needs review</th><th>Failed tries</th></tr></thead><tbody>' +
+      bins.map(function(b){ return '<tr><th>' + esc(lab(b)) + '</th><td>' + b.sub + '</td><td>' + b.nr + '</td><td>' + b.fl + '</td></tr>'; }).join('') + '</tbody></table></div>';
   var tip = $('.dbtip', el), wrap = $('.dbwrap', el);
   var show = function(g){
     var b = bins[+g.getAttribute('data-k')]; $$('.col.on', el).forEach(function(x){ x.classList.remove('on'); }); g.classList.add('on');
@@ -2586,7 +2640,7 @@ function newClient(pre){
   var planSel = ME.owner ? '<div class="field"><label for="ncP">Plan</label><select id="ncP"><option value="">Not set yet</option>' + TP.CONFIG.PLANS.map(function(n){ return '<option value="' + n + '">' + n + ' applications</option>'; }).join('') + '<option value="custom">Other number…</option></select></div>' +
       '<div class="field" id="ncPCw" hidden><label for="ncPC">Number of applications</label><input id="ncPC" type="number" min="1" max="100000" inputmode="numeric"></div>'
     : '<p class="fine">The owner sets the plan (250, 500 or 1000 applications) on the client’s Profile tab.</p>';
-  var m = TP.modal('<h2>New client</h2><p>We’ll create their login and email them a link to set a password. Nothing else is sent.</p>' +
+  var m = TP.modal('<h2>New client</h2><p>We’ll create their login and email them a link to set a password. Nothing else is sent. On the onboarding call, fill their <b>Eligibility sheet</b> on the Profile — nothing goes out until it’s confirmed with them.</p>' +
     '<form id="ncF" class="stack" style="margin-top:16px" novalidate>' +
       '<div class="field"><label for="ncN">Full name</label><input id="ncN" required autocomplete="off" placeholder="e.g. Priya Sharma"></div>' +
       '<div class="field"><label for="ncE">Email</label><input id="ncE" required placeholder="the email they’ll sign in with"' + TP.sg('email') + '></div>' +
@@ -2655,7 +2709,7 @@ function vClient(){
     if(C !== c) return;   // switched to another client meanwhile
     rememberOpen(c.row); drawOpenTabs();
     var last = TP.ssGet('tp_last_tab', {}); last[c.id] = location.hash.replace(/^#/, ''); TP.ssSet('tp_last_tab', last);
-    drawBar(); showTab();
+    drawBar(); showTab(); mbBack();
   }, function(e){
     if(C !== c) return;
     C = null;
@@ -2663,6 +2717,7 @@ function vClient(){
   });
 }
 function drawBar(){
+  loadGate();
   var c = C.row, p = C.prog || {}, done = p.done || 0, tot = c.plan_total || 0, pct = tot ? Math.min(100, Math.round(done / tot * 100)) : 0;
   document.documentElement.style.setProperty('--client', TP.hue(c.id));
   setTitle(c.full_name || c.email, c);
@@ -2677,7 +2732,7 @@ function drawBar(){
       return '<a href="' + esc(cUrl(C.id, t[0])) + '" data-go title="' + esc(t[1]) + '" class="' + (on ? 'on' : '') + '"' + (on ? ' aria-current="page"' : '') + '>' + t[2] + '<span>' + t[1] + '</span>' +
         (ask ? '<em class="wait" title="' + C.reqOpen + ' request' + (C.reqOpen === 1 ? '' : 's') + ' from ' + esc(name) + ' waiting">' + C.reqOpen + '</em>' : n !== '' && n != null ? '<em>' + n + '</em>' : '') + '</a>';
     }).join('') + '</nav><div class="grow"></div>' +
-    '<div class="pgcard" title="Applications sent / plan"><span class="lab">Applications sent</span><div class="pg"><b>' + done.toLocaleString() + '</b>' + (tot ? ' / ' + tot.toLocaleString() + ' · ' + (p.today || 0) + ' today' : ' sent · no plan set') + '</div>' +
+    '<div class="pgcard" title="Applications sent / plan"><span class="lab">Applications sent</span><div class="pg"><b>' + done.toLocaleString() + '</b>' + (tot ? ' / ' + tot.toLocaleString() + ' · ' + (p.today || 0) + '/' + DAILY_CAP + ' today' : ' sent · ' + (p.today || 0) + '/' + DAILY_CAP + ' today') + '</div>' +
       '<div class="prog' + (tot && done >= tot ? ' full' : '') + '"><i style="width:' + pct + '%"></i></div></div></div>';
   // the page's title line: the section, and whose page this is
   var sec = R.app ? null : TABS.filter(function(t){ return t[0] === R.tab; })[0];
@@ -2772,7 +2827,7 @@ function dashChart(c){
       return '<g class="col" tabindex="0" data-k="' + k + '"><rect class="hit" x="' + (padL + k * slot) + '" y="0" width="' + slot + '" height="' + (8 + plotH) + '"/>' + bar + '</g>' + tick;
     }).join('') + '</svg>';
   $('#dbC').innerHTML = '<div class="dbwrap">' + svg + '<div class="dbtip" id="dbTip" hidden><b></b><span></span></div></div>' +
-    '<table class="sr"><caption>Applications sent per ' + unitW + '</caption><tbody>' + bins.map(function(b){ return '<tr><th>' + esc(label(b)) + '</th><td>' + b.n + '</td></tr>'; }).join('') + '</tbody></table>';
+    '<div class="sr"><table><caption>Applications sent per ' + unitW + '</caption><tbody>' + bins.map(function(b){ return '<tr><th>' + esc(label(b)) + '</th><td>' + b.n + '</td></tr>'; }).join('') + '</tbody></table></div>';
   // hover or focus a column: the value first, then when (written as text, never as markup)
   var tip = $('#dbTip'), wrap = $('#dbC .dbwrap');
   var show = function(g){
@@ -2804,6 +2859,7 @@ function tProfile(){
       f('phone', 'Phone / WhatsApp', 'e.g. +1 201 555 0147') + f('linkedin', 'LinkedIn', 'linkedin.com/in/…') +
       f('location', 'Lives in', 'Start typing a city or ZIP code') + f('work_auth', 'Work authorization', 'e.g. F-1 OPT (STEM) — needs H-1B later') +
       f('salary', 'Salary expectation', 'e.g. $95K–$110K') + f('notice', 'Can start', 'e.g. 2 weeks’ notice') + '</div></div>' +
+    eligCardHTML(C) +
     '<div class="card"><h3>Standard answers</h3><p class="hint">Used to pre-fill every new application’s form answers. Tap a common question to add it, or type one — the questions forms ask and their usual answers come up as you type, with the answer suggested from the profile above.</p>' +
       '<div id="pfQA">' + ans.map(qaRow).join('') + '</div>' +
       '<div class="row" style="margin-top:10px"><button class="btn sm" type="button" data-act="qaadd">' + I.plus + 'Add a question</button></div>' +
@@ -2818,6 +2874,8 @@ function tProfile(){
     '</section><section class="pfsec" id="pfs-plan"><h2>Plan &amp; account</h2>' +
     planCardHTML(C) +   // the package, the extra applications and the status are the owners'; an employee reads them
     '<div class="card" id="pfEmp"><h3>Employee</h3><div id="pfEmpB"><div class="skel"></div></div></div>' +   // who works on them: the owners assign (empCard)
+    '<div class="card" id="pfMail"><h3>Gmail for applications</h3><div id="pfMailB"><div class="skel"></div></div></div>' +   // the inbox their applications use, read for the employers' emails (mbCard)
+    '<div class="card" id="pfSB"><h3>' + esc(first) + '’s secure browser</h3><div id="pfSBB"><div class="skel"></div></div></div>' +   // the cloud browser their applications go from (sbCard)
     '<div class="card"><h3>Their login</h3><p class="hint">They sign in at <b>trulyplaced.com/login.html</b> with <b>' + esc(c.email) + '</b> and a password (or Google, if it’s a Gmail address).</p>' +
       '<div class="row"><button class="btn sm" type="button" data-act="resend">' + I.mail + 'Email them the set-password link again</button><span class="fine" id="pfInv"></span></div></div>' +
     (!ME.owner ? '' : c.status === 'archived'   // archiving and restoring are the owners'
@@ -2826,10 +2884,10 @@ function tProfile(){
     '</section><div class="sticky-save"><span class="saved" id="pfMsg"></span><button class="btn pri" type="button" data-act="pfsave">Save changes</button></div></div></div>';
   if($('#pf_status')) $('#pf_status').value = c.status;
   var cc = C; if(ME.owner) loadAdjustments(cc).then(function(){ if(C === cc) drawAdjustments(cc); });   // the extra applications, each with its reason
-  skFresh(c); lastInvite(C); byClient(C); pfFresh(C); empCard(C);
+  skFresh(c); lastInvite(C); byClient(C); pfFresh(C); empCard(C); mbCard(C); sbCard(C);
   if(ME.owner) $('#pf_plan').addEventListener('change', function(e){ $('#pfPCw').hidden = e.target.value !== 'custom'; });
   V.querySelector('.narrow').addEventListener('input', function(e){
-    if(e.target.closest('#pfRec') || e.target.closest('#pfEmp')) return;
+    if(e.target.closest('#pfRec') || e.target.closest('#pfEmp') || e.target.closest('#pfSB')) return;
     pfMark();
     if(e.target.matches('#pfQA [data-qa=q]')) $('#pfCommon').innerHTML = commonQ(readQA($('#pfQA')));   // a question picked from the list is no longer offered below
   });
@@ -2851,6 +2909,107 @@ function empCard(c){
           (r.ended_at ? ' to ' + esc(TP.fmtDate(r.ended_at)) + ' — ' + esc(r.end_reason === 'reassigned' ? 'moved on' : r.end_reason) : ' · now') + '</div></div></div>';
       }).join('') + '</div>' : ME.owner ? '<p class="fine" style="margin-top:8px">Nobody yet — only the owners reach ' + esc(first) + ' until someone is assigned.</p>' : '');
   }, function(e){ var box = $('#pfEmpB'); if(box) box.innerHTML = errBox(e); });
+}
+/* ---------- the client's Gmail (sql/supabase-mailboxes.sql, supabase/functions/mailbox) ----------
+   The team applies for each client from a Gmail of its own. Connected here once (an owner signs in to it with Google,
+   through Composio), it's read every 10 minutes: the employers' emails go on their applications, and a certain one moves
+   the application along by itself (forward only). The client never sees the emails, only their applications' statuses. */
+function mbFn(c, action){ return TP.fn('mailbox', {action:action, client_id:c.id}, 120000); }
+function mbCard(c){
+  return q(SB.from('client_mailboxes').select('*').eq('client_id', c.id).maybeSingle()).then(function(m){
+    var box = $('#pfMailB'); if(C !== c || !box) return;
+    c.mbox = m || null;
+    var first = (c.row.full_name || '').split(' ')[0] || 'them';
+    if(!m){
+      box.innerHTML = '<p class="hint">Connect the Gmail you apply with for ' + esc(first) + '. Every 10 minutes the employers’ emails are read: an application confirmed, an interview, an offer or a rejection updates the application by itself, and verification codes show on the application. Only job emails are kept; ' + esc(first) + ' sees the statuses, never the emails.</p>' +
+        (ME.owner ? '<button class="btn sm pri" type="button" data-act="mbconnect">' + I.mail + 'Connect Gmail</button>' : '<p class="fine">An owner connects it.</p>');
+      return;
+    }
+    if(m.status === 'pending'){
+      box.innerHTML = '<p class="hint">Sign in to ' + esc(first) + '’s Gmail in the Google window, then come back here.</p><div class="row"><button class="btn sm pri" type="button" data-act="mbdone">I’ve signed in</button>' +
+        (ME.owner ? '<button class="btn sm" type="button" data-act="mbconnect">Open the Google window again</button>' : '') + '</div>';
+      return;
+    }
+    box.innerHTML = '<div class="mbrow"><span class="mbdot ' + (m.status === 'error' ? 'bad' : 'ok') + '"></span><div class="main"><b>' + esc(m.email || 'Connected') + '</b>' +
+        '<div class="m">' + (m.status === 'error' ? 'Can’t be read — connect it again' : m.checked_at ? 'Checked ' + esc(TP.ago(m.checked_at)) + ' · ' + (m.emails_found || 0).toLocaleString() + ' job email' + (m.emails_found === 1 ? '' : 's') + ' so far' : 'Connected · read in a moment') + '</div>' +
+        (m.last_error && m.status === 'error' ? '<div class="fine bad">' + esc(m.last_error) + '</div>' : '') + '</div></div>' +
+      '<div class="row" style="margin-top:10px"><button class="btn sm" type="button" data-act="mbcheck">Check now</button>' +
+        (ME.owner ? (m.status === 'error' ? '<button class="btn sm pri" type="button" data-act="mbconnect">Connect again</button>' : '') + '<button class="btn sm ghost" type="button" data-act="mbdisc">Disconnect</button>' : '') + '</div>';
+  }, function(e){ var box = $('#pfMailB'); if(box) box.innerHTML = errBox(e); });
+}
+function mbConnect(c){
+  var w = window.open('about:blank', 'tp-google');   // on the click, so the pop-up blocker lets it through
+  mbFn(c, 'connect').then(function(r){
+    if(w && !w.closed) w.location.href = r.redirect_url; else location.href = r.redirect_url;
+    mbCard(c);
+  }, function(e){ if(w && !w.closed) w.close(); TP.toast(mbErr(e)); });
+}
+function mbErr(e){ return e && e.code === 'not_configured' ? 'Gmail isn’t set up yet: the Composio keys go into Supabase’s secrets first.' : e && e.code === 'owner_only' ? 'Only an owner connects or disconnects a Gmail.' : TP.errText(e); }
+function mbDone(c, quiet){
+  return mbFn(c, 'refresh').then(function(r){
+    if(r.status === 'active'){ TP.toast(r.first ? 'Gmail connected — ' + (r.stored || 0) + ' job email' + (r.stored === 1 ? '' : 's') + ' found from the last two weeks' : 'Gmail connected'); if(r.moved) refreshProgress(); }
+    else if(!quiet) TP.toast('Not signed in yet — finish in the Google window, then try again.');
+    mbCard(c);
+  }, function(e){ if(!quiet) TP.toast(mbErr(e)); });
+}
+function mbCheck(c, btn){
+  return TP.busy(btn, mbFn(c, 'check')).then(function(r){
+    TP.toast(r.skipped ? 'Checked a moment ago' : (r.stored ? r.stored + ' new job email' + (r.stored === 1 ? '' : 's') : 'No new job emails') + (r.moved ? ' · ' + r.moved + ' application' + (r.moved === 1 ? '' : 's') + ' updated' : ''));
+    if(r.moved) refreshProgress();
+    if(R.app && A) apMail(A); else mbCard(c);
+  }, function(e){ TP.toast(mbErr(e)); });
+}
+function mbDisc(c){
+  TP.confirmBox('Disconnect this Gmail?', (c.mbox && c.mbox.email) || 'The connected Gmail', 'Disconnect', true, {items:[['info', 'Its emails stop being read. The ones already on applications stay.'], ['info', 'Connect it again any time.']]}).then(function(ok){
+    if(!ok) return;
+    mbFn(c, 'disconnect').then(function(){ TP.toast('Gmail disconnected'); mbCard(c); }, function(e){ TP.toast(mbErr(e)); });
+  });
+}
+// coming back from the Google sign-in (Composio sends the browser to team.html?client=…&gmail=back)
+function mbBack(){
+  var p = new URLSearchParams(location.search); if(p.get('gmail') !== 'back' || !C) return;
+  p.delete('gmail'); history.replaceState(null, '', location.pathname + (p.toString() ? '?' + p : '') + location.hash);
+  mbDone(C, false);
+}
+
+// The emails on an application: what each one is, any code, and what it did — moved it along (Undo), or a suggestion
+// waiting (Apply / Dismiss). A draft's Check email now reads the inbox at once, for a code being waited on.
+var MB_CAT = {application_confirmation:'Application received', interview_invite:'Interview', assessment:'Assessment', rejection:'Rejection', offer:'Offer',
+  position_closed:'Position closed', verification_code:'Verification code', recruiter_outreach:'Recruiter', other:'Email'};
+function apMail(a){
+  var box = $('#apMail'), c = C; if(!box || !a) return;
+  Promise.all([q(SB.from('client_emails').select('*').eq('application_id', a.id).order('received_at', {ascending:false}).limit(30)),
+    c.mbox !== undefined ? Promise.resolve(c.mbox) : q(SB.from('client_mailboxes').select('*').eq('client_id', c.id).maybeSingle())]).then(function(rs){
+    if(C !== c || !A || A.id !== a.id || !$('#apMail')) return;
+    var rows = rs[0] || [], m = c.mbox = rs[1] || null;
+    if(!rows.length && !m){ box.innerHTML = ''; box.hidden = true; return; }
+    box.hidden = false;
+    var codes = rows.filter(function(e){ return e.code && Date.now() - new Date(e.received_at).getTime() < 864e5; });
+    box.innerHTML = '<div class="card"><div class="ch"><h3>Emails from ' + esc(a.company || 'the employer') + '</h3>' +
+        (m && m.status !== 'pending' ? '<button class="btn sm ghost" type="button" data-act="mbcheck">Check email now</button>' : '') + '</div>' +
+      (codes.length ? codes.slice(0, 1).map(function(e){ return '<div class="mbcode"><span>Code from ' + esc(e.from_name || e.from_email) + ' · ' + esc(TP.ago(e.received_at)) + '</span><b>' + esc(e.code) + '</b><button class="btn sm" type="button" data-copy="' + esc(e.code) + '" data-what="Code">' + I.copy + 'Copy</button></div>'; }).join('') : '') +
+      (rows.length ? '<div class="mbl">' + rows.map(mbRow).join('') + '</div>'
+        : '<p class="fine">' + (m ? 'No emails about this job yet. ' + (m.checked_at ? 'Checked ' + esc(TP.ago(m.checked_at)) + '.' : '') : '') + '</p>') + '</div>';
+  }, function(){ box.innerHTML = ''; });
+}
+function mbRow(e){
+  var act = e.outcome === 'moved' || e.outcome === 'applied'
+      ? '<span class="mbo ok">' + (e.outcome === 'moved' ? 'Moved it to ' : 'Applied: ') + esc(TP.statusLabel(e.status_to)) + '</span><button class="lk" type="button" data-act="mbact" data-v="undo" data-id="' + esc(e.id) + '">Undo</button>'
+    : e.outcome === 'suggested' ? '<span class="mbo">Suggests ' + esc(TP.statusLabel(e.status_to)) + (e.verified ? '' : ' · sender not verified') + '</span><button class="btn sm" type="button" data-act="mbact" data-v="apply" data-id="' + esc(e.id) + '">Apply</button><button class="btn sm ghost" type="button" data-act="mbact" data-v="dismiss" data-id="' + esc(e.id) + '">Dismiss</button>'
+    : e.outcome === 'confirmed' ? '<span class="mbo ok">Confirmed the submission</span>'
+    : e.outcome === 'undone' ? '<span class="mbo">Undone</span>' : e.outcome === 'dismissed' ? '<span class="mbo">Dismissed</span>' : '';
+  return '<div class="mbe"><div class="mbh"><span class="st ' + esc(e.category === 'offer' ? 'offer' : e.category === 'rejection' ? 'rejected' : e.category === 'interview_invite' || e.category === 'assessment' ? 'interview' : 'applied') + '">' + esc(MB_CAT[e.category] || 'Email') + '</span>' +
+      '<b>' + esc(e.subject || '(no subject)') + '</b><span class="m">' + esc(e.from_name || e.from_email) + ' · ' + esc(TP.fmtDateTime(e.received_at)) + '</span></div>' +
+    (e.summary ? '<p class="mbs">' + esc(e.summary) + '</p>' : '') + (e.snippet ? '<details><summary>Read it</summary><p class="mbt">' + esc(e.snippet) + '</p></details>' : '') +
+    (act ? '<div class="mba">' + act + '</div>' : '') + '</div>';
+}
+function mbAct(b){
+  var id = b.getAttribute('data-id'), v = b.getAttribute('data-v');
+  TP.busy(b, q(SB.rpc('email_action', {p_id:id, p_act:v}))).then(function(){
+    TP.toast(v === 'apply' ? 'Status updated from the email' : v === 'undo' ? 'Undone — back as it was' : 'Dismissed');
+    if(v !== 'dismiss'){ refreshProgress(); if(A && R.app) q(SB.from('applications').select('*').eq('id', A.id).maybeSingle()).then(function(row){ if(row && A){ Object.assign(A, row); if(A.status === 'draft') drawDraft(); else drawSent(); } }); }
+    else if(A) apMail(A);
+  }, function(e){ TP.toast(TP.errText(e)); });
 }
 // the common questions not asked yet, each a button that adds it with its answer suggested
 function commonQ(ans){
@@ -2977,12 +3136,64 @@ function stable(v){
   if(v && typeof v === 'object') return '{' + Object.keys(v).sort().map(function(k){ return JSON.stringify(k) + ':' + stable(v[k]); }).join(',') + '}';
   return JSON.stringify(v === undefined ? null : v);
 }
+// the eligibility sheet on the Profile: filled with the client on the onboarding call, confirmed, and re-confirmed monthly
+var ELIG_F = ['work_auth_status', 'needs_sponsorship', 'salary_floor', 'locations', 'remote_ok', 'notice_days', 'years', 'licences'];
+function eligCardHTML(cc){
+  var c = cc.row, e = c.eligibility || {}, es = eligState(c), first = esc((c.full_name || '').split(' ')[0] || 'them');
+  var inp = function(k, label, ph, type){ return '<div class="field"><label for="pf_el_' + k + '">' + label + '</label><input id="pf_el_' + k + '"' + (type ? ' type="' + type + '" min="0"' : '') + ' value="' + esc(e[k] == null ? '' : e[k]) + '" placeholder="' + esc(ph || '') + '" autocomplete="off"' + (k === 'work_auth_status' ? ' list="eligWA"' : '') + '></div>'; };
+  return '<div class="card" id="pfElig"><div class="ch"><h3>Eligibility sheet</h3>' + eligPill(es) + '</div>' +
+    '<p class="hint">Filled with ' + first + ' on the onboarding call, from the resume and their answers; read before every application and against every knockout question. Press <b>Confirmed with ' + first + '</b> once they’ve agreed to it — a change to the sheet asks for it again, and once a month a task reminds you to re-confirm with one WhatsApp message. Nothing is sent while it’s red.</p>' +
+    '<datalist id="eligWA">' + ELIG_WA.map(function(w){ return '<option value="' + esc(w) + '">'; }).join('') + '</datalist>' +
+    '<div class="elgrid">' + inp('work_auth_status', 'Work authorization status', 'e.g. F-1 STEM OPT') +
+      '<div class="field"><label for="pf_el_needs_sponsorship">Needs sponsorship</label><select id="pf_el_needs_sponsorship"><option value="">—</option>' + [['no', 'No'], ['yes', 'Yes, now'], ['later', 'Later (e.g. H-1B in a year or two)']].map(function(o){ return '<option value="' + o[0] + '"' + (e.needs_sponsorship === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></div>' +
+      inp('salary_floor', 'Salary floor', 'e.g. $95K') + inp('locations', 'Locations they’ll take', 'e.g. Austin, Dallas; US remote') +
+      inp('notice_days', 'Notice (days)', 'e.g. 14', 'number') + inp('years', 'Years of experience', 'e.g. 4', 'number') +
+      inp('licences', 'Licences, clearances, certifications', 'e.g. CPA; no security clearance') +
+      '<label class="check" style="align-self:end"><input type="checkbox" id="pf_el_remote_ok"' + (e.remote_ok ? ' checked' : '') + '> Remote is fine</label></div>' +
+    '<div class="row" style="margin-top:12px;gap:8px;flex-wrap:wrap"><button class="btn sm pri" type="button" data-act="eligconfirm"' + (e.work_auth_status && e.needs_sponsorship ? '' : ' disabled title="Fill work authorization and sponsorship, then Save"') + '>' + I.check + 'Confirmed with ' + first + (es.at ? ' again' : '') + '</button>' +
+      (es.at ? '<button class="btn sm ghost" type="button" data-act="eligunconfirm">Needs confirming again</button>' : '') +
+      '<button class="btn sm" type="button" data-copy="' + esc(eligMsg(cc)) + '" data-what="Message">' + I.copy + 'Check message</button>' +
+      '<button class="btn sm" type="button" data-act="eligfill" title="From the profile and the default résumé — then complete sponsorship, salary floor and notice on the call">Fill from resume</button></div>' +
+    (es.at ? '<p class="fine" style="margin-top:8px">Confirmed ' + esc(TP.fmtDateTime(es.at)) + (es.stale ? ' — over ' + ELIG_DAYS + ' days ago' : '') + '.</p>' : '') + '</div>';
+}
+function eligForm(){
+  var e = {};
+  ELIG_F.forEach(function(k){
+    var x = $('#pf_el_' + k); if(!x) return;
+    if(k === 'remote_ok'){ if(x.checked) e[k] = true; return; }
+    var v = String(x.value || '').trim(); if(!v) return;
+    e[k] = (k === 'notice_days' || k === 'years') ? +v : v;
+  });
+  return e;
+}
+function eligFill(e){
+  ELIG_F.forEach(function(k){ var x = $('#pf_el_' + k); if(!x) return; if(k === 'remote_ok') x.checked = !!e[k]; else x.value = e[k] == null ? '' : e[k]; });
+}
+// the sheet's first draft, from what the profile and the default résumé already say (the call fills the rest)
+function eligFromResume(cc){
+  var c = cc.row, e = eligForm(), r = defaultResume(cc), doc = r && r.doc, yrs = null, loc = [];
+  if(c.work_auth && !e.work_auth_status){ var wa = ELIG_WA.map(function(w){ return [w, String(c.work_auth).toLowerCase().indexOf(w.toLowerCase())]; }).filter(function(x){ return x[1] > -1; }).sort(function(x, y){ return x[1] - y[1] || y[0].length - x[0].length; }).map(function(x){ return x[0]; })[0]; e.work_auth_status = wa || String(c.work_auth).split(/[—–-]| needs /)[0].trim(); if(!e.needs_sponsorship && /sponsor|h-?1b/i.test(c.work_auth)) e.needs_sponsorship = /later/i.test(c.work_auth) ? 'later' : 'yes'; if(!e.needs_sponsorship && /citizen|green card|no sponsorship/i.test(c.work_auth)) e.needs_sponsorship = 'no'; }
+  if(c.salary && !e.salary_floor){ var m = /\$?\s?(\d[\d,.]*\s?[kK]?)/.exec(c.salary); if(m) e.salary_floor = '$' + m[1].replace(/\s/g, '').toUpperCase(); }
+  if(c.notice && e.notice_days == null){ var nm = /(\d+)\s*(week|day|month)/i.exec(c.notice); if(nm) e.notice_days = +nm[1] * (/week/i.test(nm[2]) ? 7 : /month/i.test(nm[2]) ? 30 : 1); else if(/immediate|now|right away/i.test(c.notice)) e.notice_days = 0; }
+  if(c.target_locations) loc.push(c.target_locations); else if(c.location) loc.push(c.location);
+  if(!e.locations && loc.length) e.locations = loc.join('; ');
+  if(/remote/i.test(c.target_locations || '')) e.remote_ok = true;
+  try{
+    var items = ((doc && doc.sections) || []).filter(function(sx){ return (sx.k || sx.kind) === 'experience'; }).reduce(function(acc, sx){ return acc.concat(sx.items || []); }, []);
+    var years = items.map(function(it){ var y = /(19|20)\d{2}/.exec(String(it.meta || it.date || it.dates || '')); return y ? +y[0] : null; }).filter(Boolean);
+    if(years.length) yrs = new Date().getFullYear() - Math.min.apply(null, years);
+  }catch(ex){}
+  if(yrs != null && e.years == null && yrs >= 0 && yrs < 50) e.years = yrs;
+  eligFill(e); pfMark();
+  TP.toast('Filled from the profile and résumé — complete sponsorship, salary floor and notice on the call, then Save');
+}
 // what the Profile form would change ({} when nothing; null while the plan number is half typed)
 function pfPatch(){
   if(!C || !C.row || !$('#pf_full_name')) return {};
   var c = C.row, patch = {};
   PF.forEach(function(k){ var v = $('#pf_' + k).value.trim(); if(v !== (c[k] || '')) patch[k] = v || (k === 'full_name' ? '' : null); });
   var ans = readQA($('#pfQA')); if(stable(ans) !== stable(c.answers || [])) patch.answers = ans;
+  if($('#pf_el_work_auth_status')){ var el = eligForm(); if(stable(el) !== stable(c.eligibility || {})) patch.eligibility = el; }
   var ss = $('#pf_status'); if(ss && ss.value !== c.status) patch.status = ss.value;   // the owners' control
   if(ME.owner && $('#pf_plan')){ var pv = $('#pf_plan').value, pn = pv === 'custom' ? +$('#pf_planc').value : (pv ? +pv : null); if(pv === 'custom' && !(pn > 0)) return null; if((pn || null) !== (c.plan_package || null)) patch.plan_package = pn || null; }   // the package; the database keeps plan_total = package + the extras
   return patch;
@@ -2996,7 +3207,7 @@ function pfMark(){
   if(!dirty) bkDel('pf_' + C.id); else if(p) bkSet('pf_' + C.id, p);
 }
 var PF_NAME = {full_name:'Full name', phone:'Phone', linkedin:'LinkedIn', location:'Lives in', target_roles:'Target roles', target_locations:'Target locations', work_auth:'Work authorization',
-  salary:'Salary', notice:'Can start', apply_notes:'How to apply', optimise_rules:'Resume rules', answers:'Standard answers', status:'Status', confirmed_skills:'Skills for jobs', plan_package:'Plan'};
+  salary:'Salary', notice:'Can start', apply_notes:'How to apply', optimise_rules:'Resume rules', answers:'Standard answers', status:'Status', confirmed_skills:'Skills for jobs', plan_package:'Plan', eligibility:'Eligibility sheet'};
 // opening the Profile: changes typed here before the page closed, not saved, are offered back
 function pfRecover(c){
   var bk = bkGet('pf_' + c.id), v = bk && bk.v, keys = v ? Object.keys(v).filter(function(k){ return PF_NAME[k]; }) : [];
@@ -3008,6 +3219,7 @@ function pfRecover(c){
     if(b.getAttribute('data-rec') === 'put') keys.forEach(function(k){
       var x = v[k];
       if(k === 'answers') $('#pfQA').innerHTML = (x || []).map(qaRow).join('');
+      else if(k === 'eligibility') eligFill(x || {});
       else if(k === 'status'){ var ss2 = $('#pf_status'); if(ss2 && !ss2.disabled) ss2.value = x; }
       else if(k === 'plan_package'){ var ps = $('#pf_plan'); if(ps){ if(x && TP.CONFIG.PLANS.indexOf(x) < 0 && !$('option[value="' + x + '"]', ps)) ps.insertAdjacentHTML('beforeend', '<option value="' + x + '">' + x + '</option>'); ps.value = x ? String(x) : ''; } }
       else if($('#pf_' + k)) $('#pf_' + k).value = x || '';
@@ -3037,6 +3249,7 @@ function pfAsk(){
 // what a status or plan change means for the client, said before it's saved
 function pfEffects(patch){
   var c = C.row, first = esc((c.full_name || '').split(' ')[0] || 'The client'), out = [];
+  if(patch.eligibility) out.push(['warn', '<b>Eligibility sheet</b> changed — it needs confirming with ' + first + ' again before anything is sent.']);
   if(patch.status === 'paused') out.push(['warn', '<b>Paused</b> — ' + first + '’s dashboard says the plan is paused, and they leave the Active list.']);
   if(patch.status === 'done') out.push(['warn', '<b>Done</b> — ' + first + '’s dashboard says the plan is complete, and they move to Done.']);
   if(patch.status === 'active') out.push(['ok', '<b>Active</b> — back on the Active list, and the plan shows as running on ' + first + '’s dashboard.']);
@@ -3059,6 +3272,7 @@ function saveProfile(){
     return TP.busy(btn, q(SB.from('clients').update(patch).eq('id', c.id).select('*').maybeSingle())).then(function(row){
       if(!row) throw {message:'You don’t have access to that.'};
       C.row = row; staleList(); drawBar(); rememberOpen(row); drawOpenTabs(); bkDel('pf_' + row.id);
+      if(patch.eligibility){ var ec = $('#pfElig'); if(ec) ec.outerHTML = eligCardHTML(C); }   // the sheet changed: it needs confirming again
       var ps = $('#planSum'); if(ps) ps.outerHTML = planHeadHTML(C);   // the plan line follows (the database kept the total = package + extras)
       var s = $('#pfMsg'); if(s) s.textContent = 'Saved ' + new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
       TP.toast('Profile saved');
@@ -3412,6 +3626,7 @@ function tJobs(){
   $('#lkF').addEventListener('submit', function(e){ e.preventDefault(); readLinks(lin.value); });
   $('#lkList').addEventListener('input', lkType);
   lkDraw(); lkRead(c, L);
+  runsLoad().then(function(){ if(lkShown(L)) lkDraw(); });   // the runs as the database has them
   if(!L.items.length || L.items.some(function(x){ return x.app; })) lkFresh(c, L).then(function(){ if(lkShown(L)) lkDraw(); });   // an empty list here may be waiting in the database
   // the board's list still feeds the logos and a pasted board link's company (BOARDDOM, readJob)
   Promise.all([loadBoard(), loadAppIndex(true), loadRestricted(c)]).then(function(){ if(C === c && R.tab === 'jobs' && !R.app) rjDraw(); }, function(e){ TP.toast(TP.errText(e)); });
@@ -3645,7 +3860,6 @@ function lkList(cid){
   if(!LKS[cid]){
     var s = TP.lsGet('tp_links_' + cid, null);
     LKS[cid] = {cid:cid, items:s && Array.isArray(s.items) && s.at > Date.now() - 30 * 864e5 ? s.items : [], skip:[], more:0};
-    LKS[cid].items.forEach(function(x){ if(x.opt && (x.opt.st === 'wait' || x.opt.st === 'run')) x.opt = {st:'fail', why:'Stopped when the page was closed'}; });   // an Optimise runs in the tab that started it
     LKS[cid].items.forEach(function(x){ if(x.fit && x.fit.wait) x.fit = null; });   // a fit that was on its way is asked for again
   }
   return LKS[cid];
@@ -3919,8 +4133,6 @@ function lkDel(id){
 // jobs back on the list: reading or syncing that stopped while they were off it starts again (or offers Retry)
 function lkRestored(c, M){
   M.items.forEach(function(x){
-    var live = x.opt && (x.opt.st === 'run' ? OQ.cur[x.id] : OQ.jobs.some(function(j){ return j.id === x.id; }));
-    if(x.opt && (x.opt.st === 'wait' || x.opt.st === 'run') && !live) x.opt = {st:'fail', why:'Stopped while it was off the list'};
   });
   lkSave(M); if(lkShown(M)) lkDraw(); lkRead(c, M);
 }
@@ -3950,7 +4162,7 @@ function lkHead(L){
     if(fitDone(x) && x.fit.verdict === 'strong') fits++;
     if(x.app){
       if(x.st === 'gone') gone++; else if(x.st && x.st !== 'draft') sent++;
-      else { drafts++; if(x.opened) opened++; var os = x.opt && x.opt.st; if(os === 'wait' || os === 'run') busy++; if(os === 'ready') ready++; if(lkCanOpt(x)) opt++; }
+      else { drafts++; if(x.opened) opened++; var os = (runOptOf(x) || {}).st; if(os === 'wait' || os === 'run') busy++; if(os === 'ready') ready++; if(lkCanOpt(x)) opt++; }
     }
     else if(x.state === 'queued' || x.state === 'reading') reading++;
     else if(lkCanStart(x)) can++; else need++;
@@ -4110,7 +4322,7 @@ function lkRow(x){
   var head = function(ring){ return '<div class="jch">' + coLogo(x.company, x.url, x.dom) + '<div class="jct">' + (x.company ? '<div class="m jco">' + esc(x.company) + '</div>' : '') +
     '<div class="t" title="' + esc(x.title) + '">' + esc(x.title) + '</div></div>' + ring + '</div>'; };
   if(x.app){
-    var st = x.st || 'draft', s = st === 'gone' ? 'gone' : st === 'draft' ? 'draft' : 'sent', o = s === 'draft' && x.opt ? x.opt : null, os = o ? o.st : '';
+    var st = x.st || 'draft', s = st === 'gone' ? 'gone' : st === 'draft' ? 'draft' : 'sent', o = s === 'draft' ? runOptOf(x) : null, os = o ? o.st : '';
     // the score it started with; once synced, the draft's own score now → once its suggestions are accepted
     var pill = s === 'gone' ? '' : os === 'ready' && o.before != null ? mPill(Object.assign({hit:[], miss:[], n:0, rn:''}, mm || {}, {pct:o.before}), o.after) : mm ? mPill(mm) : '';
     var line = s === 'gone' ? 'The draft was deleted' : s === 'sent' ? 'Sent ' + esc(TP.ago(x.at))
@@ -4140,20 +4352,143 @@ function lkRow(x){
   return '<div class="lkrow jc" data-state="ready">' + head(fitPill(x)) + loc + (mm ? '<div class="jchips">' + mPill(mm) + '</div>' : '') +
       '<div class="jcb">' + fitLine(x) + (mm ? mMiss(mm) : '<div class="m ' + (x.jd ? 'ok">Job description read' : 'warn">No job description yet — add it to see the match') + '</div>') + err + '</div>' + foot + '</div>';
 }
-/* ---------- Optimise the list: the editor's own Optimise, run for each draft in a hidden editor, a few at a time ----------
-   It runs in this browser tab, so other tabs and other clients' pages are fine; closing the tab stops it, so the page asks
-   first. The suggestions wait on each draft until someone reviews them in the editor. */
-var OPT_LANES = 4, OQ = {jobs:[], run:0, cur:{}};
+/* ---------- background runs (sql/supabase-runs.sql) ----------
+   A Sync is a row in ai_runs, so it outlives the tab that started it. Every team portal tab you have open can work your runs;
+   one at a time is the runner (the browser's lock, per person). It takes up to RUN_LANES with runs_claim (one database step,
+   so no run is taken twice), runs each in a hidden editor as before (editor.html?batch=…), says it's alive every 15 s
+   (runs_beat) and how it went (runs_finish). A tab closed or asleep stops beating; 90 s later the run goes back to the queue
+   and the next runner takes it up (three tries). A lost connection, a slow answer or a resume changed meanwhile goes back to
+   the queue too; today's AI allowance used up waits for tomorrow. The suggestions wait on the draft, reviewed as before. */
+var RUN_LANES = 4, RUN = {id:'tab-' + TP.uid() + TP.uid(), lead:false, cur:{}, t:null, started:false};
+var RUNS = {mine:[], byApp:{}, cid:null, at:0};
+function runStart(){
+  if(RUN.started || !ME || ME.team === false) return; RUN.started = true;
+  var go = function(){ RUN.lead = true; runTick(); };
+  if(navigator.locks && navigator.locks.request) navigator.locks.request('tp-runner:' + ME.email, function(){ go(); return new Promise(function(){}); }).catch(go);
+  else go();
+  window.addEventListener('online', function(){ runTick(); });
+  runsLoad();
+}
+function runTick(){
+  clearTimeout(RUN.t); RUN.t = setTimeout(runTick, 10000);
+  if(!RUN.lead || !SB || navigator.onLine === false) return;
+  var ids = Object.keys(RUN.cur);
+  if(ids.length) rpc('runs_beat', {p_runner:RUN.id, p_ids:ids}).catch(function(){});
+  var free = RUN_LANES - ids.length;
+  if(free > 0) rpc('runs_claim', {p_runner:RUN.id, p_n:free}).then(function(rows){ (rows || []).forEach(runOne); if((rows || []).length) runsChanged({}); }, function(){});
+  if(ids.length || RUNS.mine.some(function(r){ return r.status === 'queued' || r.status === 'running'; })) runsLoad();
+}
+function runOne(r){
+  if(RUN.cur[r.id]) return;
+  var f = document.createElement('iframe'), over = false, tm, beat;
+  RUN.cur[r.id] = {r:r, f:f};
+  function end(st, o){
+    if(over) return; over = true; clearTimeout(tm); clearInterval(beat); window.removeEventListener('message', hear); f.remove(); delete RUN.cur[r.id];
+    o = o || {};
+    rpc('runs_finish', {p_id:r.id, p_runner:RUN.id, p_status:st, p_why:o.why || null, p_n:o.n == null ? null : o.n, p_sk:o.sk == null ? null : o.sk, p_before:o.before == null ? null : o.before, p_after:o.after == null ? null : o.after})
+      .catch(function(){}).then(function(){ runsChanged({client:r.client_id, app:r.application_id, run:st === 'ready' ? 'ready' : st}); runTick(); });
+  }
+  function hear(e){
+    var d = e.data || {}; if(e.origin !== location.origin || !d.tp || !d.batch || d.app !== r.application_id) return;
+    if(d.act === 'done') end('ready', {n:d.n || 0, sk:d.sk || 0, before:d.before, after:d.after});
+    else if(d.act === 'retry') end('queued', {why:d.why === 'changed' ? 'The resume was changed meanwhile — starting again from the new one' : d.why === 'slow' ? 'The AI was slow — trying again' : 'The connection dropped — it carries on when it’s back'});
+    else if(d.act === 'fail') end(d.why === 'limit' ? 'queued' : 'failed', {why:String(d.why || 'Something went wrong')});
+  }
+  window.addEventListener('message', hear);
+  beat = setInterval(function(){ rpc('runs_beat', {p_runner:RUN.id, p_ids:[r.id]}).then(function(n){ if(n === 0) end('failed'); }, function(){}); }, 15000);   // 0: cancelled, or taken up elsewhere
+  tm = setTimeout(function(){ end('queued', {why:'It took too long — trying again'}); }, 240000);   // a Sync can take up to 150 s by itself
+  f.src = '/editor.html?client=' + encodeURIComponent(r.client_id) + '&app=' + encodeURIComponent(r.application_id) + '&batch=' + encodeURIComponent(r.sel) + (r.ins ? '&ins=' + encodeURIComponent(r.ins) : '');
+  f.title = 'Working in the background'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
+  f.style.cssText = 'position:fixed;left:-12000px;top:0;width:1280px;height:900px;border:0;visibility:hidden';   // laid out like a real page, never seen
+  document.body.appendChild(f);
+}
+// your runs (the last two days, and every one still open) and, for the client open here, the latest run of each draft
+function runsLoad(){
+  if(!SB || !ME) return Promise.resolve();
+  var since = new Date(Date.now() - 2 * 864e5).toISOString(), cid = C ? C.id : null;
+  var mine = q(SB.from('ai_runs').select('*').eq('created_by', ME.email).gte('created_at', since).order('created_at', {ascending:false}).limit(200));
+  var theirs = cid ? q(SB.from('ai_runs').select('*').eq('client_id', cid).gte('created_at', new Date(Date.now() - 14 * 864e5).toISOString()).order('created_at', {ascending:false}).limit(500)) : Promise.resolve(null);
+  return Promise.all([mine, theirs]).then(function(rs){
+    RUNS.mine = rs[0] || []; RUNS.at = Date.now();
+    if(rs[1]){ var by = {}; rs[1].forEach(function(r){ if(!by[r.application_id]) by[r.application_id] = r; }); RUNS.byApp = by; RUNS.cid = cid; }
+    runPill();
+    if(C && R.tab === 'jobs' && !R.app && $('#lkList')){ var L = lkList(C.id); if(lkShown(L)) lkDraw(); }
+    if($('#rpList')) rpDraw();
+  }, function(){});
+}
+// what changed: this tab redraws, and the others hear it (and an open application or editor takes in a ready result)
+function runsChanged(m){
+  m = Object.assign({runs:1, apps:!!m.app}, m);
+  try{ if(BC) BC.postMessage(m); }catch(e){}
+  runsLoad();
+  if(m.app && C && R.app === m.app) refreshApp();
+}
+// a Jobs-list row's sync, as the database has it; "reviewed" is this browser's own note on a ready one
+function runOptOf(x){
+  var r = x.app && RUNS.cid && C && RUNS.cid === C.id ? RUNS.byApp[x.app] : null;
+  if(!r) return x.opt && (x.opt.st === 'done' || x.opt.st === 'fail' || x.opt.st === 'ready') ? x.opt : null;
+  if(r.status === 'cancelled') return null;
+  if(r.status === 'ready' && x.opt && x.opt.st === 'done' && x.opt.at >= new Date(r.finished_at).getTime()) return x.opt;
+  return r.status === 'queued' ? {st:'wait', why:r.why} : r.status === 'running' ? {st:'run'} : r.status === 'ready' ? {st:'ready', n:r.n || 0, sk:r.sk || 0, before:r.match_before, after:r.match_after}
+    : {st:'fail', why:r.why || 'Something went wrong'};
+}
+// the pill above your name: what's running and what's ready, opening the panel
+function runPill(){ [$('#runPill'), $('#runPillM')].forEach(function(box){ if(box) runPillIn(box); }); }
+function runPillIn(box){
+  var open = RUNS.mine.filter(function(r){ return r.status === 'queued' || r.status === 'running'; }).length, ready = RUNS.mine.filter(function(r){ return r.status === 'ready' && !runSeen(r); }).length;
+  var failed = RUNS.mine.filter(function(r){ return r.status === 'failed' && !runSeen(r); }).length;
+  if(!open && !ready && !failed){ box.hidden = true; box.innerHTML = ''; return; }
+  box.hidden = false;
+  box.innerHTML = '<button type="button" data-act="runs" title="Background runs">' + (open ? '<i class="spin"></i>' : '<i class="rdot"></i>') + '<span>' +
+    [open ? open + ' running' : '', ready ? ready + ' ready' : '', failed ? failed + ' failed' : ''].filter(Boolean).join(' · ') + '</span></button>';
+}
+function runSeen(r){ var s = TP.lsGet('tp_runs_seen', {}) || {}; return !!s[r.id]; }
+function runsPanel(){
+  TP.modal('<h2>Background runs</h2><p class="hint">Your Syncs from the last two days. They carry on while you work, and in any team portal tab you have open; with none open they wait for your next visit.</p><div id="rpList"></div>', true);
+  rpDraw(); runsLoad();   // what it shows now, then as the database has it
+  var seen = TP.lsGet('tp_runs_seen', {}) || {}; RUNS.mine.forEach(function(r){ if(r.status === 'ready' || r.status === 'failed') seen[r.id] = 1; }); TP.lsSet('tp_runs_seen', seen); runPill();
+}
+function rpDraw(){
+  var box = $('#rpList'); if(!box) return;
+  if(!RUNS.mine.length){ box.innerHTML = '<p class="fine">Nothing in the last two days. A Sync on a client’s Jobs list, or Optimize in the background on an application, shows here.</p>'; return; }
+  var order = {running:0, queued:1, ready:2, failed:3, cancelled:4};
+  var rows = RUNS.mine.slice().sort(function(a, b){ return order[a.status] - order[b.status] || (a.created_at < b.created_at ? 1 : -1); });
+  box.innerHTML = '<div class="rpanel">' + rows.map(function(r){
+    var app = cUrl(r.client_id, 'app=' + r.application_id), line, cls = '', act = '';
+    if(r.status === 'running'){ line = 'Tailoring… started ' + esc(TP.ago(r.started_at || r.created_at)) + (r.attempts > 1 ? ' · try ' + r.attempts + ' of 3' : ''); act = '<button class="btn sm ghost" type="button" data-act="runcancel" data-id="' + esc(r.id) + '">Cancel</button>'; }
+    else if(r.status === 'queued'){ line = r.why === 'limit' ? 'Today’s AI allowance is used up — it goes on tomorrow' : 'Waiting' + (r.why ? ' · ' + esc(r.why) : ''); act = '<button class="btn sm ghost" type="button" data-act="runcancel" data-id="' + esc(r.id) + '">Cancel</button>'; }
+    else if(r.status === 'ready'){ cls = ' ok'; line = (r.n ? r.n + ' suggestion' + (r.n === 1 ? '' : 's') : 'No wording changes') + (r.sk ? ' · ' + r.sk + ' skill' + (r.sk === 1 ? '' : 's') : '') + (r.match_before != null && r.match_after != null ? ' · match ' + r.match_before + ' → ' + r.match_after + '%' : '') + ' · ' + esc(TP.ago(r.finished_at)); act = '<a class="btn sm pri" href="' + esc('/editor.html?client=' + encodeURIComponent(r.client_id) + '&app=' + encodeURIComponent(r.application_id)) + '" target="tp-ed-' + esc(r.application_id) + '">Review</a>'; }
+    else if(r.status === 'failed'){ cls = ' err'; line = 'Couldn’t sync: ' + esc(r.why || 'something went wrong'); act = '<button class="btn sm" type="button" data-act="runretry" data-id="' + esc(r.id) + '">Retry</button>'; }
+    else line = 'Cancelled';
+    return '<div class="rprow"><a class="t" href="' + esc(app) + '" data-go>' + esc(r.client_name || 'Client') + ' · ' + esc(r.title || 'Role') + (r.company ? ' at ' + esc(r.company) : '') + '</a><span class="acts2">' + act + '</span><span class="m' + cls + '">' + line + '</span></div>';
+  }).join('') + '</div>';
+}
+function runAct(kind, id, b){
+  return TP.busy(b, rpc(kind === 'cancel' ? 'runs_cancel' : 'runs_retry', {p_id:id})).then(function(){
+    var r = RUNS.mine.filter(function(x){ return x.id === id; })[0];
+    if(kind === 'cancel' && RUN.cur[id]){ var cur = RUN.cur[id]; cur.f.remove(); delete RUN.cur[id]; }
+    runsChanged(r ? {client:r.client_id, app:r.application_id} : {}); if(kind === 'retry') runTick();
+    TP.toast(kind === 'cancel' ? 'Stopped' : 'Started again — it runs in the background');
+  }, fail);
+}
+// Optimize in the background, from an application's resume menu: the draft's Sync, as from the Jobs list
+function bgOpt(a, c){
+  var p = optChoices(c.id);
+  return rpc('runs_add', {p_app:a.id, p_sel:Object.keys(SYNC_SEL).join('.'), p_ins:p.ins || ''}).then(function(r){
+    runsChanged({client:c.id, app:a.id}); runTick();
+    TP.toast(r && r.status === 'running' ? 'Already being tailored in the background' : 'Tailoring in the background — carry on; the runs panel says when it’s ready');
+  }, fail);
+}
 // a draft is only ever synced to its own job - every part, in one go - since the main resume was improved already
 var SYNC_SEL = {summary:1, headline:1, location:1, experience:1, skills:1, sync:1};
-function lkCanOpt(x){ return !!x.app && (x.st || 'draft') === 'draft' && (!x.opt || x.opt.st === 'fail'); }
+function lkCanOpt(x){ var o = runOptOf(x); return !!x.app && (x.st || 'draft') === 'draft' && (!o || o.st === 'fail'); }
 function optChoices(cid){ var p = TP.lsGet('tp_opt_c_' + cid, null) || {}; return {sel:p.sel || {summary:1, experience:1, skills:1}, ins:p.ins || ''}; }   // shared with the editor's own Optimise
 function lkOptimise(){
   var c = C, L = lkList(c.id), n = L.items.filter(lkCanOpt).length, pref = optChoices(c.id); if(!n) return;
   var m = TP.modal('<h2>Sync ' + n + (n === 1 ? ' resume to its job' : ' resumes to their jobs') + '</h2><p>Each draft moves toward its own job in one go: the summary, the title under the name, every bullet in the posting’s words and order, and the skills. The same fact checks as the editor: no new numbers or tools, no lost keywords, and projects, education and certifications are never touched. Nothing on a resume changes until you review it in the editor.</p>' +
     '<div class="stack" style="margin-top:14px;gap:10px"><div class="field"><label for="boIns">Special instructions <span class="muted">(optional, for all of them)</span></label><textarea id="boIns" rows="2" maxlength="400" placeholder="e.g. Keep each bullet under 22 words">' + esc(pref.ins) + '</textarea></div>' +
       (c.row.optimise_rules ? '<p class="fine">' + esc((c.row.full_name || '').split(' ')[0] || 'The client') + '’s resume rules from the Profile are followed too.</p>' : '') +
-      '<p class="fine">Runs ' + OPT_LANES + ' at a time in this browser tab — keep it open. You can work in other tabs meanwhile.</p></div>' +
+      '<p class="fine">They run in the background, ' + RUN_LANES + ' at a time: carry on, move to another client, or close this tab — any team portal tab you have open works them, and they wait for your next visit if none is. The runs panel (above your name) shows each one.</p></div>' +
     '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="button" id="boGo">' + I.spark + 'Sync ' + n + '</button></div>');
   $('#boGo', m).onclick = function(){
     var ins = $('#boIns', m).value.trim();
@@ -4163,39 +4498,13 @@ function lkOptimise(){
 }
 function optQueue(c, L, sel, ins, only){
   var keys = Object.keys(sel).filter(function(k){ return sel[k]; }).join('.');
-  L.items.filter(only ? function(x){ return x === only; } : lkCanOpt).forEach(function(x){ x.opt = {st:'wait'}; OQ.jobs.push({cid:c.id, id:x.id, app:x.app, sel:keys, ins:ins}); });
-  lkSave(L); if(lkShown(L)) lkDraw(); optPump();
+  var list = L.items.filter(only ? function(x){ return x === only; } : lkCanOpt);
+  list.forEach(function(x){ x.opt = {st:'wait'}; }); lkSave(L); if(lkShown(L)) lkDraw();
+  Promise.all(list.map(function(x){ return rpc('runs_add', {p_app:x.app, p_sel:keys, p_ins:ins || ''}).catch(function(e){ x.opt = {st:'fail', why:TP.errText(e)}; }); })).then(function(){
+    lkSave(L); runsChanged({client:c.id}); runTick();
+  });
 }
-function optPump(){ while(OQ.run < OPT_LANES && OQ.jobs.length) optOne(OQ.jobs.shift()); }
-function optOne(job){
-  var L = lkList(job.cid), x = L.items.filter(function(y){ return y.id === job.id; })[0];
-  if(!x || x.app !== job.app || !x.opt || x.opt.st !== 'wait') return;   // taken off the list meanwhile
-  OQ.run++; OQ.cur[x.id] = 1; x.opt = {st:'run', at:Date.now()}; lkSave(L); if(lkShown(L)) lkDraw();
-  var f = document.createElement('iframe'), over = false, tm;
-  function end(o){
-    if(over) return; over = true; clearTimeout(tm); window.removeEventListener('message', hear); f.remove(); OQ.run--; delete OQ.cur[x.id];
-    if(o.why === 'limit'){   // today's AI allowance is used up: the rest would only fail too
-      o.why = 'Today’s AI allowance is used up';
-      OQ.jobs.splice(0).forEach(function(j){ var M = lkList(j.cid), y = M.items.filter(function(z){ return z.id === j.id; })[0]; if(y){ y.opt = {st:'fail', why:o.why}; lkSave(M); } });
-    }
-    x.opt = o; lkSave(L);
-    if(C && lkShown(lkList(C.id))) lkDraw();
-    optPump();
-  }
-  function hear(e){
-    var d = e.data || {}; if(e.origin !== location.origin || !d.tp || !d.batch || d.app !== job.app) return;
-    if(d.act === 'done') end(d.n || d.sk ? {st:'ready', n:d.n || 0, sk:d.sk || 0, before:d.before, after:d.after, at:Date.now()} : {st:'done', same:1, before:d.before, at:Date.now()});
-    else if(d.act === 'fail') end({st:'fail', why:String(d.why || 'Something went wrong'), at:Date.now()});
-  }
-  window.addEventListener('message', hear);
-  tm = setTimeout(function(){ end({st:'fail', why:'It took too long', at:Date.now()}); }, 240000);   // Sync can take up to 150s on its own
-  f.src = '/editor.html?client=' + encodeURIComponent(job.cid) + '&app=' + encodeURIComponent(job.app) + '&batch=' + encodeURIComponent(job.sel) + (job.ins ? '&ins=' + encodeURIComponent(job.ins) : '');
-  f.title = 'Syncing'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
-  f.style.cssText = 'position:fixed;left:-12000px;top:0;width:1280px;height:900px;border:0;visibility:hidden';   // laid out like a real page, never seen
-  document.body.appendChild(f);
-}
-function lkRetry(id){ var c = C, L = lkList(c.id), x = L.items.filter(function(y){ return y.id === id; })[0], p = optChoices(c.id); if(x) optQueue(c, L, SYNC_SEL, p.ins, x); }
-TP.onLeave(function(){ var n = OQ.run + OQ.jobs.length; return n ? n + ' resume' + (n === 1 ? ' is' : 's are') + ' still syncing in this browser tab — closing it or signing out stops ' + (n === 1 ? 'it' : 'them') + '.' : ''; });
+function lkRetry(id){ var c = C, L = lkList(c.id), x = L.items.filter(function(y){ return y.id === id; })[0], p = optChoices(c.id); if(x){ x.opt = null; optQueue(c, L, SYNC_SEL, p.ins, x); } }
 function lkSkipRow(s){
   return '<div class="li lkrow skip" data-why="' + s.why + '"><div class="main"><div class="t">' + esc(s.title ? s.title + (s.company ? ' · ' + s.company : '') : shortLink(s.url)) + '</div><div class="m">' + (s.rj ? esc(rjText(s.rj)) : LK_WHY[s.why]) + '</div></div>' +
     (s.app ? '<div class="side">' + dupNote(s.app) + '</div>' : '') + '</div>';
@@ -4232,7 +4541,7 @@ function tApps(){
   var c = C, p = c.prog || {};
   if(AP.c !== c.id){ AP = {f:'all', q:'', n:50, c:c.id, w:'', mine:false, sel:null}; }
   V.innerHTML = '<div class="stats"><div class="stat"><b>' + (p.done || 0) + (c.row.plan_total ? ' <span style="font-size:14px;color:var(--muted)">/ ' + c.row.plan_total + '</span>' : '') + '</b><span>applications sent</span></div>' +
-      '<div class="stat"><b>' + (p.today || 0) + '</b><span>sent today</span></div><div class="stat"><b>' + (p.drafts || 0) + '</b><span>drafts in progress</span></div><div class="stat"><b>' + (p.interviews || 0) + '</b><span>interviews and offers</span></div></div>' +
+      '<div class="stat"><b>' + (p.today || 0) + ' <span style="font-size:14px;color:var(--muted)">/ ' + DAILY_CAP + '</span></b><span>sent today</span></div><div class="stat"><b>' + (p.drafts || 0) + '</b><span>drafts in progress</span></div><div class="stat"><b>' + (p.interviews || 0) + '</b><span>interviews and offers</span></div></div>' +
     '<div class="tools" style="margin-top:0"><input class="inp" id="apQ" type="search" placeholder="Search role or company" value="' + esc(AP.q) + '" autocomplete="off">' +
       '<div class="seg" id="apF">' + [['all','All'],['draft','Drafts'],['applied','Applied'],['interview','Interview'],['offer','Offer'],['rejected','Not selected'],['closed','Closed'],['withdrawn','Withdrawn']].map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (AP.f === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div></div>' +
     '<div class="tools apt2"><select class="inp" id="apW" aria-label="When">' + AP_W.map(function(w){ return '<option value="' + w[0] + '"' + (AP.w === w[0] ? ' selected' : '') + '>' + w[1] + '</option>'; }).join('') + '</select>' +
@@ -4264,7 +4573,7 @@ function apQuery(c, cols){
   if(AP.f !== 'all') sq = sq.eq('status', AP.f);
   var qq = AP.q.trim().replace(/[,()*%\\]/g, ' ').trim();
   if(qq) sq = sq.or('title.ilike.*' + qq + '*,company.ilike.*' + qq + '*');
-  if(AP.w){ var d = new Date(); d.setHours(0, 0, 0, 0); if(AP.w === 'week') d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); sq = sq.gte('applied_at', d.toISOString()); }   // weeks start on Monday
+  if(AP.w) sq = sq.gte('applied_at', (AP.w === 'week' ? istWeek() : istDay(0)).toISOString());   // India time, as My day and Operations count; weeks start on Monday
   if(AP.mine) sq = sq.in('id', AP.mineIds && AP.mineIds.length ? AP.mineIds : ['00000000-0000-0000-0000-000000000000']);
   return sq;
 }
@@ -4289,7 +4598,7 @@ function loadApps(){
     if(C !== c || !$('#apL')) return;
     var more = rows.length > AP.n; rows = rows.slice(0, AP.n);
     if(!rows.length){
-      box.innerHTML = c.apCache[key] = AP.f === 'all' && !qq && !AP.w && !AP.mine ? '<div class="empty">' + J.apps + '<h3>No applications yet</h3><p>Find a job on the Jobs tab — from the job board or any link — and start the first one.</p><a class="btn pri" href="' + esc(cUrl(c.id, 'jobs')) + '" data-go>Find a job</a></div>' : '<div class="empty"><h3>Nothing here</h3><p>Try another filter or search.</p></div>';
+      box.innerHTML = c.apCache[key] = AP.f === 'all' && !qq && !AP.w && !AP.mine ? '<div class="empty">' + J.apps + '<h3>No applications yet</h3><p>Paste a job’s link on the Jobs tab and start the first one.</p><a class="btn pri" href="' + esc(cUrl(c.id, 'jobs')) + '" data-go>Find a job</a></div>' : '<div class="empty"><h3>Nothing here</h3><p>Try another filter or search.</p></div>';
       return;
     }
     box.innerHTML = c.apCache[key] = '<div class="tbl apps' + (picking ? ' picking' : '') + '"><div class="thead">' + (picking ? '<span><input type="checkbox" data-pickall aria-label="Select all shown"></span>' : '') + '<span>Role</span><span>Location</span><span>Status</span><span>Sent / started</span><span>By</span>' + (picking ? '' : '<span></span>') + '</div>' + rows.map(function(a){
@@ -4768,7 +5077,8 @@ function resumeCard(){
       (!ed && can ? '<button type="button" data-act="resmode" data-v="edit">' + J.edit + 'Edit here<small>Every line typed on beside the job</small></button>' : '') +
       (can ? '<a href="' + esc(url) + '" target="tp-ed-' + esc(A.id) + '" data-act="toeditor">' + J.upright + 'Advanced editor<small>Format, versions, sections</small></a>' : '') +
       (saved || base ? '<button type="button" data-act="resprint">' + J.dl + 'Print / Save as PDF<small>The browser’s print window, exact typeface</small></button>' : '') +
-      (text ? '<button type="button" data-act="cpresume">' + I.copy + 'Copy resume text</button>' : '') + '</span></span>', dv = '<i class="tdiv" aria-hidden="true"></i>';
+      (text ? '<button type="button" data-act="cpresume">' + I.copy + 'Copy resume text</button>' : '') +
+      (A.status === 'draft' && A.jd_text && (saved || base) ? '<button type="button" data-act="bgopt">' + I.spark + 'Optimize in the background<small>Carry on meanwhile; the runs panel says when it’s ready</small></button>' : '') + '</span></span>', dv = '<i class="tdiv" aria-hidden="true"></i>';
   var note = (pend ? '<p class="rnote2">' + I.spark + '<span><b>Synced in the background</b> — Claude’s suggestions wait in the editor; nothing has changed yet</span></p>' : '') +
     (A.jd_text ? '' : '<p class="rnote2 warnt">Paste the job description first: the resume is tailored to it.</p>');
   if(ed) return '<div class="rhe"><span class="rtabs" role="tablist" aria-label="Document"><button type="button" role="tab" data-act="qcmd" data-v="tab" data-arg="resume" aria-selected="' + (st.tab !== 'cover') + '">Resume</button>' +
@@ -4799,10 +5109,9 @@ function drawDraft(){
       '<div class="step ckit" id="ckRes">' + resStep() + '</div>' +
       '<div class="step ckit" id="ckCL"><span class="n' + (A.cover_letter ? ' ok' : '') + '">' + (A.cover_letter ? I.check : '3') + '</span><div class="bd"><b>Cover letter</b><small>' + (A.cover_letter ? 'Written.' : 'Optional — only if the form asks for one.') + '</small></div></div>' +
       '<div class="step ckit" id="ckAns"><span class="n' + (n ? ' ok' : '') + '">' + (n ? I.check : '4') + '</span><div class="bd"><b>Form answers</b><small>' + (n ? n + ' ready to copy into the form.' : 'None yet — add what the form asks.') + '</small></div></div></div>' +
-      '<p class="hint" style="margin:6px 0 10px">Apply on their site with the resume on the right (PDF above it), then add the confirmation here.</p>' +
+      '<p class="hint" style="margin:6px 0 10px">Apply inside ' + first + '’s secure browser with the resume on the right (PDF above it). Capture proof there, or add the confirmation here.</p>' +
       '<div class="senddrop">' + shotsHTML('dShot', 'Confirmation screenshots', 'Paste (<span class="kbd">Ctrl</span>+<span class="kbd">V</span>), drop, or choose several · PNG, JPG or WEBP · up to 10') +
         '</div>' +   // the resume that went is kept by itself (the tailored copy, or the main resume as it was): nothing to upload
-      '<label class="check" style="margin-top:10px"><input type="checkbox" id="noShot"> There was no confirmation screen</label>' +
       '<p class="err" id="mkErr" hidden></p>' +
       (A.submit_status === 'failed' ? '<div class="note bad" id="apFailed" style="margin-top:10px"><b>Couldn’t submit</b> (try ' + (A.attempts || 1) + '): ' + esc(A.fail_reason || '') + ' — ' + esc(TP.ago(A.attempted_at)) + '. Mark as applied once it goes through.</div>' : '') +
       '<div class="sendrow"><button class="btn ok" type="button" data-act="markapplied">' + I.check + 'Mark as applied for ' + first + '</button><span class="sp"></span>' +
@@ -4811,7 +5120,7 @@ function drawDraft(){
   // a job page: on the left the job's card and, right under it, sending it (the next thing to do); then the description and
   // analysis, the answers and the cover letter. The resume on the right
   V.innerHTML = '<div class="aprec apx"><div class="aptop"><a class="btn sm ghost" href="' + esc(cUrl(C.id, 'applications')) + '" data-go>' + I.back + 'Applications</a><div id="lkNext"></div></div>' +
-    '<div id="apDup"></div><div id="apRec"></div><div class="apgrid"><div class="apmain">' + jobCard() + send + jobTabs(jd) +
+    '<div id="apDup"></div><div id="apRec"></div><div class="apgrid"><div class="apmain">' + jobCard() + '<div id="apMail" hidden></div>' + gateCards() + send + jobTabs(jd) +
     '<div class="card"><div class="ch"><h3>Answers for the form</h3><button class="btn sm" type="button" data-act="qaadd2">' + I.plus + 'Add a question</button></div>' +
       '<p class="hint">From ' + first + '’s standard answers. Copy each into the form; anything this form asks is kept with the application.</p>' +
       '<div id="apQA">' + (A.answers || []).map(qaRow).join('') + '</div></div>' +
@@ -4820,12 +5129,13 @@ function drawDraft(){
     resPanel() + '</div>' +
     '<div class="apbar">' + resumeBtn(true) + '<button class="btn ok" type="button" data-act="gomark">' + I.check + 'Mark as applied</button></div></div>';
   ['apT', 'apC', 'apL2', 'apJD', 'apCL'].forEach(function(k){ $('#' + k).addEventListener('input', draftChanged); });
+  apMail(A);   // the employer's emails, codes first (the client's Gmail)
   // the card follows the form: the title and company as they're typed, the facts, tags, match and fit as the description settles
   $('#apT').addEventListener('input', function(e){ $('#apH').textContent = e.target.value.trim() || 'Role'; });
   $('#apC').addEventListener('input', function(e){ $('#apCo').textContent = e.target.value.trim(); });
   $('#apL2').addEventListener('input', function(e){ A.location = e.target.value.trim(); redrawJob(); });
   // the checklist follows the form: the job description and cover letter tick off as they're typed, the answers as they're added
-  $('#apJD').addEventListener('input', function(e){ var had = !!A.jd_text; A.jd_text = e.target.value.trim(); ckMark('ckJob', !!A.jd_text, '1', A.jd_text ? 'Pasted.' : 'Paste it in the Job description below — the resume is tailored to it.'); if(had !== !!A.jd_text) drawRes(); redrawJob(); appFitSoon(); });
+  $('#apJD').addEventListener('input', function(e){ var had = !!A.jd_text; A.jd_text = e.target.value.trim(); ckMark('ckJob', !!A.jd_text, '1', A.jd_text ? 'Pasted.' : 'Paste it in the Job description below — the resume is tailored to it.'); if(had !== !!A.jd_text) drawRes(); redrawJob(); appFitSoon(); gateReqs(); });
   $('#apCL').addEventListener('input', function(e){ var v = e.target.value.trim(); ckMark('ckCL', !!v, '3', v ? 'Written.' : 'Optional — only if the form asks for one.'); });
   var ckAns = function(){ var k = readQA($('#apQA')).length; ckMark('ckAns', !!k, '4', k ? k + ' ready to copy into the form.' : 'None yet — add what the form asks.'); };
   $('#apQA').addEventListener('input', function(){ draftChanged(); ckAns(); });
@@ -4835,7 +5145,7 @@ function drawDraft(){
   ['apT', 'apC'].forEach(function(k){ $('#' + k).addEventListener('change', dupCheck); });
   setupDrop($('#dShot'), 'shot', 'image/png,image/jpeg,image/webp');
   jdView();   // the job description's reading view, from the start
-  lkNext(); dupCheck(); apRecover(A); appFitRun(A);
+  lkNext(); dupCheck(); apRecover(A); appFitRun(A); gateWire();
 }
 // opening a draft: changes typed before the page closed (a crash, a refresh), never saved, are offered back
 function apRecover(a){
@@ -4856,17 +5166,22 @@ function apRecover(a){
     } else { bkDel('app_' + a.id); $('#apRec').innerHTML = ''; }
   });
 }
-// the same role at the same company already applied for (or started) for this client: say so before a second one goes
+// the same role at the same company in the last 90 days (however the posting words it): a draft warns, a sent one blocks —
+// the database refuses it too (23505). An owner can allow it with a reason, kept on the application and in the history.
 function dupCheck(){
   var a = A, c = C; if(!a || a.status !== 'draft' || !$('#apDup')) return;
-  var co = ($('#apC') || {}).value || a.company, ti = ($('#apT') || {}).value || a.title, key = function(s){ return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); };
-  if(!key(co) || !key(ti)) { $('#apDup').innerHTML = ''; return; }
-  q(SB.from('applications').select('id,status,title,company,applied_at,created_at').eq('client_id', c.id).ilike('company', co.trim().replace(/[%_*\\?]/g, '_')).neq('id', a.id).limit(50)).then(function(rows){
+  var co = ($('#apC') || {}).value || a.company, ti = ($('#apT') || {}).value || a.title, sig = jobSig(co, ti);
+  if(!sig){ $('#apDup').innerHTML = ''; a._dup = false; return; }
+  q(SB.from('applications').select('id,status,title,company,applied_at,created_at').eq('client_id', c.id).eq('signature', sig).neq('id', a.id).neq('status', 'withdrawn').limit(50)).then(function(rows){
     if(A !== a || !$('#apDup')) return;
-    var hit = (rows || []).filter(function(r){ return key(r.title) === key(ti) && key(r.company) === key(co); });
-    var sent = hit.filter(function(r){ return r.status !== 'draft'; })[0], other = sent || hit[0];
-    $('#apDup').innerHTML = other ? '<div class="note warn" style="margin-top:12px">' + esc(c.row.full_name) + (sent ? ' already applied for ' : ' has another draft for ') + '<b>' + esc(other.title) + '</b> at <b>' + esc(other.company) + '</b>' +
-      (sent ? ' on ' + esc(TP.fmtDate(other.applied_at)) : ', started ' + esc(TP.ago(other.created_at))) + '. <a href="' + esc(cUrl(c.id, 'app=' + other.id)) + '" data-go>Open it</a></div>' : '';
+    var since = Date.now() - 90 * 864e5, hit = (rows || []).filter(function(r){ return new Date(r.applied_at || r.created_at).getTime() > since; });
+    var sent = hit.filter(function(r){ return r.status !== 'draft'; })[0], other = sent || hit[0], name = esc(c.row.full_name);
+    a._dup = !!sent && !a.dup_override_reason;
+    $('#apDup').innerHTML = !other ? ''
+      : a.dup_override_reason ? '<div class="note" style="margin-top:12px">A second application for <b>' + esc(other.title) + '</b> at <b>' + esc(other.company) + '</b>, allowed by an owner: ' + esc(a.dup_override_reason) + '</div>'
+      : sent ? '<div class="note bad" style="margin-top:12px"><b>Already applied.</b> ' + name + ' applied for <b>' + esc(other.title) + '</b> at <b>' + esc(other.company) + '</b> on ' + esc(TP.fmtDate(other.applied_at)) + '. The same role at the same company counts once in 90 days. <a href="' + esc(cUrl(c.id, 'app=' + other.id)) + '" data-go>Open it</a>' +
+        (ME.owner ? '<div class="row" style="margin-top:8px;gap:8px"><input class="inp" id="dupWhy" placeholder="Why this one should go too (goes in the history)" style="flex:1"><button class="btn sm" type="button" data-act="dupallow">Allow</button></div>' : '<p class="fine" style="margin:6px 0 0">An owner can allow it with a reason.</p>') + '</div>'
+      : '<div class="note warn" style="margin-top:12px">' + name + ' has another draft for <b>' + esc(other.title) + '</b> at <b>' + esc(other.company) + '</b>, started ' + esc(TP.ago(other.created_at)) + '. <a href="' + esc(cUrl(c.id, 'app=' + other.id)) + '" data-go>Open it</a> — only one of them can go.</div>';
   }, function(){});
 }
 /* ---------- saving a draft ----------
@@ -4972,6 +5287,295 @@ function askClash(clash, srv, cur){
 }
 TP.onLeave(function(){ return DSALL.some(function(s){ return s.cur || s.p || s.why; }) ? 'Changes to a draft haven’t been saved yet.' : ''; });
 document.addEventListener('tp-online', function(){ DSALL.forEach(function(s){ if(s.cur || s.why){ clearTimeout(s.retry); saveDraft(s); } }); });
+/* ---------- the fit gate (sql/supabase-fit-gate.sql) ----------
+   What must be true before an application is sent, checked by the specialist on the application page and refused by the
+   database if skipped: the client's eligibility sheet confirmed, the fit ticked, a screenshot, where it was sent from
+   (the client's secure browser, or India), one role per company in 90 days, 15 a day and 5 an hour. The sending rules
+   switch on from a date the owners set (portal_settings 'fit_gate'); dedupe and restrictions are on from the start. */
+var DAILY_CAP = 15, HOUR_CAP = 5, ELIG_DAYS = 30, POSTING_DAYS = 14;
+var GATE = {scored:[], strict:false, strictFrom:null, p:null};
+function loadGate(force){
+  if(GATE.p && !force) return GATE.p;
+  GATE.p = q(SB.from('portal_settings').select('key,value')).then(function(rows){
+    (rows || []).forEach(function(r){
+      if(r.key === 'scored_boards') GATE.scored = (Array.isArray(r.value) ? r.value : []).map(function(x){ return String(x).toLowerCase(); });
+      if(r.key === 'fit_gate'){ GATE.strictFrom = (r.value && r.value.strict_from) || null; GATE.strict = !GATE.strictFrom || new Date(GATE.strictFrom).getTime() <= Date.now(); }
+    });
+    return GATE;
+  }, function(){ return GATE; });
+  return GATE.p;
+}
+// the same role at the same company, however the posting words it (mirrors job_signature in the database)
+function jobSig(co, ti){
+  var n = function(s){ return String(s || '').toLowerCase().replace(/\s*[\(\[][^\)\]]*[\)\]]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); };
+  var c = n(co).replace(/\b(inc|llc|ltd|limited|corp|corporation|co|company|plc|gmbh|pvt|private|group|holdings)\b/g, '').replace(/\s+/g, ' ').trim();
+  var t = n(ti).replace(/\b(remote|hybrid|wfh)\b/g, '').replace(/\s+/g, ' ').trim();
+  return c && t ? c + ' | ' + t : '';
+}
+function atsOf(u){
+  var h = String(u || '').replace(/^https?:\/\/(www\.)?/i, '').replace(/[\/?#].*$/, '').toLowerCase();
+  return /(^|\.)greenhouse\.io$/.test(h) ? 'Greenhouse' : /(^|\.)lever\.co$/.test(h) ? 'Lever' : /(^|\.)ashbyhq\.com$/.test(h) ? 'Ashby' : /(^|\.)workable\.com$/.test(h) ? 'Workable'
+    : /(^|\.)myworkday(jobs|site)\.com$/.test(h) ? 'Workday' : /(^|\.)icims\.com$/.test(h) ? 'iCIMS' : /taleo/.test(h) ? 'Taleo' : /(^|\.)smartrecruiters\.com$/.test(h) ? 'SmartRecruiters'
+    : /successfactors/.test(h) ? 'SuccessFactors' : /(^|\.)linkedin\.com$/.test(h) ? 'LinkedIn' : /(^|\.)indeed\.com$/.test(h) ? 'Indeed' : h;
+}
+function scoredBoard(u){ var b = atsOf(u); return b && GATE.scored.indexOf(b.toLowerCase()) > -1 ? b : ''; }
+var ELIG_LABEL = {yes:'needs sponsorship', no:'no sponsorship needed', later:'will need sponsorship later'};
+var ELIG_WA = ['US citizen', 'Green card', 'H-1B', 'F-1 OPT', 'F-1 STEM OPT', 'H-4 EAD', 'TN', 'L-1', 'L-2 EAD', 'O-1', 'E-3', 'Canadian citizen', 'UK citizen'];
+function eligState(row){
+  var e = (row && row.eligibility) || {}, at = row && row.eligibility_confirmed_at;
+  var missing = !e.work_auth_status || !e.needs_sponsorship || !at, days = at ? (Date.now() - new Date(at).getTime()) / 864e5 : null;
+  return {missing:missing, stale:!missing && days > ELIG_DAYS, days:days, sheet:e, at:at};
+}
+function eligPill(es){
+  return es.missing ? '<span class="gpill bad">Not confirmed</span>' : es.stale ? '<span class="gpill warn">Confirmed ' + esc(TP.ago(es.at)) + ' — check again</span>' : '<span class="gpill ok">Confirmed ' + esc(TP.ago(es.at)) + '</span>';
+}
+function eligLines(e){
+  e = e || {}; var L = [];
+  if(e.work_auth_status) L.push(['Work authorization', e.work_auth_status + (ELIG_LABEL[e.needs_sponsorship] ? ' · ' + ELIG_LABEL[e.needs_sponsorship] : '')]);
+  else if(e.needs_sponsorship) L.push(['Sponsorship', ELIG_LABEL[e.needs_sponsorship]]);
+  if(e.salary_floor) L.push(['Salary floor', e.salary_floor]);
+  if(e.locations) L.push(['Locations', e.locations + (e.remote_ok ? ' · remote OK' : '')]); else if(e.remote_ok) L.push(['Locations', 'Remote OK']);
+  if(e.notice_days != null && e.notice_days !== '') L.push(['Notice', e.notice_days + ' days']);
+  if(e.years != null && e.years !== '') L.push(['Experience', e.years + ' years']);
+  if(e.licences) L.push(['Licences', e.licences]);
+  return L;
+}
+// the one message that re-confirms the sheet: the specialist sends it on WhatsApp; "OK" back is enough to confirm
+function eligMsg(c){
+  var e = (c.row && c.row.eligibility) || {}, first = (c.row.full_name || '').split(' ')[0] || 'there', bits = [];
+  if(e.needs_sponsorship) bits.push(e.needs_sponsorship === 'no' ? 'still no sponsorship needed' : 'still ' + ELIG_LABEL[e.needs_sponsorship]);
+  if(e.work_auth_status) bits.push('still on ' + e.work_auth_status);
+  if(e.locations) bits.push('still open to ' + e.locations + (e.remote_ok ? ' and remote' : ''));
+  if(e.salary_floor) bits.push('salary floor still ' + e.salary_floor);
+  return 'Hi ' + first + ', quick check before this week’s applications: ' + (bits.length ? bits.join(', ') : 'are your work authorization, locations and salary floor still the same') + '? Reply OK, or tell me what changed.';
+}
+// the lines of a job description that read as hard requirements, so the fit tick is a read, not a hunt
+function hardReqs(jd){
+  var out = [];
+  String(jd || '').split(/\n+/).forEach(function(l){
+    l = l.replace(/^[\s•\-–*·]+/, '').trim(); if(l.length < 12 || l.length > 220) return;
+    if(/\b(must|required|requires|requirement|minimum|at least|\d+\+?\s*(years|yrs)|authori[sz]ed|authori[sz]ation|sponsorship|visa|citizen|clearance|degree|bachelor|master|licen[cs]e|certif|on-?site|in[- ]office|relocat|located in|based in)\b/i.test(l)) out.push(l);
+  });
+  return out.slice(0, 8);
+}
+// the four fields the gate keeps on a draft, saved as they're changed (apart from the draft's own save, which they don't disturb)
+function gateSave(patch){
+  var a = A; if(!a || a.status !== 'draft') return Promise.resolve();
+  Object.assign(a, patch);
+  return q(SB.from('applications').update(patch).eq('id', a.id).eq('status', 'draft')).catch(function(e){ TP.toast(TP.errText(e)); });
+}
+function gateCards(){
+  var c = C, a = A, seen = a.posting_first_seen || (a.created_at ? String(a.created_at).slice(0, 10) : '');
+  return '<div class="card" id="apGate"><div class="ch"><h3>Before it goes</h3><span class="muted">Checked by you, on every application. The database refuses what’s skipped.</span></div><div class="gate3">' +
+    '<div class="gcol" id="apFitCol"><b>Fit</b><div class="field"><label for="apSeen">Posting first seen</label><input type="date" id="apSeen" value="' + esc(seen) + '"></div>' +
+      '<label class="check"><input type="checkbox" id="apVer"' + (a.careers_site_verified ? ' checked' : '') + '> Verified on the employer’s careers site</label>' +
+      '<input class="inp" id="apVerUrl" placeholder="The job on their own careers site (link)" value="' + esc(a.careers_site_url || '') + '"' + (a.careers_site_verified ? '' : ' hidden') + '>' +
+      '<div id="apReq"></div><label class="check gatefit"><input type="checkbox" id="apFit"' + (a.fit_confirmed ? ' checked' : '') + '> <b>Meets every hard requirement</b></label><div id="apAged"></div></div>' +
+    '<div class="gcol" id="apElig"></div><div class="gcol" id="apSB"></div></div></div>';
+}
+function gateWire(){
+  var a = A, c = C;
+  $('#apSeen').addEventListener('change', function(e){ gateSave({posting_first_seen:e.target.value || null}); gateAged(); });
+  $('#apVer').addEventListener('change', function(e){ $('#apVerUrl').hidden = !e.target.checked; gateSave({careers_site_verified:e.target.checked}); gateAged(); });
+  $('#apVerUrl').addEventListener('change', function(e){ gateSave({careers_site_url:e.target.value.trim() || null}); });
+  $('#apFit').addEventListener('change', function(e){ gateSave({fit_confirmed:e.target.checked}); });
+  gateReqs(); gateAged(); eligPanel(); sbPanel();
+  loadGate().then(function(){ if(A === a && C === c) sbPanel(); });
+  q(SB.from('clients').select('eligibility,eligibility_confirmed_at,browser_status,browser_state,browser_set_at,phone,email').eq('id', c.id).maybeSingle()).then(function(row){ if(row && A === a && C === c){ Object.assign(c.row, row); eligPanel(); sbPanel(); } }, function(){});
+  sbLoad(c).then(function(){ if(A === a && C === c) sbPanel(); }, function(){});
+}
+function gateReqs(){
+  var box = $('#apReq'); if(!box) return;
+  var L = hardReqs(A.jd_text);
+  box.innerHTML = L.length ? '<div class="fine" style="margin:6px 0 2px">Hard requirements in the description — check each against the sheet:</div><ul class="reqs">' + L.map(function(l){ return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>'
+    : '<p class="fine" style="margin:6px 0 2px">' + (A.jd_text ? 'No hard requirements found in the description — read it once more before ticking.' : 'Paste the job description below to see its hard requirements here.') + '</p>';
+}
+function gateAged(){
+  var box = $('#apAged'); if(!box) return;
+  var seen = $('#apSeen').value, days = seen ? Math.floor((Date.now() - new Date(seen).getTime()) / 864e5) : null, ver = $('#apVer').checked, w = [];
+  if(days != null && days > POSTING_DAYS) w.push('posted ' + days + ' days ago — many recruiters have stopped reading');
+  if(!ver) w.push('not verified on the employer’s site — a board can keep a closed job');
+  box.innerHTML = w.length ? '<div class="note warn" style="margin-top:8px">Allowed, but it goes in the history as ' + esc(w.join('; ')) + '.</div>' : '';
+}
+function eligPanel(){
+  var box = $('#apElig'), c = C; if(!box) return;
+  var es = eligState(c.row), first = esc((c.row.full_name || '').split(' ')[0] || 'them'), L = eligLines(es.sheet);
+  box.innerHTML = '<b>Eligibility</b> ' + eligPill(es) +
+    (L.length ? '<dl class="gsheet">' + L.map(function(x){ return '<dt>' + esc(x[0]) + '</dt><dd>' + esc(x[1]) + '</dd>'; }).join('') + '</dl>' : '<p class="fine">Nothing on the sheet yet.</p>') +
+    (es.missing ? '<p class="fine bad">Work authorization, sponsorship and a confirmation with ' + first + ' are needed before anything is sent. <a href="' + esc(cUrl(c.id, 'profile')) + '" data-go>Fill the sheet</a></p>'
+      : es.stale ? '<p class="fine">Over ' + ELIG_DAYS + ' days old: send the check message, and press Confirmed when ' + first + ' replies OK.</p>' : '') +
+    '<div class="row" style="margin-top:8px"><button class="btn sm' + (es.missing ? '' : ' pri') + '" type="button" data-act="eligconfirm"' + (es.sheet.work_auth_status && es.sheet.needs_sponsorship ? '' : ' disabled title="Fill the sheet on the Profile first"') + '>' + I.check + 'Confirmed with ' + first + '</button>' +
+    '<button class="btn sm" type="button" data-copy="' + esc(eligMsg(c)) + '" data-what="Message">' + I.copy + 'Check message</button></div>';
+}
+// confirming the sheet (the specialist checked it with the client, on the call or on WhatsApp); the database dates it
+function eligConfirm(btn, undo){
+  var c = C, first = (c.row.full_name || '').split(' ')[0] || 'them';
+  var go = function(){
+    return TP.busy(btn, q(SB.from('clients').update({eligibility_confirmed_at:undo ? null : new Date().toISOString()}).eq('id', c.id).select('*').maybeSingle())).then(function(row){
+      if(!row) throw {message:'You don’t have access to that.'};
+      C.row = row; staleList();
+      TP.toast(undo ? 'Needs confirming with ' + first + ' again' : 'Confirmed with ' + first);
+      if(R.app && A) eligPanel(); else if(R.tab === 'profile') tProfile();
+    }).catch(function(e){ TP.toast(TP.errText(e)); });
+  };
+  if(R.tab === 'profile' && !R.app && pfDirty()) return saveProfile().then(function(ok){ if(ok) return go(); });
+  return go();
+}
+/* ---------- the client's secure browser (supabase/functions/client-browser) ----------
+   A cloud browser of their own: its own profile, a stable US address. The specialist opens it from the application page
+   and works in its live view; nothing runs on the client's computer and no password is ever shared. browser_sessions is
+   the log the client sees in their workspace (when, how long), never the live-view address. */
+var SBS = {};   // the open session per client, as last seen
+function sbFn(c, action, extra){ return TP.fn('client-browser', Object.assign({action:action, client_id:c.id}, extra || {}), 120000); }
+function sbLoad(c){
+  return q(SB.from('browser_sessions').select('id,session_id,started_at,ended_at,live_view_url,started_by').eq('client_id', c.id).order('started_at', {ascending:false}).limit(20)).then(function(rows){
+    rows = rows || []; SBS[c.id] = rows.filter(function(r){ return !r.ended_at; })[0] || null; return rows;
+  });
+}
+function sbErr(e){
+  return e && e.code === 'not_configured' ? 'The secure browser isn’t set up in Supabase yet: the Kernel key goes into the function’s secrets first.'
+    : e && e.code === 'owner_only' ? 'Only an owner sets up a client’s secure browser.' : e && e.status === 409 ? 'It’s already open in another tab.' : TP.errText(e);
+}
+function sbOpen(c, btn){
+  var w = window.open('about:blank', 'tp-sb-' + c.id);   // on the click, so the pop-up blocker lets it through
+  return TP.busy(btn, sbFn(c, 'open')).then(function(r){
+    var s = (r && r.session) || {}; SBS[c.id] = {id:s.id, live_view_url:s.live_view_url, started_at:new Date().toISOString()};
+    if(w && !w.closed) w.location.href = s.live_view_url; else window.open(s.live_view_url, '_blank');
+    if(R.app && A) sbPanel(); else if(R.tab === 'profile') sbCard(c);
+  }, function(e){ if(w && !w.closed) w.close(); TP.toast(sbErr(e)); });
+}
+function sbClose(c, btn){
+  return TP.busy(btn, sbFn(c, 'close')).then(function(){ SBS[c.id] = null; TP.toast('Secure browser closed'); if(R.app && A) sbPanel(); else if(R.tab === 'profile') sbCard(c); }, function(e){ TP.toast(sbErr(e)); });
+}
+// proof in one click: the browser's current page, kept as this application's confirmation screenshot
+function sbShot(c, btn){
+  var a = A; if(!a) return;
+  return TP.busy(btn, sbFn(c, 'shot', {application_id:a.id})).then(function(r){
+    if(!(r && r.path)) throw {message:'No screenshot came back'};
+    a._storedShots = (a._storedShots || []).concat(r.path);
+    TP.toast('Proof captured'); if(A === a) sbPanel();
+  }, function(e){ TP.toast(sbErr(e)); });
+}
+function sbSetup(c, btn){
+  return TP.busy(btn, sbFn(c, 'setup')).then(function(){
+    return q(SB.from('clients').select('*').eq('id', c.id).maybeSingle()).then(function(row){ if(row && C === c){ C.row = row; staleList(); } TP.toast('Secure browser ready'); sbCard(c); });
+  }, function(e){ TP.toast(sbErr(e)); });
+}
+function sbPause(c, btn){
+  var to = c.row.browser_status === 'paused' ? 'ready' : 'paused';
+  return TP.busy(btn, q(SB.from('clients').update({browser_status:to}).eq('id', c.id).select('*').maybeSingle())).then(function(row){ if(row && C === c){ C.row = row; staleList(); } sbCard(c); }, function(e){ TP.toast(TP.errText(e)); });
+}
+function sbStatusHTML(c){
+  var st = c.row.browser_status || 'none';
+  return st === 'ready' ? '<span class="gpill ok">Ready' + (c.row.browser_state ? ' · ' + esc(c.row.browser_state) : '') + '</span>' : st === 'paused' ? '<span class="gpill warn">Paused</span>' : '<span class="gpill bad">Not set up</span>';
+}
+// the application page's panel: open it, capture proof, close it; the client's own email and phone; where this one went from
+function sbPanel(){
+  var box = $('#apSB'), c = C, a = A; if(!box || !a) return;
+  var first = esc((c.row.full_name || '').split(' ')[0] || 'them'), st = c.row.browser_status || 'none', open = SBS[c.id], email = (c.mbox && c.mbox.email) || c.row.email, scored = scoredBoard(a.job_url);
+  var from = a._from || (open ? 'secure_browser' : '');
+  box.innerHTML = '<b>' + first + '’s secure browser</b> ' + sbStatusHTML(c) +
+    (st === 'ready' ? (open
+        ? '<p class="fine">Open ' + (open.started_at ? esc(TP.ago(open.started_at)) : 'now') + '. Apply inside its window; capture the proof before you close it.</p><div class="row">' +
+          '<a class="btn sm pri" href="' + esc(open.live_view_url || '#') + '" target="_blank" rel="noopener">' + I.ext + 'Its window</a><button class="btn sm" type="button" data-act="sbshot">' + I.img + 'Capture proof</button><button class="btn sm ghost" type="button" data-act="sbclose">Close</button></div>'
+        : '<div class="row" style="margin-top:6px"><button class="btn sm pri" type="button" data-act="sbopen">' + I.ext + 'Open secure browser</button></div>')
+      : '<p class="fine">' + (st === 'paused' ? 'Paused by an owner.' : 'An owner sets it up on the Profile (Plan &amp; account).') + '</p>') +
+    ((a._storedShots || []).length ? '<p class="fine ok">' + (a._storedShots.length === 1 ? 'Proof captured' : a._storedShots.length + ' proofs captured') + ' — kept with the application when it’s marked as applied.</p>' : '') +
+    '<div class="gsheet gid"><dt>Email</dt><dd>' + esc(email) + ' <button class="lk" type="button" data-copy="' + esc(email) + '" data-what="Email">Copy</button></dd>' +
+      (c.row.phone ? '<dt>Phone</dt><dd>' + esc(c.row.phone) + ' <button class="lk" type="button" data-copy="' + esc(c.row.phone) + '" data-what="Phone">Copy</button></dd>' : '') + '</div>' +
+    '<p class="fine">Every form carries ' + first + '’s own email and phone — never a team address.</p>' +
+    '<div class="gfrom"><span class="fine">Sent from</span><label class="check"><input type="radio" name="apFrom" value="secure_browser"' + (from === 'secure_browser' ? ' checked' : '') + (open ? '' : ' disabled title="Open the secure browser first"') + '> ' + first + '’s secure browser</label>' +
+      '<label class="check"><input type="radio" name="apFrom" value="india"' + (from === 'india' ? ' checked' : '') + '> India</label></div>' +
+    (scored && GATE.strict ? '<div class="note bad" style="margin-top:8px"><b>' + esc(scored) + '</b> is sent only from the secure browser: this board scores where applications come from.' + (ME.owner ? ' As an owner you can allow India with a reason.' : '') + '</div>'
+      : scored ? '<p class="fine">' + esc(scored) + ' scores where applications come from — use the secure browser.</p>' : '');
+  $$('input[name=apFrom]', box).forEach(function(r){ r.addEventListener('change', function(e){ a._from = e.target.value; }); });
+}
+// the Profile's card: set up (owners), pause, the session log
+function sbCard(c){
+  var box = $('#pfSBB'); if(!box) return;
+  return sbLoad(c).then(function(rows){
+    box = $('#pfSBB'); if(C !== c || !box) return;
+    var first = (c.row.full_name || '').split(' ')[0] || 'them', st = c.row.browser_status || 'none';
+    box.innerHTML = '<p class="hint">A cloud browser that exists only for ' + esc(first) + '’s applications: its own profile and a stable US address' + (c.row.browser_state ? ' (' + esc(c.row.browser_state) + ')' : '') + '. The team opens it from the application page and applies inside it. Nothing runs on ' + esc(first) + '’s computer; no password is shared; ' + esc(first) + ' sees every session in their workspace.</p>' +
+      '<div class="row" style="align-items:center;gap:10px">' + sbStatusHTML(c) + (c.row.browser_set_at ? '<span class="fine">since ' + esc(TP.fmtDate(c.row.browser_set_at)) + '</span>' : '') + '</div>' +
+      (ME.owner ? '<div class="row" style="margin-top:10px">' + (st === 'none' ? '<button class="btn sm pri" type="button" data-act="sbsetup">Set up ' + esc(first) + '’s secure browser</button>' : '<button class="btn sm" type="button" data-act="sbpause">' + (st === 'paused' ? 'Resume' : 'Pause') + '</button>') + '</div>' : (st === 'none' ? '<p class="fine">An owner sets it up.</p>' : '')) +
+      (rows.length ? '<div class="fine" style="margin-top:12px">Sessions</div><ul class="sbl">' + rows.slice(0, 10).map(function(r){
+          var mins = r.ended_at ? Math.max(1, Math.round((new Date(r.ended_at) - new Date(r.started_at)) / 60000)) : null;
+          return '<li>' + esc(TP.fmtDate(r.started_at)) + ' · ' + esc(TP.ago(r.started_at)) + (mins != null ? ' · ' + mins + ' min' : ' · <b>open</b>') + ' · ' + esc(teamNameOf(r.started_by)) + '</li>';
+        }).join('') + '</ul>' : '');
+  }, function(e){ box.innerHTML = errBox(e); });
+}
+function teamNameOf(e){ var t = TEAMROWS.filter(function(x){ return x.email === e; })[0]; return (t && t.full_name) || (e ? String(e).split('@')[0] : 'system'); }
+// a reason an owner gives for an override, written to the history by the database
+function askReason(title, text){
+  return new Promise(function(res){
+    var done = false, fin = function(v){ if(done) return; done = true; res(v); };
+    var m = TP.modal('<h2>' + esc(title) + '</h2><p>' + esc(text) + '</p><div class="field"><label for="whyIn">Reason (goes in the history)</label><textarea id="whyIn" rows="2"></textarea></div>' +
+      '<div class="acts"><button class="btn" type="button" data-v="no">Cancel</button><button class="btn pri" type="button" data-v="ok">Allow</button></div>', false, {onClose:function(){ fin(null); }});
+    setTimeout(function(){ var t = $('#whyIn', m); if(t) t.focus(); }, 40);
+    m.addEventListener('click', function(e){
+      var b = e.target.closest('[data-v]'); if(!b) return;
+      var why = String(($('#whyIn', m) || {}).value || '').trim();
+      if(b.getAttribute('data-v') === 'ok' && !why){ $('#whyIn', m).focus(); return; }
+      TP.closeModal(); fin(b.getAttribute('data-v') === 'ok' ? why : null);
+    });
+  });
+}
+// a duplicate an owner allows, with a reason, on the draft itself
+function dupAllow(btn){
+  var a = A, why = String(($('#dupWhy') || {}).value || '').trim();
+  if(!why){ TP.toast('Say why, for the history'); var t = $('#dupWhy'); if(t) t.focus(); return; }
+  return TP.busy(btn, q(SB.from('applications').update({dup_override_reason:why}).eq('id', a.id).eq('status', 'draft').select('dup_override_reason').maybeSingle())).then(function(r){
+    if(!r) throw {message:'This draft was sent or deleted elsewhere.'};
+    a.dup_override_reason = r.dup_override_reason; a._dup = false; TP.toast('Allowed'); dupCheck();
+  }, function(e){ TP.toast(TP.errText(e)); });
+}
+// the owners' settings: when the sending rules start, and which boards must go through the secure browser
+var GATE_BOARDS = ['Greenhouse', 'Ashby', 'Workday', 'Lever', 'iCIMS', 'SmartRecruiters', 'Workable'];
+function gateSettingsHTML(){
+  return '<div class="card" id="mdGate"><div class="ch"><h3>The fit gate</h3><span class="muted">Owners only</span></div>' +
+    '<p class="hint">Dedupe, restrictions and the eligibility sheet are checked now. The sending rules (sheet confirmed, fit ticked, proof, where it went from, 15 a day, 5 an hour) switch on from this date, so every sheet is filled first.</p>' +
+    '<div class="row" style="align-items:flex-end;gap:14px;flex-wrap:wrap"><div class="field" style="max-width:220px"><label for="gtFrom">Sending rules from</label><input type="date" id="gtFrom" value="' + esc(GATE.strictFrom ? String(GATE.strictFrom).slice(0, 10) : '') + '"></div>' +
+    '<div class="field"><label>Only from the secure browser</label><div class="row" style="gap:10px;flex-wrap:wrap">' + GATE_BOARDS.map(function(b){ return '<label class="check"><input type="checkbox" data-board="' + esc(b.toLowerCase()) + '"' + (GATE.scored.indexOf(b.toLowerCase()) > -1 ? ' checked' : '') + '> ' + esc(b) + '</label>'; }).join('') + '</div></div>' +
+    '<button class="btn sm pri" type="button" data-act="gatesave">Save</button></div>' +
+    '<p class="fine" style="margin-top:8px">' + (GATE.strict ? 'The sending rules are on.' : 'The sending rules start ' + (GATE.strictFrom ? esc(TP.fmtDate(GATE.strictFrom)) : 'when a date is set') + '.') + '</p></div>';
+}
+function gateSettingsSave(btn){
+  var from = $('#gtFrom').value, boards = $$('#mdGate [data-board]').filter(function(x){ return x.checked; }).map(function(x){ return x.getAttribute('data-board'); });
+  var ups = [q(SB.from('portal_settings').update({value:boards}).eq('key', 'scored_boards'))];
+  if(from) ups.push(q(SB.from('portal_settings').update({value:{strict_from:from + 'T00:00:00+05:30'}}).eq('key', 'fit_gate')));
+  return TP.busy(btn, Promise.all(ups)).then(function(){ TP.toast('Saved'); return loadGate(true); }).then(function(){ var el = $('#mdGate'); if(el) el.outerHTML = gateSettingsHTML(); }, function(e){ TP.toast(TP.errText(e)); });
+}
+// the owners' report: what came back, per job board and per where it was sent from (the last 30 days)
+function boardDraw(){
+  var box = $('#mdBoard'); if(!box || !ME.owner) return;
+  var from = new Date(Date.now() - 30 * 864e5).toISOString();
+  q(SB.rpc('apps_by_board', {p_from:from, p_to:null})).then(function(rows){
+    box = $('#mdBoard'); if(!box) return;
+    rows = rows || [];
+    var pct = function(a, b){ return b ? Math.round(a / b * 100) + '%' : '–'; }, ORIG = {secure_browser:'secure browser', india:'India', unknown:'not recorded'};
+    box.innerHTML = '<div class="card flush"><div class="ch"><h3>By job board, last 30 days</h3><span class="fine">Where each application went from, and what came back</span></div>' +
+      (rows.length ? '<div class="tbl wkcl bdt"><div class="thead"><span>Board</span><span>From</span><span>Sent</span><span>Interviews</span><span>Offers</span><span>Aged</span><span>Unverified</span></div>' + rows.map(function(r){
+        return '<div class="li"><span class="t">' + esc(r.board) + '</span><span>' + esc(ORIG[r.origin] || r.origin) + '</span><span class="num">' + r.sent + '</span><span class="num">' + r.interviews + ' <small class="muted">' + pct(r.interviews, r.sent) + '</small></span><span class="num">' + r.offers + '</span><span class="num">' + r.aged + '</span><span class="num">' + r.unverified + '</span></div>';
+      }).join('') + '</div>' : '<p class="fine" style="padding:14px 16px">Nothing sent in the last 30 days.</p>') + '</div>' + gateSettingsHTML();
+  }, function(e){ box.innerHTML = errBox(e); });
+}
+// once a day, the owners' page asks the database for the month's re-confirm tasks (pg_cron does it too, where it runs)
+function nudgeOnce(){
+  if(!ME.owner) return;
+  var k = 'tp_elig_nudge', d = new Date(Date.now() + 330 * 60000).toISOString().slice(0, 10);
+  if(TP.lsGet(k) === d) return;
+  q(SB.rpc('eligibility_nudges')).then(function(){ TP.lsSet(k, d); }, function(){});
+}
+var SOP_HTML = '<h2>How we apply</h2><ol class="sop">' +
+  '<li><b>Always from the client’s secure browser</b>, opened from the application page — never from your own Chrome. Greenhouse, Ashby and Workday only from there; no exceptions without an owner.</li>' +
+  '<li><b>If it won’t open</b>, do other boards from India at the same pace, and leave a task to try the secure browser again.</li>' +
+  '<li><b>The client’s own email, phone and address on every form</b> — copy them from the application page. Never a team address, never one you made up.</li>' +
+  '<li><b>Fit first.</b> The Fit check and the Eligibility sheet must be green before you answer a knockout question (authorisation, sponsorship, salary, location, notice). A red sheet means you confirm with the client first.</li>' +
+  '<li><b>Pace:</b> at most 15 a day and 5 an hour per client, spread through the day — never a burst, never the same role at a company twice in 90 days.</li>' +
+  '<li><b>Proof every time:</b> Capture proof in the secure browser (or a screenshot of the confirmation, or of the filled form just before Submit).</li>' +
+  '<li><b>Close the secure browser</b> when you’re done. Verification codes and employer emails are read from the client’s Gmail on the application page — never ask the client to forward one.</li></ol>';
+function sopModal(){ TP.modal(SOP_HTML, false); }
 var FILES = {shots:[]};
 var SHOT_MAX = 10;
 // The confirmation screenshots block: the drop zone (paste, drop or choose several), the thumbnails with a delete on each
@@ -5046,40 +5650,68 @@ document.addEventListener('paste', function(e){
   }
 });
 function ext(f){ var m = /\.(\w{2,5})$/.exec(f.name || ''); return (m ? m[1] : (f.type.split('/')[1] || 'bin')).toLowerCase().replace('jpeg', 'jpg'); }
-// "Mark as applied" is permanent and the client sees it at once, so it first shows exactly what goes on the record
-function markApplied(btn){
-  var a = A, c = C, err = $('#mkErr'), noShot = $('#noShot').checked;
+// "Mark as applied" is permanent and the client sees it at once, so it first checks the gate (the same checks the database
+// makes: eligibility confirmed, fit ticked, proof, where it went from, the pace) and shows exactly what goes on the record
+function markApplied(btn, reasons){
+  var a = A, c = C, err = $('#mkErr'), first = (c.row.full_name || '').split(' ')[0] || 'The client';
+  reasons = reasons || {};
   err.hidden = true;
-  if(!FILES.shots.length && !noShot){ err.hidden = false; err.textContent = 'Add the confirmation screenshot (paste it with Ctrl+V), or tick “There was no confirmation screen”.'; return; }
+  var say = function(m){ err.hidden = false; err.textContent = m; };
+  var es = eligState(c.row), kept = (a._storedShots || []).length, shots = FILES.shots.length + kept;
+  var from = a._from || ($$('input[name=apFrom]').filter(function(r){ return r.checked; })[0] || {}).value || '', fit = $('#apFit') && $('#apFit').checked;
+  if(es.missing && GATE.strict) return say('Confirm work authorization and sponsorship with ' + first + ' first — the Eligibility card above.');
+  if(a._dup) return say(first + ' already applied for this role at this company in the last 90 days.' + (ME.owner ? ' Allow it above, with a reason.' : ''));
+  if(!shots) return say('Add the proof: Capture proof in the secure browser, or paste the confirmation screenshot (Ctrl+V).');
+  if(!fit) return say('Tick “Meets every hard requirement” in the Fit check first — read the hard requirements against the sheet.');
+  if(!from) return say('Say where it was sent from — ' + first + '’s secure browser, or India.');
+  var scored = scoredBoard(a.job_url), sess = SBS[c.id];
+  if(from === 'secure_browser' && !sess) return say('The secure browser isn’t open — open it, or choose India.');
   var f = draftForm();
-  if(!f.title || !f.company){ err.hidden = false; err.textContent = 'Add the job title and company in step 1.'; return; }
+  if(!f.title || !f.company) return say('Add the job title and company in step 1.');
+  var today = (c.prog || {}).today || 0;
+  if(scored && from === 'india' && GATE.strict && !ME.owner && !reasons.origin_override_reason) return say(scored + ' is sent only from ' + first + '’s secure browser. Open it, or ask an owner.');
+  if(today >= DAILY_CAP && GATE.strict && !ME.owner && !reasons.cap_override_reason) return say(first + ' already has ' + today + ' sent today — the daily cap is ' + DAILY_CAP + '. Carry on tomorrow.');
+  // the owners' reasons, asked one at a time: India to a scored board, the 16th today
+  var ask = Promise.resolve(true);
+  if(scored && from === 'india' && GATE.strict && !reasons.origin_override_reason) ask = ask.then(function(ok){ if(!ok) return false; return askReason('Send to ' + scored + ' from India?', 'This board scores where applications come from. Say why ' + first + '’s secure browser can’t be used this time.').then(function(w){ if(!w) return false; reasons.origin_override_reason = w; return true; }); });
+  if(today >= DAILY_CAP && GATE.strict && !reasons.cap_override_reason) ask = ask.then(function(ok){ if(!ok) return false; return askReason('More than ' + DAILY_CAP + ' today for ' + first + '?', 'The daily cap keeps every client under the volume boards flag. Say why today needs more.').then(function(w){ if(!w) return false; reasons.cap_override_reason = w; return true; }); });
   // everything typed is saved first, and the latest the editor saved is read back
-  TP.busy(btn, saveDraft().then(function(ok){
-    if(!ok) throw {message:'The latest changes to this draft haven’t saved yet (' + (DS && DS.why || 'no connection') + '). Try again in a moment.'};
-    return q(SB.from('applications').select('resume_doc,resume_text,cover_letter,answers,jd_text,base_resume_id,status,updated_at').eq('id', a.id).maybeSingle());
+  TP.busy(btn, ask.then(function(ok){
+    if(!ok) return 'cancel';
+    return saveDraft().then(function(ok2){
+      if(!ok2) throw {message:'The latest changes to this draft haven’t saved yet (' + (DS && DS.why || 'no connection') + '). Try again in a moment.'};
+      return q(SB.from('applications').select('resume_doc,resume_text,cover_letter,answers,jd_text,base_resume_id,status,updated_at,job_url,fit_confirmed,posting_first_seen,careers_site_verified,careers_site_url,dup_override_reason').eq('id', a.id).maybeSingle());
+    });
   })).then(function(row){
+    if(row === 'cancel') return;
     if(!row) throw {message:'This draft was deleted somewhere else.'};
     if(row.status !== 'draft') throw {message:'It’s already marked as applied — refresh the page.'};
     Object.assign(a, row);
     if(A !== a) return;
     var base = (c.resumes || []).filter(function(r){ return r.id === a.base_resume_id; })[0], own = !!(a.resume_doc || a.resume_text);
     if(!own && !a.base_resume_id) throw {message:'There’s no resume on this application yet — pick the one it starts from on the right, or tailor it in the editor.'};
-    var first = (c.row.full_name || '').split(' ')[0] || 'The client', saved = a.resume_doc && a.resume_doc.meta && a.resume_doc.meta.saved, n = (a.answers || []).length;
+    var saved = a.resume_doc && a.resume_doc.meta && a.resume_doc.meta.saved, n = (a.answers || []).length;
+    var seen = $('#apSeen') && $('#apSeen').value, days = seen ? Math.floor((Date.now() - new Date(seen).getTime()) / 864e5) : null, ver = $('#apVer') && $('#apVer').checked;
     var items = [
+      es.missing ? ['warn', 'Eligibility sheet <b>not confirmed</b> with ' + esc(first) + ' — required from ' + (GATE.strictFrom ? esc(TP.fmtDate(GATE.strictFrom)) : 'the switch-on date')]
+        : es.stale ? ['warn', 'Eligibility sheet confirmed <b>' + esc(TP.ago(es.at)) + '</b> — check with ' + esc(first) + ' again soon'] : ['ok', 'Eligibility sheet confirmed ' + esc(TP.ago(es.at))],
+      ['ok', 'Fit: <b>meets every hard requirement</b>' + (days != null && days > POSTING_DAYS ? ' — but posted <b>' + days + ' days ago</b>' : '') + (ver ? '' : ' — <b>not verified</b> on the employer’s site')],
       own ? (optimisedDoc(a.resume_doc) ? ['ok', 'Resume <b>tailored to this job</b>' + (saved ? ' — last saved in the editor ' + esc(TP.ago(saved)) : '')]
                                         : ['warn', 'Resume <b>not tailored to this job</b> — it goes as copied from ' + esc(base ? base.name : 'the main resume')])
           : ['warn', 'Resume <b>not opened for this job</b> — ' + esc(base ? base.name : 'the main resume') + ' goes exactly as it is today'],
-      FILES.shots.length ? ['ok', (FILES.shots.length === 1 ? 'Confirmation screenshot' : FILES.shots.length + ' confirmation screenshots') + ' attached'] : ['warn', 'No confirmation screenshot (“There was no confirmation screen” is ticked)'],
+      ['ok', (shots === 1 ? 'Proof: 1 screenshot' : 'Proof: ' + shots + ' screenshots') + (kept ? ' (' + kept + ' captured in the secure browser)' : '')],
+      from === 'secure_browser' ? ['ok', 'Sent from <b>' + esc(first) + '’s secure browser</b>' + (c.row.browser_state ? ' in ' + esc(c.row.browser_state) : '')] : ['info', 'Sent from <b>India</b>' + (reasons.origin_override_reason ? ' — allowed: ' + esc(reasons.origin_override_reason) : '')],
+      ['info', (today + 1) + ' of ' + DAILY_CAP + ' today for ' + esc(first) + (reasons.cap_override_reason ? ' — allowed: ' + esc(reasons.cap_override_reason) : '')],
       a.cover_letter ? ['ok', 'Cover letter included'] : ['info', 'No cover letter'],
       n ? ['ok', n + ' form answer' + (n === 1 ? '' : 's') + ' kept'] : ['info', 'No form answers'],
       a.jd_text ? ['ok', 'Job description kept'] : ['warn', 'No job description kept']
     ];
     return TP.confirmBox('Mark as applied for ' + first + '?', 'This becomes the permanent record of what went to ' + (a.company || 'the company') + '. ' + first + ' sees it on their dashboard straight away, and only the owner can delete it.',
-      'Mark as applied', false, {items:items, careful:true}).then(function(ok){ if(ok) doMarkApplied(a, btn); });
+      'Mark as applied', false, {items:items, careful:true}).then(function(ok){ if(ok) doMarkApplied(a, btn, Object.assign({applied_from:from, browser_session_id:from === 'secure_browser' ? sess.id : null, fit_confirmed:true}, reasons)); });
   }).catch(function(e){ err.hidden = false; err.textContent = TP.errText(e); });
 }
-function doMarkApplied(a, btn){
-  var err = $('#mkErr');
+function doMarkApplied(a, btn, gate){
+  var err = $('#mkErr'), c = C;
   btn.disabled = true; btn.classList.add('busy');
   var base = (C.resumes || []).filter(function(r){ return r.id === a.base_resume_id; })[0];
   var stamp = Date.now(), dir = C.id + '/applications/' + a.id + '/';
@@ -5091,15 +5723,24 @@ function doMarkApplied(a, btn){
   Promise.all([resume, shots, res]).then(function(rs){
     btn.innerHTML = label;
     if(!rs[0].resume_text && !rs[0].resume_doc && !a.resume_text && !a.resume_doc && !rs[2]){ throw {message:'There’s no resume on this application yet — pick the one it starts from on the right, or tailor it in the editor.'}; }
-    var up = Object.assign({}, rs[0], {status:'applied', screenshots:rs[1], screenshot:rs[1][0] || null, resume_file:rs[2]});
+    var all = (a._storedShots || []).concat(rs[1]);   // the proofs captured in the secure browser first, then the pasted ones
+    var up = Object.assign({}, rs[0], gate || {}, {status:'applied', screenshots:all, screenshot:all[0] || null, resume_file:rs[2]});
     return q(SB.from('applications').update(up).eq('id', a.id).eq('status', 'draft').select('*').maybeSingle());
   }).then(function(row){
     if(!row) throw {message:'Couldn’t mark it — it may already be marked as applied. Refresh the page.'};
-    FILES = {shots:[]}; if(DS && DS.a === a){ DS.cur = null; DS.why = ''; } bkDel('app_' + a.id); C.idx = null; C.who = null;
+    FILES = {shots:[]}; a._storedShots = []; if(DS && DS.a === a){ DS.cur = null; DS.why = ''; } bkDel('app_' + a.id); C.idx = null; C.who = null;
     TP.toast('Marked as applied for ' + C.row.full_name);
     refreshProgress().then(function(){ var p = C.prog || {}; if(C.row.plan_total) TP.toast('Marked as applied — ' + (p.done || 0) + ' / ' + C.row.plan_total + ' for ' + C.row.full_name); });
     tApp(a.id);
-  }).catch(function(e){ btn.disabled = false; btn.classList.remove('busy'); btn.innerHTML = label; err.hidden = false; err.textContent = TP.errText(e); });
+  }).catch(function(e){
+    btn.disabled = false; btn.classList.remove('busy'); btn.innerHTML = label;
+    // a fact the résumé changed (the database's own check): an owner can allow it with a reason, right here
+    if(e && e.code === '23514' && ME.owner && gate && !gate.facts_override_reason && A === a && C === c){
+      err.hidden = false; err.textContent = TP.errText(e);
+      return askReason('Allow the changed fact?', TP.errText(e)).then(function(w){ if(w){ gate.facts_override_reason = w; doMarkApplied(a, btn, gate); } });
+    }
+    err.hidden = false; err.textContent = TP.errText(e);
+  });
 }
 // the screenshots, one after another (each made smaller first), telling the button how far it is; the paths in order
 function uploadShots(dir, stamp, say){
@@ -5116,7 +5757,7 @@ function drawSent(){
   // the same job page as a draft: the job's card with its status, its description and analysis, then the confirmation and the
   // record, the answers, the cover letter, notes and the history on the left; the resume that went, on the right
   V.innerHTML = '<div class="aprec apx"><div class="aptop"><a class="btn sm ghost" href="' + esc(cUrl(C.id, 'applications')) + '" data-go>' + I.back + 'Applications</a><div id="lkNext"></div></div>' +
-    '<div class="apgrid"><div class="apmain">' + jobCard() + jobTabs(jd) +
+    '<div class="apgrid"><div class="apmain">' + jobCard() + '<div id="apMail" hidden></div>' + jobTabs(jd) +
     '<div class="card"><div class="ch"><h3>Confirmation and record</h3><span class="lock">' + I.lock + 'Sent ' + esc(TP.fmtDateTime(A.applied_at)) + ' — what was sent can’t be changed</span></div>' +
       '<div class="aprecbox"><div>' + (shots.length === 1 ? '<div class="shot1">' + [0].map(function(i){ return '<a class="shot" data-file="' + esc(shots[0]) + '" target="_blank" rel="noopener"><img data-file="' + esc(shots[0]) + '" alt="Confirmation screenshot"></a>' + '<button type="button" class="x" data-act="wkshotx" data-i="' + i + '" aria-label="Remove screenshot ' + (i + 1) + '" title="Not this job’s? Remove it">×</button>'; })[0] + '</div><p class="fine" style="margin-top:6px">Click to open it full size · × takes off one that isn’t this job’s.</p>'
         : shots.length ? '<div class="shotgrid ro">' + shots.map(function(p, i){ return '<div class="shotc"><a class="shot" data-file="' + esc(p) + '" target="_blank" rel="noopener" title="Screenshot ' + (i + 1) + ' — click to open it full size"><img data-file="' + esc(p) + '" alt="Confirmation screenshot ' + (i + 1) + '"></a>' + '<button type="button" class="x" data-act="wkshotx" data-i="' + i + '" aria-label="Remove screenshot ' + (i + 1) + '" title="Not this job’s? Remove it">×</button>' + '</div>'; }).join('') + '</div><p class="fine" style="margin-top:6px">' + shots.length + ' screenshots · click one to open it full size · × takes off one that isn’t this job’s.</p>'
@@ -5148,6 +5789,7 @@ function drawSent(){
       'Change to ' + TP.statusLabel(to), false).then(function(ok){ if(ok) setStatus(to, from); else if(sel.isConnected) sel.value = from; });
   });
   if($('#dShot2')) setupDrop($('#dShot2'), 'shot', 'image/png,image/jpeg,image/webp', appShots(A).length);
+  apMail(A);   // the employer's emails, and what each did (the client's Gmail)
   var a = A;
   q(SB.from('client_activity').select('*').eq('application_id', a.id).order('at', {ascending:true})).then(function(rows){ if(A === a && $('#apHist')) $('#apHist').innerHTML = (rows || []).map(histRow).join('') || '<p class="fine">No history yet.</p>'; }, function(){});
   lkNext();
@@ -5208,6 +5850,7 @@ if(TP.lsGet('tp_sb_min', false)) sbToggle(true);
 var BC = window.BroadcastChannel ? new BroadcastChannel('tp-portal') : null;
 if(BC) BC.onmessage = function(e){
   var m = e.data || {};
+  if(m.runs) runsLoad();
   if(m.reviewed && m.client && m.app){   // the batch's suggestions for a draft in a list were reviewed in the editor
     var L = lkList(m.client), x = L.items.filter(function(y){ return y.app === m.app; })[0];
     if(x){ x.opt = {st:'done', at:Date.now()}; lkSave(L); if(lkShown(L)) lkDraw(); }
@@ -5268,11 +5911,10 @@ function setClientStatus(c, st, b){
 }
 // Recently deleted is there once the safeguards SQL has run; until then a delete says it can't be undone
 var TRASH = null;
-/* ---------- withdrawing or deleting a sent application ----------
-   Withdraw: the client still sees it on their list, marked Withdrawn with the reason, and it stops counting toward the plan
-   (sql/supabase-withdraw.sql keeps when, why and the status it had, so Undo withdrawal puts that back; who is in the history).
+/* ---------- taking a sent application back, or deleting it ----------
+   Withdrawn: applications withdrawn before 5 Nov 2026 stay on the client's list, marked Withdrawn with the reason, and don't count
+   toward the plan; Undo withdrawal puts back the status they had (sql/supabase-withdraw.sql). New ones are Applied by mistake.
    Delete: only for one marked by mistake; it comes off the client's list too (owners only, Recently deleted for 30 days). */
-var WD_WHY = ['Client got another offer', 'Client asked us to', 'Wrong location', 'Not the right role'];
 // Applied by mistake (sql/supabase-mistakes.sql): withdrawn and hidden from the client altogether — not on their list, counts or
 // dashboard, no reason shown. The note is the team's; the owners have every one under Operations → Applied by mistake, and only
 // they put one back.
@@ -5290,28 +5932,6 @@ function wdAfter(c, row){
   if(C !== c) return;
   if(A && R.app === row.id){ A = Object.assign(A, row); drawSent(); var n = $('.note.wdn') || $('#apH'); if(n) n.scrollIntoView({block:'center'}); }   // its button was further down: show what changed
   else if(R.tab === 'applications' && !R.app) loadApps();
-}
-function withdrawApp(a, c){
-  var first = (c.row.full_name || '').split(' ')[0] || 'The client', p = c.prog || {}, tot = c.row.plan_total || 0, why = '';
-  var pr = TP.confirmBox('Withdraw this application?', (a.title || 'Role') + (a.company ? ' at ' + a.company : '') + '.', 'Withdraw it', true, {
-    items:[['info', esc(first) + ' still sees it on their list, marked Withdrawn, with the reason below.'],
-           ['ok', 'It stops counting toward the plan' + (tot && p.done ? ' (' + Math.max(0, p.done - 1).toLocaleString() + ' of ' + tot.toLocaleString() + ' sent after this)' : '') + '.'],
-           ['info', 'It goes into the history, and Undo withdrawal puts it back.']],
-    html:'<div class="field" style="margin-top:12px"><label for="wdR">Reason <span class="muted">(' + esc(first) + ' sees it)</span></label><input id="wdR" maxlength="500" placeholder="e.g. Client got another offer" autocomplete="off">' +
-      '<div class="wdq">' + WD_WHY.map(function(w){ return '<button type="button" data-wd="' + esc(w) + '">' + esc(w) + '</button>'; }).join('') + '</div>' +
-      '<button type="button" class="lk wdmk" data-no="1" data-wdmk="1">Sent by mistake? Hide it from ' + esc(first) + ' instead</button></div>'});
-  var r = $('#wdR'), toMk = false, mk = $('[data-wdmk]');
-  if(mk) mk.addEventListener('click', function(){ toMk = true; });   // closes this one (data-no), then the mistake's own dialog
-  if(r){ r.addEventListener('input', function(){ why = r.value; });
-    $('.wdq').addEventListener('click', function(e){ var w = e.target.closest('[data-wd]'); if(w){ r.value = why = w.getAttribute('data-wd'); r.focus(); } }); }
-  return pr.then(function(ok){
-    if(!ok){ if(toMk) return mistakeApp(a, c); return; }
-    return q(SB.from('applications').update({status:'withdrawn', withdraw_reason:why.trim() || null}).eq('id', a.id).eq('client_id', c.id).neq('status', 'draft').select('*').maybeSingle()).then(function(row){
-      if(!row) throw {message:'It isn’t a sent application any more, or it isn’t yours to change — refresh the page.'};
-      refreshProgress(); wdAfter(c, row);
-      TP.toast('Withdrawn — it no longer counts toward ' + first + '’s plan', {undo:function(){ unwithdrawApp(row, c); }});
-    });
-  }).catch(fail);
 }
 function mistakeApp(a, c){
   var first = (c.row.full_name || '').split(' ')[0] || 'The client', p = c.prog || {}, tot = c.row.plan_total || 0, note = '';
@@ -5395,7 +6015,6 @@ function apRowMenu(btn){
 function apRowPick(b){
   var c = C, id = b.getAttribute('data-id'), v = b.getAttribute('data-v'), a = c.apRows && c.apRows[id]; apRowClose(); if(!a) return;
   if(v === 'open') return go(cUrl(c.id, 'app=' + id));
-  if(v === 'withdraw') return withdrawApp(a, c);
   if(v === 'unwithdraw') return unwithdrawApp(a, c);
   if(v === 'mistake') return mistakeApp(a, c);
   if(v === 'unmistake') return unmistakeApp(a, c);
@@ -5520,10 +6139,9 @@ function vTeam(){
     });
   });
   loadTeamNames().then(drawTeam);
-  // what each person sent today, from the history
-  var d0 = new Date(); d0.setHours(0, 0, 0, 0);
-  q(SB.from('client_activity').select('by_email').eq('kind', 'app_applied').gte('at', d0.toISOString()).limit(5000)).then(function(rows){
-    TODAY = {}; (rows || []).forEach(function(r){ TODAY[r.by_email] = (TODAY[r.by_email] || 0) + 1; });
+  // what each person sent today (India time, never one applied by mistake): the same figures as My day and Operations
+  q(SB.rpc('work_summary', {})).then(function(rows){
+    TODAY = {}; (rows || []).forEach(function(r){ if(r.employee) TODAY[r.employee] = (TODAY[r.employee] || 0) + (r.sent_today || 0); });
     if(R.page === 'team' && $('#tmL')) drawTeam();
   }, function(){});
 }
@@ -5904,6 +6522,17 @@ document.addEventListener('click', function(e){
       e.preventDefault(); e.stopPropagation();
       return closeTab(b.getAttribute('data-id'));
     case 'pfsave': return saveProfile();
+    case 'eligconfirm': return eligConfirm(b, false);
+    case 'eligunconfirm': return eligConfirm(b, true);
+    case 'eligfill': return eligFromResume(C);
+    case 'sbopen': return sbOpen(C, b);
+    case 'sbclose': return sbClose(C, b);
+    case 'sbshot': return sbShot(C, b);
+    case 'sbsetup': return sbSetup(C, b);
+    case 'sbpause': return sbPause(C, b);
+    case 'dupallow': return dupAllow(b);
+    case 'gatesave': return gateSettingsSave(b);
+    case 'sop': closeMeMenu(); return sopModal();
     case 'qaadd': $('#pfQA').insertAdjacentHTML('beforeend', qaRow({})); $$('#pfQA [data-qa=q]').pop().focus(); return;
     case 'qacommon': {   // its answer suggested from what the Profile says now (typed but not saved yet included)
       var qq = b.getAttribute('data-q'), form = {}; PF.forEach(function(k){ var fl = $('#pf_' + k); form[k] = fl ? fl.value.trim() : C.row[k]; });
@@ -5921,6 +6550,11 @@ document.addEventListener('click', function(e){
       if(had) TP.toast('Answer removed', {undo:function(){ if(!qbox.isConnected) return; qbox.insertBefore(r2, qnext && qnext.parentNode === qbox ? qnext : null); qaDone(); }});
       return;
     case 'resend': return resendInvite(b);
+    case 'mbconnect': return mbConnect(C);
+    case 'mbdone': return TP.busy(b, mbDone(C, false));
+    case 'mbcheck': return mbCheck(C, b);
+    case 'mbdisc': return mbDisc(C);
+    case 'mbact': return mbAct(b);
     case 'newresume': return newResume();
     case 'rqanswer': return answerReq(b.getAttribute('data-id'));
     case 'resmenu': return resumeMenu(b.getAttribute('data-id'));
@@ -5928,6 +6562,10 @@ document.addEventListener('click', function(e){
     case 'lkclear': return lkClear();
     case 'lkdel': return lkDel(b.getAttribute('data-id'));
     case 'lkopt': return lkOptimise();
+    case 'runs': return runsPanel();
+    case 'runcancel': return runAct('cancel', b.getAttribute('data-id'), b);
+    case 'runretry': return runAct('retry', b.getAttribute('data-id'), b);
+    case 'bgopt': { var bm = $('#resMenu'); if(bm) bm.hidden = true; return bgOpt(A, C); }
     case 'lkretry': return lkRetry(b.getAttribute('data-id'));
     case 'lkjd': return lkJd(b.getAttribute('data-id'));
     case 'shotmore': { var sd = $('#' + b.getAttribute('data-for')); if(sd && sd._pick) sd._pick(); return; }
@@ -5978,7 +6616,6 @@ document.addEventListener('click', function(e){
         });
       });
     case 'delsent': return delSentApp(A, C);
-    case 'withdraw': return withdrawApp(A, C);
     case 'unwithdraw': return unwithdrawApp(A, C);
     case 'mistake': return mistakeApp(A, C);
     case 'unmistake': return unmistakeApp(A, C);
