@@ -1658,6 +1658,17 @@ body.sbmin .runpill span{display:none}
 .rvt{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}.rvt td{padding:4px 6px;border-top:1px solid var(--line);vertical-align:top}
 .rvt td:first-child{color:var(--muted);width:40%}.rvt tr.empty td{background:#fffbeb}.rvt td.src{color:var(--muted);font-size:11px;white-space:nowrap;text-align:right}
 .rvt i{color:#b42318;font-style:normal}.rvt small{display:block;color:var(--muted)}.rvt .muted{color:var(--muted)}
+.apgrid.split{grid-template-columns:minmax(300px,var(--apl,40%)) 14px minmax(0,1fr);column-gap:0}
+.apgrid.split.live{grid-template-columns:minmax(300px,var(--apll,33%)) 14px minmax(0,1fr)}
+.apsplit{align-self:stretch;cursor:col-resize;position:relative;touch-action:none;outline:0}
+.apsplit::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;border-radius:2px;background:var(--line)}
+.apsplit::after{content:'';position:sticky;top:45vh;display:block;margin:0 auto;width:6px;height:36px;border-radius:4px;background:var(--line)}
+.apsplit:hover::before,.apsplit:focus-visible::before,.apdrag .apsplit::before{background:var(--blue,#2563eb)}
+.apsplit:hover::after,.apsplit:focus-visible::after,.apdrag .apsplit::after{background:var(--blue,#2563eb)}
+.apdrag,.apdrag *{cursor:col-resize!important;user-select:none}.apdrag iframe{pointer-events:none}
+.apgrid.split .apmain{grid-template-columns:minmax(0,1fr)}.apgrid.split .apmain > *{min-width:0}   /* the cards shrink with the column instead of running under the other half */
+.apgrid.split .jacts{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}.apgrid.split .jacts .btn{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}   /* the buttons wrap to one a row when the column is narrow */
+@media (max-width:900px){.apgrid.split,.apgrid.split.live{grid-template-columns:minmax(0,1fr)}.apsplit{display:none}}
 .aplive{position:sticky;top:12px;min-width:0}
 .aplive .lvhd{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;font-size:13px}
 .aplive iframe{display:block;width:100%;height:78vh;border:1px solid var(--line);border-radius:var(--rc);background:#1a1a1a}
@@ -4782,7 +4793,7 @@ function jobCard(){
   var by = C.who && C.who[A.id], draft = A.status === 'draft';
   var when = A.applied_at ? 'Applied ' + esc(TP.fmtDateTime(A.applied_at)) : 'Started ' + esc(TP.ago(A.created_at));
   var acts = draft
-    ? '<a class="btn" href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Apply</a>' +
+    ? '<button class="btn" type="button" data-act="goapply" title="Opens ' + esc((C.row.full_name || '').split(' ')[0] || 'the client') + '’s browser here on this job, with the resume in and the form filled">' + I.ext + 'Apply</button>' +
       '<button class="btn" type="button" data-act="gomark">' + J.okc + 'Mark as applied</button>' + resumeBtn('act') +
       '<button class="btn pri" type="button" data-act="gocover">' + J.doc2 + 'Cover Letter</button>'
     : '<a class="btn" href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Job posting</a>' +
@@ -5131,14 +5142,15 @@ function drawDraft(){
   // a job page: on the left the job's card and, right under it, sending it (the next thing to do); then the description and
   // analysis, the answers and the cover letter. The resume on the right
   V.innerHTML = '<div class="aprec apx"><div class="aptop"><a class="btn sm ghost" href="' + esc(cUrl(C.id, 'applications')) + '" data-go>' + I.back + 'Applications</a><div id="lkNext"></div></div>' +
-    '<div id="apDup"></div><div id="apRec"></div><div class="apgrid"><div class="apmain">' + jobCard() + '<div id="apMail" hidden></div>' + gateCards() + send + jobTabs(jd) +
+    '<div id="apDup"></div><div id="apRec"></div><div class="apgrid split" id="apGrid"><div class="apmain">' + jobCard() + '<div id="apMail" hidden></div>' + gateCards() + send + jobTabs(jd) +
     '<div class="card"><div class="ch"><h3>Answers for the form</h3><button class="btn sm" type="button" data-act="qaadd2">' + I.plus + 'Add a question</button></div>' +
       '<p class="hint">From ' + first + '’s standard answers. Copy each into the form; anything this form asks is kept with the application.</p>' +
       '<div id="apQA">' + (A.answers || []).map(qaRow).join('') + '</div></div>' +
     '<div class="card" id="apCover"><div class="ch"><h3>Cover letter <span class="muted">(if the form asks)</span></h3><button class="btn sm" type="button" data-act="cpcover">' + I.copy + 'Copy</button></div>' +
       '<p class="hint">Write it in the editor’s <b>Cover letter</b> tab, or paste it here.</p><textarea class="inp" id="apCL" rows="6">' + esc(A.cover_letter || '') + '</textarea></div></div>' +
+    '<div class="apsplit" role="separator" aria-orientation="vertical" aria-label="Drag to resize the two halves" tabindex="0" title="Drag to resize · double-click to reset"></div>' +
     '<aside class="aplive" id="apLive" hidden aria-label="The client’s secure browser"></aside>' + resPanel() + '</div>' +
-    '<div class="apbar">' + resumeBtn(true) + '<button class="btn ok" type="button" data-act="gomark">' + I.check + 'Mark as applied</button></div></div>';
+    '<div class="apbar"><button class="btn" type="button" data-act="goapply">' + I.ext + 'Apply</button>' + resumeBtn(true) + '<button class="btn ok" type="button" data-act="gomark">' + I.check + 'Mark as applied</button></div></div>';
   ['apT', 'apC', 'apL2', 'apJD', 'apCL'].forEach(function(k){ $('#' + k).addEventListener('input', draftChanged); });
   apMail(A);   // the employer's emails, codes first (the client's Gmail)
   // the card follows the form: the title and company as they're typed, the facts, tags, match and fit as the description settles
@@ -5156,7 +5168,7 @@ function drawDraft(){
   ['apT', 'apC'].forEach(function(k){ $('#' + k).addEventListener('change', dupCheck); });
   setupDrop($('#dShot'), 'shot', 'image/png,image/jpeg,image/webp');
   jdView();   // the job description's reading view, from the start
-  lkNext(); dupCheck(); apRecover(A); appFitRun(A); gateWire();
+  lkNext(); dupCheck(); apRecover(A); appFitRun(A); gateWire(); splitWire();
 }
 // opening a draft: changes typed before the page closed (a crash, a refresh), never saved, are offered back
 function apRecover(a){
@@ -5393,7 +5405,11 @@ function gateWire(){
   gateReqs(); gateAged(); eligPanel(); sbPanel();
   loadGate().then(function(){ if(A === a && C === c) sbPanel(); });
   q(SB.from('clients').select('eligibility,eligibility_confirmed_at,browser_status,browser_state,browser_set_at,phone,email').eq('id', c.id).maybeSingle()).then(function(row){ if(row && A === a && C === c){ Object.assign(c.row, row); eligPanel(); sbPanel(); if(!a._rv) sbPreview(c); } }, function(){});   // the browser's state may have arrived with this row: the checklist too
-  sbLoad(c).then(function(){ if(A === a && C === c) sbPanel(); }, function(){});
+  sbLoad(c).then(function(){
+    if(A !== a || C !== c) return;
+    sbPanel();
+    if(SBS[c.id] && a.job_url && sbAt(c) !== a.id){ sbAtSet(c, a.id); sbFn(c, 'goto', {url:String(a.job_url)}).catch(function(){ sbAtSet(c, null); }); }   // the browser follows the job you're on
+  }, function(){});
   if(!a._rv) sbPreview(c);   // the checklist, prepared in the background
 }
 function gateReqs(){
@@ -5460,12 +5476,13 @@ function sbOpen(c, btn, again){
   return TP.busy(btn, sbFn(c, 'open', url ? {url:url} : {})).then(function(r){
     var s = (r && r.session) || {}, same = !!(r && r.reopened);
     SBS[c.id] = {id:s.id, live_view_url:s.live_view_url, started_at:s.started_at || new Date().toISOString()};
+    if(!same) sbAtSet(c, A && A.id);   // a new browser starts on this job's page
     if(again){ if(w && !w.closed) w.location.href = s.live_view_url; else window.open(s.live_view_url, '_blank'); }
-    if(again && same) return;   // In a tab: the same browser, still open — nothing else to do
+    if(again && same){ if(A && A.job_url && sbAt(c) !== A.id){ sbAtSet(c, A.id); sbPush(c, null, true); } return; }   // In a tab: the same browser — on this job
     if(again) TP.toast('Its browser had closed — a new one opened on the job’s page, with the resume', {ms:7000});
     if(R.app && A){
-      var a = A; LIVEV.want = true; sbPanel();   // shown here, beside the draft
-      sbPush(c, null, same).then(function(){ if(A === a && C === c && a.job_url && !again) return sbFill(c, null); });   // then the form, filled
+      var a = A, nav = same && sbAt(c) !== a.id; a._live = true; sbAtSet(c, a.id); sbPanel();   // shown here, beside the draft, on this job
+      sbPush(c, null, nav).then(function(){ if(A === a && C === c && a.job_url && !again && !a._autoFilled){ a._autoFilled = true; return sbFill(c, null); } });   // then the form, filled (once per draft)
     } else if(R.tab === 'profile') sbCard(c);
   }, function(e){ if(w && !w.closed) w.close(); TP.toast(sbErr(e)); });
 }
@@ -5512,7 +5529,7 @@ function sbSubmit(btn){
   a._rvMsg = 'Opening ' + esc(first) + '’s browser, filling the form, pressing Submit — up to two minutes…'; a._rvKind = ''; rvDraw();
   var pdf = a.resume_file ? Promise.resolve(null) : sbPdf(a).then(function(f){ return sbB64(f.blob).then(function(b64){ return {name:f.name, data_b64:b64}; }); }).catch(function(){ return null; });
   return TP.busy(btn, pdf.then(function(p){ return sbFn(c, 'submit', Object.assign({application_id:a.id}, p || {}), 180000); })).then(function(r){
-    if(r && r.session) SBS[c.id] = {id:r.session.id, live_view_url:r.session.live_view_url, started_at:r.session.started_at};
+    if(r && r.session){ SBS[c.id] = {id:r.session.id, live_view_url:r.session.live_view_url, started_at:r.session.started_at}; sbAtSet(c, a.id); }
     if(A !== a) return;
     if(r && r.status === 'submitted'){
       if(r.path) a._storedShots = (a._storedShots || []).concat(r.path);
@@ -5527,14 +5544,38 @@ function sbSubmit(btn){
         : 'The form needs an answer the system doesn’t have: ' + esc(empties.join(', ')) + '. Fill it in the browser, then press Submit there.')
       : r && r.status === 'unsupported' ? 'This board’s form can’t be sent by the system — apply by hand in its browser.'
       : 'Submit was pressed but no confirmation was read. Look at the browser: if it went, press Mark as applied; if not, finish it there.';
-    a._rvMsg = why; a._rvKind = 'warn'; LIVEV.want = true; sbPanel(); TP.toast('Needs you — the browser is beside the draft', {ms:7000});
+    a._rvMsg = why; a._rvKind = 'warn'; a._live = true; sbPanel(); TP.toast('Needs you — the browser is beside the draft', {ms:7000});
   }, function(e){ if(A !== a) return; a._rvMsg = esc('Couldn’t send it: ' + sbErr(e)); a._rvKind = 'bad'; rvDraw(); TP.toast(sbErr(e), {ms:8000}); });
 }
 // the live view beside the draft (an iframe of Kernel's live view), or the resume: the specialist's choice, the browser first
-var LIVEV = {want:true};
+// the divider between the draft and the resume (or the browser): dragged, nudged with the arrow keys, reset with a double-click.
+// One width for the resume view and one for the browser view, remembered in this browser
+function splitWire(){
+  var g = $('#apGrid'), h = g && $('.apsplit', g); if(!h) return;
+  var live = function(){ return g.classList.contains('live'); }, prop = function(){ return live() ? '--apll' : '--apl'; }, key = function(){ return live() ? 'tp_split_live' : 'tp_split_res'; };
+  [['tp_split_res', '--apl'], ['tp_split_live', '--apll']].forEach(function(x){ var v = +TP.lsGet(x[0], 0); if(v > 15 && v < 85) g.style.setProperty(x[1], v + '%'); });
+  var set = function(p){ p = Math.max(22, Math.min(72, p)); g.style.setProperty(prop(), p.toFixed(1) + '%'); return p; };
+  var cur = function(){ var m = $('.apmain', g); return m ? m.getBoundingClientRect().width / g.getBoundingClientRect().width * 100 : 40; };
+  var keep = function(p){ TP.lsSet(key(), Math.round(p * 10) / 10); };
+  h.addEventListener('pointerdown', function(e){
+    if(e.button !== 0) return;
+    e.preventDefault(); try{ h.setPointerCapture(e.pointerId); }catch(ex){}
+    var r = g.getBoundingClientRect(), last = cur(); document.body.classList.add('apdrag');
+    var mv = function(ev){ last = set((ev.clientX - r.left) / r.width * 100); };
+    var up = function(){ h.removeEventListener('pointermove', mv); h.removeEventListener('pointerup', up); h.removeEventListener('pointercancel', up); document.body.classList.remove('apdrag'); keep(last); };
+    h.addEventListener('pointermove', mv); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up);
+  });
+  h.addEventListener('keydown', function(e){ if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return; e.preventDefault(); keep(set(cur() + (e.key === 'ArrowLeft' ? -3 : 3))); });
+  h.addEventListener('dblclick', function(){ g.style.removeProperty(prop()); try{ localStorage.removeItem(key()); }catch(ex){} });
+}
+// which application the client's open browser was last sent to (per browser session), so it follows the job you're on
+var SBAT = {};
+function sbAt(c){ var t = SBAT[c.id], s = SBS[c.id]; return t && s && t.sid === s.id ? t.app : null; }
+function sbAtSet(c, appId){ var s = SBS[c.id]; SBAT[c.id] = s && appId ? {sid:s.id, app:appId} : null; }
 function sbView(){
   var g = $('.apgrid'), L = $('#apLive'), c = C, s = c && SBS[c.id]; if(!g || !L) return;
-  if(s && s.live_view_url && LIVEV.want !== false){
+  if(s && s.live_view_url && A && A._live){
+    if(A.job_url && sbAt(c) !== A.id){ sbAtSet(c, A.id); sbPush(c, null, true); }   // still on another job: this one's page and resume
     var first = esc((c.row.full_name || '').split(' ')[0] || 'The client');
     if(L.getAttribute('data-sid') !== String(s.id)){
       L.innerHTML = '<div class="lvhd"><b>' + first + '’s browser</b><span class="fine">Apply in it here — click inside it first so it takes your typing.</span><span class="grow"></span>' +
@@ -5634,7 +5675,7 @@ function sbPanel(){
         '<button class="btn sm" type="button" data-act="sbpreview" title="Prepare the checklist again, after an answer changes">Re-check</button>' + (open ? '' : '<button class="btn sm ghost" type="button" data-act="sbopen" title="Open its browser here and apply by hand">By hand</button>') + '</div>' : '') +
     (st === 'ready' ? (open
         ? '<p class="fine">Open ' + (open.started_at ? esc(TP.ago(open.started_at)) : 'now') + ', beside the draft. ' + (auto ? 'Finish anything the system couldn’t there; Mark as applied keeps the proof.' : 'Fill the form, check it there, press Submit there; Mark as applied keeps the proof.') + '</p><div class="row">' +
-          (a.job_url ? '<button class="btn sm' + (auto ? '' : ' pri') + '" type="button" data-act="sbfill" title="Fills the employer’s form in the browser from this draft — you check it and press Submit">' + I.spark + 'Fill the form</button>' : '') + (LIVEV.want === false ? '<button class="btn sm" type="button" data-act="sbshow">' + I.ext + 'Show the browser</button>' : '') + '<button class="btn sm" type="button" data-act="sbpush" title="The browser to this job’s page, this draft’s resume in it again">Job page + resume</button><button class="btn sm" type="button" data-act="sbshot">' + I.img + 'Capture proof</button><button class="btn sm ghost" type="button" data-act="sbclose">Close</button></div>' +
+          (a.job_url ? '<button class="btn sm' + (auto ? '' : ' pri') + '" type="button" data-act="sbfill" title="Fills the employer’s form in the browser from this draft — you check it and press Submit">' + I.spark + 'Fill the form</button>' : '') + (!a._live ? '<button class="btn sm" type="button" data-act="sbshow">' + I.ext + 'Show the browser</button>' : '') + '<button class="btn sm" type="button" data-act="sbpush" title="The browser to this job’s page, this draft’s resume in it again">Job page + resume</button><button class="btn sm" type="button" data-act="sbshot">' + I.img + 'Capture proof</button><button class="btn sm ghost" type="button" data-act="sbclose">Close</button></div>' +
           '<p class="fine" id="apSBfile">' + (a._sbFileMsg || 'It opened on the job’s page with the resume inside: the site’s Upload file dialog opens on the folder it’s in.') + '</p>' +
           '<p class="fine" id="apSBfill">' + (a._sbFillMsg || 'Fill the form puts this draft’s answers, ' + first + '’s details and the resume into the employer’s form for you. Submit stays yours.') + '</p>'
         : (auto ? '' : '<div class="row" style="margin-top:6px"><button class="btn sm pri" type="button" data-act="sbopen" title="Opens ' + first + '’s secure browser here on the job’s page, puts the resume in and fills the form">' + I.spark + 'Apply in ' + first + '’s browser</button></div>'))
@@ -6695,10 +6736,16 @@ document.addEventListener('click', function(e){
     case 'eligfill': return eligFromResume(C);
     case 'sbopen': return sbOpen(C, b);
     case 'sbwin': return sbOpen(C, b, true);
-    case 'sbshow': LIVEV.want = true; sbPanel(); return;
+    case 'sbshow': if(A) A._live = true; sbPanel(); return;
+    case 'goapply': {   // Apply: the client's browser beside the draft, on this job; a new tab with the posting for a client without one
+      var ga = A, gc = C;
+      if(ga && gc && ga.status === 'draft' && gc.row.browser_status === 'ready') return sbOpen(gc, b);
+      if(ga && ga.job_url) window.open(TP.safeHref(ga.job_url), '_blank', 'noopener');
+      return;
+    }
     case 'sbsubmit': return sbSubmit(b);
     case 'sbpreview': if(A){ delete A._rv; A._rvMsg = null; rvDraw(); } return sbPreview(C);
-    case 'sbresview': LIVEV.want = false; sbPanel(); return;
+    case 'sbresview': if(A) A._live = false; sbPanel(); return;
     case 'sbclose': return sbClose(C, b);
     case 'sbshot': return sbShot(C, b);
     case 'sbpush': return sbPush(C, b);
