@@ -1655,6 +1655,14 @@ body.sbmin .runpill span{display:none}
 .gatefit{margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--bg)}
 .gfrom{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin-top:10px}.gfrom .check{margin:0}
 .fine.bad{color:#b42318}.fine.ok{color:#15803d}
+.rvt{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}.rvt td{padding:4px 6px;border-top:1px solid var(--line);vertical-align:top}
+.rvt td:first-child{color:var(--muted);width:40%}.rvt tr.empty td{background:#fffbeb}.rvt td.src{color:var(--muted);font-size:11px;white-space:nowrap;text-align:right}
+.rvt i{color:#b42318;font-style:normal}.rvt small{display:block;color:var(--muted)}.rvt .muted{color:var(--muted)}
+.aplive{position:sticky;top:12px;min-width:0}
+.aplive .lvhd{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;font-size:13px}
+.aplive iframe{display:block;width:100%;height:78vh;border:1px solid var(--line);border-radius:var(--rc);background:#1a1a1a}
+.apgrid.live{grid-template-columns:minmax(0,.72fr) minmax(0,1.45fr)}.apgrid.live .apside{display:none}
+@media (max-width:1100px){.apgrid.live{grid-template-columns:1fr}.aplive{position:static}.aplive iframe{height:70vh}}
 .sbl{list-style:none;margin:6px 0 0;padding:0;font-size:12.5px}.sbl li{padding:5px 0;border-top:1px solid var(--line)}.sbl li:first-child{border-top:0}
 .sop{padding-left:20px;font-size:13.5px}.sop li{margin:8px 0}
 .bdt .thead,.bdt .li{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) repeat(5,minmax(0,.7fr))}
@@ -5129,7 +5137,7 @@ function drawDraft(){
       '<div id="apQA">' + (A.answers || []).map(qaRow).join('') + '</div></div>' +
     '<div class="card" id="apCover"><div class="ch"><h3>Cover letter <span class="muted">(if the form asks)</span></h3><button class="btn sm" type="button" data-act="cpcover">' + I.copy + 'Copy</button></div>' +
       '<p class="hint">Write it in the editor’s <b>Cover letter</b> tab, or paste it here.</p><textarea class="inp" id="apCL" rows="6">' + esc(A.cover_letter || '') + '</textarea></div></div>' +
-    resPanel() + '</div>' +
+    '<aside class="aplive" id="apLive" hidden aria-label="The client’s secure browser"></aside>' + resPanel() + '</div>' +
     '<div class="apbar">' + resumeBtn(true) + '<button class="btn ok" type="button" data-act="gomark">' + I.check + 'Mark as applied</button></div></div>';
   ['apT', 'apC', 'apL2', 'apJD', 'apCL'].forEach(function(k){ $('#' + k).addEventListener('input', draftChanged); });
   apMail(A);   // the employer's emails, codes first (the client's Gmail)
@@ -5384,8 +5392,9 @@ function gateWire(){
   $('#apFit').addEventListener('change', function(e){ gateSave({fit_confirmed:e.target.checked}); });
   gateReqs(); gateAged(); eligPanel(); sbPanel();
   loadGate().then(function(){ if(A === a && C === c) sbPanel(); });
-  q(SB.from('clients').select('eligibility,eligibility_confirmed_at,browser_status,browser_state,browser_set_at,phone,email').eq('id', c.id).maybeSingle()).then(function(row){ if(row && A === a && C === c){ Object.assign(c.row, row); eligPanel(); sbPanel(); } }, function(){});
+  q(SB.from('clients').select('eligibility,eligibility_confirmed_at,browser_status,browser_state,browser_set_at,phone,email').eq('id', c.id).maybeSingle()).then(function(row){ if(row && A === a && C === c){ Object.assign(c.row, row); eligPanel(); sbPanel(); if(!a._rv) sbPreview(c); } }, function(){});   // the browser's state may have arrived with this row: the checklist too
   sbLoad(c).then(function(){ if(A === a && C === c) sbPanel(); }, function(){});
+  if(!a._rv) sbPreview(c);   // the checklist, prepared in the background
 }
 function gateReqs(){
   var box = $('#apReq'); if(!box) return;
@@ -5440,25 +5449,104 @@ function sbErr(e){
     : e && e.code === 'owner_only' ? 'Only an owner sets up a client’s secure browser.'
     : e && e.code === 'prefill_not_configured' ? 'Form filling isn’t set up yet: AUTOPILOT_URL and TEAM_PREFILL_SECRET go into the function’s secrets.'
     : e && e.code === 'not_open' ? 'The secure browser isn’t open — open it first.' : e && e.code === 'no_job_url' ? 'This draft has no job link.'
+    : e && e.code === 'already_sent' ? 'This application was already sent — refresh the page.'
     : e && e.status === 409 ? 'It’s already open in another tab.' : TP.errText(e);
 }
 // Open, and "Its window": the function hands back the browser still open, or starts a new one (a browser ends by itself
 // after 45 idle minutes; the page only learns that by asking). The live view opens in the same named tab either way
 function sbOpen(c, btn, again){
-  var w = window.open('about:blank', 'tp-sb-' + c.id);   // on the click, so the pop-up blocker lets it through
+  var w = again ? window.open('about:blank', 'tp-sb-' + c.id) : null;   // a tab only when one was asked for (opened on the click, so the pop-up blocker lets it through)
   var url = A && A.job_url ? String(A.job_url) : null;      // the browser opens on the job's own page
   return TP.busy(btn, sbFn(c, 'open', url ? {url:url} : {})).then(function(r){
     var s = (r && r.session) || {}, same = !!(r && r.reopened);
     SBS[c.id] = {id:s.id, live_view_url:s.live_view_url, started_at:s.started_at || new Date().toISOString()};
-    if(w && !w.closed) w.location.href = s.live_view_url; else window.open(s.live_view_url, '_blank');
-    if(again && same) return;   // Its window: the same browser, still open — nothing else to do
-    if(again) TP.toast('Its window had closed — a new one opened on the job’s page, with the resume', {ms:7000});
-    if(R.app && A){ sbPanel(); sbPush(c, null, same); }   // a browser already open goes to this job's page; a new one opened on it. Then the résumé goes in
-    else if(R.tab === 'profile') sbCard(c);
+    if(again){ if(w && !w.closed) w.location.href = s.live_view_url; else window.open(s.live_view_url, '_blank'); }
+    if(again && same) return;   // In a tab: the same browser, still open — nothing else to do
+    if(again) TP.toast('Its browser had closed — a new one opened on the job’s page, with the resume', {ms:7000});
+    if(R.app && A){
+      var a = A; LIVEV.want = true; sbPanel();   // shown here, beside the draft
+      sbPush(c, null, same).then(function(){ if(A === a && C === c && a.job_url && !again) return sbFill(c, null); });   // then the form, filled
+    } else if(R.tab === 'profile') sbCard(c);
   }, function(e){ if(w && !w.closed) w.close(); TP.toast(sbErr(e)); });
 }
+/* ---------- review and confirm: the system prepares the application, the specialist checks it once and confirms ----------
+   The checklist is the board's own questions with what the system will put in each (the client's details, the eligibility
+   sheet, the draft's answers, the résumé). Confirm and submit fills the form in the client's browser, presses Submit and
+   reads the employer's answer: a confirmation becomes the record and the proof; anything else (a bot check, an emailed
+   code, a refused field, a question nobody has answered) brings the browser up beside the draft for the specialist. */
+function sbCan(u){ return /greenhouse\.io\/|[?&]gh_jid=|jobs\.lever\.co\/|jobs\.ashbyhq\.com\/|[?&]ashby_jid=|workable\.com\//i.test(String(u || '')); }
+var RV_SRC = {profile:'profile', you:'draft', attached:'resume', needs_you:'', ai:''};
+function rvHTML(a){
+  var rv = a._rv, first = esc(((C && C.row && C.row.full_name) || '').split(' ')[0] || 'the client');
+  var msg = a._rvMsg ? '<div class="note ' + (a._rvKind || 'warn') + '" style="margin:6px 0">' + a._rvMsg + '</div>' : '';
+  if(!rv) return msg || '<p class="fine">Preparing the application: the form’s questions and what goes in each…</p>';
+  if(rv.status === 'unsupported') return msg + '<p class="fine">This board’s form can’t be prepared by the system (Greenhouse, Lever, Ashby and Workable can) — apply by hand in its browser.</p>';
+  var F = rv.fields || [], has = function(f){ return f.value != null && f.value !== '' && !(Array.isArray(f.value) && !f.value.length); };
+  var ready = F.filter(has), empty = F.filter(function(f){ return !has(f); }), req = empty.filter(function(f){ return f.required; });
+  return msg + '<p class="fine">' + ready.length + ' of ' + F.length + ' fields ready' + (req.length ? ' · <b class="bad">' + req.length + ' required still empty</b>' : '') + '. Read each line; then Confirm: the system fills the form in ' + first + '’s browser and presses Submit.</p>' +
+    '<table class="rvt">' + F.map(function(f){
+      var v = Array.isArray(f.value) ? f.value.join(', ') : f.value;
+      return '<tr' + (has(f) ? '' : ' class="empty"') + '><td>' + esc(f.label) + (f.required ? ' <i>*</i>' : '') + '</td><td>' + (has(f) ? esc(String(v)) + (f.note ? '<small>' + esc(f.note) + '</small>' : '') : '<span class="muted">— ' + esc(f.note || 'nothing to put here') + '</span>') + '</td><td class="src">' + (RV_SRC[f.source] || '') + '</td></tr>';
+    }).join('') + '</table>' +
+    (req.length ? '<p class="fine">For a required question with nothing: add it under <b>Answers for the form</b> below (the same wording), then Re-check. Or Confirm anyway — the browser comes up for you to answer it there.</p>' : '');
+}
+function rvDraw(){ var el = $('#apRv'); if(el && A) el.innerHTML = rvHTML(A); }
+function sbPreview(c){
+  var a = A; if(!(a && a.job_url && sbCan(a.job_url) && c.row.browser_status === 'ready')) return Promise.resolve();
+  var base = (c.resumes || []).filter(function(r){ return r.id === a.base_resume_id; })[0];
+  var hasPdf = !!(a.resume_file || (a.resume_doc && a.resume_doc.sections) || (base && base.doc));
+  return sbFn(c, 'preview', {application_id:a.id, has_pdf:hasPdf}, 60000).then(function(r){ if(A !== a) return; a._rv = r; a._rvMsg = null; rvDraw(); }, function(e){ if(A !== a) return; a._rvMsg = esc(sbErr(e)); a._rvKind = 'bad'; rvDraw(); });
+}
+// what has to be true before anything is sent, in words (null when it all is): the same rules Mark as applied keeps
+function gateErr(a, c){
+  var first = (c.row.full_name || '').split(' ')[0] || 'the client', es = eligState(c.row);
+  if(es.missing && GATE.strict) return 'Confirm work authorization and sponsorship with ' + first + ' first — the Eligibility card above.';
+  if(a._dup) return first + ' already applied for this role at this company in the last 90 days.' + (ME.owner ? ' Allow it above, with a reason.' : '');
+  if(!($('#apFit') && $('#apFit').checked)) return 'Tick “Meets every hard requirement” in the Fit check first — read the hard requirements against the sheet.';
+  var f = draftForm(); if(!f.title || !f.company) return 'Add the job title and company first.';
+  return null;
+}
+function sbSubmit(btn){
+  var a = A, c = C, first = (c.row.full_name || '').split(' ')[0] || 'the client';
+  var bad = gateErr(a, c); if(bad){ TP.toast(bad, {ms:7000}); var mk = $('#mkErr'); if(mk){ mk.hidden = false; mk.textContent = bad; } return; }
+  a._rvMsg = 'Opening ' + esc(first) + '’s browser, filling the form, pressing Submit — up to two minutes…'; a._rvKind = ''; rvDraw();
+  var pdf = a.resume_file ? Promise.resolve(null) : sbPdf(a).then(function(f){ return sbB64(f.blob).then(function(b64){ return {name:f.name, data_b64:b64}; }); }).catch(function(){ return null; });
+  return TP.busy(btn, pdf.then(function(p){ return sbFn(c, 'submit', Object.assign({application_id:a.id}, p || {}), 180000); })).then(function(r){
+    if(r && r.session) SBS[c.id] = {id:r.session.id, live_view_url:r.session.live_view_url, started_at:r.session.started_at};
+    if(A !== a) return;
+    if(r && r.status === 'submitted'){
+      if(r.path) a._storedShots = (a._storedShots || []).concat(r.path);
+      a._from = 'secure_browser'; a._rvMsg = 'Submitted — the employer’s page said “' + esc(r.confirmation || '') + '”. Recording it…'; a._rvKind = 'ok'; rvDraw();
+      return markApplied(btn, {_auto:true});
+    }
+    var empties = ((r && r.empty) || []).filter(function(e){ return e.required; }).map(function(e){ return e.label; });
+    var why = r && r.status === 'needs_user'
+      ? (r.reason === 'challenge' ? 'The site wants a human check (a CAPTCHA). Do it in the browser here, then press Submit there.'
+        : r.reason === 'verification' ? 'The site emailed ' + esc(first) + ' a code. It shows under Emails on this page as it arrives — type it in the browser, then press Submit there.'
+        : r.reason === 'errors' ? 'The form refused: ' + esc((r.errors || []).join('; ')) + '. Fix it in the browser, then press Submit there.'
+        : 'The form needs an answer the system doesn’t have: ' + esc(empties.join(', ')) + '. Fill it in the browser, then press Submit there.')
+      : r && r.status === 'unsupported' ? 'This board’s form can’t be sent by the system — apply by hand in its browser.'
+      : 'Submit was pressed but no confirmation was read. Look at the browser: if it went, press Mark as applied; if not, finish it there.';
+    a._rvMsg = why; a._rvKind = 'warn'; LIVEV.want = true; sbPanel(); TP.toast('Needs you — the browser is beside the draft', {ms:7000});
+  }, function(e){ if(A !== a) return; a._rvMsg = esc('Couldn’t send it: ' + sbErr(e)); a._rvKind = 'bad'; rvDraw(); TP.toast(sbErr(e), {ms:8000}); });
+}
+// the live view beside the draft (an iframe of Kernel's live view), or the resume: the specialist's choice, the browser first
+var LIVEV = {want:true};
+function sbView(){
+  var g = $('.apgrid'), L = $('#apLive'), c = C, s = c && SBS[c.id]; if(!g || !L) return;
+  if(s && s.live_view_url && LIVEV.want !== false){
+    var first = esc((c.row.full_name || '').split(' ')[0] || 'The client');
+    if(L.getAttribute('data-sid') !== String(s.id)){
+      L.innerHTML = '<div class="lvhd"><b>' + first + '’s browser</b><span class="fine">Apply in it here — click inside it first so it takes your typing.</span><span class="grow"></span>' +
+        '<button class="btn sm" type="button" data-act="sbwin" title="The same browser in a tab of its own, full size">' + I.ext + 'In a tab</button><button class="btn sm" type="button" data-act="sbresview">' + I.doc + 'Resume</button></div>' +
+        '<iframe id="apLiveF" title="' + first + '’s secure browser" src="' + esc(s.live_view_url) + '" allow="clipboard-read; clipboard-write; autoplay"></iframe>';
+      L.setAttribute('data-sid', String(s.id));
+    }
+    L.hidden = false; g.classList.add('live');
+  } else { L.hidden = true; g.classList.remove('live'); }
+}
 function sbClose(c, btn){
-  return TP.busy(btn, sbFn(c, 'close')).then(function(){ SBS[c.id] = null; TP.toast('Secure browser closed'); if(R.app && A) sbPanel(); else if(R.tab === 'profile') sbCard(c); }, function(e){ TP.toast(sbErr(e)); });
+  return TP.busy(btn, sbFn(c, 'close')).then(function(){ SBS[c.id] = null; TP.toast('Secure browser closed'); if(R.app && A){ sbPanel(); sbView(); } else if(R.tab === 'profile') sbCard(c); }, function(e){ TP.toast(sbErr(e)); });
 }
 // this job's page and this draft's résumé, into the open browser (what Open does by itself; the button does it again)
 function sbPush(c, btn, nav){
@@ -5494,11 +5582,12 @@ function sbFill(c, btn){
   var pdf = a.resume_file ? Promise.resolve(null) : sbPdf(a).then(function(f){ return sbB64(f.blob).then(function(b64){ return {name:f.name, data_b64:b64}; }); }).catch(function(){ return null; });   // no PDF: the résumé box is left for the specialist
   return TP.busy(btn, pdf.then(function(p){ return sbFn(c, 'fill', Object.assign({application_id:a.id}, p || {}), 150000); })).then(function(r){
     box = $('#apSBfill'); if(!box) return;
-    if(r && r.status === 'unsupported'){ box.textContent = 'This form can’t be filled by code (only Greenhouse, Lever, Ashby and Workable forms can) — apply in its window.'; return; }
+    if(r && r.status === 'unsupported'){ a._sbFillMsg = 'This form can’t be filled by code (only Greenhouse, Lever, Ashby and Workable forms can) — apply in the browser.'; box.innerHTML = a._sbFillMsg; return; }
     var filled = (r && r.filled) || [], empty = (r && r.empty) || [];
-    box.innerHTML = '<b>' + filled.length + ' field' + (filled.length === 1 ? '' : 's') + ' filled.</b> ' + (empty.length ? 'Left for you: ' + esc(empty.map(function(x){ return x.label + (x.required ? ' (required)' : ''); }).join(', ')) + '. ' : '') + 'Check the form in its window, then press Submit there yourself.';
-    TP.toast('Form filled — check it in its window and press Submit yourself', {ms:8000});
-  }, function(e){ box = $('#apSBfill'); if(box) box.textContent = 'Couldn’t fill it: ' + sbErr(e); TP.toast(sbErr(e), {ms:8000}); });
+    a._sbFillMsg = '<b>' + filled.length + ' field' + (filled.length === 1 ? '' : 's') + ' filled.</b> ' + (empty.length ? 'Left for you: ' + esc(empty.map(function(x){ return x.label + (x.required ? ' (required)' : ''); }).join(', ')) + '. ' : '') + 'Check the form in the browser, then press Submit there yourself.';
+    box.innerHTML = a._sbFillMsg;
+    TP.toast('Form filled — check it in the browser and press Submit yourself', {ms:8000});
+  }, function(e){ a._sbFillMsg = esc('Couldn’t fill it: ' + sbErr(e)); box = $('#apSBfill'); if(box) box.innerHTML = a._sbFillMsg; TP.toast(sbErr(e), {ms:8000}); });
 }
 function sbResume(c, a){
   var fine = $('#apSBfile');
@@ -5508,8 +5597,9 @@ function sbResume(c, a){
     return sbB64(f.blob).then(function(b64){ return sbFn(c, 'file', {name:f.name, data_b64:b64}); }).then(function(r){ return r && r.name || f.name; });
   }).then(function(name){
     TP.toast('Resume is in its window: the site’s Upload dialog opens on it — ' + name, {ms:8000});
-    fine = $('#apSBfile'); if(fine) fine.innerHTML = 'In it, as <b>' + esc(name) + '</b>: the site’s Upload file dialog opens on the folder it’s in.';
-  }, function(e){ TP.toast(sbErr(e), {ms:8000}); fine = $('#apSBfile'); if(fine) fine.textContent = 'Resume not in it yet — ' + sbErr(e); });
+    a._sbFileMsg = 'In it, as <b>' + esc(name) + '</b>: the site’s Upload file dialog opens on the folder it’s in.';
+    fine = $('#apSBfile'); if(fine) fine.innerHTML = a._sbFileMsg;
+  }, function(e){ TP.toast(sbErr(e), {ms:8000}); a._sbFileMsg = esc('Resume not in it yet — ' + sbErr(e)); fine = $('#apSBfile'); if(fine) fine.innerHTML = a._sbFileMsg; });
 }
 // proof in one click: the browser's current page, kept as this application's confirmation screenshot
 function sbShot(c, btn){
@@ -5538,13 +5628,16 @@ function sbPanel(){
   var box = $('#apSB'), c = C, a = A; if(!box || !a) return;
   var first = esc((c.row.full_name || '').split(' ')[0] || 'them'), st = c.row.browser_status || 'none', open = SBS[c.id], email = (c.mbox && c.mbox.email) || c.row.email, scored = scoredBoard(a.job_url);
   var from = a._from || (open ? 'secure_browser' : '');
+  var auto = st === 'ready' && !!a.job_url && sbCan(a.job_url);   // a board the system sends to: the checklist, then Confirm and submit
   box.innerHTML = '<b>' + first + '’s secure browser</b> ' + sbStatusHTML(c) +
+    (auto ? '<div class="rv" id="apRv">' + rvHTML(a) + '</div><div class="row" style="margin-top:8px"><button class="btn sm pri" type="button" data-act="sbsubmit" title="The system fills the form in ' + first + '’s browser and presses Submit; the employer’s confirmation is kept as the proof">' + I.check + 'Confirm and submit</button>' +
+        '<button class="btn sm" type="button" data-act="sbpreview" title="Prepare the checklist again, after an answer changes">Re-check</button>' + (open ? '' : '<button class="btn sm ghost" type="button" data-act="sbopen" title="Open its browser here and apply by hand">By hand</button>') + '</div>' : '') +
     (st === 'ready' ? (open
-        ? '<p class="fine">Open ' + (open.started_at ? esc(TP.ago(open.started_at)) : 'now') + '. Apply inside its window; capture the proof before you close it.</p><div class="row">' +
-          '<button class="btn sm pri" type="button" data-act="sbwin" title="Its live view — a new browser on the job’s page if this one has ended">' + I.ext + 'Its window</button>' + (a.job_url ? '<button class="btn sm" type="button" data-act="sbfill" title="Fills the employer’s form inside its window from this draft — you check it and press Submit">' + I.spark + 'Fill the form</button>' : '') + '<button class="btn sm" type="button" data-act="sbpush" title="Send its window to this job’s page and put this draft’s resume in it again">Job page + resume</button><button class="btn sm" type="button" data-act="sbshot">' + I.img + 'Capture proof</button><button class="btn sm ghost" type="button" data-act="sbclose">Close</button></div>' +
-          '<p class="fine" id="apSBfile">It opened on the job’s page with the resume inside: the site’s Upload file dialog opens on the folder it’s in.</p>' +
-          '<p class="fine" id="apSBfill">Fill the form puts this draft’s answers, ' + first + '’s details and the resume into the employer’s form for you. Submit stays yours.</p>'
-        : '<div class="row" style="margin-top:6px"><button class="btn sm pri" type="button" data-act="sbopen">' + I.ext + 'Open secure browser</button></div>')
+        ? '<p class="fine">Open ' + (open.started_at ? esc(TP.ago(open.started_at)) : 'now') + ', beside the draft. ' + (auto ? 'Finish anything the system couldn’t there; Mark as applied keeps the proof.' : 'Fill the form, check it there, press Submit there; Mark as applied keeps the proof.') + '</p><div class="row">' +
+          (a.job_url ? '<button class="btn sm' + (auto ? '' : ' pri') + '" type="button" data-act="sbfill" title="Fills the employer’s form in the browser from this draft — you check it and press Submit">' + I.spark + 'Fill the form</button>' : '') + (LIVEV.want === false ? '<button class="btn sm" type="button" data-act="sbshow">' + I.ext + 'Show the browser</button>' : '') + '<button class="btn sm" type="button" data-act="sbpush" title="The browser to this job’s page, this draft’s resume in it again">Job page + resume</button><button class="btn sm" type="button" data-act="sbshot">' + I.img + 'Capture proof</button><button class="btn sm ghost" type="button" data-act="sbclose">Close</button></div>' +
+          '<p class="fine" id="apSBfile">' + (a._sbFileMsg || 'It opened on the job’s page with the resume inside: the site’s Upload file dialog opens on the folder it’s in.') + '</p>' +
+          '<p class="fine" id="apSBfill">' + (a._sbFillMsg || 'Fill the form puts this draft’s answers, ' + first + '’s details and the resume into the employer’s form for you. Submit stays yours.') + '</p>'
+        : (auto ? '' : '<div class="row" style="margin-top:6px"><button class="btn sm pri" type="button" data-act="sbopen" title="Opens ' + first + '’s secure browser here on the job’s page, puts the resume in and fills the form">' + I.spark + 'Apply in ' + first + '’s browser</button></div>'))
       : '<p class="fine">' + (st === 'paused' ? 'Paused by an owner.' : 'An owner sets it up on the Profile (Plan &amp; account).') + '</p>') +
     ((a._storedShots || []).length ? '<p class="fine ok">' + (a._storedShots.length === 1 ? 'Proof captured' : a._storedShots.length + ' proofs captured') + ' — kept with the application when it’s marked as applied.</p>' : '') +
     '<div class="gsheet gid"><dt>Email</dt><dd>' + esc(email) + ' <button class="lk" type="button" data-copy="' + esc(email) + '" data-what="Email">Copy</button></dd>' +
@@ -5555,6 +5648,7 @@ function sbPanel(){
     (scored && GATE.strict ? '<div class="note bad" style="margin-top:8px"><b>' + esc(scored) + '</b> is sent only from the secure browser: this board scores where applications come from.' + (ME.owner ? ' As an owner you can allow India with a reason.' : '') + '</div>'
       : scored ? '<p class="fine">' + esc(scored) + ' scores where applications come from — use the secure browser.</p>' : '');
   $$('input[name=apFrom]', box).forEach(function(r){ r.addEventListener('change', function(e){ a._from = e.target.value; }); });
+  sbView();
 }
 // the Profile's card: set up (owners), pause, the session log
 function sbCard(c){
@@ -5727,6 +5821,14 @@ function markApplied(btn, reasons){
   var from = a._from || ($$('input[name=apFrom]').filter(function(r){ return r.checked; })[0] || {}).value || '', fit = $('#apFit') && $('#apFit').checked;
   if(es.missing && GATE.strict) return say('Confirm work authorization and sponsorship with ' + first + ' first — the Eligibility card above.');
   if(a._dup) return say(first + ' already applied for this role at this company in the last 90 days.' + (ME.owner ? ' Allow it above, with a reason.' : ''));
+  if(!shots && SBS[c.id] && !reasons._shotTried){   // the confirmation screen is on the browser: keep it, then carry on
+    reasons._shotTried = true;
+    return TP.busy(btn, sbFn(c, 'shot', {application_id:a.id})).then(function(r){
+      if(!(r && r.path)) throw {message:'No screenshot came back'};
+      a._storedShots = (a._storedShots || []).concat(r.path); if(A === a) sbPanel();
+      return markApplied(btn, reasons);
+    }, function(e){ say('Add the proof — it couldn’t be captured from the browser (' + sbErr(e) + '): paste the confirmation screenshot (Ctrl+V).'); });
+  }
   if(!shots) return say('Add the proof: Capture proof in the secure browser, or paste the confirmation screenshot (Ctrl+V).');
   if(!fit) return say('Tick “Meets every hard requirement” in the Fit check first — read the hard requirements against the sheet.');
   if(!from) return say('Say where it was sent from — ' + first + '’s secure browser, or India.');
@@ -5772,8 +5874,8 @@ function markApplied(btn, reasons){
       n ? ['ok', n + ' form answer' + (n === 1 ? '' : 's') + ' kept'] : ['info', 'No form answers'],
       a.jd_text ? ['ok', 'Job description kept'] : ['warn', 'No job description kept']
     ];
-    return TP.confirmBox('Mark as applied for ' + first + '?', 'This becomes the permanent record of what went to ' + (a.company || 'the company') + '. ' + first + ' sees it on their dashboard straight away, and only the owner can delete it.',
-      'Mark as applied', false, {items:items, careful:true}).then(function(ok){ if(ok) doMarkApplied(a, btn, Object.assign({applied_from:from, browser_session_id:from === 'secure_browser' ? sess.id : null, fit_confirmed:true}, reasons)); });
+    return (reasons._auto ? Promise.resolve(true) : TP.confirmBox('Mark as applied for ' + first + '?', 'This becomes the permanent record of what went to ' + (a.company || 'the company') + '. ' + first + ' sees it on their dashboard straight away, and only the owner can delete it.',
+      'Mark as applied', false, {items:items, careful:true})).then(function(ok){ var why = Object.assign({}, reasons); delete why._shotTried; delete why._auto; if(ok) doMarkApplied(a, btn, Object.assign({applied_from:from, browser_session_id:from === 'secure_browser' ? sess.id : null, fit_confirmed:true}, why)); });
   }).catch(function(e){ err.hidden = false; err.textContent = TP.errText(e); });
 }
 function doMarkApplied(a, btn, gate){
@@ -6593,6 +6695,10 @@ document.addEventListener('click', function(e){
     case 'eligfill': return eligFromResume(C);
     case 'sbopen': return sbOpen(C, b);
     case 'sbwin': return sbOpen(C, b, true);
+    case 'sbshow': LIVEV.want = true; sbPanel(); return;
+    case 'sbsubmit': return sbSubmit(b);
+    case 'sbpreview': if(A){ delete A._rv; A._rvMsg = null; rvDraw(); } return sbPreview(C);
+    case 'sbresview': LIVEV.want = false; sbPanel(); return;
     case 'sbclose': return sbClose(C, b);
     case 'sbshot': return sbShot(C, b);
     case 'sbpush': return sbPush(C, b);
