@@ -1,11 +1,11 @@
 # TrulyPlaced
 
-> TrulyPlaced is a done-for-you job application service. A career specialist rewrites your resume and applies to 25-30 matched roles every business day on your behalf, tailoring each application, and you track every application and interview in a client portal. For roles in the US, UK, Canada and Australia. Run by RepoReserve Technologies Private Limited (India).
+> TrulyPlaced is a done-for-you job application service. A career specialist rewrites your resume and sends 10–15 checked applications a business day on your behalf (150, 300 or 600 per plan), tailoring each one. Every role is checked for fit and eligibility before it is sent, applications go out from a secure browser in the US in your name, and you track every application, with proof of each submission, and every interview in a client portal. For roles in the US, UK, Canada and Australia. Run by RepoReserve Technologies Private Limited (India).
 
 ## Service
 
 - [Home](https://trulyplaced.com/): how it works, what a sprint looks like, members' offers, pricing and FAQ
-- Pricing: plans are paid once for a volume of applications (250, 500 or 1,000) at $299, $449 or $699, with no subscription; each price includes a one-time $100 onboarding fee
+- Pricing: plans are paid once for a volume of checked applications (150, 300 or 600) at $299, $449 or $699, with no subscription; each price includes a one-time $100 onboarding fee
 - [Cancellation & Refund Policy](https://trulyplaced.com/refunds.html): unused applications are refunded pro-rata
 - [Contact](https://trulyplaced.com/contact.html): hello@trulyplaced.com, WhatsApp, business details
 

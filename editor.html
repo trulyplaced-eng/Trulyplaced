@@ -4800,18 +4800,27 @@ let TEAM_SENT = null;
 const teamBack = () => '/team.html?client=' + encodeURIComponent(TEAM.client) + (TEAM.app ? '#app=' + encodeURIComponent(TEAM.app) : '#resumes');
 function teamCard(title, text, btn) { batchTell('fail', { why: text }); $('#gate').innerHTML = '<div class="card"><h1>' + esc(title) + '</h1><p>' + esc(text) + '</p><div class="acts">' + (btn || '') + '</div></div>'; show('gate'); }
 // batch mode: the team portal's list hears how this draft went (ready to review, or why not)
+// a background run (the batch) saves only over the resume it started from: if someone changed the draft's resume meanwhile
+// (Quick edit, the full editor), it doesn't save, and the run starts again from the new one — typing always wins
+let BATCH_BASE = null, BATCH_CHANGED = false, TEAM_BASE_BODY = '';
+const batchBody = (d) => d && d.sections ? JSON.stringify([d.name || '', d.headline || '', d.contact || [], d.sections]) : '';
 function batchTell(act, extra) { if (!BATCH || window.parent === window) return; try { window.parent.postMessage(Object.assign({ tp: 1, batch: 1, act, app: TEAM.app }, extra || {}), location.origin); } catch (e) {} }
 function batchRun() {   // the Jobs list's Sync: this draft to its job, with the editor's own checks; the suggestions wait on the draft for review
   if (READONLY) return batchTell('fail', { why: 'Already sent' });
   if (!JOB || String(JOB.text || '').trim().length < 80) return batchTell('fail', { why: 'No job description — paste it in the draft, then Retry' });
   const scores = (V) => ({ before: V && V.before != null ? V.before : null, after: V && V.after != null ? V.after : null });   // the job match now, and once the suggestions are accepted
   if (DOC.meta.optPending) return batchTell('done', Object.assign({ n: pendingCount(DOC.meta.optPending), sk: (DOC.meta.optPending.R.skills || []).length }, scores(DOC.meta.optPending.V)));
+  if (BATCH_BASE === null) BATCH_BASE = TEAM_BASE_BODY;
   saveVersion('Before Sync').then(() => { if (applyRules().length) { snap(); persist(); } return optCompute(BATCH.sel, BATCH.ins, optPlan(BATCH.sel)); }).then((o) => {   // the client's exclusions off Skills first
     const P = pendingOf(o, BATCH.sel, BATCH.ins), n = pendingCount(P), sk = (P.R.skills || []).length;
     if (n || sk) DOC.meta.optPending = P;   // nothing to change: no review to wait for
     TEAM_DIRTY = true;
-    return teamSync().then(() => { if (READONLY) throw { msg: 'Already sent' }; if (TEAM_DIRTY) throw { msg: 'Couldn’t save — check the connection' }; batchTell('done', Object.assign({ n, sk }, scores(P.V))); });
-  }).catch((e) => batchTell('fail', { why: e === 'limit' ? 'limit' : aiMsg(e) }));
+    return teamSync().then(() => { if (READONLY) throw { msg: 'Already sent' }; if (BATCH_CHANGED) throw 'changed'; if (TEAM_DIRTY) throw 'net'; batchTell('done', Object.assign({ n, sk }, scores(P.V))); });
+  }).catch((e) => {
+    const slow = e && e.msg && /took too long/.test(e.msg);   // a slow answer is usually a passing thing too
+    if (e === 'net' || e === 'changed' || slow || BATCH_CHANGED) return batchTell('retry', { why: BATCH_CHANGED ? 'changed' : slow ? 'slow' : 'net' });   // back in the queue, not failed
+    batchTell('fail', { why: e === 'limit' ? 'limit' : aiMsg(e) });
+  });
 }
 function teamPill() {
   const name = (CLIENT && CLIENT.full_name) || 'Client', ini = name.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase(), hue = [...name].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
@@ -4825,6 +4834,7 @@ function teamPill() {
 }
 function teamSync() {   // save to the draft application (only while it's a draft) or to the base resume
   if (!DOC || READONLY || !sb) return Promise.resolve();
+  if (BATCH && TEAM.app) return batchSync();
   const text = docText(), cover = String((DOC.cover && DOC.cover.text) || '').trim(), saving = DOC.meta.saved;
   const p = TEAM.app ? sb.from('applications').update(Object.assign({ resume_doc: DOC, resume_text: text }, cover ? { cover_letter: cover } : {})).eq('id', TEAM.app).eq('status', 'draft').select('id')
                      : sb.from('client_resumes').update({ doc: DOC, text }).eq('id', TEAM.resume).select('id');
@@ -4836,6 +4846,23 @@ function teamSync() {   // save to the draft application (only while it's a draf
     // quick: saved by the application page's own panel, which already shows it (the page mustn't reload the panel)
     if (TEAM_BC) try { TEAM_BC.postMessage({ client: TEAM.client, app: TEAM.app, resume: TEAM.resume, quick: QUICK }); } catch (e) {}
   }).catch(() => status('Couldn’t save — check your connection', true));
+}
+// the background run's save: the draft's resume read again first, and saved only if it's still the one the run began with
+// (never the cover letter: that's the draft page's, typed there)
+function batchSync() {
+  if (BATCH_CHANGED) return Promise.resolve();
+  return sb.from('applications').select('status,resume_doc').eq('id', TEAM.app).maybeSingle().then((r) => {
+    if (r.error) throw r.error;
+    const row = r.data; if (!row || row.status !== 'draft') { READONLY = true; TEAM_DIRTY = false; return; }
+    if (batchBody(row.resume_doc) !== (BATCH_BASE || '')) { BATCH_CHANGED = true; return; }
+    const saving = DOC.meta.saved;
+    return sb.from('applications').update({ resume_doc: DOC, resume_text: docText() }).eq('id', TEAM.app).eq('status', 'draft').select('id').then((u) => {
+      if (u.error) throw u.error;
+      if (!u.data || !u.data.length) { READONLY = true; TEAM_DIRTY = false; return; }
+      BATCH_BASE = batchBody(DOC); if (DOC.meta.saved === saving) TEAM_DIRTY = false;
+      if (TEAM_BC) try { TEAM_BC.postMessage({ client: TEAM.client, app: TEAM.app, resume: TEAM.resume, batch: 1 }); } catch (e) {}
+    });
+  }).catch(() => {});   // TEAM_DIRTY stays: the run goes back in the queue
 }
 // "Save and continue" on a base resume whose client has no target roles yet: they go on the client's profile, as the Profile
 // tab would save them, and the portal's open tabs are told so their copy of the client follows
@@ -4868,6 +4895,19 @@ function fullHere() {
   window.addEventListener('pagehide', () => say('closed'));
   say('open');
 }
+function runHere() {
+  if (!TEAM_BC || !TEAM.app || BATCH || VIEW) return;
+  TEAM_BC.addEventListener('message', (e) => {
+    const m = e.data || {}; if (m.run !== 'ready' || m.app !== TEAM.app || !DOC || READONLY || !sb) return;
+    sb.from('applications').select('resume_doc').eq('id', TEAM.app).maybeSingle().then((r) => {
+      const P = r && r.data && r.data.resume_doc && r.data.resume_doc.meta && r.data.resume_doc.meta.optPending;
+      if (!P || !DOC) return;
+      DOC.meta.optPending = P; DOC.meta.rec = r.data.resume_doc.meta.rec || DOC.meta.rec;
+      toast('The background run’s suggestions are ready to review');
+      if (QUICK) quickTell();
+    }, () => {});
+  });
+}
 function teamBoot() {
   const signIn = '<a class="btn pri" href="/login.html?next=' + encodeURIComponent(location.pathname + location.search) + '">Sign in</a>';
   if (!LIVE || !SESSION0) return teamCard('Sign in to the team portal', 'This page opens a client’s resume for the TrulyPlaced team.', signIn);
@@ -4890,8 +4930,9 @@ function teamBoot() {
         if (row.status !== 'draft') TEAM_SENT = { at: row.applied_at, company: row.company };
       }
       if (VIEW) { READONLY = true; document.body.classList.add('ro'); }
-      teamPill(); $('#ptVersions').hidden = READONLY; fullHere();
+      teamPill(); $('#ptVersions').hidden = READONLY; fullHere(); runHere();
       if (BATCH && READONLY) return batchTell('fail', { why: 'Already sent' });
+      if (TEAM.app) TEAM_BASE_BODY = batchBody(row.resume_doc);
       if (TEAM.app && row.resume_doc && row.resume_doc.sections) return startDoc(row.resume_doc);
       // the page only: a resume that was never laid out shows as its text, and nothing is read by Claude or saved
       if (VIEW) return viewFrom(row);
