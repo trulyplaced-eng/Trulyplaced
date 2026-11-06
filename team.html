@@ -1636,16 +1636,19 @@ body.sbmin .runpill span{display:none}
 .runpill.rpm{display:none}
 @media (max-width:900px){.runpill.rpm:not([hidden]){display:block;position:fixed;right:12px;bottom:76px;z-index:60;margin:0}.runpill.rpm button{width:auto;background:#0d1b3f;color:#fff;border-color:#0d1b3f;box-shadow:var(--sh-float)}body.sbmin .runpill.rpm span{display:inline}}
 /* the fit gate: the three checks before an application goes, the eligibility sheet, the secure browser */
-.gate3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:4px}
-@media (max-width:1100px){.gate3{grid-template-columns:1fr}}
+#apGate{container-type:inline-size}
+.gate3{display:grid;grid-template-columns:1fr;gap:12px;margin-top:4px}
+@container (min-width:960px){.gate3{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}}
 .gcol{border:1px solid var(--line);border-radius:var(--rc);padding:12px 14px;font-size:13px;min-width:0}
 .gcol>b{display:inline-block;font-size:13.5px;margin-bottom:6px}
+.gcol .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+.gcol p.fine{margin:6px 0 0}
 .gcol .field{margin-top:8px}.gcol .field label{font-size:12px}.gcol .check{margin-top:8px}
 .gcol .inp{margin-top:6px;width:100%}
 .gpill{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;vertical-align:middle;margin-left:4px;background:var(--bg);color:#404040}
 .gpill.ok{background:#ecfdf5;color:#065f46}.gpill.warn{background:#fffbeb;color:#92400e}.gpill.bad{background:#fef2f2;color:#991b1b}
-.gsheet{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 10px;margin:8px 0 0;font-size:12.5px}
-.gsheet dt{color:var(--muted)}.gsheet dd{margin:0;overflow-wrap:anywhere}
+.gsheet{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 12px;margin:8px 0 0;font-size:12.5px}
+.gsheet dt{color:var(--muted)}.gsheet dd{margin:0;overflow-wrap:anywhere}.gsheet dd .lk{margin-left:6px}
 .gsheet.gid{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
 .gsheet .lk{font:inherit;font-size:12px;color:var(--blue);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}
 .reqs{margin:0 0 4px;padding-left:18px;font-size:12.5px;color:#404040}.reqs li{margin:2px 0}
