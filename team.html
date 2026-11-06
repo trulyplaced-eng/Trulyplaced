@@ -5630,17 +5630,37 @@ function sbFill(c, btn){
     TP.toast('Form filled — check it in the browser and press Submit yourself', {ms:8000});
   }, function(e){ a._sbFillMsg = esc('Couldn’t fill it: ' + sbErr(e)); box = $('#apSBfill'); if(box) box.innerHTML = a._sbFillMsg; TP.toast(sbErr(e), {ms:8000}); });
 }
-function sbResume(c, a){
+function sbResume(c, a, again){
   var fine = $('#apSBfile');
   var get = sbPdf(a);
-  if(fine) fine.textContent = 'Putting the resume into it…';
+  if(fine) fine.textContent = again ? 'Your edit is saved — updating the resume in its browser…' : 'Putting the resume into it…';
   return get.then(function(f){
     return sbB64(f.blob).then(function(b64){ return sbFn(c, 'file', {name:f.name, data_b64:b64}); }).then(function(r){ return r && r.name || f.name; });
   }).then(function(name){
-    TP.toast('Resume is in its window: the site’s Upload dialog opens on it — ' + name, {ms:8000});
-    a._sbFileMsg = 'In it, as <b>' + esc(name) + '</b>: the site’s Upload file dialog opens on the folder it’s in.';
+    var at = new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+    if(again) TP.toast('Resume updated in its browser with your latest edit', {ms:5000});
+    else TP.toast('Resume is in its window: the site’s Upload dialog opens on it — ' + name, {ms:8000});
+    a._sbFileMsg = 'In it, as <b>' + esc(name) + '</b> — ' + (again ? 'updated with your edits at ' + esc(at) + '. If the form already has the resume attached, attach it again (or Fill the form).' : 'the site’s Upload file dialog opens on the folder it’s in.');
     fine = $('#apSBfile'); if(fine) fine.innerHTML = a._sbFileMsg;
-  }, function(e){ TP.toast(sbErr(e), {ms:8000}); a._sbFileMsg = esc('Resume not in it yet — ' + sbErr(e)); fine = $('#apSBfile'); if(fine) fine.innerHTML = a._sbFileMsg; });
+  }, function(e){ TP.toast(sbErr(e), {ms:8000}); a._sbFileMsg = esc((again ? 'The edited resume couldn’t be put in yet — ' : 'Resume not in it yet — ') + sbErr(e)); fine = $('#apSBfile'); if(fine) fine.innerHTML = a._sbFileMsg; });
+}
+// after an edit is saved (in the panel, or in the editor's own tab): the resume in the open browser is replaced with the new
+// one, once the preview shows the saved copy. A burst of saves sends once
+var SBRE = {t:0};
+function sbResync(c, a){
+  if(!(c && a && SBS[c.id] && sbAt(c) === a.id && a.status === 'draft')) return;   // only a browser that's on this job
+  clearTimeout(SBRE.t);
+  SBRE.t = setTimeout(function(){
+    var tries = 0;
+    (function ready(){   // the preview reloads with the saved copy: wait until its page is drawn again
+      if(A !== a || C !== c || !SBS[c.id]) return;
+      var f = $('#apFrame'), W = f && f.contentWindow, d = null;
+      try{ d = W && W.document; }catch(e){}
+      var drawn = d && d.readyState === 'complete' && W.pdfOf && d.querySelector('#sheet') && d.querySelector('#sheet').innerText.trim().length > 20;
+      if(!drawn && ++tries < 40) return setTimeout(ready, 300);
+      sbResume(c, a, true);
+    })();
+  }, 1500);
 }
 // proof in one click: the browser's current page, kept as this application's confirmation screenshot
 function sbShot(c, btn){
@@ -6046,7 +6066,7 @@ function refreshApp(){
       DFIELDS.forEach(function(k){ fresh[k] = dsame(k, now[k], s.base[k]) ? (row[k] == null ? null : row[k]) : now[k]; if(dsame(k, now[k], s.base[k])) s.base[k] = fresh[k]; });
       syncForm(fresh, null); Object.assign(a, s.base);
     }
-    drawRes(); if(moved) reloadView();
+    drawRes(); if(moved){ reloadView(); sbResync(C, a); }   // and the copy in the client's open browser follows
   }, function(){});
 }
 // the sidebar as an icon rail: [ or its button, remembered in this browser; the icons keep their names as tooltips
