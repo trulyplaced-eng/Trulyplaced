@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-11-06.1">
+<link rel="stylesheet" href="/portal.css?v=2026-11-04.1">
 <style>
 /* the app's sign-in page (app.trulyplaced.com/login and its globals.css): the logo above a white card, on Apple's soft grey with
    three large blurred pools of TrulyPlaced light drifting very slowly over a faint grid (still for anyone who asks for less motion) */
@@ -137,7 +137,7 @@
   raf = requestAnimationFrame(draw);
 })();
 </script>
-<script src="/portal.js?v=2026-11-06.1"></script>
+<script src="/portal.js?v=2026-11-04.1"></script>
 <script>
 (function(){
 "use strict";
@@ -261,7 +261,7 @@ function showSetPassword(kind, email){
 function showNoAccount(email){
   document.title = 'Sign in | TrulyPlaced';
   view.innerHTML = '<div id="noacct"><h1>No TrulyPlaced account for this email</h1><p class="lead">You’re signed in as <b>' + esc(email || 'this email') + '</b>, but it isn’t a client or team account.</p>' +
-    '<div class="note" style="margin-top:14px">Clients: sign in with the email you gave us when you joined. Team: ask an owner to add you. Not with us yet? We apply for you — a real specialist tailors your resume and sends 10–15 checked applications a business day in your name (150, 300 or 600 per plan).</div>' +
+    '<div class="note" style="margin-top:14px">Clients: sign in with the email you gave us when you joined. Team: ask an owner to add you. Not with us yet? We apply for you — a real specialist tailors your resume and sends 25–30 matched applications every business day.</div>' +
     '<div class="row" style="margin-top:16px"><a class="btn pri" href="/#pricing">See plans</a><a class="btn" href="' + esc(TP.CONFIG.WHATSAPP) + '" target="_blank" rel="noopener">' + I.wa + 'WhatsApp us</a></div>' +
     '<p style="margin-top:16px"><button class="lk" type="button" id="outBtn">Sign out and use another email</button></p></div>';
   $('#outBtn').onclick = function(){

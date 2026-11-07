@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-11-06.1">
+<link rel="stylesheet" href="/portal.css?v=2026-11-04.1">
 <style>
 /* The shell, laid out like the job board app (app.trulyplaced.com): a left sidebar with the sections, the clients open in
    this browser tab, the client you're working on with their progress, and you. Phones get a top bar and a tab bar. */
@@ -1635,56 +1635,6 @@ body.sbmin .runpill span{display:none}
 /* phones: the sidebar is hidden, so a copy of the pill floats above the tab bar */
 .runpill.rpm{display:none}
 @media (max-width:900px){.runpill.rpm:not([hidden]){display:block;position:fixed;right:12px;bottom:76px;z-index:60;margin:0}.runpill.rpm button{width:auto;background:#0d1b3f;color:#fff;border-color:#0d1b3f;box-shadow:var(--sh-float)}body.sbmin .runpill.rpm span{display:inline}}
-/* the fit gate: the three checks before an application goes, the eligibility sheet, the secure browser */
-#apGate{container-type:inline-size}
-.gate3{display:grid;grid-template-columns:1fr;gap:12px;margin-top:4px}
-@container (min-width:960px){.gate3{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}}
-.gcol{border:1px solid var(--line);border-radius:var(--rc);padding:12px 14px;font-size:13px;min-width:0}
-.gcol>b{display:inline-block;font-size:13.5px;margin-bottom:6px}
-.gcol .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
-.gcol p.fine{margin:6px 0 0}
-.gcol .field{margin-top:8px}.gcol .field label{font-size:12px}.gcol .check{margin-top:8px}
-.gcol .inp{margin-top:6px;width:100%}
-.gpill{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;vertical-align:middle;margin-left:4px;background:var(--bg);color:#404040}
-.gpill.ok{background:#ecfdf5;color:#065f46}.gpill.warn{background:#fffbeb;color:#92400e}.gpill.bad{background:#fef2f2;color:#991b1b}
-.gsheet{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 12px;margin:8px 0 0;font-size:12.5px}
-.gsheet dt{color:var(--muted)}.gsheet dd{margin:0;overflow-wrap:anywhere}.gsheet dd .lk{margin-left:6px}
-.gsheet.gid{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
-.gsheet .lk{font:inherit;font-size:12px;color:var(--blue);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}
-.reqs{margin:0 0 4px;padding-left:18px;font-size:12.5px;color:#404040}.reqs li{margin:2px 0}
-.gatefit{margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--bg)}
-.gfrom{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin-top:10px}.gfrom .check{margin:0}
-.fine.bad{color:#b42318}.fine.ok{color:#15803d}
-.rvck{display:block;margin-top:6px;font-size:13px}
-.rvsum{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;margin:2px 0 6px}.rvsum b{font-size:13.5px}
-.rvh{margin:14px 0 4px;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}.rvh.bad{color:#b42318}
-.rvt{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12.5px}
-.rvt th,.rvt td{padding:7px 8px;border-top:1px solid var(--line);vertical-align:top;text-align:left;overflow-wrap:anywhere;line-height:1.4}
-.rvt tr:first-child th,.rvt tr:first-child td{border-top:0}
-.rvt th{width:44%;font-weight:500;color:#404040}.rvt td{color:var(--ink)}
-.rvt.need{background:#fffbeb;border-radius:10px;overflow:hidden}.rvt.need th{color:#7c2d12}
-.rvt i{color:#b42318;font-style:normal}.rvt small{display:block;margin-top:2px;font-size:11.5px;color:var(--muted)}
-.rvsrc{display:inline-block;margin-left:6px;padding:0 6px;border-radius:6px;background:var(--bg);font-size:10.5px;color:var(--muted);vertical-align:1px}
-.rvt .lk{font:inherit;font-size:12px;color:var(--blue,#2563eb);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}
-.rvopt{margin-top:12px}.rvopt summary{cursor:pointer;font-size:12.5px;color:var(--muted)}.rvopt .rvt{margin-top:4px}
-.apgrid.split{grid-template-columns:minmax(300px,var(--apl,40%)) 14px minmax(0,1fr);column-gap:0}
-.apgrid.split.live{grid-template-columns:minmax(300px,var(--apll,33%)) 14px minmax(0,1fr)}
-.apsplit{align-self:stretch;cursor:col-resize;position:relative;touch-action:none;outline:0}
-.apsplit::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;border-radius:2px;background:transparent;transition:background .15s}
-.apsplit:hover::before,.apsplit:focus-visible::before,.apdrag .apsplit::before{background:var(--blue,#2563eb)}
-.apdrag,.apdrag *{cursor:col-resize!important;user-select:none}.apdrag iframe{pointer-events:none}
-.apgrid.split .apmain{grid-template-columns:minmax(0,1fr)}.apgrid.split .apmain > *{min-width:0}   /* the cards shrink with the column instead of running under the other half */
-.apgrid.split .jacts{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}.apgrid.split .jacts .btn{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}   /* the buttons wrap to one a row when the column is narrow */
-@media (max-width:900px){.apgrid.split,.apgrid.split.live{grid-template-columns:minmax(0,1fr)}.apsplit{display:none}}
-.aplive{position:sticky;top:12px;min-width:0}
-.aplive .lvhd{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;font-size:13px}
-.aplive iframe{display:block;width:100%;height:78vh;border:1px solid var(--line);border-radius:var(--rc);background:#1a1a1a}
-.apgrid.live{grid-template-columns:minmax(0,.72fr) minmax(0,1.45fr)}.apgrid.live .apside{position:fixed;left:-12000px;top:0;width:820px;height:90vh;visibility:hidden;pointer-events:none}   /* kept laid out off-screen, not removed: its PDF is drawn by measuring the page, and a display:none frame measures zero */
-@media (max-width:1100px){.apgrid.live{grid-template-columns:1fr}.aplive{position:static}.aplive iframe{height:70vh}}
-.sbl{list-style:none;margin:6px 0 0;padding:0;font-size:12.5px}.sbl li{padding:5px 0;border-top:1px solid var(--line)}.sbl li:first-child{border-top:0}
-.sop{padding-left:20px;font-size:13.5px}.sop li{margin:8px 0}
-.bdt .thead,.bdt .li{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) repeat(5,minmax(0,.7fr))}
-.elgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px}@media (max-width:700px){.elgrid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -1708,7 +1658,7 @@ body.sbmin .runpill span{display:none}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div id="modalRoot"></div>
 <input type="file" id="fileIn" hidden>
-<script src="/portal.js?v=2026-11-06.1"></script>
+<script src="/portal.js?v=2026-11-04.1"></script>
 <script src="/match.js?v=2026-10-30.1"></script>
 <script>
 (function(){
@@ -1804,7 +1754,6 @@ function meMenu(btn){
     it('/team.html#myday', J.day, 'My day', 'Your work, and who still needs an application') +
     '<button role="menuitem" type="button" data-act="switch">' + J.swap + '<span>Switch client<small>Ctrl K</small></span></button>' +
     it('/team.html#tasks', J.clip, 'Tasks') + it('/team.html#clients', I.users, 'All clients') + (ME.owner ? it('/team.html#leads', J.star, 'Leads') + it('/team.html#ops', J.ops, 'Operations') + it('/team.html#team', I.team, 'Team') : '') +
-    '<button role="menuitem" type="button" data-act="sop">' + J.help + '<span>How we apply<small>The rules for every application</small></span></button>' +
     '<button role="menuitem" type="button" data-act="out">' + I.out + '<span>Sign out</span></button></div>');
   btn.setAttribute('aria-expanded', 'true');
   var first = $('#meMenu [role=menuitem]'); if(first) first.focus();
@@ -2181,7 +2130,7 @@ function vMyDay(){
       '<button class="btn" type="button" data-act="switch">' + J.swap + 'Switch client</button></div>' +
     '<div class="stats s5" id="mdS"></div><div id="mdReq"></div><div id="mdCrm"></div>' +
     '<div class="card"><h3>Still to do today</h3><p class="hint">' + (ME.owner ? 'Active clients' : 'Your active clients') + ' with nothing sent today — the most left on their plan first.</p><div id="mdTodo"><div class="skel"></div></div></div>' +
-    '<div id="amBox"></div>' + (ME.owner ? '<div id="mdBoard"><div class="skel"></div></div>' : '') +
+    '<div id="amBox"></div>' +
     '<div class="wkhead"><h2>Your work</h2>' + wrBar() + '</div><div class="stats s5" id="mdR"></div>' +
     '<div class="card flush"><div class="ch"><h3>Your clients</h3><span class="fine">Pick one to see only your applications for them</span></div><div class="tbl wkcl" id="mdMine"><div class="skel"></div></div></div>' +
     '<div class="card flush"><div class="ch"><h3>Your applications</h3>' + tlFilters('md') + '</div><div class="tbl wktl" id="mdTl"><div class="skel"></div></div></div>';
@@ -2219,7 +2168,6 @@ function vMyDay(){
     drawTimeline('md', W && W.tl, false);
   };
   draw(); mdCrm(); mdCrmLoad();
-  if(ME.owner){ loadGate().then(boardDraw); nudgeOnce(); }
   Promise.all([loadList(), wkLoad(ME.email)]).then(function(rs){ MDAY = rs[1]; draw(); }, function(e){ if($('#mdMine')) $('#mdMine').innerHTML = errBox(e); });
   // clients waiting on an answer about their resume (asked from their workspace), oldest first
   Promise.all([loadList().catch(function(){}), SB.from('resume_requests').select('id,client_id,kind,message,created_at').eq('status', 'open').order('created_at', {ascending:true}).limit(50)]).then(function(rs){
@@ -2669,7 +2617,7 @@ function newClient(pre){
   var planSel = ME.owner ? '<div class="field"><label for="ncP">Plan</label><select id="ncP"><option value="">Not set yet</option>' + TP.CONFIG.PLANS.map(function(n){ return '<option value="' + n + '">' + n + ' applications</option>'; }).join('') + '<option value="custom">Other number…</option></select></div>' +
       '<div class="field" id="ncPCw" hidden><label for="ncPC">Number of applications</label><input id="ncPC" type="number" min="1" max="100000" inputmode="numeric"></div>'
     : '<p class="fine">The owner sets the plan (250, 500 or 1000 applications) on the client’s Profile tab.</p>';
-  var m = TP.modal('<h2>New client</h2><p>We’ll create their login and email them a link to set a password. Nothing else is sent. On the onboarding call, fill their <b>Eligibility sheet</b> on the Profile — nothing goes out until it’s confirmed with them.</p>' +
+  var m = TP.modal('<h2>New client</h2><p>We’ll create their login and email them a link to set a password. Nothing else is sent.</p>' +
     '<form id="ncF" class="stack" style="margin-top:16px" novalidate>' +
       '<div class="field"><label for="ncN">Full name</label><input id="ncN" required autocomplete="off" placeholder="e.g. Priya Sharma"></div>' +
       '<div class="field"><label for="ncE">Email</label><input id="ncE" required placeholder="the email they’ll sign in with"' + TP.sg('email') + '></div>' +
@@ -2746,7 +2694,6 @@ function vClient(){
   });
 }
 function drawBar(){
-  loadGate();
   var c = C.row, p = C.prog || {}, done = p.done || 0, tot = c.plan_total || 0, pct = tot ? Math.min(100, Math.round(done / tot * 100)) : 0;
   document.documentElement.style.setProperty('--client', TP.hue(c.id));
   setTitle(c.full_name || c.email, c);
@@ -2761,7 +2708,7 @@ function drawBar(){
       return '<a href="' + esc(cUrl(C.id, t[0])) + '" data-go title="' + esc(t[1]) + '" class="' + (on ? 'on' : '') + '"' + (on ? ' aria-current="page"' : '') + '>' + t[2] + '<span>' + t[1] + '</span>' +
         (ask ? '<em class="wait" title="' + C.reqOpen + ' request' + (C.reqOpen === 1 ? '' : 's') + ' from ' + esc(name) + ' waiting">' + C.reqOpen + '</em>' : n !== '' && n != null ? '<em>' + n + '</em>' : '') + '</a>';
     }).join('') + '</nav><div class="grow"></div>' +
-    '<div class="pgcard" title="Applications sent / plan"><span class="lab">Applications sent</span><div class="pg"><b>' + done.toLocaleString() + '</b>' + (tot ? ' / ' + tot.toLocaleString() + ' · ' + (p.today || 0) + '/' + DAILY_CAP + ' today' : ' sent · ' + (p.today || 0) + '/' + DAILY_CAP + ' today') + '</div>' +
+    '<div class="pgcard" title="Applications sent / plan"><span class="lab">Applications sent</span><div class="pg"><b>' + done.toLocaleString() + '</b>' + (tot ? ' / ' + tot.toLocaleString() + ' · ' + (p.today || 0) + ' today' : ' sent · no plan set') + '</div>' +
       '<div class="prog' + (tot && done >= tot ? ' full' : '') + '"><i style="width:' + pct + '%"></i></div></div></div>';
   // the page's title line: the section, and whose page this is
   var sec = R.app ? null : TABS.filter(function(t){ return t[0] === R.tab; })[0];
@@ -2888,7 +2835,6 @@ function tProfile(){
       f('phone', 'Phone / WhatsApp', 'e.g. +1 201 555 0147') + f('linkedin', 'LinkedIn', 'linkedin.com/in/…') +
       f('location', 'Lives in', 'Start typing a city or ZIP code') + f('work_auth', 'Work authorization', 'e.g. F-1 OPT (STEM) — needs H-1B later') +
       f('salary', 'Salary expectation', 'e.g. $95K–$110K') + f('notice', 'Can start', 'e.g. 2 weeks’ notice') + '</div></div>' +
-    eligCardHTML(C) +
     '<div class="card"><h3>Standard answers</h3><p class="hint">Used to pre-fill every new application’s form answers. Tap a common question to add it, or type one — the questions forms ask and their usual answers come up as you type, with the answer suggested from the profile above.</p>' +
       '<div id="pfQA">' + ans.map(qaRow).join('') + '</div>' +
       '<div class="row" style="margin-top:10px"><button class="btn sm" type="button" data-act="qaadd">' + I.plus + 'Add a question</button></div>' +
@@ -2904,7 +2850,6 @@ function tProfile(){
     planCardHTML(C) +   // the package, the extra applications and the status are the owners'; an employee reads them
     '<div class="card" id="pfEmp"><h3>Employee</h3><div id="pfEmpB"><div class="skel"></div></div></div>' +   // who works on them: the owners assign (empCard)
     '<div class="card" id="pfMail"><h3>Gmail for applications</h3><div id="pfMailB"><div class="skel"></div></div></div>' +   // the inbox their applications use, read for the employers' emails (mbCard)
-    '<div class="card" id="pfSB"><h3>' + esc(first) + '’s secure browser</h3><div id="pfSBB"><div class="skel"></div></div></div>' +   // the cloud browser their applications go from (sbCard)
     '<div class="card"><h3>Their login</h3><p class="hint">They sign in at <b>trulyplaced.com/login.html</b> with <b>' + esc(c.email) + '</b> and a password (or Google, if it’s a Gmail address).</p>' +
       '<div class="row"><button class="btn sm" type="button" data-act="resend">' + I.mail + 'Email them the set-password link again</button><span class="fine" id="pfInv"></span></div></div>' +
     (!ME.owner ? '' : c.status === 'archived'   // archiving and restoring are the owners'
@@ -2913,10 +2858,10 @@ function tProfile(){
     '</section><div class="sticky-save"><span class="saved" id="pfMsg"></span><button class="btn pri" type="button" data-act="pfsave">Save changes</button></div></div></div>';
   if($('#pf_status')) $('#pf_status').value = c.status;
   var cc = C; if(ME.owner) loadAdjustments(cc).then(function(){ if(C === cc) drawAdjustments(cc); });   // the extra applications, each with its reason
-  skFresh(c); lastInvite(C); byClient(C); pfFresh(C); empCard(C); mbCard(C); sbCard(C);
+  skFresh(c); lastInvite(C); byClient(C); pfFresh(C); empCard(C); mbCard(C);
   if(ME.owner) $('#pf_plan').addEventListener('change', function(e){ $('#pfPCw').hidden = e.target.value !== 'custom'; });
   V.querySelector('.narrow').addEventListener('input', function(e){
-    if(e.target.closest('#pfRec') || e.target.closest('#pfEmp') || e.target.closest('#pfSB')) return;
+    if(e.target.closest('#pfRec') || e.target.closest('#pfEmp')) return;
     pfMark();
     if(e.target.matches('#pfQA [data-qa=q]')) $('#pfCommon').innerHTML = commonQ(readQA($('#pfQA')));   // a question picked from the list is no longer offered below
   });
@@ -3165,64 +3110,12 @@ function stable(v){
   if(v && typeof v === 'object') return '{' + Object.keys(v).sort().map(function(k){ return JSON.stringify(k) + ':' + stable(v[k]); }).join(',') + '}';
   return JSON.stringify(v === undefined ? null : v);
 }
-// the eligibility sheet on the Profile: filled with the client on the onboarding call, confirmed, and re-confirmed monthly
-var ELIG_F = ['work_auth_status', 'needs_sponsorship', 'salary_floor', 'locations', 'remote_ok', 'notice_days', 'years', 'licences'];
-function eligCardHTML(cc){
-  var c = cc.row, e = c.eligibility || {}, es = eligState(c), first = esc((c.full_name || '').split(' ')[0] || 'them');
-  var inp = function(k, label, ph, type){ return '<div class="field"><label for="pf_el_' + k + '">' + label + '</label><input id="pf_el_' + k + '"' + (type ? ' type="' + type + '" min="0"' : '') + ' value="' + esc(e[k] == null ? '' : e[k]) + '" placeholder="' + esc(ph || '') + '" autocomplete="off"' + (k === 'work_auth_status' ? ' list="eligWA"' : '') + '></div>'; };
-  return '<div class="card" id="pfElig"><div class="ch"><h3>Eligibility sheet</h3>' + eligPill(es) + '</div>' +
-    '<p class="hint">Filled with ' + first + ' on the onboarding call, from the resume and their answers; read before every application and against every knockout question. Press <b>Confirmed with ' + first + '</b> once they’ve agreed to it — a change to the sheet asks for it again, and once a month a task reminds you to re-confirm with one WhatsApp message. Nothing is sent while it’s red.</p>' +
-    '<datalist id="eligWA">' + ELIG_WA.map(function(w){ return '<option value="' + esc(w) + '">'; }).join('') + '</datalist>' +
-    '<div class="elgrid">' + inp('work_auth_status', 'Work authorization status', 'e.g. F-1 STEM OPT') +
-      '<div class="field"><label for="pf_el_needs_sponsorship">Needs sponsorship</label><select id="pf_el_needs_sponsorship"><option value="">—</option>' + [['no', 'No'], ['yes', 'Yes, now'], ['later', 'Later (e.g. H-1B in a year or two)']].map(function(o){ return '<option value="' + o[0] + '"' + (e.needs_sponsorship === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></div>' +
-      inp('salary_floor', 'Salary floor', 'e.g. $95K') + inp('locations', 'Locations they’ll take', 'e.g. Austin, Dallas; US remote') +
-      inp('notice_days', 'Notice (days)', 'e.g. 14', 'number') + inp('years', 'Years of experience', 'e.g. 4', 'number') +
-      inp('licences', 'Licences, clearances, certifications', 'e.g. CPA; no security clearance') +
-      '<label class="check" style="align-self:end"><input type="checkbox" id="pf_el_remote_ok"' + (e.remote_ok ? ' checked' : '') + '> Remote is fine</label></div>' +
-    '<div class="row" style="margin-top:12px;gap:8px;flex-wrap:wrap"><button class="btn sm pri" type="button" data-act="eligconfirm"' + (e.work_auth_status && e.needs_sponsorship ? '' : ' disabled title="Fill work authorization and sponsorship, then Save"') + '>' + I.check + 'Confirmed with ' + first + (es.at ? ' again' : '') + '</button>' +
-      (es.at ? '<button class="btn sm ghost" type="button" data-act="eligunconfirm">Needs confirming again</button>' : '') +
-      '<button class="btn sm" type="button" data-copy="' + esc(eligMsg(cc)) + '" data-what="Message">' + I.copy + 'Check message</button>' +
-      '<button class="btn sm" type="button" data-act="eligfill" title="From the profile and the default résumé — then complete sponsorship, salary floor and notice on the call">Fill from resume</button></div>' +
-    (es.at ? '<p class="fine" style="margin-top:8px">Confirmed ' + esc(TP.fmtDateTime(es.at)) + (es.stale ? ' — over ' + ELIG_DAYS + ' days ago' : '') + '.</p>' : '') + '</div>';
-}
-function eligForm(){
-  var e = {};
-  ELIG_F.forEach(function(k){
-    var x = $('#pf_el_' + k); if(!x) return;
-    if(k === 'remote_ok'){ if(x.checked) e[k] = true; return; }
-    var v = String(x.value || '').trim(); if(!v) return;
-    e[k] = (k === 'notice_days' || k === 'years') ? +v : v;
-  });
-  return e;
-}
-function eligFill(e){
-  ELIG_F.forEach(function(k){ var x = $('#pf_el_' + k); if(!x) return; if(k === 'remote_ok') x.checked = !!e[k]; else x.value = e[k] == null ? '' : e[k]; });
-}
-// the sheet's first draft, from what the profile and the default résumé already say (the call fills the rest)
-function eligFromResume(cc){
-  var c = cc.row, e = eligForm(), r = defaultResume(cc), doc = r && r.doc, yrs = null, loc = [];
-  if(c.work_auth && !e.work_auth_status){ var wa = ELIG_WA.map(function(w){ return [w, String(c.work_auth).toLowerCase().indexOf(w.toLowerCase())]; }).filter(function(x){ return x[1] > -1; }).sort(function(x, y){ return x[1] - y[1] || y[0].length - x[0].length; }).map(function(x){ return x[0]; })[0]; e.work_auth_status = wa || String(c.work_auth).split(/[—–-]| needs /)[0].trim(); if(!e.needs_sponsorship && /sponsor|h-?1b/i.test(c.work_auth)) e.needs_sponsorship = /later/i.test(c.work_auth) ? 'later' : 'yes'; if(!e.needs_sponsorship && /citizen|green card|no sponsorship/i.test(c.work_auth)) e.needs_sponsorship = 'no'; }
-  if(c.salary && !e.salary_floor){ var m = /\$?\s?(\d[\d,.]*\s?[kK]?)/.exec(c.salary); if(m) e.salary_floor = '$' + m[1].replace(/\s/g, '').toUpperCase(); }
-  if(c.notice && e.notice_days == null){ var nm = /(\d+)\s*(week|day|month)/i.exec(c.notice); if(nm) e.notice_days = +nm[1] * (/week/i.test(nm[2]) ? 7 : /month/i.test(nm[2]) ? 30 : 1); else if(/immediate|now|right away/i.test(c.notice)) e.notice_days = 0; }
-  if(c.target_locations) loc.push(c.target_locations); else if(c.location) loc.push(c.location);
-  if(!e.locations && loc.length) e.locations = loc.join('; ');
-  if(/remote/i.test(c.target_locations || '')) e.remote_ok = true;
-  try{
-    var items = ((doc && doc.sections) || []).filter(function(sx){ return (sx.k || sx.kind) === 'experience'; }).reduce(function(acc, sx){ return acc.concat(sx.items || []); }, []);
-    var years = items.map(function(it){ var y = /(19|20)\d{2}/.exec(String(it.meta || it.date || it.dates || '')); return y ? +y[0] : null; }).filter(Boolean);
-    if(years.length) yrs = new Date().getFullYear() - Math.min.apply(null, years);
-  }catch(ex){}
-  if(yrs != null && e.years == null && yrs >= 0 && yrs < 50) e.years = yrs;
-  eligFill(e); pfMark();
-  TP.toast('Filled from the profile and résumé — complete sponsorship, salary floor and notice on the call, then Save');
-}
 // what the Profile form would change ({} when nothing; null while the plan number is half typed)
 function pfPatch(){
   if(!C || !C.row || !$('#pf_full_name')) return {};
   var c = C.row, patch = {};
   PF.forEach(function(k){ var v = $('#pf_' + k).value.trim(); if(v !== (c[k] || '')) patch[k] = v || (k === 'full_name' ? '' : null); });
   var ans = readQA($('#pfQA')); if(stable(ans) !== stable(c.answers || [])) patch.answers = ans;
-  if($('#pf_el_work_auth_status')){ var el = eligForm(); if(stable(el) !== stable(c.eligibility || {})) patch.eligibility = el; }
   var ss = $('#pf_status'); if(ss && ss.value !== c.status) patch.status = ss.value;   // the owners' control
   if(ME.owner && $('#pf_plan')){ var pv = $('#pf_plan').value, pn = pv === 'custom' ? +$('#pf_planc').value : (pv ? +pv : null); if(pv === 'custom' && !(pn > 0)) return null; if((pn || null) !== (c.plan_package || null)) patch.plan_package = pn || null; }   // the package; the database keeps plan_total = package + the extras
   return patch;
@@ -3236,7 +3129,7 @@ function pfMark(){
   if(!dirty) bkDel('pf_' + C.id); else if(p) bkSet('pf_' + C.id, p);
 }
 var PF_NAME = {full_name:'Full name', phone:'Phone', linkedin:'LinkedIn', location:'Lives in', target_roles:'Target roles', target_locations:'Target locations', work_auth:'Work authorization',
-  salary:'Salary', notice:'Can start', apply_notes:'How to apply', optimise_rules:'Resume rules', answers:'Standard answers', status:'Status', confirmed_skills:'Skills for jobs', plan_package:'Plan', eligibility:'Eligibility sheet'};
+  salary:'Salary', notice:'Can start', apply_notes:'How to apply', optimise_rules:'Resume rules', answers:'Standard answers', status:'Status', confirmed_skills:'Skills for jobs', plan_package:'Plan'};
 // opening the Profile: changes typed here before the page closed, not saved, are offered back
 function pfRecover(c){
   var bk = bkGet('pf_' + c.id), v = bk && bk.v, keys = v ? Object.keys(v).filter(function(k){ return PF_NAME[k]; }) : [];
@@ -3248,7 +3141,6 @@ function pfRecover(c){
     if(b.getAttribute('data-rec') === 'put') keys.forEach(function(k){
       var x = v[k];
       if(k === 'answers') $('#pfQA').innerHTML = (x || []).map(qaRow).join('');
-      else if(k === 'eligibility') eligFill(x || {});
       else if(k === 'status'){ var ss2 = $('#pf_status'); if(ss2 && !ss2.disabled) ss2.value = x; }
       else if(k === 'plan_package'){ var ps = $('#pf_plan'); if(ps){ if(x && TP.CONFIG.PLANS.indexOf(x) < 0 && !$('option[value="' + x + '"]', ps)) ps.insertAdjacentHTML('beforeend', '<option value="' + x + '">' + x + '</option>'); ps.value = x ? String(x) : ''; } }
       else if($('#pf_' + k)) $('#pf_' + k).value = x || '';
@@ -3278,7 +3170,6 @@ function pfAsk(){
 // what a status or plan change means for the client, said before it's saved
 function pfEffects(patch){
   var c = C.row, first = esc((c.full_name || '').split(' ')[0] || 'The client'), out = [];
-  if(patch.eligibility) out.push(['warn', '<b>Eligibility sheet</b> changed — it needs confirming with ' + first + ' again before anything is sent.']);
   if(patch.status === 'paused') out.push(['warn', '<b>Paused</b> — ' + first + '’s dashboard says the plan is paused, and they leave the Active list.']);
   if(patch.status === 'done') out.push(['warn', '<b>Done</b> — ' + first + '’s dashboard says the plan is complete, and they move to Done.']);
   if(patch.status === 'active') out.push(['ok', '<b>Active</b> — back on the Active list, and the plan shows as running on ' + first + '’s dashboard.']);
@@ -3301,7 +3192,6 @@ function saveProfile(){
     return TP.busy(btn, q(SB.from('clients').update(patch).eq('id', c.id).select('*').maybeSingle())).then(function(row){
       if(!row) throw {message:'You don’t have access to that.'};
       C.row = row; staleList(); drawBar(); rememberOpen(row); drawOpenTabs(); bkDel('pf_' + row.id);
-      if(patch.eligibility){ var ec = $('#pfElig'); if(ec) ec.outerHTML = eligCardHTML(C); }   // the sheet changed: it needs confirming again
       var ps = $('#planSum'); if(ps) ps.outerHTML = planHeadHTML(C);   // the plan line follows (the database kept the total = package + extras)
       var s = $('#pfMsg'); if(s) s.textContent = 'Saved ' + new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
       TP.toast('Profile saved');
@@ -4570,7 +4460,7 @@ function tApps(){
   var c = C, p = c.prog || {};
   if(AP.c !== c.id){ AP = {f:'all', q:'', n:50, c:c.id, w:'', mine:false, sel:null}; }
   V.innerHTML = '<div class="stats"><div class="stat"><b>' + (p.done || 0) + (c.row.plan_total ? ' <span style="font-size:14px;color:var(--muted)">/ ' + c.row.plan_total + '</span>' : '') + '</b><span>applications sent</span></div>' +
-      '<div class="stat"><b>' + (p.today || 0) + ' <span style="font-size:14px;color:var(--muted)">/ ' + DAILY_CAP + '</span></b><span>sent today</span></div><div class="stat"><b>' + (p.drafts || 0) + '</b><span>drafts in progress</span></div><div class="stat"><b>' + (p.interviews || 0) + '</b><span>interviews and offers</span></div></div>' +
+      '<div class="stat"><b>' + (p.today || 0) + '</b><span>sent today</span></div><div class="stat"><b>' + (p.drafts || 0) + '</b><span>drafts in progress</span></div><div class="stat"><b>' + (p.interviews || 0) + '</b><span>interviews and offers</span></div></div>' +
     '<div class="tools" style="margin-top:0"><input class="inp" id="apQ" type="search" placeholder="Search role or company" value="' + esc(AP.q) + '" autocomplete="off">' +
       '<div class="seg" id="apF">' + [['all','All'],['draft','Drafts'],['applied','Applied'],['interview','Interview'],['offer','Offer'],['rejected','Not selected'],['closed','Closed'],['withdrawn','Withdrawn']].map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (AP.f === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div></div>' +
     '<div class="tools apt2"><select class="inp" id="apW" aria-label="When">' + AP_W.map(function(w){ return '<option value="' + w[0] + '"' + (AP.w === w[0] ? ' selected' : '') + '>' + w[1] + '</option>'; }).join('') + '</select>' +
@@ -4800,7 +4690,7 @@ function jobCard(){
   var by = C.who && C.who[A.id], draft = A.status === 'draft';
   var when = A.applied_at ? 'Applied ' + esc(TP.fmtDateTime(A.applied_at)) : 'Started ' + esc(TP.ago(A.created_at));
   var acts = draft
-    ? '<button class="btn" type="button" data-act="goapply" title="Opens ' + esc((C.row.full_name || '').split(' ')[0] || 'the client') + '’s browser here on this job, with the resume in and the form filled">' + I.ext + 'Apply</button>' +
+    ? '<a class="btn" href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Apply</a>' +
       '<button class="btn" type="button" data-act="gomark">' + J.okc + 'Mark as applied</button>' + resumeBtn('act') +
       '<button class="btn pri" type="button" data-act="gocover">' + J.doc2 + 'Cover Letter</button>'
     : '<a class="btn" href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'Job posting</a>' +
@@ -5138,9 +5028,10 @@ function drawDraft(){
       '<div class="step ckit" id="ckRes">' + resStep() + '</div>' +
       '<div class="step ckit" id="ckCL"><span class="n' + (A.cover_letter ? ' ok' : '') + '">' + (A.cover_letter ? I.check : '3') + '</span><div class="bd"><b>Cover letter</b><small>' + (A.cover_letter ? 'Written.' : 'Optional — only if the form asks for one.') + '</small></div></div>' +
       '<div class="step ckit" id="ckAns"><span class="n' + (n ? ' ok' : '') + '">' + (n ? I.check : '4') + '</span><div class="bd"><b>Form answers</b><small>' + (n ? n + ' ready to copy into the form.' : 'None yet — add what the form asks.') + '</small></div></div></div>' +
-      '<p class="hint" style="margin:6px 0 10px">Apply inside ' + first + '’s secure browser with the resume on the right (PDF above it). Capture proof there, or add the confirmation here.</p>' +
+      '<p class="hint" style="margin:6px 0 10px">Apply on their site with the resume on the right (PDF above it), then add the confirmation here.</p>' +
       '<div class="senddrop">' + shotsHTML('dShot', 'Confirmation screenshots', 'Paste (<span class="kbd">Ctrl</span>+<span class="kbd">V</span>), drop, or choose several · PNG, JPG or WEBP · up to 10') +
         '</div>' +   // the resume that went is kept by itself (the tailored copy, or the main resume as it was): nothing to upload
+      '<label class="check" style="margin-top:10px"><input type="checkbox" id="noShot"> There was no confirmation screen</label>' +
       '<p class="err" id="mkErr" hidden></p>' +
       (A.submit_status === 'failed' ? '<div class="note bad" id="apFailed" style="margin-top:10px"><b>Couldn’t submit</b> (try ' + (A.attempts || 1) + '): ' + esc(A.fail_reason || '') + ' — ' + esc(TP.ago(A.attempted_at)) + '. Mark as applied once it goes through.</div>' : '') +
       '<div class="sendrow"><button class="btn ok" type="button" data-act="markapplied">' + I.check + 'Mark as applied for ' + first + '</button><span class="sp"></span>' +
@@ -5149,15 +5040,14 @@ function drawDraft(){
   // a job page: on the left the job's card and, right under it, sending it (the next thing to do); then the description and
   // analysis, the answers and the cover letter. The resume on the right
   V.innerHTML = '<div class="aprec apx"><div class="aptop"><a class="btn sm ghost" href="' + esc(cUrl(C.id, 'applications')) + '" data-go>' + I.back + 'Applications</a><div id="lkNext"></div></div>' +
-    '<div id="apDup"></div><div id="apRec"></div><div class="apgrid split" id="apGrid"><div class="apmain">' + jobCard() + '<div id="apMail" hidden></div>' + gateCards() + send + jobTabs(jd) +
+    '<div id="apDup"></div><div id="apRec"></div><div class="apgrid"><div class="apmain">' + jobCard() + '<div id="apMail" hidden></div>' + send + jobTabs(jd) +
     '<div class="card"><div class="ch"><h3>Answers for the form</h3><button class="btn sm" type="button" data-act="qaadd2">' + I.plus + 'Add a question</button></div>' +
       '<p class="hint">From ' + first + '’s standard answers. Copy each into the form; anything this form asks is kept with the application.</p>' +
       '<div id="apQA">' + (A.answers || []).map(qaRow).join('') + '</div></div>' +
     '<div class="card" id="apCover"><div class="ch"><h3>Cover letter <span class="muted">(if the form asks)</span></h3><button class="btn sm" type="button" data-act="cpcover">' + I.copy + 'Copy</button></div>' +
       '<p class="hint">Write it in the editor’s <b>Cover letter</b> tab, or paste it here.</p><textarea class="inp" id="apCL" rows="6">' + esc(A.cover_letter || '') + '</textarea></div></div>' +
-    '<div class="apsplit" role="separator" aria-orientation="vertical" aria-label="Drag to resize the two halves" tabindex="0" title="Drag to resize · double-click to reset"></div>' +
-    '<aside class="aplive" id="apLive" hidden aria-label="The client’s secure browser"></aside>' + resPanel() + '</div>' +
-    '<div class="apbar"><button class="btn" type="button" data-act="goapply">' + I.ext + 'Apply</button>' + resumeBtn(true) + '<button class="btn ok" type="button" data-act="gomark">' + I.check + 'Mark as applied</button></div></div>';
+    resPanel() + '</div>' +
+    '<div class="apbar">' + resumeBtn(true) + '<button class="btn ok" type="button" data-act="gomark">' + I.check + 'Mark as applied</button></div></div>';
   ['apT', 'apC', 'apL2', 'apJD', 'apCL'].forEach(function(k){ $('#' + k).addEventListener('input', draftChanged); });
   apMail(A);   // the employer's emails, codes first (the client's Gmail)
   // the card follows the form: the title and company as they're typed, the facts, tags, match and fit as the description settles
@@ -5165,17 +5055,17 @@ function drawDraft(){
   $('#apC').addEventListener('input', function(e){ $('#apCo').textContent = e.target.value.trim(); });
   $('#apL2').addEventListener('input', function(e){ A.location = e.target.value.trim(); redrawJob(); });
   // the checklist follows the form: the job description and cover letter tick off as they're typed, the answers as they're added
-  $('#apJD').addEventListener('input', function(e){ var had = !!A.jd_text; A.jd_text = e.target.value.trim(); ckMark('ckJob', !!A.jd_text, '1', A.jd_text ? 'Pasted.' : 'Paste it in the Job description below — the resume is tailored to it.'); if(had !== !!A.jd_text) drawRes(); redrawJob(); appFitSoon(); gateReqs(); });
+  $('#apJD').addEventListener('input', function(e){ var had = !!A.jd_text; A.jd_text = e.target.value.trim(); ckMark('ckJob', !!A.jd_text, '1', A.jd_text ? 'Pasted.' : 'Paste it in the Job description below — the resume is tailored to it.'); if(had !== !!A.jd_text) drawRes(); redrawJob(); appFitSoon(); });
   $('#apCL').addEventListener('input', function(e){ var v = e.target.value.trim(); ckMark('ckCL', !!v, '3', v ? 'Written.' : 'Optional — only if the form asks for one.'); });
   var ckAns = function(){ var k = readQA($('#apQA')).length; ckMark('ckAns', !!k, '4', k ? k + ' ready to copy into the form.' : 'None yet — add what the form asks.'); };
-  $('#apQA').addEventListener('input', function(){ draftChanged(); ckAns(); rvSoon(); });
+  $('#apQA').addEventListener('input', function(){ draftChanged(); ckAns(); });
   if(window.MutationObserver) new MutationObserver(ckAns).observe($('#apQA'), {childList:true});
   // the resume it starts from: saved first, then the preview shows it
   $('#resCard').addEventListener('change', function(e){ if(e.target.id !== 'apBase') return; var a = A; A.base_resume_id = e.target.value; draftChanged(); drawRes(); flushDraft().then(function(){ if(A === a) reloadView(); }); });
   ['apT', 'apC'].forEach(function(k){ $('#' + k).addEventListener('change', dupCheck); });
   setupDrop($('#dShot'), 'shot', 'image/png,image/jpeg,image/webp');
   jdView();   // the job description's reading view, from the start
-  lkNext(); dupCheck(); apRecover(A); appFitRun(A); gateWire(); splitWire();
+  lkNext(); dupCheck(); apRecover(A); appFitRun(A);
 }
 // opening a draft: changes typed before the page closed (a crash, a refresh), never saved, are offered back
 function apRecover(a){
@@ -5196,22 +5086,17 @@ function apRecover(a){
     } else { bkDel('app_' + a.id); $('#apRec').innerHTML = ''; }
   });
 }
-// the same role at the same company in the last 90 days (however the posting words it): a draft warns, a sent one blocks —
-// the database refuses it too (23505). An owner can allow it with a reason, kept on the application and in the history.
+// the same role at the same company already applied for (or started) for this client: say so before a second one goes
 function dupCheck(){
   var a = A, c = C; if(!a || a.status !== 'draft' || !$('#apDup')) return;
-  var co = ($('#apC') || {}).value || a.company, ti = ($('#apT') || {}).value || a.title, sig = jobSig(co, ti);
-  if(!sig){ $('#apDup').innerHTML = ''; a._dup = false; return; }
-  q(SB.from('applications').select('id,status,title,company,applied_at,created_at').eq('client_id', c.id).eq('signature', sig).neq('id', a.id).neq('status', 'withdrawn').limit(50)).then(function(rows){
+  var co = ($('#apC') || {}).value || a.company, ti = ($('#apT') || {}).value || a.title, key = function(s){ return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); };
+  if(!key(co) || !key(ti)) { $('#apDup').innerHTML = ''; return; }
+  q(SB.from('applications').select('id,status,title,company,applied_at,created_at').eq('client_id', c.id).ilike('company', co.trim().replace(/[%_*\\?]/g, '_')).neq('id', a.id).limit(50)).then(function(rows){
     if(A !== a || !$('#apDup')) return;
-    var since = Date.now() - 90 * 864e5, hit = (rows || []).filter(function(r){ return new Date(r.applied_at || r.created_at).getTime() > since; });
-    var sent = hit.filter(function(r){ return r.status !== 'draft'; })[0], other = sent || hit[0], name = esc(c.row.full_name);
-    a._dup = !!sent && !a.dup_override_reason;
-    $('#apDup').innerHTML = !other ? ''
-      : a.dup_override_reason ? '<div class="note" style="margin-top:12px">A second application for <b>' + esc(other.title) + '</b> at <b>' + esc(other.company) + '</b>, allowed by an owner: ' + esc(a.dup_override_reason) + '</div>'
-      : sent ? '<div class="note bad" style="margin-top:12px"><b>Already applied.</b> ' + name + ' applied for <b>' + esc(other.title) + '</b> at <b>' + esc(other.company) + '</b> on ' + esc(TP.fmtDate(other.applied_at)) + '. The same role at the same company counts once in 90 days. <a href="' + esc(cUrl(c.id, 'app=' + other.id)) + '" data-go>Open it</a>' +
-        (ME.owner ? '<div class="row" style="margin-top:8px;gap:8px"><input class="inp" id="dupWhy" placeholder="Why this one should go too (goes in the history)" style="flex:1"><button class="btn sm" type="button" data-act="dupallow">Allow</button></div>' : '<p class="fine" style="margin:6px 0 0">An owner can allow it with a reason.</p>') + '</div>'
-      : '<div class="note warn" style="margin-top:12px">' + name + ' has another draft for <b>' + esc(other.title) + '</b> at <b>' + esc(other.company) + '</b>, started ' + esc(TP.ago(other.created_at)) + '. <a href="' + esc(cUrl(c.id, 'app=' + other.id)) + '" data-go>Open it</a> — only one of them can go.</div>';
+    var hit = (rows || []).filter(function(r){ return key(r.title) === key(ti) && key(r.company) === key(co); });
+    var sent = hit.filter(function(r){ return r.status !== 'draft'; })[0], other = sent || hit[0];
+    $('#apDup').innerHTML = other ? '<div class="note warn" style="margin-top:12px">' + esc(c.row.full_name) + (sent ? ' already applied for ' : ' has another draft for ') + '<b>' + esc(other.title) + '</b> at <b>' + esc(other.company) + '</b>' +
+      (sent ? ' on ' + esc(TP.fmtDate(other.applied_at)) : ', started ' + esc(TP.ago(other.created_at))) + '. <a href="' + esc(cUrl(c.id, 'app=' + other.id)) + '" data-go>Open it</a></div>' : '';
   }, function(){});
 }
 /* ---------- saving a draft ----------
@@ -5317,507 +5202,6 @@ function askClash(clash, srv, cur){
 }
 TP.onLeave(function(){ return DSALL.some(function(s){ return s.cur || s.p || s.why; }) ? 'Changes to a draft haven’t been saved yet.' : ''; });
 document.addEventListener('tp-online', function(){ DSALL.forEach(function(s){ if(s.cur || s.why){ clearTimeout(s.retry); saveDraft(s); } }); });
-/* ---------- the fit gate (sql/supabase-fit-gate.sql) ----------
-   What must be true before an application is sent, checked by the specialist on the application page and refused by the
-   database if skipped: the client's eligibility sheet confirmed, the fit ticked, a screenshot, where it was sent from
-   (the client's secure browser, or India), one role per company in 90 days, 15 a day and 5 an hour. The sending rules
-   switch on from a date the owners set (portal_settings 'fit_gate'); dedupe and restrictions are on from the start. */
-var DAILY_CAP = 15, HOUR_CAP = 5, ELIG_DAYS = 30, POSTING_DAYS = 14;
-var GATE = {scored:[], strict:false, strictFrom:null, p:null};
-function loadGate(force){
-  if(GATE.p && !force) return GATE.p;
-  GATE.p = q(SB.from('portal_settings').select('key,value')).then(function(rows){
-    (rows || []).forEach(function(r){
-      if(r.key === 'scored_boards') GATE.scored = (Array.isArray(r.value) ? r.value : []).map(function(x){ return String(x).toLowerCase(); });
-      if(r.key === 'fit_gate'){ GATE.strictFrom = (r.value && r.value.strict_from) || null; GATE.strict = !GATE.strictFrom || new Date(GATE.strictFrom).getTime() <= Date.now(); }
-    });
-    return GATE;
-  }, function(){ return GATE; });
-  return GATE.p;
-}
-// the same role at the same company, however the posting words it (mirrors job_signature in the database)
-function jobSig(co, ti){
-  var n = function(s){ return String(s || '').toLowerCase().replace(/\s*[\(\[][^\)\]]*[\)\]]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); };
-  var c = n(co).replace(/\b(inc|llc|ltd|limited|corp|corporation|co|company|plc|gmbh|pvt|private|group|holdings)\b/g, '').replace(/\s+/g, ' ').trim();
-  var t = n(ti).replace(/\b(remote|hybrid|wfh)\b/g, '').replace(/\s+/g, ' ').trim();
-  return c && t ? c + ' | ' + t : '';
-}
-function atsOf(u){
-  var h = String(u || '').replace(/^https?:\/\/(www\.)?/i, '').replace(/[\/?#].*$/, '').toLowerCase();
-  return /(^|\.)greenhouse\.io$/.test(h) ? 'Greenhouse' : /(^|\.)lever\.co$/.test(h) ? 'Lever' : /(^|\.)ashbyhq\.com$/.test(h) ? 'Ashby' : /(^|\.)workable\.com$/.test(h) ? 'Workable'
-    : /(^|\.)myworkday(jobs|site)\.com$/.test(h) ? 'Workday' : /(^|\.)icims\.com$/.test(h) ? 'iCIMS' : /taleo/.test(h) ? 'Taleo' : /(^|\.)smartrecruiters\.com$/.test(h) ? 'SmartRecruiters'
-    : /successfactors/.test(h) ? 'SuccessFactors' : /(^|\.)linkedin\.com$/.test(h) ? 'LinkedIn' : /(^|\.)indeed\.com$/.test(h) ? 'Indeed' : h;
-}
-function scoredBoard(u){ var b = atsOf(u); return b && GATE.scored.indexOf(b.toLowerCase()) > -1 ? b : ''; }
-var ELIG_LABEL = {yes:'needs sponsorship', no:'no sponsorship needed', later:'will need sponsorship later'};
-var ELIG_WA = ['US citizen', 'Green card', 'H-1B', 'F-1 OPT', 'F-1 STEM OPT', 'H-4 EAD', 'TN', 'L-1', 'L-2 EAD', 'O-1', 'E-3', 'Canadian citizen', 'UK citizen'];
-function eligState(row){
-  var e = (row && row.eligibility) || {}, at = row && row.eligibility_confirmed_at;
-  var missing = !e.work_auth_status || !e.needs_sponsorship || !at, days = at ? (Date.now() - new Date(at).getTime()) / 864e5 : null;
-  return {missing:missing, stale:!missing && days > ELIG_DAYS, days:days, sheet:e, at:at};
-}
-function eligPill(es){
-  return es.missing ? '<span class="gpill bad">Not confirmed</span>' : es.stale ? '<span class="gpill warn">Confirmed ' + esc(TP.ago(es.at)) + ' — check again</span>' : '<span class="gpill ok">Confirmed ' + esc(TP.ago(es.at)) + '</span>';
-}
-function eligLines(e){
-  e = e || {}; var L = [];
-  if(e.work_auth_status) L.push(['Work authorization', e.work_auth_status + (ELIG_LABEL[e.needs_sponsorship] ? ' · ' + ELIG_LABEL[e.needs_sponsorship] : '')]);
-  else if(e.needs_sponsorship) L.push(['Sponsorship', ELIG_LABEL[e.needs_sponsorship]]);
-  if(e.salary_floor) L.push(['Salary floor', e.salary_floor]);
-  if(e.locations) L.push(['Locations', e.locations + (e.remote_ok ? ' · remote OK' : '')]); else if(e.remote_ok) L.push(['Locations', 'Remote OK']);
-  if(e.notice_days != null && e.notice_days !== '') L.push(['Notice', e.notice_days + ' days']);
-  if(e.years != null && e.years !== '') L.push(['Experience', e.years + ' years']);
-  if(e.licences) L.push(['Licences', e.licences]);
-  return L;
-}
-// the one message that re-confirms the sheet: the specialist sends it on WhatsApp; "OK" back is enough to confirm
-function eligMsg(c){
-  var e = (c.row && c.row.eligibility) || {}, first = (c.row.full_name || '').split(' ')[0] || 'there', bits = [];
-  if(e.needs_sponsorship) bits.push(e.needs_sponsorship === 'no' ? 'still no sponsorship needed' : 'still ' + ELIG_LABEL[e.needs_sponsorship]);
-  if(e.work_auth_status) bits.push('still on ' + e.work_auth_status);
-  if(e.locations) bits.push('still open to ' + e.locations + (e.remote_ok ? ' and remote' : ''));
-  if(e.salary_floor) bits.push('salary floor still ' + e.salary_floor);
-  return 'Hi ' + first + ', quick check before this week’s applications: ' + (bits.length ? bits.join(', ') : 'are your work authorization, locations and salary floor still the same') + '? Reply OK, or tell me what changed.';
-}
-// the lines of a job description that read as hard requirements, so the fit tick is a read, not a hunt
-function hardReqs(jd){
-  var out = [];
-  String(jd || '').split(/\n+/).forEach(function(l){
-    l = l.replace(/^[\s•\-–*·]+/, '').trim(); if(l.length < 12 || l.length > 220) return;
-    if(/\b(must|required|requires|requirement|minimum|at least|\d+\+?\s*(years|yrs)|authori[sz]ed|authori[sz]ation|sponsorship|visa|citizen|clearance|degree|bachelor|master|licen[cs]e|certif|on-?site|in[- ]office|relocat|located in|based in)\b/i.test(l)) out.push(l);
-  });
-  return out.slice(0, 8);
-}
-// the four fields the gate keeps on a draft, saved as they're changed (apart from the draft's own save, which they don't disturb)
-function gateSave(patch){
-  var a = A; if(!a || a.status !== 'draft') return Promise.resolve();
-  Object.assign(a, patch);
-  return q(SB.from('applications').update(patch).eq('id', a.id).eq('status', 'draft')).catch(function(e){ TP.toast(TP.errText(e)); });
-}
-function gateCards(){
-  var c = C, a = A, seen = a.posting_first_seen || (a.created_at ? String(a.created_at).slice(0, 10) : '');
-  return '<div class="card" id="apGate"><div class="ch"><h3>Before it goes</h3><span class="muted">Checked by you, on every application. The database refuses what’s skipped.</span></div><div class="gate3">' +
-    '<div class="gcol" id="apFitCol"><b>Fit</b><div class="field"><label for="apSeen">Posting first seen</label><input type="date" id="apSeen" value="' + esc(seen) + '"></div>' +
-      '<label class="check"><input type="checkbox" id="apVer"' + (a.careers_site_verified ? ' checked' : '') + '> Verified on the employer’s careers site</label>' +
-      '<input class="inp" id="apVerUrl" placeholder="The job on their own careers site (link)" value="' + esc(a.careers_site_url || '') + '"' + (a.careers_site_verified ? '' : ' hidden') + '>' +
-      '<div id="apReq"></div><label class="check gatefit"><input type="checkbox" id="apFit"' + (a.fit_confirmed ? ' checked' : '') + '> <b>Meets every hard requirement</b></label><div id="apAged"></div></div>' +
-    '<div class="gcol" id="apElig"></div><div class="gcol" id="apSB"></div></div></div>';
-}
-function gateWire(){
-  var a = A, c = C;
-  $('#apSeen').addEventListener('change', function(e){ gateSave({posting_first_seen:e.target.value || null}); gateAged(); });
-  $('#apVer').addEventListener('change', function(e){ $('#apVerUrl').hidden = !e.target.checked; gateSave({careers_site_verified:e.target.checked}); gateAged(); });
-  $('#apVerUrl').addEventListener('change', function(e){ gateSave({careers_site_url:e.target.value.trim() || null}); });
-  $('#apFit').addEventListener('change', function(e){ gateSave({fit_confirmed:e.target.checked}); });
-  gateReqs(); gateAged(); eligPanel(); sbPanel();
-  loadGate().then(function(){ if(A === a && C === c) sbPanel(); });
-  q(SB.from('clients').select('eligibility,eligibility_confirmed_at,browser_status,browser_state,browser_set_at,phone,email').eq('id', c.id).maybeSingle()).then(function(row){ if(row && A === a && C === c){ Object.assign(c.row, row); eligPanel(); sbPanel(); if(!a._rv) sbPreview(c); } }, function(){});   // the browser's state may have arrived with this row: the checklist too
-  sbLoad(c).then(function(){
-    if(A !== a || C !== c) return;
-    sbPanel();
-    if(SBS[c.id] && a.job_url && sbAt(c) !== a.id){ sbAtSet(c, a.id); sbFn(c, 'goto', {url:String(a.job_url)}).catch(function(){ sbAtSet(c, null); }); }   // the browser follows the job you're on
-  }, function(){});
-  if(!a._rv) sbPreview(c);   // the checklist, prepared in the background
-}
-function gateReqs(){
-  var box = $('#apReq'); if(!box) return;
-  var L = hardReqs(A.jd_text);
-  box.innerHTML = L.length ? '<div class="fine" style="margin:6px 0 2px">Hard requirements in the description — check each against the sheet:</div><ul class="reqs">' + L.map(function(l){ return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>'
-    : '<p class="fine" style="margin:6px 0 2px">' + (A.jd_text ? 'No hard requirements found in the description — read it once more before ticking.' : 'Paste the job description below to see its hard requirements here.') + '</p>';
-}
-function gateAged(){
-  var box = $('#apAged'); if(!box) return;
-  var seen = $('#apSeen').value, days = seen ? Math.floor((Date.now() - new Date(seen).getTime()) / 864e5) : null, ver = $('#apVer').checked, w = [];
-  if(days != null && days > POSTING_DAYS) w.push('posted ' + days + ' days ago — many recruiters have stopped reading');
-  if(!ver) w.push('not verified on the employer’s site — a board can keep a closed job');
-  box.innerHTML = w.length ? '<div class="note warn" style="margin-top:8px">Allowed, but it goes in the history as ' + esc(w.join('; ')) + '.</div>' : '';
-}
-function eligPanel(){
-  var box = $('#apElig'), c = C; if(!box) return;
-  var es = eligState(c.row), first = esc((c.row.full_name || '').split(' ')[0] || 'them'), L = eligLines(es.sheet);
-  box.innerHTML = '<b>Eligibility</b> ' + eligPill(es) +
-    (L.length ? '<dl class="gsheet">' + L.map(function(x){ return '<dt>' + esc(x[0]) + '</dt><dd>' + esc(x[1]) + '</dd>'; }).join('') + '</dl>' : '<p class="fine">Nothing on the sheet yet.</p>') +
-    (es.missing ? '<p class="fine bad">Work authorization, sponsorship and a confirmation with ' + first + ' are needed before anything is sent. <a href="' + esc(cUrl(c.id, 'profile')) + '" data-go>Fill the sheet</a></p>'
-      : es.stale ? '<p class="fine">Over ' + ELIG_DAYS + ' days old: send the check message, and press Confirmed when ' + first + ' replies OK.</p>' : '') +
-    '<div class="row" style="margin-top:8px"><button class="btn sm' + (es.missing ? '' : ' pri') + '" type="button" data-act="eligconfirm"' + (es.sheet.work_auth_status && es.sheet.needs_sponsorship ? '' : ' disabled title="Fill the sheet on the Profile first"') + '>' + I.check + 'Confirmed with ' + first + '</button>' +
-    '<button class="btn sm" type="button" data-copy="' + esc(eligMsg(c)) + '" data-what="Message">' + I.copy + 'Check message</button></div>';
-}
-// confirming the sheet (the specialist checked it with the client, on the call or on WhatsApp); the database dates it
-function eligConfirm(btn, undo){
-  var c = C, first = (c.row.full_name || '').split(' ')[0] || 'them';
-  var go = function(){
-    return TP.busy(btn, q(SB.from('clients').update({eligibility_confirmed_at:undo ? null : new Date().toISOString()}).eq('id', c.id).select('*').maybeSingle())).then(function(row){
-      if(!row) throw {message:'You don’t have access to that.'};
-      C.row = row; staleList();
-      TP.toast(undo ? 'Needs confirming with ' + first + ' again' : 'Confirmed with ' + first);
-      if(R.app && A) eligPanel(); else if(R.tab === 'profile') tProfile();
-    }).catch(function(e){ TP.toast(TP.errText(e)); });
-  };
-  if(R.tab === 'profile' && !R.app && pfDirty()) return saveProfile().then(function(ok){ if(ok) return go(); });
-  return go();
-}
-/* ---------- the client's secure browser (supabase/functions/client-browser) ----------
-   A cloud browser of their own: its own profile, a stable US address. The specialist opens it from the application page
-   and works in its live view; nothing runs on the client's computer and no password is ever shared. browser_sessions is
-   the log the client sees in their workspace (when, how long), never the live-view address. */
-var SBS = {};   // the open session per client, as last seen
-function sbFn(c, action, extra){ return TP.fn('client-browser', Object.assign({action:action, client_id:c.id}, extra || {}), 120000); }
-function sbLoad(c){
-  return q(SB.from('browser_sessions').select('id,session_id,started_at,ended_at,live_view_url,started_by').eq('client_id', c.id).order('started_at', {ascending:false}).limit(20)).then(function(rows){
-    rows = rows || []; SBS[c.id] = rows.filter(function(r){ return !r.ended_at; })[0] || null; return rows;
-  });
-}
-function sbErr(e){
-  return e && e.code === 'not_configured' ? 'The secure browser isn’t set up in Supabase yet: the Kernel key goes into the function’s secrets first.'
-    : e && e.code === 'owner_only' ? 'Only an owner sets up a client’s secure browser.'
-    : e && e.code === 'prefill_not_configured' ? 'Form filling isn’t set up yet: AUTOPILOT_URL and TEAM_PREFILL_SECRET go into the function’s secrets.'
-    : e && e.code === 'not_open' ? 'The secure browser isn’t open — open it first.' : e && e.code === 'no_job_url' ? 'This draft has no job link.'
-    : e && e.code === 'already_sent' ? 'This application was already sent — refresh the page.'
-    : e && e.status === 409 ? 'It’s already open in another tab.' : TP.errText(e);
-}
-// Open, and "Its window": the function hands back the browser still open, or starts a new one (a browser ends by itself
-// after 45 idle minutes; the page only learns that by asking). The live view opens in the same named tab either way
-function sbOpen(c, btn, again){
-  var w = again ? window.open('about:blank', 'tp-sb-' + c.id) : null;   // a tab only when one was asked for (opened on the click, so the pop-up blocker lets it through)
-  var url = A && A.job_url ? String(A.job_url) : null;      // the browser opens on the job's own page
-  return TP.busy(btn, sbFn(c, 'open', url ? {url:url} : {})).then(function(r){
-    var s = (r && r.session) || {}, same = !!(r && r.reopened);
-    SBS[c.id] = {id:s.id, live_view_url:s.live_view_url, started_at:s.started_at || new Date().toISOString()};
-    if(!same) sbAtSet(c, A && A.id);   // a new browser starts on this job's page
-    if(again){ if(w && !w.closed) w.location.href = s.live_view_url; else window.open(s.live_view_url, '_blank'); }
-    if(again && same){ if(A && A.job_url && sbAt(c) !== A.id){ sbAtSet(c, A.id); sbPush(c, null, true); } return; }   // In a tab: the same browser — on this job
-    if(again) TP.toast('Its browser had closed — a new one opened on the job’s page, with the resume', {ms:7000});
-    if(R.app && A){
-      var a = A, nav = same && sbAt(c) !== a.id; a._live = true; sbAtSet(c, a.id); sbPanel();   // shown here, beside the draft, on this job
-      sbPush(c, null, nav).then(function(){ if(A === a && C === c && a.job_url && !again && !a._autoFilled){ a._autoFilled = true; return sbFill(c, null); } });   // then the form, filled (once per draft)
-    } else if(R.tab === 'profile') sbCard(c);
-  }, function(e){ if(w && !w.closed) w.close(); TP.toast(sbErr(e)); });
-}
-/* ---------- review and confirm: the system prepares the application, the specialist checks it once and confirms ----------
-   The checklist is the board's own questions with what the system will put in each (the client's details, the eligibility
-   sheet, the draft's answers, the résumé). Confirm and submit fills the form in the client's browser, presses Submit and
-   reads the employer's answer: a confirmation becomes the record and the proof; anything else (a bot check, an emailed
-   code, a refused field, a question nobody has answered) brings the browser up beside the draft for the specialist. */
-function sbCan(u){ return /greenhouse\.io\/|[?&]gh_jid=|jobs\.lever\.co\/|jobs\.ashbyhq\.com\/|[?&]ashby_jid=|workable\.com\//i.test(String(u || '')); }
-var RV_SRC = {profile:'profile', you:'draft', attached:'resume', needs_you:'', ai:''};
-function rvHTML(a){
-  var rv = a._rv, first = esc(((C && C.row && C.row.full_name) || '').split(' ')[0] || 'the client');
-  var msg = a._rvMsg ? '<div class="note ' + (a._rvKind || 'warn') + '" style="margin:6px 0">' + a._rvMsg + '</div>' : '';
-  if(!rv) return msg || '<p class="fine">Preparing the application: the form’s questions and what goes in each…</p>';
-  if(rv.status === 'unsupported') return msg + '<p class="fine">This board’s form can’t be prepared by the system (Greenhouse, Lever, Ashby and Workable can) — apply by hand in its browser.</p>';
-  var has = function(f){ return f.value != null && f.value !== '' && !(Array.isArray(f.value) && !f.value.length); };
-  var F = (rv.fields || []).filter(function(f){ return !/^(latitude|longitude)$/i.test(String(f.label || '').trim()); });   // the form fills these itself, from the location
-  var ready = F.filter(has), need = F.filter(function(f){ return !has(f) && f.required; }), opt = F.filter(function(f){ return !has(f) && !f.required; });
-  var row = function(f, add){
-    var v = Array.isArray(f.value) ? f.value.join(', ') : f.value, src = RV_SRC[f.source] ? '<span class="rvsrc">' + RV_SRC[f.source] + '</span>' : '';
-    return '<tr><th scope="row">' + esc(f.label) + (f.required ? ' <i>*</i>' : '') + '</th><td>' +
-      (has(f) ? esc(String(v)) + src + (f.note ? '<small>' + esc(f.note) + '</small>' : '')
-        : '<small style="margin:0">' + esc(f.note || 'nothing to put here') + '</small>' + (add && f.category !== 'file' ? '<button class="lk" type="button" data-act="rvadd" data-q="' + esc(f.label) + '">Add an answer</button>' : '')) + '</td></tr>';
-  };
-  return msg + '<div class="rvsum"><b>' + ready.length + ' of ' + F.length + ' ready</b>' + (need.length ? '<span class="bad">' + need.length + ' to answer</span>' : '<span class="ok">nothing left to answer</span>') + '</div>' +
-    (need.length ? '<h4 class="rvh bad">To answer before confirming</h4><table class="rvt need">' + need.map(function(f){ return row(f, true); }).join('') + '</table>' +
-      '<p class="fine" style="margin-top:6px">Add an answer puts the question under <b>Answers for the form</b>; the checklist updates as you type. Or Confirm anyway — the browser comes up for you to answer it there.</p>' : '') +
-    (ready.length ? '<h4 class="rvh">Ready</h4><table class="rvt">' + ready.map(function(f){ return row(f, false); }).join('') + '</table>' : '') +
-    (opt.length ? '<details class="rvopt"><summary>' + opt.length + ' optional, left empty</summary><table class="rvt">' + opt.map(function(f){ return row(f, true); }).join('') + '</table></details>' : '') +
-    '<p class="fine" style="margin-top:10px">Read each line; then Confirm: the system fills the form in ' + first + '’s browser and presses Submit.</p>';
-}
-// the checklist again a moment after an answer is typed (once the draft has saved it)
-var RVT = 0;
-function rvSoon(){
-  var a = A, c = C; if(!(a && a._rv && c)) return;
-  clearTimeout(RVT);
-  RVT = setTimeout(function(){ if(A !== a) return; flushDraft().then(function(ok){ if(ok && A === a){ delete a._rv; a._rvMsg = null; rvDraw(); sbPreview(c); } }); }, 2500);
-}
-function rvDraw(){ var el = $('#apRv'); if(el && A) el.innerHTML = rvHTML(A); }
-function sbPreview(c){
-  var a = A; if(!(a && a.job_url && sbCan(a.job_url) && c.row.browser_status === 'ready')) return Promise.resolve();
-  var base = (c.resumes || []).filter(function(r){ return r.id === a.base_resume_id; })[0];
-  var hasPdf = !!(a.resume_file || (a.resume_doc && a.resume_doc.sections) || (base && base.doc));
-  return sbFn(c, 'preview', {application_id:a.id, has_pdf:hasPdf}, 60000).then(function(r){ if(A !== a) return; a._rv = r; a._rvMsg = null; rvDraw(); }, function(e){ if(A !== a) return; a._rvMsg = esc(sbErr(e)); a._rvKind = 'bad'; rvDraw(); });
-}
-// what has to be true before anything is sent, in words (null when it all is): the same rules Mark as applied keeps
-function gateErr(a, c){
-  var first = (c.row.full_name || '').split(' ')[0] || 'the client', es = eligState(c.row);
-  if(es.missing && GATE.strict) return 'Confirm work authorization and sponsorship with ' + first + ' first — the Eligibility card above.';
-  if(a._dup) return first + ' already applied for this role at this company in the last 90 days.' + (ME.owner ? ' Allow it above, with a reason.' : '');
-  if(!($('#apFit') && $('#apFit').checked)) return 'Tick “Meets every hard requirement” in the Fit check first — read the hard requirements against the sheet.';
-  var f = draftForm(); if(!f.title || !f.company) return 'Add the job title and company first.';
-  return null;
-}
-function sbSubmit(btn){
-  var a = A, c = C, first = (c.row.full_name || '').split(' ')[0] || 'the client';
-  var bad = gateErr(a, c); if(bad){ TP.toast(bad, {ms:7000}); var mk = $('#mkErr'); if(mk){ mk.hidden = false; mk.textContent = bad; } return; }
-  a._rvMsg = 'Opening ' + esc(first) + '’s browser, filling the form, pressing Submit — up to two minutes…'; a._rvKind = ''; rvDraw();
-  var pdf = a.resume_file ? Promise.resolve(null) : sbPdf(a).then(function(f){ return sbB64(f.blob).then(function(b64){ return {name:f.name, data_b64:b64}; }); }).catch(function(){ return null; });
-  return TP.busy(btn, pdf.then(function(p){ return sbFn(c, 'submit', Object.assign({application_id:a.id}, p || {}), 180000); })).then(function(r){
-    if(r && r.session){ SBS[c.id] = {id:r.session.id, live_view_url:r.session.live_view_url, started_at:r.session.started_at}; sbAtSet(c, a.id); }
-    if(A !== a) return;
-    if(r && r.status === 'submitted'){
-      if(r.path) a._storedShots = (a._storedShots || []).concat(r.path);
-      a._from = 'secure_browser'; a._rvMsg = 'Submitted — the employer’s page said “' + esc(r.confirmation || '') + '”. Recording it…'; a._rvKind = 'ok'; rvDraw();
-      return markApplied(btn, {_auto:true});
-    }
-    var empties = ((r && r.empty) || []).filter(function(e){ return e.required; }).map(function(e){ return e.label; });
-    var why = r && r.status === 'needs_user'
-      ? (r.reason === 'challenge' ? 'The site wants a human check (a CAPTCHA). Do it in the browser here, then press Submit there.'
-        : r.reason === 'verification' ? 'The site emailed ' + esc(first) + ' a code. It shows under Emails on this page as it arrives — type it in the browser, then press Submit there.'
-        : r.reason === 'errors' ? 'The form refused: ' + esc((r.errors || []).join('; ')) + '. Fix it in the browser, then press Submit there.'
-        : 'The form needs an answer the system doesn’t have: ' + esc(empties.join(', ')) + '. Fill it in the browser, then press Submit there.')
-      : r && r.status === 'unsupported' ? 'This board’s form can’t be sent by the system — apply by hand in its browser.'
-      : 'Submit was pressed but no confirmation was read. Look at the browser: if it went, press Mark as applied; if not, finish it there.';
-    a._rvMsg = why; a._rvKind = 'warn'; a._live = true; sbPanel(); TP.toast('Needs you — the browser is beside the draft', {ms:7000});
-  }, function(e){ if(A !== a) return; a._rvMsg = esc('Couldn’t send it: ' + sbErr(e)); a._rvKind = 'bad'; rvDraw(); TP.toast(sbErr(e), {ms:8000}); });
-}
-// the live view beside the draft (an iframe of Kernel's live view), or the resume: the specialist's choice, the browser first
-// the divider between the draft and the resume (or the browser): dragged, nudged with the arrow keys, reset with a double-click.
-// One width for the resume view and one for the browser view, remembered in this browser
-function splitWire(){
-  var g = $('#apGrid'), h = g && $('.apsplit', g); if(!h) return;
-  var live = function(){ return g.classList.contains('live'); }, prop = function(){ return live() ? '--apll' : '--apl'; }, key = function(){ return live() ? 'tp_split_live' : 'tp_split_res'; };
-  [['tp_split_res', '--apl'], ['tp_split_live', '--apll']].forEach(function(x){ var v = +TP.lsGet(x[0], 0); if(v > 15 && v < 85) g.style.setProperty(x[1], v + '%'); });
-  var set = function(p){ p = Math.max(22, Math.min(72, p)); g.style.setProperty(prop(), p.toFixed(1) + '%'); return p; };
-  var cur = function(){ var m = $('.apmain', g); return m ? m.getBoundingClientRect().width / g.getBoundingClientRect().width * 100 : 40; };
-  var keep = function(p){ TP.lsSet(key(), Math.round(p * 10) / 10); };
-  h.addEventListener('pointerdown', function(e){
-    if(e.button !== 0) return;
-    e.preventDefault(); try{ h.setPointerCapture(e.pointerId); }catch(ex){}
-    var r = g.getBoundingClientRect(), last = cur(); document.body.classList.add('apdrag');
-    var mv = function(ev){ last = set((ev.clientX - r.left) / r.width * 100); };
-    var up = function(){ h.removeEventListener('pointermove', mv); h.removeEventListener('pointerup', up); h.removeEventListener('pointercancel', up); document.body.classList.remove('apdrag'); keep(last); };
-    h.addEventListener('pointermove', mv); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up);
-  });
-  h.addEventListener('keydown', function(e){ if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return; e.preventDefault(); keep(set(cur() + (e.key === 'ArrowLeft' ? -3 : 3))); });
-  h.addEventListener('dblclick', function(){ g.style.removeProperty(prop()); try{ localStorage.removeItem(key()); }catch(ex){} });
-}
-// which application the client's open browser was last sent to (per browser session), so it follows the job you're on
-var SBAT = {};
-function sbAt(c){ var t = SBAT[c.id], s = SBS[c.id]; return t && s && t.sid === s.id ? t.app : null; }
-function sbAtSet(c, appId){ var s = SBS[c.id]; SBAT[c.id] = s && appId ? {sid:s.id, app:appId} : null; }
-function sbView(){
-  var g = $('.apgrid'), L = $('#apLive'), c = C, s = c && SBS[c.id]; if(!g || !L) return;
-  if(s && s.live_view_url && A && A._live){
-    if(A.job_url && sbAt(c) !== A.id){ sbAtSet(c, A.id); sbPush(c, null, true); }   // still on another job: this one's page and resume
-    var first = esc((c.row.full_name || '').split(' ')[0] || 'The client');
-    if(L.getAttribute('data-sid') !== String(s.id)){
-      L.innerHTML = '<div class="lvhd"><b>' + first + '’s browser</b><span class="fine">Apply in it here — click inside it first so it takes your typing.</span><span class="grow"></span>' +
-        '<button class="btn sm" type="button" data-act="sbwin" title="The same browser in a tab of its own, full size">' + I.ext + 'In a tab</button><button class="btn sm" type="button" data-act="sbresview">' + I.doc + 'Resume</button></div>' +
-        '<iframe id="apLiveF" title="' + first + '’s secure browser" src="' + esc(s.live_view_url) + '" allow="clipboard-read; clipboard-write; autoplay"></iframe>';
-      L.setAttribute('data-sid', String(s.id));
-    }
-    L.hidden = false; g.classList.add('live');
-  } else { L.hidden = true; g.classList.remove('live'); }
-}
-function sbClose(c, btn){
-  return TP.busy(btn, sbFn(c, 'close')).then(function(){ SBS[c.id] = null; TP.toast('Secure browser closed'); if(R.app && A){ sbPanel(); sbView(); } else if(R.tab === 'profile') sbCard(c); }, function(e){ TP.toast(sbErr(e)); });
-}
-// this job's page and this draft's résumé, into the open browser (what Open does by itself; the button does it again)
-function sbPush(c, btn, nav){
-  var a = A; if(!a) return Promise.resolve();
-  var steps = Promise.resolve();
-  if(nav !== false && a.job_url) steps = steps.then(function(){ return sbFn(c, 'goto', {url:String(a.job_url)}); }).catch(function(e){ TP.toast(sbErr(e)); });
-  steps = steps.then(function(){ return sbResume(c, a); });
-  return btn ? TP.busy(btn, steps) : steps;
-}
-// the résumé into the browser: the PDF (the file that was uploaded, or the editor's PDF of the resume in view) lands in the
-// browser's home folder — the first folder the site's "Upload file" dialog shows. The file never has to be on the specialist's machine
-// the draft's résumé as a file: the one uploaded, or the editor's PDF of the resume in view (laid out once)
-function sbPdf(a){
-  return a.resume_file
-    ? TP.fileUrl(a.resume_file).then(function(u){ return fetch(u); }).then(function(r){ if(!r.ok) throw {message:'Couldn’t read the uploaded file'}; return r.blob(); }).then(function(bl){ return {blob:bl, name:String(a.resume_file).split('/').pop()}; })
-    : Promise.resolve().then(function(){
-        var fw = $('#apFrame'), W = fw && fw.contentWindow, notLaidOut = {message:'Open the resume in the editor once so it’s laid out as a page — then it can be sent as a PDF.'};
-        if(!(W && W.pdfOf && W.loadScript)) throw notLaidOut;
-        return W.loadScript(W.JSPDF || 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js').then(function(){ return W.document.fonts && W.document.fonts.ready; }).then(function(){   // the editor's own jsPDF (its URL is a const inside the frame)
-          var pdf; try{ pdf = W.pdfOf(); }catch(e){ throw notLaidOut; }   // a resume never laid out has no page to draw
-          if(!pdf) throw notLaidOut;
-          var base = ((C && C.row && C.row.full_name) || 'Resume').replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '_') || 'Resume';   // named as the editor names a download (its fileBase is a const inside the frame)
-          return {blob:pdf.output('blob'), name:base + '_Resume.pdf'};
-        });
-      });
-}
-function sbB64(blob){ return new Promise(function(res, rej){ var rd = new FileReader(); rd.onload = function(){ res(String(rd.result).split(',')[1]); }; rd.onerror = function(){ rej({message:'Couldn’t read the PDF'}); }; rd.readAsDataURL(blob); }); }
-// Fill the form: the employer's form is filled inside its window from this draft (answers, the client's details, the résumé)
-// by Autopilot's engine; nothing is submitted — the specialist checks it there and presses Submit
-function sbFill(c, btn){
-  var a = A; if(!a) return;
-  var box = $('#apSBfill'); if(box) box.textContent = 'Filling the form in its window — a minute or so…';
-  var pdf = a.resume_file ? Promise.resolve(null) : sbPdf(a).then(function(f){ return sbB64(f.blob).then(function(b64){ return {name:f.name, data_b64:b64}; }); }).catch(function(){ return null; });   // no PDF: the résumé box is left for the specialist
-  return TP.busy(btn, pdf.then(function(p){ return sbFn(c, 'fill', Object.assign({application_id:a.id}, p || {}), 150000); })).then(function(r){
-    box = $('#apSBfill'); if(!box) return;
-    if(r && r.status === 'unsupported'){ a._sbFillMsg = 'This form can’t be filled by code (only Greenhouse, Lever, Ashby and Workable forms can) — apply in the browser.'; box.innerHTML = a._sbFillMsg; return; }
-    var filled = (r && r.filled) || [], empty = (r && r.empty) || [];
-    a._sbFillMsg = '<b>' + filled.length + ' field' + (filled.length === 1 ? '' : 's') + ' filled.</b> ' + (empty.length ? 'Left for you: ' + esc(empty.map(function(x){ return x.label + (x.required ? ' (required)' : ''); }).join(', ')) + '. ' : '') + 'Check the form in the browser, then press Submit there yourself.';
-    box.innerHTML = a._sbFillMsg;
-    TP.toast('Form filled — check it in the browser and press Submit yourself', {ms:8000});
-  }, function(e){ a._sbFillMsg = esc('Couldn’t fill it: ' + sbErr(e)); box = $('#apSBfill'); if(box) box.innerHTML = a._sbFillMsg; TP.toast(sbErr(e), {ms:8000}); });
-}
-function sbResume(c, a, again){
-  var fine = $('#apSBfile');
-  var get = sbPdf(a);
-  if(fine) fine.textContent = again ? 'Your edit is saved — updating the resume in its browser…' : 'Putting the resume into it…';
-  return get.then(function(f){
-    return sbB64(f.blob).then(function(b64){ return sbFn(c, 'file', {name:f.name, data_b64:b64}); }).then(function(r){ return r && r.name || f.name; });
-  }).then(function(name){
-    var at = new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
-    if(again) TP.toast('Resume updated in its browser with your latest edit', {ms:5000});
-    else TP.toast('Resume is in its window: the site’s Upload dialog opens on it — ' + name, {ms:8000});
-    a._sbFileMsg = 'In it, as <b>' + esc(name) + '</b> — ' + (again ? 'updated with your edits at ' + esc(at) + '. If the form already has the resume attached, attach it again (or Fill the form).' : 'the site’s Upload file dialog opens on the folder it’s in.');
-    fine = $('#apSBfile'); if(fine) fine.innerHTML = a._sbFileMsg;
-  }, function(e){ TP.toast(sbErr(e), {ms:8000}); a._sbFileMsg = esc((again ? 'The edited resume couldn’t be put in yet — ' : 'Resume not in it yet — ') + sbErr(e)); fine = $('#apSBfile'); if(fine) fine.innerHTML = a._sbFileMsg; });
-}
-// after an edit is saved (in the panel, or in the editor's own tab): the resume in the open browser is replaced with the new
-// one, once the preview shows the saved copy. A burst of saves sends once
-var SBRE = {t:0};
-function sbResync(c, a){
-  if(!(c && a && SBS[c.id] && sbAt(c) === a.id && a.status === 'draft')) return;   // only a browser that's on this job
-  clearTimeout(SBRE.t);
-  SBRE.t = setTimeout(function(){
-    var tries = 0;
-    (function ready(){   // the preview reloads with the saved copy: wait until its page is drawn again
-      if(A !== a || C !== c || !SBS[c.id]) return;
-      var f = $('#apFrame'), W = f && f.contentWindow, d = null;
-      try{ d = W && W.document; }catch(e){}
-      var drawn = d && d.readyState === 'complete' && W.pdfOf && d.querySelector('#sheet') && d.querySelector('#sheet').innerText.trim().length > 20;
-      if(!drawn && ++tries < 40) return setTimeout(ready, 300);
-      sbResume(c, a, true);
-    })();
-  }, 1500);
-}
-// proof in one click: the browser's current page, kept as this application's confirmation screenshot
-function sbShot(c, btn){
-  var a = A; if(!a) return;
-  return TP.busy(btn, sbFn(c, 'shot', {application_id:a.id})).then(function(r){
-    if(!(r && r.path)) throw {message:'No screenshot came back'};
-    a._storedShots = (a._storedShots || []).concat(r.path);
-    TP.toast('Proof captured'); if(A === a) sbPanel();
-  }, function(e){ TP.toast(sbErr(e)); });
-}
-function sbSetup(c, btn){
-  return TP.busy(btn, sbFn(c, 'setup')).then(function(){
-    return q(SB.from('clients').select('*').eq('id', c.id).maybeSingle()).then(function(row){ if(row && C === c){ C.row = row; staleList(); } TP.toast('Secure browser ready'); sbCard(c); });
-  }, function(e){ TP.toast(sbErr(e)); });
-}
-function sbPause(c, btn){
-  var to = c.row.browser_status === 'paused' ? 'ready' : 'paused';
-  return TP.busy(btn, q(SB.from('clients').update({browser_status:to}).eq('id', c.id).select('*').maybeSingle())).then(function(row){ if(row && C === c){ C.row = row; staleList(); } sbCard(c); }, function(e){ TP.toast(TP.errText(e)); });
-}
-function sbStatusHTML(c){
-  var st = c.row.browser_status || 'none';
-  return st === 'ready' ? '<span class="gpill ok">Ready' + (c.row.browser_state ? ' · ' + esc(c.row.browser_state) : '') + '</span>' : st === 'paused' ? '<span class="gpill warn">Paused</span>' : '<span class="gpill bad">Not set up</span>';
-}
-// the application page's panel: open it, capture proof, close it; the client's own email and phone; where this one went from
-function sbPanel(){
-  var box = $('#apSB'), c = C, a = A; if(!box || !a) return;
-  var first = esc((c.row.full_name || '').split(' ')[0] || 'them'), st = c.row.browser_status || 'none', open = SBS[c.id], email = (c.mbox && c.mbox.email) || c.row.email, scored = scoredBoard(a.job_url);
-  var from = a._from || (open ? 'secure_browser' : '');
-  var auto = st === 'ready' && !!a.job_url && sbCan(a.job_url);   // a board the system sends to: the checklist, then Confirm and submit
-  box.innerHTML = '<b>' + first + '’s secure browser</b> ' + sbStatusHTML(c) +
-    (auto ? '<div class="rvck" id="apRv">' + rvHTML(a) + '</div><div class="row" style="margin-top:8px"><button class="btn sm pri" type="button" data-act="sbsubmit" title="The system fills the form in ' + first + '’s browser and presses Submit; the employer’s confirmation is kept as the proof">' + I.check + 'Confirm and submit</button>' +
-        '<button class="btn sm" type="button" data-act="sbpreview" title="Prepare the checklist again, after an answer changes">Re-check</button>' + (open ? '' : '<button class="btn sm ghost" type="button" data-act="sbopen" title="Open its browser here and apply by hand">By hand</button>') + '</div>' : '') +
-    (st === 'ready' ? (open
-        ? '<p class="fine">Open ' + (open.started_at ? esc(TP.ago(open.started_at)) : 'now') + ', beside the draft. ' + (auto ? 'Finish anything the system couldn’t there; Mark as applied keeps the proof.' : 'Fill the form, check it there, press Submit there; Mark as applied keeps the proof.') + '</p><div class="row">' +
-          (a.job_url ? '<button class="btn sm' + (auto ? '' : ' pri') + '" type="button" data-act="sbfill" title="Fills the employer’s form in the browser from this draft — you check it and press Submit">' + I.spark + 'Fill the form</button>' : '') + (!a._live ? '<button class="btn sm" type="button" data-act="sbshow">' + I.ext + 'Show the browser</button>' : '') + '<button class="btn sm" type="button" data-act="sbpush" title="The browser to this job’s page, this draft’s resume in it again">Job page + resume</button><button class="btn sm" type="button" data-act="sbshot">' + I.img + 'Capture proof</button><button class="btn sm ghost" type="button" data-act="sbclose">Close</button></div>' +
-          '<p class="fine" id="apSBfile">' + (a._sbFileMsg || 'It opened on the job’s page with the resume inside: the site’s Upload file dialog opens on the folder it’s in.') + '</p>' +
-          '<p class="fine" id="apSBfill">' + (a._sbFillMsg || 'Fill the form puts this draft’s answers, ' + first + '’s details and the resume into the employer’s form for you. Submit stays yours.') + '</p>'
-        : (auto ? '' : '<div class="row" style="margin-top:6px"><button class="btn sm pri" type="button" data-act="sbopen" title="Opens ' + first + '’s secure browser here on the job’s page, puts the resume in and fills the form">' + I.spark + 'Apply in ' + first + '’s browser</button></div>'))
-      : '<p class="fine">' + (st === 'paused' ? 'Paused by an owner.' : 'An owner sets it up on the Profile (Plan &amp; account).') + '</p>') +
-    ((a._storedShots || []).length ? '<p class="fine ok">' + (a._storedShots.length === 1 ? 'Proof captured' : a._storedShots.length + ' proofs captured') + ' — kept with the application when it’s marked as applied.</p>' : '') +
-    '<div class="gsheet gid"><dt>Email</dt><dd>' + esc(email) + ' <button class="lk" type="button" data-copy="' + esc(email) + '" data-what="Email">Copy</button></dd>' +
-      (c.row.phone ? '<dt>Phone</dt><dd>' + esc(c.row.phone) + ' <button class="lk" type="button" data-copy="' + esc(c.row.phone) + '" data-what="Phone">Copy</button></dd>' : '') + '</div>' +
-    '<p class="fine">Every form carries ' + first + '’s own email and phone — never a team address.</p>' +
-    '<div class="gfrom"><span class="fine">Sent from</span><label class="check"><input type="radio" name="apFrom" value="secure_browser"' + (from === 'secure_browser' ? ' checked' : '') + (open ? '' : ' disabled title="Open the secure browser first"') + '> ' + first + '’s secure browser</label>' +
-      '<label class="check"><input type="radio" name="apFrom" value="india"' + (from === 'india' ? ' checked' : '') + '> India</label></div>' +
-    (scored && GATE.strict ? '<div class="note bad" style="margin-top:8px"><b>' + esc(scored) + '</b> is sent only from the secure browser: this board scores where applications come from.' + (ME.owner ? ' As an owner you can allow India with a reason.' : '') + '</div>'
-      : scored ? '<p class="fine">' + esc(scored) + ' scores where applications come from — use the secure browser.</p>' : '');
-  $$('input[name=apFrom]', box).forEach(function(r){ r.addEventListener('change', function(e){ a._from = e.target.value; }); });
-  sbView();
-}
-// the Profile's card: set up (owners), pause, the session log
-function sbCard(c){
-  var box = $('#pfSBB'); if(!box) return;
-  return sbLoad(c).then(function(rows){
-    box = $('#pfSBB'); if(C !== c || !box) return;
-    var first = (c.row.full_name || '').split(' ')[0] || 'them', st = c.row.browser_status || 'none';
-    box.innerHTML = '<p class="hint">A cloud browser that exists only for ' + esc(first) + '’s applications: its own profile and a stable US address' + (c.row.browser_state ? ' (' + esc(c.row.browser_state) + ')' : '') + '. The team opens it from the application page and applies inside it. Nothing runs on ' + esc(first) + '’s computer; no password is shared; ' + esc(first) + ' sees every session in their workspace.</p>' +
-      '<div class="row" style="align-items:center;gap:10px">' + sbStatusHTML(c) + (c.row.browser_set_at ? '<span class="fine">since ' + esc(TP.fmtDate(c.row.browser_set_at)) + '</span>' : '') + '</div>' +
-      (ME.owner ? '<div class="row" style="margin-top:10px">' + (st === 'none' ? '<button class="btn sm pri" type="button" data-act="sbsetup">Set up ' + esc(first) + '’s secure browser</button>' : '<button class="btn sm" type="button" data-act="sbpause">' + (st === 'paused' ? 'Resume' : 'Pause') + '</button>') + '</div>' : (st === 'none' ? '<p class="fine">An owner sets it up.</p>' : '')) +
-      (rows.length ? '<div class="fine" style="margin-top:12px">Sessions</div><ul class="sbl">' + rows.slice(0, 10).map(function(r){
-          var mins = r.ended_at ? Math.max(1, Math.round((new Date(r.ended_at) - new Date(r.started_at)) / 60000)) : null;
-          return '<li>' + esc(TP.fmtDate(r.started_at)) + ' · ' + esc(TP.ago(r.started_at)) + (mins != null ? ' · ' + mins + ' min' : ' · <b>open</b>') + ' · ' + esc(teamNameOf(r.started_by)) + '</li>';
-        }).join('') + '</ul>' : '');
-  }, function(e){ box.innerHTML = errBox(e); });
-}
-function teamNameOf(e){ var t = TEAMROWS.filter(function(x){ return x.email === e; })[0]; return (t && t.full_name) || (e ? String(e).split('@')[0] : 'system'); }
-// a reason an owner gives for an override, written to the history by the database
-function askReason(title, text){
-  return new Promise(function(res){
-    var done = false, fin = function(v){ if(done) return; done = true; res(v); };
-    var m = TP.modal('<h2>' + esc(title) + '</h2><p>' + esc(text) + '</p><div class="field"><label for="whyIn">Reason (goes in the history)</label><textarea id="whyIn" rows="2"></textarea></div>' +
-      '<div class="acts"><button class="btn" type="button" data-v="no">Cancel</button><button class="btn pri" type="button" data-v="ok">Allow</button></div>', false, {onClose:function(){ fin(null); }});
-    setTimeout(function(){ var t = $('#whyIn', m); if(t) t.focus(); }, 40);
-    m.addEventListener('click', function(e){
-      var b = e.target.closest('[data-v]'); if(!b) return;
-      var why = String(($('#whyIn', m) || {}).value || '').trim();
-      if(b.getAttribute('data-v') === 'ok' && !why){ $('#whyIn', m).focus(); return; }
-      TP.closeModal(); fin(b.getAttribute('data-v') === 'ok' ? why : null);
-    });
-  });
-}
-// a duplicate an owner allows, with a reason, on the draft itself
-function dupAllow(btn){
-  var a = A, why = String(($('#dupWhy') || {}).value || '').trim();
-  if(!why){ TP.toast('Say why, for the history'); var t = $('#dupWhy'); if(t) t.focus(); return; }
-  return TP.busy(btn, q(SB.from('applications').update({dup_override_reason:why}).eq('id', a.id).eq('status', 'draft').select('dup_override_reason').maybeSingle())).then(function(r){
-    if(!r) throw {message:'This draft was sent or deleted elsewhere.'};
-    a.dup_override_reason = r.dup_override_reason; a._dup = false; TP.toast('Allowed'); dupCheck();
-  }, function(e){ TP.toast(TP.errText(e)); });
-}
-// the owners' settings: when the sending rules start, and which boards must go through the secure browser
-var GATE_BOARDS = ['Greenhouse', 'Ashby', 'Workday', 'Lever', 'iCIMS', 'SmartRecruiters', 'Workable'];
-function gateSettingsHTML(){
-  return '<div class="card" id="mdGate"><div class="ch"><h3>The fit gate</h3><span class="muted">Owners only</span></div>' +
-    '<p class="hint">Dedupe, restrictions and the eligibility sheet are checked now. The sending rules (sheet confirmed, fit ticked, proof, where it went from, 15 a day, 5 an hour) switch on from this date, so every sheet is filled first.</p>' +
-    '<div class="row" style="align-items:flex-end;gap:14px;flex-wrap:wrap"><div class="field" style="max-width:220px"><label for="gtFrom">Sending rules from</label><input type="date" id="gtFrom" value="' + esc(GATE.strictFrom ? String(GATE.strictFrom).slice(0, 10) : '') + '"></div>' +
-    '<div class="field"><label>Only from the secure browser</label><div class="row" style="gap:10px;flex-wrap:wrap">' + GATE_BOARDS.map(function(b){ return '<label class="check"><input type="checkbox" data-board="' + esc(b.toLowerCase()) + '"' + (GATE.scored.indexOf(b.toLowerCase()) > -1 ? ' checked' : '') + '> ' + esc(b) + '</label>'; }).join('') + '</div></div>' +
-    '<button class="btn sm pri" type="button" data-act="gatesave">Save</button></div>' +
-    '<p class="fine" style="margin-top:8px">' + (GATE.strict ? 'The sending rules are on.' : 'The sending rules start ' + (GATE.strictFrom ? esc(TP.fmtDate(GATE.strictFrom)) : 'when a date is set') + '.') + '</p></div>';
-}
-function gateSettingsSave(btn){
-  var from = $('#gtFrom').value, boards = $$('#mdGate [data-board]').filter(function(x){ return x.checked; }).map(function(x){ return x.getAttribute('data-board'); });
-  var ups = [q(SB.from('portal_settings').update({value:boards}).eq('key', 'scored_boards'))];
-  if(from) ups.push(q(SB.from('portal_settings').update({value:{strict_from:from + 'T00:00:00+05:30'}}).eq('key', 'fit_gate')));
-  return TP.busy(btn, Promise.all(ups)).then(function(){ TP.toast('Saved'); return loadGate(true); }).then(function(){ var el = $('#mdGate'); if(el) el.outerHTML = gateSettingsHTML(); }, function(e){ TP.toast(TP.errText(e)); });
-}
-// the owners' report: what came back, per job board and per where it was sent from (the last 30 days)
-function boardDraw(){
-  var box = $('#mdBoard'); if(!box || !ME.owner) return;
-  var from = new Date(Date.now() - 30 * 864e5).toISOString();
-  q(SB.rpc('apps_by_board', {p_from:from, p_to:null})).then(function(rows){
-    box = $('#mdBoard'); if(!box) return;
-    rows = rows || [];
-    var pct = function(a, b){ return b ? Math.round(a / b * 100) + '%' : '–'; }, ORIG = {secure_browser:'secure browser', india:'India', unknown:'not recorded'};
-    box.innerHTML = '<div class="card flush"><div class="ch"><h3>By job board, last 30 days</h3><span class="fine">Where each application went from, and what came back</span></div>' +
-      (rows.length ? '<div class="tbl wkcl bdt"><div class="thead"><span>Board</span><span>From</span><span>Sent</span><span>Interviews</span><span>Offers</span><span>Aged</span><span>Unverified</span></div>' + rows.map(function(r){
-        return '<div class="li"><span class="t">' + esc(r.board) + '</span><span>' + esc(ORIG[r.origin] || r.origin) + '</span><span class="num">' + r.sent + '</span><span class="num">' + r.interviews + ' <small class="muted">' + pct(r.interviews, r.sent) + '</small></span><span class="num">' + r.offers + '</span><span class="num">' + r.aged + '</span><span class="num">' + r.unverified + '</span></div>';
-      }).join('') + '</div>' : '<p class="fine" style="padding:14px 16px">Nothing sent in the last 30 days.</p>') + '</div>' + gateSettingsHTML();
-  }, function(e){ box.innerHTML = errBox(e); });
-}
-// once a day, the owners' page asks the database for the month's re-confirm tasks (pg_cron does it too, where it runs)
-function nudgeOnce(){
-  if(!ME.owner) return;
-  var k = 'tp_elig_nudge', d = new Date(Date.now() + 330 * 60000).toISOString().slice(0, 10);
-  if(TP.lsGet(k) === d) return;
-  q(SB.rpc('eligibility_nudges')).then(function(){ TP.lsSet(k, d); }, function(){});
-}
-var SOP_HTML = '<h2>How we apply</h2><ol class="sop">' +
-  '<li><b>Always from the client’s secure browser</b>, opened from the application page — never from your own Chrome. Greenhouse, Ashby and Workday only from there; no exceptions without an owner.</li>' +
-  '<li><b>If it won’t open</b>, do other boards from India at the same pace, and leave a task to try the secure browser again.</li>' +
-  '<li><b>The client’s own email, phone and address on every form</b> — copy them from the application page. Never a team address, never one you made up.</li>' +
-  '<li><b>Fit first.</b> The Fit check and the Eligibility sheet must be green before you answer a knockout question (authorisation, sponsorship, salary, location, notice). A red sheet means you confirm with the client first.</li>' +
-  '<li><b>Pace:</b> at most 15 a day and 5 an hour per client, spread through the day — never a burst, never the same role at a company twice in 90 days.</li>' +
-  '<li><b>Proof every time:</b> Capture proof in the secure browser (or a screenshot of the confirmation, or of the filled form just before Submit).</li>' +
-  '<li><b>Close the secure browser</b> when you’re done. Verification codes and employer emails are read from the client’s Gmail on the application page — never ask the client to forward one.</li></ol>';
-function sopModal(){ TP.modal(SOP_HTML, false); }
 var FILES = {shots:[]};
 var SHOT_MAX = 10;
 // The confirmation screenshots block: the drop zone (paste, drop or choose several), the thumbnails with a delete on each
@@ -5892,76 +5276,40 @@ document.addEventListener('paste', function(e){
   }
 });
 function ext(f){ var m = /\.(\w{2,5})$/.exec(f.name || ''); return (m ? m[1] : (f.type.split('/')[1] || 'bin')).toLowerCase().replace('jpeg', 'jpg'); }
-// "Mark as applied" is permanent and the client sees it at once, so it first checks the gate (the same checks the database
-// makes: eligibility confirmed, fit ticked, proof, where it went from, the pace) and shows exactly what goes on the record
-function markApplied(btn, reasons){
-  var a = A, c = C, err = $('#mkErr'), first = (c.row.full_name || '').split(' ')[0] || 'The client';
-  reasons = reasons || {};
+// "Mark as applied" is permanent and the client sees it at once, so it first shows exactly what goes on the record
+function markApplied(btn){
+  var a = A, c = C, err = $('#mkErr'), noShot = $('#noShot').checked;
   err.hidden = true;
-  var say = function(m){ err.hidden = false; err.textContent = m; };
-  var es = eligState(c.row), kept = (a._storedShots || []).length, shots = FILES.shots.length + kept;
-  var from = a._from || ($$('input[name=apFrom]').filter(function(r){ return r.checked; })[0] || {}).value || '', fit = $('#apFit') && $('#apFit').checked;
-  if(es.missing && GATE.strict) return say('Confirm work authorization and sponsorship with ' + first + ' first — the Eligibility card above.');
-  if(a._dup) return say(first + ' already applied for this role at this company in the last 90 days.' + (ME.owner ? ' Allow it above, with a reason.' : ''));
-  if(!shots && SBS[c.id] && !reasons._shotTried){   // the confirmation screen is on the browser: keep it, then carry on
-    reasons._shotTried = true;
-    return TP.busy(btn, sbFn(c, 'shot', {application_id:a.id})).then(function(r){
-      if(!(r && r.path)) throw {message:'No screenshot came back'};
-      a._storedShots = (a._storedShots || []).concat(r.path); if(A === a) sbPanel();
-      return markApplied(btn, reasons);
-    }, function(e){ say('Add the proof — it couldn’t be captured from the browser (' + sbErr(e) + '): paste the confirmation screenshot (Ctrl+V).'); });
-  }
-  if(!shots) return say('Add the proof: Capture proof in the secure browser, or paste the confirmation screenshot (Ctrl+V).');
-  if(!fit) return say('Tick “Meets every hard requirement” in the Fit check first — read the hard requirements against the sheet.');
-  if(!from) return say('Say where it was sent from — ' + first + '’s secure browser, or India.');
-  var scored = scoredBoard(a.job_url), sess = SBS[c.id];
-  if(from === 'secure_browser' && !sess) return say('The secure browser isn’t open — open it, or choose India.');
+  if(!FILES.shots.length && !noShot){ err.hidden = false; err.textContent = 'Add the confirmation screenshot (paste it with Ctrl+V), or tick “There was no confirmation screen”.'; return; }
   var f = draftForm();
-  if(!f.title || !f.company) return say('Add the job title and company in step 1.');
-  var today = (c.prog || {}).today || 0;
-  if(scored && from === 'india' && GATE.strict && !ME.owner && !reasons.origin_override_reason) return say(scored + ' is sent only from ' + first + '’s secure browser. Open it, or ask an owner.');
-  if(today >= DAILY_CAP && GATE.strict && !ME.owner && !reasons.cap_override_reason) return say(first + ' already has ' + today + ' sent today — the daily cap is ' + DAILY_CAP + '. Carry on tomorrow.');
-  // the owners' reasons, asked one at a time: India to a scored board, the 16th today
-  var ask = Promise.resolve(true);
-  if(scored && from === 'india' && GATE.strict && !reasons.origin_override_reason) ask = ask.then(function(ok){ if(!ok) return false; return askReason('Send to ' + scored + ' from India?', 'This board scores where applications come from. Say why ' + first + '’s secure browser can’t be used this time.').then(function(w){ if(!w) return false; reasons.origin_override_reason = w; return true; }); });
-  if(today >= DAILY_CAP && GATE.strict && !reasons.cap_override_reason) ask = ask.then(function(ok){ if(!ok) return false; return askReason('More than ' + DAILY_CAP + ' today for ' + first + '?', 'The daily cap keeps every client under the volume boards flag. Say why today needs more.').then(function(w){ if(!w) return false; reasons.cap_override_reason = w; return true; }); });
+  if(!f.title || !f.company){ err.hidden = false; err.textContent = 'Add the job title and company in step 1.'; return; }
   // everything typed is saved first, and the latest the editor saved is read back
-  TP.busy(btn, ask.then(function(ok){
-    if(!ok) return 'cancel';
-    return saveDraft().then(function(ok2){
-      if(!ok2) throw {message:'The latest changes to this draft haven’t saved yet (' + (DS && DS.why || 'no connection') + '). Try again in a moment.'};
-      return q(SB.from('applications').select('resume_doc,resume_text,cover_letter,answers,jd_text,base_resume_id,status,updated_at,job_url,fit_confirmed,posting_first_seen,careers_site_verified,careers_site_url,dup_override_reason').eq('id', a.id).maybeSingle());
-    });
+  TP.busy(btn, saveDraft().then(function(ok){
+    if(!ok) throw {message:'The latest changes to this draft haven’t saved yet (' + (DS && DS.why || 'no connection') + '). Try again in a moment.'};
+    return q(SB.from('applications').select('resume_doc,resume_text,cover_letter,answers,jd_text,base_resume_id,status,updated_at').eq('id', a.id).maybeSingle());
   })).then(function(row){
-    if(row === 'cancel') return;
     if(!row) throw {message:'This draft was deleted somewhere else.'};
     if(row.status !== 'draft') throw {message:'It’s already marked as applied — refresh the page.'};
     Object.assign(a, row);
     if(A !== a) return;
     var base = (c.resumes || []).filter(function(r){ return r.id === a.base_resume_id; })[0], own = !!(a.resume_doc || a.resume_text);
     if(!own && !a.base_resume_id) throw {message:'There’s no resume on this application yet — pick the one it starts from on the right, or tailor it in the editor.'};
-    var saved = a.resume_doc && a.resume_doc.meta && a.resume_doc.meta.saved, n = (a.answers || []).length;
-    var seen = $('#apSeen') && $('#apSeen').value, days = seen ? Math.floor((Date.now() - new Date(seen).getTime()) / 864e5) : null, ver = $('#apVer') && $('#apVer').checked;
+    var first = (c.row.full_name || '').split(' ')[0] || 'The client', saved = a.resume_doc && a.resume_doc.meta && a.resume_doc.meta.saved, n = (a.answers || []).length;
     var items = [
-      es.missing ? ['warn', 'Eligibility sheet <b>not confirmed</b> with ' + esc(first) + ' — required from ' + (GATE.strictFrom ? esc(TP.fmtDate(GATE.strictFrom)) : 'the switch-on date')]
-        : es.stale ? ['warn', 'Eligibility sheet confirmed <b>' + esc(TP.ago(es.at)) + '</b> — check with ' + esc(first) + ' again soon'] : ['ok', 'Eligibility sheet confirmed ' + esc(TP.ago(es.at))],
-      ['ok', 'Fit: <b>meets every hard requirement</b>' + (days != null && days > POSTING_DAYS ? ' — but posted <b>' + days + ' days ago</b>' : '') + (ver ? '' : ' — <b>not verified</b> on the employer’s site')],
       own ? (optimisedDoc(a.resume_doc) ? ['ok', 'Resume <b>tailored to this job</b>' + (saved ? ' — last saved in the editor ' + esc(TP.ago(saved)) : '')]
                                         : ['warn', 'Resume <b>not tailored to this job</b> — it goes as copied from ' + esc(base ? base.name : 'the main resume')])
           : ['warn', 'Resume <b>not opened for this job</b> — ' + esc(base ? base.name : 'the main resume') + ' goes exactly as it is today'],
-      ['ok', (shots === 1 ? 'Proof: 1 screenshot' : 'Proof: ' + shots + ' screenshots') + (kept ? ' (' + kept + ' captured in the secure browser)' : '')],
-      from === 'secure_browser' ? ['ok', 'Sent from <b>' + esc(first) + '’s secure browser</b>' + (c.row.browser_state ? ' in ' + esc(c.row.browser_state) : '')] : ['info', 'Sent from <b>India</b>' + (reasons.origin_override_reason ? ' — allowed: ' + esc(reasons.origin_override_reason) : '')],
-      ['info', (today + 1) + ' of ' + DAILY_CAP + ' today for ' + esc(first) + (reasons.cap_override_reason ? ' — allowed: ' + esc(reasons.cap_override_reason) : '')],
+      FILES.shots.length ? ['ok', (FILES.shots.length === 1 ? 'Confirmation screenshot' : FILES.shots.length + ' confirmation screenshots') + ' attached'] : ['warn', 'No confirmation screenshot (“There was no confirmation screen” is ticked)'],
       a.cover_letter ? ['ok', 'Cover letter included'] : ['info', 'No cover letter'],
       n ? ['ok', n + ' form answer' + (n === 1 ? '' : 's') + ' kept'] : ['info', 'No form answers'],
       a.jd_text ? ['ok', 'Job description kept'] : ['warn', 'No job description kept']
     ];
-    return (reasons._auto ? Promise.resolve(true) : TP.confirmBox('Mark as applied for ' + first + '?', 'This becomes the permanent record of what went to ' + (a.company || 'the company') + '. ' + first + ' sees it on their dashboard straight away, and only the owner can delete it.',
-      'Mark as applied', false, {items:items, careful:true})).then(function(ok){ var why = Object.assign({}, reasons); delete why._shotTried; delete why._auto; if(ok) doMarkApplied(a, btn, Object.assign({applied_from:from, browser_session_id:from === 'secure_browser' ? sess.id : null, fit_confirmed:true}, why)); });
+    return TP.confirmBox('Mark as applied for ' + first + '?', 'This becomes the permanent record of what went to ' + (a.company || 'the company') + '. ' + first + ' sees it on their dashboard straight away, and only the owner can delete it.',
+      'Mark as applied', false, {items:items, careful:true}).then(function(ok){ if(ok) doMarkApplied(a, btn); });
   }).catch(function(e){ err.hidden = false; err.textContent = TP.errText(e); });
 }
-function doMarkApplied(a, btn, gate){
-  var err = $('#mkErr'), c = C;
+function doMarkApplied(a, btn){
+  var err = $('#mkErr');
   btn.disabled = true; btn.classList.add('busy');
   var base = (C.resumes || []).filter(function(r){ return r.id === a.base_resume_id; })[0];
   var stamp = Date.now(), dir = C.id + '/applications/' + a.id + '/';
@@ -5973,24 +5321,15 @@ function doMarkApplied(a, btn, gate){
   Promise.all([resume, shots, res]).then(function(rs){
     btn.innerHTML = label;
     if(!rs[0].resume_text && !rs[0].resume_doc && !a.resume_text && !a.resume_doc && !rs[2]){ throw {message:'There’s no resume on this application yet — pick the one it starts from on the right, or tailor it in the editor.'}; }
-    var all = (a._storedShots || []).concat(rs[1]);   // the proofs captured in the secure browser first, then the pasted ones
-    var up = Object.assign({}, rs[0], gate || {}, {status:'applied', screenshots:all, screenshot:all[0] || null, resume_file:rs[2]});
+    var up = Object.assign({}, rs[0], {status:'applied', screenshots:rs[1], screenshot:rs[1][0] || null, resume_file:rs[2]});
     return q(SB.from('applications').update(up).eq('id', a.id).eq('status', 'draft').select('*').maybeSingle());
   }).then(function(row){
     if(!row) throw {message:'Couldn’t mark it — it may already be marked as applied. Refresh the page.'};
-    FILES = {shots:[]}; a._storedShots = []; if(DS && DS.a === a){ DS.cur = null; DS.why = ''; } bkDel('app_' + a.id); C.idx = null; C.who = null;
+    FILES = {shots:[]}; if(DS && DS.a === a){ DS.cur = null; DS.why = ''; } bkDel('app_' + a.id); C.idx = null; C.who = null;
     TP.toast('Marked as applied for ' + C.row.full_name);
     refreshProgress().then(function(){ var p = C.prog || {}; if(C.row.plan_total) TP.toast('Marked as applied — ' + (p.done || 0) + ' / ' + C.row.plan_total + ' for ' + C.row.full_name); });
     tApp(a.id);
-  }).catch(function(e){
-    btn.disabled = false; btn.classList.remove('busy'); btn.innerHTML = label;
-    // a fact the résumé changed (the database's own check): an owner can allow it with a reason, right here
-    if(e && e.code === '23514' && ME.owner && gate && !gate.facts_override_reason && A === a && C === c){
-      err.hidden = false; err.textContent = TP.errText(e);
-      return askReason('Allow the changed fact?', TP.errText(e)).then(function(w){ if(w){ gate.facts_override_reason = w; doMarkApplied(a, btn, gate); } });
-    }
-    err.hidden = false; err.textContent = TP.errText(e);
-  });
+  }).catch(function(e){ btn.disabled = false; btn.classList.remove('busy'); btn.innerHTML = label; err.hidden = false; err.textContent = TP.errText(e); });
 }
 // the screenshots, one after another (each made smaller first), telling the button how far it is; the paths in order
 function uploadShots(dir, stamp, say){
@@ -6087,7 +5426,7 @@ function refreshApp(){
       DFIELDS.forEach(function(k){ fresh[k] = dsame(k, now[k], s.base[k]) ? (row[k] == null ? null : row[k]) : now[k]; if(dsame(k, now[k], s.base[k])) s.base[k] = fresh[k]; });
       syncForm(fresh, null); Object.assign(a, s.base);
     }
-    drawRes(); if(moved){ reloadView(); sbResync(C, a); }   // and the copy in the client's open browser follows
+    drawRes(); if(moved) reloadView();
   }, function(){});
 }
 // the sidebar as an icon rail: [ or its button, remembered in this browser; the icons keep their names as tooltips
@@ -6772,38 +6111,6 @@ document.addEventListener('click', function(e){
       e.preventDefault(); e.stopPropagation();
       return closeTab(b.getAttribute('data-id'));
     case 'pfsave': return saveProfile();
-    case 'eligconfirm': return eligConfirm(b, false);
-    case 'eligunconfirm': return eligConfirm(b, true);
-    case 'eligfill': return eligFromResume(C);
-    case 'sbopen': return sbOpen(C, b);
-    case 'sbwin': return sbOpen(C, b, true);
-    case 'sbshow': if(A) A._live = true; sbPanel(); return;
-    case 'goapply': {   // Apply: the client's browser beside the draft, on this job; a new tab with the posting for a client without one
-      var ga = A, gc = C;
-      if(ga && gc && ga.status === 'draft' && gc.row.browser_status === 'ready') return sbOpen(gc, b);
-      if(ga && ga.job_url) window.open(TP.safeHref(ga.job_url), '_blank', 'noopener');
-      return;
-    }
-    case 'sbsubmit': return sbSubmit(b);
-    case 'rvadd': {   // a question the checklist couldn't answer: a row for it in Answers for the form, with the cursor in its answer
-      var rq = b.getAttribute('data-q'), qbx = $('#apQA'); if(!qbx) return;
-      var have = readQA(qbx).filter(function(x){ return x.q === rq; })[0], row2;
-      if(!have){ qbx.insertAdjacentHTML('beforeend', qaRow({q:rq, a:''})); draftChanged(); }
-      row2 = $$('#apQA .qa').filter(function(r){ return ($('[data-qa=q]', r) || {}).value === rq; })[0];
-      if(row2){ row2.scrollIntoView({block:'center', behavior:'smooth'}); var ain = $('[data-qa=a]', row2); if(ain) setTimeout(function(){ ain.focus(); }, 350); }
-      return;
-    }
-    case 'sbpreview': if(A){ delete A._rv; A._rvMsg = null; rvDraw(); } return sbPreview(C);
-    case 'sbresview': if(A) A._live = false; sbPanel(); return;
-    case 'sbclose': return sbClose(C, b);
-    case 'sbshot': return sbShot(C, b);
-    case 'sbpush': return sbPush(C, b);
-    case 'sbfill': return sbFill(C, b);
-    case 'sbsetup': return sbSetup(C, b);
-    case 'sbpause': return sbPause(C, b);
-    case 'dupallow': return dupAllow(b);
-    case 'gatesave': return gateSettingsSave(b);
-    case 'sop': closeMeMenu(); return sopModal();
     case 'qaadd': $('#pfQA').insertAdjacentHTML('beforeend', qaRow({})); $$('#pfQA [data-qa=q]').pop().focus(); return;
     case 'qacommon': {   // its answer suggested from what the Profile says now (typed but not saved yet included)
       var qq = b.getAttribute('data-q'), form = {}; PF.forEach(function(k){ var fl = $('#pf_' + k); form[k] = fl ? fl.value.trim() : C.row[k]; });

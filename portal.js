@@ -10,7 +10,7 @@ var CONFIG = {
   BUCKET: 'client-files',                 // private storage for resume files and confirmation screenshots
   WHATSAPP: 'https://wa.me/918142442139',
   SUPPORT_EMAIL: 'hello@trulyplaced.com',
-  PLANS: [150, 300, 600]
+  PLANS: [250, 500, 1000]
 };
 var VERSION = '2026-10-31.3';
 var SBLIB = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
