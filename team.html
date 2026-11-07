@@ -1655,16 +1655,23 @@ body.sbmin .runpill span{display:none}
 .gatefit{margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--bg)}
 .gfrom{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin-top:10px}.gfrom .check{margin:0}
 .fine.bad{color:#b42318}.fine.ok{color:#15803d}
-.rvt{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}.rvt td{padding:4px 6px;border-top:1px solid var(--line);vertical-align:top}
-.rvt td:first-child{color:var(--muted);width:40%}.rvt tr.empty td{background:#fffbeb}.rvt td.src{color:var(--muted);font-size:11px;white-space:nowrap;text-align:right}
-.rvt i{color:#b42318;font-style:normal}.rvt small{display:block;color:var(--muted)}.rvt .muted{color:var(--muted)}
+.rvck{display:block;margin-top:6px;font-size:13px}
+.rvsum{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;margin:2px 0 6px}.rvsum b{font-size:13.5px}
+.rvh{margin:14px 0 4px;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}.rvh.bad{color:#b42318}
+.rvt{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12.5px}
+.rvt th,.rvt td{padding:7px 8px;border-top:1px solid var(--line);vertical-align:top;text-align:left;overflow-wrap:anywhere;line-height:1.4}
+.rvt tr:first-child th,.rvt tr:first-child td{border-top:0}
+.rvt th{width:44%;font-weight:500;color:#404040}.rvt td{color:var(--ink)}
+.rvt.need{background:#fffbeb;border-radius:10px;overflow:hidden}.rvt.need th{color:#7c2d12}
+.rvt i{color:#b42318;font-style:normal}.rvt small{display:block;margin-top:2px;font-size:11.5px;color:var(--muted)}
+.rvsrc{display:inline-block;margin-left:6px;padding:0 6px;border-radius:6px;background:var(--bg);font-size:10.5px;color:var(--muted);vertical-align:1px}
+.rvt .lk{font:inherit;font-size:12px;color:var(--blue,#2563eb);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}
+.rvopt{margin-top:12px}.rvopt summary{cursor:pointer;font-size:12.5px;color:var(--muted)}.rvopt .rvt{margin-top:4px}
 .apgrid.split{grid-template-columns:minmax(300px,var(--apl,40%)) 14px minmax(0,1fr);column-gap:0}
 .apgrid.split.live{grid-template-columns:minmax(300px,var(--apll,33%)) 14px minmax(0,1fr)}
 .apsplit{align-self:stretch;cursor:col-resize;position:relative;touch-action:none;outline:0}
-.apsplit::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;border-radius:2px;background:var(--line)}
-.apsplit::after{content:'';position:sticky;top:45vh;display:block;margin:0 auto;width:6px;height:36px;border-radius:4px;background:var(--line)}
+.apsplit::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;border-radius:2px;background:transparent;transition:background .15s}
 .apsplit:hover::before,.apsplit:focus-visible::before,.apdrag .apsplit::before{background:var(--blue,#2563eb)}
-.apsplit:hover::after,.apsplit:focus-visible::after,.apdrag .apsplit::after{background:var(--blue,#2563eb)}
 .apdrag,.apdrag *{cursor:col-resize!important;user-select:none}.apdrag iframe{pointer-events:none}
 .apgrid.split .apmain{grid-template-columns:minmax(0,1fr)}.apgrid.split .apmain > *{min-width:0}   /* the cards shrink with the column instead of running under the other half */
 .apgrid.split .jacts{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}.apgrid.split .jacts .btn{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}   /* the buttons wrap to one a row when the column is narrow */
@@ -5161,7 +5168,7 @@ function drawDraft(){
   $('#apJD').addEventListener('input', function(e){ var had = !!A.jd_text; A.jd_text = e.target.value.trim(); ckMark('ckJob', !!A.jd_text, '1', A.jd_text ? 'Pasted.' : 'Paste it in the Job description below — the resume is tailored to it.'); if(had !== !!A.jd_text) drawRes(); redrawJob(); appFitSoon(); gateReqs(); });
   $('#apCL').addEventListener('input', function(e){ var v = e.target.value.trim(); ckMark('ckCL', !!v, '3', v ? 'Written.' : 'Optional — only if the form asks for one.'); });
   var ckAns = function(){ var k = readQA($('#apQA')).length; ckMark('ckAns', !!k, '4', k ? k + ' ready to copy into the form.' : 'None yet — add what the form asks.'); };
-  $('#apQA').addEventListener('input', function(){ draftChanged(); ckAns(); });
+  $('#apQA').addEventListener('input', function(){ draftChanged(); ckAns(); rvSoon(); });
   if(window.MutationObserver) new MutationObserver(ckAns).observe($('#apQA'), {childList:true});
   // the resume it starts from: saved first, then the preview shows it
   $('#resCard').addEventListener('change', function(e){ if(e.target.id !== 'apBase') return; var a = A; A.base_resume_id = e.target.value; draftChanged(); drawRes(); flushDraft().then(function(){ if(A === a) reloadView(); }); });
@@ -5498,14 +5505,28 @@ function rvHTML(a){
   var msg = a._rvMsg ? '<div class="note ' + (a._rvKind || 'warn') + '" style="margin:6px 0">' + a._rvMsg + '</div>' : '';
   if(!rv) return msg || '<p class="fine">Preparing the application: the form’s questions and what goes in each…</p>';
   if(rv.status === 'unsupported') return msg + '<p class="fine">This board’s form can’t be prepared by the system (Greenhouse, Lever, Ashby and Workable can) — apply by hand in its browser.</p>';
-  var F = rv.fields || [], has = function(f){ return f.value != null && f.value !== '' && !(Array.isArray(f.value) && !f.value.length); };
-  var ready = F.filter(has), empty = F.filter(function(f){ return !has(f); }), req = empty.filter(function(f){ return f.required; });
-  return msg + '<p class="fine">' + ready.length + ' of ' + F.length + ' fields ready' + (req.length ? ' · <b class="bad">' + req.length + ' required still empty</b>' : '') + '. Read each line; then Confirm: the system fills the form in ' + first + '’s browser and presses Submit.</p>' +
-    '<table class="rvt">' + F.map(function(f){
-      var v = Array.isArray(f.value) ? f.value.join(', ') : f.value;
-      return '<tr' + (has(f) ? '' : ' class="empty"') + '><td>' + esc(f.label) + (f.required ? ' <i>*</i>' : '') + '</td><td>' + (has(f) ? esc(String(v)) + (f.note ? '<small>' + esc(f.note) + '</small>' : '') : '<span class="muted">— ' + esc(f.note || 'nothing to put here') + '</span>') + '</td><td class="src">' + (RV_SRC[f.source] || '') + '</td></tr>';
-    }).join('') + '</table>' +
-    (req.length ? '<p class="fine">For a required question with nothing: add it under <b>Answers for the form</b> below (the same wording), then Re-check. Or Confirm anyway — the browser comes up for you to answer it there.</p>' : '');
+  var has = function(f){ return f.value != null && f.value !== '' && !(Array.isArray(f.value) && !f.value.length); };
+  var F = (rv.fields || []).filter(function(f){ return !/^(latitude|longitude)$/i.test(String(f.label || '').trim()); });   // the form fills these itself, from the location
+  var ready = F.filter(has), need = F.filter(function(f){ return !has(f) && f.required; }), opt = F.filter(function(f){ return !has(f) && !f.required; });
+  var row = function(f, add){
+    var v = Array.isArray(f.value) ? f.value.join(', ') : f.value, src = RV_SRC[f.source] ? '<span class="rvsrc">' + RV_SRC[f.source] + '</span>' : '';
+    return '<tr><th scope="row">' + esc(f.label) + (f.required ? ' <i>*</i>' : '') + '</th><td>' +
+      (has(f) ? esc(String(v)) + src + (f.note ? '<small>' + esc(f.note) + '</small>' : '')
+        : '<small style="margin:0">' + esc(f.note || 'nothing to put here') + '</small>' + (add && f.category !== 'file' ? '<button class="lk" type="button" data-act="rvadd" data-q="' + esc(f.label) + '">Add an answer</button>' : '')) + '</td></tr>';
+  };
+  return msg + '<div class="rvsum"><b>' + ready.length + ' of ' + F.length + ' ready</b>' + (need.length ? '<span class="bad">' + need.length + ' to answer</span>' : '<span class="ok">nothing left to answer</span>') + '</div>' +
+    (need.length ? '<h4 class="rvh bad">To answer before confirming</h4><table class="rvt need">' + need.map(function(f){ return row(f, true); }).join('') + '</table>' +
+      '<p class="fine" style="margin-top:6px">Add an answer puts the question under <b>Answers for the form</b>; the checklist updates as you type. Or Confirm anyway — the browser comes up for you to answer it there.</p>' : '') +
+    (ready.length ? '<h4 class="rvh">Ready</h4><table class="rvt">' + ready.map(function(f){ return row(f, false); }).join('') + '</table>' : '') +
+    (opt.length ? '<details class="rvopt"><summary>' + opt.length + ' optional, left empty</summary><table class="rvt">' + opt.map(function(f){ return row(f, true); }).join('') + '</table></details>' : '') +
+    '<p class="fine" style="margin-top:10px">Read each line; then Confirm: the system fills the form in ' + first + '’s browser and presses Submit.</p>';
+}
+// the checklist again a moment after an answer is typed (once the draft has saved it)
+var RVT = 0;
+function rvSoon(){
+  var a = A, c = C; if(!(a && a._rv && c)) return;
+  clearTimeout(RVT);
+  RVT = setTimeout(function(){ if(A !== a) return; flushDraft().then(function(ok){ if(ok && A === a){ delete a._rv; a._rvMsg = null; rvDraw(); sbPreview(c); } }); }, 2500);
 }
 function rvDraw(){ var el = $('#apRv'); if(el && A) el.innerHTML = rvHTML(A); }
 function sbPreview(c){
@@ -5691,7 +5712,7 @@ function sbPanel(){
   var from = a._from || (open ? 'secure_browser' : '');
   var auto = st === 'ready' && !!a.job_url && sbCan(a.job_url);   // a board the system sends to: the checklist, then Confirm and submit
   box.innerHTML = '<b>' + first + '’s secure browser</b> ' + sbStatusHTML(c) +
-    (auto ? '<div class="rv" id="apRv">' + rvHTML(a) + '</div><div class="row" style="margin-top:8px"><button class="btn sm pri" type="button" data-act="sbsubmit" title="The system fills the form in ' + first + '’s browser and presses Submit; the employer’s confirmation is kept as the proof">' + I.check + 'Confirm and submit</button>' +
+    (auto ? '<div class="rvck" id="apRv">' + rvHTML(a) + '</div><div class="row" style="margin-top:8px"><button class="btn sm pri" type="button" data-act="sbsubmit" title="The system fills the form in ' + first + '’s browser and presses Submit; the employer’s confirmation is kept as the proof">' + I.check + 'Confirm and submit</button>' +
         '<button class="btn sm" type="button" data-act="sbpreview" title="Prepare the checklist again, after an answer changes">Re-check</button>' + (open ? '' : '<button class="btn sm ghost" type="button" data-act="sbopen" title="Open its browser here and apply by hand">By hand</button>') + '</div>' : '') +
     (st === 'ready' ? (open
         ? '<p class="fine">Open ' + (open.started_at ? esc(TP.ago(open.started_at)) : 'now') + ', beside the draft. ' + (auto ? 'Finish anything the system couldn’t there; Mark as applied keeps the proof.' : 'Fill the form, check it there, press Submit there; Mark as applied keeps the proof.') + '</p><div class="row">' +
@@ -6764,6 +6785,14 @@ document.addEventListener('click', function(e){
       return;
     }
     case 'sbsubmit': return sbSubmit(b);
+    case 'rvadd': {   // a question the checklist couldn't answer: a row for it in Answers for the form, with the cursor in its answer
+      var rq = b.getAttribute('data-q'), qbx = $('#apQA'); if(!qbx) return;
+      var have = readQA(qbx).filter(function(x){ return x.q === rq; })[0], row2;
+      if(!have){ qbx.insertAdjacentHTML('beforeend', qaRow({q:rq, a:''})); draftChanged(); }
+      row2 = $$('#apQA .qa').filter(function(r){ return ($('[data-qa=q]', r) || {}).value === rq; })[0];
+      if(row2){ row2.scrollIntoView({block:'center', behavior:'smooth'}); var ain = $('[data-qa=a]', row2); if(ain) setTimeout(function(){ ain.focus(); }, 350); }
+      return;
+    }
     case 'sbpreview': if(A){ delete A._rv; A._rvMsg = null; rvDraw(); } return sbPreview(C);
     case 'sbresview': if(A) A._live = false; sbPanel(); return;
     case 'sbclose': return sbClose(C, b);
