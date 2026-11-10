@@ -110,6 +110,7 @@ body{margin:0}
 img{max-width:100%}
 [hidden]{display:none!important}
 </style>
+<link rel="preload" as="image" href="img/hero-sky-phone.webp" media="(max-width: 640px)" fetchpriority="high">
 <title>TrulyPlaced (Truly Placed) | Done-for-you job applications</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2047,20 +2048,18 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
   .hph img{display:block;width:100%;height:auto;aspect-ratio:280/580;border-radius:40px;background:#fff}
 }
 
-/* phone hero, light mode: a white background with the soft prism (as on desktop), dark type */
+
+/* phone hero: the sky (still image, 26KB) behind white type; dimmed for dark mode; soft fade into the page */
 @media(max-width:640px){
-  html:not([data-theme="dark"]) .cx.still .cx-sky{background:radial-gradient(110% 55% at 100% 4%,rgba(140,194,255,.45),rgba(140,194,255,0) 62%),radial-gradient(80% 45% at 0% 36%,rgba(214,232,255,.7),rgba(214,232,255,0) 70%),#fff!important}
-  html:not([data-theme="dark"]) .cx.still .cx-grain{display:none!important}
-  html:not([data-theme="dark"]) .cx .cx-word,html:not([data-theme="dark"]) .cx .cx-word *{color:#0A0A0B!important;-webkit-text-fill-color:#0A0A0B!important}
-  html:not([data-theme="dark"]) .cx .cx-h1,html:not([data-theme="dark"]) .cx .cx-h1 *{color:#0A0A0B!important}
-  html:not([data-theme="dark"]) .cx-cta .cx-btn.s{background:#0A0A0B!important;color:#fff!important;box-shadow:0 10px 24px -14px rgba(10,10,11,.55)!important}
-  html:not([data-theme="dark"]) .cx-cta .cx-btn.p{color:#0A0A0B!important}
-  html:not([data-theme="dark"]) .cx-pl{border-top-color:rgba(10,10,11,.08)!important}
-  html:not([data-theme="dark"]) .cx-pl p{color:#6E6E73!important}
-  html:not([data-theme="dark"]) .cx-pl li{background:rgba(255,255,255,.75)!important;border-color:rgba(10,10,11,.1)!important;color:#1D1D1F!important}
-  html:not([data-theme="dark"]) .cx-proof i{color:#1D1D1F!important}
-  html:not([data-theme="dark"]) .cx-proof small{color:#6E6E73!important}
-  html:not([data-theme="dark"]) .cx-proof img{box-shadow:0 0 0 1px rgba(10,10,11,.1)!important}
+  .cx.still .cx-sky{background:#2E95F0 url("img/hero-sky-phone.webp") 62% 0/cover no-repeat!important;
+    -webkit-mask-image:linear-gradient(180deg,#000 78%,transparent);mask-image:linear-gradient(180deg,#000 78%,transparent)}
+  .cx.still .cx-grain{display:none!important}
+  html[data-theme="dark"] .cx.still .cx-sky{background:#030a26 url("img/hero-sky-phone-night.webp") 62% 0/cover no-repeat!important;filter:none}
+}
+
+@media(max-width:640px){
+  .cx .cx-word,.cx .cx-h1,.cx-cta .cx-btn.p,.cx-pl p,.cx-proof span{text-shadow:0 1px 14px rgba(0,58,140,.38),0 0 2px rgba(0,58,140,.18)}
+  .cx .cx-word{filter:drop-shadow(0 2px 14px rgba(0,58,140,.3))!important}
 }
 </style>
 <style id="tpDark">
@@ -2388,7 +2387,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
       <p class="cx-ats-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>We apply on the platforms employers already use</span><span class="sr-only">, including Greenhouse, Workday, Ashby, Workable, Rippling, BambooHR, Breezy, Gem, JazzHR, Dover, Jobvite</span></p>
       <div class="cx-ats-s"><div class="cx-ats-m" aria-hidden="true"><div class="cx-ats-t"><span class="cx-ats-i"><img src="img/ats/greenhouse.png" alt="" width="20" height="20" loading="lazy">Greenhouse</span><span class="cx-ats-i"><img src="img/ats/workday.png" alt="" width="20" height="20" loading="lazy">Workday</span><span class="cx-ats-i"><img src="img/ats/ashby.png" alt="" width="20" height="20" loading="lazy">Ashby</span><span class="cx-ats-i"><img src="img/ats/workable.png" alt="" width="20" height="20" loading="lazy">Workable</span><span class="cx-ats-i"><img src="img/ats/rippling.png" alt="" width="20" height="20" loading="lazy">Rippling</span><span class="cx-ats-i"><img src="img/ats/bamboohr.png" alt="" width="20" height="20" loading="lazy">BambooHR</span><span class="cx-ats-i"><img src="img/ats/breezy.png" alt="" width="20" height="20" loading="lazy">Breezy</span><span class="cx-ats-i"><img src="img/ats/gem.png" alt="" width="20" height="20" loading="lazy">Gem</span><span class="cx-ats-i"><img src="img/ats/jazzhr.jpg" alt="" width="20" height="20" loading="lazy">JazzHR</span><span class="cx-ats-i"><img src="img/ats/dover.png" alt="" width="20" height="20" loading="lazy">Dover</span><span class="cx-ats-i"><img src="img/ats/jobvite.png" alt="" width="20" height="20" loading="lazy">Jobvite</span><span class="cx-ats-i"><img src="img/ats/greenhouse.png" alt="" width="20" height="20" loading="lazy">Greenhouse</span><span class="cx-ats-i"><img src="img/ats/workday.png" alt="" width="20" height="20" loading="lazy">Workday</span><span class="cx-ats-i"><img src="img/ats/ashby.png" alt="" width="20" height="20" loading="lazy">Ashby</span><span class="cx-ats-i"><img src="img/ats/workable.png" alt="" width="20" height="20" loading="lazy">Workable</span><span class="cx-ats-i"><img src="img/ats/rippling.png" alt="" width="20" height="20" loading="lazy">Rippling</span><span class="cx-ats-i"><img src="img/ats/bamboohr.png" alt="" width="20" height="20" loading="lazy">BambooHR</span><span class="cx-ats-i"><img src="img/ats/breezy.png" alt="" width="20" height="20" loading="lazy">Breezy</span><span class="cx-ats-i"><img src="img/ats/gem.png" alt="" width="20" height="20" loading="lazy">Gem</span><span class="cx-ats-i"><img src="img/ats/jazzhr.jpg" alt="" width="20" height="20" loading="lazy">JazzHR</span><span class="cx-ats-i"><img src="img/ats/dover.png" alt="" width="20" height="20" loading="lazy">Dover</span><span class="cx-ats-i"><img src="img/ats/jobvite.png" alt="" width="20" height="20" loading="lazy">Jobvite</span></div></div></div>
     </div>
-    <div class="xph"><div class="hph"><img src="img/hero-phone.webp" width="280" height="580" alt="The TrulyPlaced app on a phone: Home, with your best matches each morning and one tap to apply" fetchpriority="high" decoding="async"></div></div>
+    <div class="xph"><div class="hph"><img src="img/hero-phone.webp?v=2" width="280" height="580" alt="The TrulyPlaced app on a phone: Home, with your best matches each morning and one tap to apply" fetchpriority="high" decoding="async"></div></div>
     <div class="cx-shot ta" data-ui role="img" aria-label="The TrulyPlaced app: the Tracker with an application open in the side panel, showing its tailored resume, cover letter and progress">
       <div class="cx-bar"><span class="cx-dot3"><i></i><i></i><i></i></span><span class="cx-url">app.trulyplaced.com/app/applications</span></div>
       <div class="ta-app">
