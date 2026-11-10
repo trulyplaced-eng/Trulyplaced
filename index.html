@@ -2553,6 +2553,20 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
   html[data-theme="dark"] .ibb-bar i{background:#F5F5F7}
 }
 @media (prefers-reduced-motion:reduce){.ibb-track,.ibb-bar i{transition:none}}
+
+/* phone Ada card: the five people never move. Messages appear in one fixed spot at the bottom of the card
+   (fading in and out), and the person speaking is highlighted in place. Same side margins as other sections. */
+@media(max-width:640px){
+  .tm{padding-left:0!important;padding-right:0!important}
+  .tm-stage .tm-card{position:relative!important;padding-bottom:150px!important}
+  .tm-stage .tm-list,.tm-stage .tm-row{position:static!important}
+  .tm-stage .tm-row{height:38px!important;min-height:38px!important;flex-wrap:nowrap!important;border-radius:10px;margin:0 -8px!important;padding:0 8px!important;transition:background-color .3s ease}
+  .tm-stage .tm-row.talk{background:#EEF3FF}
+  .tm-stage .tm-row .tm-say{position:absolute!important;left:16px!important;right:16px!important;top:auto!important;bottom:46px!important;margin:0!important;display:flex!important;flex-wrap:wrap;
+    white-space:normal!important;opacity:0;transform:translateY(6px)!important;transition:opacity .3s ease,transform .45s cubic-bezier(.16,1,.3,1)!important;pointer-events:none;max-width:none!important}
+  .tm-stage .tm-row.talk .tm-say{opacity:1;transform:none!important}
+  html[data-theme="dark"] .tm-stage .tm-row.talk{background:rgba(124,155,255,.14)}
+}
 </style>
 <style id="tpDark">
 /* ===== dark theme (test): variables + generated overrides of hard-coded light colours ===== */
