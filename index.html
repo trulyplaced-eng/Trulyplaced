@@ -2310,6 +2310,83 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
   html[data-theme="dark"] .cx.still .cx-sky{background:radial-gradient(110% 55% at 100% 4%,rgba(102,179,255,.3),rgba(102,179,255,0) 62%),#050505}
   #team-live,#success,#faq{content-visibility:auto;contain-intrinsic-size:auto 860px}
 }
+
+/* hero phone: the app's own type (SF Pro on Apple devices, Inter elsewhere), headings as the app sets them */
+.xph{-webkit-font-smoothing:antialiased}
+.xph,.xph *{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",system-ui,sans-serif!important}
+.xph .xfm-h1,.xph .xfm-h1 *,.xph .xhm-h1,.xph .xtr-head b,.xph .xap-head b{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Segoe UI",system-ui,sans-serif!important;font-weight:650!important;letter-spacing:-.022em!important}
+.xph .xtp-status span:first-child{font-weight:600!important;letter-spacing:-.01em!important}
+
+/* ================= PHONE DESIGN SYSTEM (conductor.build-style restraint) ================= */
+.mobnav-theme{display:none}
+@media(max-width:640px){
+  /* one type family everywhere except the logo wordmark */
+  body,body :where(section,footer,header,nav,div,p,span,a,b,i,em,small,li,button,h1,h2,h3,h4,label,mark,time,strong){font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",system-ui,sans-serif!important}
+  .cx-word,.cx-word *{font-family:"Poppins","Geist",system-ui,sans-serif!important}
+  body{-webkit-font-smoothing:antialiased;color:#1D1D1F}
+
+  /* hero */
+  .cx-h1,.cx-h1 *{font:600 28px/34px -apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Segoe UI",system-ui,sans-serif!important;letter-spacing:-.022em!important;color:#1D1D1F!important}
+  .cx-word{margin-bottom:20px!important}
+  .cx-cta{gap:14px!important;margin-top:26px!important}
+  .cx-cta .cx-btn.p{height:48px!important;border-radius:12px!important;font:600 15px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",system-ui,sans-serif!important}
+  .cx-cta .cx-btn.s{height:auto!important;padding:2px 0!important;border:0!important;background:none!important;box-shadow:none!important;justify-content:flex-start!important;font:500 15px/22px -apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",system-ui,sans-serif!important;color:#1D1D1F!important;width:auto!important}
+  .cx-cta .cx-btn.s svg:first-child{display:none}
+  .cx-cta .cx-btn.s::after{content:" →";white-space:pre}
+  .cx-fine,.cx .cx-ats{display:none!important}
+  .xph{margin-top:36px!important}
+
+  /* the section pattern: heading (21/28), one grey paragraph (15/23), then the visual; left-aligned; even rhythm */
+  .tm,.emx,.spx-sec{padding-top:96px!important}
+  .fqh{padding:96px 0 88px!important}
+  .tm-h,.emx-h,.spx-h,.fqh-h,.ft3-h{display:block!important;text-align:left!important;margin:0!important;max-width:none!important;
+    font:600 21px/28px -apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Segoe UI",system-ui,sans-serif!important;letter-spacing:-.022em!important;color:#1D1D1F!important}
+  .tm-h .tm-stack,.m-br,.fqh-pill{display:none!important}
+  .tm-p,.emx-p,.spx-lead,.fqh-p,.ft3-about{text-align:left!important;margin:8px 0 0!important;max-width:none!important;
+    font:400 15px/23px -apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",system-ui,sans-serif!important;color:#6E6E73!important}
+  .tm-p em,.tm-p i{font-style:normal;color:#1D1D1F}
+  .tm-stage,.emx-wide,.spx{margin-top:24px!important}
+  .tm-in,.emx-in,.spx-in,.fqh-in{padding-left:20px!important;padding-right:20px!important}
+  .fqh-h{margin-top:0!important}
+
+  /* logos: a quiet caption, centred like a trust line */
+  .cos .cos-h{font:500 14px/20px -apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",system-ui,sans-serif!important;color:#6E6E73!important}
+  .cos{padding-top:64px!important}
+
+  /* calls to action: one dark button style; secondary actions are plain text links */
+  .emx-cta .emx-btn{width:auto!important;height:auto!important;padding:2px 0!important;background:none!important;color:#1D1D1F!important;box-shadow:none!important;justify-content:flex-start!important;font:500 15px/22px -apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",system-ui,sans-serif!important}
+  .emx-cta .emx-btn canvas{display:none!important}
+  .emx-cta{margin-top:20px!important}
+  .fqh-btn.p{height:48px!important;border-radius:12px!important;font:600 15px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",system-ui,sans-serif!important}
+
+  /* small text: never below 12px, one grey */
+  .ibm-who small,.ibm-hd time,.ibm-hint,.tm-note,.ft3-bot,.ft3-col h4{font-size:12px!important}
+  .ft3-col a{font-size:15px!important;color:#1D1D1F!important}
+  .ft3-col h4{color:#6E6E73!important}
+
+  /* top bar: logo + menu only */
+  #tpBar .cb-search,#tpBar .cb-theme,#tpBar .cb-ico{display:none!important}
+  .mobnav-theme{display:flex;align-items:center;gap:8px;padding:14px 4px;border-bottom:1px solid #ECEEF3}
+  .mobnav-theme span{flex:1;font:600 16px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",system-ui,sans-serif;color:#1D1D1F}
+  .mobnav-theme button{height:32px;padding:0 14px;border-radius:99px;border:1px solid #E4E4E7;background:#fff;font:500 13px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",system-ui,sans-serif;color:#3F3F46}
+  .mobnav-theme button[aria-pressed="true"]{background:#1D1D1F;border-color:#1D1D1F;color:#fff}
+
+  /* dark mode keeps the same system */
+  html[data-theme="dark"] body{color:#F5F5F7}
+  html[data-theme="dark"] .cx-h1,html[data-theme="dark"] .cx-h1 *,html[data-theme="dark"] .tm-h,html[data-theme="dark"] .emx-h,html[data-theme="dark"] .spx-h,html[data-theme="dark"] .fqh-h,html[data-theme="dark"] .ft3-h,html[data-theme="dark"] .tm-p em,
+  html[data-theme="dark"] .cx-cta .cx-btn.s,html[data-theme="dark"] .emx-cta .emx-btn,html[data-theme="dark"] .ft3-col a{color:#F5F5F7!important}
+  html[data-theme="dark"] .tm-p,html[data-theme="dark"] .emx-p,html[data-theme="dark"] .spx-lead,html[data-theme="dark"] .fqh-p,html[data-theme="dark"] .ft3-about,html[data-theme="dark"] .cos .cos-h,html[data-theme="dark"] .ft3-col h4{color:#98989D!important}
+  html[data-theme="dark"] .mobnav-theme{border-bottom-color:rgba(255,255,255,.1)}
+  html[data-theme="dark"] .mobnav-theme span{color:#F5F5F7}
+  html[data-theme="dark"] .mobnav-theme button{background:transparent;border-color:rgba(255,255,255,.18);color:#D4D4D8}
+  html[data-theme="dark"] .mobnav-theme button[aria-pressed="true"]{background:#F5F5F7;border-color:#F5F5F7;color:#0A0A0B}
+}
+
+@media(max-width:640px){
+  .emx-cta{display:flex!important;justify-content:flex-start!important;text-align:left!important}
+  #tpBar .mobnav .mobnav-cta{background:#1D1D1F!important;color:#fff!important;border-radius:12px!important;box-shadow:none!important;font:600 15px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,sans-serif!important}
+  html[data-theme="dark"] #tpBar .mobnav .mobnav-cta{background:#F5F5F7!important;color:#0A0A0B!important}
+}
 </style>
 <style id="tpDark">
 /* ===== dark theme (test): variables + generated overrides of hard-coded light colours ===== */
@@ -2629,6 +2706,8 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
     <a href="#faq">FAQ</a>
     <a href="https://app.trulyplaced.com">Start free in the app</a>
     <a href="./login.html">Client login</a>
+    <a href="https://wa.me/918142442139?text=Hi%20TrulyPlaced%2C%20I%27d%20like%20to%20know%20more" target="_blank" rel="noopener">Chat on WhatsApp</a>
+    <div class="mobnav-theme" role="group" aria-label="Colour theme"><span>Appearance</span><button type="button" data-set-theme="light" aria-pressed="true">Light</button><button type="button" data-set-theme="dark" aria-pressed="false">Dark</button></div>
     <a class="mobnav-cta" href="https://calendly.com/hello-trulyplaced/career-hunt-2026" target="_blank" rel="noopener">Book my free strategy call &rarr;</a>
   </nav>
 </header>
@@ -3915,7 +3994,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
     var tr=document.createElement('div');tr.className='ibm-track';
     rows.forEach(function(r,k){var lg=r.querySelector('.ib-lg'),b=r.querySelector('.ib-tx b'),sub=r.querySelector('.ib-tx span'),tm=r.querySelector('time'),sh=shots[k];
       var c=document.createElement('article');c.className='ibm-card';
-      c.innerHTML='<div class="ibm-hd"><span class="ibm-lg"></span><span class="ibm-who"><b></b><small><i></i>Interview invite</small></span><time></time></div><p class="ibm-sub"></p><div class="ibm-shot"><img alt="" loading="lazy" decoding="async"></div>';
+      c.innerHTML='<div class="ibm-hd"><span class="ibm-lg"></span><span class="ibm-who"><b></b><small><i></i>Interview invite</small></span><time></time></div><p class="ibm-sub"></p><div class="ibm-shot"><img alt="" decoding="async"></div>';
       var L=c.querySelector('.ibm-lg'),im=lg&&lg.querySelector('img');if(im){var x=new Image();x.src=im.getAttribute('src');x.alt='';L.appendChild(x)}else if(lg){L.textContent=lg.textContent;L.style.background=lg.style.background;L.style.borderColor='transparent'}
       c.querySelector('.ibm-who b').textContent=b?b.textContent:'';c.querySelector('time').textContent=tm?tm.textContent:'';c.querySelector('.ibm-sub').innerHTML=sub?sub.innerHTML:'';
       var si=c.querySelector('.ibm-shot img');si.setAttribute('data-src',sh?(sh.getAttribute('src')||sh.getAttribute('data-src')):'');si.alt=sh?sh.alt:'';
@@ -3925,7 +4004,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
     var hint=document.createElement('p');hint.className='ibm-hint';hint.textContent='Swipe to see more';
     box.appendChild(tr);box.appendChild(bars);box.appendChild(hint);
     var cards=[].slice.call(tr.children),bs=[].slice.call(bars.children);
-    function load(k){[k,k+1].forEach(function(j){var c=cards[j];if(!c)return;var im=c.querySelector('.ibm-shot img');if(im&&!im.src&&im.getAttribute('data-src'))im.src=im.getAttribute('data-src')})}
+    function load(k){[k,k+1].forEach(function(j){var c=cards[j];if(!c)return;var im=c.querySelector('.ibm-shot img');if(im&&!im.src&&im.getAttribute('data-src')){im.addEventListener('load',function(){im.style.minWidth='1px'},{once:true});im.src=im.getAttribute('data-src')}})}
     function mark(k){i=k;cards.forEach(function(c,j){c.classList.toggle('on',j===k)});bs.forEach(function(b,j){b.classList.toggle('done',j<k);b.classList.remove('on');void b.offsetWidth;if(j===k)b.classList.add('on');b.setAttribute('aria-selected',j===k?'true':'false')});load(k)}
     function go(k,scroll){k=(k+cards.length)%cards.length;mark(k);if(scroll!==false)tr.scrollTo({left:cards[k].offsetLeft-20,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
     window.__ibmGo=go;
