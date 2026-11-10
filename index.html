@@ -1815,7 +1815,7 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
    the card, the paragraph breaks evenly, the caption sits centred and readable */
 @media(max-width:640px){
   .tm-stage{padding:22px 14px!important}
-  .tm-stage .tm-card{min-height:414px;display:flex!important;flex-direction:column;justify-content:flex-start;padding:22px 14px 46px!important}
+  .tm-stage .tm-card{min-height:470px;display:flex!important;flex-direction:column;justify-content:flex-start;padding:22px 14px 46px!important}
   .tm-stage .tm-note{left:0;right:0;bottom:16px;text-align:center;color:#8A90A3;font-size:10.5px}
   .tm-p{max-width:340px!important;text-wrap:pretty}
 }
@@ -3589,7 +3589,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   // Each position i keeps the old letter until a random start step, then shows random lowercase letters, and locks
   // to the new letter at step 3+i, so the new words lock in strictly left to right while the old phrase decays
   // behind them; the line grows or shrinks as positions open or close.
-  var POOL='abcdefghijklmnopqrstuvwxyz',idx=0,timer=0,STEP=22;
+  var POOL='abcdefghijklmnopqrstuvwxyz',idx=0,timer=0,STEP=32; // conductor.build: letters change every ~32ms
   function rl(){return POOL[(Math.random()*26)|0]}
   function scramble(to){
     var from=el.textContent,n=Math.max(from.length,to.length),q=[];clearInterval(timer);el.classList.remove('ul');
@@ -3607,7 +3607,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
     tick();timer=setInterval(tick,STEP);
   }
   var vis=true;new IntersectionObserver(function(es){vis=es[0].isIntersecting},{threshold:0}).observe(el);
-  setInterval(function(){if(document.hidden||!vis)return;idx=(idx+1)%PH.length;scramble(PH[idx])},2500);
+  setInterval(function(){if(document.hidden||!vis)return;idx=(idx+1)%PH.length;scramble(PH[idx])},3000); // conductor.build: a new phrase every 3s
 })();
 </script>
 <script>
@@ -4157,6 +4157,16 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
 })();
 </script>
 
+<script>
+/* Ada card (phones): never changes height. Room is reserved up front, and if the phone's own font makes a
+   message taller than that, the card keeps the tallest height it has needed and never shrinks back. */
+(function(){
+  var card=document.querySelector('.tm-stage .tm-card');if(!card||!window.ResizeObserver)return;
+  var mq=matchMedia('(max-width: 640px)'),max=0;
+  new ResizeObserver(function(){if(!mq.matches)return;var h=card.offsetHeight;if(h>max){max=h;card.style.minHeight=max+'px'}}).observe(card.querySelector('.tm-list')||card);
+  addEventListener('resize',function(){max=0;card.style.minHeight=''},{passive:true});
+})();
+</script>
 <script>
 /* sun / moon theme toggle */
 (function(){
