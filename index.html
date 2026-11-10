@@ -2428,6 +2428,64 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
   #tpBar,#tpBar.scrolled,header.nav#tpBar{background:#fff!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;border-bottom:1px solid rgba(10,10,11,.07)!important}
   html[data-theme="dark"] #tpBar,html[data-theme="dark"] #tpBar.scrolled{background:#0A0A0B!important;border-bottom-color:rgba(255,255,255,.08)!important}
 }
+
+/* ===== phone interview emails: a readable inbox, tap to see the real email ===== */
+.ibl-sheet{display:none}
+@media(max-width:640px){
+  .ibl{border:1px solid rgba(10,10,11,.08);border-radius:18px;background:#fff;overflow:hidden;box-shadow:0 1px 2px rgba(10,20,50,.04),0 20px 44px -32px rgba(10,20,50,.35)}
+  .ibl-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;border-bottom:1px solid rgba(10,10,11,.06)}
+  .ibl-hd b{font:600 17px/22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.01em;color:#1D1D1F}
+  .ibl-hd span{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:99px;background:#FEF3C7;font:600 12px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#92400E}
+  .ibl-hd span i{width:6px;height:6px;border-radius:99px;background:#F59E0B}
+  .ibl ul{list-style:none;margin:0;padding:0}
+  .ibl li{border-top:1px solid rgba(10,10,11,.06)}
+  .ibl li:first-child{border-top:0}
+  .ibl button{display:flex;align-items:flex-start;gap:12px;width:100%;padding:14px 16px;border:0;background:none;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background-color .15s ease}
+  .ibl button:active{background:#F5F5F7}
+  .ibl-lg{width:40px;height:40px;flex:none;border-radius:11px;display:grid;place-items:center;background:#fff;border:1px solid rgba(10,10,11,.08);overflow:hidden;font:700 15px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#fff}
+  .ibl-lg img{width:26px;height:26px;object-fit:contain}
+  .ibl-tx{flex:1;min-width:0}
+  .ibl-top{display:flex;align-items:baseline;gap:8px}
+  .ibl-top b{flex:1;min-width:0;font:600 15px/20px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#1D1D1F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ibl-top time{flex:none;font:400 13px/18px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#6E6E73}
+  .ibl-sub{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:2px;font:400 15px/21px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#3A3A3C}
+  .ibl-sub mark{background:#FEF3C7;color:#1D1D1F;border-radius:4px;padding:0 3px;font-weight:500}
+  .ibl-new{width:8px;height:8px;flex:none;margin-top:6px;border-radius:99px;background:#0938D5}
+  .ibl-more{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:48px;border:0;border-top:1px solid rgba(10,10,11,.06);background:#FAFAFA;font:500 15px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#1D1D1F;cursor:pointer}
+  .ibl.short li:nth-child(n+6){display:none}
+  .ibl-note{margin:12px 2px 0;font:400 13px/18px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#6E6E73}
+  /* the real email, in a sheet */
+  .ibl-sheet{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;justify-content:flex-end;pointer-events:none}
+  .ibl-sheet::before{content:"";position:absolute;inset:0;background:rgba(10,10,11,.45);opacity:0;transition:opacity .3s ease}
+  .ibl-sheet .ibl-pan{position:relative;max-height:88vh;display:flex;flex-direction:column;border-radius:20px 20px 0 0;background:#fff;transform:translateY(100%);transition:transform .42s cubic-bezier(.16,1,.3,1)}
+  .ibl-sheet.open{pointer-events:auto}
+  .ibl-sheet.open::before{opacity:1}
+  .ibl-sheet.open .ibl-pan{transform:none}
+  .ibl-grab{width:40px;height:5px;margin:8px auto 0;border-radius:99px;background:#D1D1D6}
+  .ibl-ph{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(10,10,11,.07)}
+  .ibl-ph .ibl-tx b{display:block;font:600 15px/20px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#1D1D1F}
+  .ibl-ph .ibl-tx small{display:block;font:400 13px/18px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#6E6E73}
+  .ibl-x{width:34px;height:34px;flex:none;border-radius:99px;border:0;background:#F2F2F7;font:500 18px/34px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#3A3A3C;cursor:pointer}
+  .ibl-img{overflow:auto;-webkit-overflow-scrolling:touch;padding:12px;background:#F5F5F7}
+  .ibl-img img{display:block;width:100%;height:auto;border-radius:10px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .ibl-cap{padding:10px 16px calc(14px + env(safe-area-inset-bottom));font:400 12px/16px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#6E6E73;text-align:center}
+  html[data-theme="dark"] .ibl{background:#141416;border-color:rgba(255,255,255,.08);box-shadow:none}
+  html[data-theme="dark"] .ibl-hd,html[data-theme="dark"] .ibl li,html[data-theme="dark"] .ibl-more{border-color:rgba(255,255,255,.07)}
+  html[data-theme="dark"] .ibl-hd b,html[data-theme="dark"] .ibl-top b,html[data-theme="dark"] .ibl-more,html[data-theme="dark"] .ibl-ph .ibl-tx b{color:#F5F5F7}
+  html[data-theme="dark"] .ibl-sub{color:#C7C7CC}
+  html[data-theme="dark"] .ibl-sub mark{background:rgba(250,204,21,.22);color:#F5F5F7}
+  html[data-theme="dark"] .ibl-hd span{background:rgba(250,204,21,.16);color:#FCD34D}
+  html[data-theme="dark"] .ibl-more{background:#1C1C1E}
+  html[data-theme="dark"] .ibl button:active{background:#1C1C1E}
+  html[data-theme="dark"] .ibl-lg{border-color:rgba(255,255,255,.1)}
+  html[data-theme="dark"] .ibl-sheet .ibl-pan{background:#1C1C1E}
+  html[data-theme="dark"] .ibl-ph{border-color:rgba(255,255,255,.08)}
+  html[data-theme="dark"] .ibl-img{background:#0A0A0B}
+  html[data-theme="dark"] .ibl-x{background:#2C2C2E;color:#E5E5EA}
+}
+@media (prefers-reduced-motion:reduce){.ibl-sheet .ibl-pan,.ibl-sheet::before{transition:none}}
+
+@media(max-width:640px){.ibm[data-list]{margin:0!important}}
 </style>
 <style id="tpDark">
 /* ===== dark theme (test): variables + generated overrides of hard-coded light colours ===== */
@@ -3032,7 +3090,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
       <div class="ib-view" aria-live="polite"><img class="ib-shot on" src="img/interviews/mail-09.webp" alt="Google interview email" loading="lazy" decoding="async"><img class="ib-shot" data-src="img/interviews/mail-15.webp" alt="NVIDIA interview email" loading="lazy" decoding="async"><img class="ib-shot" data-src="img/interviews/mail-20.webp" alt="Stripe interview email" loading="lazy" decoding="async"><img class="ib-shot" data-src="img/interviews/mail-02.webp" alt="Capital One interview email" loading="lazy" decoding="async"><img class="ib-shot" data-src="img/interviews/mail-12.webp" alt="Betterment interview email" loading="lazy" decoding="async"><img class="ib-shot" data-src="img/interviews/mail-18.webp" alt="Thermo Fisher interview email" loading="lazy" decoding="async"><img class="ib-shot" data-src="img/interviews/mail-04.webp" alt="Bessemer Trust interview email" loading="lazy" decoding="async"><img class="ib-shot" data-src="img/interviews/mail-10.webp" alt="Hunter Douglas interview email" loading="lazy" decoding="async"></div>
     </div>
   </div>
-  <div class="emx-in"><div class="ibm" id="ibm" aria-label="Interview emails" role="region"></div></div>
+  <div class="emx-in"><div class="ibm" id="ibm" data-list aria-label="Interview emails" role="region"></div></div>
   <div class="emx-in emx-cta"><a href="https://app.trulyplaced.com" class="cx-btn p emx-btn cta-shine">Start free in the app<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
 </section>
 
@@ -4028,7 +4086,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
 /* phone interview emails: cards built from the desktop inbox rows and screenshots. The story bars are the clock (a
    card stays 3.4s, then the next); swiping or tapping a bar moves too. Pauses off screen and while touched. */
 (function(){
-  var box=document.getElementById('ibm'),src=document.getElementById('ibox');if(!box||!src)return;
+  var box=document.getElementById('ibm'),src=document.getElementById('ibox');if(!box||!src||box.hasAttribute('data-list'))return;
   var mq=matchMedia('(max-width: 640px)'),built=false,i=0,vis=false,touch=false,tt=0;
   function build(){
     if(built||!mq.matches)return;built=true;
@@ -4165,6 +4223,50 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   var mq=matchMedia('(max-width: 640px)'),max=0;
   new ResizeObserver(function(){if(!mq.matches)return;var h=card.offsetHeight;if(h>max){max=h;card.style.minHeight=max+'px'}}).observe(card.querySelector('.tm-list')||card);
   addEventListener('resize',function(){max=0;card.style.minHeight=''},{passive:true});
+})();
+</script>
+<script>
+/* phone interview emails: the inbox list (from the desktop rows) and the sheet that shows the real email */
+(function(){
+  var box=document.getElementById('ibm'),src=document.getElementById('ibox');if(!box||!src||!box.hasAttribute('data-list'))return;
+  var mq=matchMedia('(max-width: 640px)'),built=false;
+  function build(){
+    if(built||!mq.matches)return;built=true;
+    var rows=[].slice.call(src.querySelectorAll('.ib-row')),shots=[].slice.call(src.querySelectorAll('.ib-shot'));
+    var wrap=document.createElement('div');wrap.className='ibl short';
+    wrap.innerHTML='<div class="ibl-hd"><b>Inbox</b><span><i></i>Interviews · '+rows.length+'</span></div><ul></ul>';
+    var ul=wrap.querySelector('ul');
+    var data=rows.map(function(r,k){var lg=r.querySelector('.ib-lg'),im=lg&&lg.querySelector('img'),sh=shots[k];
+      return {logo:im?im.getAttribute('src'):'',letter:im?'':(lg?lg.textContent:''),bg:lg?lg.style.background:'',co:(r.querySelector('.ib-tx b')||{}).textContent||'',
+        sub:(r.querySelector('.ib-tx span')||{}).innerHTML||'',time:(r.querySelector('time')||{}).textContent||'',img:sh?(sh.getAttribute('src')||sh.getAttribute('data-src')):'',alt:sh?sh.alt:''}});
+    data.forEach(function(d,k){
+      var li=document.createElement('li');
+      li.innerHTML='<button type="button"><span class="ibl-lg"></span><span class="ibl-tx"><span class="ibl-top"><b></b><time></time></span><span class="ibl-sub"></span></span>'+(k<2?'<span class="ibl-new" aria-label="New"></span>':'')+'</button>';
+      var L=li.querySelector('.ibl-lg');if(d.logo){var x=new Image();x.src=d.logo;x.alt='';L.appendChild(x)}else{L.textContent=d.letter;L.style.background=d.bg;L.style.borderColor='transparent'}
+      li.querySelector('b').textContent=d.co;li.querySelector('time').textContent=d.time;li.querySelector('.ibl-sub').innerHTML=d.sub;
+      li.querySelector('button').setAttribute('aria-label','Open the '+d.co+' interview email');
+      li.querySelector('button').addEventListener('click',function(){open(d)});
+      ul.appendChild(li)});
+    if(data.length>5){var more=document.createElement('button');more.type='button';more.className='ibl-more';more.textContent='Show all '+data.length+' emails';
+      more.addEventListener('click',function(){wrap.classList.remove('short');more.remove()});wrap.appendChild(more)}
+    var note=document.createElement('p');note.className='ibl-note';note.textContent='Real emails from client inboxes. Tap one to see it.';
+    box.appendChild(wrap);box.appendChild(note);
+    // the sheet
+    var sh=document.createElement('div');sh.className='ibl-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');sh.setAttribute('aria-hidden','true');
+    sh.innerHTML='<div class="ibl-pan"><div class="ibl-grab"></div><div class="ibl-ph"><span class="ibl-lg"></span><span class="ibl-tx"><b></b><small></small></span><button type="button" class="ibl-x" aria-label="Close">×</button></div><div class="ibl-img"><img alt=""></div><p class="ibl-cap">Pinch to zoom · the real email, as it arrived</p></div>';
+    document.body.appendChild(sh);
+    var pan=sh.querySelector('.ibl-pan'),simg=sh.querySelector('.ibl-img img'),last=null;
+    function open(d){var L=sh.querySelector('.ibl-ph .ibl-lg');L.innerHTML='';L.style.background='';if(d.logo){var x=new Image();x.src=d.logo;x.alt='';L.appendChild(x)}else{L.textContent=d.letter;L.style.background=d.bg}
+      sh.querySelector('.ibl-ph b').textContent=d.co;sh.querySelector('.ibl-ph small').textContent=d.time+' · Interview';simg.src=d.img;simg.alt=d.alt;
+      last=document.activeElement;sh.classList.add('open');sh.setAttribute('aria-hidden','false');document.documentElement.style.overflow='hidden';sh.querySelector('.ibl-x').focus()}
+    function close(){sh.classList.remove('open');sh.setAttribute('aria-hidden','true');document.documentElement.style.overflow='';if(last&&last.focus)last.focus()}
+    sh.addEventListener('click',function(e){if(!pan.contains(e.target)||e.target.closest('.ibl-x'))close()});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&sh.classList.contains('open'))close()});
+    // swipe the sheet down to close
+    var y0=null;pan.addEventListener('touchstart',function(e){if(sh.querySelector('.ibl-img').scrollTop<=0)y0=e.touches[0].clientY},{passive:true});
+    pan.addEventListener('touchend',function(e){if(y0!==null&&e.changedTouches[0].clientY-y0>90)close();y0=null},{passive:true});
+  }
+  build();if(mq.addEventListener)mq.addEventListener('change',build);
 })();
 </script>
 <script>
