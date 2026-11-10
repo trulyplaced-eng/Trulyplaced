@@ -131,6 +131,7 @@ img{max-width:100%}
   var phone=window.matchMedia&&matchMedia('(max-width: 640px)').matches;   // phones: content is simply there, no scroll-in reveals
   if(!phone){ d.classList.add('motion');
   setTimeout(function(){ if(!window.__tpMotion) d.classList.remove('motion'); }, 4000); }   // safety net: never leave content hidden
+  if(phone&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)){d.classList.add('wd-in');setTimeout(function(){d.classList.remove('wd-in')},4500)}
   if(!phone) d.classList.add('tp-intro');   // phones: the hero is simply there, no entrance                                                             // hero entrance (wordmark types in)
   setTimeout(function(){ d.classList.remove('tp-intro'); }, 3500);                          // safety net for the entrance
 }catch(e){}})();
@@ -2061,6 +2062,15 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
   .cx .cx-word,.cx .cx-h1,.cx-cta .cx-btn.p,.cx-pl p,.cx-proof span{text-shadow:0 1px 14px rgba(0,58,140,.38),0 0 2px rgba(0,58,140,.18)}
   .cx .cx-word{filter:drop-shadow(0 2px 14px rgba(0,58,140,.3))!important}
 }
+
+/* ===== phone wordmark entrance: builds in letter by letter, dotted ghost first (conductor.build) ===== */
+@media(max-width:640px){
+  html.wd-in .cx-word{visibility:hidden}
+  html.wd-in .cx-word.wd-on{visibility:visible}
+  .cx-word .wd{display:inline-block;white-space:pre;letter-spacing:0;opacity:0}
+  .cx-word .wd.g{opacity:.6;-webkit-mask:conic-gradient(#000 25%,transparent 0 50%,#000 0 75%,transparent 0) 0 0/4px 4px;mask:conic-gradient(#000 25%,transparent 0 50%,#000 0 75%,transparent 0) 0 0/4px 4px}
+  .cx-word .wd.on{opacity:1;-webkit-mask:none;mask:none}
+}
 </style>
 <style id="tpDark">
 /* ===== dark theme (test): variables + generated overrides of hard-coded light colours ===== */
@@ -3680,6 +3690,32 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
     pan.addEventListener('touchend',function(e){if(y0!==null&&e.changedTouches[0].clientY-y0>90)close();y0=null},{passive:true});
   }
   build();if(mq.addEventListener)mq.addEventListener('change',build);
+})();
+</script>
+<script>
+/* phone wordmark entrance */
+(function(){
+  var d=document.documentElement,w=document.querySelector('.cx-word');
+  if(!w||!d.classList.contains('wd-in'))return;
+  function show(){d.classList.remove('wd-in')}
+  if(!document.createRange||w.firstChild.nodeType!==3){show();return}
+  var WORD=w.textContent,STEP=150,started=false; // conductor.build: about one letter every 150-170ms
+  function run(){
+    if(started)return;started=true;
+    var tn=w.firstChild,r=document.createRange(),xs=[],n=WORD.length,i;
+    for(i=0;i<n;i++){r.setStart(tn,i);r.setEnd(tn,i+1);xs.push(r.getBoundingClientRect())}
+    var html='';for(i=0;i<n;i++){var wd=i<n-1?xs[i+1].left-xs[i].left:xs[i].width;html+='<span class="wd" style="width:'+wd.toFixed(2)+'px">'+WORD[i]+'</span>'}
+    w.innerHTML=html;var sp=w.querySelectorAll('.wd'),k=0;
+    sp[0].className='wd g';w.classList.add('wd-on');
+    var t=setInterval(function(){
+      if(k<n)sp[k].className='wd on';       // the ghost turns solid
+      if(k+1<n)sp[k+1].className='wd g';    // and the next letter appears as a dotted ghost
+      k++;
+      if(k>=n){clearInterval(t);setTimeout(function(){w.textContent=WORD;w.classList.remove('wd-on');show()},200)}
+    },STEP);
+  }
+  // wait briefly for the wordmark's font so the slots match the real letters
+  if(document.fonts&&document.fonts.load){document.fonts.load('700 36px Poppins',WORD).then(run,run);setTimeout(run,900)}else run();
 })();
 </script>
 <script>
