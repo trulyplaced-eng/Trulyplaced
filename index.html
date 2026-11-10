@@ -2016,14 +2016,14 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
 }
 
 /* phone hero phone: a plain, flat black device (Hirelayer-style) — no metal rim, no glass sheen, no side buttons */
-/* phone top bar: a Start free button beside the menu (Hirelayer-style) */
+/* phone top bar: Client login as the blue pill beside the menu (Start free was removed from the bar) */
 @media(max-width:640px){
-  #tpBar .cb-pill.cb-app{display:inline-flex!important;align-items:center;height:40px!important;padding:0 18px!important;border-radius:99px!important;
+  #tpBar .cb-pill.cb-login{display:inline-flex!important;align-items:center;height:40px!important;padding:0 18px!important;border-radius:99px!important;
     background:#0938D5!important;border-color:#0938D5!important;color:#fff!important;font:600 14.5px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;box-shadow:0 6px 16px -8px rgba(9,56,213,.6)!important;gap:0!important}
-  #tpBar .cb-pill.cb-app svg{display:none!important}
-  #tpBar .cb-pill.cb-app::after{display:none!important}
-  #tpBar .cb-pill.cb-app .rpl-c{display:none!important}
-  html[data-theme="dark"] body #tpBar .cb-pill.cb-app{background:#2F5BFF!important;border-color:#2F5BFF!important;color:#fff!important}
+  #tpBar .cb-pill.cb-login svg{display:none!important}
+  #tpBar .cb-pill.cb-login::after{display:none!important}
+  #tpBar .cb-pill.cb-login .rpl-c{display:none!important}
+  html[data-theme="dark"] body #tpBar .cb-pill.cb-login{background:#2F5BFF!important;border-color:#2F5BFF!important;color:#fff!important}
 }
 
 /* phone logo row, conductor.build-style: a real heading, small logos four to a row, full colour, two rows */
@@ -2068,6 +2068,28 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
   html.wd-in .cx-word{visibility:hidden}
   .cx-word.wd-on{position:relative}
   .cx-word .wd-cv{position:absolute;visibility:visible;pointer-events:none}
+}
+
+/* ===== phones: light scrolling (no backdrop blur, small shadows, no masks, no idle fixed layers) ===== */
+@media(max-width:640px){
+  .cx-pl li{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:rgba(255,255,255,.17)!important}
+  html[data-theme="dark"] .cx-pl li{background:rgba(255,255,255,.09)!important}
+  .spx .sp-demo{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#fff!important;box-shadow:0 1px 2px rgba(10,20,60,.05),0 10px 20px -14px rgba(10,20,60,.22)!important}
+  html[data-theme="dark"] .spx .sp-demo{background:#0F1426!important;box-shadow:none!important}
+  .sd-pair,.sp-demo *{filter:none!important}
+  .ibb-card{box-shadow:0 1px 2px rgba(10,10,11,.05),0 8px 14px -10px rgba(10,10,11,.2)!important}
+  html[data-theme="dark"] .ibb-card{box-shadow:none!important}
+  .ibd-track{will-change:auto!important}
+  .hph{box-shadow:0 22px 26px -20px rgba(10,20,60,.5)!important}
+  /* the sky's bottom fade: a gradient to the page colour instead of a mask (a mask is redone on every frame) */
+  .cx.still .cx-sky{-webkit-mask-image:none!important;mask-image:none!important}
+  .cx.still .cx-sky::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:23%;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,0),#fff)}
+  html[data-theme="dark"] .cx.still .cx-sky::after{background:linear-gradient(180deg,rgba(11,14,26,0),rgb(11,14,26))}
+  /* the email sheet is not on screen until opened */
+  .ibl-sheet{visibility:hidden;transition:visibility 0s linear .45s}
+  .ibl-sheet.open{visibility:visible;transition-delay:0s}
+  /* typing dots only move while their row is talking */
+  .tm-row:not(.talk) .tm-dots i{animation:none!important}
 }
 </style>
 <style id="tpDark">
@@ -2351,7 +2373,6 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
         <button type="button" data-set-theme="dark" aria-pressed="false" aria-label="Dark theme" title="Dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></button>
       </div>
       <a class="cb-pill cb-login" href="./login.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c1-3.5 3.8-5.4 7-5.4s6 1.9 7 5.4"/></svg><span>Client login</span></a>
-      <a class="cb-pill cb-app cta-shine" href="https://app.trulyplaced.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><span>Start free</span></a>
       <a class="cb-ico" href="https://wa.me/918142442139?text=Hi%20TrulyPlaced%2C%20I%27d%20like%20to%20know%20more" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp" title="Chat with us on WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2a9.9 9.9 0 0 0-8.5 15l-1.4 5 5.15-1.35A9.9 9.9 0 1 0 12.04 2zm0 18.1a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-3.06.8.82-2.98-.2-.31a8.2 8.2 0 1 1 6.92 3.81zm4.5-6.14c-.25-.12-1.46-.72-1.69-.8-.23-.09-.39-.13-.56.12-.16.25-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.04-.38-1.98-1.22-.73-.65-1.23-1.46-1.37-1.7-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.15.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.13-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43h-.48a.92.92 0 0 0-.66.31c-.23.25-.87.85-.87 2.07s.89 2.4 1.01 2.57c.12.16 1.75 2.67 4.24 3.74.59.26 1.05.41 1.41.52.6.19 1.14.16 1.57.1.48-.07 1.46-.6 1.67-1.18.2-.58.2-1.07.14-1.18-.06-.1-.22-.16-.47-.29z"/></svg></a>
       <button class="burger cb-burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobnav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     </div>
@@ -2773,14 +2794,19 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   const navEl = document.querySelector('header.nav');
   // the link for the section on screen is marked
   const spyLinks = [].slice.call(document.querySelectorAll('.nav-links a[href^="#"]')), spySecs = spyLinks.map((a) => document.querySelector(a.getAttribute('href')));
-  const onScroll = () => {
-    navEl.classList.toggle('scrolled', window.scrollY > 36);
+  let spyOn = null, spyCur = -2, spyTick = false;
+  const onScrollNow = () => {
+    spyTick = false;
+    const sc = window.scrollY > 36; if (sc !== spyOn) { spyOn = sc; navEl.classList.toggle('scrolled', sc); }
+    if (window.innerWidth <= 640) return;   // phones: the section links are in the menu, nothing to mark
     let cur = -1, best = -1; const y = window.scrollY + 160;
     spySecs.forEach((sec, k) => { if (sec && sec.offsetTop <= y && sec.offsetTop > best) { best = sec.offsetTop; cur = k; } });
     if (window.scrollY < 200) cur = -1;
+    if (cur === spyCur) return; spyCur = cur;
     spyLinks.forEach((a, k) => a.classList.toggle('on', k === cur));
   };
-  onScroll();
+  const onScroll = () => { if (!spyTick) { spyTick = true; requestAnimationFrame(onScrollNow); } };
+  onScrollNow();
   window.addEventListener('scroll', onScroll, {passive:true});
   // placements tabs
   const tabs = document.querySelectorAll('.tab');
@@ -3312,7 +3338,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   if(matchMedia('(prefers-reduced-motion: reduce)').matches||!window.IntersectionObserver){el.textContent=fmt(to);return}
   el.style.minWidth=el.getBoundingClientRect().width+'px';el.style.display='inline-block';el.textContent=fmt(0);
   var io=new IntersectionObserver(function(es){if(!es[0].isIntersecting)return;io.disconnect();var t0=performance.now(),D=1400;
-    (function f(now){var p=Math.min(1,(now-t0)/D),e=1-Math.pow(1-p,3);el.textContent=fmt(Math.round(to*e));if(p<1)requestAnimationFrame(f)})(t0)},{threshold:.6});io.observe(el);
+    var ph=matchMedia('(max-width: 640px)').matches,last=-1e9,shown='';(function f(now){var p=Math.min(1,(now-t0)/D),e=1-Math.pow(1-p,3);if(p>=1||!ph||now-last>=80){last=now;var tx=fmt(Math.round(to*e));if(tx!==shown){shown=tx;el.textContent=tx}}if(p<1)requestAnimationFrame(f)})(t0)},{threshold:.6});io.observe(el);
 })();
 </script>
 <script>
@@ -3408,7 +3434,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   }
   var started=false;
   function start(){if(started)return;started=true;draw();new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});var t;addEventListener('resize',function(){clearTimeout(t);t=setTimeout(draw,150)},{passive:true})}
-  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){start();io.disconnect()}},{rootMargin:'600px'});io.observe(cv)}else start();
+  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){start();io.disconnect()}},{rootMargin:'600px'});io.observe(cv);(function(f){var go=function(){(window.requestIdleCallback||function(g){setTimeout(g,1500)})(f,{timeout:6000})};if(document.readyState==='complete')go();else addEventListener('load',go,{once:true})})(function(){start();io.disconnect()})}else start();
 })();
 </script>
 <script>
@@ -3562,7 +3588,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   }
   new MutationObserver(function(){if(n)draw()}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
   var t,lw3=innerWidth;addEventListener('resize',function(){if(innerWidth===lw3)return;lw3=innerWidth;clearTimeout(t);t=setTimeout(build,150)},{passive:true});
-  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){build();io.disconnect()}},{rootMargin:'400px'});io.observe(word)}else build();
+  var built=false,build0=build;build=function(){built=true;build0()};if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){if(!built)build();io.disconnect()}},{rootMargin:'400px'});io.observe(word);(function(f){var go=function(){(window.requestIdleCallback||function(g){setTimeout(g,1500)})(f,{timeout:6000})};if(document.readyState==='complete')go();else addEventListener('load',go,{once:true})})(function(){if(!built)build();io.disconnect()})}else build();
 })();
 </script>
 <script>
