@@ -3187,7 +3187,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   var cv=document.getElementById('cxPrism'),sec=document.querySelector('.cx');if(!cv||!sec)return;
   // phones: the same animated prism on the blue band, in brand blues (white text stays readable), drawn at low
   // resolution and capped at 30 frames a second; paused off screen. The CSS gradient stays underneath as a fallback.
-  var PH=matchMedia('(max-width: 640px)').matches;if(PH)sec.classList.add('prism','still');
+  var PH=matchMedia('(max-width: 640px)').matches;if(PH){sec.classList.add('prism','still');return} // phones: a still gradient, no WebGL (the animation slowed phones)
   var gl=null;try{gl=cv.getContext('webgl2',{premultipliedAlpha:true,alpha:true,antialias:true})}catch(e){}
   if(!gl)return; // the sky stays
   if(PH)sec.classList.add('live');
