@@ -120,8 +120,9 @@ img{max-width:100%}
   var d=document.documentElement;
   if(!('IntersectionObserver' in window)||!CSS.supports('translate','0 1px')) return;
   if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  d.classList.add('motion');
-  setTimeout(function(){ if(!window.__tpMotion) d.classList.remove('motion'); }, 4000);   // safety net: never leave content hidden
+  var phone=window.matchMedia&&matchMedia('(max-width: 640px)').matches;   // phones: content is simply there, no scroll-in reveals
+  if(!phone){ d.classList.add('motion');
+  setTimeout(function(){ if(!window.__tpMotion) d.classList.remove('motion'); }, 4000); }   // safety net: never leave content hidden
   d.classList.add('tp-intro');                                                             // hero entrance (wordmark types in)
   setTimeout(function(){ d.classList.remove('tp-intro'); }, 3500);                          // safety net for the entrance
 }catch(e){}})();
@@ -907,7 +908,8 @@ html[data-theme="dark"] .cx-url,html[data-theme="dark"] .cx-ex{color:#8B93AB}htm
 .tm-name i{font-style:normal;color:#9AA0B2;margin-left:6px;font-size:13px}
 /* the little working spinner: six dots blinking in turn, like a braille loader */
 .tm-spin{display:inline-grid;grid-template-columns:repeat(2,3px);grid-auto-rows:3px;gap:2px;margin-left:2px;transition:opacity .25s ease}
-.tm-spin i{width:3px;height:3px;border-radius:99px;background:#9AA0B2;animation:tmBlink 1.2s linear infinite}
+.tm-spin i{width:3px;height:3px;border-radius:99px;background:#9AA0B2}
+.tm-row.typing .tm-spin i{animation:tmBlink 1.2s linear infinite}
 .tm-spin i:nth-child(1){animation-delay:0s}.tm-spin i:nth-child(3){animation-delay:.2s}.tm-spin i:nth-child(5){animation-delay:.4s}
 .tm-spin i:nth-child(6){animation-delay:.6s}.tm-spin i:nth-child(4){animation-delay:.8s}.tm-spin i:nth-child(2){animation-delay:1s}
 @keyframes tmBlink{0%,100%{opacity:.25}15%{opacity:1}40%{opacity:.25}}
@@ -2290,6 +2292,24 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
   .ft3-cols{margin-top:4px}
   .ft3 .ft3-word{margin-top:40px}
 }
+
+/* phone calm mode (conductor.build style): nothing loops for decoration; the only motion is the section being
+   looked at. No shine sweeps, no pulsing dots, no scrolling logo strip. */
+@media(max-width:640px){
+  .cta-shine::after,.cta-shine::before{animation:none!important;display:none!important}
+  .sd-live i,.xhm-auto i,.xfm-halo,.xap-ping,.xap-ping::before,.xap-ping::after,.fd-live.on i{animation:none!important}
+  .cx-ats-m{-webkit-mask-image:none!important;mask-image:none!important}
+  .cx-ats-t{animation:none!important;width:auto!important;flex-wrap:wrap;gap:10px 20px!important;padding-right:0!important}
+  .cx-ats-t .cx-ats-i:nth-child(n+7){display:none}
+}
+
+/* phones: a still hero background (no WebGL), and sections below the fold are skipped until they are near */
+@media(max-width:640px){
+  .cx.still .cx-prism{display:none!important}
+  .cx.still .cx-sky{background:radial-gradient(110% 55% at 100% 4%,rgba(140,194,255,.55),rgba(140,194,255,0) 62%),radial-gradient(80% 45% at 0% 36%,rgba(214,232,255,.85),rgba(214,232,255,0) 70%),#fff}
+  html[data-theme="dark"] .cx.still .cx-sky{background:radial-gradient(110% 55% at 100% 4%,rgba(102,179,255,.3),rgba(102,179,255,0) 62%),#050505}
+  #team-live,#success,#faq{content-visibility:auto;contain-intrinsic-size:auto 860px}
+}
 </style>
 <style id="tpDark">
 /* ===== dark theme (test): variables + generated overrides of hard-coded light colours ===== */
@@ -3514,6 +3534,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
 /* PrismGradient, ported from the React component: same shader and PRISM settings, colours follow the page theme. */
 (function(){
   var cv=document.getElementById('cxPrism'),sec=document.querySelector('.cx');if(!cv||!sec)return;
+  if(matchMedia('(max-width: 640px)').matches){sec.classList.add('prism','still');return} // phones: a still CSS gradient, no WebGL
   var gl=null;try{gl=cv.getContext('webgl2',{premultipliedAlpha:true,alpha:true,antialias:true})}catch(e){}
   if(!gl)return; // the sky stays
   var PRISM={dark:['#050505','#66B3FF','#FFFFFF'],light:['#FFFFFF','#8CC2FF','#EAF3FF'],rotation:-50,proportion:1,scale:.01,speed:30,distortion:0,swirl:50,swirlIterations:16,softness:47,offset:-299,shapeSize:45};
@@ -3570,7 +3591,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   }
   function loop(now){if(!on)return;draw(now);raf=requestAnimationFrame(loop)}
   new MutationObserver(function(){draw(performance.now())}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
-  if(RM||SPEED<=0){requestAnimationFrame(draw);return}
+  if(RM||SPEED<=0||matchMedia('(max-width: 640px)').matches){requestAnimationFrame(draw);return} // phones: one still frame, like a picture
   new IntersectionObserver(function(es){var vis=es[0].isIntersecting;if(vis&&!on){on=true;raf=requestAnimationFrame(loop)}else if(!vis){on=false;cancelAnimationFrame(raf)}},{threshold:0}).observe(cv);
   raf=requestAnimationFrame(loop);
 })();
