@@ -2567,6 +2567,21 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
   .tm-stage .tm-row.talk .tm-say{opacity:1;transform:none!important}
   html[data-theme="dark"] .tm-stage .tm-row.talk{background:rgba(124,155,255,.14)}
 }
+
+/* ===== phone interview emails: a slow, continuous drift ===== */
+@media(max-width:640px){
+  .ibd{margin:0 -20px}
+  .ibd-view{overflow:hidden;padding:4px 0 14px}
+  .ibd-track{display:flex;gap:12px;width:max-content;padding-left:20px;animation:ibdDrift var(--ibd-dur,72s) linear infinite;will-change:transform}
+  .ibd .ibb-slide{flex:0 0 auto;width:calc(100vw - 64px);max-width:520px;padding:0}
+  .ibd.held .ibd-track,.ibd.off .ibd-track,.ibd.hid .ibd-track{animation-play-state:paused}
+  @keyframes ibdDrift{to{transform:translateX(calc(-50% - 6px))}}
+}
+@media (max-width:640px) and (prefers-reduced-motion:reduce){
+  .ibd-track{animation:none}
+  .ibd-view{overflow-x:auto;scroll-snap-type:x mandatory}
+  .ibd .ibb-slide{scroll-snap-align:start}
+}
 </style>
 <style id="tpDark">
 /* ===== dark theme (test): variables + generated overrides of hard-coded light colours ===== */
@@ -4159,7 +4174,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
     word.addEventListener('pointerdown',function(e){var p=local(e);rip.push({x:p.x,y:p.y,t:performance.now()});kick()});
   }
   new MutationObserver(function(){if(n)draw()}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
-  var t;addEventListener('resize',function(){clearTimeout(t);t=setTimeout(build,150)},{passive:true});
+  var t,lw3=innerWidth;addEventListener('resize',function(){if(innerWidth===lw3)return;lw3=innerWidth;clearTimeout(t);t=setTimeout(build,150)},{passive:true});
   if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){build();io.disconnect()}},{rootMargin:'400px'});io.observe(word)}else build();
 })();
 </script>
@@ -4222,7 +4237,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   new MutationObserver(sync).observe(sp,{subtree:true,attributes:true,attributeFilter:['class']});
   tabs.addEventListener('animationend',function(e){if(e.animationName!=='spxFill')return;var k=bs.indexOf(e.target.closest('button'));var d=document.querySelectorAll('#spDots button')[(k+1)%bs.length];if(d)d.click()});
   var mq=matchMedia('(max-width: 640px)');function go(){if(mq.matches)fit()}
-  go();if(mq.addEventListener)mq.addEventListener('change',go);addEventListener('resize',function(){if(mq.matches){clearTimeout(go.t);go.t=setTimeout(fit,200)}},{passive:true});
+  go();if(mq.addEventListener)mq.addEventListener('change',go);var lw2=innerWidth;addEventListener('resize',function(){if(innerWidth===lw2)return;lw2=innerWidth;if(mq.matches){clearTimeout(go.t);go.t=setTimeout(fit,200)}},{passive:true});
 })();
 </script>
 <script>
@@ -4303,7 +4318,8 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   var card=document.querySelector('.tm-stage .tm-card');if(!card||!window.ResizeObserver)return;
   var mq=matchMedia('(max-width: 640px)'),max=0;
   new ResizeObserver(function(){if(!mq.matches)return;var h=card.offsetHeight;if(h>max){max=h;card.style.minHeight=max+'px'}}).observe(card.querySelector('.tm-list')||card);
-  addEventListener('resize',function(){max=0;card.style.minHeight=''},{passive:true});
+  // only a real width change resets it; the phone address bar sliding in/out fires resize too and must not
+  var lw=innerWidth;addEventListener('resize',function(){if(innerWidth===lw)return;lw=innerWidth;max=0;card.style.minHeight=''},{passive:true});
 })();
 </script>
 <script>
@@ -4317,34 +4333,30 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
     var data=rows.map(function(r,k){var lg=r.querySelector('.ib-lg'),im=lg&&lg.querySelector('img'),sh=shots[k];
       return {logo:im?im.getAttribute('src'):'',letter:im?'':(lg?lg.textContent:''),bg:lg?lg.style.background:'',co:(r.querySelector('.ib-tx b')||{}).textContent||'',
         sub:(r.querySelector('.ib-tx span')||{}).innerHTML||'',time:(r.querySelector('time')||{}).textContent||'',img:sh?(sh.getAttribute('src')||sh.getAttribute('data-src')):'',alt:sh?sh.alt:''}});
-    var wrap=document.createElement('div');wrap.className='ibb';
-    wrap.innerHTML='<div class="ibb-view"><div class="ibb-track"></div></div><div class="ibb-foot"><div class="ibb-bar"><i></i></div><span class="ibb-n"><b>1</b> / '+data.length+'</span></div>';
-    var view=wrap.querySelector('.ibb-view'),tr=wrap.querySelector('.ibb-track'),bar=wrap.querySelector('.ibb-bar i'),num=wrap.querySelector('.ibb-n b');
-    data.forEach(function(d,k){
-      var c=document.createElement('article');c.className='ibb-slide';
-      c.innerHTML='<button type="button" class="ibb-card"><span class="ibb-hd"><span class="ibl-lg"></span><span class="ibb-who"><b></b><small></small></span><span class="ibb-tag"><i></i>Interview</span></span><span class="ibb-mail"><img alt="" decoding="async"></span></button>';
+    var wrap=document.createElement('div');wrap.className='ibd';
+    wrap.innerHTML='<div class="ibd-view"><div class="ibd-track"></div></div>';
+    var tr=wrap.querySelector('.ibd-track');
+    function slide(d,dup){
+      var c=document.createElement('article');c.className='ibb-slide';if(dup)c.setAttribute('aria-hidden','true');
+      c.innerHTML='<button type="button" class="ibb-card"'+(dup?' tabindex="-1"':'')+'><span class="ibb-hd"><span class="ibl-lg"></span><span class="ibb-who"><b></b><small></small></span><span class="ibb-tag"><i></i>Interview</span></span><span class="ibb-mail"><img alt="" decoding="async"></span></button>';
       var L=c.querySelector('.ibl-lg');if(d.logo){var x=new Image();x.src=d.logo;x.alt='';L.appendChild(x)}else{L.textContent=d.letter;L.style.background=d.bg;L.style.borderColor='transparent'}
       c.querySelector('.ibb-who b').textContent=d.co;c.querySelector('.ibb-who small').textContent=d.time;
-      var im=c.querySelector('.ibb-mail img');im.setAttribute('data-src',d.img);im.alt=d.alt;
+      var im=c.querySelector('.ibb-mail img');im.setAttribute('data-src',d.img);im.alt=dup?'':d.alt;
       c.querySelector('.ibb-card').setAttribute('aria-label','Read the '+d.co+' interview email');
-      c.querySelector('.ibb-card').addEventListener('click',function(){if(!moved)open(d)});
-      tr.appendChild(c)});
-    var note=document.createElement('p');note.className='ibl-note';note.textContent='Real emails from client inboxes. Tap one to read it in full.';
+      c.querySelector('.ibb-card').addEventListener('click',function(){open(d)});
+      tr.appendChild(c)}
+    data.forEach(function(d){slide(d,false)});data.forEach(function(d){slide(d,true)}); // doubled for a seamless loop
+    tr.style.setProperty('--ibd-dur',(data.length*9)+'s'); // about 9 seconds per email: slow and readable
+    var note=document.createElement('p');note.className='ibl-note';note.textContent='Real emails from client inboxes. Hold to pause, tap to read one in full.';
     box.appendChild(wrap);box.appendChild(note);
-    var slides=[].slice.call(tr.children),n=slides.length,i=0,vis=false,touch=false,tt=0,timer=0,DW=4500,RM=matchMedia('(prefers-reduced-motion: reduce)').matches,moved=false;
-    function load(k){[k,k+1].forEach(function(j){var s=slides[(j+n)%n],im=s&&s.querySelector('.ibb-mail img');if(im&&!im.src&&im.getAttribute('data-src')){im.addEventListener('load',function(){im.style.minWidth='1px'},{once:true});im.src=im.getAttribute('data-src')}})}
-    function show(k,instant){i=(k+n)%n;tr.style.transition=instant||RM?'none':'';tr.style.transform='translateX('+(-i*100)+'%)';num.textContent=i+1;bar.style.width=((i+1)/n*100)+'%';
-      slides.forEach(function(s,j){s.classList.toggle('on',j===i);s.setAttribute('aria-hidden',j===i?'false':'true')});load(i)}
-    function run(){clearTimeout(timer);if(RM||!vis||touch||document.hidden)return;timer=setTimeout(function(){show(i+1);run()},DW)}
-    // swipe: the track follows the finger, then settles on the nearest slide
-    var x0=null,dx=0;
-    view.addEventListener('touchstart',function(e){touch=true;clearTimeout(timer);clearTimeout(tt);x0=e.touches[0].clientX;dx=0;moved=false;tr.style.transition='none'},{passive:true});
-    view.addEventListener('touchmove',function(e){if(x0===null)return;dx=e.touches[0].clientX-x0;if(Math.abs(dx)>6)moved=true;tr.style.transform='translateX(calc('+(-i*100)+'% + '+dx+'px))'},{passive:true});
-    view.addEventListener('touchend',function(){if(x0===null)return;tr.style.transition='';var w=view.offsetWidth;show(dx<-w*.18?i+1:dx>w*.18?i-1:i);x0=null;setTimeout(function(){moved=false},50);
-      tt=setTimeout(function(){touch=false;run()},3000)},{passive:true});
-    new IntersectionObserver(function(es){vis=es[0].isIntersecting;run()},{threshold:.4}).observe(wrap);
-    document.addEventListener('visibilitychange',run);
-    show(0,true);
+    var loaded=false;function loadAll(){if(loaded)return;loaded=true;[].forEach.call(tr.querySelectorAll('.ibb-mail img'),function(im){im.addEventListener('load',function(){im.style.minWidth='1px'},{once:true});im.src=im.getAttribute('data-src')})}
+    var view=wrap.querySelector('.ibd-view');
+    function hold(on){wrap.classList.toggle('held',on)}
+    view.addEventListener('touchstart',function(){hold(true)},{passive:true});
+    view.addEventListener('touchend',function(){setTimeout(function(){hold(false)},600)},{passive:true});
+    view.addEventListener('touchcancel',function(){hold(false)},{passive:true});
+    new IntersectionObserver(function(es){var v=es[0].isIntersecting;if(v)loadAll();wrap.classList.toggle('off',!v)},{rootMargin:'300px 0px',threshold:0}).observe(wrap);
+    document.addEventListener('visibilitychange',function(){wrap.classList.toggle('hid',document.hidden)});
     // the sheet
     var sh=document.createElement('div');sh.className='ibl-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');sh.setAttribute('aria-hidden','true');
     sh.innerHTML='<div class="ibl-pan"><div class="ibl-grab"></div><div class="ibl-ph"><span class="ibl-lg"></span><span class="ibl-tx"><b></b><small></small></span><button type="button" class="ibl-x" aria-label="Close">×</button></div><div class="ibl-img"><img alt=""></div><p class="ibl-cap">Pinch to zoom · the real email, as it arrived</p></div>';
