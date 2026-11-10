@@ -2486,6 +2486,73 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
 @media (prefers-reduced-motion:reduce){.ibl-sheet .ibl-pan,.ibl-sheet::before{transition:none}}
 
 @media(max-width:640px){.ibm[data-list]{margin:0!important}}
+
+/* ===== phone interview emails: clear slides ===== */
+@media(max-width:640px){
+  .ibc{margin:0 -20px}
+  .ibc-track{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 20px;padding:4px 20px 16px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .ibc-track::-webkit-scrollbar{display:none}
+  .ibc-card{flex:0 0 calc(100% - 52px);scroll-snap-align:start;display:flex;flex-direction:column;min-height:228px;padding:18px 18px 16px;border-radius:18px;background:#fff;
+    border:1px solid rgba(10,10,11,.08);box-shadow:0 1px 2px rgba(10,20,50,.04),0 20px 44px -32px rgba(10,20,50,.35);transition:opacity .4s ease}
+  .ibc-card:not(.on){opacity:.55}
+  .ibc-hd{display:flex;align-items:center;gap:12px}
+  .ibc-who{flex:1;min-width:0}
+  .ibc-who b{display:block;font:600 16px/21px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#1D1D1F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ibc-who small{display:flex;align-items:center;gap:6px;margin-top:2px;font:500 13px/18px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#047857}
+  .ibc-who small i{width:6px;height:6px;border-radius:99px;background:#10B981}
+  .ibc-hd time{flex:none;font:400 13px/18px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#6E6E73}
+  .ibc-sub{flex:1;margin:16px 0 0;font:600 19px/26px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.015em;color:#1D1D1F;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .ibc-sub mark{background:#FEF3C7;color:inherit;border-radius:5px;padding:0 4px}
+  .ibc-open{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;margin-top:16px;height:38px;padding:0 14px;border-radius:99px;border:1px solid rgba(10,10,11,.12);background:#fff;font:500 14px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#1D1D1F;cursor:pointer}
+  .ibc-open svg{width:14px;height:14px}
+  .ibc-open:active{background:#F5F5F7}
+  .ibc-foot{display:flex;align-items:center;gap:12px;padding:0 20px}
+  .ibc-bar{flex:1;height:3px;border-radius:3px;background:rgba(10,10,11,.09);overflow:hidden}
+  .ibc-bar i{display:block;height:100%;width:12.5%;border-radius:inherit;background:#1D1D1F;transition:width .5s cubic-bezier(.16,1,.3,1)}
+  .ibc-n{font:500 13px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#6E6E73;font-variant-numeric:tabular-nums}
+  .ibc-n b{color:#1D1D1F;font-weight:600}
+  html[data-theme="dark"] .ibc-card{background:#141416;border-color:rgba(255,255,255,.08);box-shadow:none}
+  html[data-theme="dark"] .ibc-who b,html[data-theme="dark"] .ibc-sub,html[data-theme="dark"] .ibc-n b{color:#F5F5F7}
+  html[data-theme="dark"] .ibc-who small{color:#34D399}
+  html[data-theme="dark"] .ibc-sub mark{background:rgba(250,204,21,.22)}
+  html[data-theme="dark"] .ibc-open{background:transparent;border-color:rgba(255,255,255,.16);color:#F5F5F7}
+  html[data-theme="dark"] .ibc-bar{background:rgba(255,255,255,.12)}
+  html[data-theme="dark"] .ibc-bar i{background:#F5F5F7}
+}
+@media (prefers-reduced-motion:reduce){.ibc-card,.ibc-bar i{transition:none}}
+
+/* ===== phone interview emails: big slides of the real emails ===== */
+@media(max-width:640px){
+  .ibb-view{overflow:hidden;border-radius:20px;touch-action:pan-y}
+  .ibb-track{display:flex;transition:transform .8s cubic-bezier(.65,0,.35,1);will-change:transform}
+  .ibb-slide{flex:0 0 100%;min-width:0;padding:1px}
+  .ibb-card{display:flex;flex-direction:column;width:100%;padding:0;border:1px solid rgba(10,10,11,.08);border-radius:20px;background:#fff;overflow:hidden;text-align:left;cursor:pointer;
+    box-shadow:0 1px 2px rgba(10,20,50,.04),0 24px 48px -34px rgba(10,20,50,.4);-webkit-tap-highlight-color:transparent}
+  .ibb-hd{display:flex;align-items:center;gap:12px;padding:16px 16px 14px;border-bottom:1px solid rgba(10,10,11,.07)}
+  .ibb-who{flex:1;min-width:0}
+  .ibb-who b{display:block;font:600 17px/22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#1D1D1F}
+  .ibb-who small{display:block;font:400 13px/18px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#6E6E73}
+  .ibb-tag{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:99px;background:#ECFDF5;font:600 12px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#047857}
+  .ibb-tag i{width:6px;height:6px;border-radius:99px;background:#10B981}
+  .ibb-mail{position:relative;display:block;padding:12px;background:#F5F5F7;overflow:hidden}
+  .ibb-mail::after{content:none;position:absolute;left:0;right:0;bottom:0;height:90px;background:linear-gradient(rgba(245,245,247,0),#F5F5F7);pointer-events:none}
+  .ibb-mail img{display:block;width:100%;height:auto;aspect-ratio:1100/811;object-fit:cover;object-position:top;border-radius:10px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .ibb-foot{display:flex;align-items:center;gap:12px;margin-top:16px}
+  .ibb-bar{flex:1;height:3px;border-radius:3px;background:rgba(10,10,11,.09);overflow:hidden}
+  .ibb-bar i{display:block;height:100%;width:12.5%;border-radius:inherit;background:#1D1D1F;transition:width .8s cubic-bezier(.65,0,.35,1)}
+  .ibb-n{font:500 13px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#6E6E73;font-variant-numeric:tabular-nums}
+  .ibb-n b{color:#1D1D1F;font-weight:600}
+  html[data-theme="dark"] .ibb-card{background:#141416;border-color:rgba(255,255,255,.08);box-shadow:none}
+  html[data-theme="dark"] .ibb-hd{border-color:rgba(255,255,255,.08)}
+  html[data-theme="dark"] .ibb-who b,html[data-theme="dark"] .ibb-n b{color:#F5F5F7}
+  html[data-theme="dark"] .ibb-tag{background:rgba(16,185,129,.14);color:#34D399}
+  html[data-theme="dark"] .ibb-mail{background:#0A0A0B}
+  html[data-theme="dark"] .ibb-mail::after{background:linear-gradient(rgba(10,10,11,0),#0A0A0B)}
+  html[data-theme="dark"] .ibb-mail img{filter:brightness(.92)}
+  html[data-theme="dark"] .ibb-bar{background:rgba(255,255,255,.12)}
+  html[data-theme="dark"] .ibb-bar i{background:#F5F5F7}
+}
+@media (prefers-reduced-motion:reduce){.ibb-track,.ibb-bar i{transition:none}}
 </style>
 <style id="tpDark">
 /* ===== dark theme (test): variables + generated overrides of hard-coded light colours ===== */
@@ -4233,24 +4300,37 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   function build(){
     if(built||!mq.matches)return;built=true;
     var rows=[].slice.call(src.querySelectorAll('.ib-row')),shots=[].slice.call(src.querySelectorAll('.ib-shot'));
-    var wrap=document.createElement('div');wrap.className='ibl short';
-    wrap.innerHTML='<div class="ibl-hd"><b>Inbox</b><span><i></i>Interviews · '+rows.length+'</span></div><ul></ul>';
-    var ul=wrap.querySelector('ul');
     var data=rows.map(function(r,k){var lg=r.querySelector('.ib-lg'),im=lg&&lg.querySelector('img'),sh=shots[k];
       return {logo:im?im.getAttribute('src'):'',letter:im?'':(lg?lg.textContent:''),bg:lg?lg.style.background:'',co:(r.querySelector('.ib-tx b')||{}).textContent||'',
         sub:(r.querySelector('.ib-tx span')||{}).innerHTML||'',time:(r.querySelector('time')||{}).textContent||'',img:sh?(sh.getAttribute('src')||sh.getAttribute('data-src')):'',alt:sh?sh.alt:''}});
+    var wrap=document.createElement('div');wrap.className='ibb';
+    wrap.innerHTML='<div class="ibb-view"><div class="ibb-track"></div></div><div class="ibb-foot"><div class="ibb-bar"><i></i></div><span class="ibb-n"><b>1</b> / '+data.length+'</span></div>';
+    var view=wrap.querySelector('.ibb-view'),tr=wrap.querySelector('.ibb-track'),bar=wrap.querySelector('.ibb-bar i'),num=wrap.querySelector('.ibb-n b');
     data.forEach(function(d,k){
-      var li=document.createElement('li');
-      li.innerHTML='<button type="button"><span class="ibl-lg"></span><span class="ibl-tx"><span class="ibl-top"><b></b><time></time></span><span class="ibl-sub"></span></span>'+(k<2?'<span class="ibl-new" aria-label="New"></span>':'')+'</button>';
-      var L=li.querySelector('.ibl-lg');if(d.logo){var x=new Image();x.src=d.logo;x.alt='';L.appendChild(x)}else{L.textContent=d.letter;L.style.background=d.bg;L.style.borderColor='transparent'}
-      li.querySelector('b').textContent=d.co;li.querySelector('time').textContent=d.time;li.querySelector('.ibl-sub').innerHTML=d.sub;
-      li.querySelector('button').setAttribute('aria-label','Open the '+d.co+' interview email');
-      li.querySelector('button').addEventListener('click',function(){open(d)});
-      ul.appendChild(li)});
-    if(data.length>5){var more=document.createElement('button');more.type='button';more.className='ibl-more';more.textContent='Show all '+data.length+' emails';
-      more.addEventListener('click',function(){wrap.classList.remove('short');more.remove()});wrap.appendChild(more)}
-    var note=document.createElement('p');note.className='ibl-note';note.textContent='Real emails from client inboxes. Tap one to see it.';
+      var c=document.createElement('article');c.className='ibb-slide';
+      c.innerHTML='<button type="button" class="ibb-card"><span class="ibb-hd"><span class="ibl-lg"></span><span class="ibb-who"><b></b><small></small></span><span class="ibb-tag"><i></i>Interview</span></span><span class="ibb-mail"><img alt="" decoding="async"></span></button>';
+      var L=c.querySelector('.ibl-lg');if(d.logo){var x=new Image();x.src=d.logo;x.alt='';L.appendChild(x)}else{L.textContent=d.letter;L.style.background=d.bg;L.style.borderColor='transparent'}
+      c.querySelector('.ibb-who b').textContent=d.co;c.querySelector('.ibb-who small').textContent=d.time;
+      var im=c.querySelector('.ibb-mail img');im.setAttribute('data-src',d.img);im.alt=d.alt;
+      c.querySelector('.ibb-card').setAttribute('aria-label','Read the '+d.co+' interview email');
+      c.querySelector('.ibb-card').addEventListener('click',function(){if(!moved)open(d)});
+      tr.appendChild(c)});
+    var note=document.createElement('p');note.className='ibl-note';note.textContent='Real emails from client inboxes. Tap one to read it in full.';
     box.appendChild(wrap);box.appendChild(note);
+    var slides=[].slice.call(tr.children),n=slides.length,i=0,vis=false,touch=false,tt=0,timer=0,DW=4500,RM=matchMedia('(prefers-reduced-motion: reduce)').matches,moved=false;
+    function load(k){[k,k+1].forEach(function(j){var s=slides[(j+n)%n],im=s&&s.querySelector('.ibb-mail img');if(im&&!im.src&&im.getAttribute('data-src')){im.addEventListener('load',function(){im.style.minWidth='1px'},{once:true});im.src=im.getAttribute('data-src')}})}
+    function show(k,instant){i=(k+n)%n;tr.style.transition=instant||RM?'none':'';tr.style.transform='translateX('+(-i*100)+'%)';num.textContent=i+1;bar.style.width=((i+1)/n*100)+'%';
+      slides.forEach(function(s,j){s.classList.toggle('on',j===i);s.setAttribute('aria-hidden',j===i?'false':'true')});load(i)}
+    function run(){clearTimeout(timer);if(RM||!vis||touch||document.hidden)return;timer=setTimeout(function(){show(i+1);run()},DW)}
+    // swipe: the track follows the finger, then settles on the nearest slide
+    var x0=null,dx=0;
+    view.addEventListener('touchstart',function(e){touch=true;clearTimeout(timer);clearTimeout(tt);x0=e.touches[0].clientX;dx=0;moved=false;tr.style.transition='none'},{passive:true});
+    view.addEventListener('touchmove',function(e){if(x0===null)return;dx=e.touches[0].clientX-x0;if(Math.abs(dx)>6)moved=true;tr.style.transform='translateX(calc('+(-i*100)+'% + '+dx+'px))'},{passive:true});
+    view.addEventListener('touchend',function(){if(x0===null)return;tr.style.transition='';var w=view.offsetWidth;show(dx<-w*.18?i+1:dx>w*.18?i-1:i);x0=null;setTimeout(function(){moved=false},50);
+      tt=setTimeout(function(){touch=false;run()},3000)},{passive:true});
+    new IntersectionObserver(function(es){vis=es[0].isIntersecting;run()},{threshold:.4}).observe(wrap);
+    document.addEventListener('visibilitychange',run);
+    show(0,true);
     // the sheet
     var sh=document.createElement('div');sh.className='ibl-sheet';sh.setAttribute('role','dialog');sh.setAttribute('aria-modal','true');sh.setAttribute('aria-hidden','true');
     sh.innerHTML='<div class="ibl-pan"><div class="ibl-grab"></div><div class="ibl-ph"><span class="ibl-lg"></span><span class="ibl-tx"><b></b><small></small></span><button type="button" class="ibl-x" aria-label="Close">×</button></div><div class="ibl-img"><img alt=""></div><p class="ibl-cap">Pinch to zoom · the real email, as it arrived</p></div>';
