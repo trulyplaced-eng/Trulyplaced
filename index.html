@@ -2628,6 +2628,54 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
   html[data-theme="dark"] .tm-stage .tm-card{border-color:rgba(255,255,255,.1)!important}
   html[data-theme="dark"] .tm-stage .tm-row{color:#AEAEB2!important}
 }
+
+/* ===== phone hero: platform pills (Hirelayer-style) ===== */
+.cx-pl{display:none}
+@media(max-width:640px){
+  .cx-pl{display:block;max-width:512px;margin:28px 0 0;padding-top:22px;border-top:1px solid rgba(255,255,255,.22)}
+  .cx-pl p{margin:0 0 12px;font:600 11.5px/16px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.78)}
+  .cx-pl ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+  .cx-pl li{display:inline-flex;align-items:center;height:32px;padding:0 13px;border-radius:99px;background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.26);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font:500 13.5px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#fff}
+  .cx-proof{margin-top:26px!important}
+  .cx.still .cx-sky{height:860px!important}
+  html[data-theme="dark"] .cx-pl li{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16)}
+}
+
+/* phone hero phone: a plain, flat black device (Hirelayer-style) — no metal rim, no glass sheen, no side buttons */
+@media(max-width:640px){
+  .xph .xtp-phone{background:#0A0A0B!important;padding:10px!important;border-radius:50px!important;
+    box-shadow:0 40px 70px -40px rgba(10,20,60,.55)!important}
+  .xph .xtp-rim,.xph .xtp-glass,.xph .xtp-btn,.xph .xtp-glow{display:none!important}
+  .xph .xtp-screen{border-radius:40px!important}
+  .xph .xtp-island{box-shadow:none!important}
+  .xph .xtp-island i{display:none}
+}
+/* phone top bar: a Start free button beside the menu (Hirelayer-style) */
+@media(max-width:640px){
+  #tpBar .cb-pill.cb-app{display:inline-flex!important;align-items:center;height:40px!important;padding:0 18px!important;border-radius:99px!important;
+    background:#0938D5!important;border-color:#0938D5!important;color:#fff!important;font:600 14.5px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;box-shadow:0 6px 16px -8px rgba(9,56,213,.6)!important;gap:0!important}
+  #tpBar .cb-pill.cb-app svg{display:none!important}
+  #tpBar .cb-pill.cb-app::after{display:none!important}
+  #tpBar .cb-pill.cb-app .rpl-c{display:none!important}
+  html[data-theme="dark"] body #tpBar .cb-pill.cb-app{background:#2F5BFF!important;border-color:#2F5BFF!important;color:#fff!important}
+}
+
+/* phone logo row, conductor.build-style: a real heading, small logos four to a row, full colour, two rows */
+@media(max-width:640px){
+  .cos{padding:64px 16px 0!important}
+  .cos .cos-h{max-width:none!important;font:600 20px/28px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.02em!important;color:#1D1D1F!important;text-wrap:balance}
+  .cos .cos-num{color:#0938D5!important}
+  .cos-g{display:grid!important;grid-template-columns:repeat(4,auto)!important;justify-content:space-between!important;align-items:center!important;
+    gap:30px 10px!important;max-width:none!important;margin:28px 0 0!important}
+  .cos-g li{height:auto!important;filter:none!important;zoom:.56;padding:0!important}
+  .cos-g img.wm,.wmt{transform:none!important}
+  .cos-g img[src*="ramp"]{display:inline-block!important}
+  html[data-theme="dark"] .cos .cos-h{color:#F5F5F7!important}
+  html[data-theme="dark"] .cos .cos-num{color:#7C9BFF!important}
+  html[data-theme="dark"] .cos-g li{filter:brightness(0) invert(1)!important;opacity:.85}
+  html[data-theme="dark"] .cos-g img[src*="ramp"]{display:none!important}
+}
 </style>
 <style id="tpDark">
 /* ===== dark theme (test): variables + generated overrides of hard-coded light colours ===== */
@@ -2974,6 +3022,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
       <a class="cx-btn s cta-lift" href="https://app.trulyplaced.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.5 18.5h3"/></svg>Start free in the app</a>
       <span class="cx-fine">Free 30-minute call · no commitment</span>
     </div>
+    <div class="cx-pl" aria-label="Platforms we apply on"><p>We apply on the platforms employers use</p><ul><li>Greenhouse</li><li>Workday</li><li>Ashby</li><li>Workable</li><li>Rippling</li><li>BambooHR</li><li>Breezy</li><li>Gem</li><li>JazzHR</li><li>Dover</li><li>Jobvite</li></ul></div>
     <p class="cx-proof"><img src="img/co/google.png" alt="" width="20" height="20"><span><i>“Next step: Interview for Google.”</i><small>From a TrulyPlaced client’s inbox, Aug 21</small></span></p>
     <div class="cx-ats">
       <p class="cx-ats-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>We apply on the platforms employers already use</span><span class="sr-only">, including Greenhouse, Workday, Ashby, Workable, Rippling, BambooHR, Breezy, Gem, JazzHR, Dover, Jobvite</span></p>
@@ -4394,15 +4443,13 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
       c.querySelector('.ibb-card').addEventListener('click',function(){open(d)});
       tr.appendChild(c)}
     data.forEach(function(d){slide(d,false)});data.forEach(function(d){slide(d,true)}); // doubled for a seamless loop
-    tr.style.setProperty('--ibd-dur',(data.length*9)+'s'); // about 9 seconds per email: slow and readable
-    var note=document.createElement('p');note.className='ibl-note';note.textContent='Real emails from client inboxes. Hold to pause, tap to read one in full.';
+    tr.style.setProperty('--ibd-dur',(data.length*5)+'s'); // about 5 seconds per email
+    var note=document.createElement('p');note.className='ibl-note';note.textContent='Real emails from client inboxes. Tap one to read it in full.';
     box.appendChild(wrap);box.appendChild(note);
     var loaded=false;function loadAll(){if(loaded)return;loaded=true;[].forEach.call(tr.querySelectorAll('.ibb-mail img'),function(im){im.addEventListener('load',function(){im.style.minWidth='1px'},{once:true});im.src=im.getAttribute('data-src')})}
     var view=wrap.querySelector('.ibd-view');
     function hold(on){wrap.classList.toggle('held',on)}
-    view.addEventListener('touchstart',function(){hold(true)},{passive:true});
-    view.addEventListener('touchend',function(){setTimeout(function(){hold(false)},600)},{passive:true});
-    view.addEventListener('touchcancel',function(){hold(false)},{passive:true});
+    // it keeps moving when a finger touches it (scrolling past should never stop it)
     new IntersectionObserver(function(es){var v=es[0].isIntersecting;if(v)loadAll();wrap.classList.toggle('off',!v)},{rootMargin:'300px 0px',threshold:0}).observe(wrap);
     document.addEventListener('visibilitychange',function(){wrap.classList.toggle('hid',document.hidden)});
     // the sheet
