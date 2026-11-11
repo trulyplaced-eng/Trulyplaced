@@ -157,6 +157,14 @@ body{background:#fff}
 .pwf{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-top:14px}
 .pwf .err{grid-column:1/-1}
 .seeall{display:flex;justify-content:center;margin-top:18px}
+.nav a.ext .x,.appslim .x{display:inline-flex;margin-left:auto;color:#a3a3a3}.nav a.ext .x svg,.appslim .x svg{width:14px;height:14px}
+.appcard{margin-top:14px}.appcard .ach{display:flex;gap:14px;align-items:flex-start}.appcard h3{margin:0 0 4px}
+.appcard .aci{flex:none;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;background:#eff6ff;color:#1d4ed8}
+.appcard .aci svg{width:22px;height:22px}.appcard p{margin:0;font-size:14px;color:#525252;max-width:64ch}.appcard p.fine{margin-top:6px;font-size:12.5px;color:#737373}
+.appcard .acb{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;padding-left:54px}.appcard .btn svg{width:16px;height:16px}
+.appslim{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px 16px;border:1px solid var(--edge);border-radius:12px;background:#fff;color:inherit;text-decoration:none;font-size:14px;font-weight:500}
+.appslim svg{width:18px;height:18px;color:#1d4ed8}.appslim:hover{border-color:#cbd5e1}
+@media (max-width:600px){.appcard .acb{padding-left:0}.appcard .ach{gap:12px}}
 .greet .ct{font-size:13px;color:var(--muted);align-self:flex-end}
 
 /* ---------- Resume: the page in a frame on the left (in view while the right scrolls), how it's doing, its versions and the
@@ -413,8 +421,28 @@ var IC = {
   dash:'<svg ' + SV + '><rect x="3" y="3" width="7.5" height="7.5" rx="1.8"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.8"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.8"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.8"/></svg>',
   res:'<svg ' + SV + '><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>',
   user:'<svg ' + SV + '><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg>',
-  ask:'<svg ' + SV + '><path d="M21 12a8.5 8.5 0 0 1-12.3 7.6L3 21l1.5-5.4A8.5 8.5 0 1 1 21 12z"/></svg>'
+  ask:'<svg ' + SV + '><path d="M21 12a8.5 8.5 0 0 1-12.3 7.6L3 21l1.5-5.4A8.5 8.5 0 1 1 21 12z"/></svg>',
+  jobs:'<svg ' + SV + '><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8.5 7V5.5A1.5 1.5 0 0 1 10 4h4a1.5 1.5 0 0 1 1.5 1.5V7M3 12.5h18"/></svg>',
+  out:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>'
 };
+/* ---------- the TrulyPlaced app (app.trulyplaced.com): where the client browses jobs and taps "Apply for me"; their
+   specialist applies by hand, and every step shows here and there. It opens in its own tab; the app has its own sign-in
+   (the same email, a code once). ---------- */
+var APP_URL = 'https://app.trulyplaced.com/app/jobs';
+function appLinkHTML(){
+  return '<a href="' + APP_URL + '" target="_blank" rel="noopener" class="ext" title="Browse jobs and send them to your specialist — opens the TrulyPlaced app">' +
+    IC.jobs + '<span>Find jobs</span><i class="x">' + IC.out + '</i></a>';
+}
+var APPCARD_KEY = function(){ return 'tp_appcard_' + (ME ? ME.id : ''); };
+function appCardHTML(){
+  var seen = TP.lsGet(APPCARD_KEY(), null);
+  if(seen) return '<a class="appslim" href="' + APP_URL + '" target="_blank" rel="noopener">' + IC.jobs + '<span>Find jobs in the TrulyPlaced app</span><i class="x">' + IC.out + '</i></a>';
+  return '<section class="panel appcard" id="appCard"><div class="ach"><span class="aci">' + IC.jobs + '</span><div><h3>New: pick jobs yourself</h3>' +
+    '<p>Open the TrulyPlaced app, tap <b>Apply for me</b> on any job you like, and your specialist applies for you by hand. You’ll see every step here and in the app.</p>' +
+    '<p class="fine">The app has its own sign-in: use ' + esc(ME.email) + ' and the code it emails you, once.</p></div></div>' +
+    '<div class="acb"><a class="btn pri" href="' + APP_URL + '" target="_blank" rel="noopener">' + IC.jobs + 'Open the TrulyPlaced app' + IC.out + '</a>' +
+    '<button class="btn" type="button" data-act="appcardok">Got it</button></div></section>';
+}
 // what a client can ask the team about their resume (sql/supabase-client-workspace.sql)
 var KINDS = [['no_interviews', 'I’m not getting interviews', 'Applications are going out, but no calls back'], ['wrong', 'Something on it is wrong', 'A date, a title, a detail that isn’t right'],
   ['change', 'I’d like something changed', 'Something to add, take out or say differently'], ['other', 'Something else', 'Anything else about your resume']];
@@ -491,7 +519,7 @@ function chrome(){   // the sidebar, the phone tab bar, the page title and the p
   var items = [['home', 'Dashboard', IC.dash, '#'], ['apps', 'Applications', IC.apps, '#applications'], ['resume', 'Resume', IC.res, '#resume'], ['profile', 'Profile', IC.user, '#profile'], ['settings', 'Settings', IC.set, '#settings']];
   var link = function(n, tab){ return '<a href="' + n[3] + '" data-go class="' + (cur === n[0] ? 'on' : '') + '"' + (cur === n[0] ? ' aria-current="page"' : '') + '>' + n[2] + '<span>' + n[1] + '</span>' +
     (!tab && n[0] === 'apps' && PROG && PROG.done ? '<em>' + PROG.done.toLocaleString() + '</em>' : '') + '</a>'; };
-  $('#nav').innerHTML = items.map(function(n){ return link(n); }).join('');
+  $('#nav').innerHTML = items.slice(0, 2).map(function(n){ return link(n); }).join('') + appLinkHTML() + items.slice(2).map(function(n){ return link(n); }).join('');
   $('#tabbar').innerHTML = items.map(function(n){ return link(n, true); }).join('');
   $('#pageTitle').textContent = TITLES[v] || 'Dashboard';
   var done = PROG.done || 0, tot = CL.plan_total || 0, pct = tot ? Math.min(100, Math.round(done / tot * 100)) : 0, pc = $('#planCard');
@@ -523,7 +551,7 @@ function vHome(){
       (tot ? '<div class="hbar"><i style="width:' + pct + '%"></i></div><div class="hfoot"><span>' + (done >= tot ? 'Plan complete' : (tot - done).toLocaleString() + ' to go') + '</span>' +
         (PROG.last_applied_at ? '<span>Last sent ' + esc(TP.ago(PROG.last_applied_at)) + '</span>' : '') + '</div>' : '<div class="hfoot"><span>Your plan details will appear here soon.</span></div>') +
     '</div>' + (tot ? '<div class="ring" style="--p:' + pct + '" aria-hidden="true"><span><b>' + pct + '%</b>complete</span></div>' : '') + '</section>' +
-    '<div class="kpis" id="kpis">' + kpisHTML() + '</div>' +
+    '<div class="kpis" id="kpis">' + kpisHTML() + '</div>' + appCardHTML() +
     (done ? '<div class="duo"><section class="panel"><h3>Applications per week <small>last 8 weeks</small></h3><div id="wk">' + weeksHTML() + '</div></section>' +
         '<section class="panel"><h3>Where they stand <small>' + done.toLocaleString() + ' sent</small></h3><div id="mix">' + mixHTML() + '</div></section></div>' +
       '<div class="seeall"><a class="btn" href="#applications" data-go>See all ' + done.toLocaleString() + ' application' + (done === 1 ? '' : 's') + I.chev + '</a></div>'
@@ -867,6 +895,7 @@ document.addEventListener('click', function(e){
   if(b.hasAttribute('data-ver')){ RV = b.getAttribute('data-ver'); drawRes(); return; }
   var act = b.getAttribute('data-act');
   if(act === 'out') return TP.signOut();
+  if(act === 'appcardok'){ TP.lsSet(APPCARD_KEY(), 1); var ac = $('#appCard'); if(ac) ac.outerHTML = appCardHTML(); return; }
   if(act === 'more'){ F.n += 50; loadList(); }
   if(act === 'ask') askModal();
   if(act === 'pdf'){ var fw = $('#' + (b.getAttribute('data-f') || 'rvF')); try{ if(fw && fw.contentWindow && fw.contentWindow.downloadPDF){ fw.contentWindow.downloadPDF(); return; } }catch(x){} TP.toast('One moment — the resume is still opening'); }
