@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-11-04.1">
+<link rel="stylesheet" href="/portal.css?v=2026-11-11.1">
 <style>
 /* The client's workspace, laid out as app.trulyplaced.com is: the sidebar in the app's light grey, a white page, white cards with
    a hairline and a soft shadow, figures in near-black, TrulyPlaced blue for progress and where you are. */
@@ -42,6 +42,8 @@ body{background:#fff}
 .tag{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;border-radius:999px;padding:2px 9px;background:#ecfdf5;color:#047857}
 .tag::before{content:"";width:6px;height:6px;border-radius:50%;background:#10b981}
 .tag.paused{background:#fffbeb;color:#b45309}.tag.paused::before{background:#f59e0b}
+.src{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;font-size:11px;font-weight:600;background:#f1f5f9;color:#475569;white-space:nowrap}.src.ai{background:#eef2ff;color:#4338ca}.src.assist{background:#fff7ed;color:#c2410c}
+.aiplus{margin-top:6px;font-size:13px;color:rgba(255,255,255,.85)}.aiplus b{color:#fff}
 .tag.done{background:#f0f9ff;color:#0369a1}.tag.done::before{background:#0ea5e9}
 .tag.archived{background:#f5f5f5;color:#737373}.tag.archived::before{background:#d4d4d4}
 .sb-foot a,.sb-foot button{display:flex;align-items:center;gap:10px;width:100%;min-height:38px;padding:0 12px;color:#525252;text-decoration:none;font-size:14px;border-radius:8px;border:0;background:none;text-align:left;transition:background-color .15s,color .15s}
@@ -419,6 +421,9 @@ var KINDS = [['no_interviews', 'I’m not getting interviews', 'Applications are
 var KLABEL = {no_interviews:'Not getting interviews', wrong:'Something on it is wrong', change:'A change to make', other:'Something else'};   // as the history says it
 var STS = [['applied', 'Applied', '#10b981'], ['interview', 'Interview', '#0ea5e9'], ['offer', 'Offer', '#047857'], ['rejected', 'Not selected', '#d4d4d4'], ['closed', 'Closed', '#e5e5e5']];   // the status pills' own dots
 var FILTERS = [['all', 'All'], ['applied', 'Applied'], ['interview', 'Interview'], ['offer', 'Offer'], ['rejected', 'Not selected'], ['withdrawn', 'Withdrawn']];
+// where an application came from (sql/supabase-app-link.sql): the team, or the client with the AI app, or the AI's application finished by the team
+var SRC_LABEL = {team:'Applied by your team', ai:'Applied by you (AI)', assist:'Finished by your team'}, SRC_F = [['', 'Everyone'], ['team', 'Your team'], ['ai', 'You (AI)']];
+function srcTag(a){ var s = a.source || 'team'; return '<span class="src ' + esc(s) + '">' + esc(SRC_LABEL[s] || SRC_LABEL.team) + '</span>'; }
 
 $('#sideFoot').innerHTML = '<a href="' + esc(WA) + '" target="_blank" rel="noopener">' + I.wa + 'WhatsApp your team</a><a href="mailto:' + esc(MAIL) + '">' + I.mail + 'Support</a>' +
   '<button type="button" data-act="out">' + I.out + 'Sign out</button>';
@@ -429,8 +434,9 @@ TP.client().then(function(c){ SB = c; return TP.session(); }).then(function(s){
   var md = s.user.user_metadata || {};
   ME = {id:s.user.id, email:String(s.user.email || '').toLowerCase(), name:md.full_name || md.name || ''};
   who();
-  return Promise.all([q(SB.from('clients').select('*').eq('id', ME.id).maybeSingle()), q(SB.from('client_progress').select('*').eq('client_id', ME.id).maybeSingle())]).then(function(rs){
-    CL = rs[0]; PROG = rs[1] || {};
+  return Promise.all([q(SB.from('clients').select('*').eq('id', ME.id).maybeSingle()), q(SB.from('client_progress').select('*').eq('client_id', ME.id).maybeSingle()),
+      q(SB.from('client_ai_progress').select('*').eq('client_id', ME.id).maybeSingle()).catch(function(){ return null; })]).then(function(rs){
+    CL = rs[0]; PROG = Object.assign(rs[1] || {}, rs[2] || {});   // the plan's count is the team's work; ai_done is what they sent themselves with the AI app
     if(!CL) return notClient();
     who(); render(); loadStats();
   });
@@ -513,7 +519,7 @@ function vHome(){
       '<div class="badges"><span class="badge">' + IC.plan + esc(planName()) + (tot ? ' · ' + planLine() : '') + '</span></div></div>' +
     '<section class="hero" aria-label="Your progress"><div>' +
       '<div class="eyebrow">Your progress</div>' +
-      '<div class="big"><b>' + done.toLocaleString() + '</b> <span>' + (tot ? 'of ' + tot.toLocaleString() + ' applications sent' : 'applications sent') + '</span></div>' +
+      '<div class="big"><b>' + done.toLocaleString() + '</b> <span>' + (tot ? 'of ' + tot.toLocaleString() + ' applications sent' : 'applications sent') + (PROG.ai_done ? ' by your team</span></div><div class="aiplus">+ <b>' + PROG.ai_done.toLocaleString() + '</b> you sent yourself with the AI app (not counted toward your plan)</div>' : '</span></div>') +
       (tot ? '<div class="hbar"><i style="width:' + pct + '%"></i></div><div class="hfoot"><span>' + (done >= tot ? 'Plan complete' : (tot - done).toLocaleString() + ' to go') + '</span>' +
         (PROG.last_applied_at ? '<span>Last sent ' + esc(TP.ago(PROG.last_applied_at)) + '</span>' : '') + '</div>' : '<div class="hfoot"><span>Your plan details will appear here soon.</span></div>') +
     '</div>' + (tot ? '<div class="ring" style="--p:' + pct + '" aria-hidden="true"><span><b>' + pct + '%</b>complete</span></div>' : '') + '</section>' +
@@ -531,12 +537,14 @@ function vApps(){
   V.innerHTML = '<div class="greet" id="listTop"><div><h2>Applications</h2><p>' + (done ? 'Everything we’ve sent for you, newest first. Open one to see the job, your resume as sent and the company’s confirmation.' : 'Your first applications are on the way — each appears here the moment it’s sent.') +
       '</p></div><span class="ct" id="alc"></span></div>' +
     (done ? '<div class="tools"><input class="inp" id="aq" type="search" placeholder="Search role or company" value="' + esc(F.q) + '" autocomplete="off" aria-label="Search your applications">' +
+        (PROG.ai_done ? '<div class="seg" id="asrc">' + SRC_F.map(function(f){ return '<button type="button" data-src="' + f[0] + '" class="' + ((F.src || '') === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div>' : '') +
         '<div class="seg" id="af">' + FILTERS.map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (F.f === f[0] ? 'on' : '') + '"' + (f[0] === 'withdrawn' && F.f !== 'withdrawn' ? ' hidden' : '') + '>' + f[1] + '</button>'; }).join('') + '</div></div>' +
       '<div id="al"><div class="skel"></div><div class="skel"></div></div>'
      : '<div class="empty">' + IC.apps + '<h3>Nothing sent yet</h3><p>We start applying as soon as your resume is ready. You’ll see every application here, with exactly what was sent.</p></div>');
   if(!done) return;
   var t; $('#aq').addEventListener('input', function(e){ clearTimeout(t); t = setTimeout(function(){ F.q = e.target.value; F.n = 50; loadList(); }, 250); });
   $('#af').addEventListener('click', function(e){ var b = e.target.closest('[data-f]'); if(b) setFilter(b.getAttribute('data-f')); });
+  var sg = $('#asrc'); if(sg) sg.addEventListener('click', function(e){ var b = e.target.closest('[data-src]'); if(!b) return; F.src = b.getAttribute('data-src') || ''; F.n = 50; $$('#asrc button').forEach(function(x){ x.classList.toggle('on', x === b); }); loadList(); });
   loadList();
 }
 function kpisHTML(){
@@ -604,8 +612,9 @@ function loadStats(){
 var LSEQ = 0;
 function loadList(){
   var box = $('#al'), seq = ++LSEQ;
-  var sq = SB.from('applications').select('id,status,title,company,location,applied_at,status_at', {count:'exact'}).eq('client_id', ME.id).neq('status', 'draft');
+  var sq = SB.from('applications').select('id,status,title,company,location,applied_at,status_at,source', {count:'exact'}).eq('client_id', ME.id).neq('status', 'draft');
   if(F.f !== 'all') sq = sq.eq('status', F.f);
+  if(F.src) sq = sq.eq('source', F.src);
   var qq = F.q.trim().replace(/[,()*%"\\]/g, ' ').replace(/\s+/g, ' ').trim();
   if(qq) sq = sq.or('title.ilike.*' + qq + '*,company.ilike.*' + qq + '*');
   sq.order('applied_at', {ascending:false}).range(0, F.n).then(function(r){
@@ -614,14 +623,14 @@ function loadList(){
     var rows = r.data || [], more = rows.length > F.n, c = $('#alc'); rows = rows.slice(0, F.n);
     // the count: what was sent, the withdrawn ones apart (they don't count); the Withdrawn filter shows once there's one
     var wd = F.f === 'all' && !qq && r.count != null ? Math.max(0, r.count - (PROG.done || 0)) : 0, wb = $('#af [data-f=withdrawn]'); if(wb && wd) wb.hidden = false;
-    if(c) c.textContent = r.count != null ? (F.f === 'all' && !qq ? (PROG.done || 0).toLocaleString() + ' sent' + (wd ? ' · ' + wd.toLocaleString() + ' withdrawn' : '') : r.count.toLocaleString() + ' found') : '';
+    if(c) c.textContent = r.count != null ? (F.f === 'all' && !qq && !F.src ? (PROG.done || 0).toLocaleString() + (PROG.ai_done ? ' by your team · ' + PROG.ai_done.toLocaleString() + ' by you with AI' : ' sent') + (wd ? ' · ' + wd.toLocaleString() + ' withdrawn' : '') : r.count.toLocaleString() + ' found') : '';
     if(!rows.length){
       box.innerHTML = '<div class="empty"><h3>Nothing here</h3><p>' + (qq ? 'No application matches “' + esc(qq) + '”.' : 'No applications with this status yet.') + '</p></div>';
       return;
     }
     box.innerHTML = '<div class="list">' + rows.map(function(a){
       return '<a class="li" href="#app=' + esc(a.id) + '" data-go>' + TP.logo(a.company) + '<div class="main"><div class="t">' + esc(a.title || 'Role') + '</div><div class="m">' + esc([a.company, a.location].filter(Boolean).join(' · ')) + '</div></div>' +
-        '<div class="side"><span class="when">' + esc(TP.fmtDate(a.applied_at)) + '</span>' + TP.statusChip(a.status) + '</div></a>';
+        '<div class="side"><span class="when">' + esc(TP.fmtDate(a.applied_at)) + '</span>' + TP.statusChip(a.status) + (PROG.ai_done ? srcTag(a) : '') + '</div></a>';
     }).join('') + '</div>' + (more ? '<div class="row" style="justify-content:center;margin-top:14px"><button class="btn" type="button" data-act="more">Show more</button></div>' : '');
   }).catch(function(e){ if(seq === LSEQ && $('#al') === box) box.innerHTML = '<div class="note bad">' + esc(TP.errText(e)) + '</div>'; });
 }
@@ -629,7 +638,7 @@ function loadList(){
 /* ---------- one application: exactly what was sent ---------- */
 function vApp(id){
   V.innerHTML = '<div class="skel"></div><div class="skel"></div>';
-  q(SB.from('applications').select('id,status,title,company,location,job_url,jd_text,resume_doc,resume_text,resume_file,cover_letter,answers,screenshot,screenshots,applied_at,status_at,withdrawn_at,withdraw_reason').eq('id', id).maybeSingle()).then(function(a){
+  q(SB.from('applications').select('id,status,title,company,location,job_url,jd_text,resume_doc,resume_text,resume_file,cover_letter,answers,screenshot,screenshots,applied_at,status_at,withdrawn_at,withdraw_reason,source').eq('id', id).maybeSingle()).then(function(a){
     if(appId() !== id) return;
     if(!a){ V.innerHTML = '<div class="empty"><h3>Not found</h3><p>This application isn’t on your account.</p><a class="btn" href="#applications" data-go>All applications</a></div>'; return; }
     A = a; document.title = (a.company || 'Application') + ' | TrulyPlaced';
@@ -637,7 +646,8 @@ function vApp(id){
     var page = !!(a.resume_doc && a.resume_doc.sections);
     V.innerHTML = '<a class="btn sm ghost" href="#applications" data-go>' + I.back + 'All applications</a>' +
       '<div class="card" style="margin-top:10px"><div class="ahead">' + TP.logo(a.company) + '<div style="flex:1;min-width:0"><h1>' + esc(a.title || 'Role') + '</h1><div class="m">' + esc([a.company, a.location].filter(Boolean).join(' · ')) + '</div></div>' + TP.statusChip(a.status) + '</div>' +
-        '<div class="sent">' + I.check + '<span>Sent ' + esc(TP.fmtDateTime(a.applied_at)) + ' by ' + TEAM + '</span></div>' +
+        '<div class="sent">' + I.check + '<span>Sent ' + esc(TP.fmtDateTime(a.applied_at)) + (a.source === 'ai' ? ' by you, with the AI app' : a.source === 'assist' ? ' by ' + TEAM + ', finishing what the AI app started' : ' by ' + TEAM) + '</span></div>' +
+        (a.source === 'ai' ? '<div class="note"><b>Applied by you with the AI app.</b> It’s listed here so your team sees everything you’ve applied to and never applies to the same job twice. It doesn’t count toward your plan.</div>' : '') +
         (a.status === 'withdrawn' ? '<div class="note wdn"><b>Withdrawn' + (a.withdrawn_at ? ' on ' + esc(TP.fmtDate(a.withdrawn_at)) : '') + '</b>' + (a.withdraw_reason ? ' — ' + esc(a.withdraw_reason) : '') + '. It doesn’t count toward your plan.</div>' : '') +
         '<div class="row" style="margin-top:14px"><a class="btn sm" href="' + esc(TP.safeHref(a.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'View the job posting</a></div></div>' +
       (shots.length ? '<div class="card"><h3>Proof it was sent</h3><p class="hint">The company’s confirmation screen' + (shots.length > 1 ? 's' : '') + ', saved when we applied.' + (shots.length > 1 ? ' Click one to open it full size.' : '') + '</p>' +

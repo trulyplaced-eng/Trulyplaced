@@ -142,6 +142,9 @@ pre.txt{white-space:pre-wrap;word-wrap:break-word;font-family:inherit;font-size:
 @media (prefers-reduced-motion:reduce){ .sgl{animation:none} }
 /* status chips: the app's StatusBadge, a quiet pill whose dot carries the meaning */
 .st{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:3px 10px;border-radius:999px;white-space:nowrap;background:#f5f5f5;color:#525252;border:0}
+.src{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.01em;background:#f1f5f9;color:#475569;vertical-align:middle;white-space:nowrap}
+.src.ai{background:#eef2ff;color:#4338ca}.src.assist{background:#fff7ed;color:#c2410c}
+.aisum{font-weight:500;color:#4338ca}.note.aihelp{margin-bottom:12px}.note.aiapp{margin-bottom:12px;background:#eef2ff}
 .st.wait{background:#fffbeb;color:#b45309}
 .st.wait::before{background:#f59e0b}
 .st::before{content:"";width:6px;height:6px;border-radius:50%;background:#a3a3a3}
