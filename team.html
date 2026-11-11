@@ -2847,7 +2847,9 @@ var DBRS = 0;
 window.addEventListener('resize', function(){ clearTimeout(DBRS); DBRS = setTimeout(function(){ if(C && C.dash && R.tab === 'dash' && !R.app && $('#dbC .dbwrap')) dashChart(C); }, 150); });
 
 /* ---------- Profile ---------- */
-var PF = ['full_name', 'phone', 'linkedin', 'location', 'target_roles', 'target_locations', 'work_auth', 'salary', 'notice', 'apply_notes', 'optimise_rules'];
+var PF = ['full_name', 'phone', 'linkedin', 'location', 'postal_code', 'languages', 'target_roles', 'target_locations', 'work_auth', 'salary', 'notice', 'apply_notes', 'optimise_rules'];
+// what the AI app shares with this profile (sql/supabase-app-link.sql, profile / profile_set): changed here, the app follows
+var APP_SYNC = ['phone', 'linkedin', 'location', 'postal_code', 'languages', 'notice', 'salary', 'target_roles', 'target_locations'];
 function tProfile(){
   var c = C.row, ans = Array.isArray(c.answers) ? c.answers : [], first = (c.full_name || '').split(' ')[0] || 'them';
   // a field, with the same suggestions the client gets on their own Profile (TP.sg: cities, roles, the usual answers)
@@ -2860,7 +2862,8 @@ function tProfile(){
     '<div class="card"><h3>Contact</h3><p class="hint">Who they are and how to reach them. ' + esc(first) + ' sees these on their Profile in their workspace, and can change them there too.</p><div class="grid2">' +
       f('full_name', 'Full name') + '<div class="field"><label>Login email</label><input value="' + esc(c.email) + '" readonly title="The email they sign in with"></div>' +
       f('phone', 'Phone / WhatsApp', 'e.g. +1 201 555 0147') + f('linkedin', 'LinkedIn', 'linkedin.com/in/…') +
-      f('location', 'Lives in', 'Start typing a city or ZIP code') + f('work_auth', 'Work authorization', 'e.g. F-1 OPT (STEM) — needs H-1B later') +
+      f('location', 'Lives in', 'Start typing a city or ZIP code') + f('postal_code', 'ZIP code', 'e.g. 07302') +
+      f('languages', 'Languages', 'e.g. English, Hindi') + f('work_auth', 'Work authorization', 'e.g. F-1 OPT (STEM) — needs H-1B later') +
       f('salary', 'Salary expectation', 'e.g. $95K–$110K') + f('notice', 'Can start', 'e.g. 2 weeks’ notice') + '</div></div>' +
     factsCardHTML(C, first) + appLinkCardHTML(C, first) +
     '<div class="card"><h3>Standard answers</h3><p class="hint">Used to pre-fill every new application’s form answers. Tap a common question to add it, or type one — the questions forms ask and their usual answers come up as you type, with the answer suggested from the profile above.</p>' +
@@ -2888,6 +2891,7 @@ function tProfile(){
   var cc = C; if(ME.owner) loadAdjustments(cc).then(function(){ if(C === cc) drawAdjustments(cc); });   // the extra applications, each with its reason
   skFresh(c); lastInvite(C); byClient(C); pfFresh(C); empCard(C); mbCard(C);
   if(ME.owner) $('#pf_plan').addEventListener('change', function(e){ $('#pfPCw').hidden = e.target.value !== 'custom'; });
+  if($('#pf_app_mode')) $('#pf_app_mode').addEventListener('change', function(e){ var plan = (C.row.plan_total || 0) > 0, v = e.target.value; $('#pfAiHelpW').hidden = !(v === 'ai' || (!plan && v === '')); });
   V.querySelector('.narrow').addEventListener('input', function(e){
     if(e.target.closest('#pfRec') || e.target.closest('#pfEmp')) return;
     pfMark();
@@ -3228,6 +3232,7 @@ function saveProfile(){
       C.row = row; staleList(); drawBar(); rememberOpen(row); drawOpenTabs(); bkDel('pf_' + row.id);
       var fc = $('#factsCard'); if(fc){ fc.outerHTML = factsCardHTML(C, (row.full_name || '').split(' ')[0] || 'them'); }   // "Confirmed" follows (a change un-confirms)
       if('facts' in patch) tellAppFacts(row);
+      if(APP_SYNC.some(function(k){ return k in patch; })) tellAppProfile(row);
       var ps = $('#planSum'); if(ps) ps.outerHTML = planHeadHTML(C);   // the plan line follows (the database kept the total = package + extras)
       var s = $('#pfMsg'); if(s) s.textContent = 'Saved ' + new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
       TP.toast('Profile saved');
@@ -3264,15 +3269,23 @@ function planHeadHTML(c){
    confirmed with the client once, then every form (the app's and ours) uses exactly these, never a guess. */
 var FACT_KEYS = ['first_name', 'last_name', 'gender', 'needs_sponsorship', 'willing_to_relocate', 'authorized_countries'];
 function appLinkCardHTML(c, first){
-  var row = c.row, help = row.ai_help == null ? '' : row.ai_help ? 'yes' : 'no', byPlan = row.plan_package === 1000;
+  // A client with a plan: their specialist applies — Apply in the app asks you, and the AI never sends anything for
+  // them. Only if an owner switches a client to the AI does "when the AI gets stuck" mean anything, so it shows then.
+  var row = c.row, plan = (row.plan_total || 0) > 0, mode = row.app_mode || (plan ? 'team' : 'ai');
+  var help = row.ai_help == null ? '' : row.ai_help ? 'yes' : 'no';
   var sel = function(id, v, opts, dis){ return '<select id="' + id + '"' + (dis ? ' disabled' : '') + '>' + opts.map(function(o){ return '<option value="' + o[0] + '"' + (v === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>'; };
-  return '<div class="card" id="appLink"><h3>The AI app</h3><p class="hint">' + esc(first) + ' can also apply on their own at <b>app.trulyplaced.com</b>. Those applications show here as <span class="src ai">AI Applied</span> — never counted toward the plan — and neither side applies to a job the other has.' +
-      (ME.owner ? '' : ' Only the owners change these.') + '</p><div class="grid2">' +
+  return '<div class="card" id="appLink"><h3>The AI app</h3><p class="hint">' + esc(first) + ' can also use <b>app.trulyplaced.com</b>. ' +
+      (plan ? 'With a plan, every Apply there comes to you (“Asked for in the app” on My day) and you apply by hand — the AI sends nothing for them. '
+            : 'Without a plan, the AI applies for them. ') +
+      'Neither side ever applies to a job the other has.' + (ME.owner ? '' : ' Only the owners change these.') + '</p><div class="grid2">' +
     '<div class="field"><label for="pf_app_email">App email</label><input id="pf_app_email" value="' + esc(row.app_email || '') + '" placeholder="' + esc(row.email) + ' (their login email)" autocomplete="off"' + (ME.owner ? '' : ' readonly') + '><small class="fine">Only when they signed up to the app with a different email.</small></div>' +
-    '<div class="field"><label for="pf_app_mode">When they tap Apply in the app</label>' + sel('pf_app_mode', row.app_mode || '', [['', 'Follow the plan (' + ((row.plan_total || 0) > 0 ? 'goes to their specialist' : 'the AI applies') + ')'], ['team', 'Goes to their specialist — applied by hand'], ['ai', 'The AI applies']], !ME.owner) +
-      '<small class="fine">A client with a plan: Apply asks you (it shows under “Asked for in the app” on My day). Nothing is sent by AI.</small></div>' +
-    '<div class="field"><label for="pf_ai_help">When the AI gets stuck</label>' + sel('pf_ai_help', help, [['', 'Follow the plan (' + (byPlan ? 'we finish it' : 'they finish it themselves') + ')'], ['yes', 'We finish it by hand — Manual Assistance'], ['no', 'They finish it themselves']], !ME.owner) +
-      '<small class="fine">A 1,000-application plan includes finishing what the AI can’t (a CAPTCHA, an emailed code, an account to make). It then shows on My day under “Needs our help”.</small></div></div></div>';
+    '<div class="field"><label for="pf_app_mode">When ' + esc(first) + ' taps Apply in the app</label>' +
+      sel('pf_app_mode', row.app_mode === 'ai' ? 'ai' : '', plan ? [['', 'Their specialist applies by hand (their plan)'], ['ai', 'The AI applies instead (an exception)']]
+                                                                : [['', 'The AI applies (no plan)'], ['team', 'Their specialist applies by hand']].map(function(o){ return o; }), !ME.owner) +
+      '<small class="fine">' + (plan ? 'Leave it on their specialist unless the client asks for the AI.' : 'Give them a plan and this becomes their specialist.') + '</small></div>' +
+    '<div class="field" id="pfAiHelpW"' + (mode === 'ai' ? '' : ' hidden') + '><label for="pf_ai_help">When the AI gets stuck</label>' +
+      sel('pf_ai_help', help, [['', 'They finish it themselves'], ['yes', 'We finish it by hand — Manual Assistance'], ['no', 'They finish it themselves (always)']], !ME.owner) +
+      '<small class="fine">A CAPTCHA, an emailed code, an account to make. “We finish it” puts it on My day under “Needs our help”.</small></div></div></div>';
 }
 function factsCardHTML(c, first){
   var row = c.row, f = row.facts || {}, when = row.facts_confirmed_at;
@@ -3299,6 +3312,13 @@ function factsConfirm(btn){
     TP.toast('Confirmed — every form now uses these');
     tellAppFacts(row);
   }).catch(function(e){ TP.toast(TP.errText(e)); });
+}
+// the client's details the AI app shares (where they live, ZIP, LinkedIn, phone, languages, notice, salary, the roles
+// and places they want): the app fills them in for the client, and the client sees them as their specialist's
+function tellAppProfile(row){
+  if(!row) return;
+  var fields = {}; APP_SYNC.forEach(function(k){ if(row[k]) fields[k] = row[k]; });
+  TP.fn('app-hook', {action:'push_to_app', kind:'profile', email:row.app_email || row.email, fields:fields}, 25000).then(function(){}, function(){});   // the app reads them again on its own when it can't be told
 }
 function tellAppFacts(row){
   if(!row || !row.facts_confirmed_at || !row.facts || !row.facts.first_name) return;
