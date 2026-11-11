@@ -426,17 +426,18 @@ var IC = {
   out:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>'
 };
 /* ---------- the TrulyPlaced app (app.trulyplaced.com): where the client browses jobs and taps "Apply for me"; their
-   specialist applies by hand, and every step shows here and there. It opens in its own tab; the app has its own sign-in
+   specialist applies by hand, and every step shows here and there. It opens in this tab, and the app's "Client dashboard" link
+   comes back here; the app has its own sign-in
    (the same email, a code once). ---------- */
 var APP_URL = 'https://app.trulyplaced.com/app/jobs';
 function appLinkHTML(){
-  return '<a href="' + APP_URL + '" target="_blank" rel="noopener" class="ext" title="Browse jobs and send them to your specialist — opens the TrulyPlaced app">' +
+  return '<a href="' + APP_URL + '" class="ext" title="Browse jobs and send them to your specialist — opens the TrulyPlaced app">' +
     IC.jobs + '<span>Find jobs</span><i class="x">' + IC.out + '</i></a>';
 }
 var APPCARD_KEY = function(){ return 'tp_appcard_' + (ME ? ME.id : ''); };
 function appCardHTML(){
   var seen = TP.lsGet(APPCARD_KEY(), null);
-  if(seen) return '<a class="appslim" href="' + APP_URL + '" target="_blank" rel="noopener">' + IC.jobs + '<span>Find jobs in the TrulyPlaced app</span><i class="x">' + IC.out + '</i></a>';
+  if(seen) return '<a class="appslim" href="' + APP_URL + '">' + IC.jobs + '<span>Find jobs in the TrulyPlaced app</span><i class="x">' + IC.out + '</i></a>';
   return '<section class="panel appcard" id="appCard"><div class="ach"><span class="aci">' + IC.jobs + '</span><div><h3>New: pick jobs yourself</h3>' +
     '<p>Open the TrulyPlaced app, tap <b>Apply for me</b> on any job you like, and your specialist applies for you by hand. You’ll see every step here and in the app.</p>' +
     '<p class="fine">The app has its own sign-in: use ' + esc(ME.email) + ' and the code it emails you, once.</p></div></div>' +

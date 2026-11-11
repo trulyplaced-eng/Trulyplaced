@@ -88,6 +88,9 @@
 /* stats */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
 .stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.stats.s4{grid-template-columns:repeat(4,1fr)}.aul{padding:0}.aurow{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1.4fr) minmax(0,1.3fr) 280px;gap:8px 22px;align-items:start;padding:14px 18px;border-bottom:1px solid var(--line)}.aurow:last-child{border-bottom:0}
+.aurow .main{min-width:0}@media (max-width:900px){.aurow{grid-template-columns:1fr}}.aurow .t .st{margin-left:4px;vertical-align:1px}.aucon{min-width:0;overflow-wrap:anywhere;font-size:13.5px}.auuse{font-size:12px}
+.auact{display:flex;gap:6px;flex-wrap:wrap;align-items:center;justify-content:flex-end}.btn.wa{background:#25D366;color:#fff;border-color:#25D366}.aurep{margin-bottom:12px}.aurep .ch{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.aurr{margin:10px 0 0;padding-left:18px;font-size:13.5px}
 .stat b{display:block;font-family:Poppins;font-size:21px;color:var(--ink);line-height:1.2}
 .stat span{font-size:12.5px;color:var(--muted)}
 
@@ -1753,7 +1756,7 @@ function meMenu(btn){
   $('#me').insertAdjacentHTML('beforeend', '<div class="memenu" id="meMenu" role="menu" aria-label="Your menu">' +
     it('/team.html#myday', J.day, 'My day', 'Your work, and who still needs an application') +
     '<button role="menuitem" type="button" data-act="switch">' + J.swap + '<span>Switch client<small>Ctrl K</small></span></button>' +
-    it('/team.html#tasks', J.clip, 'Tasks') + it('/team.html#clients', I.users, 'All clients') + (ME.owner ? it('/team.html#leads', J.star, 'Leads') + it('/team.html#ops', J.ops, 'Operations') + it('/team.html#team', I.team, 'Team') : '') +
+    it('/team.html#tasks', J.clip, 'Tasks') + it('/team.html#clients', I.users, 'All clients') + (ME.owner ? it('/team.html#leads', J.star, 'Leads') + it('/team.html#appusers', J.bag, 'App users', 'Who signed up to the AI app') + it('/team.html#ops', J.ops, 'Operations') + it('/team.html#team', I.team, 'Team') : '') +
     '<button role="menuitem" type="button" data-act="out">' + I.out + '<span>Sign out</span></button></div>');
   btn.setAttribute('aria-expanded', 'true');
   var first = $('#meMenu [role=menuitem]'); if(first) first.focus();
@@ -1781,6 +1784,7 @@ function route(){
   if(!r.client){   // the owners' home is Clients and the Team page is theirs; an employee's home is My day, with Clients at #clients
     var emp = !!ME && ME.owner === false, oe = /^ops\/emp=(.+)$/.exec(h);
     if(oe){ r.page = emp ? 'myday' : 'opsemp'; try{ r.emp = decodeURIComponent(oe[1]).toLowerCase(); }catch(e){ r.page = 'ops'; } return r; }   // one employee on Operations
+    if(h === 'appusers' || h === 'appusers/reports'){ r.page = emp ? 'myday' : 'appusers'; r.sub = h === 'appusers/reports' ? 'reports' : ''; return r; }   // the AI app's users, the owners'
     r.page = h === 'team' || h === 'leads' || h === 'ops' || h === 'opsclients' || h === 'opsmistakes' ? (emp ? 'myday' : h) : h === 'tasks' ? 'tasks' : h === 'myday' || (emp && !h) ? 'myday' : 'clients';   // Leads, Operations and Team are the owners'
     return r;
   }
@@ -1842,14 +1846,14 @@ function draw(){
   if(!ME) return;
   R = route();
   $('#me').innerHTML = meHTML();
-  var cl = R.page === 'clients', tm = R.page === 'team', md = R.page === 'myday', tk = R.page === 'tasks', ld = R.page === 'leads', op = /^ops/.test(R.page || '');
+  var cl = R.page === 'clients', tm = R.page === 'team', md = R.page === 'myday', tk = R.page === 'tasks', ld = R.page === 'leads', au = R.page === 'appusers', op = /^ops/.test(R.page || '');
   $('#pnav').innerHTML = '<div class="ngl">Workspace</div><a href="/team.html#myday" data-go title="My day" class="' + (md ? 'on' : '') + '"' + (md ? ' aria-current="page"' : '') + '>' + J.day + '<span>My day</span></a>' +
     '<a href="/team.html#tasks" data-go title="Tasks" class="' + (tk ? 'on' : '') + '"' + (tk ? ' aria-current="page"' : '') + '>' + J.clip + '<span>Tasks</span></a>' +
     '<a href="/team.html#clients" data-go title="Clients" class="' + (cl ? 'on' : '') + '"' + (cl ? ' aria-current="page"' : '') + '>' + I.users + '<span>Clients</span></a><div class="otabs" id="otabs" hidden></div>' +
-    (ME.owner ? '<div class="ngl">Sales</div><a href="/team.html#leads" data-go title="Leads" class="' + (ld ? 'on' : '') + '"' + (ld ? ' aria-current="page"' : '') + '>' + J.star + '<span>Leads</span></a>' : '') +
+    (ME.owner ? '<div class="ngl">Sales</div><a href="/team.html#leads" data-go title="Leads" class="' + (ld ? 'on' : '') + '"' + (ld ? ' aria-current="page"' : '') + '>' + J.star + '<span>Leads</span></a><a href="/team.html#appusers" data-go title="App users" class="' + (au ? 'on' : '') + '"' + (au ? ' aria-current="page"' : '') + '>' + J.bag + '<span>App users</span></a>' : '') +
     (ME.owner ? '<div class="ngl">Organisation</div><a href="/team.html#ops" data-go title="Operations" class="' + (op ? 'on' : '') + '"' + (op ? ' aria-current="page"' : '') + '>' + J.ops + '<span>Operations</span></a><a href="/team.html#team" data-go title="Team" class="' + (tm ? 'on' : '') + '"' + (tm ? ' aria-current="page"' : '') + '>' + I.team + '<span>Team</span></a>' : '');   // the Team page is the owners'; the titles name the icons when the sidebar is a rail
   drawOpenTabs();
-  if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : md ? vMyDay() : tk ? vTasks() : ld ? vLeads() : R.page === 'ops' ? vOps() : R.page === 'opsemp' ? vOpsEmp(R.emp) : R.page === 'opsclients' ? vOpsClients() : R.page === 'opsmistakes' ? vOpsMistakes() : vClients(); }
+  if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : md ? vMyDay() : tk ? vTasks() : ld ? vLeads() : au ? vAppUsers() : R.page === 'ops' ? vOps() : R.page === 'opsemp' ? vOpsEmp(R.emp) : R.page === 'opsclients' ? vOpsClients() : R.page === 'opsmistakes' ? vOpsMistakes() : vClients(); }
   vClient();
 }
 // phones: a top bar with the client and Switch, and the sections along the bottom
@@ -1860,7 +1864,7 @@ function drawPhone(c){
       '<button class="icb" type="button" data-act="switch" title="Switch client">' + J.swap + '<span class="sr">Switch client</span></button>' : '<span class="grow"></span>') +
     '<button class="icb" type="button" data-act="out" title="Sign out">' + I.out + '<span class="sr">Sign out</span></button>';
   var items = c ? TABS.map(function(t){ return [cUrl(c.id, t[0]), t[3] || t[1], t[2], R.tab === t[0]]; })
-    : [['/team.html#myday', 'My day', J.day, R.page === 'myday'], ['/team.html#tasks', 'Tasks', J.clip, R.page === 'tasks'], ['/team.html#clients', 'Clients', I.users, R.page === 'clients']].concat(ME.owner ? [['/team.html#leads', 'Leads', J.star, R.page === 'leads'], ['/team.html#ops', 'Operations', J.ops, /^ops/.test(R.page || '')], ['/team.html#team', 'Team', I.team, R.page === 'team']] : []);
+    : [['/team.html#myday', 'My day', J.day, R.page === 'myday'], ['/team.html#tasks', 'Tasks', J.clip, R.page === 'tasks'], ['/team.html#clients', 'Clients', I.users, R.page === 'clients']].concat(ME.owner ? [['/team.html#leads', 'Leads', J.star, R.page === 'leads'], ['/team.html#appusers', 'App users', J.bag, R.page === 'appusers'], ['/team.html#ops', 'Operations', J.ops, /^ops/.test(R.page || '')], ['/team.html#team', 'Team', I.team, R.page === 'team']] : []);
   $('#tabbar').innerHTML = items.map(function(n){ return '<a href="' + esc(n[0]) + '" data-go class="' + (n[3] ? 'on' : '') + '"' + (n[3] ? ' aria-current="page"' : '') + '>' + n[2] + '<span>' + n[1] + '</span></a>'; }).join('');
 }
 function setTitle(t, c){
@@ -4753,7 +4757,16 @@ function tApp(id){
     if(!rs[0]){ V.innerHTML = '<div class="empty"><h3>Not found for ' + esc(c.row.full_name) + '</h3><p>This application doesn’t belong to this client, or it was deleted.</p><a class="btn" href="' + esc(cUrl(c.id, 'applications')) + '" data-go>All applications</a></div>'; return; }
     A = rs[0]; A._c = c.id;
     setTitle((A.company || 'Application') + ' · ' + (c.row.full_name || ''), c.row);
-    if(A.status === 'draft') drawDraft(); else drawSent();
+    if(A.status !== 'draft') return drawSent();
+    // a draft that came without the client's main resume or standard answers (asked for in the app before the resume was
+    // added, say): it gets them now, as a draft started on the Jobs tab does
+    var base = defaultResume(c), fill = {};
+    if(!A.base_resume_id && !A.resume_doc && !A.resume_text && base) fill.base_resume_id = base.id;
+    if(!(A.answers || []).length && Array.isArray(c.row.answers) && c.row.answers.length) fill.answers = c.row.answers.map(function(x){ return {q:x.q, a:x.a}; });
+    if(!Object.keys(fill).length) return drawDraft();
+    var a = A;
+    q(SB.from('applications').update(fill).eq('id', a.id).eq('status', 'draft').select('*').maybeSingle()).then(function(row){ if(row && A === a){ A = row; A._c = c.id; } }, function(){})
+      .then(function(){ if(R.app === id && A && A.status === 'draft') drawDraft(); });
   }, function(e){ V.innerHTML = errBox(e); });
 }
 /* ---------- the application page, laid out like a job page: the job's card (who, where, its terms, the match and the fit, the
@@ -5911,7 +5924,7 @@ function teamMenu(email){
    database (crm_lead_activity) and notes are added here. Times are India time, as on My day.
    ===================================================================== */
 var LD_STAGES = [['new', 'New', 'draft'], ['call_booked', 'Call booked', 'interview'], ['call_done', 'Call done', 'applied'], ['link_sent', 'Payment link sent', 'wait'], ['won', 'Won', 'offer'], ['lost', 'Lost', 'rejected']];
-var LD_SRC = [['whatsapp', 'WhatsApp'], ['website', 'Website'], ['calendly', 'Calendly'], ['instagram', 'Instagram'], ['linkedin', 'LinkedIn'], ['referral', 'Referral'], ['other', 'Other']];
+var LD_SRC = [['whatsapp', 'WhatsApp'], ['app', 'AI app'], ['website', 'Website'], ['calendly', 'Calendly'], ['instagram', 'Instagram'], ['linkedin', 'LinkedIn'], ['referral', 'Referral'], ['other', 'Other']];
 var LD_F = [['open', 'Open'], ['new', 'New'], ['call_booked', 'Call booked'], ['call_done', 'Call done'], ['link_sent', 'Link sent'], ['won', 'Won'], ['lost', 'Lost'], ['all', 'All']];
 var LD = {q:'', f:'open', rows:null};
 function ldStage(s){ return LD_STAGES.filter(function(x){ return x[0] === s; })[0] || LD_STAGES[0]; }
@@ -5941,6 +5954,115 @@ function ldRank(l){   // calls today, then overdue and due follow-ups, then the 
 }
 function loadLeads(){
   return q(SB.from('crm_leads').select('*').order('updated_at', {ascending:false}).limit(2000)).then(function(r){ LD.rows = r || []; return LD.rows; });
+}
+/* =====================================================================
+   App users (#appusers, owners only): everyone who signed up to the AI app (app.trulyplaced.com) — how far they got,
+   who said we may contact them, a WhatsApp or a call to offer the team applying for them, ranked by how likely they
+   are to buy — and the postings readers reported as fake (#appusers/reports). Read from the app through the link
+   (app-hook push_to_app, kind admin_*; the app answers owners only). Each person shows whether they're already a
+   client or a lead here, and goes into Leads in one click.
+   ===================================================================== */
+var AU = {data:null, at:0, f:'all', q:''};
+function auLoad(force){
+  if(AU.data && !force && Date.now() - AU.at < 60000) return Promise.resolve(AU.data);
+  return Promise.all([TP.fn('app-hook', {action:'push_to_app', kind:'admin_overview'}, 60000), loadLeads().catch(function(){ return []; }), loadList().catch(function(){ return null; })]).then(function(rs){
+    AU.data = rs[0]; AU.at = Date.now();
+    AU.leads = {}; (rs[1] || []).forEach(function(l){ if(l.email) AU.leads[l.email.toLowerCase()] = l; });
+    AU.clients = {}; ((rs[2] && rs[2].rows) || []).forEach(function(c){ if(c.email) AU.clients[c.email.toLowerCase()] = c; });
+    return AU.data;
+  });
+}
+function auStat(label, n){ return '<div class="stat"><span>' + esc(label) + '</span><b>' + esc(n) + '</b></div>'; }
+function auWhatsapp(p){
+  var digits = String(p.phone || '').replace(/\D/g, ''); if(digits.length === 10) digits = '1' + digits;
+  var first = String(p.name || p.email || 'there').split(/\s+/)[0], me = (ME.name || ME.email.split('@')[0]).split(' ')[0];
+  var text = 'Hi ' + first + ', this is ' + me + ' from TrulyPlaced. Thanks for using TrulyPlaced Autopilot! Our expert team can also take your job search off your hands and apply to roles for you. Would you like to hear how it works?';
+  return 'https://wa.me/' + digits + '?text=' + encodeURIComponent(text);
+}
+function vAppUsers(){
+  setTitle(R.sub === 'reports' ? 'Job reports' : 'App users', null);
+  V.innerHTML = '<div class="pageh"><div class="grow"><h1>' + (R.sub === 'reports' ? 'Job reports' : 'App users') + '</h1><div class="sub">' +
+      (R.sub === 'reports' ? 'Postings readers of the app reported as fake. Taking one down closes it for good; clearing it takes the warning off.'
+        : 'Everyone who signed up to the AI app. Message the people who opted in about the team applying for them.') + '</div></div>' +
+      '<a class="btn" href="https://app.trulyplaced.com/app" target="_blank" rel="noopener">Open the app' + I.ext + '</a></div>' +
+    '<div id="auBody"><div class="skel"></div><div class="skel"></div></div>';
+  auLoad().then(auDraw, function(e){ var b = $('#auBody'); if(b) b.innerHTML = '<div class="note bad">The app couldn’t be reached: ' + esc(TP.errText(e)) + '. Check APP_HOOK_URL and APP_LINK_SECRET (Supabase → Edge Functions → Secrets).</div>'; });
+}
+function auDraw(){
+  var b = $('#auBody'), d = AU.data; if(!b || !d || R.page !== 'appusers') return;
+  var st = d.stats || {}, reports = d.reports || [];
+  var head = '<div class="stats s4">' + auStat('People', st.people) + auStat('Opted in to contact', st.optedIn) + auStat('Active this week', st.activeWeek) + auStat('With a phone number', st.withPhone) + '</div>' +
+    '<div class="stats s4">' + auStat('Open US jobs', '~' + (st.openUsJobs || 0).toLocaleString('en-US')) + auStat('Added, last 24h', '~' + (st.added24h || 0).toLocaleString('en-US')) + auStat('Closed, last 24h', '~' + (st.closed24h || 0).toLocaleString('en-US')) + auStat('Fake-job reports open', st.reportsOpen) + '</div>' +
+    '<div class="tools"><div class="seg" id="auF">' + [['all', 'Everyone'], ['opted', 'Opted in only'], ['reports', 'Job reports' + (reports.length ? ' (' + reports.length + ')' : '')]].map(function(f){
+        var on = R.sub === 'reports' ? f[0] === 'reports' : AU.f === f[0];
+        return '<button type="button" data-f="' + f[0] + '" class="' + (on ? 'on' : '') + '">' + esc(f[1]) + '</button>'; }).join('') + '</div>' +
+      (R.sub === 'reports' ? '' : '<button class="btn sm" type="button" data-act="aurank" title="One AI pass over everyone: how likely each is to buy the team applying for them">' + J.star + 'Rank leads</button>' +
+        (d.rankedAt ? '<span class="fine">Ranked ' + esc(TP.ago(d.rankedAt)) + '</span>' : '') +
+        '<input class="inp" id="auQ" type="search" placeholder="Name, email, phone, role, city" value="' + esc(AU.q) + '" autocomplete="off" style="margin-left:auto;max-width:300px">') + '</div>';
+  b.innerHTML = head + '<div id="auList"></div>';
+  $('#auF').addEventListener('click', function(e){
+    var x = e.target.closest('[data-f]'); if(!x) return; var f = x.getAttribute('data-f');
+    if(f === 'reports'){ if(R.sub !== 'reports') go('/team.html#appusers/reports'); return; }
+    AU.f = f; if(R.sub === 'reports') return go('/team.html#appusers'); auDraw();
+  });
+  var qi = $('#auQ'), t; if(qi) qi.addEventListener('input', function(){ clearTimeout(t); t = setTimeout(function(){ AU.q = qi.value; auList(); }, 200); });
+  if(R.sub === 'reports') auReports(); else auList();
+}
+function auList(){
+  var box = $('#auList'), d = AU.data; if(!box || !d) return;
+  var n = AU.q.trim().toLowerCase(), ranked = (d.people || []).some(function(p){ return p.lead; });
+  var rows = (d.people || []).filter(function(p){ return AU.f !== 'opted' || p.optedIn; })
+    .filter(function(p){ return !n || [p.name, p.email, p.phone, p.location, p.headline].concat(p.roles || []).some(function(v){ return v && String(v).toLowerCase().indexOf(n) >= 0; }); })
+    .sort(function(a, b){ return (ranked ? ((b.lead && b.lead.score) || -1) - ((a.lead && a.lead.score) || -1) : 0) || (b.optedIn - a.optedIn) || String(b.last || '').localeCompare(String(a.last || '')); });
+  if(!rows.length){ box.innerHTML = '<div class="empty"><h3>No one matches</h3></div>'; return; }
+  box.innerHTML = '<div class="card aul">' + rows.map(function(p){
+    var em = (p.email || '').toLowerCase(), cl = AU.clients[em], ld = AU.leads[em];
+    var chips = (p.optedIn ? '<span class="st applied">Opted in</span>' : '<span class="st closed">Not opted in</span>') +
+      (!p.onboarded ? ' <span class="st wait">Didn’t finish setup</span>' : '') +
+      (p.lead ? ' <span class="st ' + (p.lead.score >= 70 ? 'interview' : 'closed') + '" title="' + esc(p.lead.reason || '') + '">Lead ' + p.lead.score + '</span>' : '') +
+      (cl ? ' <a class="st applied" href="' + esc(cUrl(cl.id, '')) + '" data-go title="Already a client">Client</a>' : ld ? ' <a class="st interview" href="/team.html#leads" data-go title="Already in Leads">In Leads</a>' : '');
+    var acts = (p.phone && p.optedIn ? '<a class="btn sm wa" href="' + esc(auWhatsapp(p)) + '" target="_blank" rel="noopener">WhatsApp</a><a class="btn sm" href="tel:' + esc(String(p.phone).replace(/[^\d+]/g, '')) + '">Call</a>' : '') +
+      (!cl && !ld ? '<button class="btn sm" type="button" data-act="aulead" data-id="' + esc(p.id) + '">' + I.plus + 'Add to Leads</button>' : '');
+    return '<div class="li aurow"><div class="main"><div class="t">' + esc(p.name || '(no name yet)') + ' ' + chips + '</div>' +
+        (p.lead && p.lead.reason ? '<div class="m">' + esc(p.lead.reason) + '</div>' : '') +
+        '<div class="m">' + esc([p.headline, p.location].filter(Boolean).join(' · ') || 'No resume yet') + '</div>' +
+        ((p.roles || []).length ? '<div class="m fine">Wants: ' + esc(p.roles.join(', ')) + '</div>' : '') + '</div>' +
+      '<div class="aucon"><div>' + esc(p.email || '—') + '</div><div class="m">' + esc(p.phone || 'No phone on resume') + '</div></div>' +
+      '<div class="auuse m"><div>' + esc(p.plan) + ' · ' + p.used + '/' + p.quota + ' used</div><div>' + p.sent + ' sent · ' + p.waiting + ' waiting</div><div>Joined ' + esc(TP.ago(p.joined)) + (p.last ? ' · active ' + esc(TP.ago(p.last)) : '') + '</div></div>' +
+      '<div class="auact">' + acts + '</div></div>';
+  }).join('') + '</div>';
+}
+function auReports(){
+  var box = $('#auList'), d = AU.data; if(!box || !d) return;
+  var L = d.reports || [];
+  if(!L.length){ box.innerHTML = '<div class="empty"><h3>No open reports</h3><p>Readers of the app can report a posting as fake; it shows here for review.</p></div>'; return; }
+  box.innerHTML = L.map(function(x){
+    var j = x.job;
+    return '<div class="card aurep"><div class="ch"><div><div class="fine">' + esc(j.company) + '</div><h3>' + esc(j.title) + '</h3><div class="m">' + esc([j.location, 'via ' + j.ats, j.is_open ? 'open' : 'closed'].filter(Boolean).join(' · ')) + '</div>' +
+        '<div class="m">Trust check: <b>' + esc(j.risk || 'not checked') + '</b>' + ((j.risk_reasons || []).length ? ' — ' + esc(j.risk_reasons.join(' ')) : '') + '</div></div>' +
+        '<div class="row">' + (j.apply_url ? '<a class="btn sm" href="' + esc(TP.safeHref(j.apply_url)) + '" target="_blank" rel="noopener">Posting' + I.ext + '</a>' : '') +
+        '<button class="btn sm bad" type="button" data-act="aufake" data-id="' + esc(j.id) + '">Take it down</button><button class="btn sm" type="button" data-act="aufine" data-id="' + esc(j.id) + '">Looks fine</button></div></div>' +
+      '<ul class="aurr">' + x.reports.map(function(r){ return '<li>' + esc(r.reason || 'No reason given') + ' <span class="fine">· ' + esc(TP.ago(r.at)) + '</span></li>'; }).join('') + '</ul></div>';
+  }).join('');
+}
+function auRank(btn){
+  TP.busy(btn, TP.fn('app-hook', {action:'push_to_app', kind:'admin_rank'}, 180000)).then(function(r){ TP.toast('Ranked ' + ((r && r.scored) || 0) + ' people'); return auLoad(true).then(auDraw); }, function(e){ TP.toast('Couldn’t rank: ' + TP.errText(e)); });
+}
+function auResolve(btn, verdict){
+  var id = btn.getAttribute('data-id'), x = (AU.data.reports || []).filter(function(r){ return r.job.id === id; })[0]; if(!x) return;
+  var go = function(){ TP.busy(btn, TP.fn('app-hook', {action:'push_to_app', kind:'admin_resolve', job_id:id, verdict:verdict}, 30000)).then(function(){
+      TP.toast(verdict === 'fake' ? 'Taken down — the readers who reported it are thanked' : 'Cleared — the warning is off'); return auLoad(true).then(auDraw); }, function(e){ TP.toast(TP.errText(e)); }); };
+  if(verdict === 'fine') return go();
+  TP.confirmBox('Take down ' + x.job.title + ' at ' + x.job.company + '?', 'It closes for good and is hidden from everyone in the app. Each reader who reported it is told it was taken down.', 'Take it down', true).then(function(ok){ if(ok) go(); });
+}
+function auLead(btn){
+  var p = (AU.data.people || []).filter(function(x){ return x.id === btn.getAttribute('data-id'); })[0]; if(!p) return;
+  var row = {full_name:p.name || p.email || 'App user', email:p.email || null, phone:p.phone || null, source:'app', stage:'new',
+    interest:[(p.roles || []).join(', '), p.headline, p.location].filter(Boolean).join(' · ').slice(0, 500) || null};
+  TP.busy(btn, q(SB.from('crm_leads').insert(row).select('*').maybeSingle())).then(function(l){
+    if(l && l.email) AU.leads[l.email.toLowerCase()] = l; LD.rows = null;
+    TP.toast((p.name || 'They') + ' added to Leads'); auList();
+  }, function(e){ TP.toast(TP.errText(e)); });
 }
 function vLeads(){
   setTitle('Leads', null);
@@ -6229,6 +6351,10 @@ document.addEventListener('click', function(e){
     case 'retry': if(!ME) return location.reload(); if(C){ C.row = null; C.resumes = null; } staleList(); return render();   // only this page loads again; nothing typed elsewhere is touched
     case 'newclient': return newClient();
     case 'newlead': return leadOpen(null);
+    case 'aurank': return auRank(b);
+    case 'aulead': return auLead(b);
+    case 'aufake': return auResolve(b, 'fake');
+    case 'aufine': return auResolve(b, 'fine');
     case 'leadopen': e.preventDefault(); return (LD.rows ? Promise.resolve() : loadLeads()).then(function(){ leadOpen(b.getAttribute('data-id')); }, fail);
     case 'leadnote': return leadNote(b);
     case 'leaddel': return leadDelete(b.getAttribute('data-id'));
