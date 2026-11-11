@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-11-11.1">
+<link rel="stylesheet" href="/portal.css?v=2026-11-11.2">
 <style>
 /* The client's workspace, laid out as app.trulyplaced.com is: the sidebar in the app's light grey, a white page, white cards with
    a hairline and a soft shadow, figures in near-black, TrulyPlaced blue for progress and where you are. */
@@ -638,7 +638,7 @@ function loadList(){
 /* ---------- one application: exactly what was sent ---------- */
 function vApp(id){
   V.innerHTML = '<div class="skel"></div><div class="skel"></div>';
-  q(SB.from('applications').select('id,status,title,company,location,job_url,jd_text,resume_doc,resume_text,resume_file,cover_letter,answers,screenshot,screenshots,applied_at,status_at,withdrawn_at,withdraw_reason,source').eq('id', id).maybeSingle()).then(function(a){
+  q(SB.from('applications').select('id,status,title,company,location,job_url,jd_text,resume_doc,resume_text,resume_file,cover_letter,answers,screenshot,screenshots,applied_at,status_at,withdrawn_at,withdraw_reason,source,requested_at').eq('id', id).maybeSingle()).then(function(a){
     if(appId() !== id) return;
     if(!a){ V.innerHTML = '<div class="empty"><h3>Not found</h3><p>This application isn’t on your account.</p><a class="btn" href="#applications" data-go>All applications</a></div>'; return; }
     A = a; document.title = (a.company || 'Application') + ' | TrulyPlaced';
@@ -647,6 +647,7 @@ function vApp(id){
     V.innerHTML = '<a class="btn sm ghost" href="#applications" data-go>' + I.back + 'All applications</a>' +
       '<div class="card" style="margin-top:10px"><div class="ahead">' + TP.logo(a.company) + '<div style="flex:1;min-width:0"><h1>' + esc(a.title || 'Role') + '</h1><div class="m">' + esc([a.company, a.location].filter(Boolean).join(' · ')) + '</div></div>' + TP.statusChip(a.status) + '</div>' +
         '<div class="sent">' + I.check + '<span>Sent ' + esc(TP.fmtDateTime(a.applied_at)) + (a.source === 'ai' ? ' by you, with the AI app' : a.source === 'assist' ? ' by ' + TEAM + ', finishing what the AI app started' : ' by ' + TEAM) + '</span></div>' +
+        (a.requested_at ? '<div class="note"><b>You asked for this one in the app</b> on ' + esc(TP.fmtDate(a.requested_at)) + ', and ' + TEAM + ' applied for you by hand.</div>' : '') +
         (a.source === 'ai' ? '<div class="note"><b>Applied by you with the AI app.</b> It’s listed here so your team sees everything you’ve applied to and never applies to the same job twice. It doesn’t count toward your plan.</div>' : '') +
         (a.status === 'withdrawn' ? '<div class="note wdn"><b>Withdrawn' + (a.withdrawn_at ? ' on ' + esc(TP.fmtDate(a.withdrawn_at)) : '') + '</b>' + (a.withdraw_reason ? ' — ' + esc(a.withdraw_reason) : '') + '. It doesn’t count toward your plan.</div>' : '') +
         '<div class="row" style="margin-top:14px"><a class="btn sm" href="' + esc(TP.safeHref(a.job_url)) + '" target="_blank" rel="noopener">' + I.ext + 'View the job posting</a></div></div>' +

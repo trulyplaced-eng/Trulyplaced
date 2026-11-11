@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="stylesheet" href="/portal.css?v=2026-11-11.1">
+<link rel="stylesheet" href="/portal.css?v=2026-11-11.2">
 <style>
 /* The shell, laid out like the job board app (app.trulyplaced.com): a left sidebar with the sections, the clients open in
    this browser tab, the client you're working on with their progress, and you. Phones get a top bar and a tab bar. */
@@ -2128,7 +2128,7 @@ function vMyDay(){
   var when = now.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long', timeZone:'UTC'});
   V.innerHTML = '<div class="pageh"><div class="grow"><h1>My day</h1><div class="sub">' + (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ', ' + esc(first) + ' · ' + esc(when) + '</div></div>' +
       '<button class="btn" type="button" data-act="switch">' + J.swap + 'Switch client</button></div>' +
-    '<div class="stats s5" id="mdS"></div><div id="mdHelp"></div><div id="mdReq"></div><div id="mdCrm"></div>' +
+    '<div class="stats s5" id="mdS"></div><div id="mdAsk"></div><div id="mdHelp"></div><div id="mdReq"></div><div id="mdCrm"></div>' +
     '<div class="card"><h3>Still to do today</h3><p class="hint">' + (ME.owner ? 'Active clients' : 'Your active clients') + ' with nothing sent today — the most left on their plan first.</p><div id="mdTodo"><div class="skel"></div></div></div>' +
     '<div id="amBox"></div>' +
     '<div class="wkhead"><h2>Your work</h2>' + wrBar() + '</div><div class="stats s5" id="mdR"></div>' +
@@ -2169,6 +2169,17 @@ function vMyDay(){
   };
   draw(); mdCrm(); mdCrmLoad();
   Promise.all([loadList(), wkLoad(ME.email)]).then(function(rs){ MDAY = rs[1]; draw(); }, function(e){ if($('#mdMine')) $('#mdMine').innerHTML = errBox(e); });
+  // jobs clients asked for in the app (Apply, for a client with a plan): oldest first — each one is the normal draft
+  // page with the job description already there; marked as applied, the client's app shows it Submitted
+  Promise.all([loadList().catch(function(){}), SB.from('applications').select('id,client_id,title,company,requested_at,picked_at').not('requested_at', 'is', null).eq('status', 'draft').order('requested_at', {ascending:true}).limit(100)]).then(function(rs){
+    var r = rs[1], el = $('#mdAsk'); if(!r || r.error || !el || R.page !== 'myday') return;
+    var L = r.data || [], names = {}; (LIST ? LIST.rows : []).forEach(function(c){ names[c.id] = c.full_name || c.email; });
+    el.innerHTML = L.length ? '<div class="card mdreq mdask"><h3>Asked for in the app <span class="st wait">' + L.length + '</span></h3><p class="hint">Your clients tapped Apply on these. Tailor the resume, apply by hand and mark each as applied — they see every step in their app. Counts as your work.</p><div class="list">' +
+      L.map(function(x){
+        return '<a class="li" href="' + esc(cUrl(x.client_id, 'app=' + x.id)) + '" data-go><span class="av" style="background:' + TP.hue(x.client_id) + '">' + esc(TP.initials(names[x.client_id] || '?', '')) + '</span>' +
+          '<div class="main"><div class="t">' + esc(names[x.client_id] || 'A client') + ' · ' + esc(x.title || 'Role') + (x.company ? ' at ' + esc(x.company) : '') + '</div><div class="m">Asked ' + esc(TP.ago(x.requested_at)) + (x.picked_at ? ' · started' : ' · not started yet') + '</div></div>' + I.ch + '</a>';
+      }).join('') + '</div></div>' : '';
+  }, function(){});
   // the AI app's applications that stopped (a CAPTCHA, an emailed code, an account to make…) for clients whose team finishes
   // them by hand: oldest first. Opening one is the normal draft page with the AI's resume and answers already there.
   Promise.all([loadList().catch(function(){}), SB.from('applications').select('id,client_id,title,company,help_kind,help_reason,created_at').eq('source', 'assist').eq('status', 'draft').order('created_at', {ascending:true}).limit(50)]).then(function(rs){
@@ -3137,6 +3148,7 @@ function pfPatch(){
   if($('#pf_fact_first_name') && stable(factsForm()) !== stable(c.facts || {})) patch.facts = factsForm();   // confirmed facts (sql/supabase-app-link.sql)
   if(ME.owner && $('#pf_app_email')){
     var ae = $('#pf_app_email').value.trim().toLowerCase(); if(ae !== (c.app_email || '')) patch.app_email = ae || null;
+    var am = $('#pf_app_mode').value; if(am !== (c.app_mode || '')) patch.app_mode = am || null;
     var ah = $('#pf_ai_help').value, cur = c.ai_help == null ? '' : c.ai_help ? 'yes' : 'no'; if(ah !== cur) patch.ai_help = ah === '' ? null : ah === 'yes';
   }
   if(ME.owner && $('#pf_plan')){ var pv = $('#pf_plan').value, pn = pv === 'custom' ? +$('#pf_planc').value : (pv ? +pv : null); if(pv === 'custom' && !(pn > 0)) return null; if((pn || null) !== (c.plan_package || null)) patch.plan_package = pn || null; }   // the package; the database keeps plan_total = package + the extras
@@ -3257,6 +3269,8 @@ function appLinkCardHTML(c, first){
   return '<div class="card" id="appLink"><h3>The AI app</h3><p class="hint">' + esc(first) + ' can also apply on their own at <b>app.trulyplaced.com</b>. Those applications show here as <span class="src ai">AI Applied</span> — never counted toward the plan — and neither side applies to a job the other has.' +
       (ME.owner ? '' : ' Only the owners change these.') + '</p><div class="grid2">' +
     '<div class="field"><label for="pf_app_email">App email</label><input id="pf_app_email" value="' + esc(row.app_email || '') + '" placeholder="' + esc(row.email) + ' (their login email)" autocomplete="off"' + (ME.owner ? '' : ' readonly') + '><small class="fine">Only when they signed up to the app with a different email.</small></div>' +
+    '<div class="field"><label for="pf_app_mode">When they tap Apply in the app</label>' + sel('pf_app_mode', row.app_mode || '', [['', 'Follow the plan (' + ((row.plan_total || 0) > 0 ? 'goes to their specialist' : 'the AI applies') + ')'], ['team', 'Goes to their specialist — applied by hand'], ['ai', 'The AI applies']], !ME.owner) +
+      '<small class="fine">A client with a plan: Apply asks you (it shows under “Asked for in the app” on My day). Nothing is sent by AI.</small></div>' +
     '<div class="field"><label for="pf_ai_help">When the AI gets stuck</label>' + sel('pf_ai_help', help, [['', 'Follow the plan (' + (byPlan ? 'we finish it' : 'they finish it themselves') + ')'], ['yes', 'We finish it by hand — Manual Assistance'], ['no', 'They finish it themselves']], !ME.owner) +
       '<small class="fine">A 1,000-application plan includes finishing what the AI can’t (a CAPTCHA, an emailed code, an account to make). It then shows on My day under “Needs our help”.</small></div></div></div>';
 }
@@ -4536,7 +4550,7 @@ function tApps(){
   V.innerHTML = '<div class="stats"><div class="stat"><b>' + (p.done || 0) + (c.row.plan_total ? ' <span style="font-size:14px;color:var(--muted)">/ ' + c.row.plan_total + '</span>' : '') + '</b><span>applications sent</span></div>' +
       '<div class="stat"><b>' + (p.today || 0) + '</b><span>sent today</span></div><div class="stat"><b>' + (p.drafts || 0) + '</b><span>drafts in progress</span></div><div class="stat"><b>' + (p.interviews || 0) + '</b><span>interviews and offers</span></div></div>' +
     '<div class="tools" style="margin-top:0"><input class="inp" id="apQ" type="search" placeholder="Search role or company" value="' + esc(AP.q) + '" autocomplete="off">' +
-      '<div class="seg" id="apF">' + [['all','All'],['draft','Drafts'],['applied','Applied'],['interview','Interview'],['offer','Offer'],['rejected','Not selected'],['closed','Closed'],['withdrawn','Withdrawn']].map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (AP.f === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div>' + '<div class="seg" id="apSrc" title="Where the application came from">' + [['', 'Everyone'], ['team', 'Team'], ['ai', 'AI'], ['assist', 'Assist']].map(function(f){ return '<button type="button" data-src="' + f[0] + '" class="' + ((AP.src || '') === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div></div>' +
+      '<div class="seg" id="apF">' + [['all','All'],['draft','Drafts'],['applied','Applied'],['interview','Interview'],['offer','Offer'],['rejected','Not selected'],['closed','Closed'],['withdrawn','Withdrawn']].map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (AP.f === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div>' + '<div class="seg" id="apSrc" title="Where the application came from">' + [['', 'Everyone'], ['team', 'Team'], ['req', 'Requested'], ['ai', 'AI'], ['assist', 'Assist']].map(function(f){ return '<button type="button" data-src="' + f[0] + '" class="' + ((AP.src || '') === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div></div>' +
     '<div class="tools apt2"><select class="inp" id="apW" aria-label="When">' + AP_W.map(function(w){ return '<option value="' + w[0] + '"' + (AP.w === w[0] ? ' selected' : '') + '>' + w[1] + '</option>'; }).join('') + '</select>' +
       '<label class="check apmine"><input type="checkbox" id="apMine"' + (AP.mine ? ' checked' : '') + '> Only mine</label><span class="grow"></span>' +
       '<button class="btn" type="button" data-act="apsel">' + (AP.sel ? 'Done selecting' : 'Select') + '</button>' +
@@ -4565,7 +4579,8 @@ function tApps(){
 function apQuery(c, cols){
   var sq = SB.from('applications').select(cols).eq('client_id', c.id);
   if(AP.f !== 'all') sq = sq.eq('status', AP.f);
-  if(AP.src) sq = sq.eq('source', AP.src);   // Team / AI / Manual Assistance (sql/supabase-app-link.sql)
+  if(AP.src === 'req') sq = sq.not('requested_at', 'is', null);   // asked for by the client in the app
+  else if(AP.src) sq = sq.eq('source', AP.src);   // Team / AI / Manual Assistance (sql/supabase-app-link.sql)
   var qq = AP.q.trim().replace(/[,()*%\\]/g, ' ').trim();
   if(qq) sq = sq.or('title.ilike.*' + qq + '*,company.ilike.*' + qq + '*');
   if(AP.w) sq = sq.gte('applied_at', (AP.w === 'week' ? istWeek() : istDay(0)).toISOString());   // India time, as My day and Operations count; weeks start on Monday
@@ -4588,7 +4603,7 @@ function loadApps(){
   if(c.apCache[key] && box){ box.innerHTML = c.apCache[key]; markPicked(); }
   (AP.mine ? mineIds(c) : Promise.resolve(null)).then(function(ids){
     AP.mineIds = ids;
-    return q(apQuery(c, 'id,status,title,company,location,job_url,applied_at,created_at,status_at,submit_status,withdrawn_from,mistake_at,mistake_note,source,help_kind,app_ref').order('applied_at', {ascending:false, nullsFirst:true}).order('created_at', {ascending:false}).range(0, AP.n));   // drafts first, then newest sent
+    return q(apQuery(c, 'id,status,title,company,location,job_url,applied_at,created_at,status_at,submit_status,withdrawn_from,mistake_at,mistake_note,source,help_kind,app_ref,requested_at').order('applied_at', {ascending:false, nullsFirst:true}).order('created_at', {ascending:false}).range(0, AP.n));   // drafts first, then newest sent
   }).then(function(rows){ rows = rows || []; return whoOf(c, rows.slice(0, AP.n).map(function(a){ return a.id; })).then(function(){ return rows; }); }).then(function(rows){
     if(C !== c || !$('#apL')) return;
     var more = rows.length > AP.n; rows = rows.slice(0, AP.n);
@@ -4601,7 +4616,7 @@ function loadApps(){
       var by = c.who[a.id], old = !a.applied_at && Date.now() - new Date(a.created_at) > 2 * 864e5;
       var cells = '<div class="arole">' + coLogo(a.company, a.job_url) + '<div class="main"><div class="t">' + esc(a.title || 'Role') + '</div><div class="m">' + esc(a.company || '') + '</div></div></div>' +
         '<div class="m aloc">' + esc(a.location || '—') + '</div>' +
-        '<div class="ast">' + (a.submit_status === 'failed' ? subPill('failed') : stChip(a)) + srcChip(a) + (a.submit_status === 'needs_review' ? '<span class="nrdot" title="Needs review: nothing confirms it was submitted yet" aria-label="Needs review"></span>' : '') + '</div>' +
+        '<div class="ast">' + (a.submit_status === 'failed' ? subPill('failed') : stChip(a)) + srcChip(a) + (a.requested_at ? '<span class="src req" title="' + esc(C.row.full_name.split(' ')[0] || 'The client') + ' asked for this one in the app">Requested</span>' : '') + (a.submit_status === 'needs_review' ? '<span class="nrdot" title="Needs review: nothing confirms it was submitted yet" aria-label="Needs review"></span>' : '') + '</div>' +
         '<div class="adate"' + (a.applied_at ? ' title="' + esc(TP.fmtDateTime(a.applied_at)) + '"' : '') + '>' + (a.applied_at ? esc(TP.fmtDateTime(a.applied_at)) : '<span' + (old ? ' class="stale" title="A draft for more than 2 days"' : '') + '>Started ' + esc(TP.ago(a.created_at)) + '</span>') + '</div>' +
         '<div class="m aby">' + (a.source === 'ai' ? '<span title="Applied by the client with the AI app">Client (AI app)</span>' : by ? esc(who(by)) : '—') + '</div>';
       return picking ? '<div class="li arow" data-pick="' + esc(a.id) + '" data-st="' + esc(a.status) + '" role="checkbox" aria-checked="false" tabindex="0"><span class="apick"><input type="checkbox" tabindex="-1" aria-hidden="true"></span>' + cells + '</div>'
@@ -5099,7 +5114,8 @@ function drawDraft(){
     '<div class="field"><label for="apJD">Job description <span class="muted" style="font-weight:500">— the resume is tailored to it, and the match and the fit are read from it</span></label><textarea id="apJD" rows="12" placeholder="Paste the whole job description">' + esc(A.jd_text || '') + '</textarea></div>' +
     '<div class="jdeft"><button class="btn sm pri" type="button" data-act="jdeditdone">Done</button></div></div>';
   // sending it: what's ready, the confirmation and the file, and Mark as applied (permanent, and the client sees it)
-  var send = (A.source === 'assist' ? '<div class="note warn aihelp"><span>' + I.lock + '<b>The AI app stopped at ' + esc(helpWhy(A)) + '</b>' + (A.help_reason ? ' — ' + esc(A.help_reason) : '') + '. ' + first + ' applied with the AI app and it couldn’t finish: the resume and answers it prepared are here. Finish it by hand on the employer’s site and mark it as applied — it counts as your work (Manual Assistance).</span></div>' : '') +
+  var send = (A.requested_at ? '<div class="note aireq"><span>' + I.check + '<b>' + first + ' asked for this one in the app</b> ' + esc(TP.ago(A.requested_at)) + '. They see “' + (A.picked_at ? 'Your specialist is working on it' : 'Sent to your specialist') + '” there, and it turns to Submitted, with your screenshot, the moment you mark it as applied.</span></div>' : '') +
+    (A.source === 'assist' ? '<div class="note warn aihelp"><span>' + I.lock + '<b>The AI app stopped at ' + esc(helpWhy(A)) + '</b>' + (A.help_reason ? ' — ' + esc(A.help_reason) : '') + '. ' + first + ' applied with the AI app and it couldn’t finish: the resume and answers it prepared are here. Finish it by hand on the employer’s site and mark it as applied — it counts as your work (Manual Assistance).</span></div>' : '') +
     '<div class="card apsend" id="ckRec"><div class="ch"><h3>Send it</h3><span class="muted">Keeps exactly what went to ' + esc(A.company || 'the company') + '. ' + first + ' sees it on their dashboard.</span></div><div class="ck sendck">' +
       '<div class="step ckit" id="ckJob"><span class="n' + (A.jd_text ? ' ok' : '') + '">' + (A.jd_text ? I.check : '1') + '</span><div class="bd"><b>Job description</b><small>' + (A.jd_text ? 'Pasted.' : 'Paste it in the Job description below — the resume is tailored to it.') + '</small></div></div>' +
       '<div class="step ckit" id="ckRes">' + resStep() + '</div>' +
@@ -5466,7 +5482,7 @@ function setStatus(s, from){
   var a = A, c = C, sel = $('#apSt'); if(sel) sel.disabled = true;
   q(SB.from('applications').update({status:s}).eq('id', a.id).select('*').maybeSingle()).then(function(row){
     if(!row) throw {message:'You don’t have access to that.'};
-    refreshProgress();
+    refreshProgress(); tellAppStatus(row);
     if(A && A.id === a.id){ A = row; drawSent(); }
     TP.toast('Status: ' + TP.statusLabel(s), from ? {undo:function(){
       if(A && A.id === a.id && R.app === a.id) return setStatus(from);
@@ -5596,8 +5612,13 @@ function srcChip(a){ var s = SRC[a.source] || SRC.team; return '<span class="src
 function helpWhy(a){ return HELP_KIND[a.help_kind] || HELP_KIND.unknown; }
 // an employee finished by hand an application the AI app handed over: the app is told, so the client sees it as Submitted there
 function tellAppDone(a){
-  if(!a || a.source !== 'assist' || !a.app_ref) return Promise.resolve();
-  return TP.fn('app-hook', {action:'push_to_app', kind:'assist_done', ref:a.app_ref}, 25000).then(function(){}, function(e){ TP.toast('Marked here — but the AI app couldn’t be told (' + TP.errText(e) + '). It will show there once the link is set up.'); });
+  if(!a || a.source === 'ai' || !a.app_ref) return Promise.resolve();
+  return TP.fn('app-hook', {action:'push_to_app', kind:'team_done', ref:a.app_ref, applied_at:a.applied_at}, 25000).then(function(){}, function(e){ TP.toast('Marked here — but the AI app couldn’t be told (' + TP.errText(e) + '). It will show there once the link is set up.'); });
+}
+// a later outcome on one the client asked for in the app (interview, offer, not selected…): the app follows
+function tellAppStatus(a){
+  if(!a || a.source === 'ai' || !a.app_ref || a.status === 'draft') return;
+  TP.fn('app-hook', {action:'push_to_app', kind:'team_status', ref:a.app_ref, status:a.status}, 25000).then(function(){}, function(){});
 }
 function wdNote(a){
   var first = (C.row.full_name || '').split(' ')[0] || 'the client';
