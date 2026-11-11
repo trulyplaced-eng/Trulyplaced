@@ -842,6 +842,7 @@ function pfSave(b){
   TP.busy(b, SB.rpc('update_my_profile', {p:p}).then(function(r){ if(r.error) throw r.error; return r.data; })).then(function(row){
     if(row && row.id) CL = row; else PFF.concat(['answers']).forEach(function(k){ if(k in p) CL[k] = p[k]; });
     who(); vProfile(); TP.toast('Saved — your team sees it now');
+    TP.fn('app-hook', {action:'push_to_app', kind:'profile', client_id:ME.id}, 25000).then(function(){}, function(){});   // the TrulyPlaced app shows the same details
   }, function(e){
     var t = TP.errText(e);
     TP.toast(/update_my_profile|PGRST202|Could not find the function/i.test(t + (e && e.code)) ? 'Your profile can’t be saved here yet — message your team on WhatsApp' : t);

@@ -2465,7 +2465,7 @@ function appFail(){
     var why = $('#afR', m).value.trim(), er = $('#afErr', m);
     if(!why){ er.hidden = false; er.textContent = 'Say what went wrong, so the next try can avoid it.'; return; }
     TP.busy($('#afF button[type=submit]', m), flushDraft().then(function(){ return q(SB.from('applications').update({submit_status:'failed', fail_reason:why}).eq('id', a.id).select('id').single()); })).then(function(){
-      TP.closeModal(); OPS = null; MDAY = null;
+      TP.closeModal(); OPS = null; MDAY = null; tellAppEnded(a, 'failed', why);
       TP.toast('Kept as a failed try', {undo:function(){
         q(SB.from('applications').update({submit_status:'in_progress'}).eq('id', a.id)).then(function(){ if(C === c && A && A.id === a.id) tApp(a.id); }, fail);
       }});
@@ -2895,6 +2895,7 @@ function tProfile(){
   var cc = C; if(ME.owner) loadAdjustments(cc).then(function(){ if(C === cc) drawAdjustments(cc); });   // the extra applications, each with its reason
   skFresh(c); lastInvite(C); byClient(C); pfFresh(C); empCard(C); mbCard(C);
   if(ME.owner) $('#pf_plan').addEventListener('change', function(e){ $('#pfPCw').hidden = e.target.value !== 'custom'; });
+  appSeen(C);   // is this client in the AI app, and with which email
   if($('#pf_app_mode')) $('#pf_app_mode').addEventListener('change', function(e){ var plan = (C.row.plan_total || 0) > 0, v = e.target.value; $('#pfAiHelpW').hidden = !(v === 'ai' || (!plan && v === '')); });
   V.querySelector('.narrow').addEventListener('input', function(e){
     if(e.target.closest('#pfRec') || e.target.closest('#pfEmp')) return;
@@ -3278,7 +3279,7 @@ function appLinkCardHTML(c, first){
   var row = c.row, plan = (row.plan_total || 0) > 0, mode = row.app_mode || (plan ? 'team' : 'ai');
   var help = row.ai_help == null ? '' : row.ai_help ? 'yes' : 'no';
   var sel = function(id, v, opts, dis){ return '<select id="' + id + '"' + (dis ? ' disabled' : '') + '>' + opts.map(function(o){ return '<option value="' + o[0] + '"' + (v === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>'; };
-  return '<div class="card" id="appLink"><h3>The AI app</h3><p class="hint">' + esc(first) + ' can also use <b>app.trulyplaced.com</b>. ' +
+  return '<div class="card" id="appLink"><h3>The AI app <span class="st closed" id="appSeen">Checking…</span></h3><p class="hint">' + esc(first) + ' can also use <b>app.trulyplaced.com</b>. ' +
       (plan ? 'With a plan, every Apply there comes to you (“Asked for in the app” on My day) and you apply by hand — the AI sends nothing for them. '
             : 'Without a plan, the AI applies for them. ') +
       'Neither side ever applies to a job the other has.' + (ME.owner ? '' : ' Only the owners change these.') + '</p><div class="grid2">' +
@@ -3290,6 +3291,15 @@ function appLinkCardHTML(c, first){
     '<div class="field" id="pfAiHelpW"' + (mode === 'ai' ? '' : ' hidden') + '><label for="pf_ai_help">When the AI gets stuck</label>' +
       sel('pf_ai_help', help, [['', 'They finish it themselves'], ['yes', 'We finish it by hand — Manual Assistance'], ['no', 'They finish it themselves (always)']], !ME.owner) +
       '<small class="fine">A CAPTCHA, an emailed code, an account to make. “We finish it” puts it on My day under “Needs our help”.</small></div></div></div>';
+}
+// whether the client uses the AI app, and with which email (sql/supabase-app-link.sql, app_links): seen there means linked
+function appSeen(c){
+  q(SB.from('app_links').select('email,first_seen,last_seen').eq('client_id', c.id).maybeSingle()).then(function(l){
+    var el = $('#appSeen'); if(!el || C !== c) return;
+    var want = (c.row.app_email || c.row.email || '').toLowerCase();
+    if(!l){ el.className = 'st wait'; el.textContent = 'Not in the app yet'; el.title = 'They haven’t signed in to app.trulyplaced.com with ' + want + '. If they used another email, set it as App email below.'; return; }
+    el.className = 'st applied'; el.textContent = 'Linked · seen ' + TP.ago(l.last_seen); el.title = 'Signed in to the app as ' + l.email + ' (first ' + TP.fmtDate(l.first_seen) + ')';
+  }, function(){ var el = $('#appSeen'); if(el) el.hidden = true; });
 }
 function factsCardHTML(c, first){
   var row = c.row, f = row.facts || {}, when = row.facts_confirmed_at;
@@ -3322,11 +3332,11 @@ function factsConfirm(btn){
 function tellAppProfile(row){
   if(!row) return;
   var fields = {}; APP_SYNC.forEach(function(k){ if(row[k]) fields[k] = row[k]; });
-  TP.fn('app-hook', {action:'push_to_app', kind:'profile', email:row.app_email || row.email, fields:fields}, 25000).then(function(){}, function(){});   // the app reads them again on its own when it can't be told
+  TP.fn('app-hook', {action:'push_to_app', kind:'profile', client_id:row.id}, 25000).then(function(){}, function(){});   // the app reads them again on its own when it can't be told
 }
 function tellAppFacts(row){
   if(!row || !row.facts_confirmed_at || !row.facts || !row.facts.first_name) return;
-  TP.fn('app-hook', {action:'push_to_app', kind:'facts', email:row.app_email || row.email, facts:row.facts}, 25000).then(function(){}, function(){});   // the app learns of them when the link is set up
+  TP.fn('app-hook', {action:'push_to_app', kind:'facts', client_id:row.id, facts:row.facts}, 25000).then(function(){}, function(){});   // the app learns of them when the link is set up
 }
 function factsForm(){
   var out = {};
@@ -5653,6 +5663,11 @@ function tellAppStatus(a){
   if(!a || a.source === 'ai' || !a.app_ref || a.status === 'draft') return;
   TP.fn('app-hook', {action:'push_to_app', kind:'team_status', ref:a.app_ref, status:a.status}, 25000).then(function(){}, function(){});
 }
+// a request from the app that won't be sent: deleted, or kept as a failed try — the client's app says so at once
+function tellAppEnded(a, status, reason){
+  if(!a || !a.app_ref || !a.requested_at) return;
+  TP.fn('app-hook', {action:'push_to_app', kind:'team_status', client_id:a.client_id, ref:a.app_ref, status:status, reason:reason || null}, 25000).then(function(){}, function(){});
+}
 function wdNote(a){
   var first = (C.row.full_name || '').split(' ')[0] || 'the client';
   if(a.mistake_at) return '<div class="note wdn"><b>Applied by mistake · ' + esc(TP.fmtDateTime(a.mistake_at)) + '</b>' + (a.mistake_note ? ' — ' + esc(a.mistake_note) : '') +
@@ -5720,6 +5735,7 @@ function delDraftRow(da, dc){
       bkDel('app_' + da.id);
       q(SB.from('applications').delete().eq('id', da.id).eq('status', 'draft').select('id')).then(function(r){
         if(!r || !r.length) throw {message:'It was already marked as applied, or deleted — refresh the page.'};
+        tellAppEnded(da, 'removed');
         dc.idx = null; refreshProgress(); if(C === dc && R.tab === 'applications' && !R.app) loadApps();
         TP.toast('Draft deleted', kept ? {undo:function(){ restoreItem(da.id).then(function(){ dc.idx = null; refreshProgress(); TP.toast('Draft restored'); if(C === dc && R.tab === 'applications' && !R.app) loadApps(); }, fail); }} : null);
       }, fail);
@@ -6446,6 +6462,7 @@ document.addEventListener('click', function(e){
           if(DS && DS.a === da){ DS.cur = null; DS.why = ''; clearTimeout(DS.retry); } bkDel('app_' + da.id);
           q(SB.from('applications').delete().eq('id', da.id).eq('status', 'draft').select('id')).then(function(r){
             if(!r || !r.length) throw {message:'It was already marked as applied, or deleted — refresh the page.'};
+            tellAppEnded(da, 'removed');
             dc.idx = null; refreshProgress(); if(C === dc) go(cUrl(dc.id, 'applications'), true);
             TP.toast('Draft deleted', kept ? {undo:function(){ restoreItem(da.id).then(function(){ dc.idx = null; refreshProgress(); TP.toast('Draft restored'); if(C === dc) go(cUrl(dc.id, 'app=' + da.id)); }, fail); }} : null);
           }, fail);
