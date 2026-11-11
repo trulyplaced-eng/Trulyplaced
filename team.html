@@ -662,6 +662,28 @@ a.li:hover,button.li:hover{background:var(--hover)}
 .aprecbox{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:16px;align-items:start}
 .aprecbox .shot img{width:100%;max-height:220px;object-fit:cover;object-position:top;border-radius:12px;border:1px solid var(--edge)}
 .aprecbox .rvs .rv{padding:8px 12px;font-size:13px}
+.aprecbox.noshot{grid-template-columns:minmax(0,1fr)}.aprecbox.noshot>div:first-child .hint{margin:0}
+/* the notes from the app (asked for in the app, the AI stopped, applied with the AI): their icon at text size */
+.note.aireq svg,.note.aihelp svg,.note.aiapp svg{width:16px;height:16px;flex:none;vertical-align:-3px;margin-right:6px}
+/* the divider between the job and the resume */
+@media (min-width:1101px){
+  .apgrid.split{grid-template-columns:minmax(320px,calc(var(--apl,42%) - 9px)) 18px minmax(360px,1fr) !important;column-gap:0}
+  .apgrid.split>.apmain{margin-right:4px}
+}
+.apdiv{display:none}
+@media (min-width:1101px){
+  .apdiv{display:block;position:sticky;top:12px;align-self:stretch;height:calc(100vh - 24px);min-height:540px;cursor:col-resize;touch-action:none;outline:none}
+  .apdiv::before{content:"";position:absolute;left:8px;top:0;bottom:0;width:2px;border-radius:2px;background:transparent;transition:background .15s}
+  .apdiv::after{content:"";position:absolute;left:5px;top:50%;width:8px;height:44px;margin-top:-22px;border-radius:6px;background:#cbd5e1;transition:background .15s}
+  .apdiv:hover::before,.apdiv:focus-visible::before,.apgrid.dragging .apdiv::before{background:#93c5fd}
+  .apdiv:hover::after,.apdiv:focus-visible::after,.apgrid.dragging .apdiv::after{background:#2563eb}
+}
+.apgrid.dragging{user-select:none;cursor:col-resize}.apgrid.dragging iframe{pointer-events:none}
+/* My day: the lists from the app, by client */
+.mdgrp .mdc{border-top:1px solid var(--line);padding:10px 0 4px}.mdgrp .mdc:first-of-type{border-top:0}
+.mdgrp .mdch{display:flex;align-items:center;gap:10px;padding:0 4px 6px}.mdgrp .mdch b{font-size:14px}.mdgrp .mdch .fine{color:var(--muted)}
+.mdgrp .mdall{margin-left:auto;display:inline-flex;align-items:center;gap:2px;font-size:13px;font-weight:500}
+.mdgrp .list .li{padding-left:44px}.mdgrp .li .t .m{font-weight:400}
 /* the resume, as the editor lays it out (editor.html?view=1): in view beside the job while the page scrolls */
 .apside{position:sticky;top:12px;display:flex;flex-direction:column;height:calc(100vh - 24px);min-height:540px;overflow:hidden;background:#fff;border:1px solid var(--edge);border-radius:16px;box-shadow:var(--sh-card)}
 .reshd{display:grid;gap:9px;padding:13px 14px;border-bottom:1px solid var(--line)}
@@ -2173,27 +2195,20 @@ function vMyDay(){
   };
   draw(); mdCrm(); mdCrmLoad();
   Promise.all([loadList(), wkLoad(ME.email)]).then(function(rs){ MDAY = rs[1]; draw(); }, function(e){ if($('#mdMine')) $('#mdMine').innerHTML = errBox(e); });
-  // jobs clients asked for in the app (Apply, for a client with a plan): oldest first — each one is the normal draft
-  // page with the job description already there; marked as applied, the client's app shows it Submitted
-  Promise.all([loadList().catch(function(){}), SB.from('applications').select('id,client_id,title,company,requested_at,picked_at').not('requested_at', 'is', null).eq('status', 'draft').order('requested_at', {ascending:true}).limit(100)]).then(function(rs){
-    var r = rs[1], el = $('#mdAsk'); if(!r || r.error || !el || R.page !== 'myday') return;
-    var L = r.data || [], names = {}; (LIST ? LIST.rows : []).forEach(function(c){ names[c.id] = c.full_name || c.email; });
-    el.innerHTML = L.length ? '<div class="card mdreq mdask"><h3>Asked for in the app <span class="st wait">' + L.length + '</span></h3><p class="hint">Your clients tapped Apply on these. Tailor the resume, apply by hand and mark each as applied — they see every step in their app. Counts as your work.</p><div class="list">' +
-      L.map(function(x){
-        return '<a class="li" href="' + esc(cUrl(x.client_id, 'app=' + x.id)) + '" data-go><span class="av" style="background:' + TP.hue(x.client_id) + '">' + esc(TP.initials(names[x.client_id] || '?', '')) + '</span>' +
-          '<div class="main"><div class="t">' + esc(names[x.client_id] || 'A client') + ' · ' + esc(x.title || 'Role') + (x.company ? ' at ' + esc(x.company) : '') + '</div><div class="m">Asked ' + esc(TP.ago(x.requested_at)) + (x.picked_at ? ' · started' : ' · not started yet') + '</div></div>' + I.ch + '</a>';
-      }).join('') + '</div></div>' : '';
-  }, function(){});
-  // the AI app's applications that stopped (a CAPTCHA, an emailed code, an account to make…) for clients whose team finishes
-  // them by hand: oldest first. Opening one is the normal draft page with the AI's resume and answers already there.
-  Promise.all([loadList().catch(function(){}), SB.from('applications').select('id,client_id,title,company,help_kind,help_reason,created_at').eq('source', 'assist').eq('status', 'draft').order('created_at', {ascending:true}).limit(50)]).then(function(rs){
-    var r = rs[1], el = $('#mdHelp'); if(!r || r.error || !el || R.page !== 'myday') return;
-    var L = r.data || [], names = {}; (LIST ? LIST.rows : []).forEach(function(c){ names[c.id] = c.full_name || c.email; });
-    el.innerHTML = L.length ? '<div class="card mdreq mdhelp"><h3>Needs our help <span class="st wait">' + L.length + '</span></h3><p class="hint">The AI app couldn’t finish these — finish each by hand (the resume and answers are ready on the draft) and mark it as applied. Counts as your work.</p><div class="list">' +
-      L.map(function(x){
-        return '<a class="li" href="' + esc(cUrl(x.client_id, 'app=' + x.id)) + '" data-go><span class="av" style="background:' + TP.hue(x.client_id) + '">' + esc(TP.initials(names[x.client_id] || '?', '')) + '</span>' +
-          '<div class="main"><div class="t">' + esc(names[x.client_id] || 'A client') + ' · ' + esc(x.title || 'Role') + (x.company ? ' at ' + esc(x.company) : '') + '</div><div class="m">Stopped at ' + esc(HELP_KIND[x.help_kind] || HELP_KIND.unknown) + (x.help_reason ? ' — ' + esc(x.help_reason) : '') + ' · ' + esc(TP.ago(x.created_at)) + '</div></div>' + I.ch + '</a>';
-      }).join('') + '</div></div>' : '';
+  // jobs clients asked for in the app, and the AI's applications that stopped (a CAPTCHA, an emailed code…): grouped by
+  // client, the client with the newest first; each shows its three newest, then "See all" (their Applications, filtered)
+  Promise.all([loadList().catch(function(){}),
+    SB.from('applications').select('id,client_id,title,company,requested_at,picked_at').not('requested_at', 'is', null).eq('status', 'draft').order('requested_at', {ascending:false}).limit(500),
+    SB.from('applications').select('id,client_id,title,company,help_kind,help_reason,created_at').eq('source', 'assist').eq('status', 'draft').order('created_at', {ascending:false}).limit(300)]).then(function(rs){
+    if(R.page !== 'myday') return;
+    var names = {}; (LIST ? LIST.rows : []).forEach(function(c){ names[c.id] = c.full_name || c.email; });
+    var ask = rs[1] && !rs[1].error ? rs[1].data || [] : [], help = rs[2] && !rs[2].error ? rs[2].data || [] : [];
+    mdGroups($('#mdAsk'), ask, names, {cls:'mdask', title:'Asked for in the app', src:'req', at:'requested_at',
+      hint:'Your clients tapped Apply for me on these. Tailor the resume, apply by hand and mark each as applied — they see every step in their app. Counts as your work.',
+      line:function(x){ return 'Asked ' + TP.ago(x.requested_at) + (x.picked_at ? ' · started' : ' · not started yet'); }});
+    mdGroups($('#mdHelp'), help, names, {cls:'mdhelp', title:'Needs our help', src:'assist', at:'created_at',
+      hint:'The AI app couldn’t finish these — finish each by hand (the resume and answers are ready on the draft) and mark it as applied. Counts as your work.',
+      line:function(x){ return 'Stopped at ' + (HELP_KIND[x.help_kind] || HELP_KIND.unknown) + (x.help_reason ? ' — ' + x.help_reason : '') + ' · ' + TP.ago(x.created_at); }});
   }, function(){});
   // clients waiting on an answer about their resume (asked from their workspace), oldest first
   Promise.all([loadList().catch(function(){}), SB.from('resume_requests').select('id,client_id,kind,message,created_at').eq('status', 'open').order('created_at', {ascending:true}).limit(50)]).then(function(rs){
@@ -4581,6 +4596,7 @@ var AP_W = [['', 'Any time'], ['today', 'Sent today'], ['week', 'Sent this week'
 function tApps(){
   var c = C, p = c.prog || {};
   if(AP.c !== c.id){ AP = {f:'all', q:'', n:50, c:c.id, w:'', mine:false, sel:null}; }
+  if(AP_NEXT_SRC){ AP.src = AP_NEXT_SRC; AP_NEXT_SRC = null; AP.f = AP.src === 'req' || AP.src === 'assist' ? 'draft' : AP.f; }   // from My day's "See all"
   V.innerHTML = '<div class="stats"><div class="stat"><b>' + (p.done || 0) + (c.row.plan_total ? ' <span style="font-size:14px;color:var(--muted)">/ ' + c.row.plan_total + '</span>' : '') + '</b><span>applications sent</span></div>' +
       '<div class="stat"><b>' + (p.today || 0) + '</b><span>sent today</span></div><div class="stat"><b>' + (p.drafts || 0) + '</b><span>drafts in progress</span></div><div class="stat"><b>' + (p.interviews || 0) + '</b><span>interviews and offers</span></div></div>' +
     '<div class="tools" style="margin-top:0"><input class="inp" id="apQ" type="search" placeholder="Search role or company" value="' + esc(AP.q) + '" autocomplete="off">' +
@@ -5485,7 +5501,7 @@ function drawSent(){
   V.innerHTML = '<div class="aprec apx"><div class="aptop"><a class="btn sm ghost" href="' + esc(cUrl(C.id, 'applications')) + '" data-go>' + I.back + 'Applications</a><div id="lkNext"></div></div>' +
     '<div class="apgrid"><div class="apmain">' + jobCard() + '<div id="apMail" hidden></div>' + jobTabs(jd) +
     '<div class="card"><div class="ch"><h3>Confirmation and record</h3><span class="lock">' + I.lock + 'Sent ' + esc(TP.fmtDateTime(A.applied_at)) + ' — what was sent can’t be changed</span></div>' +
-      '<div class="aprecbox"><div>' + (shots.length === 1 ? '<div class="shot1">' + [0].map(function(i){ return '<a class="shot" data-file="' + esc(shots[0]) + '" target="_blank" rel="noopener"><img data-file="' + esc(shots[0]) + '" alt="Confirmation screenshot"></a>' + '<button type="button" class="x" data-act="wkshotx" data-i="' + i + '" aria-label="Remove screenshot ' + (i + 1) + '" title="Not this job’s? Remove it">×</button>'; })[0] + '</div><p class="fine" style="margin-top:6px">Click to open it full size · × takes off one that isn’t this job’s.</p>'
+      '<div class="aprecbox' + (shots.length ? '' : ' noshot') + '"><div>' + (shots.length === 1 ? '<div class="shot1">' + [0].map(function(i){ return '<a class="shot" data-file="' + esc(shots[0]) + '" target="_blank" rel="noopener"><img data-file="' + esc(shots[0]) + '" alt="Confirmation screenshot"></a>' + '<button type="button" class="x" data-act="wkshotx" data-i="' + i + '" aria-label="Remove screenshot ' + (i + 1) + '" title="Not this job’s? Remove it">×</button>'; })[0] + '</div><p class="fine" style="margin-top:6px">Click to open it full size · × takes off one that isn’t this job’s.</p>'
         : shots.length ? '<div class="shotgrid ro">' + shots.map(function(p, i){ return '<div class="shotc"><a class="shot" data-file="' + esc(p) + '" target="_blank" rel="noopener" title="Screenshot ' + (i + 1) + ' — click to open it full size"><img data-file="' + esc(p) + '" alt="Confirmation screenshot ' + (i + 1) + '"></a>' + '<button type="button" class="x" data-act="wkshotx" data-i="' + i + '" aria-label="Remove screenshot ' + (i + 1) + '" title="Not this job’s? Remove it">×</button>' + '</div>'; }).join('') + '</div><p class="fine" style="margin-top:6px">' + shots.length + ' screenshots · click one to open it full size · × takes off one that isn’t this job’s.</p>'
         : '<p class="hint">No screenshot was saved.</p>') + '</div>' +
       (A.source === 'ai' ? '<div class="note aiapp"><span>' + I.lock + '<b>Applied by ' + esc(C.row.full_name.split(' ')[0] || 'the client') + ' with the AI app</b> — no employee involved, and not counted toward the plan. The record is the app’s: only the status changes here.</span></div>' : '') +
@@ -6080,6 +6096,54 @@ function auLead(btn){
     TP.toast((p.name || 'They') + ' added to Leads'); auList();
   }, function(e){ TP.toast(TP.errText(e)); });
 }
+// one My day list from the app, by client: the client with the newest at the top, their three newest under them
+function mdGroups(el, L, names, o){
+  if(!el) return;
+  if(!L.length){ el.innerHTML = ''; return; }
+  var by = {}, order = [];
+  L.forEach(function(x){ if(!by[x.client_id]){ by[x.client_id] = []; order.push(x.client_id); } by[x.client_id].push(x); });   // L is newest first
+  el.innerHTML = '<div class="card mdreq mdgrp ' + o.cls + '"><h3>' + esc(o.title) + ' <span class="st wait">' + L.length + '</span>' +
+      (order.length > 1 ? ' <span class="fine">· ' + order.length + ' clients</span>' : '') + '</h3><p class="hint">' + esc(o.hint) + '</p>' +
+    order.map(function(cid){
+      var xs = by[cid], nm = names[cid] || 'A client';
+      return '<div class="mdc"><div class="mdch"><span class="av sm" style="background:' + TP.hue(cid) + '">' + esc(TP.initials(nm, '')) + '</span><b>' + esc(nm) + '</b>' +
+          '<span class="fine">' + xs.length + ' job' + (xs.length === 1 ? '' : 's') + ' · newest ' + esc(TP.ago(xs[0][o.at])) + '</span>' +
+          (xs.length > 3 ? '<a class="mdall" href="' + esc(cUrl(cid, 'applications')) + '" data-go data-apsrc="' + o.src + '">See all ' + xs.length + I.chev.replace('<svg', '<svg class="chev"') + '</a>' : '') + '</div>' +
+        '<div class="list">' + xs.slice(0, 3).map(function(x){
+          return '<a class="li" href="' + esc(cUrl(cid, 'app=' + x.id)) + '" data-go><div class="main"><div class="t">' + esc(x.title || 'Role') + (x.company ? ' <span class="m">at ' + esc(x.company) + '</span>' : '') + '</div>' +
+            '<div class="m">' + esc(o.line(x)) + '</div></div>' + I.chev.replace('<svg', '<svg class="chev"') + '</a>';
+        }).join('') + '</div></div>';
+    }).join('') + '</div>';
+  // "See all": that client's Applications, filtered to these
+  $$('[data-apsrc]', el).forEach(function(a){ a.addEventListener('click', function(){ AP_NEXT_SRC = a.getAttribute('data-apsrc'); }); });
+}
+var AP_NEXT_SRC = null;
+/* the application page's two sides (the job and sending it; the resume), split by a divider the employee can drag.
+   The width is kept in this browser; double-click puts it back. Wide screens only (narrow ones stack the two). */
+var AP_SPLIT_KEY = 'tp_apsplit', AP_SPLIT_DEF = 0.42;
+function apSplit(grid){
+  var side = grid && $('.apside', grid); if(!side || grid.classList.contains('split')) return;
+  var div = document.createElement('div');
+  div.className = 'apdiv'; div.setAttribute('role', 'separator'); div.setAttribute('aria-orientation', 'vertical'); div.setAttribute('tabindex', '0');
+  div.setAttribute('aria-label', 'Drag to resize the job and the resume'); div.title = 'Drag to resize · double-click to reset';
+  grid.insertBefore(div, side); grid.classList.add('split');
+  var set = function(r){ r = Math.max(0.28, Math.min(0.66, r)); grid.style.setProperty('--apl', (r * 100).toFixed(2) + '%'); div.setAttribute('aria-valuenow', Math.round(r * 100)); return r; };
+  var ratio = set(Number(TP.lsGet(AP_SPLIT_KEY, AP_SPLIT_DEF)) || AP_SPLIT_DEF);
+  div.addEventListener('pointerdown', function(e){
+    e.preventDefault(); div.setPointerCapture(e.pointerId); grid.classList.add('dragging');
+    var box = grid.getBoundingClientRect();
+    var move = function(ev){ ratio = set((ev.clientX - box.left) / box.width); };
+    var up = function(){ grid.classList.remove('dragging'); div.removeEventListener('pointermove', move); div.removeEventListener('pointerup', up); TP.lsSet(AP_SPLIT_KEY, ratio); };
+    div.addEventListener('pointermove', move); div.addEventListener('pointerup', up);
+  });
+  div.addEventListener('dblclick', function(){ ratio = set(AP_SPLIT_DEF); TP.lsSet(AP_SPLIT_KEY, ratio); });
+  div.addEventListener('keydown', function(e){
+    if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault(); ratio = set(ratio + (e.key === 'ArrowLeft' ? -0.02 : 0.02)); TP.lsSet(AP_SPLIT_KEY, ratio);
+  });
+}
+// whenever an application page is drawn (draft or sent), its divider goes in
+if(window.MutationObserver) new MutationObserver(function(){ var g = document.querySelector('.apgrid:not(.split)'); if(g) apSplit(g); }).observe(document.getElementById('view') || document.body, {childList:true, subtree:true});
 function vLeads(){
   setTitle('Leads', null);
   V.innerHTML = '<div class="pageh"><div class="grow"><h1>Leads</h1><div class="sub" id="ldSub">Loading leads…</div></div>' +
@@ -6308,7 +6372,8 @@ function taskDel(id){
 function mdCrm(){
   var el = $('#mdCrm'); if(!el || R.page !== 'myday') return;
   var d = istYmd(Date.now());
-  var tasks = (TK.rows || []).filter(function(t){ return !t.done_at && t.assignee === ME.email && t.due && t.due <= d; });
+  // the app's own tasks (a request, an application the AI couldn't finish) are already on My day, grouped by client
+  var tasks = (TK.rows || []).filter(function(t){ return !t.done_at && t.assignee === ME.email && t.due && t.due <= d && t.created_by !== 'app'; });
   var leads = ME.owner ? (LD.rows || []).filter(function(l){ return ldOpen(l) && ((l.call_at && istYmd(l.call_at) === d) || (l.follow_up && l.follow_up <= d)); }) : [];
   if(!tasks.length && !leads.length){ el.innerHTML = ''; return; }
   el.innerHTML = '<div class="mdg mdcrm">' +
