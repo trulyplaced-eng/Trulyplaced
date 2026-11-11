@@ -661,6 +661,57 @@ h1{font-weight:650}
   .tbl.queue .li .main{grid-area:main}.tbl.queue .li .qst{grid-area:st}.tbl.queue .li .cwho{grid-area:who}.tbl.queue .li .qdue{grid-area:due}
   .tbl.queue .li > .m,.tbl.queue .li > .chev{display:none}
 }
+/* Workload */
+.tbl.wltbl .thead,.tbl.wltbl .li{grid-template-columns:minmax(180px,1.4fr) minmax(170px,1.3fr) 70px 90px 80px 110px 150px 170px}
+.tbl.wltbl .li{align-items:center}.tbl.wltbl .li.off{opacity:.6}
+.tbl.wltbl .cwho{display:flex;align-items:center;gap:8px;min-width:0;text-decoration:none;color:inherit}.tbl.wltbl .cwho .main{display:flex;flex-direction:column;min-width:0}
+.tbl.wltbl .cwho .t{font-weight:500;color:var(--ink)}.tbl.wltbl .cwho:hover .t{color:var(--blue)}
+.tbl.wltbl .num.late{color:var(--overdue);font-weight:600}
+.wlst{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0}.wlcov{font-size:var(--fs-12)}
+.wlcov .lnk,.wmlist + .lnk,#wmAll{border:0;background:none;padding:0;font:inherit;color:var(--blue);cursor:pointer}.wlcov .lnk:hover,#wmAll:hover{text-decoration:underline}
+.wlcap{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:6px}.wlcap .prog{height:6px}.wlcap small{color:var(--muted)}
+.wlacts{display:flex;gap:4px;justify-content:flex-end}
+.wlpool{background:var(--g-50)}.av.wlnone{background:var(--g-300);color:var(--g-700)}
+.wlalerts{display:grid;gap:8px;margin-bottom:16px}.wlal{display:flex;align-items:center;gap:12px}.wlal .btn{flex:none}
+.wmlist{display:grid;gap:4px;max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:var(--r-ctl);padding:8px}
+.wmc{padding:4px;border-radius:var(--r-ctl)}.wmc:hover{background:var(--g-50)}
+.honote{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}.honote > svg{width:18px;height:18px;flex:none;margin-top:2px}
+.src.cov{background:var(--stg-ready-bg);color:var(--stg-ready);margin-left:0}
+/* the draft's action bar: in view at the bottom of the job's side */
+.apact{position:sticky;bottom:12px;z-index:5;display:flex;align-items:center;gap:8px;margin-top:16px;padding:8px 12px;background:#fff;border:1px solid var(--line-2);border-radius:var(--r-card);box-shadow:var(--sh-float)}
+.apact .apbc{display:flex;flex-direction:column;min-width:0}.apact .apbc b{color:var(--ink);font-size:var(--fs-13);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.apact .apbc span{font-size:var(--fs-12);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.apact{flex-wrap:wrap;min-width:0}.apact .apbc{flex:1 1 120px}.apact .grow{display:none}.apgrid > .apmain{min-width:0}
+.apact .btn{flex:none}.apact kbd,.khl kbd{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 4px;margin-left:4px;border-radius:4px;border:1px solid var(--line-2);background:var(--g-50);font:500 11px/1 var(--ui);color:var(--muted)}
+.apact .btn.ok kbd{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.3);color:#fff}
+@media (max-width:1440px){ .apact kbd{display:none} }
+@media (max-width:900px){ .apact{display:none} }   /* a phone has its own bar at the bottom (.apbar) */
+html:has(#apBar){scroll-padding-bottom:88px}
+@media (min-width:901px){ body:has(#apBar) .toast{bottom:88px} }   /* scrolling to something keeps it clear of the bar */
+.fastmk{margin-top:12px;font-size:var(--fs-13);color:var(--body)}
+.khl{display:grid;gap:4px;margin-top:12px}.khl h3{font-size:var(--fs-13);color:var(--muted);margin:12px 0 4px;font-weight:600}.kh{display:flex;justify-content:space-between;gap:16px;padding:4px 0;border-bottom:1px solid var(--line);font-size:var(--fs-13)}.kh kbd{margin:0 2px 0 0}
+.qrow.kf{outline:2px solid var(--blue);outline-offset:-2px}
+.tbl.queue.picking .li{cursor:pointer}.tbl.queue.picking .li.on{background:var(--blue-soft)}.qpick{position:absolute;left:12px;top:50%;transform:translateY(-50%)}
+.tbl.queue.picking .li{padding-left:40px}.tbl.queue.picking.g-client .li{padding-left:52px}
+.qbulk{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px 12px;border:1px solid var(--blue-line);background:var(--blue-soft);border-radius:var(--r-ctl)}
+.qbulk .lnk,#qAll{border:0;background:none;padding:0;font:inherit;color:var(--blue);cursor:pointer}
+.swa{margin-top:8px;max-height:30vh;overflow:auto}.swa:empty{display:none}.swh{padding:8px 12px 4px;font-size:var(--fs-12);font-weight:600;color:var(--muted)}.swa .li .st{margin-left:auto}
+/* Review, and your day on My queue */
+.tbl.rvst .thead,.tbl.rvst .li{grid-template-columns:minmax(160px,2fr) 90px 120px 100px 110px}.tbl.rvst .cwho{display:flex;align-items:center;gap:8px}
+.tbl.rvst .num.late,.lnk.late{color:var(--overdue);font-weight:600}
+.rvg{margin-top:16px}.tbl.rvtbl .li{grid-template-columns:minmax(0,2fr) 150px 120px auto;align-items:center}.tbl.rvtbl .li.done{opacity:.6}
+.tbl.rvtbl .main{display:flex;flex-direction:column;min-width:0;text-decoration:none;color:inherit}.tbl.rvtbl .main .t{font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rvacts{display:flex;gap:4px;justify-content:flex-end}
+.qme{display:flex;align-items:center;gap:16px;margin-bottom:16px;padding:12px 16px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff}
+.qmet{display:flex;align-items:baseline;gap:6px;flex:none}.qmet b{font-size:var(--fs-20);color:var(--ink);font-variant-numeric:tabular-nums}.qmet span{color:var(--muted);font-size:var(--fs-13)}
+.qme .prog{flex:1;max-width:320px}.qme .lnk{border:0;background:none;padding:0;font:inherit;cursor:pointer;margin-left:auto}.qme .fine{margin-left:auto}
+.dot.k-review_ok{background:var(--stg-confirmed-dot)}.dot.k-review_issue{background:var(--stg-blocked-dot)}
+.horeq{margin-bottom:16px}.horeq .li{align-items:center;gap:8px}.horeq .li .main{min-width:0}.horeq .li .t{white-space:normal}
+@media (max-width:1100px){
+  .tbl.wltbl .thead{display:none}
+  .tbl.wltbl .li{grid-template-columns:minmax(0,1fr) auto;row-gap:6px}
+  .tbl.wltbl .li > .num,.tbl.wltbl .li > .m{display:none}
+  .tbl.wltbl .wlcap,.tbl.wltbl .wlacts{grid-column:1/-1}.tbl.wltbl .wlacts{justify-content:flex-start}
+}
 /* My day: the lists from the app, by client */
 .mdgrp .mdc{border-top:1px solid var(--line);padding:12px 0 4px}.mdgrp .mdc:first-of-type{border-top:0}
 .mdgrp .mdch{display:flex;align-items:center;gap:12px;padding:0 4px 8px}.mdgrp .mdch b{font-size:var(--fs-14)}.mdgrp .mdch .fine{color:var(--muted)}
@@ -1609,6 +1660,8 @@ body.sbmin .runpill span{display:none}
 "use strict";
 var $ = TP.$, $$ = TP.$$, esc = TP.esc, I = TP.I, q = TP.q;
 var J = {
+  review:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.7 0 3.3.47 4.66 1.29"/></svg>',
+  load:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 11h5M16 15h5M18 7h3"/></svg>',
   queue:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/><path d="m17 16 2 2 3-4"/></svg>',
   ops:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15v2M11 11v6M15 8v9M19 5v12"/></svg>',   // Operations
   // the job description's sections, as the reference shows them
@@ -1698,7 +1751,9 @@ function meMenu(btn){
   $('#me').insertAdjacentHTML('beforeend', '<div class="memenu" id="meMenu" role="menu" aria-label="Your menu">' +
     it('/team.html#myday', J.day, 'My day', 'Your work, and who still needs an application') +
     '<button role="menuitem" type="button" data-act="switch">' + J.swap + '<span>Switch client<small>Ctrl K</small></span></button>' +
+    '<button role="menuitem" type="button" data-act="hoaway">' + J.load + '<span>Set my status<small>Away or on leave, and who covers</small></span></button>' +
     it('/team.html#tasks', J.clip, 'Tasks') + it('/team.html#clients', I.users, 'All clients') + (ME.owner ? it('/team.html#leads', J.star, 'Leads') + it('/team.html#appusers', J.bag, 'App users', 'Who signed up to the AI app') + it('/team.html#ops', J.ops, 'Operations') + it('/team.html#team', I.team, 'Team') : '') +
+    '<button role="menuitem" type="button" data-act="keys">' + J.clip + '<span>Keyboard shortcuts<small>?</small></span></button>' +
     '<button role="menuitem" type="button" data-act="out">' + I.out + '<span>Sign out</span></button></div>');
   btn.setAttribute('aria-expanded', 'true');
   var first = $('#meMenu [role=menuitem]'); if(first) first.focus();
@@ -1727,7 +1782,7 @@ function route(){
     var emp = !!ME && ME.owner === false, oe = /^ops\/emp=(.+)$/.exec(h);
     if(oe){ r.page = emp ? 'myday' : 'opsemp'; try{ r.emp = decodeURIComponent(oe[1]).toLowerCase(); }catch(e){ r.page = 'ops'; } return r; }   // one employee on Operations
     if(h === 'appusers' || h === 'appusers/reports'){ r.page = emp ? 'myday' : 'appusers'; r.sub = h === 'appusers/reports' ? 'reports' : ''; return r; }   // the AI app's users, the owners'
-    r.page = h === 'team' || h === 'leads' || h === 'ops' || h === 'opsclients' || h === 'opsmistakes' ? (emp ? 'myday' : h) : h === 'tasks' ? 'tasks' : h === 'queue' || (emp && !h) ? 'queue' : h === 'myday' ? 'myday' : 'clients';   // Leads, Operations and Team are the owners'
+    r.page = h === 'review' ? (emp ? 'queue' : 'review') : h === 'workload' ? (emp ? 'queue' : 'workload') : h === 'team' || h === 'leads' || h === 'ops' || h === 'opsclients' || h === 'opsmistakes' ? (emp ? 'myday' : h) : h === 'tasks' ? 'tasks' : h === 'queue' || (emp && !h) ? 'queue' : h === 'myday' ? 'myday' : 'clients';   // Leads, Operations and Team are the owners'
     return r;
   }
   var m = /^app=([0-9a-f-]{36})$/i.exec(h);
@@ -1796,9 +1851,9 @@ function draw(){
     '<a href="/team.html#tasks" data-go title="Tasks" class="' + (tk ? 'on' : '') + '"' + (tk ? ' aria-current="page"' : '') + '>' + J.clip + '<span>Tasks</span>' + qBadge('tasks') + '</a>' +
     '<a href="/team.html#clients" data-go title="Clients" class="' + (cl ? 'on' : '') + '"' + (cl ? ' aria-current="page"' : '') + '>' + I.users + '<span>Clients</span>' + qBadge('unassigned') + '</a><div class="otabs" id="otabs" hidden></div>' +
     (ME.owner ? '<div class="ngl">Sales</div><a href="/team.html#leads" data-go title="Leads" class="' + (ld ? 'on' : '') + '"' + (ld ? ' aria-current="page"' : '') + '>' + J.star + '<span>Leads</span></a><a href="/team.html#appusers" data-go title="App users" class="' + (au ? 'on' : '') + '"' + (au ? ' aria-current="page"' : '') + '>' + J.bag + '<span>App users</span></a>' : '') +
-    (ME.owner ? '<div class="ngl">Organisation</div><a href="/team.html#ops" data-go title="Operations" class="' + (op ? 'on' : '') + '"' + (op ? ' aria-current="page"' : '') + '>' + J.ops + '<span>Operations</span></a><a href="/team.html#team" data-go title="Team" class="' + (tm ? 'on' : '') + '"' + (tm ? ' aria-current="page"' : '') + '>' + I.team + '<span>Team</span></a>' : '');   // the Team page is the owners'; the titles name the icons when the sidebar is a rail
+    (ME.owner ? '<div class="ngl">Organisation</div><a href="/team.html#workload" data-go title="Workload" class="' + (R.page === 'workload' ? 'on' : '') + '"' + (R.page === 'workload' ? ' aria-current="page"' : '') + '>' + J.load + '<span>Workload</span>' + wlBadge() + '</a><a href="/team.html#review" data-go title="Review" class="' + (R.page === 'review' ? 'on' : '') + '"' + (R.page === 'review' ? ' aria-current="page"' : '') + '>' + J.review + '<span>Review</span></a><a href="/team.html#ops" data-go title="Operations" class="' + (op ? 'on' : '') + '"' + (op ? ' aria-current="page"' : '') + '>' + J.ops + '<span>Operations</span></a><a href="/team.html#team" data-go title="Team" class="' + (tm ? 'on' : '') + '"' + (tm ? ' aria-current="page"' : '') + '>' + I.team + '<span>Team</span></a>' : '');   // the Team page is the owners'; the titles name the icons when the sidebar is a rail
   drawOpenTabs();
-  if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : R.page === 'queue' ? vQueue() : md ? vMyDay() : tk ? vTasks() : ld ? vLeads() : au ? vAppUsers() : R.page === 'ops' ? vOps() : R.page === 'opsemp' ? vOpsEmp(R.emp) : R.page === 'opsclients' ? vOpsClients() : R.page === 'opsmistakes' ? vOpsMistakes() : vClients(); }
+  if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : R.page === 'queue' ? vQueue() : R.page === 'workload' ? vWorkload() : R.page === 'review' ? vReview() : md ? vMyDay() : tk ? vTasks() : ld ? vLeads() : au ? vAppUsers() : R.page === 'ops' ? vOps() : R.page === 'opsemp' ? vOpsEmp(R.emp) : R.page === 'opsclients' ? vOpsClients() : R.page === 'opsmistakes' ? vOpsMistakes() : vClients(); }
   vClient();
 }
 // phones: a top bar with the client and Switch, and the sections along the bottom
@@ -1809,7 +1864,7 @@ function drawPhone(c){
       '<button class="icb" type="button" data-act="switch" title="Switch client">' + J.swap + '<span class="sr">Switch client</span></button>' : '<span class="grow"></span>') +
     '<button class="icb" type="button" data-act="out" title="Sign out">' + I.out + '<span class="sr">Sign out</span></button>';
   var items = c ? TABS.map(function(t){ return [cUrl(c.id, t[0]), t[3] || t[1], t[2], R.tab === t[0]]; })
-    : [['/team.html#queue', 'Queue', J.queue, R.page === 'queue'], ['/team.html#myday', 'My day', J.day, R.page === 'myday'], ['/team.html#tasks', 'Tasks', J.clip, R.page === 'tasks'], ['/team.html#clients', 'Clients', I.users, R.page === 'clients']].concat(ME.owner ? [['/team.html#leads', 'Leads', J.star, R.page === 'leads'], ['/team.html#appusers', 'App users', J.bag, R.page === 'appusers'], ['/team.html#ops', 'Operations', J.ops, /^ops/.test(R.page || '')], ['/team.html#team', 'Team', I.team, R.page === 'team']] : []);
+    : [['/team.html#queue', 'Queue', J.queue, R.page === 'queue'], ['/team.html#myday', 'My day', J.day, R.page === 'myday'], ['/team.html#tasks', 'Tasks', J.clip, R.page === 'tasks'], ['/team.html#clients', 'Clients', I.users, R.page === 'clients']].concat(ME.owner ? [['/team.html#leads', 'Leads', J.star, R.page === 'leads'], ['/team.html#appusers', 'App users', J.bag, R.page === 'appusers'], ['/team.html#workload', 'Workload', J.load, R.page === 'workload'], ['/team.html#review', 'Review', J.review, R.page === 'review'], ['/team.html#ops', 'Operations', J.ops, /^ops/.test(R.page || '')], ['/team.html#team', 'Team', I.team, R.page === 'team']] : []);
   $('#tabbar').innerHTML = items.map(function(n){ return '<a href="' + esc(n[0]) + '" data-go class="' + (n[3] ? 'on' : '') + '"' + (n[3] ? ' aria-current="page"' : '') + '>' + n[2] + '<span>' + n[1] + '</span></a>'; }).join('');
 }
 function setTitle(t, c){
@@ -2323,9 +2378,10 @@ function vOps(){
 }
 // the employee picker beside a client: changing it assigns, moves or takes them off, after saying so
 function assignSel(cid, cur, id){
-  var emps = TEAMROWS.filter(function(t){ return t.role !== 'owner' && (t.active || t.email === cur); });
+  var emps = wlSort(TEAMROWS.filter(function(t){ return t.role !== 'owner' && (t.active || t.email === cur); }));
+  if(!WL && ME && ME.owner) wlLoad().then(function(){ $$('select[data-asg]').forEach(function(sel){ $$('option[value]', sel).forEach(function(o){ if(o.value) o.textContent = wlLabel(o.value); }); }); }, function(){});
   return '<select class="asel" data-asg="' + esc(cid) + '" data-cur="' + esc(cur || '') + '"' + (id ? ' id="' + id + '"' : '') + ' aria-label="Employee for this client"><option value="">' + (cur ? 'Nobody (owners only)' : 'Assign to…') + '</option>' +
-    emps.map(function(t){ return '<option value="' + esc(t.email) + '"' + (t.email === cur ? ' selected' : '') + '>' + esc(t.full_name || t.email) + (t.active ? '' : ' (access off)') + '</option>'; }).join('') + '</select>';
+    emps.map(function(t){ return '<option value="' + esc(t.email) + '"' + (t.email === cur ? ' selected' : '') + '>' + esc(wlLabel(t.email)) + '</option>'; }).join('') + '</select>';
 }
 function assignTo(cid, emp, name, sel){
   var cur = sel ? sel.getAttribute('data-cur') : empOf(cid);
@@ -2686,8 +2742,8 @@ function progOf(id){
 }
 function switcher(){
   var all = (LIST && LIST.rows) || [];
-  var m = TP.modal('<h2>Find a client</h2><p>Type a name or email, then Enter. Ctrl+click (or middle-click) opens them in a new browser tab.</p>' +
-    '<input class="inp" id="swQ" type="search" placeholder="Find a client" style="margin-top:16px" autocomplete="off"><div id="swL" class="list" style="margin-top:12px;max-height:52vh;overflow:auto"></div>');
+  var m = TP.modal('<h2>Find</h2><p>A client’s name or email, or an application’s role or company; Enter opens the first. Ctrl+click (or middle-click) opens them in a new browser tab.</p>' +
+    '<input class="inp" id="swQ" type="search" placeholder="A client, or an application’s role or company" style="margin-top:16px" autocomplete="off"><div id="swL" class="list" style="margin-top:12px;max-height:40vh;overflow:auto"></div><div id="swA" class="list swa"></div>');
   function draw(){
     var box = $('#swQ'); if(!box) return;   // the list can arrive after the dialog was closed
     var qq = box.value.toLowerCase().trim(), open = openList().map(function(x){ return x.id; });
@@ -2696,7 +2752,21 @@ function switcher(){
       .sort(function(a, b){ return (open.indexOf(b.id) > -1) - (open.indexOf(a.id) > -1); }).slice(0, 60);
     $('#swL').innerHTML = rows.map(function(c){ return '<a class="li" href="' + esc(cUrl(c.id)) + '" data-go data-mclose="0"><span class="av sm" style="background:' + TP.hue(c.id) + '">' + esc(TP.initials(c.full_name, c.email)) + '</span><div class="main"><div class="t">' + esc(c.full_name || c.email) + '</div><div class="m">' + esc(c.email || 'open in this tab') + '</div></div>' + (c.id === (C && C.id) ? '<span class="tag">now</span>' : '') + '</a>'; }).join('') || '<p class="fine" style="padding:16px">No one matches.</p>';
   }
-  $('#swQ').addEventListener('input', draw);
+  var apT = null, apN = 0;
+  var apps = function(){
+    var qq = ($('#swQ') || {}).value || '', n = ++apN; qq = qq.trim();
+    var box = $('#swA'); if(!box) return;
+    if(qq.length < 2){ box.innerHTML = ''; return; }
+    var pat = '*' + qq.replace(/[*,()%]/g, ' ') + '*';
+    q(SB.from('applications').select('id,client_id,title,company,status,submit_status,source,requested_at,picked_at,mistake_at,applied_at').or('title.ilike.' + pat + ',company.ilike.' + pat).order('created_at', {ascending:false}).limit(12)).then(function(rows){
+      if(n !== apN || !$('#swA')) return;
+      var names = {}; (LIST ? LIST.rows : []).forEach(function(c){ names[c.id] = c.full_name || c.email; });
+      $('#swA').innerHTML = (rows || []).length ? '<div class="swh">Applications</div>' + rows.map(function(a){
+        return '<a class="li" href="' + esc(cUrl(a.client_id, 'app=' + a.id)) + '" data-go data-mclose="0">' + coLogo(a.company, '') + '<div class="main"><div class="t">' + esc(a.title || 'Role') + (a.company ? ' <span class="m">at ' + esc(a.company) + '</span>' : '') + '</div><div class="m">' + esc(names[a.client_id] || 'A client') + (a.applied_at ? ' · sent ' + esc(TP.fmtDate(a.applied_at)) : '') + '</div></div>' + stagePill(a) + '</a>';
+      }).join('') : '';
+    }, function(){});
+  };
+  $('#swQ').addEventListener('input', function(){ draw(); clearTimeout(apT); apT = setTimeout(apps, 180); });
   $('#swQ').addEventListener('keydown', function(e){ if(e.key === 'Enter'){ var a = $('#swL a'); if(a){ TP.closeModal(); go(a.getAttribute('href')); } } });
   m.addEventListener('click', function(e){ var a = e.target.closest('a[data-go]'); if(a && !(e.ctrlKey || e.metaKey || e.button === 1)) TP.closeModal(); });
   draw();
@@ -2707,7 +2777,7 @@ function switcher(){
    Like the dashboard on Scout Better. Counted from the client's applications, so it always agrees with the Applications tab. */
 var DB = {by:'week'};
 function tDash(){
-  var c = C;
+  var c = C; setTimeout(function(){ hoNote(c); }, 0);
   V.innerHTML = '<div class="stats" id="dbS">' + dashStats(c, null) + '</div>' +
     '<div class="card dchart"><div class="row" style="align-items:flex-start"><div class="grow"><h3>Applications sent</h3><p class="hint" id="dbH">&nbsp;</p></div>' +
       '<div class="seg" id="dbBy">' + [['month', 'Monthly'], ['week', 'Weekly'], ['day', 'Daily']].map(function(o){ return '<button type="button" data-by="' + o[0] + '" class="' + (DB.by === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</div></div>' +
@@ -2837,7 +2907,8 @@ function empCard(c){
     var cur = rows.filter(function(r){ return !r.ended_at; })[0], first = (c.row.full_name || '').split(' ')[0] || 'them';
     box.innerHTML = (ME.owner
         ? '<p class="hint">Only the employee assigned here (and the owners) can open ' + esc(first) + ' — their profile, resumes, Jobs and applications. What someone already sent stays theirs if ' + esc(first) + ' moves to someone else.</p><div class="field" style="max-width:300px"><label for="pfAsg">Works on ' + esc(first) + '</label>' + assignSel(c.id, cur ? cur.employee : '', 'pfAsg') + '</div>'
-        : '<p class="hint">' + (cur && cur.employee === ME.email ? esc(first) + ' is your client. ' : '') + 'Only the owners change who works on a client.</p>') +
+        : '<p class="hint">' + (cur && cur.employee === ME.email ? esc(first) + ' is your client. Handing them to someone else goes to an owner to approve. ' : 'Only the owners change who works on a client.') + '</p>' +
+          (cur && cur.employee === ME.email ? '<button class="btn sm" type="button" data-act="hogive" data-c="' + esc(c.id) + '" style="margin-top:8px">Hand over ' + esc(first) + '…</button>' : '')) +
       (rows.length ? '<div class="adjl" style="margin-top:12px">' + rows.map(function(r){
         return '<div class="adj' + (r.ended_at ? ' off' : '') + '"><b>' + esc(who(r.employee)) + '</b><div class="main"><div class="m">From ' + esc(TP.fmtDate(r.assigned_at)) + ' (' + esc(who(r.assigned_by)) + ')' +
           (r.ended_at ? ' to ' + esc(TP.fmtDate(r.ended_at)) + ' — ' + esc(r.end_reason === 'reassigned' ? 'moved on' : r.end_reason) : ' · now') + '</div></div></div>';
@@ -4504,6 +4575,7 @@ var AP_W = [['', 'Any time'], ['today', 'Sent today'], ['week', 'Sent this week'
 function tApps(){
   var c = C, p = c.prog || {};
   if(AP.c !== c.id){ AP = {f:'all', q:'', n:50, c:c.id, w:'', mine:false, sel:null}; }
+  setTimeout(function(){ hoNote(c); }, 0);
   if(AP_NEXT_SRC){ AP.src = AP_NEXT_SRC; AP_NEXT_SRC = null; AP.f = AP.src === 'req' || AP.src === 'assist' ? 'draft' : AP.f; }   // from My day's "See all"
   V.innerHTML = '<div class="stats"><div class="stat"><b>' + (p.done || 0) + (c.row.plan_total ? ' <span style="font-size:var(--fs-14);color:var(--muted)">/ ' + c.row.plan_total + '</span>' : '') + '</b><span>applications sent</span></div>' +
       '<div class="stat"><b>' + (p.today || 0) + '</b><span>sent today</span></div><div class="stat"><b>' + (p.drafts || 0) + '</b><span>drafts in progress</span></div><div class="stat"><b>' + (p.interviews || 0) + '</b><span>interviews and offers</span></div></div>' +
@@ -5081,7 +5153,7 @@ function drawDraft(){
     '<div class="field"><label for="apJD">Job description <span class="muted" style="font-weight:500">— the resume is tailored to it, and the match and the fit are read from it</span></label><textarea id="apJD" rows="12" placeholder="Paste the whole job description">' + esc(A.jd_text || '') + '</textarea></div>' +
     '<div class="jdeft"><button class="btn sm pri" type="button" data-act="jdeditdone">Done</button></div></div>';
   // sending it: what's ready, the confirmation and the file, and Mark as applied (permanent, and the client sees it)
-  var send = (A.requested_at ? '<div class="note aireq"><span>' + I.check + '<b>' + first + ' asked for this one in the app</b> ' + esc(TP.ago(A.requested_at)) + '. They see “' + (A.picked_at ? 'Your specialist is working on it' : 'Sent to your specialist') + '” there, and it turns to Submitted, with your screenshot, the moment you mark it as applied.</span></div>' : '') +
+  var send = (A.assigned_to && A.status === 'draft' ? '<div class="note honote" id="apHanded">' + J.load + '<div class="grow"><b>' + (A.assigned_to === ME.email ? 'Handed to you' : 'Handed to ' + esc(who(A.assigned_to))) + '</b> — this one application; ' + esc(first) + ' stays with their employee.<span id="apHandedNote"></span></div></div>' : '') + (A.requested_at ? '<div class="note aireq"><span>' + I.check + '<b>' + first + ' asked for this one in the app</b> ' + esc(TP.ago(A.requested_at)) + '. They see “' + (A.picked_at ? 'Your specialist is working on it' : 'Sent to your specialist') + '” there, and it turns to Submitted, with your screenshot, the moment you mark it as applied.</span></div>' : '') +
     (A.source === 'assist' ? '<div class="note warn aihelp"><span>' + I.lock + '<b>The AI app stopped at ' + esc(helpWhy(A)) + '</b>' + (A.help_reason ? ' — ' + esc(A.help_reason) : '') + '. ' + first + ' applied with the AI app and it couldn’t finish: the resume and answers it prepared are here. Finish it by hand on the employer’s site and mark it as applied — it counts as your work (Manual Assistance).</span></div>' : '') +
     '<div class="card apsend" id="ckRec"><div class="ch"><h3>Send it</h3><span class="muted">Keeps exactly what went to ' + esc(A.company || 'the company') + '. ' + first + ' sees it on their dashboard.</span></div><div class="ck sendck">' +
       '<div class="step ckit" id="ckJob"><span class="n' + (A.jd_text ? ' ok' : '') + '">' + (A.jd_text ? I.check : '1') + '</span><div class="bd"><b>Job description</b><small>' + (A.jd_text ? 'Pasted.' : 'Paste it in the Job description below — the resume is tailored to it.') + '</small></div></div>' +
@@ -5125,7 +5197,7 @@ function drawDraft(){
   ['apT', 'apC'].forEach(function(k){ $('#' + k).addEventListener('change', dupCheck); });
   setupDrop($('#dShot'), 'shot', 'image/png,image/jpeg,image/webp');
   jdView();   // the job description's reading view, from the start
-  lkNext(); dupCheck(); apRecover(A); appFitRun(A);
+  lkNext(); dupCheck(); apRecover(A); appFitRun(A); apBar();
 }
 // opening a draft: changes typed before the page closed (a crash, a refresh), never saved, are offered back
 function apRecover(a){
@@ -5364,9 +5436,89 @@ function markApplied(btn){
       n ? ['ok', n + ' form answer' + (n === 1 ? '' : 's') + ' kept'] : ['info', 'No form answers'],
       a.jd_text ? ['ok', 'Job description kept'] : ['warn', 'No job description kept']
     ];
-    return TP.confirmBox('Mark as applied for ' + first + '?', 'This becomes the permanent record of what went to ' + (a.company || 'the company') + '. ' + first + ' sees it on their dashboard straight away, and only the owner can delete it.',
-      'Mark as applied', false, {items:items, careful:true}).then(function(ok){ if(ok) doMarkApplied(a, btn); });
+    var ready = items.every(function(x){ return x[0] !== 'warn'; });
+    if(ready && fastMark()) return markSoon(a, btn, first);   // everything checks out and you said not to ask again today
+    var quiet = false;
+    var pr = TP.confirmBox('Mark as applied for ' + first + '?', 'This becomes the permanent record of what went to ' + (a.company || 'the company') + '. ' + first + ' sees it on their dashboard straight away, and only the owner can delete it.',
+      'Mark as applied', false, {items:items, careful:true});
+    var mod = $('#modalRoot .mod .acts');
+    if(mod && ready) mod.insertAdjacentHTML('beforebegin', '<label class="check fastmk"><input type="checkbox" id="fastMk"> Don’t ask again today when everything is ready (you get a few seconds to undo instead)</label>');
+    var fm = $('#fastMk'); if(fm) fm.addEventListener('change', function(){ quiet = fm.checked; });
+    return pr.then(function(ok){ if(!ok) return; if(quiet) TP.lsSet('tp_fastmark', istYmd(Date.now())); doMarkApplied(a, btn); });
   }).catch(function(e){ err.hidden = false; err.textContent = TP.errText(e); });
+}
+/* ---------- speed: the draft's action bar, fewer confirmations, keyboard shortcuts ---------- */
+function fastMark(){ return TP.lsGet('tp_fastmark', '') === istYmd(Date.now()); }
+// mark as applied in a few seconds, with Undo meanwhile (you chose not to be asked today)
+function markSoon(a, btn, first){
+  var t = setTimeout(function(){ if(A === a && A.status === 'draft') doMarkApplied(a, btn); }, 5000);
+  btn.disabled = true;
+  TP.toast('Marking as applied for ' + first + ' in 5 seconds…', {undo:function(){ clearTimeout(t); btn.disabled = false; TP.toast('Not marked — still a draft'); }, label:'Undo', ms:5000});
+}
+function copyAllAnswers(){
+  var rows = $$('#apQA .qa').map(function(r){ var qv = $('[data-qa=q]', r), av = $('[data-qa=a]', r); return [qv ? qv.value.trim() : '', av ? av.value.trim() : '']; }).filter(function(x){ return x[0] || x[1]; });
+  if(!rows.length) return TP.toast('No answers on this application yet');
+  TP.copy(rows.map(function(x){ return x[0] + '\n' + x[1]; }).join('\n\n'), rows.length + ' answer' + (rows.length === 1 ? '' : 's'));
+}
+// the next application: from the queue you came from, else nothing
+function qCtxNext(step){
+  var ctx = TP.ssGet('tp_qctx', null); if(!ctx || !ctx.ids || !A) return null;
+  var i = -1; ctx.ids.forEach(function(x, j){ if(x.id === A.id) i = j; }); if(i < 0) return null;
+  var list = ctx.ids.filter(function(x){ return x.id === A.id || ctx.done.indexOf(x.id) < 0; }), k = list.map(function(x){ return x.id; }).indexOf(A.id);
+  return list[k + (step || 1)] || null;
+}
+function qGo(step){ var nx = qCtxNext(step); if(!nx) return false; var c2 = TP.ssGet('tp_qctx', null); if(c2){ c2.cur = nx.id; TP.ssSet('tp_qctx', c2); } go(cUrl(nx.cid, 'app=' + nx.id)); return true; }
+// a bar that stays in view at the bottom of the job's side: who it's for, and the four things done most
+function apBar(){
+  var main = $('.apgrid .apmain'); if(!main || !A || A.status !== 'draft' || $('#apBar')) return;
+  var row = C.row, p = C.prog || {}, f = row.facts || {}, left = row.plan_total ? Math.max(0, row.plan_total - (p.done || 0)) : null;
+  var bits = [left != null ? left + ' left on plan' : '', f.needs_sponsorship != null && f.needs_sponsorship !== '' ? 'Sponsorship: ' + (f.needs_sponsorship === true || f.needs_sponsorship === 'yes' ? 'needs it' : f.needs_sponsorship === false || f.needs_sponsorship === 'no' ? 'not needed' : String(f.needs_sponsorship)) : '',
+    f.willing_to_relocate != null && f.willing_to_relocate !== '' ? 'Relocate: ' + (f.willing_to_relocate === true || f.willing_to_relocate === 'yes' ? 'yes' : f.willing_to_relocate === false || f.willing_to_relocate === 'no' ? 'no' : String(f.willing_to_relocate)) : ''].filter(Boolean);
+  var nx = qCtxNext(1);
+  main.insertAdjacentHTML('beforeend', '<div class="apact" id="apBar" role="toolbar" aria-label="This application">' +
+    '<span class="av sm" style="background:' + TP.hue(C.id) + '">' + esc(TP.initials(row.full_name, row.email)) + '</span><div class="apbc"><b>' + esc(row.full_name || row.email) + '</b><span>' + esc(bits.join(' · ') || 'Applying for them') + '</span></div>' +
+    '<span class="grow"></span>' +
+    '<a class="btn sm" href="' + esc(TP.safeHref(A.job_url)) + '" target="_blank" rel="noopener" data-k="o" title="Open the posting (O)">' + I.ext + 'Posting<kbd>O</kbd></a>' +
+    '<button class="btn sm" type="button" data-act="copyall" title="Copy every answer (C)">' + I.copy + 'Answers<kbd>C</kbd></button>' +
+    '<button class="btn sm ok" type="button" data-act="gomark" title="Mark as applied (A)">' + I.check + 'Applied<kbd>A</kbd></button>' +
+    (nx ? '<a class="btn sm" href="' + esc(cUrl(nx.cid, 'app=' + nx.id)) + '" data-go data-qnext="' + esc(nx.id) + '" title="Next in your queue (N): ' + esc(nx.t) + '">Next<kbd>N</kbd></a>' : '') + '</div>');
+}
+// ? lists the shortcuts
+function keysHelp(){
+  var k = function(keys, what){ return '<div class="kh"><span>' + keys.map(function(x){ return '<kbd>' + esc(x) + '</kbd>'; }).join(' ') + '</span><span>' + esc(what) + '</span></div>'; };
+  TP.modal('<h2>Keyboard shortcuts</h2><div class="khl">' +
+    '<h3>Anywhere</h3>' + k(['Ctrl', 'K'], 'Find a client or an application') + k(['/'], 'Search this page') + k(['G', 'Q'], 'My queue') + k(['G', 'D'], 'My day') + k(['G', 'C'], 'Clients') + k(['G', 'T'], 'Tasks') + (ME.owner ? k(['G', 'W'], 'Workload') : '') + k(['['], 'Fold the sidebar') + k(['?'], 'This list') +
+    '<h3>My queue</h3>' + k(['J'], 'Next row') + k(['K'], 'Previous row') + k(['Enter'], 'Open it') + k(['X'], 'Select it') +
+    '<h3>An application</h3>' + k(['O'], 'Open the posting') + k(['C'], 'Copy every answer') + k(['A'], 'Mark as applied') + k(['N'], 'Next in your queue') + k(['J', 'K'], 'Next / previous in your queue') +
+    '</div>', false);
+}
+var KG = 0;
+function keyNav(e){
+  var k = e.key.toLowerCase();
+  if(KG && Date.now() - KG < 1200){
+    KG = 0;
+    var to = {q:'/team.html#queue', d:'/team.html#myday', c:'/team.html#clients', t:'/team.html#tasks', w:ME.owner ? '/team.html#workload' : null}[k];
+    if(to){ e.preventDefault(); go(to); }
+    return true;
+  }
+  if(k === 'g'){ KG = Date.now(); return true; }
+  if(e.key === '?'){ e.preventDefault(); keysHelp(); return true; }
+  // My queue: move through the rows
+  if(R.page === 'queue' && !R.client && $('.qrow')){
+    var rows = $$('.qrow'), cur = $('.qrow.kf'), i = rows.indexOf(cur);
+    if(k === 'j' || k === 'k'){ e.preventDefault(); var n = rows[Math.max(0, Math.min(rows.length - 1, i < 0 ? 0 : i + (k === 'j' ? 1 : -1)))]; if(cur) cur.classList.remove('kf'); n.classList.add('kf'); n.focus({preventScroll:true}); n.scrollIntoView({block:'nearest'}); return true; }
+    if(k === 'enter' && cur){ e.preventDefault(); cur.click(); return true; }
+    if(k === 'x' && cur && QSEL){ e.preventDefault(); qToggle(cur.getAttribute('data-qi')); return true; }
+  }
+  // an application
+  if(R.app && A){
+    if(k === 'o' && A.job_url){ e.preventDefault(); window.open(TP.safeHref(A.job_url), '_blank', 'noopener'); return true; }
+    if(k === 'c' && A.status === 'draft'){ e.preventDefault(); copyAllAnswers(); return true; }
+    if(k === 'a' && A.status === 'draft'){ var mb = $('[data-act=markapplied]'); if(mb){ e.preventDefault(); var rec = $('#ckRec'); if(rec) rec.scrollIntoView({behavior:'smooth', block:'center'}); markApplied(mb); } return true; }
+    if(k === 'n' || k === 'j'){ if(qGo(1)) e.preventDefault(); return true; }
+    if(k === 'k'){ if(qGo(-1)) e.preventDefault(); return true; }
+  }
+  return false;
 }
 function doMarkApplied(a, btn){
   var err = $('#mkErr');
@@ -5429,7 +5581,7 @@ function drawSent(){
     (A.cover_letter ? '<div class="card"><div class="ch"><h3>Cover letter</h3></div><pre class="txt">' + esc(A.cover_letter) + '</pre></div>' : '') +
     '<div class="card"><div class="ch"><h3>Notes</h3></div><p class="hint">Interview times, recruiter replies. Only the team sees them; they go into the history.</p>' +
       '<textarea class="inp" id="anT" rows="2" placeholder="e.g. Recruiter call booked for Tue 3 pm (EST)"></textarea><div class="row end" style="margin-top:8px"><button class="btn sm pri" type="button" data-act="appnote">Save note</button></div></div>' +
-    '<div class="card"><div class="ch"><h3>History</h3></div><div class="hist" id="apHist"><div class="skel"></div></div></div></div>' +
+    '<div id="apReview"></div><div class="card"><div class="ch"><h3>History</h3></div><div class="hist" id="apHist"><div class="skel"></div></div></div></div>' +
     resPanel() + '</div></div>';
   TP.fillFiles(V); noteKeep($('#anT'), 'anote_' + A.id);
   var pf = $('#apFile'); if(pf) TP.fileUrl(pf.getAttribute('data-src')).then(function(u){ if(pf.isConnected) pf.src = u; }, function(){});   // the uploaded resume, in view
@@ -5441,8 +5593,9 @@ function drawSent(){
   });
   if($('#dShot2')) setupDrop($('#dShot2'), 'shot', 'image/png,image/jpeg,image/webp', appShots(A).length);
   apMail(A);   // the employer's emails, and what each did (the client's Gmail)
+  apReview(A);
   var a = A;
-  q(SB.from('client_activity').select('*').eq('application_id', a.id).order('at', {ascending:true})).then(function(rows){ if(A === a && $('#apHist')) $('#apHist').innerHTML = (rows || []).map(histRow).join('') || '<p class="fine">No history yet.</p>'; }, function(){});
+  apHistLoad(a).then(function(rows){ if(A === a && $('#apHist')) $('#apHist').innerHTML = (rows || []).map(histRow).join('') || '<p class="fine">No history yet.</p>'; }, function(){});
   lkNext();
 }
 function setStatus(s, from){
@@ -5468,6 +5621,22 @@ function addMissing(btn){
     return q(SB.from('applications').update(patch).eq('id', a.id).select('*').maybeSingle());
   }).then(function(row){ FILES = {shots:[]}; TP.toast(patch.screenshots ? (rs0(patch) + ' added') : 'File added'); A = row; drawSent(); }, function(e){ btn.disabled = false; btn.classList.remove('busy'); btn.innerHTML = label; TP.toast(TP.errText(e)); });
   function rs0(p){ var k = p.screenshots.length - have.length; return k === 1 ? 'Screenshot' : k + ' screenshots'; }
+}
+// one application's whole story: what was done to it, who had the client from when it started until it was sent (or now),
+// and the owners' review — in order
+function apHistLoad(a){
+  var end = a.applied_at || new Date().toISOString();
+  return Promise.all([q(SB.from('client_activity').select('*').eq('application_id', a.id).order('at', {ascending:true})),
+      q(SB.from('client_activity').select('*').eq('client_id', a.client_id || C.id).eq('kind', 'assigned').lte('at', end).order('at', {ascending:true}).limit(200)),
+      a.status !== 'draft' ? q(SB.from('application_reviews').select('*').eq('application_id', a.id)).catch(function(){ return []; }) : Promise.resolve([])]).then(function(rs){
+    var own = rs[0] || [], asg = rs[1] || [];
+    var start = new Date(a.created_at).getTime(), before = asg.filter(function(h){ return new Date(h.at).getTime() < start; }).pop();   // who had them when it started
+    var during = asg.filter(function(h){ return new Date(h.at).getTime() >= start; });
+    var rv = (rs[2] || []).map(function(r){ return {kind:r.verdict === 'ok' ? 'review_ok' : 'review_issue', summary:r.verdict === 'ok' ? 'Reviewed: looks good' : 'Reviewed: a problem — ' + r.note, by_email:r.reviewer, at:r.at}; });
+    var all = own.concat(during, rv);
+    if(before) all.push(Object.assign({}, before, {summary:before.summary + ' (before this application started)', at:a.created_at}));
+    return all.sort(function(x, y){ return new Date(x.at) - new Date(y.at); });
+  });
 }
 function histRow(h){
   return '<div class="hi"><span class="dot k-' + esc(h.kind) + '"></span><div class="tx"><b>' + esc(h.summary) + '</b><small>' + esc(who(h.by_email)) + (h.by_email && h.by_email !== 'system' ? ' (' + esc(h.by_email) + ')' : '') + ' · <span title="' + esc(TP.fmtDateTime(h.at)) + '">' + esc(TP.ago(h.at)) + '</span></small></div></div>';
@@ -5783,9 +5952,9 @@ function tActivity(){
 }
 // the history, narrowed to one kind of thing, or to one person
 var ACF = {k:'all', by:''};
-var AC_K = [['all', 'All'], ['note', 'Notes'], ['apps', 'Applications'], ['status', 'Status'], ['profile', 'Profile & resumes']];
+var AC_K = [['all', 'All'], ['note', 'Notes'], ['apps', 'Applications'], ['status', 'Status'], ['assign', 'Who worked on them'], ['profile', 'Profile & resumes']];
 var AC_KINDS = {note:['note'], apps:['app_started', 'app_applied', 'app_deleted', 'app_restored', 'app_edited', 'app_failed', 'app_confirmed'], status:['app_status'],
-  profile:['profile_updated', 'plan_changed', 'resume_added', 'resume_updated', 'resume_deleted', 'resume_restored', 'client_created', 'invite_sent', 'client_archived', 'client_restored', 'assigned']};
+  profile:['profile_updated', 'plan_changed', 'resume_added', 'resume_updated', 'resume_deleted', 'resume_restored', 'client_created', 'invite_sent', 'client_archived', 'client_restored'], assign:['assigned']};
 // a note being written is kept in this browser until it's saved, and put back if the page closed first
 function noteKeep(el, key){
   if(!el) return;
@@ -6034,6 +6203,428 @@ function auLead(btn){
 }
 var AP_NEXT_SRC = null;
 /* =====================================================================
+   Workload (the owners', sql/supabase-availability.sql): who is working today, how much each has waiting, and moving it.
+   One row per employee: their status (available, away or on leave, with dates), their clients, open work and what's
+   overdue, the oldest thing waiting, and what they sent today against their daily target. From a row: set their status
+   (and who covers), move several of their clients to someone else with a note, or arrange cover. The clients nobody is
+   assigned to are at the top. The things that need an owner — someone away with work and nobody covering, overdue work,
+   clients with nothing sent for 3 days — are listed above the table.
+   ===================================================================== */
+var WL = null, WLP = null;
+var WL_ST = {available:['Available', 'stg-confirmed'], away:['Away', 'stg-blocked'], on_leave:['On leave', 'stg-off']};
+function wlLoad(force){
+  if(WL && !force && Date.now() - WL.at < 30000) return Promise.resolve(WL);
+  if(WLP && !force) return WLP;
+  WLP = Promise.all([rpc('workload', {}), loadList(), loadTeamNames(), q(SB.from('client_assignments').select('client_id,employee,assigned_at,note').is('ended_at', null).limit(5000)),
+      q(SB.from('handover_requests').select('*').eq('status', 'open').order('created_at', {ascending:true}).limit(200))]).then(function(rs){
+    var rows = rs[0] || [], asg = {};
+    (rs[3] || []).forEach(function(a){ asg[a.client_id] = a.employee; });
+    WL = {at:Date.now(), rows:rows.filter(function(r){ return r.email; }), pool:rows.filter(function(r){ return !r.email; })[0] || {clients:0, open:0, overdue:0, fresh:0}, asg:asg, req:rs[4] || []};
+    WLP = null; return WL;
+  }, function(e){ WLP = null; throw e; });
+  return WLP;
+}
+function wlRow(email){ return WL ? WL.rows.filter(function(r){ return r.email === email; })[0] : null; }
+// who should take work: active employees who are in today, the fewest open first
+function wlSort(list){
+  return list.slice().sort(function(a, b){
+    var x = wlRow(a.email) || {}, y = wlRow(b.email) || {}, ax = x.state === 'available' && a.active !== false ? 0 : 1, by = y.state === 'available' && b.active !== false ? 0 : 1;
+    return ax - by || (x.open || 0) - (y.open || 0) || String(a.full_name || a.email).localeCompare(String(b.full_name || b.email));
+  });
+}
+function wlLabel(email){
+  var t = TEAMROWS.filter(function(x){ return x.email === email; })[0] || {email:email}, r = wlRow(email), nm = t.full_name || email;
+  if(!r) return nm + (t.active === false ? ' (access off)' : '');
+  return nm + ' · ' + r.open + ' open · ' + r.clients + ' client' + (r.clients === 1 ? '' : 's') + (r.state !== 'available' ? ' · ' + WL_ST[r.state][0].toLowerCase() + (r.away_until ? ' until ' + TP.fmtDate(r.away_until) : '') : '') + (t.active === false ? ' (access off)' : '');
+}
+function wlBadge(){
+  var a = WL ? WL.rows.filter(function(r){ return r.state !== 'available' && r.open > 0 && !r.covered_by; }).length : 0, rq = WL ? WL.req.length : 0, n = a + rq;
+  return '<em class="qb late" data-wlb' + (n ? '' : ' hidden') + ' title="' + [rq ? rq + ' request' + (rq === 1 ? '' : 's') + ' to decide' : '', a ? a + ' away with open work and nobody covering' : ''].filter(Boolean).join(' · ') + '">' + n + '</em>';
+}
+function wlStatePill(r){
+  var x = WL_ST[r.state] || WL_ST.available;
+  return '<span class="st stg ' + x[1] + '">' + x[0] + (r.state !== 'available' && r.away_until ? ' until ' + esc(TP.fmtDate(r.away_until)) : '') + '</span>' +
+    (r.status !== 'available' && r.state === 'available' && r.away_from ? ' <span class="fine" title="Planned">' + esc(WL_ST[r.status][0]) + ' from ' + esc(TP.fmtDate(r.away_from)) + '</span>' : '');
+}
+function vWorkload(){
+  setTitle('Workload', null);
+  V.innerHTML = '<div class="pageh"><div class="grow">' + opsCrumb() + '<h1>Workload</h1><div class="sub">Who is in today, how much each has waiting, and moving work between people</div></div>' +
+      '<a class="btn" href="/team.html#queue" data-go data-wlq="all">' + J.queue + 'Everyone’s queue</a></div>' +
+    '<div class="stats s5" id="wlS"></div><div id="wlR"></div><div id="wlA"></div>' +
+    '<div class="card flush"><div class="ch"><h3>The team</h3><span class="fine">Open is everything not sent yet; due 24 hours after it arrived. Sent today counts against each person’s daily target.</span></div><div class="tbl wltbl" id="wlT"><div class="skel"></div></div></div>';
+  $('[data-wlq]').addEventListener('click', function(){ QF.scope = 'all'; qSave(); });
+  if(WL) wlDraw();
+  wlLoad(true).then(wlDraw, function(e){ if($('#wlT')) $('#wlT').innerHTML = errBox(e); });
+}
+function wlDraw(){
+  if(R.page !== 'workload' || !$('#wlT') || !WL) return;
+  var rows = WL.rows.filter(function(r){ return r.active || r.open || r.clients; }), pool = WL.pool;
+  var people = rows.filter(function(r){ return r.role !== 'owner' || r.clients || r.open; });
+  var inToday = people.filter(function(r){ return r.active && r.state === 'available'; }).length, away = people.filter(function(r){ return r.state !== 'available'; }).length;
+  var open = rows.reduce(function(n, r){ return n + r.open; }, 0) + pool.open, late = rows.reduce(function(n, r){ return n + r.overdue; }, 0) + pool.overdue;
+  $('#wlS').innerHTML = [[inToday, 'in today'], [away, 'away or on leave', away ? 'warn' : ''], [open, 'open across the team'], [late, 'overdue', late ? 'bad' : ''], [pool.clients, 'clients with no employee', pool.clients ? 'warn' : '']]
+    .map(function(x){ return '<div class="stat' + (x[2] ? ' ' + x[2] : '') + '"><b>' + Number(x[0]).toLocaleString() + '</b><span>' + x[1] + '</span></div>'; }).join('');
+  // what needs an owner now
+  var al = [];
+  people.filter(function(r){ return r.state !== 'available' && r.open > 0 && !r.covered_by; }).forEach(function(r){
+    al.push(['bad', '<b>' + esc(r.full_name || r.email) + '</b> is ' + esc(WL_ST[r.state][0].toLowerCase()) + (r.away_until ? ' until ' + esc(TP.fmtDate(r.away_until)) : '') + ' with <b>' + r.open + ' open</b> and nobody covering.',
+      '<button class="btn sm pri" type="button" data-wl="cover" data-e="' + esc(r.email) + '">Arrange cover</button><button class="btn sm" type="button" data-wl="move" data-e="' + esc(r.email) + '">Move work</button>']);
+  });
+  if(late) al.push(['warn', '<b>' + late + ' overdue</b> across the team — waiting more than 24 hours.', '<a class="btn sm" href="/team.html#queue" data-go data-wllate>See them</a>']);
+  if(pool.clients) al.push(['warn', '<b>' + pool.clients + ' active client' + (pool.clients === 1 ? '' : 's') + '</b> with no employee' + (pool.open ? ' (' + pool.open + ' open)' : '') + ' — only the owners reach them.', '<button class="btn sm" type="button" data-wl="move" data-e="">Assign</button>']);
+  if(LIST){
+    var P = LIST.prog, stale = LIST.rows.filter(function(c){ var p = P[c.id] || {}; return c.status === 'active' && (!c.plan_total || (p.done || 0) < c.plan_total) && (!p.last_applied_at || Date.now() - new Date(p.last_applied_at) > 3 * 864e5); });
+    if(stale.length) al.push(['warn', '<b>' + stale.length + ' active client' + (stale.length === 1 ? '' : 's') + '</b> with nothing sent in 3 days: ' + stale.slice(0, 4).map(function(c){ return '<a href="' + esc(cUrl(c.id, 'applications')) + '" data-go>' + esc(c.full_name || c.email) + '</a>'; }).join(', ') + (stale.length > 4 ? ' and ' + (stale.length - 4) + ' more' : '') + '.', '']);
+  }
+  $('#wlA').innerHTML = al.length ? '<div class="wlalerts">' + al.map(function(a){ return '<div class="note ' + a[0] + ' wlal"><div class="grow">' + a[1] + '</div>' + a[2] + '</div>'; }).join('') + '</div>' : '';
+  var lt = $('[data-wllate]'); if(lt) lt.addEventListener('click', function(){ QF.scope = 'all'; QF.st = 'late'; qSave(); });
+  hoOwnerDraw();
+  // the table
+  var head = '<div class="thead"><span>Employee</span><span>Status</span><span class="num">Clients</span><span class="num">Open</span><span class="num">Overdue</span><span>Oldest waiting</span><span>Sent today</span><span></span></div>';
+  var poolRow = '<div class="li wlpool"><span class="cwho"><span class="av sm wlnone">—</span><span class="main"><span class="t">No employee</span><span class="m">Only the owners reach these clients</span></span></span>' +
+    '<span></span><span class="num">' + pool.clients + '</span><span class="num">' + pool.open + '</span><span class="num' + (pool.overdue ? ' late' : '') + '">' + pool.overdue + '</span><span class="m">' + (pool.oldest ? esc(TP.ago(pool.oldest)) : '—') + '</span><span></span>' +
+    '<span class="wlacts">' + (pool.clients ? '<button class="btn sm" type="button" data-wl="move" data-e="">Assign…</button>' : '') + '</span></div>';
+  $('#wlT').innerHTML = head + poolRow + people.sort(function(a, b){ return (b.overdue - a.overdue) || (b.open - a.open) || String(a.full_name || a.email).localeCompare(String(b.full_name || b.email)); }).map(function(r){
+    var cap = r.capacity || 0, pct = cap ? Math.min(100, Math.round(r.sent_today / cap * 100)) : 0;
+    var cover = r.covered_by ? '<span class="m wlcov">Covered by ' + esc(who(r.covered_by)) + (r.cover_until ? ' until ' + esc(TP.fmtDate(r.cover_until)) : '') + ' · <button type="button" class="lnk" data-wl="endcover" data-id="' + esc(r.cover_id) + '" data-e="' + esc(r.email) + '">End</button></span>' : '';
+    var covering = (r.covering || []).length ? '<span class="m wlcov">Covering ' + r.covering.map(function(e){ return esc(who(e)); }).join(', ') + '</span>' : '';
+    return '<div class="li' + (r.active ? '' : ' off') + '" data-wle="' + esc(r.email) + '"><a class="cwho" href="/team.html#ops/emp=' + encodeURIComponent(r.email) + '" data-go><span class="av sm" style="background:' + TP.hue(r.email) + '">' + esc(TP.initials(r.full_name, r.email)) + '</span><span class="main"><span class="t">' + esc(r.full_name || r.email) + '</span><span class="m">' + esc(r.role === 'owner' ? 'Owner' : r.title || 'Employee') + (r.active ? '' : ' · access off') + '</span></span></a>' +
+      '<span class="wlst">' + wlStatePill(r) + cover + covering + '</span>' +
+      '<span class="num">' + r.clients + '</span><span class="num"><b>' + r.open + '</b>' + (r.fresh ? ' <small class="fine">' + r.fresh + ' new</small>' : '') + '</span><span class="num' + (r.overdue ? ' late' : '') + '">' + r.overdue + '</span>' +
+      '<span class="m">' + (r.oldest ? esc(TP.ago(r.oldest)) : '—') + '</span>' +
+      '<span class="wlcap" title="' + r.sent_today + ' of ' + cap + ' today"><span class="prog' + (cap && r.sent_today >= cap ? ' full' : '') + '"><i style="width:' + pct + '%"></i></span><b>' + r.sent_today + '</b><small>/ ' + cap + '</small></span>' +
+      '<span class="wlacts"><button class="btn sm ghost" type="button" data-wl="status" data-e="' + esc(r.email) + '">Status</button>' + (r.clients ? '<button class="btn sm ghost" type="button" data-wl="move" data-e="' + esc(r.email) + '">Move work</button>' : '') + '</span></div>';
+  }).join('');
+  var b = $('[data-wlb]'); if(b) b.outerHTML = wlBadge();
+}
+document.addEventListener('click', function(e){ wlClick(e); });   // once for the page (the view is redrawn, this stays)
+function wlClick(e){
+  var b = e.target.closest('[data-wl]'); if(!b || R.page !== 'workload') return;
+  var k = b.getAttribute('data-wl'), em = b.getAttribute('data-e');
+  if(k === 'status') return wlStatus(em);
+  if(k === 'move') return wlMove(em || null);
+  if(k === 'cover') return wlCover(em);
+  if(k === 'endcover') return TP.confirmBox('End the cover for ' + who(em) + '?', 'Whoever was covering no longer reaches ' + who(em) + '’s clients.', 'End cover', false).then(function(ok){
+    if(ok) rpc('end_cover', {p_id:+b.getAttribute('data-id')}).then(function(){ TP.toast('Cover ended'); wlLoad(true).then(wlDraw); }, fail);
+  });
+}
+function wlPick(id, exclude, label){
+  var list = wlSort(TEAMROWS.filter(function(t){ return t.active !== false && t.email !== exclude && t.role !== 'owner'; }));
+  return '<select id="' + id + '" required><option value="">' + esc(label) + '</option>' + list.map(function(t, i){ var r = wlRow(t.email); return '<option value="' + esc(t.email) + '">' + esc(wlLabel(t.email)) + (i === 0 && r && r.state === 'available' ? ' — suggested' : '') + '</option>'; }).join('') + '</select>';
+}
+// status: available / away / on leave, with dates and a daily target; going away can arrange cover in the same step
+function wlStatus(em){
+  var t = TEAMROWS.filter(function(x){ return x.email === em; })[0] || {email:em}, r = wlRow(em) || {}, nm = t.full_name || em;
+  var m = TP.modal('<h2>' + esc(nm) + '’s status</h2><p>Away and On leave last between the dates (leave Until empty for “until changed”); after the last day they read as available by themselves.</p>' +
+    '<form id="wsF" class="stack" style="margin-top:16px" novalidate>' +
+      '<div class="field"><label for="wsS">Status</label><select id="wsS">' + ['available', 'away', 'on_leave'].map(function(k){ return '<option value="' + k + '"' + ((r.status || 'available') === k ? ' selected' : '') + '>' + WL_ST[k][0] + '</option>'; }).join('') + '</select></div>' +
+      '<div class="grid2 wsdates"><div class="field"><label for="wsF1">From</label><input id="wsF1" type="date" value="' + esc(r.away_from || istYmd(Date.now())) + '"></div><div class="field"><label for="wsU">Until (last day)</label><input id="wsU" type="date" value="' + esc(r.away_until || '') + '"></div></div>' +
+      '<div class="field wsdates"><label for="wsN">Note <span class="muted">(optional, the owners see it)</span></label><input id="wsN" maxlength="200" value="' + esc(r.status_note || '') + '" placeholder="e.g. Family wedding"></div>' +
+      (r.open || r.clients ? '<div class="field wsdates"><label for="wsC">Who covers ' + esc(nm.split(' ')[0]) + '’s clients <span class="muted">(' + (r.open || 0) + ' open)</span></label>' + wlPick('wsC', em, 'Nobody — I’ll move work myself') + '<small>They work on ' + esc(nm.split(' ')[0]) + '’s clients until the last day, then it ends by itself.</small></div>' : '') +
+      '<div class="field"><label for="wsCap">Daily target</label><input id="wsCap" type="number" min="0" max="500" step="1" value="' + esc(r.capacity != null ? r.capacity : 25) + '"><small>Applications a day ' + esc(nm.split(' ')[0]) + ' is expected to send.</small></div>' +
+      '<p class="err" id="wsErr" hidden></p><div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="wsGo">Save</button></div></form>', false, {keep:true});
+  var sync = function(){ var on = $('#wsS', m).value !== 'available'; $$('.wsdates', m).forEach(function(x){ x.hidden = !on; }); };
+  $('#wsS', m).addEventListener('change', sync); sync();
+  $('#wsF', m).addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var st = $('#wsS', m).value, f1 = $('#wsF1', m).value || null, u = $('#wsU', m).value || null, cap = parseInt($('#wsCap', m).value, 10), cov = $('#wsC', m) ? $('#wsC', m).value : '', err = $('#wsErr', m);
+    var bad = isNaN(cap) || cap < 0 || cap > 500 ? 'The daily target is a number from 0 to 500.' : st !== 'available' && u && f1 && u < f1 ? 'Until is before From.' : st !== 'available' && cov && !u ? 'Pick the last day, so the cover knows when to end.' : '';
+    if(bad){ err.hidden = false; err.textContent = bad; return; }
+    var row = st === 'available' ? {status:'available', away_from:null, away_until:null, status_note:null, daily_capacity:cap} : {status:st, away_from:f1, away_until:u, status_note:$('#wsN', m).value.trim() || null, daily_capacity:cap};
+    TP.busy($('#wsGo', m), q(SB.from('team_members').update(row).eq('email', em).select('email')).then(function(){
+      if(st !== 'available' && cov) return rpc('start_cover', {p_employee:em, p_by:cov, p_until:u, p_note:$('#wsN', m).value.trim() || null, p_from:f1});
+    })).then(function(){
+      TP.closeModal(); TP.toast(st === 'available' ? nm + ' is available' : nm + ': ' + WL_ST[st][0].toLowerCase() + (u ? ' until ' + TP.fmtDate(u) : '') + (cov ? ' · ' + who(cov) + ' covers' : ''));
+      loadTeamNames(); wlLoad(true).then(wlDraw);
+    }, function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
+  });
+}
+// cover on its own (someone already away)
+function wlCover(em){
+  var r = wlRow(em) || {}, nm = who(em);
+  var m = TP.modal('<h2>Cover for ' + esc(nm) + '</h2><p>The person you pick works on ' + esc(nm.split(' ')[0]) + '’s clients (' + (r.open || 0) + ' open) until the last day; ' + esc(nm.split(' ')[0]) + ' keeps them, and it ends by itself.</p>' +
+    '<form id="wcF" class="stack" style="margin-top:16px" novalidate><div class="field"><label for="wcB">Who covers</label>' + wlPick('wcB', em, 'Pick someone') + '</div>' +
+      '<div class="field"><label for="wcU">Until (last day)</label><input id="wcU" type="date" value="' + esc(r.away_until || '') + '"></div>' +
+      '<div class="field"><label for="wcN">Handover note <span class="muted">(optional)</span></label><textarea id="wcN" maxlength="1000" placeholder="e.g. Use resume v3 for BI roles; two drafts are half done"></textarea></div>' +
+      '<p class="err" id="wcErr" hidden></p><div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="wcGo">Arrange cover</button></div></form>', false, {keep:true});
+  $('#wcF', m).addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var by = $('#wcB', m).value, u = $('#wcU', m).value, err = $('#wcErr', m);
+    if(!by || !u){ err.hidden = false; err.textContent = !by ? 'Pick who covers.' : 'Pick the last day.'; return; }
+    TP.busy($('#wcGo', m), rpc('start_cover', {p_employee:em, p_by:by, p_until:u, p_note:$('#wcN', m).value.trim() || null, p_from:null})).then(function(){
+      TP.closeModal(); TP.toast(who(by) + ' covers for ' + nm + ' until ' + TP.fmtDate(u)); wlLoad(true).then(wlDraw);
+    }, function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
+  });
+}
+// move several clients (from someone, or from nobody) to another employee, with a note they see at the top of each client
+function wlMove(from){
+  var nm = from ? who(from) : 'No employee', P = LIST ? LIST.prog : {};
+  var mine = (LIST ? LIST.rows : []).filter(function(c){ return c.status !== 'archived' && (WL.asg[c.id] || null) === from && (from || c.status === 'active'); })
+    .sort(function(a, b){ return ((P[b.id] || {}).drafts || 0) - ((P[a.id] || {}).drafts || 0) || String(a.full_name).localeCompare(String(b.full_name)); });
+  if(!mine.length){ TP.toast(from ? nm + ' has no clients to move' : 'Every client has an employee'); return; }
+  var m = TP.modal('<h2>' + (from ? 'Move ' + esc(nm.split(' ')[0]) + '’s work' : 'Assign clients') + '</h2><p>' + (from ? 'The clients you tick go to the person you pick, with everything on them — drafts, resumes, history. What ' + esc(nm.split(' ')[0]) + ' already sent still counts as theirs.' : 'The clients you tick go to the person you pick.') + '</p>' +
+    '<form id="wmF" class="stack" style="margin-top:16px" novalidate>' +
+      '<div class="field"><div class="row"><span class="lbl grow">Clients <span class="muted" id="wmN"></span></span><button type="button" class="lnk" id="wmAll">Select all</button></div><div class="wmlist">' +
+        mine.map(function(c){ var p = P[c.id] || {}; return '<label class="check wmc"><input type="checkbox" value="' + esc(c.id) + '"><span class="grow"><b>' + esc(c.full_name || c.email) + '</b> <span class="muted">' + (p.drafts || 0) + ' draft' + ((p.drafts || 0) === 1 ? '' : 's') + (c.plan_total ? ' · ' + Math.max(0, c.plan_total - (p.done || 0)) + ' left on plan' : '') + (c.status !== 'active' ? ' · ' + esc(ST_NAME[c.status] || c.status) : '') + '</span></span></label>'; }).join('') + '</div></div>' +
+      '<div class="field"><label for="wmTo">To</label>' + wlPick('wmTo', from, 'Pick who takes them') + '</div>' +
+      '<div class="field"><label for="wmNote">Handover note <span class="muted">(optional; shown to them at the top of each client)</span></label><textarea id="wmNote" maxlength="1000" placeholder="e.g. Resume v3 is the one to use; 4 drafts half done"></textarea></div>' +
+      '<p class="err" id="wmErr" hidden></p><div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="wmGo">Move</button></div></form>', true, {keep:true});
+  var picked = function(){ return $$('.wmlist input:checked', m).map(function(i){ return i.value; }); };
+  var count = function(){ var n = picked().length; $('#wmN', m).textContent = n ? '· ' + n + ' ticked' : ''; $('#wmGo', m).textContent = n ? 'Move ' + n + ' client' + (n === 1 ? '' : 's') : 'Move'; };
+  $('.wmlist', m).addEventListener('change', count);
+  $('#wmAll', m).addEventListener('click', function(){ var all = picked().length < mine.length; $$('.wmlist input', m).forEach(function(i){ i.checked = all; }); count(); });
+  $('#wmF', m).addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var ids = picked(), to = $('#wmTo', m).value, err = $('#wmErr', m);
+    if(!ids.length || !to){ err.hidden = false; err.textContent = !ids.length ? 'Tick at least one client.' : 'Pick who takes them.'; return; }
+    TP.busy($('#wmGo', m), rpc('reassign_work', {p_from:from, p_to:to, p_clients:ids, p_note:$('#wmNote', m).value.trim() || null})).then(function(n){
+      TP.closeModal(); TP.toast(n + ' client' + (n === 1 ? '' : 's') + ' → ' + who(to) + (n < ids.length ? ' (' + (ids.length - n) + ' had moved meanwhile)' : ''));
+      OPS && (OPS.at = 0); staleList(); wlLoad(true).then(wlDraw);
+    }, function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
+  });
+}
+/* =====================================================================
+   Handing over and taking work (sql/supabase-handover.sql). An employee asks — hand some of my clients or single
+   applications to a colleague, take some of a colleague's work, or have someone cover while I'm away — and an owner
+   approves or declines it on Workload. The clients nobody is assigned to can be taken at once. Anyone sets their own status.
+   ===================================================================== */
+var HO_KIND = {give:'Hand over', take:'Take work', cover:'Cover while away', pool:'Took unclaimed clients'};
+function hoColleagues(sel, none){
+  return '<select id="' + sel + '"><option value="">' + esc(none) + '</option>' + TEAMROWS.filter(function(t){ return t.active !== false && t.email !== ME.email && t.role !== 'owner'; })
+    .sort(function(a, b){ return String(a.full_name || a.email).localeCompare(String(b.full_name || b.email)); })
+    .map(function(t){ return '<option value="' + esc(t.email) + '">' + esc(t.full_name || t.email) + '</option>'; }).join('') + '</select>';
+}
+function hoWhat(r, names){
+  var cl = (r.client_ids || []).map(function(id){ return names[id] || 'a client'; }), ap = (r.app_ids || []).length;
+  return [cl.length ? cl.join(', ') : '', ap ? ap + ' application' + (ap === 1 ? '' : 's') : ''].filter(Boolean).join(' and ');
+}
+function hoNames(){ var n = {}; (LIST ? LIST.rows : []).forEach(function(c){ n[c.id] = c.full_name || c.email; }); return n; }
+// your own status: away / on leave with dates; with clients, ask for cover in the same step
+function hoAway(){
+  var me = TEAMROWS.filter(function(t){ return t.email === ME.email; })[0] || {};
+  var m = TP.modal('<h2>Set my status</h2><p>The owners see it on Workload. After your last day you show as available again by yourself.</p><form id="haF" class="stack" style="margin-top:16px" novalidate>' +
+      '<div class="field"><label for="haS">Status</label><select id="haS"><option value="away">Away</option><option value="on_leave">On leave</option><option value="available">Available</option></select></div>' +
+      '<div class="grid2 hadates"><div class="field"><label for="haF1">From</label><input id="haF1" type="date" value="' + esc(istYmd(Date.now())) + '"></div><div class="field"><label for="haU">Until (last day)</label><input id="haU" type="date"></div></div>' +
+      '<div class="field hadates"><label for="haN">Note <span class="muted">(optional)</span></label><input id="haN" maxlength="200" placeholder="e.g. Doctor’s appointment"></div>' +
+      (ME.owner ? '' : '<div class="field hadates"><label class="check"><input type="checkbox" id="haC" checked> Ask for someone to cover my clients while I’m away</label>' +
+        '<div class="field" style="margin-top:8px"><label for="haW">Who I suggest <span class="muted">(an owner confirms)</span></label>' + hoColleagues('haW', 'An owner picks') + '</div></div>') +
+      '<p class="err" id="haErr" hidden></p><div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="haGo">Save</button></div></form>', false, {keep:true});
+  if(me.status) $('#haS', m).value = me.status === 'available' ? 'away' : me.status;
+  var sync = function(){ var on = $('#haS', m).value !== 'available'; $$('.hadates', m).forEach(function(x){ x.hidden = !on; }); };
+  $('#haS', m).addEventListener('change', sync); sync();
+  $('#haF', m).addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var st = $('#haS', m).value, f1 = $('#haF1', m).value || null, u = $('#haU', m).value || null, cov = $('#haC', m) && $('#haC', m).checked && st !== 'available', err = $('#haErr', m);
+    var bad = st !== 'available' && u && f1 && u < f1 ? 'Until is before From.' : cov && !u ? 'Pick your last day, so the cover knows when to end.' : '';
+    if(bad){ err.hidden = false; err.textContent = bad; return; }
+    TP.busy($('#haGo', m), rpc('set_my_status', {p_status:st, p_from:st === 'available' ? null : f1, p_until:st === 'available' ? null : u, p_note:$('#haN', m).value.trim() || null}).then(function(){
+      if(cov) return rpc('request_handover', {p_kind:'cover', p_other:$('#haW', m).value || null, p_clients:[], p_apps:[], p_note:$('#haN', m).value.trim() || null, p_from:f1, p_until:u});
+    })).then(function(){
+      TP.closeModal(); TP.toast(st === 'available' ? 'You’re available' : 'Saved' + (cov ? ' — an owner will confirm your cover' : '')); loadTeamNames(); hoMine();
+    }, function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
+  });
+}
+// hand over: whole clients of mine, or single open applications; to a colleague or "an owner picks"
+function hoGive(pre){
+  var mine = (LIST ? LIST.rows : []).filter(function(c){ return c.status !== 'archived'; }), apps = (QROWS || []).filter(function(x){ return x.assigned_to === ME.email; });
+  var load = (!LIST ? loadList() : Promise.resolve()).then(function(){ return QROWS ? null : qLoad(); });
+  return load.then(function(){
+    mine = (LIST ? LIST.rows : []).filter(function(c){ return c.status !== 'archived'; }); apps = (QROWS || []).filter(function(x){ return x.assigned_to === ME.email; });
+    var m = TP.modal('<h2>Hand over work</h2><p>Pick whole clients, or single applications. It goes to an owner to approve; nothing moves until then.</p><form id="hgF" class="stack" style="margin-top:16px" novalidate>' +
+        '<div class="field"><span class="lbl">Whole clients</span><div class="wmlist">' + (mine.length ? mine.map(function(c){ return '<label class="check wmc"><input type="checkbox" data-hc value="' + esc(c.id) + '"' + (pre.indexOf(c.id) > -1 ? ' checked' : '') + '><span class="grow"><b>' + esc(c.full_name || c.email) + '</b></span></label>'; }).join('') : '<p class="fine">No clients assigned to you.</p>') + '</div></div>' +
+        '<div class="field"><span class="lbl">Or single applications</span><div class="wmlist">' + (apps.length ? apps.map(function(x){ return '<label class="check wmc"><input type="checkbox" data-ha value="' + esc(x.id) + '"><span class="grow"><b>' + esc(x.title || 'Role') + '</b> <span class="muted">' + esc((x.company || '') + ' · ' + (x.client_name || '')) + '</span></span></label>'; }).join('') : '<p class="fine">No open applications.</p>') + '</div></div>' +
+        '<div class="field"><label for="hgTo">To</label>' + hoColleagues('hgTo', 'An owner picks who') + '</div>' +
+        '<div class="field"><label for="hgN">Handover note <span class="muted">(they see it at the top of each client)</span></label><textarea id="hgN" maxlength="1000" placeholder="e.g. Resume v3 is the one to use; 2 drafts half done"></textarea></div>' +
+        '<p class="err" id="hgErr" hidden></p><div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="hgGo">Ask an owner</button></div></form>', true, {keep:true});
+    $('#hgF', m).addEventListener('submit', function(ev){
+      ev.preventDefault();
+      var cl = $$('[data-hc]:checked', m).map(function(i){ return i.value; }), ap = $$('[data-ha]:checked', m).map(function(i){ return i.value; }), err = $('#hgErr', m);
+      if(!cl.length && !ap.length){ err.hidden = false; err.textContent = 'Tick at least one client or application.'; return; }
+      TP.busy($('#hgGo', m), rpc('request_handover', {p_kind:'give', p_other:$('#hgTo', m).value || null, p_clients:cl, p_apps:ap, p_note:$('#hgN', m).value.trim() || null, p_from:null, p_until:null})).then(function(){
+        TP.closeModal(); TP.toast('Asked — an owner approves it on Workload'); hoMine();
+      }, function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
+    });
+  });
+}
+// take work: the unclaimed clients at once, or ask for some of a colleague's
+function hoTake(){
+  rpc('pool_clients', {}).then(function(pool){
+    pool = pool || [];
+    var m = TP.modal('<h2>Take work</h2><form id="htF" class="stack" style="margin-top:16px" novalidate>' +
+        '<div class="field"><span class="lbl">Clients nobody has yet <span class="muted">— yours at once</span></span><div class="wmlist">' + (pool.length ? pool.map(function(c){ return '<label class="check wmc"><input type="checkbox" data-hp value="' + esc(c.id) + '"><span class="grow"><b>' + esc(c.full_name || 'Client') + '</b> <span class="muted">' + esc([c.target_roles, c.plan_total ? Math.max(0, c.plan_total - c.done) + ' left on plan' : '', c.drafts ? c.drafts + ' drafts' : ''].filter(Boolean).join(' · ')) + '</span></span></label>'; }).join('') : '<p class="fine">Every client has an employee.</p>') + '</div></div>' +
+        '<div class="field"><label for="htW">Or ask for some of a colleague’s work <span class="muted">(an owner picks which and approves)</span></label>' + hoColleagues('htW', 'Nobody') + '</div>' +
+        '<div class="field"><label for="htN">Note <span class="muted">(optional)</span></label><input id="htN" maxlength="1000" placeholder="e.g. I have room for two more clients this week"></div>' +
+        '<p class="err" id="htErr" hidden></p><div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="htGo">Take</button></div></form>', true, {keep:true});
+    $('#htF', m).addEventListener('submit', function(ev){
+      ev.preventDefault();
+      var ids = $$('[data-hp]:checked', m).map(function(i){ return i.value; }), w = $('#htW', m).value, err = $('#htErr', m);
+      if(!ids.length && !w){ err.hidden = false; err.textContent = 'Tick a client, or pick a colleague to ask.'; return; }
+      TP.busy($('#htGo', m), Promise.all([ids.length ? rpc('take_from_pool', {p_clients:ids}) : 0, w ? rpc('request_handover', {p_kind:'take', p_other:w, p_clients:[], p_apps:[], p_note:$('#htN', m).value.trim() || null, p_from:null, p_until:null}) : null])).then(function(rs){
+        TP.closeModal(); TP.toast([rs[0] ? rs[0] + ' client' + (rs[0] === 1 ? '' : 's') + ' are yours now' : '', w ? 'asked an owner for some of ' + who(w) + '’s work' : ''].filter(Boolean).join(' · '));
+        staleList(); loadList(true).then(function(){ render(); });
+      }, function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
+    });
+  }, fail);
+}
+function hoCancel(id){ rpc('cancel_handover', {p_id:id}).then(function(){ TP.toast('Request cancelled'); hoMine(); }, fail); }
+// My queue: your requests, open and decided this week
+function hoMine(){
+  var el = $('#qReq'); if(!el || !SB) return;
+  q(SB.from('handover_requests').select('*').or('created_by.eq.' + ME.email + ',to_email.eq.' + ME.email).gte('created_at', new Date(Date.now() - 7 * 864e5).toISOString()).order('created_at', {ascending:false}).limit(20)).then(function(rows){
+    rows = (rows || []).filter(function(r){ return r.kind !== 'pool'; }); el = $('#qReq'); if(!el) return;
+    if(!rows.length){ el.innerHTML = ''; return; }
+    var names = hoNames(), stp = {open:['Waiting for an owner', 'stg-blocked'], approved:['Approved', 'stg-confirmed'], declined:['Declined', 'stg-off'], cancelled:['Cancelled', 'stg-off']};
+    el.innerHTML = '<div class="card horeq"><h3>Your requests</h3><div class="list">' + rows.map(function(r){
+      var mine = r.created_by === ME.email, what = r.kind === 'cover' ? 'until ' + TP.fmtDate(r.until) + (r.to_email ? ' — you suggested ' + who(r.to_email) : '')
+        : r.kind === 'take' ? (mine ? 'Some of ' + who(r.from_email) + '’s work' : who(r.from_email) + '’s work, to you')
+        : (mine ? hoWhat(r, names) + (r.to_email ? ' to ' + who(r.to_email) : '') : hoWhat(r, names) + ' from ' + who(r.from_email) + ' to you');
+      var st = stp[r.status] || stp.open;
+      return '<div class="li"><div class="main"><div class="t">' + esc(HO_KIND[r.kind]) + ' · ' + esc(what) + '</div><div class="m">' + esc(TP.ago(r.created_at)) + (r.note ? ' · “' + esc(r.note) + '”' : '') + (r.decision_note ? ' · ' + esc(who(r.decided_by)) + ': ' + esc(r.decision_note) : '') + '</div></div>' +
+        '<span class="st stg ' + st[1] + '">' + st[0] + '</span>' + (mine && r.status === 'open' ? '<button class="btn sm ghost" type="button" data-act="hocancel" data-id="' + esc(r.id) + '">Cancel</button>' : '') + '</div>';
+    }).join('') + '</div></div>';
+  }, function(){});
+}
+// Workload: the open requests, each with Approve / Decline
+function hoOwnerDraw(){
+  var el = $('#wlR'); if(!el || !WL) return;
+  var L = WL.req || [], names = hoNames();
+  if(!L.length){ el.innerHTML = ''; return; }
+  el.innerHTML = '<div class="card horeq"><h3>Requests to decide <span class="st wait">' + L.length + '</span></h3><p class="hint">From the team, oldest first. Approving moves the work at once; the person who asked sees the answer on their queue.</p><div class="list">' + L.map(function(r){
+    var what = r.kind === 'cover' ? who(r.from_email) + ' is away ' + TP.fmtDate(r.starts) + ' – ' + TP.fmtDate(r.until) + ' and asks for cover' + (r.to_email ? ' (suggests ' + who(r.to_email) + ')' : '')
+      : r.kind === 'take' ? who(r.to_email) + ' asks to take some of ' + who(r.from_email) + '’s work'
+      : who(r.from_email) + ' hands ' + hoWhat(r, names) + ' to ' + (r.to_email ? who(r.to_email) : 'someone you pick');
+    return '<div class="li" data-hor="' + esc(r.id) + '"><div class="main"><div class="t">' + esc(what) + '</div><div class="m">' + esc(TP.ago(r.created_at)) + (r.note ? ' · “' + esc(r.note) + '”' : '') + '</div></div>' +
+      '<button class="btn sm" type="button" data-act="hodecide" data-v="no" data-id="' + esc(r.id) + '">Decline</button><button class="btn sm pri" type="button" data-act="hodecide" data-v="yes" data-id="' + esc(r.id) + '">Approve…</button></div>';
+  }).join('') + '</div></div>';
+}
+function hoDecide(id, yes){
+  var r = (WL && WL.req || []).filter(function(x){ return x.id === id; })[0]; if(!r) return;
+  var done = function(p, msg){ return p.then(function(){ TP.closeModal(); TP.toast(msg); OPS && (OPS.at = 0); staleList(); wlLoad(true).then(wlDraw); }); };
+  if(!yes){
+    var m0 = TP.modal('<h2>Decline this request?</h2><form id="hdF" class="stack" style="margin-top:12px" novalidate><div class="field"><label for="hdN">Why <span class="muted">(optional; they see it)</span></label><input id="hdN" maxlength="500" placeholder="e.g. Not this week — busy season"></div><p class="err" id="hdErr" hidden></p><div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn bad" type="submit" id="hdGo">Decline</button></div></form>', false, {keep:true});
+    $('#hdF', m0).addEventListener('submit', function(ev){ ev.preventDefault(); TP.busy($('#hdGo', m0), done(rpc('decide_handover', {p_id:id, p_approve:false, p_to:null, p_clients:null, p_note:$('#hdN', m0).value.trim() || null}), 'Declined')).catch(function(e2){ var er = $('#hdErr', m0); er.hidden = false; er.textContent = TP.errText(e2); }); });
+    return;
+  }
+  // approving: confirm who gets it; a take request also needs which of the colleague's clients
+  var theirs = r.kind === 'take' ? (LIST ? LIST.rows : []).filter(function(c){ return WL.asg[c.id] === r.from_email && c.status !== 'archived'; }) : [];
+  var exclude = r.kind === 'take' ? r.from_email : r.from_email, pickTo = r.kind !== 'take';
+  var m = TP.modal('<h2>Approve</h2><form id="hyF" class="stack" style="margin-top:12px" novalidate>' +
+      (r.kind === 'take' ? '<div class="field"><span class="lbl">Which of ' + esc(who(r.from_email)) + '’s clients go to ' + esc(who(r.to_email)) + '</span><div class="wmlist">' + theirs.map(function(c){ var p = (LIST.prog[c.id] || {}); return '<label class="check wmc"><input type="checkbox" value="' + esc(c.id) + '"><span class="grow"><b>' + esc(c.full_name || c.email) + '</b> <span class="muted">' + (p.drafts || 0) + ' drafts</span></span></label>'; }).join('') + '</div></div>' : '') +
+      (pickTo ? '<div class="field"><label for="hyTo">' + (r.kind === 'cover' ? 'Who covers' : 'Who takes it') + '</label>' + wlPick('hyTo', exclude, 'Pick someone') + '</div>' : '') +
+      '<div class="field"><label for="hyN">Note to them <span class="muted">(optional)</span></label><input id="hyN" maxlength="500"></div>' +
+      '<p class="err" id="hyErr" hidden></p><div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="hyGo">Approve</button></div></form>', r.kind === 'take', {keep:true});
+  if(pickTo && r.to_email && $('#hyTo option[value="' + r.to_email + '"]', m)) $('#hyTo', m).value = r.to_email;
+  $('#hyF', m).addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var to = pickTo ? $('#hyTo', m).value : r.to_email, cl = r.kind === 'take' ? $$('.wmlist input:checked', m).map(function(i){ return i.value; }) : null, err = $('#hyErr', m);
+    if(!to){ err.hidden = false; err.textContent = 'Pick who takes it.'; return; }
+    if(cl && !cl.length){ err.hidden = false; err.textContent = 'Tick at least one client.'; return; }
+    TP.busy($('#hyGo', m), done(rpc('decide_handover', {p_id:id, p_approve:true, p_to:to, p_clients:cl, p_note:$('#hyN', m).value.trim() || null}), 'Approved — ' + (r.kind === 'cover' ? who(to) + ' covers' : 'moved to ' + who(to)))).catch(function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
+  });
+}
+/* =====================================================================
+   Review (the owners', sql/supabase-review.sql): a fair sample of each person's sent work — the ones nothing confirms
+   first, then a few others chosen for the day (the same list for every owner until tomorrow). Looks good, or Problem
+   with what's wrong; the person who sent it sees the verdict on the application and a count on their queue.
+   ===================================================================== */
+var RV = {days:7, per:5};
+function vReview(){
+  setTitle('Review', null);
+  V.innerHTML = '<div class="pageh"><div class="grow">' + opsCrumb() + '<h1>Review</h1><div class="sub">A fair sample of what each person sent — the unconfirmed first. A few minutes a day keeps quality visible.</div></div>' +
+      '<div class="seg" id="rvD">' + [[7, 'Last 7 days'], [30, 'Last 30 days']].map(function(o){ return '<button type="button" data-v="' + o[0] + '" class="' + (RV.days === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</div></div>' +
+    '<div class="card flush"><div class="ch"><h3>By person</h3><span class="fine">Sent, reviewed and problems found, ' + (RV.days === 7 ? 'the last 7 days' : 'the last 30 days') + '</span></div><div class="tbl rvst" id="rvS"><div class="skel"></div></div></div>' +
+    '<div id="rvL"><div class="skel"></div></div>';
+  $('#rvD').addEventListener('click', function(e){ var b = e.target.closest('[data-v]'); if(!b) return; RV.days = +b.getAttribute('data-v'); vReview(); });
+  rvLoad();
+}
+function rvLoad(){
+  Promise.all([rpc('review_sample', {p_days:RV.days, p_per:RV.per}), rpc('review_stats', {p_days:RV.days}), loadTeamNames()]).then(function(rs){
+    if(R.page !== 'review' || !$('#rvL')) return;
+    var L = rs[0] || [];
+    rvStatsDraw(rs[1] || []);
+    if(!L.length){ $('#rvL').innerHTML = '<div class="empty">' + J.review + '<h3>All reviewed</h3><p>Nothing left in today’s sample. A new one comes tomorrow.</p></div>'; return; }
+    var by = {}, order = [];
+    L.forEach(function(x){ if(!by[x.employee]){ by[x.employee] = []; order.push(x.employee); } by[x.employee].push(x); });
+    $('#rvL').innerHTML = order.map(function(e){
+      return '<div class="card flush rvg"><div class="ch"><h3>' + esc(who(e)) + '</h3><span class="fine">' + by[e].length + ' to check</span></div><div class="tbl rvtbl">' + by[e].map(function(x){
+        return '<div class="li" data-rv="' + esc(x.id) + '"><a class="main" href="' + esc(cUrl(x.client_id, 'app=' + x.id)) + '" data-go><span class="t">' + esc(x.title || 'Role') + (x.company ? ' <span class="m">at ' + esc(x.company) + '</span>' : '') + '</span><span class="m">' + esc(x.client_name || '') + ' · sent ' + esc(TP.fmtDateTime(x.applied_at)) + '</span></a>' +
+          '<span>' + stagePill(x) + '</span><span class="m">' + (x.shots ? x.shots + ' screenshot' + (x.shots === 1 ? '' : 's') : '<span class="qnone">No screenshot</span>') + '</span>' +
+          '<span class="rvacts"><a class="btn sm ghost" href="' + esc(TP.safeHref(x.job_url)) + '" target="_blank" rel="noopener">Posting</a><button class="btn sm" type="button" data-act="rvissue" data-id="' + esc(x.id) + '">Problem…</button><button class="btn sm ok" type="button" data-act="rvok" data-id="' + esc(x.id) + '">Looks good</button></span></div>';
+      }).join('') + '</div></div>';
+    }).join('');
+  }, function(e){ if($('#rvL')) $('#rvL').innerHTML = errBox(e); });
+}
+function rvStatsDraw(S){
+  var el = $('#rvS'); if(!el) return;
+  el.innerHTML = S.length ? '<div class="thead"><span>Person</span><span class="num">Sent</span><span class="num">Reviewed</span><span class="num">Problems</span><span class="num">Unconfirmed</span></div>' +
+    S.sort(function(a, b){ return b.sent - a.sent; }).map(function(r){
+      return '<div class="li"><span class="cwho"><span class="av sm" style="background:' + TP.hue(r.employee) + '">' + esc(TP.initials(who(r.employee), r.employee)) + '</span><span class="t">' + esc(who(r.employee)) + '</span></span>' +
+        '<span class="num">' + r.sent + '</span><span class="num">' + r.reviewed + (r.sent ? ' <small class="fine">' + Math.round(r.reviewed / r.sent * 100) + '%</small>' : '') + '</span><span class="num' + (r.issues ? ' late' : '') + '">' + r.issues + '</span><span class="num">' + r.needs_review + '</span></div>';
+    }).join('') : '<p class="fine" style="padding:16px">Nothing sent in this time.</p>';
+}
+function rvSave(id, verdict, btn, note){
+  return TP.busy(btn, rpc('review_application', {p_app:id, p_verdict:verdict, p_note:note || null})).then(function(){
+    TP.toast(verdict === 'ok' ? 'Looks good — noted' : 'Problem noted; they see it on the application');
+    var row = $('[data-rv="' + id + '"]'); if(row){ row.classList.add('done'); var ac = $('.rvacts', row); if(ac) ac.innerHTML = '<span class="st stg ' + (verdict === 'ok' ? 'stg-confirmed">Looks good' : 'stg-blocked">Problem') + '</span>'; }
+    if(R.app && A && A.id === id) apReview(A);
+    if(R.page === 'review') rpc('review_stats', {p_days:RV.days}).then(rvStatsDraw, function(){});
+  }, fail);
+}
+function rvIssue(id, btn){
+  var m = TP.modal('<h2>What’s wrong?</h2><p>The person who sent it sees this on the application, so it can be put right — and avoided next time.</p><form id="riF" class="stack" style="margin-top:16px" novalidate>' +
+    '<div class="field"><label for="riN">The problem</label><textarea id="riN" maxlength="1000" placeholder="e.g. The resume went without the tailoring; the salary answer doesn’t match the profile"></textarea></div><p class="err" id="riErr" hidden></p>' +
+    '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="riGo">Save</button></div></form>', false, {keep:true});
+  $('#riF', m).addEventListener('submit', function(ev){
+    ev.preventDefault(); var note = $('#riN', m).value.trim();
+    if(!note){ var er = $('#riErr', m); er.hidden = false; er.textContent = 'Say what’s wrong.'; return; }
+    TP.closeModal(); rvSave(id, 'issue', btn, note);
+  });
+}
+// on a sent application: the verdict, and (owners) the buttons
+function apReview(a){
+  var el = $('#apReview'); if(!el || !a || a.status === 'draft') return;
+  q(SB.from('application_reviews').select('*').eq('application_id', a.id)).then(function(rows){
+    el = $('#apReview'); if(!el || A !== a) return;
+    var r = rows && rows[0];
+    if(!r && !ME.owner){ el.innerHTML = ''; return; }
+    el.innerHTML = '<div class="card rvcard"><div class="ch"><h3>Review</h3>' + (r ? '<span class="st stg ' + (r.verdict === 'ok' ? 'stg-confirmed">Looks good' : 'stg-blocked">Problem') + '</span>' : '') + '</div>' +
+      (r ? '<p class="hint">' + esc(who(r.reviewer)) + ', ' + esc(TP.ago(r.at)) + (r.note ? ': ' + esc(r.note) : '') + '</p>' : '<p class="hint">Not reviewed yet.</p>') +
+      (ME.owner ? '<div class="row"><button class="btn sm ok" type="button" data-act="rvok" data-id="' + esc(a.id) + '">Looks good</button><button class="btn sm" type="button" data-act="rvissue" data-id="' + esc(a.id) + '">Problem…</button></div>' : '') + '</div>';
+  }, function(){});
+}
+// My queue: your day against your target, and what the owners found this week
+function qMe(){
+  var el = $('#qMe'); if(!el || !SB) return;
+  rpc('my_progress', {}).then(function(p){
+    el = $('#qMe'); if(!el || !p) return;
+    var t = p.target || 0, pct = t ? Math.min(100, Math.round(p.sent_today / t * 100)) : 0;
+    el.innerHTML = '<div class="qme"><div class="qmet"><b>' + p.sent_today + '</b><span>/ ' + t + ' sent today</span></div><span class="prog' + (t && p.sent_today >= t ? ' full' : '') + '"><i style="width:' + pct + '%"></i></span>' +
+      (p.issues ? '<button type="button" class="lnk late" data-act="myissues">' + p.issues + ' problem' + (p.issues === 1 ? '' : 's') + ' found this week</button>' : p.reviewed ? '<span class="fine">' + p.reviewed + ' reviewed this week, no problems</span>' : '') + '</div>';
+  }, function(){});
+}
+function myIssues(){
+  q(SB.from('application_reviews').select('*').eq('employee', ME.email).eq('verdict', 'issue').gte('at', new Date(Date.now() - 7 * 864e5).toISOString()).order('at', {ascending:false})).then(function(rs){
+    rs = rs || [];
+    return (rs.length ? q(SB.from('applications').select('id,client_id,title,company').in('id', rs.map(function(r){ return r.application_id; }))) : Promise.resolve([])).then(function(apps){
+      var by = {}; (apps || []).forEach(function(a){ by[a.id] = a; });
+      TP.modal('<h2>Problems found in your work</h2><p>From the owners’ reviews this week. Open one to see it as it was sent.</p><div class="list" style="margin-top:12px">' + rs.map(function(r){
+        var a = by[r.application_id] || {};
+        return '<a class="li" href="' + esc(cUrl(a.client_id || r.client_id, 'app=' + r.application_id)) + '" data-go data-mclose="1"><div class="main"><div class="t">' + esc(a.title || 'Role') + (a.company ? ' <span class="m">at ' + esc(a.company) + '</span>' : '') + '</div><div class="m">' + esc(who(r.reviewer)) + ', ' + esc(TP.ago(r.at)) + ': ' + esc(r.note || '') + '</div></div></a>';
+      }).join('') + '</div>', false);
+    });
+  }, fail);
+}
+// at the top of a client: the note left when they were handed to you (two weeks, or until you close it)
+function hoNote(c){
+  if(!c || !V || C !== c || !SB) return;
+  q(SB.from('client_assignments').select('id,employee,assigned_at,assigned_by,note').eq('client_id', c.id).is('ended_at', null).not('note', 'is', null).limit(1)).then(function(rs){
+    var a = rs && rs[0]; if(!a || C !== c || !V.isConnected) return;
+    if(Date.now() - new Date(a.assigned_at) > 14 * 864e5 || TP.lsGet('tp_ho_' + a.id, false) || $('#hoNote')) return;
+    V.insertAdjacentHTML('afterbegin', '<div class="note ok honote" id="hoNote">' + J.load + '<div class="grow"><b>Handover from ' + esc(who(a.assigned_by)) + '</b>, ' + esc(TP.ago(a.assigned_at)) + (a.employee !== ME.email ? ' (to ' + esc(who(a.employee)) + ')' : '') + ': ' + esc(a.note) + '</div><button type="button" class="lnk" id="hoX">Got it</button></div>');
+    $('#hoX').addEventListener('click', function(){ TP.lsSet('tp_ho_' + a.id, true); var n = $('#hoNote'); if(n) n.remove(); });
+  }, function(){});
+}
+/* =====================================================================
    My queue (sql/supabase-queue.sql): every open application across the clients you work for, in one table — what to do
    next, for whom, at what stage, and how long it has waited. Each is due 24 hours after it arrived (a request in the app,
    the AI's hand-over, or a draft started); overdue first, then the oldest. Group it by client or by stage; filters and
@@ -6081,33 +6672,41 @@ function qDue(x){
 function qSrcOf(x){ return x.requested_at && x.source !== 'ai' ? 'req' : x.source || 'team'; }
 function vQueue(){
   setTitle('My queue', null);
+  if(QSEL && R.page !== 'queue') QSEL = null;
   V.innerHTML = '<div class="pageh"><div class="grow"><h1>My queue</h1><div class="sub" id="qSub">Everything waiting across ' + (ME.owner ? 'the clients' : 'your clients') + ', the most urgent first</div></div>' +
       (ME.owner ? '<div class="seg" id="qScope" role="tablist" aria-label="Whose work">' + [['mine', 'Mine'], ['unassigned', 'No employee'], ['all', 'Everyone']].map(function(o){ return '<button type="button" data-v="' + o[0] + '" class="' + (QF.scope === o[0] ? 'on' : '') + '" aria-selected="' + (QF.scope === o[0]) + '">' + o[1] + '</button>'; }).join('') + '</div>' : '') +
+      (ME.owner ? '' : '<button class="btn" type="button" data-act="hotake">Take work</button><button class="btn" type="button" data-act="hogive">Hand over…</button>') +
+      '<button class="btn" type="button" data-act="hoaway">I’m away</button>' +
       '<button class="btn" type="button" data-act="switch">' + J.swap + 'Switch client</button></div>' +
-    '<div class="stats s5 qstats" id="qS"></div>' +
+    '<div id="qMe"></div><div id="qReq"></div><div class="stats s5 qstats" id="qS"></div>' +
     '<div class="tools qtools"><input class="inp" id="qQ" type="search" placeholder="Search client, role or company" aria-label="Search the queue" value="' + esc(QF.q) + '">' +
       '<div class="seg" id="qSt" role="tablist" aria-label="Stage">' + Q_ST.map(function(o){ return '<button type="button" data-v="' + o[0] + '" class="' + (QF.st === o[0] ? 'on' : '') + '" aria-selected="' + (QF.st === o[0]) + '">' + o[1] + '<b data-qn="' + o[0] + '"></b></button>'; }).join('') + '</div>' +
       '<select class="inp qsel" id="qSrc" aria-label="Source">' + Q_SRC.map(function(o){ return '<option value="' + o[0] + '"' + (QF.src === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>' +
+      '<button class="btn sm" type="button" id="qSelB" aria-pressed="' + !!QSEL + '">' + (QSEL ? 'Done' : 'Select') + '</button>' +
       '<div class="seg" id="qG" role="tablist" aria-label="Group">' + Q_G.map(function(o){ return '<button type="button" data-v="' + o[0] + '" class="' + (QF.g === o[0] ? 'on' : '') + '" aria-selected="' + (QF.g === o[0]) + '">' + o[1] + '</button>'; }).join('') + '</div></div>' +
-    '<div id="qL">' + (QROWS ? '' : '<div class="skel"></div><div class="skel"></div><div class="skel"></div>') + '</div>';
+    '<div id="qBulk"></div><div id="qL">' + (QROWS ? '' : '<div class="skel"></div><div class="skel"></div><div class="skel"></div>') + '</div>';
   var seg = function(id, k){ var el = $(id); if(el) el.addEventListener('click', function(e){ var b = e.target.closest('[data-v]'); if(!b) return; QF[k] = b.getAttribute('data-v'); qSave(); $$(id + ' [data-v]').forEach(function(x){ var on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-selected', String(on)); }); if(k === 'scope') qLoad(true); else qDraw(); }); };
   seg('#qSt', 'st'); seg('#qG', 'g'); seg('#qScope', 'scope');
   $('#qSrc').addEventListener('change', function(e){ QF.src = e.target.value; qSave(); qDraw(); });
   var tq; $('#qQ').addEventListener('input', function(e){ clearTimeout(tq); tq = setTimeout(function(){ QF.q = e.target.value; QN = 200; qDraw(); }, 120); });
   $('#qS').addEventListener('click', function(e){ var b = e.target.closest('[data-st]'); if(!b) return; var v = b.getAttribute('data-st'); var t = $('#qSt [data-v="' + v + '"]'); if(t) t.click(); });
+  $('#qSelB').addEventListener('click', function(){ QSEL = QSEL ? null : {}; vQueue(); });
   $('#qL').addEventListener('click', function(e){
-    var r = e.target.closest('[data-qi]'); if(r) qRemember(r.getAttribute('data-qi'));
+    var r = e.target.closest('[data-qi]');
+    if(r && QSEL){ e.preventDefault(); e.stopPropagation(); qToggle(r.getAttribute('data-qi')); return; }
+    if(r) qRemember(r.getAttribute('data-qi'));
     if(e.target.closest('[data-act=qmore]')){ QN += 200; qDraw(); }
   });
   if(QROWS) qDraw();
-  qLoad(); qCounts(true);
+  qLoad(); qCounts(true); hoMine(); qBulk(); qMe();
 }
 var QN = 200, QSEQ = 0, QSHOWN = [];
 function qLoad(){
-  var n = ++QSEQ, qq = SB.from('work_queue').select('id,client_id,client_name,client_email,client_status,title,company,job_url,source,requested_at,picked_at,created_at,submit_status,attempts,fail_reason,help_kind,help_reason,stage,since,due_at,assigned_to').order('due_at', {ascending:true}).limit(2000);
-  if(ME.owner && QF.scope === 'mine') qq = qq.or('assigned_to.eq.' + ME.email + ',assigned_to.is.null');
+  var n = ++QSEQ, qq = SB.from('work_queue').select('id,client_id,client_name,client_email,client_status,title,company,job_url,source,requested_at,picked_at,created_at,submit_status,attempts,fail_reason,help_kind,help_reason,stage,since,due_at,assigned_to,covered_by,handed').order('due_at', {ascending:true}).limit(2000);
+  if(ME.owner && QF.scope === 'mine') qq = qq.or('assigned_to.eq.' + ME.email + ',covered_by.eq.' + ME.email + ',assigned_to.is.null');
   else if(ME.owner && QF.scope === 'unassigned') qq = qq.is('assigned_to', null);
-  return q(qq).then(function(rows){ if(n !== QSEQ) return; QROWS = rows || []; if(R.page === 'queue' && !R.client) qDraw(); },
+  else if(!ME.owner) qq = qq.or('assigned_to.eq.' + ME.email + ',covered_by.eq.' + ME.email);   // yours, or covered by you (one handed to a colleague is theirs now)
+  return q(qq).then(function(rows){ if(n !== QSEQ) return; QROWS = rows || []; if(R.page === 'queue' && !R.client){ if(QSEL) Object.keys(QSEL).forEach(function(id){ if(!QROWS.some(function(x){ return x.id === id; })) delete QSEL[id]; }); qDraw(); } },
     function(e){ if(R.page === 'queue' && $('#qL') && !QROWS) $('#qL').innerHTML = errBox(e); });
 }
 function qDraw(){
@@ -6145,18 +6744,68 @@ function qDraw(){
     return gh + g.rows.slice(0, Math.max(0, QN - shown)).map(function(x){
       shown++; QSHOWN.push({id:x.id, cid:x.client_id, t:x.title || 'Role', co:x.company || '', cn:x.client_name || x.client_email});
       var why = x.source === 'assist' ? 'Stopped at ' + (HELP_KIND[x.help_kind] || HELP_KIND.unknown) : x.stage === 'blocked' ? 'Try ' + (x.attempts || 1) + (x.fail_reason ? ': ' + x.fail_reason : '') : '';
-      return '<a class="li qrow' + (late(x) ? ' overdue' : '') + '" href="' + esc(cUrl(x.client_id, 'app=' + x.id)) + '" data-go data-qi="' + esc(x.id) + '" style="--ch:' + TP.hue(x.client_id) + '">' +
+      return '<a class="li qrow' + (late(x) ? ' overdue' : '') + (QSEL && QSEL[x.id] ? ' on' : '') + '" href="' + esc(cUrl(x.client_id, 'app=' + x.id)) + '"' + (QSEL ? '' : ' data-go') + ' data-qi="' + esc(x.id) + '" style="--ch:' + TP.hue(x.client_id) + '">' +
+        (QSEL ? '<span class="qpick"><input type="checkbox" tabindex="-1" aria-label="Select"' + (QSEL[x.id] ? ' checked' : '') + '></span>' : '') +
         '<span class="cwho"><span class="av sm" style="background:' + TP.hue(x.client_id) + '">' + esc(TP.initials(x.client_name, x.client_email)) + '</span><span class="t">' + esc(x.client_name || x.client_email) + '</span></span>' +
         '<span class="main"><span class="t">' + esc(x.title || 'Role') + '</span><span class="m">' + esc([x.company, why].filter(Boolean).join(' · ')) + '</span></span>' +
-        '<span class="qst">' + stagePill(x, x.stage) + srcTag(x) + '</span>' +
+        '<span class="qst">' + stagePill(x, x.stage) + srcTag(x) + (x.handed && x.assigned_to === ME.email ? '<span class="src cov" title="This application was handed to you; the client stays with their employee">Handed to you</span>' : '') + (x.covered_by && x.covered_by === ME.email && x.assigned_to !== ME.email ? '<span class="src cov" title="' + esc(who(x.assigned_to)) + ' is away; you cover their clients">Covering ' + esc(who(x.assigned_to).split(' ')[0]) + '</span>' : '') + '</span>' +
         '<span class="m" title="' + esc(TP.fmtDateTime(x.since)) + '">' + esc(TP.ago(x.since)) + '</span>' +
         '<span class="qdue">' + qDue(x) + '</span>' +
-        (showWho ? '<span class="m">' + (x.assigned_to ? esc(who(x.assigned_to)) : '<span class="qnone">No employee</span>') + '</span>' : '') +
+        (showWho ? '<span class="m">' + (x.assigned_to ? esc(who(x.assigned_to)) + (x.covered_by ? ' <span class="fine">· ' + esc(who(x.covered_by)) + ' covers</span>' : '') : '<span class="qnone">No employee</span>') + '</span>' : '') +
         I.chev.replace('<svg', '<svg class="chev"') + '</a>';
     }).join('');
   }).join('');
-  box.innerHTML = '<div class="tbl queue' + (showWho ? ' who' : '') + ' g-' + QF.g + '">' + head + html + '</div>' +
+  box.innerHTML = '<div class="tbl queue' + (showWho ? ' who' : '') + (QSEL ? ' picking' : '') + ' g-' + QF.g + '">' + head + html + '</div>' +
     (rows.length > shown ? '<div class="row" style="justify-content:center;margin-top:12px;gap:8px"><span class="fine">' + shown + ' of ' + rows.length + '</span><button class="btn sm" type="button" data-act="qmore">Show more</button></div>' : '');
+}
+// several at once (Select): the bar above the table
+var QSEL = null;
+function qToggle(id){
+  if(!QSEL) return; if(QSEL[id]) delete QSEL[id]; else QSEL[id] = 1;
+  var r = $('.qrow[data-qi="' + id + '"]'); if(r){ r.classList.toggle('on', !!QSEL[id]); var c = $('input', r); if(c) c.checked = !!QSEL[id]; }
+  qBulk();
+}
+function qBulk(){
+  var el = $('#qBulk'); if(!el) return;
+  var ids = QSEL ? Object.keys(QSEL) : [];
+  if(!QSEL){ el.innerHTML = ''; return; }
+  el.innerHTML = '<div class="bulkbar qbulk"><b>' + ids.length + ' selected</b><button type="button" class="lnk" id="qAll">Select all shown</button><span class="grow"></span>' +
+    '<button class="btn sm" type="button" id="qbMove"' + (ids.length ? '' : ' disabled') + '>' + (ME.owner ? 'Move to…' : 'Hand over…') + '</button>' +
+    '<button class="btn sm" type="button" id="qbFail"' + (ids.length ? '' : ' disabled') + '>Couldn’t submit…</button></div>';
+  $('#qAll').addEventListener('click', function(){ QSHOWN.forEach(function(x){ QSEL[x.id] = 1; }); qDraw(); qBulk(); });
+  $('#qbMove').addEventListener('click', function(){ qbMove(Object.keys(QSEL)); });
+  $('#qbFail').addEventListener('click', function(){ qbFail(Object.keys(QSEL)); });
+}
+function qbDone(msg){ TP.closeModal(); TP.toast(msg); QSEL = {}; qLoad(true).then(function(){ qBulk(); }); qCounts(true); }
+// owners move them straight away (one application to one person); an employee's goes to an owner to approve
+function qbMove(ids){
+  var m = TP.modal('<h2>' + (ME.owner ? 'Move ' : 'Hand over ') + ids.length + ' application' + (ids.length === 1 ? '' : 's') + '</h2><p>' + (ME.owner ? 'They go to the person you pick; each client stays with their employee.' : 'It goes to an owner to approve; nothing moves until then.') + '</p>' +
+    '<form id="qmF" class="stack" style="margin-top:16px" novalidate><div class="field"><label for="qmTo">To</label>' + (ME.owner ? wlPick('qmTo', null, 'Pick someone') : hoColleagues('qmTo', 'An owner picks who')) + '</div>' +
+    '<div class="field"><label for="qmN">Note <span class="muted">(optional)</span></label><input id="qmN" maxlength="1000"></div><p class="err" id="qmErr" hidden></p>' +
+    '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="qmGo">' + (ME.owner ? 'Move' : 'Ask an owner') + '</button></div></form>', false, {keep:true});
+  if(ME.owner && !WL) wlLoad().catch(function(){});
+  $('#qmF', m).addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var to = $('#qmTo', m).value, err = $('#qmErr', m), note = $('#qmN', m).value.trim() || null;
+    if(ME.owner && !to){ err.hidden = false; err.textContent = 'Pick who takes them.'; return; }
+    var p = ME.owner ? q(SB.from('applications').update({assigned_to:to}).in('id', ids).eq('status', 'draft').select('id'))
+      : rpc('request_handover', {p_kind:'give', p_other:to || null, p_clients:[], p_apps:ids, p_note:note, p_from:null, p_until:null});
+    TP.busy($('#qmGo', m), p).then(function(r){ qbDone(ME.owner ? (r || []).length + ' moved to ' + who(to) : 'Asked — an owner approves it on Workload'); }, function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
+  });
+}
+// a form that wouldn't take them: one reason for all, each kept as a failed try
+function qbFail(ids){
+  var m = TP.modal('<h2>Couldn’t submit ' + ids.length + '</h2><p>Each is kept as a failed try with this reason, and stays in the queue as Couldn’t submit.</p><form id="qfF" class="stack" style="margin-top:16px" novalidate>' +
+    '<div class="field"><label for="qfR">What went wrong</label><input id="qfR" maxlength="1000" placeholder="e.g. The posting closed"></div><p class="err" id="qfErr" hidden></p>' +
+    '<div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="qfGo">Save</button></div></form>', false, {keep:true});
+  $('#qfF', m).addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var why = $('#qfR', m).value.trim(), err = $('#qfErr', m);
+    if(!why){ err.hidden = false; err.textContent = 'Say what went wrong, so the next try can avoid it.'; return; }
+    TP.busy($('#qfGo', m), Promise.all(ids.map(function(id){ return q(SB.from('applications').update({submit_status:'failed', fail_reason:why}).eq('id', id).eq('status', 'draft').select('id')); }))).then(function(rs){
+      qbDone(rs.filter(function(r){ return r && r.length; }).length + ' marked Couldn’t submit');
+    }, function(e2){ err.hidden = false; err.textContent = TP.errText(e2); });
+  });
 }
 // what the employee opened from the queue, in the order shown: after Mark as applied, "Open next" takes the next one
 function qRemember(id){ TP.ssSet('tp_qctx', {at:Date.now(), ids:QSHOWN, done:[], cur:id}); }
@@ -6456,6 +7105,7 @@ document.addEventListener('keydown', function(e){
   if((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 'k'){ e.preventDefault(); switcher(); return; }
   if(e.key === '/' && !typing && !e.ctrlKey && !e.metaKey){ var s = $('#cq') || $('#lq') || $('#apQ'); if(s){ e.preventDefault(); s.focus(); s.select(); } }
   if(e.key === '[' && !typing && !e.ctrlKey && !e.metaKey){ e.preventDefault(); sbToggle(); }   // the sidebar as an icon rail, and back
+  if(!typing && !e.ctrlKey && !e.metaKey) keyNav(e);   // G then a letter, ?, J/K, O C A N (keysHelp lists them)
 });
 
 /* =====================================================================
@@ -6467,6 +7117,14 @@ document.addEventListener('click', function(e){
   if(act !== 'memenu' && b.closest('#meMenu')) closeMeMenu();   // a choice in your menu closes it
   switch(act){
     case 'memenu': return meMenu(b);
+    case 'hoaway': closeMeMenu(); return hoAway();
+    case 'hogive': return hoGive(b.getAttribute('data-c') ? [b.getAttribute('data-c')] : []);
+    case 'hotake': return hoTake();
+    case 'hocancel': return hoCancel(+b.getAttribute('data-id'));
+    case 'rvok': return rvSave(b.getAttribute('data-id'), 'ok', b);
+    case 'rvissue': return rvIssue(b.getAttribute('data-id'), b);
+    case 'myissues': return myIssues();
+    case 'hodecide': return hoDecide(+b.getAttribute('data-id'), b.getAttribute('data-v') === 'yes');
     case 'jtab': return apTab(b.getAttribute('data-v'));
     case 'resmode': return setResMode(b.getAttribute('data-v'));   // the resume beside the job: Preview, or Edit right there
     case 'qcmd': {   // the panel's toolbar: the editor in the panel does it
@@ -6516,6 +7174,8 @@ document.addEventListener('click', function(e){
       var na = $$('#pfQA [data-qa=a]').pop(); na.focus(); na.select(); pfMark(); return;
     }
     case 'qaadd2': $('#apQA').insertAdjacentHTML('beforeend', qaRow({})); $$('#apQA [data-qa=q]').pop().focus(); return;
+    case 'copyall': return copyAllAnswers();
+    case 'keys': return keysHelp();
     case 'qacopy': var row = b.closest('.qa'); return TP.copy($('[data-qa=a]', row).value, 'Answer');
     case 'qadel':
       // an answer taken out: Undo puts it back in the same place (on a draft both are saved straight away)
@@ -6615,7 +7275,7 @@ document.addEventListener('click', function(e){
       var at = $('#anT').value.trim(), aa = A, ac = C; if(!at) return $('#anT').focus();
       return TP.busy(b, q(SB.from('client_activity').insert({client_id:ac.id, application_id:aa.id, kind:'note', summary:at}))).then(function(){
         bkDel('anote_' + aa.id); if($('#anT')) $('#anT').value = ''; $$('.rechint').forEach(function(x){ x.remove(); }); TP.toast('Note saved');
-        q(SB.from('client_activity').select('*').eq('application_id', aa.id).order('at', {ascending:true})).then(function(rows){ if(A === aa && $('#apHist')) $('#apHist').innerHTML = (rows || []).map(histRow).join(''); }, function(){});
+        apHistLoad(aa).then(function(rows){ if(A === aa && $('#apHist')) $('#apHist').innerHTML = (rows || []).map(histRow).join(''); }, function(){});
       }, fail);
     case 'tmmenu': return teamMenu(b.getAttribute('data-email'));
     case 'addextra': return addExtra();
