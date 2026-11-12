@@ -7,6 +7,7 @@
 - [Home](https://trulyplaced.com/): how it works, what a sprint looks like, members' offers, pricing and FAQ
 - Pricing: plans are paid once for a volume of applications (250, 500 or 1,000) at $299, $449 or $699, with no subscription; each price includes a one-time $100 onboarding fee
 - [Cancellation & Refund Policy](https://trulyplaced.com/refunds.html): unused applications are refunded pro-rata
+- [About](https://trulyplaced.com/about.html): who TrulyPlaced is, what it does, the company behind it
 - [Contact](https://trulyplaced.com/contact.html): hello@trulyplaced.com, WhatsApp, business details
 
 ## Free tools
