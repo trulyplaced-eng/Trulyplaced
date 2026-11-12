@@ -82,3 +82,12 @@
   apply(root.getAttribute("data-theme")==="dark"?"dark":"light");
   btns.forEach(function(b){b.addEventListener("click",function(){var t=b.getAttribute("data-set-theme");apply(t);try{localStorage.setItem("tp-theme",t)}catch(e){}})});
 })();
+
+/* The bar's name: shown once the page's own big "TrulyPlaced" (the homepage's .cx-word) is out of view, hidden while
+   it's in view; on pages without one, shown as the page opens. */
+(function(){
+  var bar=document.getElementById('tpBar');if(!bar)return;
+  var word=document.querySelector('.cx-word');
+  if(!word||!('IntersectionObserver' in window)){requestAnimationFrame(function(){requestAnimationFrame(function(){bar.classList.add('cb-named')})});return}
+  new IntersectionObserver(function(es){bar.classList.toggle('cb-named',!es[0].isIntersecting)},{rootMargin:'-72px 0px 0px 0px'}).observe(word);
+})();

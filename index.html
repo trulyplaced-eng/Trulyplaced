@@ -2573,6 +2573,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   <div class="emx-in">
     <h2 class="emx-h" id="emxTitle">Real interview emails.<br class="m-br"> Real inboxes.</h2>
     <p class="emx-p">What lands in our clients’ inboxes once their applications start going out: phone screens, assessments, final rounds.</p>
+    <p class="emx-verified"><svg class="emx-tick" viewBox="0 0 24 24" aria-hidden="true"><path fill="#1D9BF0" d="M12 1.6l2.25 1.65 2.77-.35 1.08 2.58 2.58 1.08-.35 2.77L22 11.58l-1.67 2.25.35 2.77-2.58 1.08-1.08 2.58-2.77-.35L12 21.56l-2.25-1.65-2.77.35-1.08-2.58-2.58-1.08.35-2.77L2 11.58l1.67-2.25-.35-2.77 2.58-1.08 1.08-2.58 2.77.35z"/><path d="M8.1 11.9l2.6 2.6 5.2-5.3" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Verified</b> · straight from our clients’ inboxes</span></p>
   </div>
   <div class="emx-in emx-wide">
     <div class="ib" id="ibox">
@@ -3796,5 +3797,36 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   btns.forEach(function(b){b.addEventListener("click",function(){var t=b.getAttribute("data-set-theme");apply(t);try{localStorage.setItem("tp-theme",t)}catch(e){}})});
 })();
 </script>
+<style>
+/* The name beside the mark wipes in left to right behind a soft edge (and back out), like a word being written:
+   on the homepage once its big "TrulyPlaced" has scrolled away, on other pages as they open (site.js / below). */
+#tpBar .cb-name{display:inline-block!important;font:700 20px/1 "Poppins","Geist",system-ui,sans-serif;letter-spacing:-.02em;color:#121a33;
+  -webkit-mask-image:linear-gradient(90deg,#000 0 40%,transparent 60% 100%);mask-image:linear-gradient(90deg,#000 0 40%,transparent 60% 100%);
+  -webkit-mask-size:260% 100%;mask-size:260% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:100% 0;mask-position:100% 0;transition:-webkit-mask-position .6s cubic-bezier(.65,0,.35,1),mask-position .6s cubic-bezier(.65,0,.35,1)}
+#tpBar.cb-named .cb-name{-webkit-mask-position:0 0;mask-position:0 0}
+html[data-theme="dark"] #tpBar .cb-name{color:#F5F5F7}
+@media(max-width:380px){#tpBar .cb-name{font-size:18px}}
+@media(prefers-reduced-motion:reduce){#tpBar .cb-name{transition:none}}
+</style>
+<script>
+/* The bar's name: shown once the page's own big "TrulyPlaced" (the homepage's .cx-word) is out of view, hidden while
+   it's in view; on pages without one, shown as the page opens. */
+(function(){
+  var bar=document.getElementById('tpBar');if(!bar)return;
+  var word=document.querySelector('.cx-word');
+  if(!word||!('IntersectionObserver' in window)){requestAnimationFrame(function(){requestAnimationFrame(function(){bar.classList.add('cb-named')})});return}
+  new IntersectionObserver(function(es){bar.classList.toggle('cb-named',!es[0].isIntersecting)},{rootMargin:'-72px 0px 0px 0px'}).observe(word);
+})();
+</script>
+<style>
+/* the one verified tick on the site: under "Real interview emails", where it vouches for what it sits on */
+.emx-verified{display:flex;width:fit-content;align-items:center;gap:7px;margin:18px auto 0;padding:6px 12px 6px 8px;border-radius:999px;background:#fff;border:1px solid rgba(10,10,11,.08);box-shadow:0 6px 18px -12px rgba(18,26,51,.3);font:500 13px/1 "Inter",ui-sans-serif,system-ui,sans-serif;color:#52525B}
+.emx-verified b{font-weight:600;color:#0A0A0B}
+.emx-tick{width:18px;height:18px;flex:none}
+@media(max-width:640px){.emx-verified{margin:14px 0 0}}
+html[data-theme="dark"] .emx-verified{background:#141418;border-color:rgba(255,255,255,.1);box-shadow:none;color:#A1A1AA}
+html[data-theme="dark"] .emx-verified b{color:#F5F5F7}
+</style>
 </body>
 </html>
