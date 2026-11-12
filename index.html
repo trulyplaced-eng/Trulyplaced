@@ -3828,5 +3828,15 @@ html[data-theme="dark"] #tpBar .cb-name{color:#F5F5F7}
 html[data-theme="dark"] .emx-verified{background:#141418;border-color:rgba(255,255,255,.1);box-shadow:none;color:#A1A1AA}
 html[data-theme="dark"] .emx-verified b{color:#F5F5F7}
 </style>
+<style>
+/* cos-theme: the companies' marks in the page's own ink (not each brand's colours), so the row reads as part of the page;
+   a mark shows its real colours while the pointer is on it. Dark mode: white, as before. */
+.cos-g li{filter:grayscale(1) brightness(0) opacity(.62);transition:filter .25s ease}
+@media(hover:hover){.cos-g li:hover{filter:none}}
+html[data-theme="dark"] .cos-g li{filter:grayscale(1) brightness(0) invert(1) opacity(.7)}
+@media(hover:hover){html[data-theme="dark"] .cos-g li:hover{filter:grayscale(1) brightness(0) invert(1)}}
+html[data-theme="dark"] .cos-g img,html[data-theme="dark"] .cos-g .wmt img{filter:none}
+@media(prefers-reduced-motion:reduce){.cos-g li{transition:none}}
+</style>
 </body>
 </html>
