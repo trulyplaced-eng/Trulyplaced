@@ -1476,7 +1476,7 @@ html:not([data-theme="dark"]) .ft3 a:focus-visible{outline-color:#0938D5}
 .ft3-cta{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin-top:28px}
 .ft3-ghost{font:500 14.5px/20px "Inter",ui-sans-serif,system-ui,sans-serif;color:#fff;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.3);padding-bottom:2px;transition:border-color .2s ease}
 .ft3-ghost:hover{border-bottom-color:#fff}
-.ft3-cols{display:grid;grid-template-columns:repeat(4,minmax(0,auto));gap:24px 56px}
+.ft3-cols{display:grid;grid-template-columns:repeat(5,minmax(0,auto));gap:24px 48px}
 .ft3-col{display:flex;flex-direction:column;gap:12px}
 .ft3-col h4{margin:0 0 6px;font:500 11.5px/16px "Inter",ui-sans-serif,system-ui,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#8B8F99}
 .ft3-col a{display:inline-flex;align-items:center;gap:4px;width:fit-content;font:400 14px/20px "Inter",ui-sans-serif,system-ui,sans-serif;color:#D4D4D8;text-decoration:none;transition:color .2s ease}
@@ -1489,13 +1489,14 @@ html:not([data-theme="dark"]) .ft3-ghost:hover{border-bottom-color:#0A0A0B}
 html:not([data-theme="dark"]) .ft3-col h4{color:#8A90A3}
 html:not([data-theme="dark"]) .ft3-col a{color:#3F3F46}
 html:not([data-theme="dark"]) .ft3-col a:hover{color:#0938D5}
-@media(max-width:1100px){.ft3-cols{grid-template-columns:repeat(4,minmax(0,1fr));gap:24px 32px;width:100%}}
+@media(max-width:1100px){.ft3-cols{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 32px;width:100%}}
 @media(max-width:900px){.ft3-lead{max-width:none}}
 @media(max-width:640px){.ft3-h{font-size:26px;line-height:32px}.ft3-cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:36px 20px}.ft3-cta .cx-btn{width:100%;justify-content:center}}
 
-/* footer layout: lead on the left, the four columns beside it */
-.ft3-top{display:grid!important;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:48px 72px}
-.ft3-cols{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:24px 32px!important;padding-top:6px}
+/* footer layout: the lead, then the five columns across the full width below it */
+.ft3-top{display:grid!important;grid-template-columns:1fr;gap:40px}
+.ft3-cols{grid-template-columns:repeat(5,max-content)!important;gap:24px 56px!important;padding-top:6px}
+@media(max-width:1100px){.ft3-cols{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:28px 32px!important}}
 .ft3-btn{height:40px;padding:0 16px}
 @media(max-width:1100px){.ft3-top{grid-template-columns:1fr}.ft3-lead{max-width:520px}}
 @media(max-width:640px){.ft3-cols{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:36px 20px!important}.ft3-btn{height:44px}}
@@ -2765,6 +2766,13 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
           <a href="https://app.trulyplaced.com/jobs">Browse open jobs</a>
           <a href="https://calendly.com/hello-trulyplaced/career-hunt-2026" target="_blank" rel="noopener">Strategy call<svg class="ft3-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
           <a href="./login.html">Client login</a>
+        </nav>
+        <nav class="ft3-col" aria-label="Compare">
+          <h4>Compare</h4>
+          <a href="./trulyplaced-vs-scale-jobs.html">TrulyPlaced vs Scale.jobs</a>
+          <a href="./trulyplaced-vs-lazyapply.html">TrulyPlaced vs LazyApply</a>
+          <a href="./best-job-application-services.html">Best job application services</a>
+          <a href="./pay-someone-to-apply-for-jobs.html">Is paying someone worth it?</a>
         </nav>
         <nav class="ft3-col" aria-label="Support">
           <h4>Support</h4>
