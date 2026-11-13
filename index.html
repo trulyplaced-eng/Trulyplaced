@@ -130,7 +130,7 @@ img{max-width:100%}
   var phone=window.matchMedia&&matchMedia('(max-width: 640px)').matches;   // phones: content is simply there, no scroll-in reveals
   if(!phone){ d.classList.add('motion');
   setTimeout(function(){ if(!window.__tpMotion) d.classList.remove('motion'); }, 4000); }   // safety net: never leave content hidden
-  if(phone&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)){d.classList.add('hx-go');setTimeout(function(){d.classList.remove('hx-go')},2600)}   // phones: one short entrance (styles in the head, so nothing shows and then hides)
+  if(phone&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)){d.classList.add('wd-in');setTimeout(function(){d.classList.remove('wd-in')},4500)}
   if(!phone) d.classList.add('tp-intro');   // phones: the hero is simply there, no entrance                                                             // hero entrance (wordmark types in)
   setTimeout(function(){ d.classList.remove('tp-intro'); }, 3500);                          // safety net for the entrance
 }catch(e){}})();
@@ -2168,21 +2168,27 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
 @keyframes tpFadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.dm *{transition:none!important}}
 
-/* ===== phone entrance (13 Nov), studied on cluely.com: one short sequence, top to bottom, nothing shown and then hidden.
-   The name fades up, the headline rises line by line, then the line under it, the button, the platforms, and the
-   app's phone slides up last. About 1.5s in all; the class is set in the head before the first paint. ===== */
+/* the headline's word wrappers are plain text on computers */
+.cx-h1 .wm,.cx-h1 .wi{display:inline!important;margin:0!important;padding:0!important}
+/* ===== phone entrance v2 (13 Nov): Cluely's system, TrulyPlaced's opening. 0s the name plots in pixel blocks (about
+   1.1s) · 0.55s the headline rises word by word from behind its line · 1.45s the line under it · 1.6s the button ·
+   1.8s the platforms · 1.95s the app's phone slides up. One thing at a time, top to bottom. ===== */
 @media(max-width:640px){
-  html.hx-go .cx .cx-word{animation:hxWord .6s cubic-bezier(.2,.75,.2,1) .05s both}
-  html.hx-go .cx-h1 .cx-l1,html.hx-go .cx-h1 .cx-l2{animation:tpRise .7s cubic-bezier(.2,.75,.2,1) both}
-  html.hx-go .cx-h1 .cx-l1{display:block;animation-delay:.18s}
-  html.hx-go .cx-h1 .cx-l2{animation-delay:.3s}
-  html.hx-go .cx-sub{animation:tpFadeUp .6s cubic-bezier(.2,.75,.2,1) .45s both}
-  html.hx-go .cx-cta{animation:tpFadeUp .6s cubic-bezier(.2,.75,.2,1) .55s both}
-  html.hx-go .cx-pl{animation:tpFadeUp .6s cubic-bezier(.2,.75,.2,1) .65s both}
-  html.hx-go .xph{animation:hxPhone .85s cubic-bezier(.2,.75,.2,1) .75s both}
+  .cx-h1 .wm{display:inline-block!important;overflow:hidden;vertical-align:top;padding-bottom:.2em!important;margin-bottom:-.2em!important}
+  .cx-h1 .wi{display:inline-block!important}
+  html.wd-in:not(.wd-go) .cx-h1 .wi{transform:translateY(110%)}
+  html.wd-in:not(.wd-go) :is(.cx-sub,.cx-cta,.cx-pl,.xph){opacity:0}
+  html.wd-go .cx-h1 .wi{animation:enRise .6s cubic-bezier(.2,.8,.2,1) both}
+  html.wd-go .cx-h1 .wm:nth-child(1) .wi{animation-delay:0.55s}html.wd-go .cx-h1 .wm:nth-child(2) .wi{animation-delay:0.62s}html.wd-go .cx-h1 .wm:nth-child(3) .wi{animation-delay:0.69s}html.wd-go .cx-h1 .wm:nth-child(4) .wi{animation-delay:0.76s}html.wd-go .cx-h1 .wm:nth-child(5) .wi{animation-delay:0.83s}
+  html.wd-go .cx-l2 .wm:nth-child(1) .wi{animation-delay:0.90s}html.wd-go .cx-l2 .wm:nth-child(2) .wi{animation-delay:0.97s}html.wd-go .cx-l2 .wm:nth-child(3) .wi{animation-delay:1.04s}
+  html.wd-go .cx-sub{animation:enUp .55s cubic-bezier(.2,.8,.2,1) 1.45s both}
+  html.wd-go .cx-cta{animation:enUp .8s cubic-bezier(.2,.8,.2,1) 1.6s both}
+  html.wd-go .cx-pl{animation:enUp .7s cubic-bezier(.2,.8,.2,1) 1.8s both}
+  html.wd-go .xph{animation:enPhone .9s cubic-bezier(.2,.8,.2,1) 1.95s both}
 }
-@keyframes hxWord{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes hxPhone{from{opacity:0;transform:translateY(48px)}to{opacity:1;transform:none}}
+@keyframes enRise{from{transform:translateY(110%)}to{transform:none}}
+@keyframes enUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes enPhone{from{opacity:0;transform:translateY(56px)}to{opacity:1;transform:none}}
 
 /* ===== phone focus (13 Nov): the phone page exists to get people into the app: it names the pain, shows the
    product and asks for one thing ("Try it free"). No prices or plan sizes anywhere. Order: hero, logos, the pain
@@ -2671,7 +2677,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   <div class="cx-sky" aria-hidden="true"><div class="cx-skyin"><img class="cx-img" data-src="img/hero-sky.jpg" alt="" data-sample="data:image/jpeg;base64,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"><canvas class="cx-dots" id="cxDots"></canvas><canvas class="cx-prism" id="cxPrism"></canvas><div class="cx-grain"></div></div></div>
   <div class="cx-in">
     <p class="cx-word" aria-hidden="true">TrulyPlaced</p>
-    <h1 class="cx-h1"><span class="cx-l1">Job applications, done for you,</span><span class="cx-l2" id="cxScr" aria-live="off">every business day.</span></h1>
+    <h1 class="cx-h1"><span class="cx-l1"><span class="wm"><span class="wi">Job&nbsp;</span></span><span class="wm"><span class="wi">applications,&nbsp;</span></span><span class="wm"><span class="wi">done&nbsp;</span></span><span class="wm"><span class="wi">for&nbsp;</span></span><span class="wm"><span class="wi">you,</span></span></span><span class="cx-l2" id="cxScr" aria-live="off"><span class="wm"><span class="wi">every&nbsp;</span></span><span class="wm"><span class="wi">business&nbsp;</span></span><span class="wm"><span class="wi">day.</span></span></span></h1>
     <p class="cx-sub">Applying everywhere and hearing nothing back? Upload your resume and see the jobs that fit you.</p>
     <div class="cx-cta">
       <a class="cx-btn s cta-shine" href="https://app.trulyplaced.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.5 18.5h3"/></svg><span class="lb-d">Start free in the app</span><span class="lb-m">Start free in the app<svg class="lb-ar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
@@ -4126,7 +4132,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
       // where the baseline is
       var bl=document.createElement('span');bl.style.cssText='display:inline-block;width:0;height:0;vertical-align:baseline';w.appendChild(bl);
       var base=bl.getBoundingClientRect().top-wr.top;w.removeChild(bl);
-      var PAD=12,CELL=5,DOT=105,SPAN=2050,LET=400,W=Math.ceil(wr.width)+PAD*2,H=Math.ceil(wr.height)+PAD*2,dpr=Math.min(3,window.devicePixelRatio||1);
+      var PAD=12,CELL=5,DOT=90,SPAN=850,LET=280,W=Math.ceil(wr.width)+PAD*2,H=Math.ceil(wr.height)+PAD*2,dpr=Math.min(3,window.devicePixelRatio||1);
       // the real letters, off screen
       var src=document.createElement('canvas');src.width=W*dpr;src.height=H*dpr;var sx=src.getContext('2d');sx.scale(dpr,dpr);
       sx.font=cs.fontStyle+' '+cs.fontWeight+' '+cs.fontSize+' '+cs.fontFamily;sx.fillStyle=cs.color;sx.textBaseline='alphabetic';
@@ -4142,7 +4148,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
           cells.push({c:c,r:rw,t:li*(SPAN/n)+(fx*.72+(rw/rows)*.28)*LET+Math.random()*120,s:0})}}
       cells.sort(function(a,b){return a.t-b.t});
       var END=cells.length?cells[cells.length-1].t+DOT+60:0,h=C/2;
-      w.classList.add('wd-on');w.appendChild(cv);
+      w.classList.add('wd-on');w.appendChild(cv);d.classList.add('wd-go');setTimeout(function(){d.classList.remove('wd-go')},3200);
       var t0=performance.now(),from=0;
       function frame(now){var t=now-t0;
         for(var k=from;k<cells.length;k++){var q=cells[k];if(q.t>t)break;
