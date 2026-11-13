@@ -1753,7 +1753,7 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
 @media(max-width:640px){
   /* one type family everywhere except the logo wordmark */
   body,body :where(section,footer,header,nav,div,p,span,a,b,i,em,small,li,button,h1,h2,h3,h4,label,mark,time,strong){font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important}
-  .cx-word,.cx-word *{font-family:"Poppins","Geist",system-ui,sans-serif!important}
+  .cx-word,.cx-word *,#tpBar .cb-name{font-family:"Poppins","Geist",system-ui,sans-serif!important}
   body{-webkit-font-smoothing:antialiased;color:#1D1D1F}
 
   /* hero */
@@ -2046,8 +2046,15 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
 /* phone hero: a still screenshot of the app in a flat black phone (light and fast) */
 @media(max-width:640px){
   .xph{display:flex!important;justify-content:center;margin-top:40px!important;position:relative;z-index:1}
-  .hph{width:min(300px,80vw);padding:10px;border-radius:50px;background:#0A0A0B;box-shadow:0 40px 70px -40px rgba(10,20,60,.55)}
-  .hph img{display:block;width:100%;height:auto;aspect-ratio:280/580;border-radius:40px;background:#fff}
+  /* an iPhone: thin black bezel, a titanium edge, side buttons, a soft glass sheen; the screen inside is 393 x 852 points */
+  .hph{position:relative;width:min(292px,78vw);padding:5px;border-radius:49px;border:1.5px solid transparent;
+    background:linear-gradient(#050506,#050506) padding-box,linear-gradient(150deg,#9A9AA0 0%,#4A4A4F 22%,#2A2A2E 50%,#55555A 78%,#A5A5AB 100%) border-box;
+    box-shadow:0 50px 80px -46px rgba(10,20,60,.6),0 18px 30px -24px rgba(10,20,60,.35)}
+  .hph img{display:block;width:100%;height:auto;aspect-ratio:393/852;border-radius:42px;background:#fff}
+  .hph::after{content:"";position:absolute;inset:5px;border-radius:42px;pointer-events:none;background:linear-gradient(118deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,0) 34%)}
+  .hph::before{content:"";position:absolute;right:-3.5px;top:27%;width:2.5px;height:62px;border-radius:0 2px 2px 0;background:linear-gradient(90deg,#3A3A3E,#77777C)}
+  .xph{position:relative}
+  .hph-btns{position:absolute;left:-3.5px;top:17%;width:2.5px;height:22px;border-radius:2px 0 0 2px;background:linear-gradient(270deg,#3A3A3E,#77777C);box-shadow:0 40px 0 0 #55555A}
 }
 
 
@@ -2418,7 +2425,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
       <p class="cx-ats-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>We apply on the platforms employers already use</span><span class="sr-only">, including Greenhouse, Workday, Ashby, Workable, Rippling, BambooHR, Breezy, Gem, JazzHR, Dover, Jobvite</span></p>
       <div class="cx-ats-s"><div class="cx-ats-m" aria-hidden="true"><div class="cx-ats-t"><span class="cx-ats-i"><img src="img/ats/greenhouse.png" alt="" width="20" height="20" loading="lazy">Greenhouse</span><span class="cx-ats-i"><img src="img/ats/workday.png" alt="" width="20" height="20" loading="lazy">Workday</span><span class="cx-ats-i"><img src="img/ats/ashby.png" alt="" width="20" height="20" loading="lazy">Ashby</span><span class="cx-ats-i"><img src="img/ats/workable.png" alt="" width="20" height="20" loading="lazy">Workable</span><span class="cx-ats-i"><img src="img/ats/rippling.png" alt="" width="20" height="20" loading="lazy">Rippling</span><span class="cx-ats-i"><img src="img/ats/bamboohr.png" alt="" width="20" height="20" loading="lazy">BambooHR</span><span class="cx-ats-i"><img src="img/ats/breezy.png" alt="" width="20" height="20" loading="lazy">Breezy</span><span class="cx-ats-i"><img src="img/ats/gem.png" alt="" width="20" height="20" loading="lazy">Gem</span><span class="cx-ats-i"><img src="img/ats/jazzhr.jpg" alt="" width="20" height="20" loading="lazy">JazzHR</span><span class="cx-ats-i"><img src="img/ats/dover.png" alt="" width="20" height="20" loading="lazy">Dover</span><span class="cx-ats-i"><img src="img/ats/jobvite.png" alt="" width="20" height="20" loading="lazy">Jobvite</span><span class="cx-ats-i"><img src="img/ats/greenhouse.png" alt="" width="20" height="20" loading="lazy">Greenhouse</span><span class="cx-ats-i"><img src="img/ats/workday.png" alt="" width="20" height="20" loading="lazy">Workday</span><span class="cx-ats-i"><img src="img/ats/ashby.png" alt="" width="20" height="20" loading="lazy">Ashby</span><span class="cx-ats-i"><img src="img/ats/workable.png" alt="" width="20" height="20" loading="lazy">Workable</span><span class="cx-ats-i"><img src="img/ats/rippling.png" alt="" width="20" height="20" loading="lazy">Rippling</span><span class="cx-ats-i"><img src="img/ats/bamboohr.png" alt="" width="20" height="20" loading="lazy">BambooHR</span><span class="cx-ats-i"><img src="img/ats/breezy.png" alt="" width="20" height="20" loading="lazy">Breezy</span><span class="cx-ats-i"><img src="img/ats/gem.png" alt="" width="20" height="20" loading="lazy">Gem</span><span class="cx-ats-i"><img src="img/ats/jazzhr.jpg" alt="" width="20" height="20" loading="lazy">JazzHR</span><span class="cx-ats-i"><img src="img/ats/dover.png" alt="" width="20" height="20" loading="lazy">Dover</span><span class="cx-ats-i"><img src="img/ats/jobvite.png" alt="" width="20" height="20" loading="lazy">Jobvite</span></div></div></div>
     </div>
-    <div class="xph"><div class="hph"><img src="img/hero-phone.webp?v=2" width="280" height="580" alt="The TrulyPlaced app on a phone: Home, with your best matches each morning and one tap to apply" fetchpriority="high" decoding="async"></div></div>
+    <div class="xph"><div class="hph"><i class="hph-btns" aria-hidden="true"></i><img src="img/hero-phone.webp?v=3" width="393" height="852" alt="The TrulyPlaced app on a phone: Home, with your best matches each morning and one tap to apply" fetchpriority="high" decoding="async"></div></div>
     <div class="cx-shot ta" data-ui role="img" aria-label="The TrulyPlaced app: the Tracker with an application open in the side panel, showing its tailored resume, cover letter and progress">
       <div class="cx-bar"><span class="cx-dot3"><i></i><i></i><i></i></span><span class="cx-url">app.trulyplaced.com/app/applications</span></div>
       <div class="ta-app">
@@ -3807,6 +3814,8 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   -webkit-mask-size:260% 100%;mask-size:260% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-position:100% 0;mask-position:100% 0;transition:-webkit-mask-position .6s cubic-bezier(.65,0,.35,1),mask-position .6s cubic-bezier(.65,0,.35,1)}
 #tpBar.cb-named .cb-name{-webkit-mask-position:0 0;mask-position:0 0}
+/* room for the y's tail inside the wipe's mask (the mask covers only the box) */
+#tpBar .cb-name{padding:.2em 0 .28em;margin:-.2em 0 -.28em}
 html[data-theme="dark"] #tpBar .cb-name{color:#F5F5F7}
 @media(max-width:380px){#tpBar .cb-name{font-size:18px}}
 @media(prefers-reduced-motion:reduce){#tpBar .cb-name{transition:none}}

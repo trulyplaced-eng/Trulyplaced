@@ -586,6 +586,8 @@ html[data-theme="dark"] .prose h2#faq ~ h3{border-top-color:rgba(255,255,255,.08
   -webkit-mask-size:260% 100%;mask-size:260% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
   -webkit-mask-position:100% 0;mask-position:100% 0;transition:-webkit-mask-position .6s cubic-bezier(.65,0,.35,1),mask-position .6s cubic-bezier(.65,0,.35,1)}
 #tpBar.cb-named .cb-name{-webkit-mask-position:0 0;mask-position:0 0}
+/* room for the y's tail inside the wipe's mask (the mask covers only the box) */
+#tpBar .cb-name{padding:.2em 0 .28em;margin:-.2em 0 -.28em}
 html[data-theme="dark"] #tpBar .cb-name{color:#F5F5F7}
 @media(max-width:380px){#tpBar .cb-name{font-size:18px}}
 @media(prefers-reduced-motion:reduce){#tpBar .cb-name{transition:none}}
