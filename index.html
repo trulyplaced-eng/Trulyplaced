@@ -2098,6 +2098,141 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
   /* typing dots only move while their row is talking */
   .tm-row:not(.talk) .tm-dots i{animation:none!important}
 }
+/* ===== phone focus (13 Nov): the phone page exists to get people into the app: it names the pain, shows the
+   product and asks for one thing ("Try it free"). No prices or plan sizes anywhere. Order: hero, logos, the pain
+   answered, how it works, interview emails, three steps to start, FAQ, short footer.
+   The team section and the sprint demo stay on computers. ===== */
+.lb-m,.cx-sub,.cx-free,.pn,.st,.mcta,.ft3-more,.ft3-m{display:none}
+.faq-item:has(.faq-skip),.ta-left{display:none!important}
+@media(max-width:640px){
+  .lb-d{display:none}.lb-m{display:inline}
+  main#top{display:flex;flex-direction:column}
+  main#top>.cx{order:1}main#top>.cos{order:2}main#top>.pn{order:3}main#top>.hw{order:4}main#top>.emx{order:5}main#top>.st{order:6}main#top>.fqh{order:7}
+  main#top>.tm,main#top>.spx-sec{display:none!important}
+
+  /* hero: what it is, what it costs, one button */
+  .cx-sub{display:block;margin:10px 0 0;max-width:512px;font:400 15px/22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:rgba(255,255,255,.94);text-shadow:0 1px 12px rgba(0,58,140,.35)}
+  .cx-free{display:block;order:-1;margin:2px 0 0;text-align:center;font:500 13px/18px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:rgba(255,255,255,.92);text-shadow:0 1px 10px rgba(0,58,140,.35)}
+  .cx-proof{display:none!important}
+
+  /* rhythm: 64px between sections */
+  .hw{padding:64px 20px 0}
+  .emx{padding-top:64px!important}
+  .fqh{padding:64px 0 56px!important}
+
+  /* logos: a quiet trust line right under the hero */
+  .cos{padding:36px 20px 0!important}
+  .cos .cos-h{font:500 14px/20px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:0!important;color:#6E6E73!important}
+  .cos .cos-num{color:inherit!important;font-weight:600}
+  html[data-theme="dark"] .cos .cos-h{color:#98989D!important}
+  .cos .cos-g{margin-top:18px!important;gap:20px 6px!important}
+
+  /* how it works: three cards in the order things happen; no tabs, no number tiles */
+  .hw-more,.hb-tabs,#hbP2,.hb-t{display:none!important}
+  .hb-p{margin-top:16px}
+  .hw .hb-a{order:1}.hw .hb-b{order:2}.hw .hb-c3{order:3}
+  .hb-a,.hb-c3{aspect-ratio:16/11}
+  .hb-b{aspect-ratio:4/4.4}
+
+  /* interview emails: the heading and the emails; the paragraph goes */
+  .emx-p{display:none!important}
+
+
+
+  /* the pain, answered: what hurts (grey, struck through) and what happens instead */
+  .pn{display:block;padding:56px 20px 0;background:#fff}
+  .pn-h,.st-h{margin:0;font:600 21px/28px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.022em;color:#1D1D1F}
+  .pn-l{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:10px}
+  .pn-l li{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border-radius:16px;background:#F5F7FB}
+  .pn-l s{font:400 14px/20px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#8E8E93;text-decoration-color:rgba(142,142,147,.6)}
+  .pn-l b{display:flex;align-items:center;gap:8px;font:600 16px/22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.01em;color:#0A0A0B}
+  .pn-l svg{width:18px;height:18px;flex:none;padding:3px;border-radius:99px;background:#0938D5;color:#fff}
+
+  /* the emails lead straight into the three steps, which carry the button */
+  .emx .emx-cta{display:none!important}
+
+  /* three steps to your matches: what happens after the tap, so signing in feels small */
+  .st{display:block;padding:64px 20px 0;background:#fff}
+  .st-l{list-style:none;margin:16px 0 0;padding:0;counter-reset:st}
+  .st-l li{position:relative;counter-increment:st;padding:0 0 18px 44px}
+  .st-l li::before{content:counter(st);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:99px;display:grid;place-items:center;background:#0A0A0B;color:#fff;font:600 13px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  .st-l li:not(:last-child)::after{content:"";position:absolute;left:13.5px;top:32px;bottom:4px;width:1px;background:#E4E4E7}
+  .st-l b{display:block;font:600 16px/22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.01em;color:#0A0A0B;padding-top:3px}
+  .st-l span{display:block;margin-top:2px;font:400 14.5px/21px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#6E6E73}
+  .st-b{display:flex;align-items:center;justify-content:center;height:48px;margin-top:6px;border-radius:999px;background:#0A0A0B;color:#fff;font:600 15px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;text-decoration:none}
+  html[data-theme="dark"] .pn,html[data-theme="dark"] .st{background:var(--bg)}
+  html[data-theme="dark"] .pn-h,html[data-theme="dark"] .st-h,html[data-theme="dark"] .pn-l b,html[data-theme="dark"] .st-l b{color:#F5F5F7}
+  html[data-theme="dark"] .pn-l li{background:rgba(255,255,255,.05)}
+  html[data-theme="dark"] .pn-l svg{background:#2F5BFF}
+  html[data-theme="dark"] .st-l li::before,html[data-theme="dark"] .st-b{background:#fff;color:#0A0A0B}
+  html[data-theme="dark"] .st-l li:not(:last-child)::after{background:rgba(255,255,255,.14)}
+  html[data-theme="dark"] .st-l span{color:#98989D}
+
+  /* footer: short. The link columns open with "More links" */
+  .ft3-about{display:none!important}
+  .ft3-cols{margin-top:28px!important}
+  .ft3-cols .ft3-col:not(.ft3-keep){display:none}
+  .ft3.more .ft3-cols .ft3-col{display:block}
+  .ft3-m{display:block}
+  .ft3-more{display:inline-flex;align-items:center;gap:6px;margin-top:28px;height:44px;padding:0;border:0;background:none;font:500 15px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#1D1D1F;cursor:pointer}
+  .ft3-more::after{content:"+";font-size:18px;line-height:1}
+  .ft3.more .ft3-more::after{content:"–"}
+  html[data-theme="dark"] .ft3-more{color:#F5F5F7}
+  .ft3 .ft3-keep h4{display:none}
+  .ft3-top{gap:0!important}
+  .ft3-more{margin-top:20px}
+  .ft3-more+.ft3-cols{margin-top:4px!important;padding-top:0!important}
+
+  /* sticky bar: the button stays in reach once the hero's button has scrolled away, and leaves at the footer */
+  .mcta{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);border-top:1px solid rgba(10,10,11,.08);
+    box-shadow:0 -10px 30px -18px rgba(10,10,11,.3);transform:translateY(110%);transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+  .mcta.on{transform:none}
+  .mcta span{font:400 12.5px/17px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#6E6E73}
+  .mcta b{display:block;font:600 14px/19px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#0A0A0B}
+  .mcta a{flex:none;display:flex;align-items:center;height:44px;padding:0 24px;border-radius:999px;background:#0A0A0B;color:#fff;font:600 15px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;text-decoration:none}
+  html[data-theme="dark"] .mcta{background:rgba(20,20,22,.96);border-top-color:rgba(255,255,255,.1)}
+  html[data-theme="dark"] .mcta span{color:#98989D}
+  html[data-theme="dark"] .mcta b{color:#F5F5F7}
+  html[data-theme="dark"] .mcta a{background:#fff;color:#0A0A0B}
+  footer.ft3{padding-bottom:calc(24px + env(safe-area-inset-bottom))!important}
+}
+@media(prefers-reduced-motion:reduce){.mcta{transition:none}}
+
+/* ===== phone hero (13 Nov): a bigger headline and button, tighter spacing, the platforms as one moving row, so the
+   app's phone is already in view on the first screen. The wordmark, the changing line and the phone demo are as before. ===== */
+.lb-ar{display:none}
+@media(max-width:640px){
+  .cx .cx-h1,.cx .cx-h1 *{font-size:min(26px,6.6vw)!important}
+  .cx-h1 .cx-l1{display:block;white-space:nowrap!important}
+  .cx-h1 .cx-l2{white-space:nowrap}
+  .cx-sub{margin:0;font-size:16px;line-height:24px;text-wrap:pretty}
+  .cx .cx-cta{margin-top:22px!important;gap:4px!important}
+  .cx-cta .cx-btn.s{height:56px!important;border-radius:999px!important;font:600 17px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.01em!important;
+    box-shadow:0 18px 36px -16px rgba(0,30,110,.65),0 2px 0 rgba(255,255,255,.6) inset!important}
+  .cx-cta .cx-btn.s:active{transform:scale(.98)}
+  .cx-cta .cx-btn.s .lb-m{display:inline-flex;align-items:center;gap:8px}
+  .cx-cta .cx-btn.s .lb-ar{display:block!important;width:18px;height:18px;animation:heroNudge 2.6s cubic-bezier(.3,.7,.2,1) 2s infinite}
+  .cx-free{margin-top:8px;font-size:13.5px}
+  .cx .cx-cta .cx-btn.p{padding:9px 0!important;align-self:center;width:auto!important}
+
+  /* the platforms: one row that drifts, edge to edge, fading at both sides */
+  .cx-pl{margin:14px -20px 0!important;padding:18px 0 0!important;overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 20px,#000 calc(100% - 28px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 20px,#000 calc(100% - 28px),transparent 100%)}
+  .cx-pl p{margin:0 20px 10px!important;text-align:center}
+  .cx-pl ul{flex-wrap:nowrap!important;width:max-content;padding:0 0 0 20px!important;gap:8px!important}
+  .cx-pl ul.run{animation:heroRun 34s linear infinite}
+  .cx-pl li{flex:none}
+  .xph{margin-top:30px!important}
+
+  /* entrance, after the headline's rise */
+  html.wd-in .cx-sub{animation:tpFadeUp .6s cubic-bezier(.2,.75,.2,1) .38s both}
+  html.wd-in .cx-pl{animation:tpFadeUp .6s cubic-bezier(.2,.75,.2,1) .62s both}
+}
+@keyframes heroNudge{0%,70%,100%{transform:none}80%{transform:translateX(5px)}90%{transform:translateX(-1px)}}
+@keyframes heroRun{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.cx-pl ul.run,.cx-cta .cx-btn.s .lb-ar{animation:none!important}.cx-pl{overflow-x:auto}}
+
 /* ===== phone bar (13 Nov): the bar leads with what a new visitor needs. "Try it free" is the black pill while the
    hero is in view (once you scroll, the bar at the bottom of the screen carries it and the name takes its place);
    "Client login" is always there as a quiet link. The menu opens with a short slide and the burger becomes a cross. ===== */
@@ -2127,8 +2262,16 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
   @starting-style{#tpBar .mobnav{opacity:0;transform:translateY(-10px) scale(.985)}}
   #tpBar .mobnav .mobnav-cta{order:-1;margin:4px 0 8px!important;height:50px;display:flex!important;align-items:center}
   #tpBar .mobnav a:not(.mobnav-cta){font-weight:500}
+  /* the menu attached to the bar (no gap, no floating corners), and the page behind dimmed */
+  #tpBar .mobnav{margin:0!important;border-radius:0!important;border-left:0!important;border-right:0!important;border-bottom:1px solid rgba(10,10,11,.08)!important;box-shadow:0 24px 40px -20px rgba(3,10,42,.35)!important}
+  #tpBar:has(.cb-burger[aria-expanded="true"])::after{content:"";position:fixed;inset:0;z-index:-1;background:rgba(10,14,30,.45);animation:mnDim .25s ease both}
+  html[data-theme="dark"] #tpBar:has(.cb-burger[aria-expanded="true"])::after{background:rgba(0,0,0,.6)}
+  #tpBar:has(.cb-burger[aria-expanded="true"]) .cb-in{position:relative;background:#fff}
+  html[data-theme="dark"] #tpBar:has(.cb-burger[aria-expanded="true"]) .cb-in{background:#0A0A0B}
+  #tpBar .mobnav .mobnav-theme{border-bottom:0!important}
 }
 @media(prefers-reduced-motion:reduce){#tpBar .mobnav,#tpBar .cb-burger::before,#tpBar .cb-burger::after,#tpBar .cb-burger svg{transition:none!important}}
+@keyframes mnDim{from{opacity:0}to{opacity:1}}
 </style>
 <style id="tpDark">
 /* ===== dark theme (test): variables + generated overrides of hard-coded light colours ===== */
@@ -2417,7 +2560,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
     </div>
   </div>
   <nav class="mobnav" id="mobnav" hidden>
-    <a class="mobnav-cta" href="https://app.trulyplaced.com">Try it free</a>
+    <a class="mobnav-cta" href="https://app.trulyplaced.com">Find my job matches</a>
     <a href="#how">How it works</a>
     <a href="#success">Interview emails</a>
     <a href="./compare.html">Compare</a>
@@ -4249,107 +4392,6 @@ html[data-theme="dark"] .hb-t span{color:#98989D}
   .cx-cta .cx-btn.p{padding:11px 0!important}
   .spx-tabs button{padding:13px 0 4px}
 }
-
-/* ===== phone focus (13 Nov): the phone page exists to get people into the app: it names the pain, shows the
-   product and asks for one thing ("Try it free"). No prices or plan sizes anywhere. Order: hero, logos, the pain
-   answered, how it works, interview emails, three steps to start, FAQ, short footer.
-   The team section and the sprint demo stay on computers. ===== */
-.lb-m,.cx-sub,.cx-free,.pn,.st,.mcta,.ft3-more,.ft3-m{display:none}
-.faq-item:has(.faq-skip),.ta-left{display:none!important}
-@media(max-width:640px){
-  .lb-d{display:none}.lb-m{display:inline}
-  main#top{display:flex;flex-direction:column}
-  main#top>.cx{order:1}main#top>.cos{order:2}main#top>.pn{order:3}main#top>.hw{order:4}main#top>.emx{order:5}main#top>.st{order:6}main#top>.fqh{order:7}
-  main#top>.tm,main#top>.spx-sec{display:none!important}
-
-  /* hero: what it is, what it costs, one button */
-  .cx-sub{display:block;margin:10px 0 0;max-width:512px;font:400 15px/22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:rgba(255,255,255,.94);text-shadow:0 1px 12px rgba(0,58,140,.35)}
-  .cx-free{display:block;order:-1;margin:2px 0 0;text-align:center;font:500 13px/18px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:rgba(255,255,255,.92);text-shadow:0 1px 10px rgba(0,58,140,.35)}
-  .cx-proof{display:none!important}
-
-  /* rhythm: 64px between sections */
-  .hw{padding:64px 20px 0}
-  .emx{padding-top:64px!important}
-  .fqh{padding:64px 0 56px!important}
-
-  /* logos: a quiet trust line right under the hero */
-  .cos{padding:36px 20px 0!important}
-  .cos .cos-h{font:500 14px/20px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:0!important;color:#6E6E73!important}
-  .cos .cos-num{color:inherit!important;font-weight:600}
-  html[data-theme="dark"] .cos .cos-h{color:#98989D!important}
-  .cos-g{margin-top:18px!important;gap:20px 6px!important}
-
-  /* how it works: three cards in the order things happen; no tabs, no number tiles */
-  .hw-more,.hb-tabs,#hbP2,.hb-t{display:none!important}
-  .hb-p{margin-top:16px}
-  .hb-a{order:1}.hb-b{order:2}.hb-c3{order:3}
-  .hb-a,.hb-c3{aspect-ratio:16/11}
-  .hb-b{aspect-ratio:4/4.4}
-
-  /* interview emails: the heading and the emails; the paragraph goes */
-  .emx-p{display:none!important}
-
-
-
-  /* the pain, answered: what hurts (grey, struck through) and what happens instead */
-  .pn{display:block;padding:56px 20px 0;background:#fff}
-  .pn-h,.st-h{margin:0;font:600 21px/28px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.022em;color:#1D1D1F}
-  .pn-l{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:10px}
-  .pn-l li{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border-radius:16px;background:#F5F7FB}
-  .pn-l s{font:400 14px/20px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#8E8E93;text-decoration-color:rgba(142,142,147,.6)}
-  .pn-l b{display:flex;align-items:center;gap:8px;font:600 16px/22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.01em;color:#0A0A0B}
-  .pn-l svg{width:18px;height:18px;flex:none;padding:3px;border-radius:99px;background:#0938D5;color:#fff}
-
-  /* the emails lead straight into the three steps, which carry the button */
-  .emx .emx-cta{display:none!important}
-
-  /* three steps to your matches: what happens after the tap, so signing in feels small */
-  .st{display:block;padding:64px 20px 0;background:#fff}
-  .st-l{list-style:none;margin:16px 0 0;padding:0;counter-reset:st}
-  .st-l li{position:relative;counter-increment:st;padding:0 0 18px 44px}
-  .st-l li::before{content:counter(st);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:99px;display:grid;place-items:center;background:#0A0A0B;color:#fff;font:600 13px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-  .st-l li:not(:last-child)::after{content:"";position:absolute;left:13.5px;top:32px;bottom:4px;width:1px;background:#E4E4E7}
-  .st-l b{display:block;font:600 16px/22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.01em;color:#0A0A0B;padding-top:3px}
-  .st-l span{display:block;margin-top:2px;font:400 14.5px/21px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#6E6E73}
-  .st-b{display:flex;align-items:center;justify-content:center;height:48px;margin-top:6px;border-radius:999px;background:#0A0A0B;color:#fff;font:600 15px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;text-decoration:none}
-  html[data-theme="dark"] .pn,html[data-theme="dark"] .st{background:var(--bg)}
-  html[data-theme="dark"] .pn-h,html[data-theme="dark"] .st-h,html[data-theme="dark"] .pn-l b,html[data-theme="dark"] .st-l b{color:#F5F5F7}
-  html[data-theme="dark"] .pn-l li{background:rgba(255,255,255,.05)}
-  html[data-theme="dark"] .pn-l svg{background:#2F5BFF}
-  html[data-theme="dark"] .st-l li::before,html[data-theme="dark"] .st-b{background:#fff;color:#0A0A0B}
-  html[data-theme="dark"] .st-l li:not(:last-child)::after{background:rgba(255,255,255,.14)}
-  html[data-theme="dark"] .st-l span{color:#98989D}
-
-  /* footer: short. The link columns open with "More links" */
-  .ft3-about{display:none!important}
-  .ft3-cols{margin-top:28px!important}
-  .ft3-cols .ft3-col:not(.ft3-keep){display:none}
-  .ft3.more .ft3-cols .ft3-col{display:block}
-  .ft3-m{display:block}
-  .ft3-more{display:inline-flex;align-items:center;gap:6px;margin-top:28px;height:44px;padding:0;border:0;background:none;font:500 15px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#1D1D1F;cursor:pointer}
-  .ft3-more::after{content:"+";font-size:18px;line-height:1}
-  .ft3.more .ft3-more::after{content:"–"}
-  html[data-theme="dark"] .ft3-more{color:#F5F5F7}
-  .ft3 .ft3-keep h4{display:none}
-  .ft3-top{gap:0!important}
-  .ft3-more{margin-top:20px}
-  .ft3-more+.ft3-cols{margin-top:4px!important;padding-top:0!important}
-
-  /* sticky bar: the button stays in reach once the hero's button has scrolled away, and leaves at the footer */
-  .mcta{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:12px;
-    padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);border-top:1px solid rgba(10,10,11,.08);
-    box-shadow:0 -10px 30px -18px rgba(10,10,11,.3);transform:translateY(110%);transition:transform .3s cubic-bezier(.2,.7,.2,1)}
-  .mcta.on{transform:none}
-  .mcta span{font:400 12.5px/17px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#6E6E73}
-  .mcta b{display:block;font:600 14px/19px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#0A0A0B}
-  .mcta a{flex:none;display:flex;align-items:center;height:44px;padding:0 24px;border-radius:999px;background:#0A0A0B;color:#fff;font:600 15px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;text-decoration:none}
-  html[data-theme="dark"] .mcta{background:rgba(20,20,22,.96);border-top-color:rgba(255,255,255,.1)}
-  html[data-theme="dark"] .mcta span{color:#98989D}
-  html[data-theme="dark"] .mcta b{color:#F5F5F7}
-  html[data-theme="dark"] .mcta a{background:#fff;color:#0A0A0B}
-  footer.ft3{padding-bottom:calc(24px + env(safe-area-inset-bottom))!important}
-}
-@media(prefers-reduced-motion:reduce){.mcta{transition:none}}
 /* narrow phones: Client login on one line */
 @media(max-width:380px){#tpBar .cb-pill.cb-login{padding:0 14px!important;white-space:nowrap}#tpBar .cb-mark{width:32px;height:32px}}
 
@@ -4456,40 +4498,6 @@ html[data-theme="dark"] .hb-t span{color:#98989D}
 @keyframes hxToast{0%,61.1%{opacity:0;transform:translateY(-16px) scale(.94)}67.8%,94%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-8px)}}
 @media(prefers-reduced-motion:reduce){.hx *{animation:none!important}}
 
-/* ===== phone hero (13 Nov): a bigger headline and button, tighter spacing, the platforms as one moving row, so the
-   app's phone is already in view on the first screen. The wordmark, the changing line and the phone demo are as before. ===== */
-.lb-ar{display:none}
-@media(max-width:640px){
-  .cx .cx-h1,.cx .cx-h1 *{font-size:min(26px,6.6vw)!important}
-  .cx-h1 .cx-l1{display:block;white-space:nowrap!important}
-  .cx-h1 .cx-l2{white-space:nowrap}
-  .cx-sub{margin:0;font-size:16px;line-height:24px;text-wrap:pretty}
-  .cx-cta{margin-top:22px!important;gap:4px!important}
-  .cx-cta .cx-btn.s{height:56px!important;border-radius:999px!important;font:600 17px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.01em!important;
-    box-shadow:0 18px 36px -16px rgba(0,30,110,.65),0 2px 0 rgba(255,255,255,.6) inset!important}
-  .cx-cta .cx-btn.s:active{transform:scale(.98)}
-  .cx-cta .cx-btn.s .lb-m{display:inline-flex;align-items:center;gap:8px}
-  .cx-cta .cx-btn.s .lb-ar{display:block!important;width:18px;height:18px;animation:heroNudge 2.6s cubic-bezier(.3,.7,.2,1) 2s infinite}
-  .cx-free{margin-top:8px;font-size:13.5px}
-  .cx-cta .cx-btn.p{padding:9px 0!important;align-self:center;width:auto!important}
-
-  /* the platforms: one row that drifts, edge to edge, fading at both sides */
-  .cx-pl{margin:14px -20px 0!important;padding:18px 0 0!important;overflow:hidden;
-    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 20px,#000 calc(100% - 28px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 20px,#000 calc(100% - 28px),transparent 100%)}
-  .cx-pl p{margin:0 20px 10px!important;text-align:center}
-  .cx-pl ul{flex-wrap:nowrap!important;width:max-content;padding:0 0 0 20px!important;gap:8px!important}
-  .cx-pl ul.run{animation:heroRun 34s linear infinite}
-  .cx-pl li{flex:none}
-  .xph{margin-top:30px!important}
-
-  /* entrance, after the headline's rise */
-  html.wd-in .cx-sub{animation:tpFadeUp .6s cubic-bezier(.2,.75,.2,1) .38s both}
-  html.wd-in .cx-pl{animation:tpFadeUp .6s cubic-bezier(.2,.75,.2,1) .62s both}
-}
-@keyframes heroNudge{0%,70%,100%{transform:none}80%{transform:translateX(5px)}90%{transform:translateX(-1px)}}
-@keyframes heroRun{to{transform:translateX(-50%)}}
-@media(prefers-reduced-motion:reduce){.cx-pl ul.run,.cx-cta .cx-btn.s .lb-ar{animation:none!important}.cx-pl{overflow-x:auto}}
-
 /* ===== phone logos card (13 Nov): the trust line as one large card under the hero. A big counting number, then the
    companies in two rows that drift opposite ways. The rows are built on phones from the same list computers show. ===== */
 .cq{display:none}
@@ -4502,9 +4510,13 @@ html[data-theme="dark"] .hb-t span{color:#98989D}
   .cos>*{position:relative;z-index:1}
   .cos .cos-h{display:flex!important;flex-direction:column;align-items:center;gap:2px;max-width:none!important;margin:0!important;padding:34px 24px 0;text-align:center;
     font:500 16px/24px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.01em!important;color:#6B7280!important}
-  .cos .cos-w{font-size:0;line-height:0}
-  .cos .cos-w::before{content:"Real results";font:600 13px/18px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:.02em;color:#0938D5}
-  html[data-theme="dark"] .cos .cos-w::before{color:#7DA2FF}
+  /* "Real results" as a pill badge, in the style of the Verified badge */
+  .cos .cos-w{display:inline-flex!important;align-items:center;gap:7px;align-self:center;height:34px;padding:0 14px 0 8px;margin-bottom:14px;border-radius:99px;font-size:0;line-height:0;
+    background:#fff;box-shadow:0 0 0 1px rgba(15,23,51,.08),0 6px 16px -10px rgba(15,23,51,.35)}
+  .cos .cos-w::after{content:"";order:-1;width:20px;height:20px;border-radius:99px;background:#1D9BF0 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/12px no-repeat}
+  .cos .cos-w::before{content:"Real results";font:600 14px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.005em;color:#0A0A0B}
+  html[data-theme="dark"] .cos .cos-w{background:rgba(255,255,255,.06);box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+  html[data-theme="dark"] .cos .cos-w::before{color:#F5F5F7}
   .cos .cos-r::after{content:" at"}
   .cos .cos-num{display:block;font:700 64px/1.05 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.05em;color:#0F1733!important}
   .cos .cos-r{display:block;font:600 19px/26px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.02em;color:#263043}
@@ -4690,6 +4702,12 @@ html[data-theme="dark"] .hb-t span{color:#98989D}
 }
 
 </style>
+<script>
+/* phones: tapping the dimmed page behind the open menu closes it */
+(function(){try{var bar=document.getElementById('tpBar'),bt=document.getElementById('burger');if(!bar||!bt)return;
+  bar.addEventListener('click',function(e){if(e.target===bar&&bt.getAttribute('aria-expanded')==='true')bt.click()});
+}catch(e){}})();
+</script>
 <script>
 /* phones: the pain card plays once, when it comes into view */
 (function(){try{
