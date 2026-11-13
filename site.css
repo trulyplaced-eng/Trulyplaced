@@ -829,3 +829,5 @@ html[data-theme="dark"] .blg-back:hover{color:#F5F5F7}
 @media(max-width:900px){.blg-feat-sh{background:linear-gradient(180deg,rgba(6,28,120,.92) 0%,rgba(9,56,213,.78) 55%,rgba(9,56,213,.35) 100%)}}
 @media(max-width:640px){.blg-photo{border-radius:18px}.blg-cv figcaption{text-align:left}}
 @media(min-width:901px){.blg-feat-ph{left:auto;right:0;width:62%;object-position:50% 35%}.blg-feat-sh{background:linear-gradient(90deg,#0B2AA8 0%,#0B2FB8 38%,rgba(11,47,184,.55) 50%,rgba(11,47,184,0) 66%)}}
+.prose table.bl-plain tr:first-child th:nth-child(2),html[data-theme="dark"] .prose table.bl-plain tr:first-child th:nth-child(2){color:inherit}
+@media(max-width:640px){.prose table.bl-plain{font-size:13.5px;min-width:0;width:100%}.prose table.bl-plain th,.prose table.bl-plain td{padding:10px 8px}}
