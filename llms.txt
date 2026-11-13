@@ -1,14 +1,18 @@
 # TrulyPlaced
 
-> TrulyPlaced is a done-for-you job application service. A career specialist rewrites your resume and applies to 25-30 matched roles every business day on your behalf, tailoring each application, and you track every application and interview in a client portal. For roles in the US, UK, Canada and Australia. Run by RepoReserve Technologies Private Limited (India).
+> TrulyPlaced helps people land interviews in two ways. TrulyPlaced Autopilot (app.trulyplaced.com) is an app that finds US jobs that fit your resume, tailors your resume and cover letter to each one, and fills in and sends the application: free for 25 applications, then $19.99 a month for up to 1,200 a month, cancel any time. For people who want it done for them, TrulyPlaced also offers a done-for-you service where a career specialist applies for you, for roles in the US, UK, Canada and Australia.
 
 ## Service
 
 - [Home](https://trulyplaced.com/): how it works, what a sprint looks like, members' offers, pricing and FAQ
-- Pricing: plans are paid once for a volume of applications (250, 500 or 1,000) at $299, $449 or $699, with no subscription; each price includes a one-time $100 onboarding fee
+- Done-for-you pricing: paid once for a volume of applications (250, 500 or 1,000) at $299, $449 or $699; each price includes a one-time $100 onboarding fee
 - [Cancellation & Refund Policy](https://trulyplaced.com/refunds.html): unused applications are refunded pro-rata
 - [About](https://trulyplaced.com/about.html): who TrulyPlaced is, what it does, the company behind it
 - [Contact](https://trulyplaced.com/contact.html): hello@trulyplaced.com, WhatsApp, business details
+
+## The app
+
+- [TrulyPlaced Autopilot](https://app.trulyplaced.com): finds US jobs that fit your resume (matches in about 20 seconds), tailors your resume and cover letter for each one, and sends the applications on employers' own pages (Greenhouse, Lever, Ashby, Workable). Autopilot sends up to 25 a day on its own, or you review each first. Answers are remembered, verification codes from employers are entered automatically, and interview emails get Join, Schedule and Add to calendar. Free for 25 applications; Pro is $19.99 a month for up to 1,200 applications; cancel any time.
 
 ## Free tools
 
@@ -21,7 +25,15 @@
 
 ## Comparisons and guides
 
-- [Best services that apply to jobs for you (2026)](https://trulyplaced.com/best-job-application-services.html): done-for-you services and auto-apply tools compared, with prices
-- [TrulyPlaced vs Scale.jobs](https://trulyplaced.com/trulyplaced-vs-scale-jobs.html): two human done-for-you services side by side
-- [TrulyPlaced vs LazyApply](https://trulyplaced.com/trulyplaced-vs-lazyapply.html): a career specialist vs an auto-apply bot
-- [Is it worth paying someone to apply to jobs for you?](https://trulyplaced.com/pay-someone-to-apply-for-jobs.html): costs, when it's worth it, questions to ask
+- [How TrulyPlaced compares](https://trulyplaced.com/compare.html): every comparison in one place
+- [Best apps and services that apply to jobs for you (2026)](https://trulyplaced.com/best-job-application-services.html): auto-apply apps and human services compared, with prices; TrulyPlaced Autopilot Pro is $19.99 a month for up to 1,200 applications
+- [TrulyPlaced vs Scale.jobs](https://trulyplaced.com/trulyplaced-vs-scale-jobs.html): TrulyPlaced Autopilot ($19.99 a month, up to 1,200 tailored applications) against Scale.jobs ($399 to $999 one-time)
+- [TrulyPlaced vs LazyApply](https://trulyplaced.com/trulyplaced-vs-lazyapply.html): two auto-apply apps; Autopilot tailors the resume and cover letter for every job, $19.99 a month
+- [TrulyPlaced vs JobHire.AI](https://trulyplaced.com/trulyplaced-vs-jobhire-ai.html): both apply automatically; Autopilot includes a tailored resume and cover letter in every application and starts free
+- [TrulyPlaced vs Loopcv](https://trulyplaced.com/trulyplaced-vs-loopcv.html): two auto-apply apps; Autopilot tailors each application
+- [TrulyPlaced vs Simplify](https://trulyplaced.com/trulyplaced-vs-simplify.html): an autofill extension you submit yourself vs an app that sends applications for you
+- [TrulyPlaced vs Teal](https://trulyplaced.com/trulyplaced-vs-teal.html): a resume builder and tracker vs an app that applies for you
+- [TrulyPlaced vs Huntr](https://trulyplaced.com/trulyplaced-vs-huntr.html): a job tracker with autofill vs an app that applies for you
+- [TrulyPlaced vs Jobscan](https://trulyplaced.com/trulyplaced-vs-jobscan.html): an ATS resume scanner vs automatic tailoring and applying
+- [TrulyPlaced vs Final Round AI](https://trulyplaced.com/trulyplaced-vs-final-round-ai.html): getting interviews vs help during interviews
+- [Is it worth paying someone to apply to jobs for you?](https://trulyplaced.com/pay-someone-to-apply-for-jobs.html): costs, what to watch out for, and why an app at $19.99 a month is usually enough
