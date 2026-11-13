@@ -2415,7 +2415,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
     <h1 class="cx-h1"><span class="cx-l1">Job applications, done for you,</span><span class="cx-l2" id="cxScr" aria-live="off">every business day.</span></h1>
     <p class="cx-sub">Applying everywhere and hearing nothing back? Upload your resume and see the jobs that fit you.</p>
     <div class="cx-cta">
-      <a class="cx-btn s cta-shine" href="https://app.trulyplaced.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.5 18.5h3"/></svg><span class="lb-d">Start free in the app</span><span class="lb-m">Try it free</span></a>
+      <a class="cx-btn s cta-shine" href="https://app.trulyplaced.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.5 18.5h3"/></svg><span class="lb-d">Start free in the app</span><span class="lb-m">Try it free<svg class="lb-ar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
       <a class="cx-btn p cta-lift" href="https://calendly.com/hello-trulyplaced/career-hunt-2026" target="_blank" rel="noopener">Book my free strategy call<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       <span class="cx-fine">Free 30-minute call · no commitment</span>
       <span class="cx-free">Start with your resume. See your matches.</span>
@@ -2568,7 +2568,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
 
 <!-- ================= THE PAIN, ANSWERED (phones) ================= -->
 <section class="pn" aria-labelledby="pnTitle">
-  <div class="pn-in">
+  <div class="pn-in" id="pnCard">
     <h2 class="pn-h" id="pnTitle">Job hunting shouldn’t be a second job</h2>
     <ul class="pn-l">
       <li><s>Hours filling in the same forms</s><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Filled in for you</b></li>
@@ -2654,7 +2654,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
 
 <!-- ================= YOUR TEAM, LIVE (presence section) ================= -->
 <section class="cos" aria-labelledby="cosTitle">
-  <h2 class="cos-h" id="cosTitle">Where <span class="cos-num" data-count="1200" data-suffix="+">1,200+</span> TrulyPlaced users have interviewed</h2>
+  <h2 class="cos-h" id="cosTitle"><span class="cos-w">Where</span> <span class="cos-num" data-count="1200" data-suffix="+">1,200+</span> <span class="cos-r">TrulyPlaced users have interviewed</span></h2>
   <ul class="cos-g"><li><img class="wm" src="img/wm/stripe.svg" alt="Stripe" style="height:34px" loading="lazy"></li><li><img class="wm" src="img/wm/airbnb.svg" alt="Airbnb" style="height:30px" loading="lazy"></li><li><img class="wm" src="img/wm/databricks.svg" alt="Databricks" style="height:40px" loading="lazy"></li><li><span class="wmt" style="font-size:24px;font-weight:600"><img src="img/wm/figma-icon.svg" alt="" style="height:26px" loading="lazy">Figma</span></li><li><span class="wmt" style="font-size:21px;font-weight:500"><img src="img/wm/notion-icon.svg" alt="" style="height:28px" loading="lazy">Notion</span></li><li><img class="wm" src="img/wm/coinbase.svg" alt="Coinbase" style="height:23px" loading="lazy"></li><li><img class="wm" src="img/wm/plaid.svg" alt="Plaid" style="height:30px" loading="lazy"></li><li><span class="wmt" style="font-size:27px;font-weight:500;letter-spacing:-.04em">ramp<img class="keep" src="img/co/ramp.png" alt="" style="height:24px;margin-left:2px" loading="lazy"></span></li></ul>
 </section>
 <section class="tm" id="team-live" aria-labelledby="tmTitle">
@@ -4423,7 +4423,271 @@ html[data-theme="dark"] .hb-t span{color:#98989D}
 @keyframes hxSent{0%,51.1%{opacity:0}55.6%,95%{opacity:1}100%{opacity:0}}
 @keyframes hxToast{0%,61.1%{opacity:0;transform:translateY(-16px) scale(.94)}67.8%,94%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-8px)}}
 @media(prefers-reduced-motion:reduce){.hx *{animation:none!important}}
+
+/* ===== phone hero (13 Nov): a bigger headline and button, tighter spacing, the platforms as one moving row, so the
+   app's phone is already in view on the first screen. The wordmark, the changing line and the phone demo are as before. ===== */
+.lb-ar{display:none}
+@media(max-width:640px){
+  .cx .cx-h1,.cx .cx-h1 *{font-size:min(26px,6.6vw)!important}
+  .cx-h1 .cx-l1{display:block;white-space:nowrap!important}
+  .cx-h1 .cx-l2{white-space:nowrap}
+  .cx-sub{margin:0;font-size:16px;line-height:24px;text-wrap:pretty}
+  .cx-cta{margin-top:22px!important;gap:4px!important}
+  .cx-cta .cx-btn.s{height:56px!important;border-radius:999px!important;font:600 17px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.01em!important;
+    box-shadow:0 18px 36px -16px rgba(0,30,110,.65),0 2px 0 rgba(255,255,255,.6) inset!important}
+  .cx-cta .cx-btn.s:active{transform:scale(.98)}
+  .cx-cta .cx-btn.s .lb-m{display:inline-flex;align-items:center;gap:8px}
+  .cx-cta .cx-btn.s .lb-ar{display:block!important;width:18px;height:18px;animation:heroNudge 2.6s cubic-bezier(.3,.7,.2,1) 2s infinite}
+  .cx-free{margin-top:8px;font-size:13.5px}
+  .cx-cta .cx-btn.p{padding:9px 0!important;align-self:center;width:auto!important}
+
+  /* the platforms: one row that drifts, edge to edge, fading at both sides */
+  .cx-pl{margin:14px -20px 0!important;padding:18px 0 0!important;overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 20px,#000 calc(100% - 28px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 20px,#000 calc(100% - 28px),transparent 100%)}
+  .cx-pl p{margin:0 20px 10px!important;text-align:center}
+  .cx-pl ul{flex-wrap:nowrap!important;width:max-content;padding:0 0 0 20px!important;gap:8px!important}
+  .cx-pl ul.run{animation:heroRun 34s linear infinite}
+  .cx-pl li{flex:none}
+  .xph{margin-top:30px!important}
+
+  /* entrance, after the headline's rise */
+  html.wd-in .cx-sub{animation:tpFadeUp .6s cubic-bezier(.2,.75,.2,1) .38s both}
+  html.wd-in .cx-pl{animation:tpFadeUp .6s cubic-bezier(.2,.75,.2,1) .62s both}
+}
+@keyframes heroNudge{0%,70%,100%{transform:none}80%{transform:translateX(5px)}90%{transform:translateX(-1px)}}
+@keyframes heroRun{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.cx-pl ul.run,.cx-cta .cx-btn.s .lb-ar{animation:none!important}.cx-pl{overflow-x:auto}}
+
+/* ===== phone logos card (13 Nov): the trust line as one large card under the hero. A big counting number, then the
+   companies in two rows that drift opposite ways. The rows are built on phones from the same list computers show. ===== */
+.cq{display:none}
+@media(max-width:640px){
+  .cos{padding:28px 20px 0!important}
+  .cos{position:relative}
+  .cos::before{content:"";display:block;position:absolute;left:20px;right:20px;top:28px;bottom:0;border-radius:32px;z-index:0;
+    background:radial-gradient(92% 124% at 50% 99%,rgba(221,226,238,.75) 55%,rgba(187,197,221,.55) 100%),#F4F6FA;box-shadow:inset 0 0 0 1px #E3E7EF,inset 0 2px 10px rgba(255,255,255,.9)}
+  html[data-theme="dark"] .cos::before{background:radial-gradient(92% 124% at 50% 99%,rgba(47,91,255,.16) 40%,rgba(255,255,255,.03) 100%),#14161C;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+  .cos>*{position:relative;z-index:1}
+  .cos .cos-h{display:flex!important;flex-direction:column;align-items:center;gap:2px;max-width:none!important;margin:0!important;padding:34px 24px 0;text-align:center;
+    font:500 16px/24px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.01em!important;color:#6B7280!important}
+  .cos .cos-w{font-size:0;line-height:0}
+  .cos .cos-w::before{content:"Real results";font:600 13px/18px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:.02em;color:#0938D5}
+  html[data-theme="dark"] .cos .cos-w::before{color:#7DA2FF}
+  .cos .cos-r::after{content:" at"}
+  .cos .cos-num{display:block;font:700 64px/1.05 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.05em;color:#0F1733!important}
+  .cos .cos-r{display:block;font:600 19px/26px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.02em;color:#263043}
+  html[data-theme="dark"] .cos .cos-h{color:#98989D!important}
+  html[data-theme="dark"] .cos .cos-w{color:#7DA2FF}
+  html[data-theme="dark"] .cos .cos-num,html[data-theme="dark"] .cos .cos-r{color:#F5F5F7!important}
+  .cos.cq-on .cos-g{display:none!important}
+  .cos .cos-g{padding:0 16px 30px}
+  .cq{display:block;margin:26px 0 0;padding:0 0 34px;overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 44px,#000 calc(100% - 44px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 44px,#000 calc(100% - 44px),transparent 100%)}
+  .cq ul{list-style:none;margin:0;padding:0;display:flex;align-items:center;gap:44px;width:max-content;zoom:.74;animation:cqRun 30s linear infinite}
+  .cq ul+ul{margin-top:34px;animation-direction:reverse;animation-duration:36s}
+  .cq li{flex:none;height:40px;display:flex;align-items:center;filter:grayscale(1) brightness(0) opacity(.6)}
+  .cq li img.wm{width:auto;max-width:none}
+  html[data-theme="dark"] .cq li{filter:brightness(0) invert(1) opacity(.82)}
+  html[data-theme="dark"] .cq li img,html[data-theme="dark"] .cq .wmt img{filter:none}
+  html[data-theme="dark"] .cq .wmt{color:#000}
+}
+@keyframes cqRun{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.cq ul{animation:none!important;flex-wrap:wrap;justify-content:center;width:auto;gap:22px 34px;padding:0 20px}}
+
+/* ===== phone pain card (13 Nov): one large dark card. Each frustration is struck through, then its fix lands under it,
+   one row after another, once, when the card comes into view. Base styles are the finished state. ===== */
+@media(max-width:640px){
+  .pn{padding:14px 20px 0!important}
+  .pn-in{position:relative;overflow:hidden;isolation:isolate;padding:32px 22px 24px;border-radius:32px;color:#fff;
+    background:radial-gradient(120% 70% at 0% 0%,#26304F 0%,#0C0E16 62%);box-shadow:inset 1.5px 1.5px 8px rgba(255,255,255,.08),0 26px 50px -36px rgba(10,14,30,.9)}
+  .pn-in::before{content:"";position:absolute;right:-70px;top:-70px;width:220px;height:220px;border-radius:50%;z-index:-1;background:radial-gradient(circle,rgba(47,91,255,.5),transparent 68%)}
+  html[data-theme="dark"] .pn-in{box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+  .pn .pn-h{font:600 28px/36px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.03em;color:#fff;text-wrap:balance}
+  .pn .pn-l{margin-top:24px;gap:12px}
+  .pn .pn-l li{gap:8px;padding:18px 18px 18px;border-radius:20px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+  html[data-theme="dark"] .pn .pn-l li{background:rgba(255,255,255,.06)}
+  .pn .pn-l s{align-self:flex-start;font:400 15px/22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:rgba(255,255,255,.5);text-decoration:none;
+    background:linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,.55)) 0 56%/100% 1.5px no-repeat}
+  .pn .pn-l b{gap:10px;font:600 19px/26px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.015em;color:#fff}
+  .pn .pn-l svg{width:24px;height:24px;padding:5px;background:#2F5BFF;box-shadow:0 0 0 4px rgba(47,91,255,.22)}
+
+  .pn-in.io:not(.go) .pn-l li{opacity:0}
+  .pn-in.io:not(.go) .pn-h{opacity:0}
+  .pn-in.go .pn-h{animation:tpFadeUp .6s cubic-bezier(.2,.75,.2,1) both}
+  .pn-in.go .pn-l li{animation:tpFadeUp .55s cubic-bezier(.2,.75,.2,1) both;animation-delay:calc(.25s + var(--i) * .75s)}
+  .pn-in.go .pn-l s{animation:pnStrike .45s cubic-bezier(.4,0,.2,1) both;animation-delay:calc(.6s + var(--i) * .75s)}
+  .pn-in.go .pn-l b{animation:pnFix .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.9s + var(--i) * .75s)}
+  .pn-in.go .pn-l svg{animation:pnPop .4s cubic-bezier(.2,.9,.3,1.4) both;animation-delay:calc(1s + var(--i) * .75s)}
+  .pn-l li:nth-child(1){--i:0}.pn-l li:nth-child(2){--i:1}.pn-l li:nth-child(3){--i:2}
+}
+@keyframes pnStrike{from{background-size:0% 1.5px}to{background-size:100% 1.5px}}
+@keyframes pnFix{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pnPop{from{transform:scale(.3)}to{transform:none}}
+@media(prefers-reduced-motion:reduce){.pn-in *{animation:none!important}.pn-in.io:not(.go) .pn-l li,.pn-in.io:not(.go) .pn-h{opacity:1}}
+
+/* ===== phone emails card (13 Nov): the interview emails inside one large sky-blue card. The heading and the Verified
+   pill sit in the card; the real emails drift across inside it (tap one to read it), fading at the card's edges. ===== */
+@media(max-width:640px){
+  .emx{position:relative;padding-top:14px!important}
+  .emx::before{content:"";position:absolute;left:20px;right:20px;top:14px;bottom:0;border-radius:32px;z-index:0;
+    background:radial-gradient(110% 60% at 85% 0%,rgba(255,255,255,.9),transparent 60%),linear-gradient(180deg,#E6EEFF 0%,#CBDcFF 100%);box-shadow:inset 0 0 0 1px #C6D6FB,inset 0 2px 10px rgba(255,255,255,.9)}
+  html[data-theme="dark"] .emx::before{background:radial-gradient(110% 60% at 85% 0%,rgba(47,91,255,.35),transparent 60%),linear-gradient(180deg,#131B36 0%,#0D1226 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+  .emx>*{position:relative;z-index:1}
+  .emx>.emx-in:first-child{padding:32px 44px 0!important}
+  .emx .emx-h{font:600 28px/36px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.03em!important;color:#0F1733!important;text-wrap:balance}
+  html[data-theme="dark"] .emx .emx-h{color:#F5F5F7!important}
+  .emx .emx-verified{margin-top:16px!important;box-shadow:0 6px 16px -10px rgba(15,23,51,.35)}
+  .emx .emx-wide{margin-top:22px!important}
+  .emx .ibd{margin:0!important;border-radius:0 0 0 0}
+  .emx .ibd-view{padding:4px 0 16px;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 22px,#000 calc(100% - 22px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 22px,#000 calc(100% - 22px),transparent 100%)}
+  .emx .ibd-track{padding-left:24px}
+  .emx .ibd .ibb-slide{width:calc(100vw - 112px)}
+  .emx .ibb-card{border-radius:22px;border-color:rgba(15,23,51,.08);box-shadow:0 18px 34px -22px rgba(15,23,51,.45)!important}
+  .emx .ibl-note{margin:4px 24px 0!important;padding-bottom:28px;text-align:center;color:#5B6785!important}
+  html[data-theme="dark"] .emx .ibl-note{color:#98989D!important}
+}
+@media(max-width:380px){.emx>.emx-in:first-child{padding:32px 38px 0!important}.emx .emx-verified,.emx .emx-verified *{font-size:12px!important;white-space:nowrap}.emx .emx-verified{padding-left:10px;padding-right:12px;gap:6px}}
+
+/* ===== phone FAQ card (13 Nov): the questions inside one large light card. Each question is its own white tile that
+   opens smoothly (where the browser can animate it); the two buttons close the card. ===== */
+@media(max-width:640px){
+  .fqh{position:relative;padding:14px 0 44px!important;interpolate-size:allow-keywords}
+  .fqh::before{content:"";position:absolute;left:20px;right:20px;top:14px;bottom:44px;border-radius:32px;z-index:0;
+    background:radial-gradient(92% 124% at 50% 99%,rgba(221,226,238,.75) 55%,rgba(187,197,221,.55) 100%),#F4F6FA;box-shadow:inset 0 0 0 1px #E3E7EF,inset 0 2px 10px rgba(255,255,255,.9)}
+  html[data-theme="dark"] .fqh::before{background:radial-gradient(92% 124% at 50% 99%,rgba(47,91,255,.16) 40%,rgba(255,255,255,.03) 100%),#14161C;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+  .fqh>*{position:relative;z-index:1}
+  .fqh .fqh-in{padding:32px 36px 28px!important}
+  .fqh .fqh-h{font:600 28px/36px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.03em!important;color:#263043!important}
+  .fqh .fqh-p{margin-top:10px!important;font:400 16px/24px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;color:#8C929D!important}
+  html[data-theme="dark"] .fqh .fqh-h{color:#F5F5F7!important}
+  html[data-theme="dark"] .fqh .fqh-p{color:#98989D!important}
+  .fqh .faq-list{margin-top:22px!important;border-top:0!important;display:grid;gap:10px}
+  .fqh .faq-item{border:0!important;border-radius:18px;background:#fff;box-shadow:0 1px 2px rgba(15,23,51,.05),0 10px 22px -18px rgba(15,23,51,.35);overflow:hidden}
+  html[data-theme="dark"] .fqh .faq-item{background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+  .fqh .faq-q{padding:18px 14px 18px 18px!important;gap:12px!important;font:600 15.5px/22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.012em!important;min-height:60px}
+  .fqh .faq-a{padding:0 18px 18px!important;font:400 15px/24px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important}
+  .fqh .faq-item::details-content{height:0;overflow:hidden;opacity:0;transition:height .38s cubic-bezier(.3,.7,.2,1),opacity .3s ease,content-visibility .38s allow-discrete}
+  .fqh .faq-item[open]::details-content{height:auto;opacity:1}
+  .fqh .fqh-cta{margin-top:26px!important;gap:10px!important}
+  .fqh .fqh-cta::before{font:600 18px/26px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.015em;color:#263043!important;margin-bottom:8px!important;text-align:center}
+  html[data-theme="dark"] .fqh .fqh-cta::before{color:#F5F5F7!important}
+  .fqh .fqh-btn{height:52px!important;border-radius:999px!important;font:600 16px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important}
+  .fqh .fqh-btn.s{background:#fff!important;border-color:#E3E7EF!important;box-shadow:0 6px 16px -12px rgba(15,23,51,.4)}
+  html[data-theme="dark"] .fqh .fqh-btn.s{background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.14)!important;color:#F5F5F7!important}
+}
+@media(prefers-reduced-motion:reduce){.fqh .faq-item::details-content{transition:none}}
+
+/* ===== phone footer card (13 Nov): the page closes on one large blue card (the line, the button, the strategy call),
+   with a soft light that drifts across it. The legal links sit in two columns beneath, then the name. ===== */
+@media(max-width:640px){
+  footer.ft3{padding-top:0!important}
+  .ft3 .ft3-lead{position:relative;overflow:hidden;isolation:isolate;padding:34px 24px 28px;border-radius:32px;color:#fff;
+    background:linear-gradient(165deg,#6E9BFF 0%,#3A72FF 42%,#0938D5 100%);box-shadow:inset 1.5px 1.5px 8px rgba(255,255,255,.18),0 26px 50px -36px rgba(9,56,213,.8)}
+  .ft3 .ft3-lead::before{content:"";position:absolute;right:-60px;top:-80px;width:260px;height:260px;border-radius:50%;z-index:-1;
+    background:radial-gradient(circle,rgba(255,255,255,.42),transparent 66%);animation:ftGlow 9s ease-in-out infinite alternate}
+  .ft3 .ft3-lead .ft3-h{font:600 28px/36px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.03em!important;color:#fff!important}
+  .ft3 .ft3-lead .ft3-cta{margin-top:24px;gap:16px}
+  .ft3 .ft3-lead .ft3-btn{height:54px!important;background:#fff!important;color:#0A0A0B!important;font:600 16.5px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;box-shadow:0 16px 30px -16px rgba(3,20,80,.7)!important}
+  .ft3 .ft3-lead .ft3-ghost{color:#fff!important;border-bottom-color:rgba(255,255,255,.45)!important;font:500 15px/20px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  .ft3 .ft3-more{margin-top:18px}
+  .ft3:not(.more) .ft3-keep{display:grid!important;grid-column:1/-1;grid-template-columns:1fr 1fr;gap:2px 16px}
+  .ft3 .ft3-keep a{padding:9px 0}
+  .ft3 .ft3-word{margin-top:26px}
+}
+@keyframes ftGlow{from{transform:translate(0,0)}to{transform:translate(-150px,90px)}}
+@media(prefers-reduced-motion:reduce){.ft3 .ft3-lead::before{animation:none}}
+
+/* ===== phone rhythm and variety (13 Nov): one spacing rule (80px between sections, 12px inside a group, 20px from a
+   heading to its content) and a different layout per section, so the page is not a stack of identical cards:
+   logos = open strip · pain = full-width dark band · how it works = cards that stack as you scroll ·
+   emails = tinted full-width band · three steps = open · FAQ = open list · footer = the one closing card. ===== */
+@media(max-width:640px){
+  /* logos: open, no card; the rows run edge to edge */
+  .cos{padding:72px 0 0!important}
+  .cos::before{display:none!important}
+  .cos .cos-h{padding:0 24px!important}
+  .cos .cos-num{color:#0A0A0B!important}
+  .cos .cos-r{color:#1D1D1F}
+  .cq{padding-bottom:0;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 36px,#000 calc(100% - 36px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 36px,#000 calc(100% - 36px),transparent 100%)}
+
+  /* pain: a dark band across the whole screen */
+  .pn{padding:72px 0 0!important}
+  .pn-in{border-radius:0;padding:60px 24px 60px;box-shadow:none!important;background:radial-gradient(120% 60% at 0% 0%,#26304F 0%,#0C0E16 62%)}
+
+  /* how it works: the three cards stack over one another as you scroll */
+  .hw{padding:80px 20px 0}
+  .hx{gap:12px;margin-top:20px}
+  .hx-c{position:sticky;top:68px}
+  .hx-2,.hx-3{box-shadow:0 -14px 30px -20px rgba(15,23,51,.45),inset 0 0 0 1px rgba(255,255,255,.1)}
+  .hx-2{box-shadow:0 -14px 30px -20px rgba(15,23,51,.35),inset 0 0 0 1px #E3E7EF,inset 0 2px 10px rgba(255,255,255,.9)}
+
+  /* emails: a soft tinted band, the emails edge to edge */
+  .emx{margin-top:80px;padding:64px 0 60px!important;background:#F1F5FE}
+  html[data-theme="dark"] .emx{background:#0D1222}
+  .emx::before{display:none!important}
+  .emx>.emx-in:first-child{padding:0 20px!important}
+  .emx .emx-wide{margin-top:24px!important}
+  .emx .ibd{margin:0 -20px!important}
+  .emx .ibd-view{-webkit-mask-image:none;mask-image:none}
+  .emx .ibd-track{padding-left:20px}
+  .emx .ibd .ibb-slide{width:calc(100vw - 72px)}
+  .emx .ibl-note{margin:6px 0 0!important;padding-bottom:0;text-align:left}
+
+  /* three steps: open */
+  .st{padding:80px 20px 0!important}
+  .st-h{font-size:24px!important;line-height:30px!important}
+  .st-l{margin-top:24px}
+  .st-b{margin-top:14px}
+
+  /* FAQ: an open list on the page, no outer card; one button (the bar and the footer carry Try it free) */
+  .fqh{padding:80px 0 72px!important}
+  .fqh::before{display:none!important}
+  .fqh .fqh-in{padding:0 20px!important}
+  .fqh .fqh-h{color:#1D1D1F!important;font-size:24px!important;line-height:30px!important}
+  .fqh .fqh-p{color:#6E6E73!important;font-size:15px!important;line-height:23px!important}
+  .fqh .faq-item{background:#F4F6FA;box-shadow:none}
+  .fqh .fqh-cta::before{text-align:left;color:#1D1D1F!important}
+  .fqh .fqh-btn.p{display:none!important}
+  .fqh .fqh-btn.s{border-color:#DCDFE7!important;box-shadow:none}
+  html[data-theme="dark"] .fqh .fqh-h,html[data-theme="dark"] .fqh .fqh-cta::before{color:#F5F5F7!important}
+
+  /* footer: room around the closing card */
+  .ft3 .ft3-more{margin-top:28px}
+  .ft3 .ft3-word{margin-top:32px}
+}
 </style>
+<script>
+/* phones: the pain card plays once, when it comes into view */
+(function(){try{
+  var c=document.getElementById('pnCard');if(!c||!('IntersectionObserver' in window)||!matchMedia('(max-width: 640px)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  c.classList.add('io');
+  var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){c.classList.add('go');io.disconnect()}},{threshold:.35});io.observe(c);
+}catch(e){}})();
+</script>
+<script>
+/* phones: the company logos as two drifting rows (each row is its half of the list, doubled so the loop is seamless) */
+(function(){try{
+  if(!matchMedia('(max-width: 640px)').matches)return;
+  var sec=document.querySelector('.cos'),g=sec&&sec.querySelector('.cos-g');if(!g||sec.querySelector('.cq'))return;
+  var items=[].slice.call(g.children),half=Math.ceil(items.length/2),box=document.createElement('div');box.className='cq';box.setAttribute('aria-hidden','true');
+  var still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  [items.slice(0,half),items.slice(half)].forEach(function(row){var ul=document.createElement('ul');
+    (still?row:row.concat(row)).forEach(function(li){var c=li.cloneNode(true);[].forEach.call(c.querySelectorAll('img'),function(i){i.loading='eager'});ul.appendChild(c)});
+    if(!still)ul.style.paddingRight='44px';box.appendChild(ul)});
+  sec.appendChild(box);sec.classList.add('cq-on');
+  g.setAttribute('aria-hidden','false');
+}catch(e){}})();
+</script>
+<script>
+/* phones: the platform pills run as one seamless row (the list is doubled, the copy hidden from screen readers) */
+(function(){try{
+  if(!matchMedia('(max-width: 640px)').matches)return;
+  var ul=document.querySelector('.cx-pl ul');if(!ul||ul.classList.contains('run'))return;
+  [].slice.call(ul.children).forEach(function(li){var c=li.cloneNode(true);c.setAttribute('aria-hidden','true');ul.appendChild(c)});
+  ul.style.paddingRight='8px';ul.classList.add('run');
+}catch(e){}})();
+</script>
 <script>
 /* phones: each large card animates only while it is on screen */
 (function(){try{

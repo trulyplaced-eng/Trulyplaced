@@ -648,3 +648,6 @@ html[data-theme="dark"] .prose ol.tp-steps>li:not(:last-child)::after{background
   .ft3 .ft3-ghost{align-self:center;font-size:14px}
   .ft3-cols{margin-top:36px!important}
 }
+
+/* narrow phones: Client login on one line */
+@media(max-width:380px){#tpBar .cb-pill.cb-login{padding:0 14px!important;white-space:nowrap}#tpBar .cb-mark{width:32px;height:32px}}
