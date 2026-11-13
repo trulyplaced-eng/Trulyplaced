@@ -651,3 +651,23 @@ html[data-theme="dark"] .prose ol.tp-steps>li:not(:last-child)::after{background
 
 /* narrow phones: Client login on one line */
 @media(max-width:380px){#tpBar .cb-pill.cb-login{padding:0 14px!important;white-space:nowrap}#tpBar .cb-mark{width:32px;height:32px}}
+
+/* ===== blog: post cards (index and "more from the blog") and the sources list ===== */
+.prose .bl-list,.prose .bl-more{display:grid;gap:14px;margin:28px 0 36px}
+.prose .bl-more{grid-template-columns:repeat(2,minmax(0,1fr))}
+.prose a.bl-card{display:flex;flex-direction:column;gap:8px;padding:22px 24px;border-radius:20px;border:1px solid var(--line);background:var(--card);color:inherit;text-decoration:none;
+  transition:border-color .2s ease,transform .2s cubic-bezier(.2,.7,.2,1),box-shadow .2s ease}
+.prose a.bl-card:hover{border-color:#C9CDD8;transform:translateY(-2px);box-shadow:0 16px 32px -24px rgba(15,23,51,.4)}
+.prose .bl-card small{font-size:13px;color:var(--muted)}
+.prose .bl-card b{font:600 20px/1.3 "Geist",system-ui,sans-serif;letter-spacing:-.02em;color:var(--ink)}
+.prose .bl-more .bl-card b{font-size:17px}
+.prose .bl-card span{font-size:15px;line-height:1.55;color:var(--body)}
+.prose .bl-card i{margin-top:4px;font-style:normal;font-weight:600;font-size:14.5px;color:var(--blue)}
+.prose .bl-card i::after{content:" →"}
+.prose ul.bl-src{font-size:14.5px;line-height:1.6}
+.d-eyebrow a{color:inherit;text-decoration:none}
+html[data-theme="dark"] .prose a.bl-card{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1)}
+html[data-theme="dark"] .prose a.bl-card:hover{border-color:rgba(255,255,255,.22)}
+html[data-theme="dark"] .prose .bl-card b{color:#F5F5F7}
+html[data-theme="dark"] .prose .bl-card i{color:#7DA2FF}
+@media(max-width:640px){.prose .bl-more{grid-template-columns:1fr}.prose a.bl-card{padding:20px}.prose .bl-card b{font-size:19px}}
