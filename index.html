@@ -4111,6 +4111,48 @@ html[data-theme="dark"] .hb-t span{color:#98989D}
 @media(prefers-reduced-motion:reduce){.hb-p:not([hidden]){animation:none}.hb-bg,.hb-ph{transition:none}}
 @keyframes hwInk{from{color:#B4B7C2}to{color:#0A0A0B}}
 @keyframes hwInkD{from{color:#4A4D57}to{color:#F5F5F7}}
+
+/* ===== phone polish (13 Nov): one rhythm between sections, every section starts the same way (left heading, 21/28),
+   the logo row is an even grid that fits, and each closing block has a real button. ===== */
+@media(max-width:640px){
+  /* rhythm: 72px between sections instead of 96 */
+  .tm,.emx,.spx-sec{padding-top:72px!important}
+  .hw{padding:72px 20px 0}
+  .fqh{padding:72px 0 64px!important}
+  footer.ft3{margin-top:0!important}
+
+  /* How Autopilot works: the same left heading as the other sections; the tabs are a full-width switch */
+  .hw-h{margin:0;text-align:left;font:600 21px/28px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.022em;color:#1D1D1F}
+  html[data-theme="dark"] .hw-h{color:#F5F5F7}
+  .hb-tabs{width:100%;margin:16px 0 0}
+  .hb-tabs button{flex:1;height:40px;padding:0 8px;font-size:14.5px}
+  .hb-p{margin-top:16px}
+
+  /* logos: four equal columns, two rows; every mark centred in its cell, in the page's ink like on computers */
+  .cos{padding:64px 20px 0!important}
+  .cos-g{grid-template-columns:repeat(4,minmax(0,1fr))!important;justify-content:normal!important;justify-items:center!important;gap:26px 6px!important;margin:24px 0 0!important}
+  .cos-g li{width:100%;display:flex!important;justify-content:center!important;align-items:center!important;filter:grayscale(1) brightness(0) opacity(.62)!important}
+
+  /* interview emails: a real button, not a line of text */
+  .emx-cta .emx-btn{display:flex!important;width:100%!important;height:48px!important;padding:0 20px!important;border-radius:999px!important;background:#0A0A0B!important;color:#fff!important;
+    justify-content:center!important;font:600 15px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important}
+  html[data-theme="dark"] .emx .emx-cta .emx-btn{background:#fff!important;color:#0A0A0B!important}
+  .emx-cta{margin-top:20px!important}
+
+  /* footer: its headline gets its button back */
+  .ft3 .ft3-cta{display:flex;flex-direction:column;align-items:stretch;gap:14px;margin-top:20px}
+  .ft3 .ft3-cta .ft3-btn{width:100%;height:48px!important;justify-content:center}
+  .ft3 .ft3-ghost{align-self:center;font-size:14px}
+  .ft3-cols{margin-top:36px!important}
+
+  /* FAQ rows run the full width, like everything else */
+  .fqh .faq-list{width:100%!important;align-self:stretch!important}
+
+  /* easy to tap: at least 44px tall for the hero's text link and the sprint's step tabs */
+  .cx-cta{gap:6px!important}
+  .cx-cta .cx-btn.p{padding:11px 0!important}
+  .spx-tabs button{padding:13px 0 4px}
+}
 </style>
 <script>
 /* bento tabs: click or arrow keys switch the panel */

@@ -640,3 +640,11 @@ html[data-theme="dark"] .prose ol.tp-steps>li:not(:last-child)::after{background
 
 .prose .tp-us{margin:10px 0 0;font-size:13.5px;color:var(--muted)}
 .prose ul.tp-also{margin-bottom:28px}
+
+/* phones: footer: its headline gets its button back */
+@media(max-width:640px){
+  .ft3 .ft3-cta{display:flex;flex-direction:column;align-items:stretch;gap:14px;margin-top:20px}
+  .ft3 .ft3-cta .ft3-btn{width:100%;height:48px!important;justify-content:center}
+  .ft3 .ft3-ghost{align-self:center;font-size:14px}
+  .ft3-cols{margin-top:36px!important}
+}
