@@ -2386,14 +2386,15 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
     </div>
   </div>
   <nav class="mobnav" id="mobnav" hidden>
-    <a href="#process">The sprint</a>
+    <a class="mobnav-cta" href="https://app.trulyplaced.com">Try it free</a>
+    <a href="#how">How it works</a>
     <a href="#success">Interview emails</a>
+    <a href="./compare.html">Compare</a>
     <a href="#faq">FAQ</a>
+    <a href="https://wa.me/918142442139?text=Hi%20TrulyPlaced%2C%20I%27d%20like%20to%20know%20more" target="_blank" rel="noopener">Chat on WhatsApp</a>
     <a href="https://calendly.com/hello-trulyplaced/career-hunt-2026" target="_blank" rel="noopener">Book a free strategy call</a>
     <a href="./login.html">Client login</a>
-    <a href="https://wa.me/918142442139?text=Hi%20TrulyPlaced%2C%20I%27d%20like%20to%20know%20more" target="_blank" rel="noopener">Chat on WhatsApp</a>
     <div class="mobnav-theme" role="group" aria-label="Colour theme"><span>Appearance</span><button type="button" data-set-theme="light" aria-pressed="true">Light</button><button type="button" data-set-theme="dark" aria-pressed="false">Dark</button></div>
-    <a class="mobnav-cta" href="https://app.trulyplaced.com">Try it free</a>
   </nav>
 </header>
 <div class="cb-pal" id="cbPalette" role="dialog" aria-modal="true" aria-label="Search TrulyPlaced" hidden>
@@ -2579,7 +2580,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
 </section>
 
 <!-- ================= HOW AUTOPILOT WORKS ================= -->
-<section class="hw" aria-labelledby="hwTitle">
+<section class="hw" id="how" aria-labelledby="hwTitle">
   <div class="hw-in">
     <h2 class="hw-h" id="hwTitle">How Autopilot works<span class="hw-more"> while<br class="hw-br"> you get on with your day</span></h2>
     <div class="hx" id="hxCards">
@@ -4656,6 +4657,38 @@ html[data-theme="dark"] .hb-t span{color:#98989D}
   .ft3 .ft3-more{margin-top:28px}
   .ft3 .ft3-word{margin-top:32px}
 }
+
+/* ===== phone bar (13 Nov): the bar leads with what a new visitor needs. "Try it free" is the black pill while the
+   hero is in view (once you scroll, the bar at the bottom of the screen carries it and the name takes its place);
+   "Client login" is always there as a quiet link. The menu opens with a short slide and the burger becomes a cross. ===== */
+@media(max-width:640px){
+  #tpBar .cb-pill.cb-app{display:inline-flex!important;align-items:center;height:36px!important;padding:0 16px!important;border-radius:99px!important;border:0!important;
+    background:#0A0A0B!important;color:#fff!important;font:600 14px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;box-shadow:none!important;white-space:nowrap;transition:opacity .25s ease,transform .25s ease}
+  #tpBar .cb-pill.cb-app .rpl-c,#tpBar .cb-pill.cb-app::after{display:none!important}
+  html[data-theme="dark"] body #tpBar .cb-pill.cb-app{background:#fff!important;color:#0A0A0B!important}
+  #tpBar.cb-named .cb-pill.cb-app{display:none!important}
+  #tpBar .cb-pill.cb-login,html[data-theme="dark"] body #tpBar .cb-pill.cb-login{height:40px!important;padding:0 8px!important;background:none!important;border-color:transparent!important;box-shadow:none!important;
+    color:#0A0A0B!important;font:500 14px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;white-space:nowrap}
+  html[data-theme="dark"] body #tpBar .cb-pill.cb-login{color:#F5F5F7!important}
+  #tpBar .cb-right{gap:6px!important}
+  #tpBar .cb-right .cb-login{order:1}#tpBar .cb-right .cb-app{order:2}#tpBar .cb-right .cb-burger{order:3}
+  #tpBar.scrolled{box-shadow:0 10px 30px -22px rgba(15,23,51,.45)}
+
+  /* the burger turns into a cross */
+  #tpBar .cb-burger{position:relative}
+  #tpBar .cb-burger svg{transition:opacity .2s ease,transform .25s ease}
+  #tpBar .cb-burger::before,#tpBar .cb-burger::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:2px;margin:-1px 0 0 -9px;border-radius:2px;background:currentColor;opacity:0;transition:transform .25s cubic-bezier(.2,.7,.2,1),opacity .2s ease}
+  #tpBar .cb-burger[aria-expanded="true"] svg{opacity:0;transform:scale(.6)}
+  #tpBar .cb-burger[aria-expanded="true"]::before{opacity:1;transform:rotate(45deg)}
+  #tpBar .cb-burger[aria-expanded="true"]::after{opacity:1;transform:rotate(-45deg)}
+
+  /* the menu: the button first, then the links; it slides in */
+  #tpBar .mobnav{transition:opacity .25s ease,transform .28s cubic-bezier(.2,.75,.2,1);transform-origin:50% 0}
+  @starting-style{#tpBar .mobnav{opacity:0;transform:translateY(-10px) scale(.985)}}
+  #tpBar .mobnav .mobnav-cta{order:-1;margin:4px 0 8px!important;height:50px;display:flex!important;align-items:center}
+  #tpBar .mobnav a:not(.mobnav-cta){font-weight:500}
+}
+@media(prefers-reduced-motion:reduce){#tpBar .mobnav,#tpBar .cb-burger::before,#tpBar .cb-burger::after,#tpBar .cb-burger svg{transition:none!important}}
 </style>
 <script>
 /* phones: the pain card plays once, when it comes into view */
