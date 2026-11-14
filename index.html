@@ -4181,8 +4181,14 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
 (function(){
   var CLIENT='873182343892-cdrfm5inguku5sfmjrt9n5ngopamf3fl.apps.googleusercontent.com',
       APP='https://app.trulyplaced.com', DELAY=3000;
-  if(!window.crypto||!crypto.subtle||!window.fetch)return;
-  var cn=navigator.connection;if(cn&&cn.saveData)return;
+  // trulyplaced.com/?gsidebug shows each step on screen (for checking on a phone); nobody else sees it
+  var DBG=/[?&]gsidebug/.test(location.search),box=null;
+  function log(t){if(!DBG)return;if(!box){box=document.createElement('pre');box.style.cssText='position:fixed;left:8px;right:8px;top:70px;z-index:2147483647;margin:0;padding:10px;max-height:45vh;overflow:auto;background:rgba(0,0,0,.85);color:#7CFC9A;font:12px/1.45 ui-monospace,monospace;white-space:pre-wrap;border-radius:10px';document.body.appendChild(box)}box.textContent+=(Math.round(performance.now())+'ms '+t+String.fromCharCode(10))}
+  if(DBG){log('page version: one-tap v2');log('browser: '+navigator.userAgent);log('FedCM (IdentityCredential): '+('IdentityCredential' in window?'yes':'no'));
+    var ce=console.error;console.error=function(){try{log('console: '+[].slice.call(arguments).join(' ').slice(0,300))}catch(e){}return ce.apply(console,arguments)};
+    var cw=console.warn;console.warn=function(){try{log('warn: '+[].slice.call(arguments).join(' ').slice(0,300))}catch(e){}return cw.apply(console,arguments)}}
+  if(!window.crypto||!crypto.subtle||!window.fetch){log('stopped: no crypto/fetch');return}
+  var cn=navigator.connection;if(cn&&cn.saveData){log('stopped: Data Saver is on');return}
   var started=false;
   function hex(buf){return Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2)}).join('')}
   function post(cred,raw){
@@ -4195,18 +4201,18 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
     if(started)return;started=true;
     var a=new Uint8Array(16);crypto.getRandomValues(a);var raw=hex(a.buffer);
     crypto.subtle.digest('SHA-256',new TextEncoder().encode(raw)).then(function(h){
-      var sc=document.createElement('script');sc.src='https://accounts.google.com/gsi/client';sc.async=true;
+      log('loading Google script');var sc=document.createElement('script');sc.src='https://accounts.google.com/gsi/client';sc.async=true;sc.onerror=function(){log('Google script failed to load (blocked?)')};
       sc.onload=function(){
-        if(!window.google||!google.accounts||!google.accounts.id)return;
+        if(!window.google||!google.accounts||!google.accounts.id){log('Google script loaded but no google.accounts.id');return}log('Google script ready, asking for the sheet');
         google.accounts.id.initialize({client_id:CLIENT,nonce:hex(h),context:'signin',ux_mode:'popup',auto_select:false,
           itp_support:true,use_fedcm_for_prompt:true,cancel_on_tap_outside:false,
           callback:function(r){if(r&&r.credential)post(r.credential,raw)}});
-        google.accounts.id.prompt();
+        google.accounts.id.prompt(function(n){try{log('prompt: displayed='+(n.isDisplayed&&n.isDisplayed())+' notDisplayed='+(n.isNotDisplayed&&n.isNotDisplayed()?n.getNotDisplayedReason():'-')+' skipped='+(n.isSkippedMoment&&n.isSkippedMoment()?n.getSkippedReason():'-')+' dismissed='+(n.isDismissedMoment&&n.isDismissedMoment()?n.getDismissedReason():'-'))}catch(e){log('prompt moment (FedCM)')}});
       };
       document.head.appendChild(sc);
     }).catch(function(){});
   }
-  function later(){setTimeout(start,DELAY)}
+  function later(){log('page loaded, waiting '+DELAY+'ms');setTimeout(start,DELAY)}
   if(document.readyState==='complete')later();else addEventListener('load',later,{once:true});
 })();
 </script>
@@ -4247,6 +4253,21 @@ html[data-theme="dark"] #tpBar .cb-name{color:#F5F5F7}
   new IntersectionObserver(function(es){bar.classList.toggle('cb-named',!es[0].isIntersecting)},{rootMargin:'-72px 0px 0px 0px'}).observe(word);
 })();
 </script>
+<style>
+/* Phones: "Try it free" in the bar grows in and out instead of popping. It opens to its width while it fades and
+   settles in (so "Client login" glides across rather than jumping), over 0.8s. */
+@media(max-width:640px){
+  #tpBar .cb-pill.cb-app{display:inline-flex!important;max-width:124px;overflow:hidden;opacity:1;transform:none;visibility:visible;
+    transition:max-width .8s cubic-bezier(.65,0,.35,1),padding .8s cubic-bezier(.65,0,.35,1),margin .8s cubic-bezier(.65,0,.35,1),opacity .55s ease .3s,transform .7s cubic-bezier(.2,.8,.2,1) .2s,visibility 0s linear 0s!important}
+  #tpBar.cb-named .cb-pill.cb-app{display:inline-flex!important;max-width:0!important;padding-left:0!important;padding-right:0!important;margin-left:-6px!important;
+    opacity:0;transform:scale(.88);visibility:hidden;pointer-events:none;
+    transition:max-width .8s cubic-bezier(.65,0,.35,1),padding .8s cubic-bezier(.65,0,.35,1),margin .8s cubic-bezier(.65,0,.35,1),opacity .25s ease,transform .3s ease,visibility 0s linear .8s!important}
+  #tpBar .cb-pill.cb-login{transition:transform .8s cubic-bezier(.65,0,.35,1)}
+}
+@media(max-width:640px) and (prefers-reduced-motion:reduce){
+  #tpBar .cb-pill.cb-app,#tpBar.cb-named .cb-pill.cb-app{transition:none!important}
+}
+</style>
 <style>
 /* the one verified tick on the site: under "Real interview emails", where it vouches for what it sits on */
 .emx-verified{display:flex;width:fit-content;align-items:center;gap:7px;margin:18px auto 0;padding:6px 12px 6px 8px;border-radius:999px;background:#fff;border:1px solid rgba(10,10,11,.08);box-shadow:0 6px 18px -12px rgba(18,26,51,.3);font:500 13px/1 "Inter",ui-sans-serif,system-ui,sans-serif;color:#52525B}
