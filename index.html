@@ -4184,7 +4184,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   // trulyplaced.com/?gsidebug shows each step on screen (for checking on a phone); nobody else sees it
   var DBG=/[?&]gsidebug/.test(location.search),box=null;
   function log(t){if(!DBG)return;if(!box){box=document.createElement('pre');box.style.cssText='position:fixed;left:8px;right:8px;top:70px;z-index:2147483647;margin:0;padding:10px;max-height:45vh;overflow:auto;background:rgba(0,0,0,.85);color:#7CFC9A;font:12px/1.45 ui-monospace,monospace;white-space:pre-wrap;border-radius:10px';document.body.appendChild(box)}box.textContent+=(Math.round(performance.now())+'ms '+t+String.fromCharCode(10))}
-  if(DBG){log('page version: one-tap v2');log('browser: '+navigator.userAgent);log('FedCM (IdentityCredential): '+('IdentityCredential' in window?'yes':'no'));
+  if(DBG){log('page version: one-tap v3');log('browser: '+navigator.userAgent);log('FedCM (IdentityCredential): '+('IdentityCredential' in window?'yes':'no'));
     var ce=console.error;console.error=function(){try{log('console: '+[].slice.call(arguments).join(' ').slice(0,300))}catch(e){}return ce.apply(console,arguments)};
     var cw=console.warn;console.warn=function(){try{log('warn: '+[].slice.call(arguments).join(' ').slice(0,300))}catch(e){}return cw.apply(console,arguments)}}
   if(!window.crypto||!crypto.subtle||!window.fetch){log('stopped: no crypto/fetch');return}
@@ -4204,10 +4204,14 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
       log('loading Google script');var sc=document.createElement('script');sc.src='https://accounts.google.com/gsi/client';sc.async=true;sc.onerror=function(){log('Google script failed to load (blocked?)')};
       sc.onload=function(){
         if(!window.google||!google.accounts||!google.accounts.id){log('Google script loaded but no google.accounts.id');return}log('Google script ready, asking for the sheet');
-        google.accounts.id.initialize({client_id:CLIENT,nonce:hex(h),context:'signin',ux_mode:'popup',auto_select:false,
-          itp_support:true,use_fedcm_for_prompt:true,cancel_on_tap_outside:false,
-          callback:function(r){if(r&&r.credential)post(r.credential,raw)}});
-        google.accounts.id.prompt(function(n){try{log('prompt: displayed='+(n.isDisplayed&&n.isDisplayed())+' notDisplayed='+(n.isNotDisplayed&&n.isNotDisplayed()?n.getNotDisplayedReason():'-')+' skipped='+(n.isSkippedMoment&&n.isSkippedMoment()?n.getSkippedReason():'-')+' dismissed='+(n.isDismissedMoment&&n.isDismissedMoment()?n.getDismissedReason():'-'))}catch(e){log('prompt moment (FedCM)')}});
+        // Product Hunt's settings and nothing more (extra options broke the phone sheet: "FedCM ... Error retrieving a token").
+        // ?gsidebug&nononce tries it without the nonce too, to tell the two apart on a phone.
+        var noNonce=/[?&]nononce/.test(location.search),opts={client_id:CLIENT,context:'signin',auto_select:false,
+          callback:function(r){if(r&&r.credential)post(r.credential,noNonce?'':raw)}};
+        if(!noNonce)opts.nonce=hex(h);
+        log('settings: '+Object.keys(opts).join(', '));
+        google.accounts.id.initialize(opts);
+        if(DBG)google.accounts.id.prompt(function(n){try{log('prompt: displayed='+(n.isDisplayed&&n.isDisplayed())+' notDisplayed='+(n.isNotDisplayed&&n.isNotDisplayed()?n.getNotDisplayedReason():'-')+' skipped='+(n.isSkippedMoment&&n.isSkippedMoment()?n.getSkippedReason():'-')+' dismissed='+(n.isDismissedMoment&&n.isDismissedMoment()?n.getDismissedReason():'-'))}catch(e){log('prompt moment (FedCM)')}});else google.accounts.id.prompt();
       };
       document.head.appendChild(sc);
     }).catch(function(){});
