@@ -1630,6 +1630,7 @@ body.sbmin .runpill span{display:none}
 /* phones: the sidebar is hidden, so a copy of the pill floats above the tab bar */
 .runpill.rpm{display:none}
 @media (max-width:900px){.runpill.rpm:not([hidden]){display:block;position:fixed;right:12px;bottom:76px;z-index:60;margin:0}.runpill.rpm button{width:auto;background:#0d1b3f;color:#fff;border-color:#0d1b3f;box-shadow:var(--sh-float)}body.sbmin .runpill.rpm span{display:inline}}
+.aufilters{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 14px;margin:-4px 0 14px}.aufl{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--mut,#6b7280)}.aufl select{min-width:150px}#auCount{margin-left:auto}
 </style>
 </head>
 <body>
@@ -6099,7 +6100,7 @@ function loadLeads(){
    (app-hook push_to_app, kind admin_*; the app answers owners only). Each person shows whether they're already a
    client or a lead here, and goes into Leads in one click.
    ===================================================================== */
-var AU = {data:null, at:0, f:'all', q:''};
+var AU = {data:null, at:0, f:'all', q:'', fs:{stage:'', plan:'', phone:'', active:'', crm:''}};
 function auLoad(force){
   if(AU.data && !force && Date.now() - AU.at < 60000) return Promise.resolve(AU.data);
   return Promise.all([TP.fn('app-hook', {action:'push_to_app', kind:'admin_overview'}, 60000), loadLeads().catch(function(){ return []; }), loadList().catch(function(){ return null; })]).then(function(rs){
@@ -6136,7 +6137,21 @@ function auDraw(){
       (R.sub === 'reports' ? '' : '<button class="btn sm" type="button" data-act="aurank" title="One AI pass over everyone: how likely each is to buy the team applying for them">' + J.star + 'Rank leads</button>' +
         (d.rankedAt ? '<span class="fine">Ranked ' + esc(TP.ago(d.rankedAt)) + '</span>' : '') +
         '<input class="inp" id="auQ" type="search" placeholder="Name, email, phone, role, city" value="' + esc(AU.q) + '" autocomplete="off" style="margin-left:auto;max-width:300px">') + '</div>';
-  b.innerHTML = head + '<div id="auList"></div>';
+  var sel = function(k, label, opts){ return '<label class="aufl"><span>' + esc(label) + '</span><select class="inp sm" data-fk="' + k + '">' +
+      opts.map(function(o){ return '<option value="' + o[0] + '"' + (AU.fs[k] === o[0] ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join('') + '</select></label>'; };
+  var filters = R.sub === 'reports' ? '' : '<div class="aufilters" id="auFs">' +
+    sel('stage', 'Setup', [['', 'Any'], ['terms', 'Left on first screen'], ['resume', 'No resume yet'], ['setup', 'Resume in, setup unfinished'], ['done', 'Finished setup']]) +
+    sel('plan', 'Plan', [['', 'Any'], ['free', 'Free'], ['paid', 'Paid or team']]) +
+    sel('phone', 'Phone', [['', 'Any'], ['yes', 'Has a phone'], ['no', 'No phone']]) +
+    sel('active', 'Activity', [['', 'Any'], ['week', 'Active this week'], ['quiet', 'Quiet 7+ days'], ['new', 'Joined this week']]) +
+    sel('crm', 'In our lists', [['', 'Any'], ['none', 'Not a lead or client yet'], ['lead', 'In Leads'], ['client', 'Client']]) +
+    '<button class="btn sm" type="button" id="auClear"' + (Object.keys(AU.fs).some(function(k){ return AU.fs[k]; }) ? '' : ' hidden') + '>Clear filters</button><span class="fine" id="auCount"></span></div>';
+  b.innerHTML = head + filters + '<div id="auList"></div>';
+  var fsBox = $('#auFs');
+  if(fsBox){
+    fsBox.addEventListener('change', function(e){ var k = e.target.getAttribute('data-fk'); if(!k) return; AU.fs[k] = e.target.value; $('#auClear').hidden = !Object.keys(AU.fs).some(function(x){ return AU.fs[x]; }); auList(); });
+    $('#auClear').addEventListener('click', function(){ Object.keys(AU.fs).forEach(function(k){ AU.fs[k] = ''; }); auDraw(); });
+  }
   $('#auF').addEventListener('click', function(e){
     var x = e.target.closest('[data-f]'); if(!x) return; var f = x.getAttribute('data-f');
     if(f === 'reports'){ if(R.sub !== 'reports') go('/team.html#appusers/reports'); return; }
@@ -6148,14 +6163,32 @@ function auDraw(){
 function auList(){
   var box = $('#auList'), d = AU.data; if(!box || !d) return;
   var n = AU.q.trim().toLowerCase(), ranked = (d.people || []).some(function(p){ return p.lead; });
+  var wk = Date.now() - 7 * 864e5, F = AU.fs;
+  var stageOf = function(p){ return p.stage || (p.onboarded ? 'done' : (p.headline || p.location) ? 'setup' : 'resume'); };   // older app builds send no stage
   var rows = (d.people || []).filter(function(p){ return AU.f !== 'opted' || p.optedIn; })
+    .filter(function(p){
+      var em = (p.email || '').toLowerCase(), cl = AU.clients[em], ld = AU.leads[em], last = p.last ? Date.parse(p.last) : 0;
+      if(F.stage && stageOf(p) !== F.stage) return false;
+      if(F.plan === 'free' && p.plan !== 'free') return false;
+      if(F.plan === 'paid' && p.plan === 'free') return false;
+      if(F.phone === 'yes' && !p.phone) return false;
+      if(F.phone === 'no' && p.phone) return false;
+      if(F.active === 'week' && !(last > wk)) return false;
+      if(F.active === 'quiet' && last > wk) return false;
+      if(F.active === 'new' && !(Date.parse(p.joined) > wk)) return false;
+      if(F.crm === 'none' && (cl || ld)) return false;
+      if(F.crm === 'lead' && !ld) return false;
+      if(F.crm === 'client' && !cl) return false;
+      return true;
+    })
     .filter(function(p){ return !n || [p.name, p.email, p.phone, p.location, p.headline].concat(p.roles || []).some(function(v){ return v && String(v).toLowerCase().indexOf(n) >= 0; }); })
     .sort(function(a, b){ return (ranked ? ((b.lead && b.lead.score) || -1) - ((a.lead && a.lead.score) || -1) : 0) || (b.optedIn - a.optedIn) || String(b.last || '').localeCompare(String(a.last || '')); });
+  var cnt = $('#auCount'); if(cnt) cnt.textContent = rows.length + ' of ' + (d.people || []).length;
   if(!rows.length){ box.innerHTML = '<div class="empty"><h3>No one matches</h3></div>'; return; }
   box.innerHTML = '<div class="card aul">' + rows.map(function(p){
     var em = (p.email || '').toLowerCase(), cl = AU.clients[em], ld = AU.leads[em];
     var chips = (p.optedIn ? '<span class="st applied">Opted in</span>' : '<span class="st closed">Not opted in</span>') +
-      (!p.onboarded ? ' <span class="st wait">Didn’t finish setup</span>' : '') +
+      (!p.onboarded ? ' <span class="st wait">' + ({terms:'Left on first screen', resume:'No resume yet', setup:'Didn’t finish setup'}[stageOf(p)] || 'Didn’t finish setup') + '</span>' : '') +
       (p.lead ? ' <span class="st ' + (p.lead.score >= 70 ? 'interview' : 'closed') + '" title="' + esc(p.lead.reason || '') + '">Lead ' + p.lead.score + '</span>' : '') +
       (cl ? ' <a class="st applied" href="' + esc(cUrl(cl.id, '')) + '" data-go title="Already a client">Client</a>' : ld ? ' <a class="st interview" href="/team.html#leads" data-go title="Already in Leads">In Leads</a>' : '');
     var acts = (p.phone && p.optedIn ? '<a class="btn sm wa" href="' + esc(auWhatsapp(p)) + '" target="_blank" rel="noopener">WhatsApp</a><a class="btn sm" href="tel:' + esc(String(p.phone).replace(/[^\d+]/g, '')) + '">Call</a>' : '') +
