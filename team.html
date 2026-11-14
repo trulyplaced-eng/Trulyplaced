@@ -6146,7 +6146,7 @@ function auDraw(){
   var b = $('#auBody'), d = AU.data; if(!b || !d || R.page !== 'appusers') return;
   var st = d.stats || {}, reports = d.reports || [];
   var head = '<div class="stats s4">' + auStat('People', st.people) + '<div class="stat"><span><i class="auon"></i>Online now</span><b id="auOnN">' + esc(st.onlineNow == null ? '—' : st.onlineNow) + '</b></div>' + auStat('Opted in to contact', st.optedIn) + auStat('Active this week', st.activeWeek) + '</div>' +
-    '<div class="stats s4">' + auStat('Open US jobs', '~' + (st.openUsJobs || 0).toLocaleString('en-US')) + auStat('Added, last 24h', '~' + (st.added24h || 0).toLocaleString('en-US')) + auStat('Closed, last 24h', '~' + (st.closed24h || 0).toLocaleString('en-US')) + auStat('Fake-job reports open', st.reportsOpen) + '</div>' +
+    '<div class="stats s4">' + auStat('Open US jobs', '~' + (st.openUsJobs || 0).toLocaleString('en-US')) + auStat('Added, last 24h', (st.dayCountsExact ? '' : '~') + (st.added24h || 0).toLocaleString('en-US') + (st.added7d != null ? ' · ' + st.added7d.toLocaleString('en-US') + ' this week' : '')) + auStat('Closed, last 24h', (st.dayCountsExact ? '' : '~') + (st.closed24h || 0).toLocaleString('en-US')) + auStat('Fake-job reports open', st.reportsOpen) + '</div>' +
     '<div class="tools"><div class="seg" id="auF">' + [['all', 'Everyone'], ['opted', 'Opted in only'], ['reports', 'Job reports' + (reports.length ? ' (' + reports.length + ')' : '')]].map(function(f){
         var on = R.sub === 'reports' ? f[0] === 'reports' : AU.f === f[0];
         return '<button type="button" data-f="' + f[0] + '" class="' + (on ? 'on' : '') + '">' + esc(f[1]) + '</button>'; }).join('') + '</div>' +
