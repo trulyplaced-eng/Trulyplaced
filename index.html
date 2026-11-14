@@ -4188,7 +4188,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
     var ce=console.error;console.error=function(){try{log('console: '+[].slice.call(arguments).join(' ').slice(0,300))}catch(e){}return ce.apply(console,arguments)};
     var cw=console.warn;console.warn=function(){try{log('warn: '+[].slice.call(arguments).join(' ').slice(0,300))}catch(e){}return cw.apply(console,arguments)}}
   if(!window.crypto||!crypto.subtle||!window.fetch){log('stopped: no crypto/fetch');return}
-  var cn=navigator.connection;if(cn&&cn.saveData){log('stopped: Data Saver is on');return}
+  var cn=navigator.connection;if(cn&&cn.saveData)log('Data Saver is on (shown anyway)');
   var started=false;
   function hex(buf){return Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2)}).join('')}
   function post(cred,raw){
