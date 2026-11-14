@@ -1631,6 +1631,7 @@ body.sbmin .runpill span{display:none}
 .runpill.rpm{display:none}
 @media (max-width:900px){.runpill.rpm:not([hidden]){display:block;position:fixed;right:12px;bottom:76px;z-index:60;margin:0}.runpill.rpm button{width:auto;background:#0d1b3f;color:#fff;border-color:#0d1b3f;box-shadow:var(--sh-float)}body.sbmin .runpill.rpm span{display:inline}}
 .aufilters{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 14px;margin:-4px 0 14px}.aufl{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--mut,#6b7280)}.aufl select{min-width:150px}#auCount{margin-left:auto}
+.auon{display:inline-block;width:8px;height:8px;border-radius:50%;background:#16a34a;margin-right:6px;box-shadow:0 0 0 3px rgba(22,163,74,.18);vertical-align:1px}.st.auonl{background:#e8f7ee;color:#0e7a3e}
 </style>
 </head>
 <body>
@@ -6110,6 +6111,21 @@ function auLoad(force){
     return AU.data;
   });
 }
+function auOnline(p){ return p.seen ? Date.now() - Date.parse(p.seen) < 120000 : false; }
+/* while App users is open, refresh every 30 seconds so people appear online and drop off on their own
+   (not while the tab is hidden or the search box is being typed in) */
+function auTick(){
+  clearTimeout(AU.tick);
+  AU.tick = setTimeout(function(){
+    if(R.page !== 'appusers' || R.sub === 'reports') return;
+    if(document.hidden || (document.activeElement && document.activeElement.id === 'auQ')) return auTick();
+    auLoad(true).then(function(){
+      if(R.page !== 'appusers' || R.sub === 'reports') return;
+      var st = (AU.data && AU.data.stats) || {}, n = $('#auOnN'); if(n) n.textContent = st.onlineNow == null ? '—' : st.onlineNow;
+      auList(); auTick();
+    }, function(){ auTick(); });
+  }, 30000);
+}
 function auStat(label, n){ return '<div class="stat"><span>' + esc(label) + '</span><b>' + esc(n) + '</b></div>'; }
 function auWhatsapp(p){
   var digits = String(p.phone || '').replace(/\D/g, ''); if(digits.length === 10) digits = '1' + digits;
@@ -6129,7 +6145,7 @@ function vAppUsers(){
 function auDraw(){
   var b = $('#auBody'), d = AU.data; if(!b || !d || R.page !== 'appusers') return;
   var st = d.stats || {}, reports = d.reports || [];
-  var head = '<div class="stats s4">' + auStat('People', st.people) + auStat('Opted in to contact', st.optedIn) + auStat('Active this week', st.activeWeek) + auStat('With a phone number', st.withPhone) + '</div>' +
+  var head = '<div class="stats s4">' + auStat('People', st.people) + '<div class="stat"><span><i class="auon"></i>Online now</span><b id="auOnN">' + esc(st.onlineNow == null ? '—' : st.onlineNow) + '</b></div>' + auStat('Opted in to contact', st.optedIn) + auStat('Active this week', st.activeWeek) + '</div>' +
     '<div class="stats s4">' + auStat('Open US jobs', '~' + (st.openUsJobs || 0).toLocaleString('en-US')) + auStat('Added, last 24h', '~' + (st.added24h || 0).toLocaleString('en-US')) + auStat('Closed, last 24h', '~' + (st.closed24h || 0).toLocaleString('en-US')) + auStat('Fake-job reports open', st.reportsOpen) + '</div>' +
     '<div class="tools"><div class="seg" id="auF">' + [['all', 'Everyone'], ['opted', 'Opted in only'], ['reports', 'Job reports' + (reports.length ? ' (' + reports.length + ')' : '')]].map(function(f){
         var on = R.sub === 'reports' ? f[0] === 'reports' : AU.f === f[0];
@@ -6143,7 +6159,7 @@ function auDraw(){
     sel('stage', 'Setup', [['', 'Any'], ['terms', 'Left on first screen'], ['resume', 'No resume yet'], ['setup', 'Resume in, setup unfinished'], ['done', 'Finished setup']]) +
     sel('plan', 'Plan', [['', 'Any'], ['free', 'Free'], ['paid', 'Paid or team']]) +
     sel('phone', 'Phone', [['', 'Any'], ['yes', 'Has a phone'], ['no', 'No phone']]) +
-    sel('active', 'Activity', [['', 'Any'], ['week', 'Active this week'], ['quiet', 'Quiet 7+ days'], ['new', 'Joined this week']]) +
+    sel('active', 'Activity', [['', 'Any'], ['online', 'Online now'], ['week', 'Active this week'], ['quiet', 'Quiet 7+ days'], ['new', 'Joined this week']]) +
     sel('crm', 'In our lists', [['', 'Any'], ['none', 'Not a lead or client yet'], ['lead', 'In Leads'], ['client', 'Client']]) +
     '<button class="btn sm" type="button" id="auClear"' + (Object.keys(AU.fs).some(function(k){ return AU.fs[k]; }) ? '' : ' hidden') + '>Clear filters</button><span class="fine" id="auCount"></span></div>';
   b.innerHTML = head + filters + '<div id="auList"></div>';
@@ -6158,7 +6174,7 @@ function auDraw(){
     AU.f = f; if(R.sub === 'reports') return go('/team.html#appusers'); auDraw();
   });
   var qi = $('#auQ'), t; if(qi) qi.addEventListener('input', function(){ clearTimeout(t); t = setTimeout(function(){ AU.q = qi.value; auList(); }, 200); });
-  if(R.sub === 'reports') auReports(); else auList();
+  if(R.sub === 'reports') auReports(); else { auList(); auTick(); }
 }
 function auList(){
   var box = $('#auList'), d = AU.data; if(!box || !d) return;
@@ -6173,7 +6189,8 @@ function auList(){
       if(F.plan === 'paid' && p.plan === 'free') return false;
       if(F.phone === 'yes' && !p.phone) return false;
       if(F.phone === 'no' && p.phone) return false;
-      if(F.active === 'week' && !(last > wk)) return false;
+      if(F.active === 'online' && !auOnline(p)) return false;
+      if(F.active === 'week' && !(Math.max(last, p.seen ? Date.parse(p.seen) : 0) > wk)) return false;
       if(F.active === 'quiet' && last > wk) return false;
       if(F.active === 'new' && !(Date.parse(p.joined) > wk)) return false;
       if(F.crm === 'none' && (cl || ld)) return false;
@@ -6182,12 +6199,12 @@ function auList(){
       return true;
     })
     .filter(function(p){ return !n || [p.name, p.email, p.phone, p.location, p.headline].concat(p.roles || []).some(function(v){ return v && String(v).toLowerCase().indexOf(n) >= 0; }); })
-    .sort(function(a, b){ return (ranked ? ((b.lead && b.lead.score) || -1) - ((a.lead && a.lead.score) || -1) : 0) || (b.optedIn - a.optedIn) || String(b.last || '').localeCompare(String(a.last || '')); });
+    .sort(function(a, b){ return (auOnline(b) - auOnline(a)) || (ranked ? ((b.lead && b.lead.score) || -1) - ((a.lead && a.lead.score) || -1) : 0) || (b.optedIn - a.optedIn) || String(b.last || '').localeCompare(String(a.last || '')); });
   var cnt = $('#auCount'); if(cnt) cnt.textContent = rows.length + ' of ' + (d.people || []).length;
   if(!rows.length){ box.innerHTML = '<div class="empty"><h3>No one matches</h3></div>'; return; }
   box.innerHTML = '<div class="card aul">' + rows.map(function(p){
     var em = (p.email || '').toLowerCase(), cl = AU.clients[em], ld = AU.leads[em];
-    var chips = (p.optedIn ? '<span class="st applied">Opted in</span>' : '<span class="st closed">Not opted in</span>') +
+    var chips = (auOnline(p) ? '<span class="st auonl"><i class="auon"></i>Online</span> ' : '') + (p.optedIn ? '<span class="st applied">Opted in</span>' : '<span class="st closed">Not opted in</span>') +
       (!p.onboarded ? ' <span class="st wait">' + ({terms:'Left on first screen', resume:'No resume yet', setup:'Didn’t finish setup'}[stageOf(p)] || 'Didn’t finish setup') + '</span>' : '') +
       (p.lead ? ' <span class="st ' + (p.lead.score >= 70 ? 'interview' : 'closed') + '" title="' + esc(p.lead.reason || '') + '">Lead ' + p.lead.score + '</span>' : '') +
       (cl ? ' <a class="st applied" href="' + esc(cUrl(cl.id, '')) + '" data-go title="Already a client">Client</a>' : ld ? ' <a class="st interview" href="/team.html#leads" data-go title="Already in Leads">In Leads</a>' : '');
@@ -6198,7 +6215,7 @@ function auList(){
         '<div class="m">' + esc([p.headline, p.location].filter(Boolean).join(' · ') || 'No resume yet') + '</div>' +
         ((p.roles || []).length ? '<div class="m fine">Wants: ' + esc(p.roles.join(', ')) + '</div>' : '') + '</div>' +
       '<div class="aucon"><div>' + esc(p.email || '—') + '</div><div class="m">' + esc(p.phone || 'No phone on resume') + '</div></div>' +
-      '<div class="auuse m"><div>' + esc(p.plan) + ' · ' + p.used + '/' + p.quota + ' used</div><div>' + p.sent + ' sent · ' + p.waiting + ' waiting</div><div>Joined ' + esc(TP.ago(p.joined)) + (p.last ? ' · active ' + esc(TP.ago(p.last)) : '') + '</div></div>' +
+      '<div class="auuse m"><div>' + esc(p.plan) + ' · ' + p.used + '/' + p.quota + ' used</div><div>' + p.sent + ' sent · ' + p.waiting + ' waiting</div><div>Joined ' + esc(TP.ago(p.joined)) + (p.seen && !auOnline(p) ? ' · last seen ' + esc(TP.ago(p.seen)) : !p.seen && p.last ? ' · active ' + esc(TP.ago(p.last)) : '') + '</div></div>' +
       '<div class="auact">' + acts + '</div></div>';
   }).join('') + '</div>';
 }
