@@ -4180,11 +4180,11 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
 /* Google One Tap */
 (function(){
   var CLIENT='873182343892-cdrfm5inguku5sfmjrt9n5ngopamf3fl.apps.googleusercontent.com',
-      APP='https://app.trulyplaced.com', DELAY=3000;
+      APP='https://app.trulyplaced.com', DELAY=1500;
   // trulyplaced.com/?gsidebug shows each step on screen (for checking on a phone); nobody else sees it
   var DBG=/[?&]gsidebug/.test(location.search),box=null;
   function log(t){if(!DBG)return;if(!box){box=document.createElement('pre');box.style.cssText='position:fixed;left:8px;right:8px;top:70px;z-index:2147483647;margin:0;padding:10px;max-height:45vh;overflow:auto;background:rgba(0,0,0,.85);color:#7CFC9A;font:12px/1.45 ui-monospace,monospace;white-space:pre-wrap;border-radius:10px';document.body.appendChild(box)}box.textContent+=(Math.round(performance.now())+'ms '+t+String.fromCharCode(10))}
-  if(DBG){log('page version: one-tap v4 (phone sheet)');log('browser: '+navigator.userAgent);log('FedCM (IdentityCredential): '+('IdentityCredential' in window?'yes':'no'));
+  if(DBG){log('page version: one-tap v5 (card first, sheet if refused)');log('browser: '+navigator.userAgent);log('FedCM (IdentityCredential): '+('IdentityCredential' in window?'yes':'no'));
     var ce=console.error;console.error=function(){try{log('console: '+[].slice.call(arguments).join(' ').slice(0,300))}catch(e){}return ce.apply(console,arguments)};
     var cw=console.warn;console.warn=function(){try{log('warn: '+[].slice.call(arguments).join(' ').slice(0,300))}catch(e){}return cw.apply(console,arguments)}}
   if(!window.crypto||!crypto.subtle||!window.fetch){log('stopped: no crypto/fetch');return}
@@ -4193,9 +4193,9 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   // the owner's phone 14 Nov), so phones get our sheet instead, with Google's official "Continue as <name>" button in it
   // (a different, long-standing Google sign-in path). Closed: not again for 3 days. Computers keep Google's card.
   var PHONE=matchMedia('(max-width: 640px)').matches,KEY='tp_gsheet_closed';
-  if(PHONE&&!DBG){try{if(Date.now()-(+localStorage.getItem(KEY)||0)<3*864e5){log('sheet closed recently');return}}catch(e){}}
   function sheet(){
     if(document.getElementById('gSheet'))return;
+    if(!DBG){try{if(Date.now()-(+localStorage.getItem(KEY)||0)<3*864e5){log('sheet closed recently');return}}catch(e){}}
     var st=document.createElement('style');st.textContent="#gSheet{position:fixed;left:0;right:0;bottom:0;z-index:2147483000;transform:translateY(105%);transition:transform .55s cubic-bezier(.32,.72,0,1);background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -14px 44px rgba(10,14,30,.22);padding:10px 20px calc(20px + env(safe-area-inset-bottom));font:400 14px/1.4 ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#1D1D1F}#gSheet.on{transform:none}#gSheet .gs-grab{display:block;width:36px;height:5px;margin:0 auto 12px;border-radius:9px;background:#DCDCE0}#gSheet .gs-hd{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid #EFEFF2}#gSheet .gs-hd svg{width:20px;height:20px;flex:none}#gSheet .gs-hd b{flex:1;font-weight:500;font-size:14.5px}#gSheet .gs-x{width:36px;height:36px;margin:-6px -8px -6px 0;border:0;background:none;border-radius:99px;display:grid;place-items:center;color:#3C3C43;cursor:pointer}#gSheet .gs-x svg{width:18px;height:18px}#gSheet .gs-lead{margin:14px 0 12px;font-size:15px;font-weight:600;letter-spacing:-.01em}#gSheet .gs-btn{min-height:44px;display:flex;justify-content:center}#gSheet .gs-fine{margin:12px 0 0;font-size:12.5px;color:#6E6E73;text-align:center}html[data-theme=dark] #gSheet{background:#1C1C1E;color:#F5F5F7;box-shadow:0 -14px 44px rgba(0,0,0,.6)}html[data-theme=dark] #gSheet .gs-hd{border-color:rgba(255,255,255,.1)}html[data-theme=dark] #gSheet .gs-x{color:#EBEBF5}html[data-theme=dark] #gSheet .gs-fine{color:#A1A1A6}@media(prefers-reduced-motion:reduce){#gSheet{transition:none}}";document.head.appendChild(st);
     var el=document.createElement('div');el.id='gSheet';el.setAttribute('role','dialog');el.setAttribute('aria-label','Sign in to TrulyPlaced with Google');
     el.innerHTML="<span class=\"gs-grab\" aria-hidden=\"true\"></span><div class=\"gs-hd\"><svg viewBox=\"0 0 48 48\" aria-hidden=\"true\"><path fill=\"#EA4335\" d=\"M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z\"/><path fill=\"#4285F4\" d=\"M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z\"/><path fill=\"#FBBC05\" d=\"M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z\"/><path fill=\"#34A853\" d=\"M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z\"/></svg><b>Sign in to TrulyPlaced with Google</b><button type=\"button\" class=\"gs-x\" aria-label=\"Close\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M6 6l12 12M18 6 6 18\"/></svg></button></div><p class=\"gs-lead\">See the jobs that fit you, free.</p><div class=\"gs-btn\"></div><p class=\"gs-fine\">Nothing is sent to an employer until you approve it.</p>";
@@ -4228,8 +4228,14 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
         if(!noNonce)opts.nonce=hex(h);
         log('settings: '+Object.keys(opts).join(', '));
         google.accounts.id.initialize(opts);
-        if(PHONE){sheet();return}
-        if(DBG)google.accounts.id.prompt(function(n){try{log('prompt: displayed='+(n.isDisplayed&&n.isDisplayed())+' notDisplayed='+(n.isNotDisplayed&&n.isNotDisplayed()?n.getNotDisplayedReason():'-')+' skipped='+(n.isSkippedMoment&&n.isSkippedMoment()?n.getSkippedReason():'-')+' dismissed='+(n.isDismissedMoment&&n.isDismissedMoment()?n.getDismissedReason():'-'))}catch(e){log('prompt moment (FedCM)')}});else google.accounts.id.prompt();
+        // Google's own card first, everywhere. On a phone, if Chrome refuses to show it (it does that silently, e.g. while
+        // the site is paused after the card was closed), our sheet with Google's button takes its place.
+        google.accounts.id.prompt(function(n){try{
+          var shown=n.isDisplayed&&n.isDisplayed(),not=n.isNotDisplayed&&n.isNotDisplayed(),skip=n.isSkippedMoment&&n.isSkippedMoment(),
+              why=not?n.getNotDisplayedReason():skip?n.getSkippedReason():'';
+          log('prompt: displayed='+shown+' notDisplayed='+(not?why:'-')+' skipped='+(skip?why:'-')+' dismissed='+(n.isDismissedMoment&&n.isDismissedMoment()?n.getDismissedReason():'-'));
+          if(PHONE&&(not||(skip&&why!=='user_cancel'&&why!=='tap_outside')))sheet();
+        }catch(e){log('prompt note error: '+e.message)}});
       };
       document.head.appendChild(sc);
     }).catch(function(){});
