@@ -56,8 +56,7 @@
     {"@type": "Question", "name": "Does TrulyPlaced apply without asking me?", "acceptedAnswer": {"@type": "Answer", "text": "Only within what you approve. You first sign off on your rebuilt resume and the roles, locations, salary and companies you want; after that, your specialist applies on your behalf every business day. Every application shows up in your tracker with the exact resume and cover letter that was sent."}},
     {"@type": "Question", "name": "Where do the jobs come from?", "acceptedAnswer": {"@type": "Answer", "text": "Straight from employers' own hiring pages on platforms like Greenhouse, Lever, Ashby and Workable, so we usually apply within 1–4 days of a role being posted. Each posting is checked for scams, seniority and sponsorship before anything is sent."}},
     {"@type": "Question", "name": "Will my resume still sound like me?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Your specialist rewrites the wording to match each job, never the facts: your roles, dates, numbers and skills stay exactly as you gave them. You review and approve the rebuilt resume before a single application goes out."}},
-    {"@type": "Question", "name": "What happens after I apply?", "acceptedAnswer": {"@type": "Answer", "text": "Every application lands in your tracker with its status. Employer replies and interview invites arrive in your TrulyPlaced inbox and you get an alert. Your specialist watches where the callbacks come from and adjusts the next batch."}},
-    {"@type": "Question", "name": "Can I cancel any time?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. There's no subscription: you pay once for a plan. If you stop early, a small one-time onboarding fee is kept and the rest is refunded for the applications we haven't sent yet. The full method is on our Cancellation & Refund Policy page."}}
+    {"@type": "Question", "name": "What happens after I apply?", "acceptedAnswer": {"@type": "Answer", "text": "Every application lands in your tracker with its status. Employer replies and interview invites arrive in your TrulyPlaced inbox and you get an alert. Your specialist watches where the callbacks come from and adjusts the next batch."}}
   ]
 }
 </script>
@@ -1476,7 +1475,7 @@ html:not([data-theme="dark"]) .ft3 a:focus-visible{outline-color:#0938D5}
 .ft3-cta{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;margin-top:28px}
 .ft3-ghost{font:500 14.5px/20px "Inter",ui-sans-serif,system-ui,sans-serif;color:#fff;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.3);padding-bottom:2px;transition:border-color .2s ease}
 .ft3-ghost:hover{border-bottom-color:#fff}
-.ft3-cols{display:grid;grid-template-columns:repeat(4,minmax(0,auto));gap:24px 56px}
+.ft3-cols{display:grid;grid-template-columns:repeat(5,minmax(0,auto));gap:24px 48px}
 .ft3-col{display:flex;flex-direction:column;gap:12px}
 .ft3-col h4{margin:0 0 6px;font:500 11.5px/16px "Inter",ui-sans-serif,system-ui,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#8B8F99}
 .ft3-col a{display:inline-flex;align-items:center;gap:4px;width:fit-content;font:400 14px/20px "Inter",ui-sans-serif,system-ui,sans-serif;color:#D4D4D8;text-decoration:none;transition:color .2s ease}
@@ -1489,13 +1488,14 @@ html:not([data-theme="dark"]) .ft3-ghost:hover{border-bottom-color:#0A0A0B}
 html:not([data-theme="dark"]) .ft3-col h4{color:#8A90A3}
 html:not([data-theme="dark"]) .ft3-col a{color:#3F3F46}
 html:not([data-theme="dark"]) .ft3-col a:hover{color:#0938D5}
-@media(max-width:1100px){.ft3-cols{grid-template-columns:repeat(4,minmax(0,1fr));gap:24px 32px;width:100%}}
+@media(max-width:1100px){.ft3-cols{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 32px;width:100%}}
 @media(max-width:900px){.ft3-lead{max-width:none}}
 @media(max-width:640px){.ft3-h{font-size:26px;line-height:32px}.ft3-cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:36px 20px}.ft3-cta .cx-btn{width:100%;justify-content:center}}
 
-/* footer layout: lead on the left, the four columns beside it */
-.ft3-top{display:grid!important;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:48px 72px}
-.ft3-cols{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:24px 32px!important;padding-top:6px}
+/* footer layout: the lead, then the five columns across the full width below it */
+.ft3-top{display:grid!important;grid-template-columns:1fr;gap:40px}
+.ft3-cols{grid-template-columns:repeat(5,max-content)!important;gap:24px 56px!important;padding-top:6px}
+@media(max-width:1100px){.ft3-cols{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:28px 32px!important}}
 .ft3-btn{height:40px;padding:0 16px}
 @media(max-width:1100px){.ft3-top{grid-template-columns:1fr}.ft3-lead{max-width:520px}}
 @media(max-width:640px){.ft3-cols{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:36px 20px!important}.ft3-btn{height:44px}}
@@ -1752,7 +1752,7 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
 @media(max-width:640px){
   /* one type family everywhere except the logo wordmark */
   body,body :where(section,footer,header,nav,div,p,span,a,b,i,em,small,li,button,h1,h2,h3,h4,label,mark,time,strong){font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important}
-  .cx-word,.cx-word *{font-family:"Poppins","Geist",system-ui,sans-serif!important}
+  .cx-word,.cx-word *,#tpBar .cb-name{font-family:"Poppins","Geist",system-ui,sans-serif!important}
   body{-webkit-font-smoothing:antialiased;color:#1D1D1F}
 
   /* hero */
@@ -2045,8 +2045,15 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
 /* phone hero: a still screenshot of the app in a flat black phone (light and fast) */
 @media(max-width:640px){
   .xph{display:flex!important;justify-content:center;margin-top:40px!important;position:relative;z-index:1}
-  .hph{width:min(300px,80vw);padding:10px;border-radius:50px;background:#0A0A0B;box-shadow:0 40px 70px -40px rgba(10,20,60,.55)}
-  .hph img{display:block;width:100%;height:auto;aspect-ratio:280/580;border-radius:40px;background:#fff}
+  /* an iPhone: thin black bezel, a titanium edge, side buttons, a soft glass sheen; the screen inside is 393 x 852 points */
+  .hph{position:relative;width:min(292px,78vw);padding:5px;border-radius:49px;border:1.5px solid transparent;
+    background:linear-gradient(#050506,#050506) padding-box,linear-gradient(150deg,#9A9AA0 0%,#4A4A4F 22%,#2A2A2E 50%,#55555A 78%,#A5A5AB 100%) border-box;
+    box-shadow:0 50px 80px -46px rgba(10,20,60,.6),0 18px 30px -24px rgba(10,20,60,.35)}
+  .hph img{display:block;width:100%;height:auto;aspect-ratio:393/852;border-radius:42px;background:#fff}
+  .hph::after{content:"";position:absolute;inset:5px;border-radius:42px;pointer-events:none;background:linear-gradient(118deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,0) 34%)}
+  .hph::before{content:"";position:absolute;right:-3.5px;top:27%;width:2.5px;height:62px;border-radius:0 2px 2px 0;background:linear-gradient(90deg,#3A3A3E,#77777C)}
+  .xph{position:relative}
+  .hph-btns{position:absolute;left:-3.5px;top:17%;width:2.5px;height:22px;border-radius:2px 0 0 2px;background:linear-gradient(270deg,#3A3A3E,#77777C);box-shadow:0 40px 0 0 #55555A}
 }
 
 
@@ -2091,6 +2098,270 @@ html[data-theme="dark"] .spx .sp-demo{background:rgba(15,20,38,.86)!important;bo
   /* typing dots only move while their row is talking */
   .tm-row:not(.talk) .tm-dots i{animation:none!important}
 }
+/* ===== hero phone demo: tap Apply, the resume is tailored, the form filled, sent; then an interview invite opens
+   from the Dynamic Island. 1 point of the 393-point-wide screenshot = var(--u). Transforms and opacity only. ===== */
+@media(max-width:640px){
+  .hph img{border-radius:0}
+  .hph-scr{position:relative;border-radius:42px;overflow:hidden;background:#fff;container-type:inline-size;--u:calc(100cqw / 393)}
+  .dm{position:absolute;inset:0;pointer-events:none;color:#0A0A0B}
+  .dm *{box-sizing:border-box}
+  .dm-ap{position:absolute;left:calc(309.9 * var(--u));top:calc(466.5 * var(--u));width:calc(63.1 * var(--u));height:calc(30 * var(--u));border-radius:99px;
+    transition:transform .18s cubic-bezier(.2,.7,.2,1)}
+  .dm-ap b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:calc(3 * var(--u));border-radius:99px;font-size:calc(13 * var(--u));font-weight:500;letter-spacing:-.01em;opacity:0}
+  .dm-ap b:first-child{opacity:1;background:#fff;border:1px solid #DCDCE0}
+  .dm-ap .dm-sent{background:#E8F7EE;color:#0E7A3E;font-weight:600;transition:opacity .35s ease}
+  .dm-ap svg,.dm-tk svg,.dm-ok svg{width:calc(11 * var(--u));height:calc(11 * var(--u));flex:none}
+  .dm-dot{position:absolute;left:0;top:0;width:calc(30 * var(--u));height:calc(30 * var(--u));margin:calc(-15 * var(--u)) 0 0 calc(-15 * var(--u));border-radius:99px;
+    background:rgba(10,10,11,.16);box-shadow:0 0 0 calc(1.5 * var(--u)) rgba(255,255,255,.9),0 4px 12px rgba(10,10,11,.18);opacity:0;
+    transform:translate(calc(210 * var(--u)),calc(700 * var(--u)));transition:transform .75s cubic-bezier(.45,0,.2,1),opacity .3s ease}
+  .dm-sh{position:absolute;left:0;right:0;bottom:0;height:calc(372 * var(--u));padding:calc(10 * var(--u)) calc(20 * var(--u)) 0;background:#fff;
+    border-radius:calc(24 * var(--u)) calc(24 * var(--u)) 0 0;box-shadow:0 -10px 40px rgba(10,10,11,.16);transform:translateY(105%);transition:transform .55s cubic-bezier(.32,.72,0,1)}
+  .dm-grab{display:block;width:calc(36 * var(--u));height:calc(5 * var(--u));margin:0 auto calc(14 * var(--u));border-radius:9px;background:#DCDCE0}
+  .dm-hd{display:flex;align-items:center;gap:calc(10 * var(--u))}
+  .dm-hd img{width:calc(40 * var(--u));height:calc(40 * var(--u));padding:calc(5 * var(--u));border-radius:calc(11 * var(--u));border:1px solid #EDEDF0;object-fit:contain;background:#fff}
+  .dm-hd b{display:block;font-size:calc(15 * var(--u));font-weight:600;letter-spacing:-.02em;line-height:1.25}
+  .dm-hd small{display:block;font-size:calc(12.5 * var(--u));color:#6E6E73;line-height:1.3}
+  .dm-k{margin:calc(16 * var(--u)) 0 calc(6 * var(--u));font-size:calc(11.5 * var(--u));font-weight:600;letter-spacing:.02em;color:#8E8E93}
+  .dm-ln{position:relative;height:calc(36 * var(--u));margin:0 0 calc(4 * var(--u));padding-left:calc(10 * var(--u));font-size:calc(12.5 * var(--u));line-height:calc(17 * var(--u));letter-spacing:-.01em}
+  .dm-ln::before{content:"";position:absolute;left:0;top:calc(7 * var(--u));width:calc(4 * var(--u));height:calc(4 * var(--u));border-radius:9px;background:#0A0A0B}
+  .dm-ln span{position:absolute;left:calc(10 * var(--u));right:0;top:0;transition:opacity .4s ease,transform .4s cubic-bezier(.2,.7,.2,1)}
+  .dm-ln .o{color:#6E6E73}
+  .dm-ln .n{opacity:0;transform:translateY(calc(5 * var(--u)))}
+  .dm-ln mark{color:inherit;background:linear-gradient(transparent 58%,rgba(47,91,255,.18) 58%);-webkit-box-decoration-break:clone;box-decoration-break:clone}
+  .dm-tk{list-style:none;margin:0;padding:0;display:grid;gap:calc(6 * var(--u))}
+  .dm-tk li{display:flex;align-items:center;gap:calc(7 * var(--u));font-size:calc(13 * var(--u));letter-spacing:-.01em;opacity:.35;transition:opacity .3s ease}
+  .dm-tk li svg{color:#fff;background:#C7C7CC;border-radius:99px;padding:calc(2.5 * var(--u));width:calc(16 * var(--u));height:calc(16 * var(--u));transition:background-color .3s ease}
+  .dm-ok{display:flex;align-items:center;justify-content:center;gap:calc(6 * var(--u));margin:calc(16 * var(--u)) 0 0;height:calc(40 * var(--u));border-radius:calc(12 * var(--u));
+    background:#0A0A0B;color:#fff;font-size:calc(13.5 * var(--u));font-weight:600;letter-spacing:-.01em;opacity:0;transform:translateY(calc(6 * var(--u)));transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1)}
+  .dm-is{position:absolute;left:calc(12 * var(--u));right:calc(12 * var(--u));top:calc(11 * var(--u));height:calc(76 * var(--u));border-radius:calc(38 * var(--u));background:#000;color:#fff;
+    display:flex;align-items:center;gap:calc(11 * var(--u));padding:0 calc(16 * var(--u)) 0 calc(16 * var(--u));
+    clip-path:inset(0 calc(122 * var(--u)) calc(39 * var(--u)) calc(122 * var(--u)) round calc(18.5 * var(--u)));opacity:0;
+    transition:clip-path .55s cubic-bezier(.32,.72,0,1),opacity .2s ease}
+  .dm-is>*{opacity:0;transition:opacity .25s ease}
+  .dm-ic{width:calc(44 * var(--u));height:calc(44 * var(--u));border-radius:calc(12 * var(--u));background:#2F5BFF;display:grid;place-items:center;flex:none}
+  .dm-ic svg{width:calc(22 * var(--u));height:calc(22 * var(--u))}
+  .dm-it{flex:1;min-width:0}
+  .dm-it b{display:block;font-size:calc(15 * var(--u));font-weight:600;letter-spacing:-.015em;line-height:1.25}
+  .dm-it small{display:block;font-size:calc(12.5 * var(--u));color:#A1A1A6;line-height:1.3}
+  .dm-ib{height:calc(30 * var(--u));padding:0 calc(13 * var(--u));border-radius:99px;background:#fff;color:#000;font-size:calc(13 * var(--u));font-weight:600;line-height:calc(30 * var(--u))}
+
+  /* the steps, switched on one after another by the script */
+  .dm.s1 .dm-dot{opacity:1;transform:translate(calc(341.5 * var(--u)),calc(481.5 * var(--u)))}
+  .dm.s2 .dm-ap{transform:scale(.92)}
+  .dm.s2 .dm-dot{opacity:0;transition:opacity .35s ease .1s;transform:translate(calc(341.5 * var(--u)),calc(481.5 * var(--u))) scale(1.6)}
+  .dm.s3 .dm-ap{transform:none}
+  .dm.s3 .dm-sh{transform:none}
+  .dm.s4 .l1 .o,.dm.s5 .l2 .o{opacity:0;transform:translateY(calc(-5 * var(--u)))}
+  .dm.s4 .l1 .n,.dm.s5 .l2 .n{opacity:1;transform:none}
+  .dm.s6 .dm-tk li:nth-child(1),.dm.s7 .dm-tk li:nth-child(2),.dm.s8 .dm-tk li:nth-child(3){opacity:1}
+  .dm.s6 .dm-tk li:nth-child(1) svg,.dm.s7 .dm-tk li:nth-child(2) svg,.dm.s8 .dm-tk li:nth-child(3) svg{background:#22A55A}
+  .dm.s9 .dm-ok{opacity:1;transform:none}
+  .dm.s10 .dm-sh{transform:translateY(105%)}
+  .dm.s10 .dm-sent{opacity:1}
+  .dm.s11 .dm-is{opacity:1;clip-path:inset(0 0 0 0 round calc(38 * var(--u)))}
+  .dm.s11 .dm-is>*{opacity:1;transition-delay:.25s}
+  .dm.s12 .dm-is{clip-path:inset(0 calc(122 * var(--u)) calc(39 * var(--u)) calc(122 * var(--u)) round calc(18.5 * var(--u)));transition:clip-path .45s cubic-bezier(.32,.72,0,1),opacity .2s ease .4s;opacity:0}
+  .dm.s12 .dm-is>*{opacity:0;transition-delay:0s}
+
+}
+@keyframes tpRise{from{transform:translateY(100%);clip-path:inset(0 0 100% 0)}to{transform:none;clip-path:inset(-10% 0 -25% 0)}}
+@keyframes tpFadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.dm *{transition:none!important}}
+
+/* the headline's word wrappers are plain text on computers */
+.cx-h1 .wm,.cx-h1 .wi{display:inline!important;margin:0!important;padding:0!important}
+/* ===== phone entrance v2 (13 Nov): Cluely's system, TrulyPlaced's opening. 0s the name plots in pixel blocks (about
+   1.1s) · 0.55s the headline rises word by word from behind its line · 1.45s the line under it · 1.6s the button ·
+   1.8s the platforms · 1.95s the app's phone slides up. One thing at a time, top to bottom. ===== */
+@media(max-width:640px){
+  .cx-h1 .wm{display:inline-block!important;overflow:hidden;vertical-align:top;padding-bottom:.2em!important;margin-bottom:-.2em!important}
+  .cx-h1 .wi{display:inline-block!important}
+  html.wd-in:not(.wd-go) .cx-h1 .wi{transform:translateY(110%)}
+  html.wd-in:not(.wd-go) :is(.cx-sub,.cx-cta,.cx-pl,.xph){opacity:0}
+  html.wd-go .cx-h1 .wi{animation:enRise .6s cubic-bezier(.2,.8,.2,1) both}
+  html.wd-go .cx-h1 .wm:nth-child(1) .wi{animation-delay:0.55s}html.wd-go .cx-h1 .wm:nth-child(2) .wi{animation-delay:0.62s}html.wd-go .cx-h1 .wm:nth-child(3) .wi{animation-delay:0.69s}html.wd-go .cx-h1 .wm:nth-child(4) .wi{animation-delay:0.76s}html.wd-go .cx-h1 .wm:nth-child(5) .wi{animation-delay:0.83s}
+  html.wd-go .cx-l2 .wm:nth-child(1) .wi{animation-delay:0.90s}html.wd-go .cx-l2 .wm:nth-child(2) .wi{animation-delay:0.97s}html.wd-go .cx-l2 .wm:nth-child(3) .wi{animation-delay:1.04s}
+  html.wd-go .cx-sub{animation:enUp .55s cubic-bezier(.2,.8,.2,1) 1.45s both}
+  html.wd-go .cx-cta{animation:enUp .8s cubic-bezier(.2,.8,.2,1) 1.6s both}
+  html.wd-go .cx-pl{animation:enUp .7s cubic-bezier(.2,.8,.2,1) 1.8s both}
+  html.wd-go .xph{animation:enPhone .9s cubic-bezier(.2,.8,.2,1) 1.95s both}
+}
+@keyframes enRise{from{transform:translateY(110%)}to{transform:none}}
+@keyframes enUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes enPhone{from{opacity:0;transform:translateY(56px)}to{opacity:1;transform:none}}
+
+/* ===== phone focus (13 Nov): the phone page exists to get people into the app: it names the pain, shows the
+   product and asks for one thing ("Try it free"). No prices or plan sizes anywhere. Order: hero, logos, the pain
+   answered, how it works, interview emails, three steps to start, FAQ, short footer.
+   The team section and the sprint demo stay on computers. ===== */
+.lb-m,.cx-sub,.cx-free,.pn,.st,.mcta,.ft3-more,.ft3-m{display:none}
+.faq-item:has(.faq-skip),.ta-left{display:none!important}
+@media(max-width:640px){
+  .lb-d{display:none}.lb-m{display:inline}
+  main#top{display:flex;flex-direction:column}
+  main#top>.cx{order:1}main#top>.cos{order:2}main#top>.pn{order:3}main#top>.hw{order:4}main#top>.emx{order:5}main#top>.st{order:6}main#top>.fqh{order:7}
+  main#top>.tm,main#top>.spx-sec{display:none!important}
+
+  /* hero: what it is, what it costs, one button */
+  .cx-sub{display:block;margin:10px 0 0;max-width:512px;font:400 15px/22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:rgba(255,255,255,.94);text-shadow:0 1px 12px rgba(0,58,140,.35)}
+  .cx-free{display:block;order:-1;margin:2px 0 0;text-align:center;font:500 13px/18px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:rgba(255,255,255,.92);text-shadow:0 1px 10px rgba(0,58,140,.35)}
+  .cx-proof{display:none!important}
+
+  /* rhythm: 64px between sections */
+  .hw{padding:64px 20px 0}
+  .emx{padding-top:64px!important}
+  .fqh{padding:64px 0 56px!important}
+
+  /* logos: a quiet trust line right under the hero */
+  .cos{padding:36px 20px 0!important}
+  .cos .cos-h{font:500 14px/20px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:0!important;color:#6E6E73!important}
+  .cos .cos-num{color:inherit!important;font-weight:600}
+  html[data-theme="dark"] .cos .cos-h{color:#98989D!important}
+  .cos .cos-g{margin-top:18px!important;gap:20px 6px!important}
+
+  /* how it works: three cards in the order things happen; no tabs, no number tiles */
+  .hw-more,.hb-tabs,#hbP2,.hb-t{display:none!important}
+  .hb-p{margin-top:16px}
+  .hw .hb-a{order:1}.hw .hb-b{order:2}.hw .hb-c3{order:3}
+  .hb-a,.hb-c3{aspect-ratio:16/11}
+  .hb-b{aspect-ratio:4/4.4}
+
+  /* interview emails: the heading and the emails; the paragraph goes */
+  .emx-p{display:none!important}
+
+
+
+  /* the pain, answered: what hurts (grey, struck through) and what happens instead */
+  .pn{display:block;padding:56px 20px 0;background:#fff}
+  .pn-h,.st-h{margin:0;font:600 21px/28px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.022em;color:#1D1D1F}
+  .pn-l{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:10px}
+  .pn-l li{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border-radius:16px;background:#F5F7FB}
+  .pn-l s{font:400 14px/20px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#8E8E93;text-decoration-color:rgba(142,142,147,.6)}
+  .pn-l b{display:flex;align-items:center;gap:8px;font:600 16px/22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.01em;color:#0A0A0B}
+  .pn-l svg{width:18px;height:18px;flex:none;padding:3px;border-radius:99px;background:#0938D5;color:#fff}
+
+  /* the emails lead straight into the three steps, which carry the button */
+  .emx .emx-cta{display:none!important}
+
+  /* three steps to your matches: what happens after the tap, so signing in feels small */
+  .st{display:block;padding:64px 20px 0;background:#fff}
+  .st-l{list-style:none;margin:16px 0 0;padding:0;counter-reset:st}
+  .st-l li{position:relative;counter-increment:st;padding:0 0 18px 44px}
+  .st-l li::before{content:counter(st);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:99px;display:grid;place-items:center;background:#0A0A0B;color:#fff;font:600 13px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  .st-l li:not(:last-child)::after{content:"";position:absolute;left:13.5px;top:32px;bottom:4px;width:1px;background:#E4E4E7}
+  .st-l b{display:block;font:600 16px/22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.01em;color:#0A0A0B;padding-top:3px}
+  .st-l span{display:block;margin-top:2px;font:400 14.5px/21px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#6E6E73}
+  .st-b{display:flex;align-items:center;justify-content:center;height:48px;margin-top:6px;border-radius:999px;background:#0A0A0B;color:#fff;font:600 15px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;text-decoration:none}
+  html[data-theme="dark"] .pn,html[data-theme="dark"] .st{background:var(--bg)}
+  html[data-theme="dark"] .pn-h,html[data-theme="dark"] .st-h,html[data-theme="dark"] .pn-l b,html[data-theme="dark"] .st-l b{color:#F5F5F7}
+  html[data-theme="dark"] .pn-l li{background:rgba(255,255,255,.05)}
+  html[data-theme="dark"] .pn-l svg{background:#2F5BFF}
+  html[data-theme="dark"] .st-l li::before,html[data-theme="dark"] .st-b{background:#fff;color:#0A0A0B}
+  html[data-theme="dark"] .st-l li:not(:last-child)::after{background:rgba(255,255,255,.14)}
+  html[data-theme="dark"] .st-l span{color:#98989D}
+
+  /* footer: short. The link columns open with "More links" */
+  .ft3-about{display:none!important}
+  .ft3-cols{margin-top:28px!important}
+  .ft3-cols .ft3-col:not(.ft3-keep){display:none}
+  .ft3.more .ft3-cols .ft3-col{display:block}
+  .ft3-m{display:block}
+  .ft3-more{display:inline-flex;align-items:center;gap:6px;margin-top:28px;height:44px;padding:0;border:0;background:none;font:500 15px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#1D1D1F;cursor:pointer}
+  .ft3-more::after{content:"+";font-size:18px;line-height:1}
+  .ft3.more .ft3-more::after{content:"–"}
+  html[data-theme="dark"] .ft3-more{color:#F5F5F7}
+  .ft3 .ft3-keep h4{display:none}
+  .ft3-top{gap:0!important}
+  .ft3-more{margin-top:20px}
+  .ft3-more+.ft3-cols{margin-top:4px!important;padding-top:0!important}
+
+  /* sticky bar: the button stays in reach once the hero's button has scrolled away, and leaves at the footer */
+  .mcta{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);border-top:1px solid rgba(10,10,11,.08);
+    box-shadow:0 -10px 30px -18px rgba(10,10,11,.3);transform:translateY(110%);transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+  .mcta.on{transform:none}
+  .mcta span{font:400 12.5px/17px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#6E6E73}
+  .mcta b{display:block;font:600 14px/19px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#0A0A0B}
+  .mcta a{flex:none;display:flex;align-items:center;height:44px;padding:0 24px;border-radius:999px;background:#0A0A0B;color:#fff;font:600 15px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;text-decoration:none}
+  html[data-theme="dark"] .mcta{background:rgba(20,20,22,.96);border-top-color:rgba(255,255,255,.1)}
+  html[data-theme="dark"] .mcta span{color:#98989D}
+  html[data-theme="dark"] .mcta b{color:#F5F5F7}
+  html[data-theme="dark"] .mcta a{background:#fff;color:#0A0A0B}
+  footer.ft3{padding-bottom:calc(24px + env(safe-area-inset-bottom))!important}
+}
+@media(prefers-reduced-motion:reduce){.mcta{transition:none}}
+
+/* ===== phone hero (13 Nov): a bigger headline and button, tighter spacing, the platforms as one moving row, so the
+   app's phone is already in view on the first screen. The wordmark, the changing line and the phone demo are as before. ===== */
+.lb-ar{display:none}
+@media(max-width:640px){
+  .cx .cx-h1,.cx .cx-h1 *{font-size:min(26px,6.6vw)!important}
+  .cx-h1 .cx-l1{display:block;white-space:nowrap!important}
+  .cx-h1 .cx-l2{white-space:nowrap}
+  .cx-sub{margin:0;font-size:16px;line-height:24px;text-wrap:pretty}
+  .cx .cx-cta{margin-top:22px!important;gap:4px!important}
+  .cx-cta .cx-btn.s{height:56px!important;border-radius:999px!important;font:600 17px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.01em!important;
+    box-shadow:0 18px 36px -16px rgba(0,30,110,.65),0 2px 0 rgba(255,255,255,.6) inset!important}
+  .cx-cta .cx-btn.s:active{transform:scale(.98)}
+  .cx-cta .cx-btn.s .lb-m{display:inline-flex;align-items:center;gap:8px}
+  .cx-cta .cx-btn.s .lb-ar{display:block!important;width:18px;height:18px;animation:heroNudge 2.6s cubic-bezier(.3,.7,.2,1) 2s infinite}
+  .cx-free{margin-top:8px;font-size:13.5px}
+  .cx .cx-cta .cx-btn.p{padding:9px 0!important;align-self:center;width:auto!important}
+
+  /* the platforms: one row that drifts, edge to edge, fading at both sides */
+  .cx-pl{margin:14px -20px 0!important;padding:18px 0 0!important;overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 20px,#000 calc(100% - 28px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 20px,#000 calc(100% - 28px),transparent 100%)}
+  .cx-pl p{margin:0 20px 10px!important;text-align:center}
+  .cx-pl ul{flex-wrap:nowrap!important;width:max-content;padding:0 0 0 20px!important;gap:8px!important}
+  .cx-pl ul.run{animation:heroRun 34s linear infinite}
+  .cx-pl li{flex:none}
+  .xph{margin-top:30px!important}
+
+  /* entrance, after the headline's rise */
+}
+@keyframes heroNudge{0%,70%,100%{transform:none}80%{transform:translateX(5px)}90%{transform:translateX(-1px)}}
+@keyframes heroRun{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.cx-pl ul.run,.cx-cta .cx-btn.s .lb-ar{animation:none!important}.cx-pl{overflow-x:auto}}
+
+/* ===== phone bar (13 Nov): the bar leads with what a new visitor needs. "Try it free" is the black pill while the
+   hero is in view (once you scroll, the bar at the bottom of the screen carries it and the name takes its place);
+   "Client login" is always there as a quiet link. The menu opens with a short slide and the burger becomes a cross. ===== */
+@media(max-width:640px){
+  #tpBar .cb-pill.cb-app{display:inline-flex!important;align-items:center;height:36px!important;padding:0 16px!important;border-radius:99px!important;border:0!important;
+    background:#0A0A0B!important;color:#fff!important;font:600 14px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;box-shadow:none!important;white-space:nowrap;transition:opacity .25s ease,transform .25s ease}
+  #tpBar .cb-pill.cb-app .rpl-c,#tpBar .cb-pill.cb-app::after{display:none!important}
+  html[data-theme="dark"] body #tpBar .cb-pill.cb-app{background:#fff!important;color:#0A0A0B!important}
+  #tpBar.cb-named .cb-pill.cb-app{display:none!important}
+  #tpBar .cb-pill.cb-login,html[data-theme="dark"] body #tpBar .cb-pill.cb-login{height:40px!important;padding:0 8px!important;background:none!important;border-color:transparent!important;box-shadow:none!important;
+    color:#0A0A0B!important;font:500 14px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;white-space:nowrap}
+  html[data-theme="dark"] body #tpBar .cb-pill.cb-login{color:#F5F5F7!important}
+  #tpBar .cb-right{gap:6px!important}
+  #tpBar .cb-right .cb-login{order:1}#tpBar .cb-right .cb-app{order:2}#tpBar .cb-right .cb-burger{order:3}
+  #tpBar.scrolled{box-shadow:0 10px 30px -22px rgba(15,23,51,.45)}
+
+  /* the burger turns into a cross */
+  #tpBar .cb-burger{position:relative}
+  #tpBar .cb-burger svg{transition:opacity .2s ease,transform .25s ease}
+  #tpBar .cb-burger::before,#tpBar .cb-burger::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:2px;margin:-1px 0 0 -9px;border-radius:2px;background:currentColor;opacity:0;transition:transform .25s cubic-bezier(.2,.7,.2,1),opacity .2s ease}
+  #tpBar .cb-burger[aria-expanded="true"] svg{opacity:0;transform:scale(.6)}
+  #tpBar .cb-burger[aria-expanded="true"]::before{opacity:1;transform:rotate(45deg)}
+  #tpBar .cb-burger[aria-expanded="true"]::after{opacity:1;transform:rotate(-45deg)}
+
+  /* the menu: the button first, then the links; it slides in */
+  #tpBar .mobnav{transition:opacity .25s ease,transform .28s cubic-bezier(.2,.75,.2,1);transform-origin:50% 0}
+  @starting-style{#tpBar .mobnav{opacity:0;transform:translateY(-10px) scale(.985)}}
+  #tpBar .mobnav .mobnav-cta{order:-1;margin:4px 0 8px!important;height:50px;display:flex!important;align-items:center}
+  #tpBar .mobnav a:not(.mobnav-cta){font-weight:500}
+  /* the menu attached to the bar (no gap, no floating corners), and the page behind dimmed */
+  #tpBar .mobnav{margin:0!important;border-radius:0!important;border-left:0!important;border-right:0!important;border-bottom:1px solid rgba(10,10,11,.08)!important;box-shadow:0 24px 40px -20px rgba(3,10,42,.35)!important}
+  #tpBar:has(.cb-burger[aria-expanded="true"])::after{content:"";position:fixed;inset:0;z-index:-1;background:rgba(10,14,30,.45);animation:mnDim .25s ease both}
+  html[data-theme="dark"] #tpBar:has(.cb-burger[aria-expanded="true"])::after{background:rgba(0,0,0,.6)}
+  #tpBar:has(.cb-burger[aria-expanded="true"]) .cb-in{position:relative;background:#fff}
+  html[data-theme="dark"] #tpBar:has(.cb-burger[aria-expanded="true"]) .cb-in{background:#0A0A0B}
+  #tpBar .mobnav .mobnav-theme{border-bottom:0!important}
+}
+@media(prefers-reduced-motion:reduce){#tpBar .mobnav,#tpBar .cb-burger::before,#tpBar .cb-burger::after,#tpBar .cb-burger svg{transition:none!important}}
+@keyframes mnDim{from{opacity:0}to{opacity:1}}
 </style>
 <style id="tpDark">
 /* ===== dark theme (test): variables + generated overrides of hard-coded light colours ===== */
@@ -2372,20 +2643,23 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
         <button type="button" data-set-theme="light" aria-pressed="true" aria-label="Light theme" title="Light theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg></button>
         <button type="button" data-set-theme="dark" aria-pressed="false" aria-label="Dark theme" title="Dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></button>
       </div>
+      <a class="cb-pill cb-app cta-shine" href="https://app.trulyplaced.com">Try it free</a>
       <a class="cb-pill cb-login" href="./login.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c1-3.5 3.8-5.4 7-5.4s6 1.9 7 5.4"/></svg><span>Client login</span></a>
       <a class="cb-ico" href="https://wa.me/918142442139?text=Hi%20TrulyPlaced%2C%20I%27d%20like%20to%20know%20more" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp" title="Chat with us on WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2a9.9 9.9 0 0 0-8.5 15l-1.4 5 5.15-1.35A9.9 9.9 0 1 0 12.04 2zm0 18.1a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-3.06.8.82-2.98-.2-.31a8.2 8.2 0 1 1 6.92 3.81zm4.5-6.14c-.25-.12-1.46-.72-1.69-.8-.23-.09-.39-.13-.56.12-.16.25-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.04-.38-1.98-1.22-.73-.65-1.23-1.46-1.37-1.7-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.15.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.13-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43h-.48a.92.92 0 0 0-.66.31c-.23.25-.87.85-.87 2.07s.89 2.4 1.01 2.57c.12.16 1.75 2.67 4.24 3.74.59.26 1.05.41 1.41.52.6.19 1.14.16 1.57.1.48-.07 1.46-.6 1.67-1.18.2-.58.2-1.07.14-1.18-.06-.1-.22-.16-.47-.29z"/></svg></a>
       <button class="burger cb-burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobnav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     </div>
   </div>
   <nav class="mobnav" id="mobnav" hidden>
-    <a href="#process">The sprint</a>
+    <a class="mobnav-cta" href="https://app.trulyplaced.com">Find my job matches</a>
+    <a href="#how">How it works</a>
     <a href="#success">Interview emails</a>
+    <a href="./compare.html">Compare</a>
+    <a href="/blog/">Blog</a>
     <a href="#faq">FAQ</a>
-    <a href="https://app.trulyplaced.com">Start free in the app</a>
-    <a href="./login.html">Client login</a>
     <a href="https://wa.me/918142442139?text=Hi%20TrulyPlaced%2C%20I%27d%20like%20to%20know%20more" target="_blank" rel="noopener">Chat on WhatsApp</a>
+    <a href="https://calendly.com/hello-trulyplaced/career-hunt-2026" target="_blank" rel="noopener">Book a free strategy call</a>
+    <a href="./login.html">Client login</a>
     <div class="mobnav-theme" role="group" aria-label="Colour theme"><span>Appearance</span><button type="button" data-set-theme="light" aria-pressed="true">Light</button><button type="button" data-set-theme="dark" aria-pressed="false">Dark</button></div>
-    <a class="mobnav-cta" href="https://calendly.com/hello-trulyplaced/career-hunt-2026" target="_blank" rel="noopener">Book my free strategy call &rarr;</a>
   </nav>
 </header>
 <div class="cb-pal" id="cbPalette" role="dialog" aria-modal="true" aria-label="Search TrulyPlaced" hidden>
@@ -2404,11 +2678,13 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   <div class="cx-sky" aria-hidden="true"><div class="cx-skyin"><img class="cx-img" data-src="img/hero-sky.jpg" alt="" data-sample="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCACQAQADASIAAhEBAxEB/8QAGwAAAQUBAQAAAAAAAAAAAAAAAwECBAUGAAf/xAAzEAABAwMDAwQBAwIGAwAAAAABAAIDBBESBSExE0FRBiJhcTIUQpEVIwdSgaHB0TNDYv/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDLYpMUWySyARamlqMQkLUAbJCEbFNLUAS1NLUfFI5qABCaWo5amloQCxTS1GxTS1AOyaQikJC1AKyQhEskxQDskxRMV1kA7LrJ9kuKAVl1kQtSWQDsusiEJMfhAPFdZExtyFb+ntHbqNU3ruxgHPz8IKeOmmlDjFE5wbuSBwhuYWmzgQfBC9oZpFDFpwhiY1jLbWFisRq9LTQyyRU8LZZnm2fJv9IMYkstBVaQYWwF8D3Od+QbZD1GipIYuo27CdjHzY/aCixSYozmgHbhNIQaLFIQjFqaWoBYpLIuKQtQCsuLUTFIQgERsm2RiE0hAEtTS1HxSFqAJamlqMWppagDZIQjFqaWoBYpMUXFIWoBEJMUUtXWQCxXYohausgFiuxUqCknqA4wwve1ou4gbBDx3sQgfQ0hqZQ21/i9leTempWNYS1z3u/CO3Pj6Vx6H9NiukZWTPODDYRgcr1GLT4o2t9g2HhB5PT/AOHdZPTB0krY5nHdtrhoV/pHob+nkl9U95ttYWAK3z8WNsAoM1QG3IQVUul4Ujoi8uvxfssvW0kelRuqKgtfKb22/wCVpNS1DpRucXWsOVi6qql1SWWIDEhpGTt7AoM7qGrS1khDG+0ceVAkp55LuItfsVfU1AI3iK4ZZ35AfmtLpOkUjnB5cXkck90HmctJPGCXRusOTbhAsvY9W0ijkpC0tA27bLyatgEFTJGLe1xFh2QaAtTS1HxSYoI5amlqkFpTS1AHFJijY2TS1AEtTS1HLU0tQCsksi4pMUAi1NLUUtSFqAJamlqMQkLUAbJMUXFJigDiuDUbFJZALFXGl+nKrUY4nxXtK/EWF8R3JUSipH1U7Y2Dk7nwF6RodTBp8UdLThhLRYuJ7lBd6b6boqXShSmJpYR7gf3fazuqejaKpqWiItgbtcNbwPj+Vsf1WUANwSo+0jrlA/03o1NpNMIqc37k+SriZ4aFBge1jdih1NUOLoG1UvNlVVMhN7KW68p2Tf03chBn62llqRiHFt+6qK7SqiJ8UQD5WHdxibufhbORsbN7cKtq6yOJ2ZcAT3QUtXphFG04tDmcZCxWfpNWfps8lPle7rkkkho/5Wk1jUWvpHMLt3N2cOy89qL9Td17HbdBu5tSfV0hERbnb9xtssHqsTmVDsvyO/KOzUJo4sGHHa177qFK50jruJJ8lBpMUmKPhup+n6PU1ssbWNDWPNuo7gIK6no6iqfhTQySu8MaSmTU0sEropo3MkabOa4WIXsvp7SGaPQCEOa953c8Ntcqv17SaDUGASxBjw6/UZ+Xyg8zotIqa4jos2cbAni6v4fQFW+nMk9THG7G4aG5b/Jutho2h0Wn3kpJnvB5bIQbfSk6hqETY3sjkaJGC5ae32g8craKaindDO2zh/B+QoxYt/qtLPXQOfNpsrweJGNPt+R/CxU0RjeW2dbtkLGyCGWJMVILd0nTcdwCgjFqaWqWynfJfFt7coTmWvsgAWppajFqQtQAxSFqNikLUArIlPA6olEbDYkE/wAC67FOjJjeHt5CDa+lvR8dRC6Srqf7pH/ijd+N/Kv9I9IQ0NXJLJKZrgYtcNmnvZV/+HVbBHegZDIZnf3JZHcfA/hbeqYWbtKAEtK1rQ2wDVDme2JrrXPwBuiSzP4RaWm6hyegpYf6mx7y2EOYT7butso7INQn1EdYWhJIsNtgtXMWxssOyq2VrW1VmgOBNib8ILSGlYyMbbqHWvEYICmOqR09iqeumvdBCeHzvI4QKnSYJYz1dz5uhz6gICdibC6rqz1A3pNdewP+yDP6/pc0cjRFO97CbBpHCzlTC+GQtcQSO4WirdaElxcn6VBUPMry4oIpCQtRSE3FBtKOIPnaC3IX/E91utF06mikbNUVBLyBaMOsG/GywjLg3VhS6nUU/wCD7+LjhB6lLM1seyoqyS7ib2WYh1yqDS6fN8Z2Lr91faN+mr6aMzTF0zd3b2H0gLGyebaE2J/cEkOk10GqMmeyOeJ497jZpB8nzwtBBTxxjJoA27Jk1SIygJUeyE28LAatp39V19pqA+OFoAc4tO9vBW0/XxyGz9gq7XJRLTOigF8tvbygxv8AQmajqxjoYulStNsrkh1vF16BQ6PQ0FD0YqeMAj3XF7/aq/TenSUzmF9QSA23TLbAFaSXaOyDy/1ToBpJJKqlDGU5P4B1rfSyzmWuvXdYonVNG4XjAP7nftXl9bTiKqliY/qBriA4DlBWuYm4qU6OxsRumFiCPikLUctSFqCPilDN0XFdig03pjVjSTPfi1pe4XPJIHYBbWi1tuoFrWMdvffxYryiJzmG7TZXFDrVRT4tJ9g7N2Qej3a6cMuLqxaBHGsBT+pIIZTOQ9znnceFNqfWEDoLsyy/yoL6uqQAd1la3UMamR8OQmaNx+0jz9qNF6ibM53W9oVVqtfHOT0nOsed7BBstN1F7oQ+sexgPDb72R56mBzc8vae681NXKQ0F7iG+SrCl1h+X9/3hrcWtvYAINBW6pSghkcYeTsTZZvVaiKa+zNuxG4UerrS53t2aOAFXzSOkcSUEVw3TSEYhNLUArJLIuKTHZBrA03T2sdyATZPabG45Tus69xt9IJ1FXRNez9VEHsYPa08KdV6jRyuZJTtELgbuxFr/wAKkBa4HqXJPBS9NuPtNyg2VN6lp2xCO5JtbdT6US18XVLCxp4y5WBo3Njna9zQbG4ubBb+g1WmkpW4PbfhBDroXQyMjjBe5xtsq4yPjnk6rTiywDW7ucfhTdT1TpjNkh55aL2Wd1DVDO4ENjBvbNuxsg2VNUQQw5ulsfBKkNqRUMyY72+Vi6fUqUw9OeNrW9i0E7psmtSRYhjmmPkBm38hBe11fBM+Sie4tFt78H4WV1GlZQSZBjWFwNmm5Dh9qHXVklTMZHEje4F+EB88j2YPeXC97HdBHqQHyuc3glAxUhzU3FAAsSGNWOn0gqalkbjYE8Dl3wFu9N9JUTC2erjDjYWjv7R/2g8yMabgvT/UGjUNRC2OOGOFzdmvY21h9DlY3VtG/SSPdTPMkLQLk8hBRYpQLKT+neWZht2/CFggGbpCi4pCxAEgprgUfC6aWII+K6yOWJCxBHIum4qQWJCxBGLU0tUksTSxBHLUmKOWpMUGoxSYo2KQtQMAXC908NS4+EDN0uThwSPop2K7FAJznkWLnEeLoRBUnFMLLoAi6Qo7KeSQ2jY5x8AJJIJI3YyMc0+CLIIxCaWo5YkwQAsi00TXvId/oPJS4JwYg1vpnRoKaQVMz2OkI9o7NWpqKiNkdg4XXnNHqM9KLMI/1CsqPVoo/fUOkkPdv/SC01KpDWl5N78DyVmK2rnla4mBxaBv7eAflWGoatBUyNcIHYt4GVgftRZ9WLmFscDG35PN0FEC5hJYSL8oTmqXJ7nE2Av4Q8EEfFIWqRgk6aCOGJcEfpp3TQRemkMfwriDR6uaLqthIaTYX2J+lrdP9PUFNR2nibPO4e5ztwPpB5wY0hjW/Og0Qc+0QFxYA3NlR6joL4Hl0W8fg8oM0Y00xq/rNPgjpo3MBDjzdQWUFRI28cTnDzZBWGNNwPhWE9NJA8skbZw7IRj+EGgxXYIuKUNQBxS4o2K7FAHFJhZHxXYoAYJuCk4JMUDIHSQuziOLh3Q5nPkdlIS4o9khagiYfCQsUosSYII2C7FSMEmF0AMV2KNguwQBLU0sUjFdigi4JpZ8KXguLR2aAgh4JQz4Ugs+EuCCP01KoOhFM107cmjdcI+54+0aJrR+ERc7/wCuEGgg1COYMLWWaO5PCPLq0EUbhHY22NlV6fpjZT1Jybf5G7JslBC+s6cbi1ncXv8A6ILKkqHVZL4mOPk9gpTqXMgyBw87bI9OYqanbG0tjaON1GqK1pBEZLkFbqWkwzEPa0tc083vdNa9tLTkSyNPYANshVVY5jrFxAKqppXyPc4P3ta4QQa5wmmLm+VGLFc0tLTkZTgk35JsFKEVBG2xbGf90HYLg1SS0HsE3BAANS4o+C7BAAMSYKRguwQAwSFikYLixBGwSYKTgkLEEYsXYKSGJMEEfp34RJKUxsa4uaSewPCKGLixBEwSFilFiTBBFwXYKR01xYgjYri1SMEmCCNglxR8F2CAAbbdGbK9u+1/JCXBLigQ1M5/9jh9IecmV8iD5uiYrsEDM3nl7v5XB54cXW+Cn4LsEAJAN8ePlAc1TCxMMaCIQfJTS0qWY0wsQf/Z"><canvas class="cx-dots" id="cxDots"></canvas><canvas class="cx-prism" id="cxPrism"></canvas><div class="cx-grain"></div></div></div>
   <div class="cx-in">
     <p class="cx-word" aria-hidden="true">TrulyPlaced</p>
-    <h1 class="cx-h1"><span class="cx-l1">Job applications, done for you,</span><span class="cx-l2" id="cxScr" aria-live="off">every business day.</span></h1>
+    <h1 class="cx-h1"><span class="cx-l1"><span class="wm"><span class="wi">Job&nbsp;</span></span><span class="wm"><span class="wi">applications,&nbsp;</span></span><span class="wm"><span class="wi">done&nbsp;</span></span><span class="wm"><span class="wi">for&nbsp;</span></span><span class="wm"><span class="wi">you,</span></span></span><span class="cx-l2" id="cxScr" aria-live="off"><span class="wm"><span class="wi">every&nbsp;</span></span><span class="wm"><span class="wi">business&nbsp;</span></span><span class="wm"><span class="wi">day.</span></span></span></h1>
+    <p class="cx-sub">Applying everywhere and hearing nothing back? Upload your resume and see the jobs that fit you.</p>
     <div class="cx-cta">
-      <a class="cx-btn p cta-shine" href="https://calendly.com/hello-trulyplaced/career-hunt-2026" target="_blank" rel="noopener">Book my free strategy call<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      <a class="cx-btn s cta-lift" href="https://app.trulyplaced.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.5 18.5h3"/></svg>Start free in the app</a>
+      <a class="cx-btn s cta-shine" href="https://app.trulyplaced.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M10.5 18.5h3"/></svg><span class="lb-d">Start free in the app</span><span class="lb-m">Start free in the app<svg class="lb-ar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+      <a class="cx-btn p cta-lift" href="https://calendly.com/hello-trulyplaced/career-hunt-2026" target="_blank" rel="noopener">Book my free strategy call<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       <span class="cx-fine">Free 30-minute call · no commitment</span>
+      <span class="cx-free">Start with your resume. See your matches.</span>
     </div>
     <div class="cx-pl" aria-label="Platforms we apply on"><p>We apply on the platforms employers use</p><ul><li>Greenhouse</li><li>Workday</li><li>Ashby</li><li>Workable</li><li>Rippling</li><li>BambooHR</li><li>Breezy</li><li>Gem</li><li>JazzHR</li><li>Dover</li><li>Jobvite</li></ul></div>
     <p class="cx-proof"><img src="img/co/google.png" alt="" width="20" height="20"><span><i>“Next step: Interview for Google.”</i><small>From a TrulyPlaced client’s inbox, Aug 21</small></span></p>
@@ -2416,7 +2692,22 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
       <p class="cx-ats-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>We apply on the platforms employers already use</span><span class="sr-only">, including Greenhouse, Workday, Ashby, Workable, Rippling, BambooHR, Breezy, Gem, JazzHR, Dover, Jobvite</span></p>
       <div class="cx-ats-s"><div class="cx-ats-m" aria-hidden="true"><div class="cx-ats-t"><span class="cx-ats-i"><img src="img/ats/greenhouse.png" alt="" width="20" height="20" loading="lazy">Greenhouse</span><span class="cx-ats-i"><img src="img/ats/workday.png" alt="" width="20" height="20" loading="lazy">Workday</span><span class="cx-ats-i"><img src="img/ats/ashby.png" alt="" width="20" height="20" loading="lazy">Ashby</span><span class="cx-ats-i"><img src="img/ats/workable.png" alt="" width="20" height="20" loading="lazy">Workable</span><span class="cx-ats-i"><img src="img/ats/rippling.png" alt="" width="20" height="20" loading="lazy">Rippling</span><span class="cx-ats-i"><img src="img/ats/bamboohr.png" alt="" width="20" height="20" loading="lazy">BambooHR</span><span class="cx-ats-i"><img src="img/ats/breezy.png" alt="" width="20" height="20" loading="lazy">Breezy</span><span class="cx-ats-i"><img src="img/ats/gem.png" alt="" width="20" height="20" loading="lazy">Gem</span><span class="cx-ats-i"><img src="img/ats/jazzhr.jpg" alt="" width="20" height="20" loading="lazy">JazzHR</span><span class="cx-ats-i"><img src="img/ats/dover.png" alt="" width="20" height="20" loading="lazy">Dover</span><span class="cx-ats-i"><img src="img/ats/jobvite.png" alt="" width="20" height="20" loading="lazy">Jobvite</span><span class="cx-ats-i"><img src="img/ats/greenhouse.png" alt="" width="20" height="20" loading="lazy">Greenhouse</span><span class="cx-ats-i"><img src="img/ats/workday.png" alt="" width="20" height="20" loading="lazy">Workday</span><span class="cx-ats-i"><img src="img/ats/ashby.png" alt="" width="20" height="20" loading="lazy">Ashby</span><span class="cx-ats-i"><img src="img/ats/workable.png" alt="" width="20" height="20" loading="lazy">Workable</span><span class="cx-ats-i"><img src="img/ats/rippling.png" alt="" width="20" height="20" loading="lazy">Rippling</span><span class="cx-ats-i"><img src="img/ats/bamboohr.png" alt="" width="20" height="20" loading="lazy">BambooHR</span><span class="cx-ats-i"><img src="img/ats/breezy.png" alt="" width="20" height="20" loading="lazy">Breezy</span><span class="cx-ats-i"><img src="img/ats/gem.png" alt="" width="20" height="20" loading="lazy">Gem</span><span class="cx-ats-i"><img src="img/ats/jazzhr.jpg" alt="" width="20" height="20" loading="lazy">JazzHR</span><span class="cx-ats-i"><img src="img/ats/dover.png" alt="" width="20" height="20" loading="lazy">Dover</span><span class="cx-ats-i"><img src="img/ats/jobvite.png" alt="" width="20" height="20" loading="lazy">Jobvite</span></div></div></div>
     </div>
-    <div class="xph"><div class="hph"><img src="img/hero-phone.webp?v=2" width="280" height="580" alt="The TrulyPlaced app on a phone: Home, with your best matches each morning and one tap to apply" fetchpriority="high" decoding="async"></div></div>
+    <div class="xph"><div class="hph"><i class="hph-btns" aria-hidden="true"></i><div class="hph-scr" id="hphDemo"><img src="img/hero-phone.webp?v=3" width="393" height="852" alt="The TrulyPlaced app on a phone: Home, with your best matches each morning and one tap to apply" fetchpriority="high" decoding="async">
+      <div class="dm" aria-hidden="true">
+        <span class="dm-ap"><b>Apply</b><b class="dm-sent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Sent</b></span>
+        <span class="dm-dot"></span>
+        <div class="dm-sh">
+          <i class="dm-grab"></i>
+          <div class="dm-hd"><img src="img/co/pega.png" alt="" width="40" height="40" loading="lazy"><span><b>Senior Data Analyst</b><small>Pegasystems · Cambridge, MA</small></span></div>
+          <p class="dm-k">Tailoring your resume</p>
+          <p class="dm-ln l1"><span class="o">Made reports in SQL and Tableau for the sales team</span><span class="n"><mark>Built SQL and Tableau reporting</mark> for the sales team</span></p>
+          <p class="dm-ln l2"><span class="o">Worked with product managers on metrics</span><span class="n"><mark>Partnered</mark> with product managers <mark>to define KPIs</mark></span></p>
+          <p class="dm-k">Filling in the form</p>
+          <ul class="dm-tk"><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Contact details</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>6 screening questions</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Resume and cover letter</li></ul>
+          <p class="dm-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Sent · confirmation saved</p>
+        </div>
+        <div class="dm-is"><span class="dm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span><span class="dm-it"><b>Interview invite</b><small>Pegasystems · Thu, 2:00 PM</small></span><span class="dm-ib">Add</span></div>
+      </div></div></div></div>
     <div class="cx-shot ta" data-ui role="img" aria-label="The TrulyPlaced app: the Tracker with an application open in the side panel, showing its tailored resume, cover letter and progress">
       <div class="cx-bar"><span class="cx-dot3"><i></i><i></i><i></i></span><span class="cx-url">app.trulyplaced.com/app/applications</span></div>
       <div class="ta-app">
@@ -2433,7 +2724,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
             <span class="ta-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>Notifications<b class="r">3</b></span>
             <span class="ta-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="m4.93 4.93 4.24 4.24M14.83 9.17l4.24-4.24M14.83 14.83l4.24 4.24M9.17 14.83l-4.24 4.24"/></svg>Help</span>
             <div class="ta-left"><p>Applications left</p><p class="n"><strong>142</strong><small>of 200</small><span>Upgrade<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span></p><i><u></u></i></div>
-            <div class="ta-acct"><i>AR</i><span><b>Ananya Rao</b><small>Pro Plan</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></div>
+            <div class="ta-acct"><i>AR</i><span><b>Ananya Rao</b><small>Data Analyst</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></div>
           </div>
         </aside>
         <div class="ta-main">
@@ -2541,9 +2832,95 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   </div>
 </section>
 
+<!-- ================= THE PAIN, ANSWERED (phones) ================= -->
+<section class="pn" aria-labelledby="pnTitle">
+  <div class="pn-in" id="pnCard">
+    <h2 class="pn-h" id="pnTitle">Job hunting shouldn’t be a second job</h2>
+    <ul class="pn-l">
+      <li><s>Hours filling in the same forms</s><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Filled in for you</b></li>
+      <li><s>One resume sent to every job</s><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Tailored to each role</b></li>
+      <li><s>Applying, then silence</s><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Every reply in one inbox</b></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= HOW AUTOPILOT WORKS ================= -->
+<section class="hw" id="how" aria-labelledby="hwTitle">
+  <div class="hw-in">
+    <h2 class="hw-h" id="hwTitle">How Autopilot works<span class="hw-more"> while<br class="hw-br"> you get on with your day</span></h2>
+    <div class="hx" id="hxCards">
+      <article class="hx-c hx-1">
+        <h3 class="hx-t">TrulyPlaced <span class="hx-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-3.8-3.8"/></svg>finds</span> jobs that fit you</h3>
+        <p class="hx-p">New matches every morning, scored against your resume.</p>
+        <div class="hx-v" aria-hidden="true">
+          <p class="hx-st"><i></i>Matching today’s new jobs</p>
+          <div class="hx-job"><img src="img/co/pega.png" alt="" width="36" height="36" loading="lazy"><span><b>Senior Data Analyst</b><small>Pegasystems · Hybrid</small></span><em>92%</em></div>
+          <div class="hx-job"><img src="img/co/workiva.png" alt="" width="36" height="36" loading="lazy"><span><b>Analytics Engineer</b><small>Workiva · Remote</small></span><em>88%</em></div>
+          <div class="hx-job"><img src="img/co/klaviyo.png" alt="" width="36" height="36" loading="lazy"><span><b>BI Analyst</b><small>Klaviyo · Boston</small></span><em>86%</em></div>
+        </div>
+      </article>
+      <article class="hx-c hx-2">
+        <h3 class="hx-t">It <span class="hx-pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>tailors</span> your resume to each job</h3>
+        <p class="hx-p">The wording changes. Your facts never do.</p>
+        <div class="hx-v" aria-hidden="true">
+          <div class="hx-pane">
+            <p class="hx-for"><i></i>Tailoring for Senior Data Analyst</p>
+            <p class="hx-ln l1"><span class="o">Made reports in SQL and Tableau for the sales team</span><span class="n"><mark>Built SQL and Tableau reporting</mark> for the sales team</span></p>
+            <p class="hx-ln l2"><span class="o">Worked with product managers on metrics</span><span class="n"><mark>Partnered</mark> with product managers <mark>to define KPIs</mark></span></p>
+            <p class="hx-sk"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>SQL</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Tableau</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>KPIs</span></p>
+          </div>
+        </div>
+      </article>
+      <article class="hx-c hx-3">
+        <h3 class="hx-t">Then it <span class="hx-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 10.5 13.5M21 3l-6.5 18-4-7.5L3 9.5z"/></svg>applies</span> and catches every reply</h3>
+        <p class="hx-p">Forms filled in and sent. Replies in one inbox.</p>
+        <div class="hx-v" aria-hidden="true">
+          <div class="hx-toast"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></i><span><b>Interview invite</b><small>Pegasystems · Thu, 2:00 PM</small></span></div>
+          <div class="hx-form">
+            <div class="hx-row r1"><span>Contact details</span><i class="hx-bar"><s></s></i><i class="hx-tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i></div>
+            <div class="hx-row r2"><span>Screening questions</span><i class="hx-bar"><s></s></i><i class="hx-tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i></div>
+            <div class="hx-row r3"><span>Resume and cover letter</span><i class="hx-bar"><s></s></i><i class="hx-tk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i></div>
+            <p class="hx-send"><span>Sending…</span><b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Sent</b></p>
+          </div>
+        </div>
+      </article>
+    </div>
+    <div class="hb-tabs" role="tablist" aria-label="Autopilot">
+      <button type="button" role="tab" id="hbTab1" aria-controls="hbP1" aria-selected="true">How it works</button>
+      <button type="button" role="tab" id="hbTab2" aria-controls="hbP2" aria-selected="false" tabindex="-1">Interviews landed</button>
+    </div>
+    <div class="hb-p" id="hbP1" role="tabpanel" aria-labelledby="hbTab1">
+      <div class="hb-g">
+        <div class="hb-col">
+          <article class="hb-c hb-a"><img class="hb-bg" src="img/stage-silk-dark.webp" alt="" loading="lazy"><div class="hb-chips hb-cyc"><span class="hb-chip hb-lg" style="--rc:#25A485"><img src="img/ats/greenhouse.png" alt="Greenhouse" width="18" height="18" loading="lazy"></span><span class="hb-chip hb-lg" style="--rc:#5146E5"><img src="img/ats/ashby.png" alt="Ashby" width="18" height="18" loading="lazy"></span><span class="hb-chip hb-lg" style="--rc:#16A38A"><img src="img/ats/workable.png" alt="Workable" width="18" height="18" loading="lazy"></span><span class="hb-chip hb-txt" style="--rc:#fff">+ Lever</span></div><p class="hb-cap">Finds real US jobs that fit you every morning, each scored like “92% match”.</p></article>
+          <div class="hb-t hb-tr"><b>Daily</b><span>fresh matches every morning</span></div>
+        </div>
+        <article class="hb-c hb-b"><span class="hb-sky"></span><span class="hb-ph"><img src="img/hero-phone.webp?v=3" alt="The TrulyPlaced app with today's best matches" width="393" height="852" loading="lazy"></span><p class="hb-cap">Writes a resume and cover letter for each job, then fills in the form and sends it.</p></article>
+        <div class="hb-col">
+          <div class="hb-t hb-tl"><b>1 inbox</b><span>for every employer reply</span></div>
+          <article class="hb-c hb-c3"><img class="hb-bg hb-mail" src="img/interviews/mail-12.webp" alt="" loading="lazy"><div class="hb-chips"><span class="hb-chip hb-txt">✉ you@mail.trulyplaced.com</span></div><p class="hb-cap">Catches verification codes and interview invites in one inbox, and alerts you.</p></article>
+        </div>
+      </div>
+    </div>
+    <div class="hb-p" id="hbP2" role="tabpanel" aria-labelledby="hbTab2" hidden>
+      <div class="hb-g">
+        <div class="hb-col">
+          <article class="hb-c hb-a"><img class="hb-bg hb-mail" src="img/interviews/mail-15.webp" alt="NVIDIA interview email" loading="lazy"><div class="hb-chips"><span class="hb-chip hb-lg" style="--rc:#76B900"><img src="img/co/nvidia.png" alt="NVIDIA" width="18" height="18" loading="lazy"></span></div><p class="hb-cap">NVIDIA: “Your confirmed interview”</p></article>
+          <div class="hb-t hb-tr"><b>1,200+</b><span>users have interviewed</span></div>
+        </div>
+        <article class="hb-c hb-b"><img class="hb-bg hb-mail" src="img/interviews/mail-09.webp" alt="Google interview email" loading="lazy"><div class="hb-chips"><span class="hb-chip hb-lg" style="--rc:#4285F4"><img src="img/co/google.png" alt="Google" width="18" height="18" loading="lazy"></span></div><p class="hb-cap">Google: “Next step: Interview for Google”</p></article>
+        <div class="hb-col">
+          <div class="hb-t hb-tl"><b>Real</b><span>emails from clients’ inboxes</span></div>
+          <article class="hb-c hb-c3"><img class="hb-bg hb-mail" src="img/interviews/mail-20.webp" alt="Stripe interview email" loading="lazy"><div class="hb-chips"><span class="hb-chip hb-lg" style="--rc:#635BFF"><img src="img/co/stripe.png" alt="Stripe" width="18" height="18" loading="lazy"></span></div><p class="hb-cap">Stripe: Zoom interview, Full Stack Engineer</p></article>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= YOUR TEAM, LIVE (presence section) ================= -->
 <section class="cos" aria-labelledby="cosTitle">
-  <h2 class="cos-h" id="cosTitle">Where <span class="cos-num" data-count="1200" data-suffix="+">1,200+</span> TrulyPlaced users have interviewed</h2>
+  <h2 class="cos-h" id="cosTitle"><span class="cos-w">Where</span> <span class="cos-num" data-count="1200" data-suffix="+">1,200+</span> <span class="cos-r">TrulyPlaced users have interviewed</span></h2>
   <ul class="cos-g"><li><img class="wm" src="img/wm/stripe.svg" alt="Stripe" style="height:34px" loading="lazy"></li><li><img class="wm" src="img/wm/airbnb.svg" alt="Airbnb" style="height:30px" loading="lazy"></li><li><img class="wm" src="img/wm/databricks.svg" alt="Databricks" style="height:40px" loading="lazy"></li><li><span class="wmt" style="font-size:24px;font-weight:600"><img src="img/wm/figma-icon.svg" alt="" style="height:26px" loading="lazy">Figma</span></li><li><span class="wmt" style="font-size:21px;font-weight:500"><img src="img/wm/notion-icon.svg" alt="" style="height:28px" loading="lazy">Notion</span></li><li><img class="wm" src="img/wm/coinbase.svg" alt="Coinbase" style="height:23px" loading="lazy"></li><li><img class="wm" src="img/wm/plaid.svg" alt="Plaid" style="height:30px" loading="lazy"></li><li><span class="wmt" style="font-size:27px;font-weight:500;letter-spacing:-.04em">ramp<img class="keep" src="img/co/ramp.png" alt="" style="height:24px;margin-left:2px" loading="lazy"></span></li></ul>
 </section>
 <section class="tm" id="team-live" aria-labelledby="tmTitle">
@@ -2572,6 +2949,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   <div class="emx-in">
     <h2 class="emx-h" id="emxTitle">Real interview emails.<br class="m-br"> Real inboxes.</h2>
     <p class="emx-p">What lands in our clients’ inboxes once their applications start going out: phone screens, assessments, final rounds.</p>
+    <p class="emx-verified"><svg class="emx-tick" viewBox="0 0 24 24" aria-hidden="true"><path fill="#1D9BF0" d="M12 1.6l2.25 1.65 2.77-.35 1.08 2.58 2.58 1.08-.35 2.77L22 11.58l-1.67 2.25.35 2.77-2.58 1.08-1.08 2.58-2.77-.35L12 21.56l-2.25-1.65-2.77.35-1.08-2.58-2.58-1.08.35-2.77L2 11.58l1.67-2.25-.35-2.77 2.58-1.08 1.08-2.58 2.77.35z"/><path d="M8.1 11.9l2.6 2.6 5.2-5.3" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Verified</b> · straight from our clients’ inboxes</span></p>
   </div>
   <div class="emx-in emx-wide">
     <div class="ib" id="ibox">
@@ -2589,7 +2967,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
     </div>
   </div>
   <div class="emx-in"><div class="ibm" id="ibm" data-list aria-label="Interview emails" role="region"></div></div>
-  <div class="emx-in emx-cta"><a href="https://app.trulyplaced.com" class="cx-btn p emx-btn cta-shine">Start free in the app<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+  <div class="emx-in emx-cta"><p class="emx-next"><b>Your inbox could be next.</b> Start free, and we apply while you sleep.</p><a href="https://app.trulyplaced.com" class="cx-btn p emx-btn cta-shine"><span class="lb-d">Get started free</span><span class="lb-m">Try it free</span></a></div>
 </section>
 
 
@@ -2703,13 +3081,24 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
 
 
 <!-- ================= FAQ ================= -->
+<section class="st" aria-labelledby="stTitle">
+  <div class="st-in">
+    <h2 class="st-h" id="stTitle">See your matches in three steps</h2>
+    <ol class="st-l">
+      <li><b>Tap Try it free</b><span>Sign in with Google or your email.</span></li>
+      <li><b>Upload your resume</b><span>Your profile fills itself in.</span></li>
+      <li><b>See the jobs that fit you</b><span>Scored against your resume, ready to apply.</span></li>
+    </ol>
+    <a class="st-b" href="https://app.trulyplaced.com">Get started free</a>
+  </div>
+</section>
 <section class="section fqh" id="faq" aria-labelledby="fqTitle">
   <div class="fqh-in">
     <div class="fqh-left">
       <span class="fqh-pill">FAQs</span>
       <h2 class="fqh-h" id="fqTitle">Need assistance?</h2>
-      <p class="fqh-p">Our team is on WhatsApp and usually replies instantly. Or start free in the app: nothing to pay to get going.</p>
-      <div class="fqh-cta"><a class="fqh-btn p cta-shine" href="https://app.trulyplaced.com">Start free in the app<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a href="https://wa.me/918142442139?text=Hi%20TrulyPlaced%2C%20I%27d%20like%20to%20know%20more" target="_blank" rel="noopener" class="fqh-btn s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>Chat with us</a></div>
+      <p class="fqh-p">Our team is on WhatsApp and usually replies instantly. Or open the app and see the jobs that fit you.</p>
+      <div class="fqh-cta"><a class="fqh-btn p cta-shine" href="https://app.trulyplaced.com">Try it free</a><a href="https://wa.me/918142442139?text=Hi%20TrulyPlaced%2C%20I%27d%20like%20to%20know%20more" target="_blank" rel="noopener" class="fqh-btn s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>Chat with us</a></div>
     </div>
     <div class="faq-list">
       <details class="faq-item">
@@ -2729,7 +3118,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
         <div class="faq-a">Every application lands in your tracker with its status. Employer replies and interview invites arrive in your TrulyPlaced inbox and you get an alert. Your specialist watches where the callbacks come from and adjusts the next batch.</div>
       </details>
       <details class="faq-item">
-        <summary class="faq-q">Can I cancel any time?<span class="ic">+</span></summary>
+        <summary class="faq-q faq-skip">Can I cancel any time?<span class="ic">+</span></summary>
         <div class="faq-a">Yes. There's no subscription: you pay once for a plan. If you stop early, a small one-time onboarding fee is kept and the rest is refunded for the applications we haven't sent yet. The full method is on our <a href="./refunds.html">Cancellation &amp; Refund Policy</a> page.</div>
       </details>
     </div>
@@ -2737,6 +3126,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
 </section>
 
 </main>
+<div class="mcta" id="mCta" aria-hidden="true"><span><b>See the jobs that fit you</b>Start with your resume</span><a href="https://app.trulyplaced.com" tabindex="-1">Try it free</a></div>
 
 <!-- ================= FOOTER ================= -->
 <footer id="team" class="ft ft3">
@@ -2747,10 +3137,11 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
         <h2 class="ft3-h">Your next interview<br>starts with one good application.</h2>
         <p class="ft3-about">Job applications, done for you by a real specialist. Every resume tailored to the role, every application tracked in your portal, every business day.</p>
         <div class="ft3-cta">
-          <a class="cx-btn p emx-btn cta-shine ft3-btn" href="https://app.trulyplaced.com">Start free in the app<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-          <a class="ft3-ghost" href="https://calendly.com/hello-trulyplaced/career-hunt-2026" target="_blank" rel="noopener">Book my free strategy call</a>
+          <a class="cx-btn p emx-btn cta-shine ft3-btn" href="https://app.trulyplaced.com"><span class="lb-d">Join free</span><span class="lb-m">Try it free</span></a>
+          <a class="ft3-ghost" href="https://calendly.com/hello-trulyplaced/career-hunt-2026" target="_blank" rel="noopener">or book a free strategy call</a>
         </div>
       </div>
+      <button type="button" class="ft3-more" id="ft3More" aria-expanded="false">More links</button>
       <div class="ft3-cols">
         <nav class="ft3-col" aria-label="Service">
           <h4>Service</h4>
@@ -2761,22 +3152,33 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
         </nav>
         <nav class="ft3-col" aria-label="Get started">
           <h4>Get started</h4>
-          <a href="https://app.trulyplaced.com">Start free in the app</a>
+          <a href="https://app.trulyplaced.com">Open the app</a>
           <a href="https://app.trulyplaced.com/jobs">Browse open jobs</a>
           <a href="https://calendly.com/hello-trulyplaced/career-hunt-2026" target="_blank" rel="noopener">Strategy call<svg class="ft3-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
           <a href="./login.html">Client login</a>
+        </nav>
+        <nav class="ft3-col" aria-label="Compare">
+          <h4>Compare</h4>
+          <a href="/compare.html">All comparisons</a>
+          <a href="/blog/">Blog</a>
+          <a href="./trulyplaced-vs-scale-jobs.html">TrulyPlaced vs Scale.jobs</a>
+          <a href="./trulyplaced-vs-lazyapply.html">TrulyPlaced vs LazyApply</a>
+          <a href="./best-job-application-services.html">Best job application services</a>
+          <a href="./pay-someone-to-apply-for-jobs.html">Is paying someone worth it?</a>
         </nav>
         <nav class="ft3-col" aria-label="Support">
           <h4>Support</h4>
           <a href="https://wa.me/918142442139?text=Hi%20TrulyPlaced%2C%20I%27d%20like%20to%20know%20more" target="_blank" rel="noopener">WhatsApp<svg class="ft3-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
           <a href="mailto:hello@trulyplaced.com">hello@trulyplaced.com</a>
+          <a href="./about.html">About TrulyPlaced</a>
           <a href="./contact.html">Contact us</a>
         </nav>
-        <nav class="ft3-col" aria-label="Legal">
+        <nav class="ft3-col ft3-keep" aria-label="Legal">
           <h4>Legal</h4>
           <a href="./terms.html">Terms of service</a>
           <a href="./privacy.html">Privacy policy</a>
           <a href="./refunds.html">Cancellation &amp; refunds</a>
+          <a class="ft3-m" href="./contact.html">Contact us</a>
         </nav>
       </div>
     </div>
@@ -3444,7 +3846,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
    ripples read as liquid swirls and the button is plain at rest. Runs only while ripples are alive. */
 (function(){
   if(window.matchMedia&&(matchMedia('(prefers-reduced-motion: reduce)').matches||!matchMedia('(hover: hover) and (pointer: fine)').matches))return;
-  var sel='#tpBar .cb-login, #tpBar .cb-app, .cx-btn.p';
+  var sel='#tpBar .cb-login, #tpBar .cb-app, .cx-btn.p:not(.cx-cta .cx-btn), .cx-cta .cx-btn.s';
   function hash(x,y){var n=Math.sin(x*127.1+y*311.7)*43758.5453;return n-Math.floor(n)}
   function vnoise(x,y){var xi=Math.floor(x),yi=Math.floor(y),xf=x-xi,yf=y-yi,u=xf*xf*(3-2*xf),v=yf*yf*(3-2*yf);
     var a=hash(xi,yi),b=hash(xi+1,yi),c=hash(xi,yi+1),d=hash(xi+1,yi+1);return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v}
@@ -3732,7 +4134,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
       // where the baseline is
       var bl=document.createElement('span');bl.style.cssText='display:inline-block;width:0;height:0;vertical-align:baseline';w.appendChild(bl);
       var base=bl.getBoundingClientRect().top-wr.top;w.removeChild(bl);
-      var PAD=12,CELL=5,DOT=105,SPAN=2050,LET=400,W=Math.ceil(wr.width)+PAD*2,H=Math.ceil(wr.height)+PAD*2,dpr=Math.min(3,window.devicePixelRatio||1);
+      var PAD=12,CELL=5,DOT=90,SPAN=850,LET=280,W=Math.ceil(wr.width)+PAD*2,H=Math.ceil(wr.height)+PAD*2,dpr=Math.min(3,window.devicePixelRatio||1);
       // the real letters, off screen
       var src=document.createElement('canvas');src.width=W*dpr;src.height=H*dpr;var sx=src.getContext('2d');sx.scale(dpr,dpr);
       sx.font=cs.fontStyle+' '+cs.fontWeight+' '+cs.fontSize+' '+cs.fontFamily;sx.fillStyle=cs.color;sx.textBaseline='alphabetic';
@@ -3748,7 +4150,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
           cells.push({c:c,r:rw,t:li*(SPAN/n)+(fx*.72+(rw/rows)*.28)*LET+Math.random()*120,s:0})}}
       cells.sort(function(a,b){return a.t-b.t});
       var END=cells.length?cells[cells.length-1].t+DOT+60:0,h=C/2;
-      w.classList.add('wd-on');w.appendChild(cv);
+      w.classList.add('wd-on');w.appendChild(cv);d.classList.add('wd-go');setTimeout(function(){d.classList.remove('wd-go')},3200);
       var t0=performance.now(),from=0;
       function frame(now){var t=now-t0;
         for(var k=from;k<cells.length;k++){var q=cells[k];if(q.t>t)break;
@@ -3820,6 +4222,615 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   apply(root.getAttribute("data-theme")==="dark"?"dark":"light");
   btns.forEach(function(b){b.addEventListener("click",function(){var t=b.getAttribute("data-set-theme");apply(t);try{localStorage.setItem("tp-theme",t)}catch(e){}})});
 })();
+</script>
+<style>
+/* The name beside the mark wipes in left to right behind a soft edge (and back out), like a word being written:
+   on the homepage once its big "TrulyPlaced" has scrolled away, on other pages as they open (site.js / below). */
+#tpBar .cb-name{display:inline-block!important;font:700 20px/1 "Poppins","Geist",system-ui,sans-serif;letter-spacing:-.02em;color:#121a33;
+  -webkit-mask-image:linear-gradient(90deg,#000 0 40%,transparent 60% 100%);mask-image:linear-gradient(90deg,#000 0 40%,transparent 60% 100%);
+  -webkit-mask-size:260% 100%;mask-size:260% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:100% 0;mask-position:100% 0;transition:-webkit-mask-position .6s cubic-bezier(.65,0,.35,1),mask-position .6s cubic-bezier(.65,0,.35,1)}
+#tpBar.cb-named .cb-name{-webkit-mask-position:0 0;mask-position:0 0}
+/* room for the y's tail inside the wipe's mask (the mask covers only the box) */
+#tpBar .cb-name{padding:.2em 0 .28em;margin:-.2em 0 -.28em}
+html[data-theme="dark"] #tpBar .cb-name{color:#F5F5F7}
+@media(max-width:380px){#tpBar .cb-name{font-size:18px}}
+@media(prefers-reduced-motion:reduce){#tpBar .cb-name{transition:none}}
+</style>
+<script>
+/* The bar's name: shown once the page's own big "TrulyPlaced" (the homepage's .cx-word) is out of view, hidden while
+   it's in view; on pages without one, shown as the page opens. */
+(function(){
+  var bar=document.getElementById('tpBar');if(!bar)return;
+  var word=document.querySelector('.cx-word');
+  if(!word||!('IntersectionObserver' in window)){requestAnimationFrame(function(){requestAnimationFrame(function(){bar.classList.add('cb-named')})});return}
+  new IntersectionObserver(function(es){bar.classList.toggle('cb-named',!es[0].isIntersecting)},{rootMargin:'-72px 0px 0px 0px'}).observe(word);
+})();
+</script>
+<style>
+/* the one verified tick on the site: under "Real interview emails", where it vouches for what it sits on */
+.emx-verified{display:flex;width:fit-content;align-items:center;gap:7px;margin:18px auto 0;padding:6px 12px 6px 8px;border-radius:999px;background:#fff;border:1px solid rgba(10,10,11,.08);box-shadow:0 6px 18px -12px rgba(18,26,51,.3);font:500 13px/1 "Inter",ui-sans-serif,system-ui,sans-serif;color:#52525B}
+.emx-verified b{font-weight:600;color:#0A0A0B}
+.emx-tick{width:18px;height:18px;flex:none}
+@media(max-width:640px){.emx-verified{margin:14px 0 0}}
+html[data-theme="dark"] .emx-verified{background:#141418;border-color:rgba(255,255,255,.1);box-shadow:none;color:#A1A1AA}
+html[data-theme="dark"] .emx-verified b{color:#F5F5F7}
+</style>
+<style>
+/* cos-theme: the companies' marks in the page's own ink (not each brand's colours), so the row reads as part of the page;
+   a mark shows its real colours while the pointer is on it. Dark mode: white, as before. */
+.cos-g li{filter:grayscale(1) brightness(0) opacity(.62);transition:filter .25s ease}
+@media(hover:hover){.cos-g li:hover{filter:none}}
+html[data-theme="dark"] .cos-g li{filter:grayscale(1) brightness(0) invert(1) opacity(.7)}
+@media(hover:hover){html[data-theme="dark"] .cos-g li:hover{filter:grayscale(1) brightness(0) invert(1)}}
+html[data-theme="dark"] .cos-g img,html[data-theme="dark"] .cos-g .wmt img{filter:none}
+@media(prefers-reduced-motion:reduce){.cos-g li{transition:none}}
+</style>
+<style>
+/* ta-full: the hero's app window shows the whole screen (it was a fixed 736px, slicing its last row, the account row and
+   the last similar job): as tall as its contents, with room under the list. */
+.ta-app{height:auto!important;min-height:736px}
+.ta-main{padding-bottom:28px!important}
+</style>
+<style>
+/* cta-pill: one main button across the page: a black pill that says what you get ("Start free now") and opens the app;
+   the strategy call is a text link beside it. The hero keeps its own two buttons. */
+.cx-btn.p.emx-btn,.fqh-btn.p,.cx-btn.p.ft3-btn{height:46px!important;padding:0 26px!important;border-radius:999px!important;gap:0!important;
+  font:500 15.5px/1 "Inter",ui-sans-serif,system-ui,sans-serif!important;letter-spacing:-.005em!important}
+#tpBar .mobnav .mobnav-cta{border-radius:999px!important;justify-content:center;text-align:center}
+.cx-fine a{color:inherit;text-decoration:underline;text-decoration-color:currentColor;text-underline-offset:3px}
+.cx-fine a:hover{opacity:.8}
+@media(max-width:640px){.cx-btn.p.emx-btn,.fqh-btn.p{height:48px!important}}
+/* hero on desktop: "Start free in the app" is the filled button, the strategy call the outlined one (phones already lead with the app) */
+@media(min-width:641px){
+  .cx-cta .cx-btn.s{background:#fff;color:#0F1733;border-color:transparent;box-shadow:0 10px 26px -14px rgba(10,30,70,.55)}
+  .cx-cta .cx-btn.s:hover{background:#fff;border-color:transparent}
+  .cx-cta .cx-btn.p{background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.7);box-shadow:none}
+  .cx-cta .cx-btn.p:hover{border-color:#fff;background:rgba(255,255,255,.14)}
+  html:not([data-theme="dark"]) .cx.prism .cx-cta .cx-btn.s{background:#0A0A0B;color:#fff;border-color:transparent;box-shadow:0 10px 26px -14px rgba(0,0,0,.5)}
+  html:not([data-theme="dark"]) .cx.prism .cx-cta .cx-btn.s:hover{background:#27272A}
+  html:not([data-theme="dark"]) .cx.prism .cx-cta .cx-btn.p{background:rgba(255,255,255,.55);color:#0A0A0B;border:1px solid rgba(10,10,11,.28);box-shadow:none;text-shadow:none}
+  html:not([data-theme="dark"]) .cx.prism .cx-cta .cx-btn.p:hover{border-color:#0A0A0B;background:rgba(255,255,255,.8)}
+}
+/* interview emails: the button sits in a bar the width of the inbox, with a line that says why to press it */
+@media(min-width:641px){
+  .emx .emx-cta{max-width:1056px;margin:20px auto 0;padding:16px 16px 16px 28px;display:flex;align-items:center;justify-content:space-between;gap:24px;text-align:left;
+    border-radius:16px;background:#FAFAFA;border:1px solid rgba(10,10,11,.07)}
+  .emx-next{margin:0;font:400 16px/24px "Inter",system-ui,sans-serif;letter-spacing:-.01em;color:#52525B}
+  .emx-next b{font-weight:600;color:#0A0A0B}
+  html[data-theme="dark"] .emx .emx-cta{background:#141416;border-color:rgba(255,255,255,.09)}
+  html[data-theme="dark"] .emx-next{color:#A1A1AA}
+  html[data-theme="dark"] .emx-next b{color:#F5F5F7}
+}
+@media(max-width:640px){.emx-next{display:none}}
+
+/* ===== how Autopilot works: an ElevenLabs-style bento. Centred heading, two tabs, picture cards with a caption on a
+   dark fade, and two small number tiles that stagger the grid. ===== */
+.hw{background:#fff;padding:112px 32px 0}
+.hw-in{max-width:1120px;margin:0 auto}
+.hw-h{margin:0 auto;text-align:center;font:500 40px/46px "Geist",system-ui,sans-serif;letter-spacing:-.034em;color:#0A0A0B}
+.hb-tabs{display:flex;width:max-content;margin:24px auto 0;padding:3px;border-radius:99px;border:1px solid #E7E7EA;background:#FAFAFA}
+.hb-tabs button{height:40px;padding:0 20px;border:0;border-radius:99px;background:none;font:500 15px/1 "Inter",system-ui,sans-serif;letter-spacing:-.01em;color:#71717A;cursor:pointer;transition:background-color .2s ease,color .2s ease,box-shadow .2s ease}
+.hb-tabs button[aria-selected="true"]{background:#fff;color:#0A0A0B;box-shadow:0 1px 2px rgba(10,10,11,.08),0 0 0 1px rgba(10,10,11,.06)}
+.hb-tabs button:focus-visible{outline:2px solid #0938D5;outline-offset:2px}
+.hb-p{margin-top:36px}
+.hb-p:not([hidden]){animation:hbIn .45s cubic-bezier(.2,.7,.2,1)}
+@keyframes hbIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hb-g{display:grid;grid-template-columns:1fr 1.52fr 1fr;gap:14px;align-items:stretch}
+.hb-col{display:flex;flex-direction:column;gap:14px}
+.hb-c{position:relative;overflow:hidden;margin:0;border-radius:18px;background:#0A0A0B;isolation:isolate}
+.hb-a,.hb-c3{aspect-ratio:1}
+.hb-b{min-height:100%}
+.hb-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.hb-c:has(.hb-mail){background:radial-gradient(120% 90% at 100% 0%,#2453D8 0%,#0F1733 60%)}
+.hb-c .hb-mail{inset:auto;left:20px;top:64px;width:calc(100% + 60px);height:auto;max-height:none;object-fit:initial;border-radius:12px;box-shadow:0 18px 40px -18px rgba(0,0,0,.6);transform-origin:0 0}
+.hb-c:hover .hb-mail{transform:translateY(-4px)}
+.hb-c.hb-c:has(.hb-mail)::after{background:linear-gradient(180deg,rgba(15,23,51,0) 40%,rgba(15,23,51,.88) 70%,#0F1733 92%)}
+.hb-c.hb-b::after{background:linear-gradient(180deg,rgba(6,24,96,0) 42%,rgba(6,24,96,.86) 74%,#061860 100%)}
+.hb-c::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,10,11,0) 38%,rgba(10,10,11,.78) 100%)}
+.hb-c:hover .hb-bg{transform:scale(1.03)}
+.hb-cap{position:absolute;left:22px;right:22px;bottom:20px;margin:0;font:500 17px/24px "Inter",system-ui,sans-serif;letter-spacing:-.015em;color:#fff;text-wrap:pretty}
+.hb-chips{position:absolute;left:20px;top:20px;display:flex;flex-wrap:wrap;gap:6px}
+.hb-chip{display:inline-flex;align-items:center;justify-content:center;height:30px;min-width:30px;padding:0 6px;border-radius:9px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.hb-chip img{width:18px;height:18px;object-fit:contain}
+.hb-txt{padding:0 10px;font:500 12.5px/1 "Inter",system-ui,sans-serif;color:#0A0A0B;letter-spacing:-.005em}
+.hb-sky{position:absolute;inset:0;z-index:-3;background:radial-gradient(90% 70% at 50% 0%,#9CCBFF 0%,#4C8DF6 45%,#0938D5 100%)}
+.hb-ph{position:absolute;left:50%;top:34px;width:56%;transform:translateX(-50%);z-index:-2;padding:5px;border-radius:38px;background:#050506;box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
+.hb-ph img{display:block;width:100%;height:auto;border-radius:33px}
+.hb-b:hover .hb-ph{transform:translateX(-50%) translateY(-4px)}
+.hb-ph{transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.hb-t{width:calc(50% - 7px);aspect-ratio:1;border-radius:18px;background:#F4F4F5;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;padding:16px}
+.hb-tr{align-self:flex-end}
+.hb-tl{align-self:flex-start}
+.hb-t b{font:600 30px/1 "Geist",system-ui,sans-serif;letter-spacing:-.035em;color:#0A0A0B}
+.hb-t span{font:400 13px/17px "Inter",system-ui,sans-serif;color:#71717A}
+html[data-theme="dark"] .hw{background:var(--bg)}
+html[data-theme="dark"] .hw-h{color:#F5F5F7}
+html[data-theme="dark"] .hb-tabs{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1)}
+html[data-theme="dark"] .hb-tabs button{color:#A1A1AA}
+html[data-theme="dark"] .hb-tabs button[aria-selected="true"]{background:#F5F5F7;color:#0A0A0B;box-shadow:none}
+html[data-theme="dark"] .hb-t{background:rgba(255,255,255,.06)}
+html[data-theme="dark"] .hb-t b{color:#F5F5F7}
+html[data-theme="dark"] .hb-t span{color:#98989D}
+@media(max-width:900px){
+  .hb-g{grid-template-columns:1fr 1fr}
+  .hb-b{grid-column:1/-1;grid-row:1;min-height:0;aspect-ratio:4/3.4}
+  .hb-ph{width:44%}
+}
+@media(max-width:640px){
+  .hw{padding:80px 20px 0}
+  .hw-h{font-size:26px;line-height:32px}.hw-br{display:none}
+  .hb-tabs button{height:36px;padding:0 15px;font-size:14px}
+  .hb-p{margin-top:24px}
+  .hb-g{grid-template-columns:1fr 1fr;gap:12px}
+  .hb-col{display:contents}
+  .hb-b{grid-column:1/-1;grid-row:auto;order:1;aspect-ratio:4/5}
+  .hb-a{grid-column:1/-1;order:2}
+  .hb-tr{order:3}.hb-tl{order:4}
+  .hb-c3{grid-column:1/-1;order:5}
+  .hb-ph{width:62%}
+  .hb-a,.hb-c3{aspect-ratio:5/4}
+  .hb-t{width:auto;aspect-ratio:auto;min-height:0;padding:18px 16px 16px;justify-content:flex-start}
+  .hb-cap{font-size:16px;line-height:22px;left:18px;right:18px;bottom:16px}
+}
+@supports (animation-timeline:view()){
+  @media(prefers-reduced-motion:no-preference){
+    .hw-h{animation:hwInk linear both;animation-timeline:view();animation-range:entry 10% cover 35%}
+    html[data-theme="dark"] .hw-h{animation-name:hwInkD}
+  }
+}
+
+/* logo chips: an outline ring a few pixels out from the tile (like an app icon being picked). A row of chips takes
+   turns: the picked one is in colour with its ring, the rest go grey; a single chip just breathes its ring. */
+.hb-chip{position:relative}
+.hb-lg{width:36px;height:36px;min-width:0;padding:0;border-radius:10px}
+.hb-lg img{width:22px;height:22px}
+.hb-chips{gap:12px}
+.hb-chip::after{content:"";position:absolute;inset:-5px;border-radius:14px;border:2px solid var(--rc,#fff);opacity:0;transform:scale(.86);pointer-events:none}
+.hb-chips:not(.hb-cyc) .hb-chip::after{animation:hbRing 3.2s cubic-bezier(.2,.7,.2,1) infinite}
+.hb-cyc .hb-chip{animation:hbPick 6.4s linear infinite}
+.hb-cyc .hb-chip::after{animation:hbPickRing 6.4s cubic-bezier(.2,.7,.2,1) infinite}
+.hb-cyc .hb-chip:nth-child(2),.hb-cyc .hb-chip:nth-child(2)::after{animation-delay:-4.8s}
+.hb-cyc .hb-chip:nth-child(3),.hb-cyc .hb-chip:nth-child(3)::after{animation-delay:-3.2s}
+.hb-cyc .hb-chip:nth-child(4),.hb-cyc .hb-chip:nth-child(4)::after{animation-delay:-1.6s}
+@keyframes hbRing{0%{opacity:0;transform:scale(.86)}18%,62%{opacity:1;transform:none}80%,100%{opacity:0;transform:scale(1.04)}}
+@keyframes hbPickRing{0%{opacity:0;transform:scale(.86)}4%,21%{opacity:1;transform:none}25%,100%{opacity:0;transform:scale(1.04)}}
+@keyframes hbPick{0%,24%{filter:none;opacity:1}28%,96%{filter:grayscale(1);opacity:.55}100%{filter:none;opacity:1}}
+@media(max-width:640px){.hb-lg{width:34px;height:34px}.hb-chips{gap:11px}}
+@media(prefers-reduced-motion:reduce){.hb-chip,.hb-chip::after{animation:none!important}.hb-chips:not(.hb-cyc) .hb-chip::after{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.hb-p:not([hidden]){animation:none}.hb-bg,.hb-ph{transition:none}}
+@keyframes hwInk{from{color:#B4B7C2}to{color:#0A0A0B}}
+@keyframes hwInkD{from{color:#4A4D57}to{color:#F5F5F7}}
+
+/* ===== phone polish (13 Nov): one rhythm between sections, every section starts the same way (left heading, 21/28),
+   the logo row is an even grid that fits, and each closing block has a real button. ===== */
+@media(max-width:640px){
+  /* rhythm: 72px between sections instead of 96 */
+  .tm,.emx,.spx-sec{padding-top:72px!important}
+  .hw{padding:72px 20px 0}
+  .fqh{padding:72px 0 64px!important}
+  footer.ft3{margin-top:0!important}
+
+  /* How Autopilot works: the same left heading as the other sections; the tabs are a full-width switch */
+  .hw-h{margin:0;text-align:left;font:600 21px/28px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.022em;color:#1D1D1F}
+  html[data-theme="dark"] .hw-h{color:#F5F5F7}
+  .hb-tabs{width:100%;margin:16px 0 0}
+  .hb-tabs button{flex:1;height:40px;padding:0 8px;font-size:14.5px}
+  .hb-p{margin-top:16px}
+
+  /* logos: four equal columns, two rows; every mark centred in its cell, in the page's ink like on computers */
+  .cos{padding:64px 20px 0!important}
+  .cos-g{grid-template-columns:repeat(4,minmax(0,1fr))!important;justify-content:normal!important;justify-items:center!important;gap:26px 6px!important;margin:24px 0 0!important}
+  .cos-g li{width:100%;display:flex!important;justify-content:center!important;align-items:center!important;filter:grayscale(1) brightness(0) opacity(.62)!important}
+
+  /* interview emails: a real button, not a line of text */
+  .emx-cta .emx-btn{display:flex!important;width:100%!important;height:48px!important;padding:0 20px!important;border-radius:999px!important;background:#0A0A0B!important;color:#fff!important;
+    justify-content:center!important;font:600 15px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important}
+  html[data-theme="dark"] .emx .emx-cta .emx-btn{background:#fff!important;color:#0A0A0B!important}
+  .emx-cta{margin-top:20px!important}
+
+  /* footer: its headline gets its button back */
+  .ft3 .ft3-cta{display:flex;flex-direction:column;align-items:stretch;gap:14px;margin-top:20px}
+  .ft3 .ft3-cta .ft3-btn{width:100%;height:48px!important;justify-content:center}
+  .ft3 .ft3-ghost{align-self:center;font-size:14px}
+  .ft3-cols{margin-top:36px!important}
+
+  /* FAQ rows run the full width, like everything else */
+  .fqh .faq-list{width:100%!important;align-self:stretch!important}
+
+  /* easy to tap: at least 44px tall for the hero's text link and the sprint's step tabs */
+  .cx-cta{gap:6px!important}
+  .cx-cta .cx-btn.p{padding:11px 0!important}
+  .spx-tabs button{padding:13px 0 4px}
+}
+/* narrow phones: Client login on one line */
+@media(max-width:380px){#tpBar .cb-pill.cb-login{padding:0 14px!important;white-space:nowrap}#tpBar .cb-mark{width:32px;height:32px}}
+
+/* ===== phones: How Autopilot works as three large cards, each with a live visual. A card is nearly a screen tall, so
+   one idea is in view at a time; its animation runs only while the card is on screen. ===== */
+.hx{display:none}
+@media(max-width:640px){
+  #hbP1{display:none!important}
+  .hw-h{font:600 28px/34px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.03em}
+  .hx{display:grid;gap:14px;margin-top:20px}
+  .hx-c{position:relative;overflow:hidden;isolation:isolate;margin:0;padding:32px 24px 26px;border-radius:32px;color:#fff;min-height:520px;display:flex;flex-direction:column}
+  .hx-t{margin:0;font:600 28px/36px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.025em;color:inherit;text-wrap:balance}
+  .hx-p{margin:12px 0 0;font:400 16px/24px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:rgba(255,255,255,.86)}
+  .hx-pill{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 13px 0 10px;margin:0 2px;border-radius:99px;vertical-align:3px;white-space:nowrap;
+    font-size:.86em;background:rgba(255,255,255,.2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3),inset 0 1px 6px rgba(255,255,255,.18)}
+  .hx-pill svg{width:17px;height:17px;flex:none}
+  .hx-v{position:relative;margin-top:auto;padding-top:28px}
+
+  /* 1 · finds: blue sky card; matched jobs arrive one by one */
+  .hx-1{background:linear-gradient(165deg,#6E9BFF 0%,#3A72FF 42%,#0938D5 100%);box-shadow:inset 1.5px 1.5px 8px rgba(255,255,255,.18),0 26px 50px -36px rgba(9,56,213,.8)}
+  .hx-1::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(110% 60% at 85% 0%,rgba(255,255,255,.28),transparent 60%)}
+  .hx-st{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 14px;font:500 13.5px/18px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:rgba(255,255,255,.9)}
+  .hx-st i{width:8px;height:8px;border-radius:9px;background:#fff;animation:hxPulse 1.6s ease-in-out infinite}
+  .hx-job{display:flex;align-items:center;gap:12px;margin-top:12px;padding:15px 14px;border-radius:20px;background:#fff;color:#0A0A0B;box-shadow:0 14px 28px -18px rgba(3,20,80,.55);
+    animation:hxRow 7s cubic-bezier(.2,.75,.2,1) infinite both}
+  .hx-job:nth-of-type(2){animation-name:hxRow2}
+  .hx-job:nth-of-type(3){animation-name:hxRow3}
+  .hx-job img{width:44px;height:44px;padding:4px;flex:none;border-radius:11px;border:1px solid #EDEDF0;object-fit:contain;background:#fff}
+  .hx-job>span{flex:1;min-width:0}
+  .hx-job b{display:block;font:600 16px/22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hx-job small{display:block;font:400 13px/18px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#6E6E73;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hx-job em{flex:none;height:30px;padding:0 11px;border-radius:99px;display:grid;place-items:center;background:#EAF0FF;color:#0938D5;font:600 13.5px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-style:normal}
+
+  /* 2 · tailors: light card with a dark glass pane; two resume lines rewrite themselves, the job's skills tick on */
+  .hx-2{color:#263043;background:radial-gradient(92% 124% at 50% 99%,rgba(221,226,238,.75) 55%,rgba(187,197,221,.55) 100%),#F4F6FA;box-shadow:inset 0 0 0 1px #E3E7EF,inset 0 2px 10px rgba(255,255,255,.9)}
+  .hx-2 .hx-p{color:#8C929D}
+  .hx-2 .hx-pill{background:#fff;color:#0938D5;box-shadow:inset 0 0 0 1px #E3E7EF,0 4px 10px -6px rgba(15,23,51,.25)}
+  .hx-pane{padding:22px 20px 20px;border-radius:22px;color:#fff;background:linear-gradient(180deg,#4A4B52 0%,#3A3B41 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 22px 40px -26px rgba(15,23,51,.7)}
+  .hx-for{display:flex;align-items:center;gap:8px;margin:0 0 14px;font:500 12.5px/16px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:rgba(255,255,255,.7)}
+  .hx-for i{width:7px;height:7px;border-radius:9px;background:#7DA2FF;animation:hxPulse 1.6s ease-in-out infinite}
+  .hx-ln{position:relative;height:52px;margin:0 0 12px;font:400 16px/26px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.01em}
+  .hx-ln span{position:absolute;inset:0}
+  .hx-ln .o{color:rgba(255,255,255,.55);opacity:0;animation:hxOld 8s ease infinite both}
+  .hx-ln .n{animation:hxNew 8s cubic-bezier(.2,.75,.2,1) infinite both}
+  .hx-ln.l2 .o{animation-name:hxOld2}.hx-ln.l2 .n{animation-name:hxNew2}
+  .hx-ln mark{color:inherit;background:linear-gradient(transparent 58%,rgba(125,162,255,.5) 58%);-webkit-box-decoration-break:clone;box-decoration-break:clone}
+  .hx-sk{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
+  .hx-sk span{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px 0 9px;border-radius:99px;background:rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);font:500 13px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    animation:hxSk 8s cubic-bezier(.2,.9,.3,1.2) infinite both}
+  .hx-sk span:nth-child(2){animation-name:hxSk2}.hx-sk span:nth-child(3){animation-name:hxSk3}
+  .hx-sk svg{width:14px;height:14px;padding:2px;border-radius:99px;background:#22A55A}
+
+  /* 3 · applies: navy card; the form fills row by row, it is sent, and an interview invite drops in */
+  .hx-3{background:radial-gradient(120% 80% at 100% 0%,#2453D8 0%,#0F1733 62%);box-shadow:inset 1.5px 1.5px 8px rgba(255,255,255,.1)}
+  .hx-3 .hx-v{padding-top:98px}
+  .hx-3 .hx-toast{top:24px}
+  .hx-toast{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:99px;background:#000;box-shadow:0 14px 30px -14px rgba(0,0,0,.7),inset 0 0 0 1px rgba(255,255,255,.1);
+    animation:hxToast 9s cubic-bezier(.32,.72,0,1) infinite both}
+  .hx-toast i{width:40px;height:40px;flex:none;border-radius:99px;display:grid;place-items:center;background:#2F5BFF}
+  .hx-toast svg{width:20px;height:20px}
+  .hx-toast b{display:block;font:600 15px/20px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.01em}
+  .hx-toast small{display:block;font:400 13px/18px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#A1A1A6}
+  .hx-form{padding:6px 16px 16px;border-radius:22px;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+  .hx-row{display:grid;grid-template-columns:1fr 22px;align-items:center;gap:9px 10px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+  .hx-row span{font:500 14.5px/20px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  .hx-bar{grid-column:1;display:block;height:5px;border-radius:9px;background:rgba(255,255,255,.16);overflow:hidden}
+  .hx-bar s{display:block;height:100%;border-radius:inherit;background:#7DA2FF;transform-origin:0 50%}
+  .hx-tk{grid-column:2;grid-row:1/3;width:22px;height:22px;border-radius:99px;display:grid;place-items:center;background:#22A55A}
+  .hx-tk svg{width:13px;height:13px}
+  .hx-row.r1 .hx-bar s{animation:hxF1 9s cubic-bezier(.4,0,.2,1) infinite both}.hx-row.r1 .hx-tk{animation:hxK1 9s cubic-bezier(.2,.9,.3,1.3) infinite both}
+  .hx-row.r2 .hx-bar s{animation:hxF2 9s cubic-bezier(.4,0,.2,1) infinite both}.hx-row.r2 .hx-tk{animation:hxK2 9s cubic-bezier(.2,.9,.3,1.3) infinite both}
+  .hx-row.r3 .hx-bar s{animation:hxF3 9s cubic-bezier(.4,0,.2,1) infinite both}.hx-row.r3 .hx-tk{animation:hxK3 9s cubic-bezier(.2,.9,.3,1.3) infinite both}
+  .hx-send{position:relative;margin:14px 0 0;height:46px;border-radius:99px;background:rgba(255,255,255,.12);display:grid;place-items:center;font:600 15px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:rgba(255,255,255,.8);overflow:hidden}
+  .hx-send b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:7px;background:#22A55A;color:#fff;animation:hxSent 9s ease infinite both}
+  .hx-send svg{width:15px;height:15px}
+
+  /* run only while a card is on screen */
+  .hx.io .hx-c:not(.on) *{animation-play-state:paused!important}
+
+  html[data-theme="dark"] .hx-2{color:#F5F5F7;background:radial-gradient(92% 124% at 50% 99%,rgba(47,91,255,.16) 40%,rgba(255,255,255,.03) 100%),#14161C;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+  html[data-theme="dark"] .hx-2 .hx-p{color:#98989D}
+  html[data-theme="dark"] .hx-2 .hx-pill{background:rgba(255,255,255,.1);color:#AFC2FF;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+  html[data-theme="dark"] .hx-pane{background:linear-gradient(180deg,#2A2C33 0%,#202228 100%)}
+}
+@media(max-width:380px){.hx-job{gap:10px;padding:13px 12px}.hx-job img{width:38px;height:38px}.hx-job b{font-size:14.5px}.hx-job em{padding:0 8px;font-size:13px}}
+@keyframes hxPulse{0%,100%{opacity:.35;transform:scale(.8)}50%{opacity:1;transform:none}}
+@keyframes hxRow{0%{opacity:0;transform:translateY(22px) scale(.97)}9%,90%{opacity:1;transform:none}97%,100%{opacity:0;transform:translateY(-8px)}}
+@keyframes hxRow2{0%,7%{opacity:0;transform:translateY(22px) scale(.97)}16%,90%{opacity:1;transform:none}97%,100%{opacity:0;transform:translateY(-8px)}}
+@keyframes hxRow3{0%,14%{opacity:0;transform:translateY(22px) scale(.97)}23%,90%{opacity:1;transform:none}97%,100%{opacity:0;transform:translateY(-8px)}}
+@keyframes hxOld{0%,16%{opacity:1;transform:none}23%,100%{opacity:0;transform:translateY(-6px)}}
+@keyframes hxNew{0%,23%{opacity:0;transform:translateY(8px)}31%,93%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes hxOld2{0%,30%{opacity:1;transform:none}37%,100%{opacity:0;transform:translateY(-6px)}}
+@keyframes hxNew2{0%,37%{opacity:0;transform:translateY(8px)}45%,93%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes hxSk{0%,48%{opacity:0;transform:scale(.7)}53%,93%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes hxSk2{0%,52%{opacity:0;transform:scale(.7)}57%,93%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes hxSk3{0%,56%{opacity:0;transform:scale(.7)}61%,93%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes hxF1{0%,4.4%{transform:scaleX(0)}16.7%,95%{transform:none}100%{transform:scaleX(0)}}
+@keyframes hxK1{0%,16.7%{opacity:0;transform:scale(.5)}20.0%,95%{opacity:1;transform:none}100%{opacity:0;transform:scale(.5)}}
+@keyframes hxF2{0%,18.9%{transform:scaleX(0)}31.1%,95%{transform:none}100%{transform:scaleX(0)}}
+@keyframes hxK2{0%,31.1%{opacity:0;transform:scale(.5)}34.4%,95%{opacity:1;transform:none}100%{opacity:0;transform:scale(.5)}}
+@keyframes hxF3{0%,33.3%{transform:scaleX(0)}45.6%,95%{transform:none}100%{transform:scaleX(0)}}
+@keyframes hxK3{0%,45.6%{opacity:0;transform:scale(.5)}48.9%,95%{opacity:1;transform:none}100%{opacity:0;transform:scale(.5)}}
+@keyframes hxSent{0%,51.1%{opacity:0}55.6%,95%{opacity:1}100%{opacity:0}}
+@keyframes hxToast{0%,61.1%{opacity:0;transform:translateY(-16px) scale(.94)}67.8%,94%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-8px)}}
+@media(prefers-reduced-motion:reduce){.hx *{animation:none!important}}
+
+/* ===== phone logos card (13 Nov): the trust line as one large card under the hero. A big counting number, then the
+   companies in two rows that drift opposite ways. The rows are built on phones from the same list computers show. ===== */
+.cq{display:none}
+@media(max-width:640px){
+  .cos{padding:28px 20px 0!important}
+  .cos{position:relative}
+  .cos::before{content:"";display:block;position:absolute;left:20px;right:20px;top:28px;bottom:0;border-radius:32px;z-index:0;
+    background:radial-gradient(92% 124% at 50% 99%,rgba(221,226,238,.75) 55%,rgba(187,197,221,.55) 100%),#F4F6FA;box-shadow:inset 0 0 0 1px #E3E7EF,inset 0 2px 10px rgba(255,255,255,.9)}
+  html[data-theme="dark"] .cos::before{background:radial-gradient(92% 124% at 50% 99%,rgba(47,91,255,.16) 40%,rgba(255,255,255,.03) 100%),#14161C;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+  .cos>*{position:relative;z-index:1}
+  .cos .cos-h{display:flex!important;flex-direction:column;align-items:center;gap:2px;max-width:none!important;margin:0!important;padding:34px 24px 0;text-align:center;
+    font:500 16px/24px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.01em!important;color:#6B7280!important}
+  /* "Real results" as a pill badge, in the style of the Verified badge */
+  .cos .cos-w{display:inline-flex!important;align-items:center;gap:7px;align-self:center;height:34px;padding:0 14px 0 8px;margin-bottom:14px;border-radius:99px;font-size:0;line-height:0;
+    background:#fff;box-shadow:0 0 0 1px rgba(15,23,51,.08),0 6px 16px -10px rgba(15,23,51,.35)}
+  .cos .cos-w::after{content:"";order:-1;width:20px;height:20px;border-radius:99px;background:#1D9BF0 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center/12px no-repeat}
+  .cos .cos-w::before{content:"Real results";font:600 14px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.005em;color:#0A0A0B}
+  html[data-theme="dark"] .cos .cos-w{background:rgba(255,255,255,.06);box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+  html[data-theme="dark"] .cos .cos-w::before{color:#F5F5F7}
+  .cos .cos-r::after{content:" at"}
+  .cos .cos-num{display:block;font:700 64px/1.05 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.05em;color:#0F1733!important}
+  .cos .cos-r{display:block;font:600 19px/26px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.02em;color:#263043}
+  html[data-theme="dark"] .cos .cos-h{color:#98989D!important}
+  html[data-theme="dark"] .cos .cos-w{color:#7DA2FF}
+  html[data-theme="dark"] .cos .cos-num,html[data-theme="dark"] .cos .cos-r{color:#F5F5F7!important}
+  .cos.cq-on .cos-g{display:none!important}
+  .cos .cos-g{padding:0 16px 30px}
+  .cq{display:block;margin:26px 0 0;padding:0 0 34px;overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 44px,#000 calc(100% - 44px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 44px,#000 calc(100% - 44px),transparent 100%)}
+  .cq ul{list-style:none;margin:0;padding:0;display:flex;align-items:center;gap:44px;width:max-content;zoom:.74;animation:cqRun 30s linear infinite}
+  .cq ul+ul{margin-top:34px;animation-direction:reverse;animation-duration:36s}
+  .cq li{flex:none;height:40px;display:flex;align-items:center;filter:grayscale(1) brightness(0) opacity(.6)}
+  .cq li img.wm{width:auto;max-width:none}
+  html[data-theme="dark"] .cq li{filter:brightness(0) invert(1) opacity(.82)}
+  html[data-theme="dark"] .cq li img,html[data-theme="dark"] .cq .wmt img{filter:none}
+  html[data-theme="dark"] .cq .wmt{color:#000}
+}
+@keyframes cqRun{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.cq ul{animation:none!important;flex-wrap:wrap;justify-content:center;width:auto;gap:22px 34px;padding:0 20px}}
+
+/* ===== phone pain card (13 Nov): one large dark card. Each frustration is struck through, then its fix lands under it,
+   one row after another, once, when the card comes into view. Base styles are the finished state. ===== */
+@media(max-width:640px){
+  .pn{padding:14px 20px 0!important}
+  .pn-in{position:relative;overflow:hidden;isolation:isolate;padding:32px 22px 24px;border-radius:32px;color:#fff;
+    background:radial-gradient(120% 70% at 0% 0%,#26304F 0%,#0C0E16 62%);box-shadow:inset 1.5px 1.5px 8px rgba(255,255,255,.08),0 26px 50px -36px rgba(10,14,30,.9)}
+  .pn-in::before{content:"";position:absolute;right:-70px;top:-70px;width:220px;height:220px;border-radius:50%;z-index:-1;background:radial-gradient(circle,rgba(47,91,255,.5),transparent 68%)}
+  html[data-theme="dark"] .pn-in{box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+  .pn .pn-h{font:600 28px/36px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.03em;color:#fff;text-wrap:balance}
+  .pn .pn-l{margin-top:24px;gap:12px}
+  .pn .pn-l li{gap:8px;padding:18px 18px 18px;border-radius:20px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+  html[data-theme="dark"] .pn .pn-l li{background:rgba(255,255,255,.06)}
+  .pn .pn-l s{align-self:flex-start;font:400 15px/22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:rgba(255,255,255,.5);text-decoration:none;
+    background:linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,.55)) 0 56%/100% 1.5px no-repeat}
+  .pn .pn-l b{gap:10px;font:600 19px/26px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.015em;color:#fff}
+  .pn .pn-l svg{width:24px;height:24px;padding:5px;background:#2F5BFF;box-shadow:0 0 0 4px rgba(47,91,255,.22)}
+
+  .pn-in.io:not(.go) .pn-l li{opacity:0}
+  .pn-in.io:not(.go) .pn-h{opacity:0}
+  .pn-in.go .pn-h{animation:tpFadeUp .6s cubic-bezier(.2,.75,.2,1) both}
+  .pn-in.go .pn-l li{animation:tpFadeUp .55s cubic-bezier(.2,.75,.2,1) both;animation-delay:calc(.25s + var(--i) * .75s)}
+  .pn-in.go .pn-l s{animation:pnStrike .45s cubic-bezier(.4,0,.2,1) both;animation-delay:calc(.6s + var(--i) * .75s)}
+  .pn-in.go .pn-l b{animation:pnFix .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.9s + var(--i) * .75s)}
+  .pn-in.go .pn-l svg{animation:pnPop .4s cubic-bezier(.2,.9,.3,1.4) both;animation-delay:calc(1s + var(--i) * .75s)}
+  .pn-l li:nth-child(1){--i:0}.pn-l li:nth-child(2){--i:1}.pn-l li:nth-child(3){--i:2}
+}
+@keyframes pnStrike{from{background-size:0% 1.5px}to{background-size:100% 1.5px}}
+@keyframes pnFix{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pnPop{from{transform:scale(.3)}to{transform:none}}
+@media(prefers-reduced-motion:reduce){.pn-in *{animation:none!important}.pn-in.io:not(.go) .pn-l li,.pn-in.io:not(.go) .pn-h{opacity:1}}
+
+/* ===== phone emails card (13 Nov): the interview emails inside one large sky-blue card. The heading and the Verified
+   pill sit in the card; the real emails drift across inside it (tap one to read it), fading at the card's edges. ===== */
+@media(max-width:640px){
+  .emx{position:relative;padding-top:14px!important}
+  .emx::before{content:"";position:absolute;left:20px;right:20px;top:14px;bottom:0;border-radius:32px;z-index:0;
+    background:radial-gradient(110% 60% at 85% 0%,rgba(255,255,255,.9),transparent 60%),linear-gradient(180deg,#E6EEFF 0%,#CBDcFF 100%);box-shadow:inset 0 0 0 1px #C6D6FB,inset 0 2px 10px rgba(255,255,255,.9)}
+  html[data-theme="dark"] .emx::before{background:radial-gradient(110% 60% at 85% 0%,rgba(47,91,255,.35),transparent 60%),linear-gradient(180deg,#131B36 0%,#0D1226 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+  .emx>*{position:relative;z-index:1}
+  .emx>.emx-in:first-child{padding:32px 44px 0!important}
+  .emx .emx-h{font:600 28px/36px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.03em!important;color:#0F1733!important;text-wrap:balance}
+  html[data-theme="dark"] .emx .emx-h{color:#F5F5F7!important}
+  .emx .emx-verified{margin-top:16px!important;box-shadow:0 6px 16px -10px rgba(15,23,51,.35)}
+  .emx .emx-wide{margin-top:22px!important}
+  .emx .ibd{margin:0!important;border-radius:0 0 0 0}
+  .emx .ibd-view{padding:4px 0 16px;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 22px,#000 calc(100% - 22px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 22px,#000 calc(100% - 22px),transparent 100%)}
+  .emx .ibd-track{padding-left:24px}
+  .emx .ibd .ibb-slide{width:calc(100vw - 112px)}
+  .emx .ibb-card{border-radius:22px;border-color:rgba(15,23,51,.08);box-shadow:0 18px 34px -22px rgba(15,23,51,.45)!important}
+  .emx .ibl-note{margin:4px 24px 0!important;padding-bottom:28px;text-align:center;color:#5B6785!important}
+  html[data-theme="dark"] .emx .ibl-note{color:#98989D!important}
+}
+@media(max-width:380px){.emx>.emx-in:first-child{padding:32px 38px 0!important}.emx .emx-verified,.emx .emx-verified *{font-size:12px!important;white-space:nowrap}.emx .emx-verified{padding-left:10px;padding-right:12px;gap:6px}}
+
+/* ===== phone FAQ card (13 Nov): the questions inside one large light card. Each question is its own white tile that
+   opens smoothly (where the browser can animate it); the two buttons close the card. ===== */
+@media(max-width:640px){
+  .fqh{position:relative;padding:14px 0 44px!important;interpolate-size:allow-keywords}
+  .fqh::before{content:"";position:absolute;left:20px;right:20px;top:14px;bottom:44px;border-radius:32px;z-index:0;
+    background:radial-gradient(92% 124% at 50% 99%,rgba(221,226,238,.75) 55%,rgba(187,197,221,.55) 100%),#F4F6FA;box-shadow:inset 0 0 0 1px #E3E7EF,inset 0 2px 10px rgba(255,255,255,.9)}
+  html[data-theme="dark"] .fqh::before{background:radial-gradient(92% 124% at 50% 99%,rgba(47,91,255,.16) 40%,rgba(255,255,255,.03) 100%),#14161C;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+  .fqh>*{position:relative;z-index:1}
+  .fqh .fqh-in{padding:32px 36px 28px!important}
+  .fqh .fqh-h{font:600 28px/36px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.03em!important;color:#263043!important}
+  .fqh .fqh-p{margin-top:10px!important;font:400 16px/24px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;color:#8C929D!important}
+  html[data-theme="dark"] .fqh .fqh-h{color:#F5F5F7!important}
+  html[data-theme="dark"] .fqh .fqh-p{color:#98989D!important}
+  .fqh .faq-list{margin-top:22px!important;border-top:0!important;display:grid;gap:10px}
+  .fqh .faq-item{border:0!important;border-radius:18px;background:#fff;box-shadow:0 1px 2px rgba(15,23,51,.05),0 10px 22px -18px rgba(15,23,51,.35);overflow:hidden}
+  html[data-theme="dark"] .fqh .faq-item{background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+  .fqh .faq-q{padding:18px 14px 18px 18px!important;gap:12px!important;font:600 15.5px/22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.012em!important;min-height:60px}
+  .fqh .faq-a{padding:0 18px 18px!important;font:400 15px/24px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important}
+  .fqh .faq-item::details-content{height:0;overflow:hidden;opacity:0;transition:height .38s cubic-bezier(.3,.7,.2,1),opacity .3s ease,content-visibility .38s allow-discrete}
+  .fqh .faq-item[open]::details-content{height:auto;opacity:1}
+  .fqh .fqh-cta{margin-top:26px!important;gap:10px!important}
+  .fqh .fqh-cta::before{font:600 18px/26px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.015em;color:#263043!important;margin-bottom:8px!important;text-align:center}
+  html[data-theme="dark"] .fqh .fqh-cta::before{color:#F5F5F7!important}
+  .fqh .fqh-btn{height:52px!important;border-radius:999px!important;font:600 16px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important}
+  .fqh .fqh-btn.s{background:#fff!important;border-color:#E3E7EF!important;box-shadow:0 6px 16px -12px rgba(15,23,51,.4)}
+  html[data-theme="dark"] .fqh .fqh-btn.s{background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.14)!important;color:#F5F5F7!important}
+}
+@media(prefers-reduced-motion:reduce){.fqh .faq-item::details-content{transition:none}}
+
+/* ===== phone footer card (13 Nov): the page closes on one large blue card (the line, the button, the strategy call),
+   with a soft light that drifts across it. The legal links sit in two columns beneath, then the name. ===== */
+@media(max-width:640px){
+  footer.ft3{padding-top:0!important}
+  .ft3 .ft3-lead{position:relative;overflow:hidden;isolation:isolate;padding:34px 24px 28px;border-radius:32px;color:#fff;
+    background:linear-gradient(165deg,#6E9BFF 0%,#3A72FF 42%,#0938D5 100%);box-shadow:inset 1.5px 1.5px 8px rgba(255,255,255,.18),0 26px 50px -36px rgba(9,56,213,.8)}
+  .ft3 .ft3-lead::before{content:"";position:absolute;right:-60px;top:-80px;width:260px;height:260px;border-radius:50%;z-index:-1;
+    background:radial-gradient(circle,rgba(255,255,255,.42),transparent 66%);animation:ftGlow 9s ease-in-out infinite alternate}
+  .ft3 .ft3-lead .ft3-h{font:600 28px/36px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;letter-spacing:-.03em!important;color:#fff!important}
+  .ft3 .ft3-lead .ft3-cta{margin-top:24px;gap:16px}
+  .ft3 .ft3-lead .ft3-btn{height:54px!important;background:#fff!important;color:#0A0A0B!important;font:600 16.5px/1 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif!important;box-shadow:0 16px 30px -16px rgba(3,20,80,.7)!important}
+  .ft3 .ft3-lead .ft3-ghost{color:#fff!important;border-bottom-color:rgba(255,255,255,.45)!important;font:500 15px/20px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  .ft3 .ft3-more{margin-top:18px}
+  .ft3:not(.more) .ft3-keep{display:grid!important;grid-column:1/-1;grid-template-columns:1fr 1fr;gap:2px 16px}
+  .ft3 .ft3-keep a{padding:9px 0}
+  .ft3 .ft3-word{margin-top:26px}
+}
+@keyframes ftGlow{from{transform:translate(0,0)}to{transform:translate(-150px,90px)}}
+@media(prefers-reduced-motion:reduce){.ft3 .ft3-lead::before{animation:none}}
+
+/* ===== phone rhythm and variety (13 Nov): one spacing rule (80px between sections, 12px inside a group, 20px from a
+   heading to its content) and a different layout per section, so the page is not a stack of identical cards:
+   logos = open strip · pain = full-width dark band · how it works = cards that stack as you scroll ·
+   emails = tinted full-width band · three steps = open · FAQ = open list · footer = the one closing card. ===== */
+@media(max-width:640px){
+  /* logos: open, no card; the rows run edge to edge */
+  .cos{padding:72px 0 0!important}
+  .cos::before{display:none!important}
+  .cos .cos-h{padding:0 24px!important}
+  .cos .cos-num{color:#0A0A0B!important}
+  .cos .cos-r{color:#1D1D1F}
+  .cq{padding-bottom:0;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 36px,#000 calc(100% - 36px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 36px,#000 calc(100% - 36px),transparent 100%)}
+
+  /* pain: a dark band across the whole screen */
+  .pn{padding:72px 0 0!important}
+  .pn-in{border-radius:0;padding:60px 24px 60px;box-shadow:none!important;background:radial-gradient(120% 60% at 0% 0%,#26304F 0%,#0C0E16 62%)}
+
+  /* how it works: the three cards stack over one another as you scroll */
+  .hw{padding:80px 20px 0}
+  .hx{gap:12px;margin-top:20px}
+  .hx-c{position:sticky;top:68px}
+  .hx-2,.hx-3{box-shadow:0 -14px 30px -20px rgba(15,23,51,.45),inset 0 0 0 1px rgba(255,255,255,.1)}
+  .hx-2{box-shadow:0 -14px 30px -20px rgba(15,23,51,.35),inset 0 0 0 1px #E3E7EF,inset 0 2px 10px rgba(255,255,255,.9)}
+
+  /* emails: a soft tinted band, the emails edge to edge */
+  .emx{margin-top:80px;padding:64px 0 60px!important;background:#F1F5FE}
+  html[data-theme="dark"] .emx{background:#0D1222}
+  .emx::before{display:none!important}
+  .emx>.emx-in:first-child{padding:0 20px!important}
+  .emx .emx-wide{margin-top:24px!important}
+  .emx .ibd{margin:0 -20px!important}
+  .emx .ibd-view{-webkit-mask-image:none;mask-image:none}
+  .emx .ibd-track{padding-left:20px}
+  .emx .ibd .ibb-slide{width:calc(100vw - 72px)}
+  .emx .ibl-note{margin:6px 0 0!important;padding-bottom:0;text-align:left}
+
+  /* three steps: open */
+  .st{padding:80px 20px 0!important}
+  .st-h{font-size:24px!important;line-height:30px!important}
+  .st-l{margin-top:24px}
+  .st-b{margin-top:14px}
+
+  /* FAQ: an open list on the page, no outer card; one button (the bar and the footer carry Try it free) */
+  .fqh{padding:80px 0 72px!important}
+  .fqh::before{display:none!important}
+  .fqh .fqh-in{padding:0 20px!important}
+  .fqh .fqh-h{color:#1D1D1F!important;font-size:24px!important;line-height:30px!important}
+  .fqh .fqh-p{color:#6E6E73!important;font-size:15px!important;line-height:23px!important}
+  .fqh .faq-item{background:#F4F6FA;box-shadow:none}
+  .fqh .fqh-cta::before{text-align:left;color:#1D1D1F!important}
+  .fqh .fqh-btn.p{display:none!important}
+  .fqh .fqh-btn.s{border-color:#DCDFE7!important;box-shadow:none}
+  html[data-theme="dark"] .fqh .fqh-h,html[data-theme="dark"] .fqh .fqh-cta::before{color:#F5F5F7!important}
+
+  /* footer: room around the closing card */
+  .ft3 .ft3-more{margin-top:28px}
+  .ft3 .ft3-word{margin-top:32px}
+}
+
+</style>
+<script>
+/* phones: tapping the dimmed page behind the open menu closes it */
+(function(){try{var bar=document.getElementById('tpBar'),bt=document.getElementById('burger');if(!bar||!bt)return;
+  bar.addEventListener('click',function(e){if(e.target===bar&&bt.getAttribute('aria-expanded')==='true')bt.click()});
+}catch(e){}})();
+</script>
+<script>
+/* phones: the pain card plays once, when it comes into view */
+(function(){try{
+  var c=document.getElementById('pnCard');if(!c||!('IntersectionObserver' in window)||!matchMedia('(max-width: 640px)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  c.classList.add('io');
+  var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){c.classList.add('go');io.disconnect()}},{threshold:.35});io.observe(c);
+}catch(e){}})();
+</script>
+<script>
+/* phones: the company logos as two drifting rows (each row is its half of the list, doubled so the loop is seamless) */
+(function(){try{
+  if(!matchMedia('(max-width: 640px)').matches)return;
+  var sec=document.querySelector('.cos'),g=sec&&sec.querySelector('.cos-g');if(!g||sec.querySelector('.cq'))return;
+  var items=[].slice.call(g.children),half=Math.ceil(items.length/2),box=document.createElement('div');box.className='cq';box.setAttribute('aria-hidden','true');
+  var still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  [items.slice(0,half),items.slice(half)].forEach(function(row){var ul=document.createElement('ul');
+    (still?row:row.concat(row)).forEach(function(li){var c=li.cloneNode(true);[].forEach.call(c.querySelectorAll('img'),function(i){i.loading='eager'});ul.appendChild(c)});
+    if(!still)ul.style.paddingRight='44px';box.appendChild(ul)});
+  sec.appendChild(box);sec.classList.add('cq-on');
+  g.setAttribute('aria-hidden','false');
+}catch(e){}})();
+</script>
+<script>
+/* phones: the platform pills run as one seamless row (the list is doubled, the copy hidden from screen readers) */
+(function(){try{
+  if(!matchMedia('(max-width: 640px)').matches)return;
+  var ul=document.querySelector('.cx-pl ul');if(!ul||ul.classList.contains('run'))return;
+  [].slice.call(ul.children).forEach(function(li){var c=li.cloneNode(true);c.setAttribute('aria-hidden','true');ul.appendChild(c)});
+  ul.style.paddingRight='8px';ul.classList.add('run');
+}catch(e){}})();
+</script>
+<script>
+/* phones: each large card animates only while it is on screen */
+(function(){try{
+  var box=document.getElementById('hxCards');if(!box||!('IntersectionObserver' in window))return;
+  box.classList.add('io');
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){e.target.classList.toggle('on',e.isIntersecting)})},{threshold:.3});
+  [].forEach.call(box.querySelectorAll('.hx-c'),function(c){io.observe(c)});
+}catch(e){}})();
+</script>
+<script>
+/* phones: the sticky "Try it free" bar and the footer's "More links" */
+(function(){try{
+  var more=document.getElementById('ft3More'),ft=document.querySelector('footer.ft3');
+  if(more&&ft)more.addEventListener('click',function(){var on=ft.classList.toggle('more');more.setAttribute('aria-expanded',on)});
+  var bar=document.getElementById('mCta'),btn=document.querySelector('.cx-cta .cx-btn.s');
+  if(!bar||!btn||!ft||!('IntersectionObserver' in window)||!matchMedia('(max-width: 640px)').matches)return;
+  var past=false,end=false,link=bar.querySelector('a');
+  function set(){var on=past&&!end;bar.classList.toggle('on',on);bar.setAttribute('aria-hidden',!on);link.tabIndex=on?0:-1}
+  new IntersectionObserver(function(es){var e=es[0];past=!e.isIntersecting&&e.boundingClientRect.top<0;set()}).observe(btn);
+  new IntersectionObserver(function(es){end=es[0].isIntersecting;set()},{rootMargin:'0px 0px -80px 0px'}).observe(ft);
+}catch(e){}})();
+</script>
+<script>
+/* bento tabs: click or arrow keys switch the panel */
+(function(){try{
+  var tabs=[].slice.call(document.querySelectorAll('.hb-tabs [role="tab"]'));if(!tabs.length)return;
+  function pick(t,focus){tabs.forEach(function(x){var on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;document.getElementById(x.getAttribute('aria-controls')).hidden=!on});if(focus)t.focus()}
+  tabs.forEach(function(t,i){t.addEventListener('click',function(){pick(t)});t.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();pick(tabs[(i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length],true)}})});
+}catch(e){}})();
+</script>
+<script>
+/* hero phone demo: plays once, when the phone is mostly in view (phones only; still for reduced motion) */
+(function(){try{
+  var box=document.getElementById('hphDemo');if(!box||!('IntersectionObserver' in window))return;
+  if(!matchMedia('(max-width: 640px)').matches)return;
+  var dm=box.querySelector('.dm');
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){dm.className='dm s10';return}
+  var steps=[[0,'s1'],[800,'s2'],[1050,'s3'],[1750,'s4'],[2250,'s5'],[2850,'s6'],[3150,'s7'],[3450,'s8'],[3850,'s9'],[4650,'s10'],[5250,'s11'],[7600,'s12']];
+  function play(){steps.forEach(function(st){setTimeout(function(){dm.classList.add(st[1])},st[0]+400)})}
+  var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){io.disconnect();play()}},{threshold:.55});io.observe(box);
+}catch(e){}})();
 </script>
 </body>
 </html>
