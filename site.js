@@ -91,3 +91,30 @@
   if(!word||!('IntersectionObserver' in window)){requestAnimationFrame(function(){requestAnimationFrame(function(){bar.classList.add('cb-named')})});return}
   new IntersectionObserver(function(es){bar.classList.toggle('cb-named',!es[0].isIntersecting)},{rootMargin:'-72px 0px 0px 0px'}).observe(word);
 })();
+
+/* blog: the phone and tablet "Try it free" card (styles at the end of site.css). Shown once the post's photo or the
+   blog home's title has scrolled away; hidden while one of the page's own "Get started" buttons, the closing card
+   or the footer is in view, while the menu is open, and for the rest of the visit once closed. */
+(function(){try{
+  if(!document.querySelector('main.blg')||!('IntersectionObserver' in window))return;
+  try{if(sessionStorage.getItem('tp-bcta')==='x')return}catch(e){}
+  var pin='<svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="#fff"/><path d="M256 410C168 314 138 278 138 206c0-64 53-112 118-112s118 48 118 112c0 72-30 108-118 204z" fill="#0938D5"/><path d="M205 200l37 36 76-88" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var job=function(n,p){return '<span class="bcta-job j'+n+'"><i></i><span></span><em style="--p:'+p+'"><b>'+p+'</b></em></span>'};
+  var bar=document.createElement('aside');bar.className='bcta';bar.setAttribute('aria-label','Try TrulyPlaced');bar.setAttribute('aria-hidden','true');
+  bar.innerHTML='<div class="bcta-top"><span class="bcta-tx"><span class="bcta-brand">'+pin+'TrulyPlaced</span><b>See the jobs that fit you</b></span>'+
+    '<span class="bcta-art" aria-hidden="true">'+job(1,87)+job(2,91)+job(3,96)+'</span></div>'+
+    '<a class="bcta-go" href="https://app.trulyplaced.com" tabindex="-1">Try it free<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>'+
+    '<button class="bcta-x" type="button" aria-label="Close" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>';
+  document.body.appendChild(bar);
+  var go=bar.querySelector('.bcta-go'),x=bar.querySelector('.bcta-x'),mob=document.getElementById('mobnav');
+  var past=false,busy={},off=false;
+  function set(){var near=false;for(var k in busy)if(busy[k])near=true;
+    var on=past&&!near&&!off&&!(mob&&!mob.hidden);bar.classList.toggle('on',on);bar.setAttribute('aria-hidden',String(!on));go.tabIndex=x.tabIndex=on?0:-1}
+  var start=document.querySelector('.blg-cv')||document.querySelector('.blg-hd')||document.querySelector('.blg-ph');
+  if(start)new IntersectionObserver(function(es){var e=es[0];past=!e.isIntersecting&&e.boundingClientRect.top<0;set()}).observe(start);else past=true;
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){busy[e.target.__bk]=e.isIntersecting});set()},{rootMargin:'0px 0px -240px 0px'});   // counts once it rises above the card's own height, so the card slides away to reveal it
+  [].forEach.call(document.querySelectorAll('.prose a.cta, .blg-end, footer.ft3'),function(el,i){el.__bk='k'+i;io.observe(el)});
+  if(mob)new MutationObserver(set).observe(mob,{attributes:true,attributeFilter:['hidden']});
+  x.addEventListener('click',function(){off=true;set();try{sessionStorage.setItem('tp-bcta','x')}catch(e){}});
+  set();
+}catch(e){}})();
