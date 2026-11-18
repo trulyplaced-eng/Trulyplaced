@@ -2661,16 +2661,20 @@ main#top>.trx{order:1}
 .trx-card{position:relative;display:block;border-radius:18px;overflow:hidden;background:#fff;color:#fff;text-decoration:none;aspect-ratio:9/16;box-shadow:0 0 0 1px rgba(10,10,11,.07),0 30px 60px -38px rgba(10,10,11,.45);transform:translateZ(0);transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s}
 .trx-card:hover{transform:translateY(-4px);box-shadow:0 0 0 1px rgba(10,10,11,.1),0 40px 70px -36px rgba(10,10,11,.55)}
 .trx-card iframe{position:absolute;top:0;left:0;width:816px;height:1500px;border:0;transform-origin:0 0;pointer-events:none;background:#fff}
-.trx-role{position:absolute;top:14px;left:14px;z-index:2;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.92);color:#0A0A0B;font:600 12px/16px "Inter",ui-sans-serif,system-ui,sans-serif;box-shadow:0 1px 2px rgba(10,10,11,.08)}
+.trx-role{position:absolute;top:14px;left:14px;z-index:2;max-width:calc(100% - 28px);padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.94);color:#0A0A0B;font:600 12.5px/16px "Inter",ui-sans-serif,system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 1px 2px rgba(10,10,11,.1)}
 .trx-lock{position:absolute;left:50%;top:42%;z-index:2;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:#0A0A0B;display:grid;place-items:center;box-shadow:0 0 0 5px rgba(255,255,255,.7);transition:transform .25s}
 .trx-card:hover .trx-lock{transform:scale(1.08)}
 .trx-lock svg{width:18px;height:18px}
-.trx-foot{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:90px 18px 18px;background:linear-gradient(180deg,rgba(10,10,11,0),rgba(10,10,11,.62) 50%,rgba(10,10,11,.86))}
+.trx-foot{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:70px 14px 14px;background:linear-gradient(180deg,rgba(10,10,11,0),rgba(10,10,11,.5) 42%,rgba(10,10,11,.8))}
 .trx-t{display:block;font:600 17px/22px "Inter",ui-sans-serif,system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.trx-stats{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font:500 14px/18px "Inter",ui-sans-serif,system-ui,sans-serif;color:rgba(255,255,255,.86)}
+.trx-stats{display:flex;flex-wrap:wrap;gap:4px 16px;padding:0 4px;font:600 14px/20px "Inter",ui-sans-serif,system-ui,sans-serif;color:#fff}
 .trx-stats span{display:inline-flex;align-items:center;gap:5px}
 .trx-stats svg{width:16px;height:16px}
-.trx-stats .trx-win{color:#6EE7B7;font-weight:600}
+.trx-stats .trx-win{color:#fff}
+.trx-stats small{font:500 12.5px/20px "Inter",ui-sans-serif,system-ui,sans-serif;color:rgba(255,255,255,.78);margin-left:-1px}
+.trx-btn{display:flex;align-items:center;justify-content:center;gap:7px;height:42px;margin-top:12px;border-radius:999px;background:#fff;color:#0A0A0B;font:600 14px/1 "Inter",ui-sans-serif,system-ui,sans-serif;box-shadow:0 6px 18px -8px rgba(10,10,11,.5);transition:transform .2s,background .15s}
+.trx-btn svg{width:15px;height:15px}
+.trx-card:hover .trx-btn{background:#F3F4F7;transform:translateY(-1px)}
 html[data-theme="dark"] .trx{background:var(--bg)}
 html[data-theme="dark"] .trx-h{color:#EEF0F8}
 html[data-theme="dark"] .trx-p{color:#9AA1B8}
@@ -2928,17 +2932,16 @@ html[data-theme="dark"] .trx-card{background:#1A1D26}
       var a = document.createElement("a"); a.className = "trx-card"; a.href = it.url;
       a.setAttribute("aria-label", it.headline + ": " + it.interviews + " interviews");
       var f = document.createElement("iframe"); f.setAttribute("sandbox", ""); f.setAttribute("tabindex", "-1"); f.setAttribute("aria-hidden", "true"); f.setAttribute("loading", "lazy"); f.title = it.headline; f.srcdoc = it.html;
-      var role = document.createElement("span"); role.className = "trx-role"; role.textContent = it.role;
-      var lock = document.createElement("span"); lock.className = "trx-lock"; lock.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+      var role = document.createElement("span"); role.className = "trx-role"; role.textContent = it.headline;
       var foot = document.createElement("span"); foot.className = "trx-foot";
-      var t = document.createElement("span"); t.className = "trx-t"; t.textContent = it.headline;
       var st = document.createElement("span"); st.className = "trx-stats";
-      var w = document.createElement("span"); w.className = "trx-win"; w.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>'; w.appendChild(document.createTextNode(it.interviews + (it.interviews === 1 ? " interview" : " interviews")));
+      var w = document.createElement("span"); w.className = "trx-win"; w.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>'; w.appendChild(document.createTextNode(it.interviews)); var wl = document.createElement("small"); wl.textContent = it.interviews === 1 ? "interview" : "interviews"; w.appendChild(wl);
       st.appendChild(w);
-      if (it.assessments) { var as = document.createElement("span"); as.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'; as.appendChild(document.createTextNode(it.assessments + (it.assessments === 1 ? " assessment" : " assessments"))); st.appendChild(as); }
-      if (it.applications) { var ap = document.createElement("span"); ap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>'; ap.appendChild(document.createTextNode(it.applications + " applied")); st.appendChild(ap); }
-      foot.appendChild(t); foot.appendChild(st);
-      a.appendChild(f); a.appendChild(role); a.appendChild(lock); a.appendChild(foot);
+      if (it.assessments) { var as = document.createElement("span"); as.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'; as.appendChild(document.createTextNode(it.assessments)); var al = document.createElement("small"); al.textContent = it.assessments === 1 ? "assessment" : "assessments"; as.appendChild(al); st.appendChild(as); }
+      if (it.applications) { var ap = document.createElement("span"); ap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>'; ap.appendChild(document.createTextNode(it.applications)); var pl = document.createElement("small"); pl.textContent = "applied"; ap.appendChild(pl); st.appendChild(ap); }
+      var btn = document.createElement("span"); btn.className = "trx-btn"; btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Craft mine like this';
+      foot.appendChild(st); foot.appendChild(btn);
+      a.appendChild(f); a.appendChild(role); a.appendChild(foot);
       li.appendChild(a); row.appendChild(li);
     });
     // Role tabs, when there's more than one role.
