@@ -2695,52 +2695,29 @@ html[data-theme="dark"] .trx-card{background:#1A1D26}
   .trx-more{display:block!important}
 }
 .trx-more{display:none;margin:4px 0 0;text-align:center}
-/* Hover (computers only): why it worked wipes up from the bottom over the page; the card tilts a little toward the
-   pointer, with a soft glare. Phones and reduced motion: unchanged. */
-.trx-hv,.trx-gl{display:none}
-@media(hover:hover) and (pointer:fine){
-  .trx-hv{display:block;position:absolute;inset:0;z-index:1;padding:62px 20px 0;background:radial-gradient(circle at 82% 10%,rgba(79,93,255,.5),transparent 44%),linear-gradient(160deg,#1d2230,#07080b);clip-path:inset(100% 0 0 0);filter:blur(1.5px);transform:scale(1.025);transform-origin:50% 100%;transition:clip-path .72s cubic-bezier(.22,1,.36,1),filter .72s cubic-bezier(.22,1,.36,1),transform .72s cubic-bezier(.22,1,.36,1);pointer-events:none}
-  .trx-card:hover .trx-hv,.trx-card:focus-visible .trx-hv{clip-path:inset(0);filter:none;transform:none}
-  .trx-hv b{display:block;margin:0 0 16px;font:500 11.5px/14px "Inter",ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6)}
-  .trx-hv-l{display:grid;gap:16px}
-  .trx-hv-l>span{display:grid;grid-template-columns:22px 1fr;gap:6px;font:500 17px/23px "Geist",system-ui,sans-serif;letter-spacing:-.02em;color:#fff}
-  .trx-hv-q{display:block;font:500 24px/30px "Geist",system-ui,sans-serif;letter-spacing:-.03em;color:#fff}
-  .trx-hv-s{display:block;margin-top:14px;font:500 14px/20px "Inter",ui-sans-serif,system-ui,sans-serif;color:rgba(255,255,255,.7)}
-  .trx-hv-l i{font:600 12px/23px "Inter",ui-sans-serif,system-ui,sans-serif;font-style:normal;color:rgba(255,255,255,.5)}
-  .trx-gl{display:block;position:absolute;inset:0;z-index:3;pointer-events:none;mix-blend-mode:screen;background:radial-gradient(circle 180px at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.22),rgba(255,255,255,.05) 48%,transparent 78%);opacity:0;transition:opacity .3s cubic-bezier(.22,1,.36,1)}
-  .trx-card:hover .trx-gl{opacity:.5}
-  .trx-card{transition:transform .55s cubic-bezier(.22,1,.36,1),box-shadow .25s}
-  .trx-card:hover{transform:perspective(1000px) rotateX(var(--tx,0deg)) rotateY(var(--ty,0deg)) translateY(-4px) scale(1.012);transition:transform .22s cubic-bezier(.22,1,.36,1),box-shadow .25s}
-}
-/* Each card's own colour (data-tone), from the site's palette: brand blue, navy glow, ink, royal, midnight, deep blue. */
-@media(hover:hover) and (pointer:fine){
-  .trx-card[data-tone="0"] .trx-hv{background:radial-gradient(110% 60% at 85% 0%,rgba(255,255,255,.28),transparent 60%),linear-gradient(165deg,#6E9BFF 0%,#3A72FF 42%,#0938D5 100%)}
-  .trx-card[data-tone="1"] .trx-hv{background:radial-gradient(120% 80% at 100% 0%,#2453D8 0%,#0F1733 62%)}
-  .trx-card[data-tone="2"] .trx-hv{background:radial-gradient(90% 60% at 0% 100%,rgba(47,91,255,.5),transparent 62%),linear-gradient(180deg,#131623,#0A0A0B)}
-  .trx-card[data-tone="3"] .trx-hv{background:radial-gradient(90% 55% at 100% 0%,rgba(140,194,255,.45),transparent 60%),linear-gradient(160deg,#2F6BFF 0%,#0938D5 60%,#06228A 100%)}
-  .trx-card[data-tone="4"] .trx-hv{background:radial-gradient(100% 70% at 50% 0%,#3B7BFF 0%,#131623 62%)}
-  .trx-card[data-tone="5"] .trx-hv{background:radial-gradient(80% 50% at 0% 0%,rgba(79,141,255,.55),transparent 60%),linear-gradient(200deg,#2F5BFF 0%,#0938D5 48%,#0F1733 100%)}
-  /* The dark fade behind the counts is for the white page; over a coloured panel it fades out so the colour shows. */
-  .trx-foot{background:none}
-  .trx-foot::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,10,11,0),rgba(10,10,11,.5) 42%,rgba(10,10,11,.8));transition:opacity .5s cubic-bezier(.22,1,.36,1)}
-  .trx-card:hover .trx-foot::before,.trx-card:focus-visible .trx-foot::before{opacity:.35}
-}
-/* Each card's own way in (data-fx); "wipe" is the default above. */
-@media(hover:hover) and (pointer:fine){
-  .trx-card .trx-hv{transition:clip-path .72s cubic-bezier(.22,1,.36,1),filter .72s cubic-bezier(.22,1,.36,1),transform .72s cubic-bezier(.22,1,.36,1),opacity .72s cubic-bezier(.22,1,.36,1)}
-  .trx-card[data-fx=ripple] .trx-hv{clip-path:circle(0% at 50% 100%);transform:scale(1.035);transition-duration:.9s}
-  .trx-card[data-fx=ripple]:hover .trx-hv{clip-path:circle(150% at 50% 100%)}
-  .trx-card[data-fx=curtain] .trx-hv{clip-path:inset(0 50% 0 50%);filter:blur(3px);transform:scale(.96);opacity:0}
-  .trx-card[data-fx=curtain]:hover .trx-hv{clip-path:inset(0);opacity:1}
-  .trx-card[data-fx=diagonal] .trx-hv{clip-path:polygon(0 100%,0 100%,0 100%);filter:blur(2px);transform:scale(.97);transition-duration:.9s}
-  .trx-card[data-fx=diagonal]:hover .trx-hv{clip-path:polygon(0 -100%,200% 100%,0 100%)}
-  .trx-card[data-fx=morph] .trx-hv{clip-path:inset(43% round 42%);filter:blur(3px);opacity:0;transform:scale(.86) rotate(2deg);transform-origin:50% 50%}
-  .trx-card[data-fx=morph]:hover .trx-hv{clip-path:inset(0 round 0);opacity:1}
-  .trx-card[data-fx=slide] .trx-hv{clip-path:inset(0);filter:blur(3px);opacity:0;transform:translate3d(0,16%,0) scale(.985)}
-  .trx-card[data-fx=slide]:hover .trx-hv{opacity:1}
-  .trx-card:hover .trx-hv,.trx-card:focus-visible .trx-hv{filter:none;transform:none}
-}
-@media(prefers-reduced-motion:reduce){.trx-hv,.trx-gl,.trx-card,.trx-card:hover{transition:none!important}.trx-card:hover{transform:none}}
+/* HoverTransition (owner's component, ported). */
+.trx-stage{position:absolute;inset:0;transform-style:preserve-3d}
+.trx-base,.trx-ly{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.trx-ly>.trx-in2{position:absolute;inset:0}
+.trx-hv{position:absolute;inset:0;display:block;padding:62px 20px 0;color:#fff;background:radial-gradient(circle at 82% 10%,rgba(79,93,255,.5),transparent 44%),linear-gradient(160deg,#1d2230,#07080b)}
+.trx-hv b{display:block;margin:0 0 16px;font:500 11.5px/14px "Inter",ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.62)}
+.trx-hv-l{display:grid;gap:16px}
+.trx-hv-l>span{display:grid;grid-template-columns:22px 1fr;gap:6px;font:500 17px/23px "Geist",system-ui,sans-serif;letter-spacing:-.02em}
+.trx-hv-l i{font:600 12px/23px "Inter",ui-sans-serif,system-ui,sans-serif;font-style:normal;color:rgba(255,255,255,.5)}
+.trx-hv-q{display:block;font:500 24px/30px "Geist",system-ui,sans-serif;letter-spacing:-.03em}
+.trx-hv-s{display:block;margin-top:14px;font:500 14px/20px "Inter",ui-sans-serif,system-ui,sans-serif;color:rgba(255,255,255,.72)}
+.trx-card[data-tone="0"] .trx-hv{background:radial-gradient(110% 60% at 85% 0%,rgba(255,255,255,.28),transparent 60%),linear-gradient(165deg,#6E9BFF 0%,#3A72FF 42%,#0938D5 100%)}
+.trx-card[data-tone="1"] .trx-hv{background:radial-gradient(120% 80% at 100% 0%,#2453D8 0%,#0F1733 62%)}
+.trx-card[data-tone="2"] .trx-hv{background:radial-gradient(90% 60% at 0% 100%,rgba(47,91,255,.5),transparent 62%),linear-gradient(180deg,#131623,#0A0A0B)}
+.trx-card[data-tone="3"] .trx-hv{background:radial-gradient(90% 55% at 100% 0%,rgba(140,194,255,.45),transparent 60%),linear-gradient(160deg,#2F6BFF 0%,#0938D5 60%,#06228A 100%)}
+.trx-card[data-tone="4"] .trx-hv{background:radial-gradient(100% 70% at 50% 0%,#3B7BFF 0%,#131623 62%)}
+.trx-card[data-tone="5"] .trx-hv{background:radial-gradient(80% 50% at 0% 0%,rgba(79,141,255,.55),transparent 60%),linear-gradient(200deg,#2F5BFF 0%,#0938D5 48%,#0F1733 100%)}
+.trx-gl{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;background:radial-gradient(circle 180px at var(--hover-glare-x,50%) var(--hover-glare-y,50%),rgba(255,255,255,.22),rgba(255,255,255,.05) 48%,transparent 78%);opacity:0}
+/* The dark fade behind the counts is for the white page; over a coloured panel it fades back. */
+.trx-card.ht .trx-foot{background:none}
+.trx-card.ht .trx-foot::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,10,11,0),rgba(10,10,11,.5) 42%,rgba(10,10,11,.8));transition:opacity .5s cubic-bezier(.22,1,.36,1)}
+.trx-card.ht.on .trx-foot::before{opacity:.35}
+.trx-card.ht:hover{transform:none}
 /* Phones: the same heading as How Autopilot works (2026-11-18). */
 @media(max-width:640px){.trx-h{font:600 28px/34px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.03em}}
 /* Desktop: heading, text and role filters centred like How Autopilot works; See all stays at the right (2026-11-18). */@media(min-width:901px){.trx-hd{display:grid;grid-template-columns:1fr minmax(0,auto) 1fr;align-items:end;text-align:center}.trx-hd>div{grid-column:2}.trx-hd .trx-all{grid-column:3;justify-self:end}.trx-p{margin-left:auto;margin-right:auto}.trx-tabs{justify-content:safe center}}
@@ -2969,17 +2946,100 @@ html[data-theme="dark"] .trx-card{background:#1A1D26}
   </div>
 </section>
 <script>
+// HoverTransition, from the owner's React component: same effects, vectors, insets, timings and easing.
+var HT = (function () {
+  var V = { top: [0, -1], right: [1, 0], bottom: [0, 1], left: [-1, 0], "top-left": [-1, -1], "top-right": [1, -1], "bottom-right": [1, 1], "bottom-left": [-1, 1], center: [0, 0] };
+  var O = { top: "50% 0%", right: "100% 50%", bottom: "50% 100%", left: "0% 50%", "top-left": "0% 0%", "top-right": "100% 0%", "bottom-right": "100% 100%", "bottom-left": "0% 100%", center: "50% 50%" };
+  function hiddenInset(d) { return { top: "inset(0 0 100% 0)", right: "inset(0 0 0 100%)", bottom: "inset(100% 0 0 0)", left: "inset(0 100% 0 0)", "top-left": "inset(0 100% 100% 0)", "top-right": "inset(0 0 100% 100%)", "bottom-right": "inset(100% 0 0 100%)", "bottom-left": "inset(100% 100% 0 0)" }[d] || "inset(50%)"; }
+  var EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+  function css(el, st) { for (var k in st) el.style[k] = st[k]; }
+  function layer(child) { var l = document.createElement("span"); l.className = "trx-ly"; l.setAttribute("aria-hidden", "true"); if (child) l.appendChild(child); return l; }
+  // card: the <a>; before: makes a copy of the page; after: makes a copy of the panel.
+  function mount(card, before, after, effect, direction) {
+    direction = direction || "right";
+    var vec = V[direction], dx = vec[0] * 100, dy = vec[1] * 100;
+    var stage = document.createElement("span"); stage.className = "trx-stage";
+    var dup = effect === "parallax" || effect === "curtain" || effect === "diagonal" || effect === "slide";
+    var base = document.createElement("span"); base.className = "trx-base"; base.appendChild(before()); if (dup) base.style.visibility = "hidden";
+    stage.appendChild(base);
+    var L = [], strips = [];
+    function add(child) { var l = layer(child); stage.appendChild(l); L.push(l); return l; }
+    var inner = null;
+    if (effect === "parallax") { add(before()); inner = document.createElement("span"); inner.className = "trx-in2"; inner.appendChild(after()); add(inner); }
+    else if (effect === "curtain" || effect === "diagonal") { add(after()); add(before()); add(before()); }
+    else if (effect === "slide") { add(before()); add(after()); }
+    else if (effect === "strips") { for (var i = 0; i < 8; i++) strips.push(add(after())); }
+    else add(after());
+    var gl = document.createElement("span"); gl.className = "trx-gl"; gl.setAttribute("aria-hidden", "true"); stage.appendChild(gl);
+    card.insertBefore(stage, card.firstChild);
+    card.classList.add("ht");
+
+    function render(active) {
+      var seconds = reduced.matches ? 0 : 0.72 * (effect === "diagonal" || effect === "ripple" ? 1.25 : 1);
+      function tr(props, delay, scale) { return props.map(function (p) { return p + " " + seconds * (scale || 1) + "s " + EASE + " " + (reduced.matches ? 0 : delay || 0) + "s"; }).join(", "); }
+      var layerT = tr(["clip-path", "transform", "opacity", "filter", "border-radius"]);
+      css(stage, { transform: reduced.matches ? "none" : "perspective(1000px) rotateX(var(--hover-tilt-x, 0deg)) rotateY(var(--hover-tilt-y, 0deg)) scale(" + (active ? 1.012 : 1) + ")", transition: reduced.matches ? "none" : "transform " + (active ? 0.22 : 0.55) + "s " + EASE });
+      css(base, { filter: active ? "brightness(.86) saturate(.88)" : "none", transform: active ? "scale(1.025)" : "scale(1)", transition: tr(["transform", "filter"]) });
+      css(gl, { opacity: active && !reduced.matches ? "0.16" : "0", transition: reduced.matches ? "none" : "opacity 0.3s " + EASE });
+      var o = O[direction];
+      if (effect === "ripple") css(L[0], { transition: layerT, clipPath: active ? "circle(150% at " + o + ")" : "circle(0% at " + o + ")", filter: active ? "blur(0px)" : "blur(2px)", transform: active ? "scale(1)" : "scale(1.035)", transformOrigin: o });
+      else if (effect === "parallax") {
+        css(L[0], { transform: active ? "translate3d(" + -dx * 0.12 + "%, " + -dy * 0.12 + "%, 0) scale(1.045)" : "translate3d(0, 0, 0) scale(1)", filter: active ? "brightness(.78) saturate(.75)" : "none", transition: tr(["transform", "filter"]) });
+        css(L[1], { clipPath: active ? "inset(0)" : hiddenInset(direction), filter: active ? "blur(0px)" : "blur(2px)", transition: tr(["clip-path", "filter"]) });
+        css(inner, { transform: active ? "translate3d(0, 0, 0) scale(1)" : "translate3d(" + dx * 0.24 + "%, " + dy * 0.24 + "%, 0) scale(1.07)", transition: tr(["transform"]) });
+      } else if (effect === "curtain") {
+        var vm = vec[1] !== 0 || direction === "center";
+        css(L[0], { transition: layerT, opacity: active ? "1" : "0", filter: active ? "blur(0px)" : "blur(3px)", transform: active ? "scale(1)" : "scale(.96)" });
+        css(L[1], { clipPath: vm ? "inset(0 0 50% 0)" : "inset(0 50% 0 0)", transform: active ? (vm ? "translate3d(0, -100%, 0)" : "translate3d(-100%, 0, 0)") : "translate3d(0, 0, 0)", filter: active ? "blur(1px)" : "blur(0px)", transition: tr(["transform", "filter"]) });
+        css(L[2], { clipPath: vm ? "inset(50% 0 0 0)" : "inset(0 0 0 50%)", transform: active ? (vm ? "translate3d(0, 100%, 0)" : "translate3d(100%, 0, 0)") : "translate3d(0, 0, 0)", filter: active ? "blur(1px)" : "blur(0px)", transition: tr(["transform", "filter"]) });
+      } else if (effect === "diagonal") {
+        var fl = direction.indexOf("left") >= 0;
+        css(L[0], { transition: layerT, opacity: active ? "1" : "0", filter: active ? "blur(0px)" : "blur(2px)", transform: active ? "scale(1)" : "scale(.97)" });
+        css(L[1], { clipPath: fl ? "polygon(0 0, 100% 0, 100% 100%)" : "polygon(0 0, 100% 0, 0 100%)", transform: active ? (fl ? "translate3d(100%, -100%, 0)" : "translate3d(-100%, -100%, 0)") : "translate3d(0, 0, 0)", filter: active ? "blur(1px)" : "blur(0px)", transition: tr(["transform", "filter"]) });
+        css(L[2], { clipPath: fl ? "polygon(0 0, 100% 100%, 0 100%)" : "polygon(100% 0, 100% 100%, 0 100%)", transform: active ? (fl ? "translate3d(-100%, 100%, 0)" : "translate3d(100%, 100%, 0)") : "translate3d(0, 0, 0)", filter: active ? "blur(1px)" : "blur(0px)", transition: tr(["transform", "filter"]) });
+      } else if (effect === "morph") css(L[0], { transition: layerT, borderRadius: active ? "0%" : "42%", clipPath: active ? "inset(0% round 0%)" : "inset(43% round 42%)", filter: active ? "blur(0px)" : "blur(3px)", opacity: active ? "1" : "0", transform: active ? "translate3d(0, 0, 0) scale(1) rotate(0deg)" : "translate3d(" + dx * 0.04 + "%, " + dy * 0.04 + "%, 0) scale(.86) rotate(" + (vec[0] < 0 ? -2 : 2) + "deg)", transformOrigin: o });
+      else if (effect === "strips") {
+        var vertical = Math.abs(vec[0]) >= Math.abs(vec[1]), n = 8;
+        strips.forEach(function (l, i) {
+          var a0 = (i / n) * 100, a1 = ((i + 1) / n) * 100;
+          var clip = vertical ? "inset(0 " + (100 - a1) + "% 0 " + a0 + "%)" : "inset(" + a0 + "% 0 " + (100 - a1) + "% 0)";
+          var ox = (vec[0] || (vec[1] === 0 ? 1 : 0)) * 72, oy = vec[1] * 72;
+          var si = active ? i : n - i - 1, delay = (si / (n - 1)) * seconds * 0.15;
+          css(l, { clipPath: clip, filter: active ? "blur(0px)" : "blur(1.5px)", opacity: active ? "1" : "0", transform: active ? "translate3d(0, 0, 0)" : "translate3d(" + ox + "%, " + oy + "%, 0)", transition: tr(["transform", "opacity", "filter"], delay, 0.85) });
+        });
+      } else if (effect === "slide") {
+        css(L[0], { transform: active ? (direction === "center" ? "scale(1.035)" : "translate3d(" + -dx * 0.16 + "%, " + -dy * 0.16 + "%, 0) scale(1.025)") : "translate3d(0, 0, 0)", filter: active ? "brightness(.72) blur(2px)" : "none", opacity: active ? "0" : "1", transition: tr(["transform", "opacity", "filter"]) });
+        css(L[1], { transition: layerT, opacity: active ? "1" : "0", filter: active ? "blur(0px)" : "blur(3px)", transform: active ? "translate3d(0, 0, 0)" : direction === "center" ? "scale(.96)" : "translate3d(" + dx * 0.16 + "%, " + dy * 0.16 + "%, 0) scale(.985)" });
+      } else css(L[0], { transition: layerT, clipPath: active ? "inset(0)" : hiddenInset(direction), filter: active ? "blur(0px)" : "blur(1.5px)", transform: active ? "scale(1)" : "scale(1.025)", transformOrigin: o });
+      card.classList.toggle("on", active);
+    }
+    render(false);
+    card.addEventListener("mouseenter", function () { render(true); });
+    card.addEventListener("mouseleave", function () { render(false); });
+    card.addEventListener("focus", function () { render(true); });
+    card.addEventListener("blur", function () { render(false); });
+    card.addEventListener("pointermove", function (e) {
+      if (reduced.matches || e.pointerType !== "mouse") return;
+      var b = card.getBoundingClientRect(), x = Math.min(1, Math.max(0, (e.clientX - b.left) / b.width)), y = Math.min(1, Math.max(0, (e.clientY - b.top) / b.height));
+      card.style.setProperty("--hover-tilt-x", ((0.5 - y) * 2.4).toFixed(2) + "deg"); card.style.setProperty("--hover-tilt-y", ((x - 0.5) * 2.4).toFixed(2) + "deg");
+      card.style.setProperty("--hover-glare-x", (x * 100).toFixed(1) + "%"); card.style.setProperty("--hover-glare-y", (y * 100).toFixed(1) + "%");
+    });
+    card.addEventListener("pointerleave", function () { card.style.setProperty("--hover-tilt-x", "0deg"); card.style.setProperty("--hover-tilt-y", "0deg"); });
+  }
+  return { mount: mount, effects: ["wipe", "ripple", "parallax", "curtain", "diagonal", "morph", "strips", "slide"] };
+})();
 (function () {
   var box = document.getElementById("top-resumes"), row = document.getElementById("trxRow"), tabs = document.getElementById("trxTabs");
   if (!box || !row || !window.fetch) return;
   fetch("https://app.trulyplaced.com/api/showcase").then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
     if (!d || !d.items || !d.items.length) return;
     var roles = [];
-    var FX = ["wipe", "ripple", "curtain", "diagonal", "morph", "slide"];
+    var canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     d.items.forEach(function (it, idx) {
       if (roles.indexOf(it.role) < 0) roles.push(it.role);
       var li = document.createElement("li"); li.setAttribute("data-role", it.role);
-      var a = document.createElement("a"); a.className = "trx-card"; a.href = it.url; a.setAttribute("data-fx", FX[idx % FX.length]); a.setAttribute("data-tone", String(idx % 6));
+      var a = document.createElement("a"); a.className = "trx-card"; a.href = it.url;
       a.setAttribute("aria-label", it.headline + ": " + it.interviews + " interviews");
       var f = document.createElement("iframe"); f.setAttribute("sandbox", ""); f.setAttribute("tabindex", "-1"); f.setAttribute("aria-hidden", "true"); f.setAttribute("loading", "lazy"); f.title = it.headline; f.srcdoc = it.html;
       var role = document.createElement("span"); role.className = "trx-role"; role.textContent = it.headline;
@@ -2991,29 +3051,23 @@ html[data-theme="dark"] .trx-card{background:#1A1D26}
       if (it.applications) { var ap = document.createElement("span"); ap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>'; ap.appendChild(document.createTextNode(it.applications)); var pl = document.createElement("small"); pl.textContent = "applied"; ap.appendChild(pl); st.appendChild(ap); }
       var btn = document.createElement("span"); btn.className = "trx-btn"; btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Craft mine like this';
       foot.appendChild(st); foot.appendChild(btn);
-      a.appendChild(f);
-      var hv = document.createElement("span"); hv.className = "trx-hv"; hv.setAttribute("aria-hidden", "true");
-      var hb = document.createElement("b"); hb.textContent = "Why this resume worked"; hv.appendChild(hb);
-      if (it.why && it.why.length) {
-        var ol = document.createElement("span"); ol.className = "trx-hv-l";
-        it.why.forEach(function (t, i) { var wl = document.createElement("span"), n = document.createElement("i"); n.textContent = "0" + (i + 1); wl.appendChild(n); wl.appendChild(document.createTextNode(t)); ol.appendChild(wl); });
-        hv.appendChild(ol);
-      } else {
-        // No points written yet: what the card leads to, with its real count.
-        var q = document.createElement("span"); q.className = "trx-hv-q"; q.textContent = "See what got this resume " + it.interviews + " interview" + (it.interviews === 1 ? "" : "s"); hv.appendChild(q);
-        var sb = document.createElement("span"); sb.className = "trx-hv-s"; sb.textContent = "Open it \u2192"; hv.appendChild(sb);
-      }
-      a.appendChild(hv);
-      var gl = document.createElement("span"); gl.className = "trx-gl"; gl.setAttribute("aria-hidden", "true");
-      a.appendChild(role); a.appendChild(foot); a.appendChild(gl);
-      // Tilt toward the pointer (at most 2.4°) and move the glare with it.
-      a.addEventListener("pointermove", function (e) {
-        if (e.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-        var r = a.getBoundingClientRect(), x = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), y = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
-        a.style.setProperty("--tx", ((0.5 - y) * 2.4).toFixed(2) + "deg"); a.style.setProperty("--ty", ((x - 0.5) * 2.4).toFixed(2) + "deg");
-        a.style.setProperty("--gx", (x * 100).toFixed(1) + "%"); a.style.setProperty("--gy", (y * 100).toFixed(1) + "%");
-      });
-      a.addEventListener("pointerleave", function () { a.style.setProperty("--tx", "0deg"); a.style.setProperty("--ty", "0deg"); });
+      a.appendChild(role); a.appendChild(foot);
+      if (canHover) {
+        // "After": why this resume worked (or, before any are written, what it leads to).
+        var hv = document.createElement("span"); hv.className = "trx-hv";
+        var hb = document.createElement("b"); hb.textContent = "Why this resume worked"; hv.appendChild(hb);
+        if (it.why && it.why.length) {
+          var ol = document.createElement("span"); ol.className = "trx-hv-l";
+          it.why.forEach(function (t, i) { var wl = document.createElement("span"), n = document.createElement("i"); n.textContent = "0" + (i + 1); wl.appendChild(n); wl.appendChild(document.createTextNode(t)); ol.appendChild(wl); });
+          hv.appendChild(ol);
+        } else {
+          var q = document.createElement("span"); q.className = "trx-hv-q"; q.textContent = "See what got this resume " + it.interviews + " interview" + (it.interviews === 1 ? "" : "s"); hv.appendChild(q);
+          var sb = document.createElement("span"); sb.className = "trx-hv-s"; sb.textContent = "Open it \u2192"; hv.appendChild(sb);
+        }
+        a.setAttribute("data-tone", String(idx % 6));
+        var first = true;
+        HT.mount(a, function () { if (first) { first = false; return f; } var c = f.cloneNode(); c.srcdoc = it.html; return c; }, function () { return hv.cloneNode(true); }, HT.effects[idx % HT.effects.length], "right");
+      } else a.insertBefore(f, a.firstChild);
       li.appendChild(a); row.appendChild(li);
     });
     // Role tabs, when there's more than one role.
@@ -3034,7 +3088,7 @@ html[data-theme="dark"] .trx-card{background:#1A1D26}
     limit(); window.addEventListener("resize", limit);
     box.hidden = false;
     // Each page drawn at Letter size, shrunk to sit inside its card with a margin.
-    function fit() { row.querySelectorAll(".trx-card").forEach(function (c) { c.querySelector("iframe").style.transform = "scale(" + c.clientWidth / 816 + ")"; }); }
+    function fit() { row.querySelectorAll(".trx-card").forEach(function (c) { c.querySelectorAll("iframe").forEach(function (fr) { fr.style.transform = "scale(" + c.clientWidth / 816 + ")"; }); }); }
     fit(); window.addEventListener("resize", fit);
   }).catch(function () {});
 })();
