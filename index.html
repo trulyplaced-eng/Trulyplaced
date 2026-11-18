@@ -2712,6 +2712,34 @@ html[data-theme="dark"] .trx-card{background:#1A1D26}
   .trx-card{transition:transform .55s cubic-bezier(.22,1,.36,1),box-shadow .25s}
   .trx-card:hover{transform:perspective(1000px) rotateX(var(--tx,0deg)) rotateY(var(--ty,0deg)) translateY(-4px) scale(1.012);transition:transform .22s cubic-bezier(.22,1,.36,1),box-shadow .25s}
 }
+/* Each card's own colour (data-tone), from the site's palette: brand blue, navy glow, ink, royal, midnight, deep blue. */
+@media(hover:hover) and (pointer:fine){
+  .trx-card[data-tone="0"] .trx-hv{background:radial-gradient(110% 60% at 85% 0%,rgba(255,255,255,.28),transparent 60%),linear-gradient(165deg,#6E9BFF 0%,#3A72FF 42%,#0938D5 100%)}
+  .trx-card[data-tone="1"] .trx-hv{background:radial-gradient(120% 80% at 100% 0%,#2453D8 0%,#0F1733 62%)}
+  .trx-card[data-tone="2"] .trx-hv{background:radial-gradient(90% 60% at 0% 100%,rgba(47,91,255,.5),transparent 62%),linear-gradient(180deg,#131623,#0A0A0B)}
+  .trx-card[data-tone="3"] .trx-hv{background:radial-gradient(90% 55% at 100% 0%,rgba(140,194,255,.45),transparent 60%),linear-gradient(160deg,#2F6BFF 0%,#0938D5 60%,#06228A 100%)}
+  .trx-card[data-tone="4"] .trx-hv{background:radial-gradient(100% 70% at 50% 0%,#3B7BFF 0%,#131623 62%)}
+  .trx-card[data-tone="5"] .trx-hv{background:radial-gradient(80% 50% at 0% 0%,rgba(79,141,255,.55),transparent 60%),linear-gradient(200deg,#2F5BFF 0%,#0938D5 48%,#0F1733 100%)}
+  /* The dark fade behind the counts is for the white page; over a coloured panel it fades out so the colour shows. */
+  .trx-foot{background:none}
+  .trx-foot::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,10,11,0),rgba(10,10,11,.5) 42%,rgba(10,10,11,.8));transition:opacity .5s cubic-bezier(.22,1,.36,1)}
+  .trx-card:hover .trx-foot::before,.trx-card:focus-visible .trx-foot::before{opacity:.35}
+}
+/* Each card's own way in (data-fx); "wipe" is the default above. */
+@media(hover:hover) and (pointer:fine){
+  .trx-card .trx-hv{transition:clip-path .72s cubic-bezier(.22,1,.36,1),filter .72s cubic-bezier(.22,1,.36,1),transform .72s cubic-bezier(.22,1,.36,1),opacity .72s cubic-bezier(.22,1,.36,1)}
+  .trx-card[data-fx=ripple] .trx-hv{clip-path:circle(0% at 50% 100%);transform:scale(1.035);transition-duration:.9s}
+  .trx-card[data-fx=ripple]:hover .trx-hv{clip-path:circle(150% at 50% 100%)}
+  .trx-card[data-fx=curtain] .trx-hv{clip-path:inset(0 50% 0 50%);filter:blur(3px);transform:scale(.96);opacity:0}
+  .trx-card[data-fx=curtain]:hover .trx-hv{clip-path:inset(0);opacity:1}
+  .trx-card[data-fx=diagonal] .trx-hv{clip-path:polygon(0 100%,0 100%,0 100%);filter:blur(2px);transform:scale(.97);transition-duration:.9s}
+  .trx-card[data-fx=diagonal]:hover .trx-hv{clip-path:polygon(0 -100%,200% 100%,0 100%)}
+  .trx-card[data-fx=morph] .trx-hv{clip-path:inset(43% round 42%);filter:blur(3px);opacity:0;transform:scale(.86) rotate(2deg);transform-origin:50% 50%}
+  .trx-card[data-fx=morph]:hover .trx-hv{clip-path:inset(0 round 0);opacity:1}
+  .trx-card[data-fx=slide] .trx-hv{clip-path:inset(0);filter:blur(3px);opacity:0;transform:translate3d(0,16%,0) scale(.985)}
+  .trx-card[data-fx=slide]:hover .trx-hv{opacity:1}
+  .trx-card:hover .trx-hv,.trx-card:focus-visible .trx-hv{filter:none;transform:none}
+}
 @media(prefers-reduced-motion:reduce){.trx-hv,.trx-gl,.trx-card,.trx-card:hover{transition:none!important}.trx-card:hover{transform:none}}
 /* Phones: the same heading as How Autopilot works (2026-11-18). */
 @media(max-width:640px){.trx-h{font:600 28px/34px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.03em}}
@@ -2947,10 +2975,11 @@ html[data-theme="dark"] .trx-card{background:#1A1D26}
   fetch("https://app.trulyplaced.com/api/showcase").then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
     if (!d || !d.items || !d.items.length) return;
     var roles = [];
-    d.items.forEach(function (it) {
+    var FX = ["wipe", "ripple", "curtain", "diagonal", "morph", "slide"];
+    d.items.forEach(function (it, idx) {
       if (roles.indexOf(it.role) < 0) roles.push(it.role);
       var li = document.createElement("li"); li.setAttribute("data-role", it.role);
-      var a = document.createElement("a"); a.className = "trx-card"; a.href = it.url;
+      var a = document.createElement("a"); a.className = "trx-card"; a.href = it.url; a.setAttribute("data-fx", FX[idx % FX.length]); a.setAttribute("data-tone", String(idx % 6));
       a.setAttribute("aria-label", it.headline + ": " + it.interviews + " interviews");
       var f = document.createElement("iframe"); f.setAttribute("sandbox", ""); f.setAttribute("tabindex", "-1"); f.setAttribute("aria-hidden", "true"); f.setAttribute("loading", "lazy"); f.title = it.headline; f.srcdoc = it.html;
       var role = document.createElement("span"); role.className = "trx-role"; role.textContent = it.headline;
