@@ -2630,6 +2630,68 @@ html[data-theme="dark"] body #tpBar .cb-pill,html[data-theme="dark"] body #tpBar
 html[data-theme="dark"] body #tpBar .cb-ico:hover{background:rgba(255,255,255,.07);color:#FAFAFA}
 html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.07)}
 @media(max-width:900px){html[data-theme="dark"] body #tpBar .cb-search{background:transparent;border-color:transparent}html[data-theme="dark"] body #tpBar .cb-search svg{color:#FAFAFA}}
+
+/* "Top resumes" in the top bar (2026-11-18): a plain link, so "Try it free" stays the one black button. Phones: in the menu. */
+#tpBar .cb-link{display:inline-flex;align-items:center;height:38px;padding:0 12px;border-radius:999px;font:500 14px/1 "Inter",ui-sans-serif,system-ui,sans-serif;color:#0F1733;text-decoration:none;white-space:nowrap;transition:background .15s}
+#tpBar .cb-link:hover{background:rgba(15,23,51,.06)}
+html[data-theme="dark"] #tpBar .cb-link{color:#EEF0F8}
+html[data-theme="dark"] #tpBar .cb-link:hover{background:rgba(255,255,255,.08)}
+@media(max-width:900px){#tpBar .cb-link{display:none}}
+
+
+/* ===== Top resumes (2026-11-18, v2): right after the hero, like Higgsfield's Shorts Studio. Real client resumes
+   that got interviews, greyed out, from app.trulyplaced.com/api/showcase. Hidden until one is published. ===== */
+main#top>.trx{order:1}
+.trx{background:#fff;padding:64px 0 24px}
+.trx-in{max-width:1720px;margin:0 auto;padding:0 24px}
+.trx-hd{display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
+.trx-h{margin:0;font:800 34px/40px "Geist",ui-sans-serif,system-ui,sans-serif;letter-spacing:-.03em;text-transform:uppercase;color:#0A0A0B}
+.trx-p{margin:8px 0 0;font:400 16px/24px "Inter",ui-sans-serif,system-ui,sans-serif;color:#6B7287;max-width:620px}
+.trx-all{flex:none;display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(10,10,11,.14);color:#0A0A0B;font:500 14px/20px "Inter",ui-sans-serif,system-ui,sans-serif;text-decoration:none;transition:border-color .15s,background .15s}
+.trx-all:hover{border-color:#0A0A0B;background:rgba(10,10,11,.03)}
+.trx-tabs{display:flex;gap:6px;margin:22px 0 0;overflow-x:auto;scrollbar-width:none}
+.trx-tabs::-webkit-scrollbar{display:none}
+.trx-tabs button{flex:none;height:36px;padding:0 16px;border-radius:999px;border:0;background:transparent;color:#4B5163;font:500 14px/20px "Inter",ui-sans-serif,system-ui,sans-serif;cursor:pointer;transition:background .15s,color .15s}
+.trx-tabs button:hover{background:rgba(10,10,11,.05);color:#0A0A0B}
+.trx-tabs button[aria-pressed="true"]{background:#0A0A0B;color:#fff}
+.trx-row{list-style:none;margin:20px 0 0;padding:4px 0 24px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.trx-row li[hidden]{display:none}
+/* Computers: one row of five (four on smaller screens); phones swipe through all of them. */
+@media(min-width:901px){.trx-row li.trx-over{display:none}}
+.trx-card{position:relative;display:block;border-radius:18px;overflow:hidden;background:#fff;color:#fff;text-decoration:none;aspect-ratio:9/16;box-shadow:0 0 0 1px rgba(10,10,11,.07),0 30px 60px -38px rgba(10,10,11,.45);transform:translateZ(0);transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s}
+.trx-card:hover{transform:translateY(-4px);box-shadow:0 0 0 1px rgba(10,10,11,.1),0 40px 70px -36px rgba(10,10,11,.55)}
+.trx-card iframe{position:absolute;top:0;left:0;width:816px;height:1500px;border:0;transform-origin:0 0;pointer-events:none;background:#fff}
+.trx-role{position:absolute;top:14px;left:14px;z-index:2;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.92);color:#0A0A0B;font:600 12px/16px "Inter",ui-sans-serif,system-ui,sans-serif;box-shadow:0 1px 2px rgba(10,10,11,.08)}
+.trx-lock{position:absolute;left:50%;top:42%;z-index:2;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:#0A0A0B;display:grid;place-items:center;box-shadow:0 0 0 5px rgba(255,255,255,.7);transition:transform .25s}
+.trx-card:hover .trx-lock{transform:scale(1.08)}
+.trx-lock svg{width:18px;height:18px}
+.trx-foot{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:90px 18px 18px;background:linear-gradient(180deg,rgba(10,10,11,0),rgba(10,10,11,.62) 50%,rgba(10,10,11,.86))}
+.trx-t{display:block;font:600 17px/22px "Inter",ui-sans-serif,system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trx-stats{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px;font:500 14px/18px "Inter",ui-sans-serif,system-ui,sans-serif;color:rgba(255,255,255,.86)}
+.trx-stats span{display:inline-flex;align-items:center;gap:5px}
+.trx-stats svg{width:16px;height:16px}
+.trx-stats .trx-win{color:#6EE7B7;font-weight:600}
+html[data-theme="dark"] .trx{background:var(--bg)}
+html[data-theme="dark"] .trx-h{color:#EEF0F8}
+html[data-theme="dark"] .trx-p{color:#9AA1B8}
+html[data-theme="dark"] .trx-all{color:#EEF0F8;border-color:rgba(255,255,255,.22)}
+html[data-theme="dark"] .trx-tabs button{color:#9AA1B8}
+html[data-theme="dark"] .trx-tabs button[aria-pressed="true"]{background:#fff;color:#0A0A0B}
+html[data-theme="dark"] .trx-card{background:#1A1D26}
+@media(min-width:901px) and (max-width:1100px){.trx-row{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:900px){
+  .trx{padding:40px 0 12px}
+  .trx-in{padding:0 16px}
+  .trx-h{font-size:24px;line-height:30px}
+  .trx-p{font-size:15px;line-height:22px}
+  .trx-hd .trx-all{display:none}
+  .trx-row{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:66%;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:16px -16px 0;padding:4px 16px 20px;scroll-padding:0 16px;scrollbar-width:none}
+  .trx-row::-webkit-scrollbar{display:none}
+  .trx-row li{scroll-snap-align:start}
+  .trx-more{display:block!important}
+}
+.trx-more{display:none;margin:4px 0 0;text-align:center}
+.trx-more a{display:flex;justify-content:center}
 </style>
 </head>
 <body>
@@ -2638,6 +2700,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   <div class="cb-in">
     <a class="cb-brand" href="#top" aria-label="TrulyPlaced, your AI job search agent on web and app. Back to the top"><svg class="cb-mark" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="116" fill="#0938D5"/><path d="M256 410C168 314 138 278 138 206c0-64 53-112 118-112s118 48 118 112c0 72-30 108-118 204z" fill="#fff"/><path d="M205 200l37 36 76-88" fill="none" stroke="#0938D5" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="cb-name">TrulyPlaced</span><span class="cb-div" aria-hidden="true"></span><span class="cb-tag" id="cbTag">Your AI job search agent, on web and app</span></a>
     <div class="cb-right">
+      <a class="cb-link" href="https://app.trulyplaced.com/resumes">Top resumes</a>
       <button class="cb-search" id="cbOpen" type="button" aria-haspopup="dialog" aria-controls="cbPalette"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="cb-st">Search</span><span class="cb-keys"><kbd id="cbMod">Ctrl</kbd><kbd>K</kbd></span></button>
       <div class="cb-theme" role="group" aria-label="Colour theme">
         <button type="button" data-set-theme="light" aria-pressed="true" aria-label="Light theme" title="Light theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg></button>
@@ -2653,6 +2716,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
     <a class="mobnav-cta" href="https://app.trulyplaced.com">Find my job matches</a>
     <a href="#how">How it works</a>
     <a href="#success">Interview emails</a>
+    <a href="https://app.trulyplaced.com/resumes">Top resumes</a>
     <a href="./compare.html">Compare</a>
     <a href="/blog/">Blog</a>
     <a href="#faq">FAQ</a>
@@ -2832,6 +2896,72 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   </div>
 </section>
 
+<!-- ================= TOP RESUMES (2026-11-18, v2) =================
+     Right after the hero (owner, after Higgsfield's Shorts Studio): real client resumes that got interviews, shared with
+     permission and without their details. Filled from app.trulyplaced.com/api/showcase; hidden until one is published. -->
+<section class="trx" id="top-resumes" aria-labelledby="trxTitle" hidden>
+  <div class="trx-in">
+    <div class="trx-hd">
+      <div>
+        <h2 class="trx-h" id="trxTitle">Resumes that got interviews</h2>
+        <p class="trx-p">Real client resumes, shared with their permission and without their details. See why each one worked, then craft yours the same way.</p>
+      </div>
+      <a class="trx-all" href="https://app.trulyplaced.com/resumes">See all <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="trx-tabs" id="trxTabs" role="group" aria-label="Filter by role"></div>
+    <ul class="trx-row" id="trxRow" aria-label="Top resumes"></ul>
+    <p class="trx-more"><a class="trx-all" href="https://app.trulyplaced.com/resumes">See all top resumes <span aria-hidden="true">→</span></a></p>
+  </div>
+</section>
+<script>
+(function () {
+  var box = document.getElementById("top-resumes"), row = document.getElementById("trxRow"), tabs = document.getElementById("trxTabs");
+  if (!box || !row || !window.fetch) return;
+  fetch("https://app.trulyplaced.com/api/showcase").then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+    if (!d || !d.items || !d.items.length) return;
+    var roles = [];
+    d.items.forEach(function (it) {
+      if (roles.indexOf(it.role) < 0) roles.push(it.role);
+      var li = document.createElement("li"); li.setAttribute("data-role", it.role);
+      var a = document.createElement("a"); a.className = "trx-card"; a.href = it.url;
+      a.setAttribute("aria-label", it.headline + ": " + it.interviews + " interviews");
+      var f = document.createElement("iframe"); f.setAttribute("sandbox", ""); f.setAttribute("tabindex", "-1"); f.setAttribute("aria-hidden", "true"); f.setAttribute("loading", "lazy"); f.title = it.headline; f.srcdoc = it.html;
+      var role = document.createElement("span"); role.className = "trx-role"; role.textContent = it.role;
+      var lock = document.createElement("span"); lock.className = "trx-lock"; lock.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+      var foot = document.createElement("span"); foot.className = "trx-foot";
+      var t = document.createElement("span"); t.className = "trx-t"; t.textContent = it.headline;
+      var st = document.createElement("span"); st.className = "trx-stats";
+      var w = document.createElement("span"); w.className = "trx-win"; w.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>'; w.appendChild(document.createTextNode(it.interviews + (it.interviews === 1 ? " interview" : " interviews")));
+      st.appendChild(w);
+      if (it.applications) { var ap = document.createElement("span"); ap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>'; ap.appendChild(document.createTextNode(it.applications + " applications")); st.appendChild(ap); }
+      foot.appendChild(t); foot.appendChild(st);
+      a.appendChild(f); a.appendChild(role); a.appendChild(lock); a.appendChild(foot);
+      li.appendChild(a); row.appendChild(li);
+    });
+    // Role tabs, when there's more than one role.
+    if (roles.length > 1) {
+      ["All"].concat(roles).forEach(function (r, i) {
+        var bt = document.createElement("button"); bt.type = "button"; bt.textContent = r; bt.setAttribute("aria-pressed", i === 0 ? "true" : "false");
+        bt.addEventListener("click", function () {
+          tabs.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", x === bt ? "true" : "false"); });
+          row.querySelectorAll("li").forEach(function (li) { li.hidden = r !== "All" && li.getAttribute("data-role") !== r; });
+          limit();
+          fit();
+        });
+        tabs.appendChild(bt);
+      });
+    } else tabs.remove();
+    // A row of five on a computer (four on a smaller one): the rest are behind See all.
+    function limit() { var n = 0, max = window.innerWidth <= 1100 ? 4 : 5; row.querySelectorAll("li").forEach(function (li) { if (li.hidden) return; li.classList.toggle("trx-over", ++n > max); }); }
+    limit(); window.addEventListener("resize", limit);
+    box.hidden = false;
+    // Each page drawn at Letter size, shrunk to sit inside its card with a margin.
+    function fit() { row.querySelectorAll(".trx-card").forEach(function (c) { c.querySelector("iframe").style.transform = "scale(" + c.clientWidth / 816 + ")"; }); }
+    fit(); window.addEventListener("resize", fit);
+  }).catch(function () {});
+})();
+</script>
+
 <!-- ================= THE PAIN, ANSWERED (phones) ================= -->
 <section class="pn" aria-labelledby="pnTitle">
   <div class="pn-in" id="pnCard">
@@ -2969,6 +3099,9 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   <div class="emx-in"><div class="ibm" id="ibm" data-list aria-label="Interview emails" role="region"></div></div>
   <div class="emx-in emx-cta"><p class="emx-next"><b>Your inbox could be next.</b> Start free, and we apply while you sleep.</p><a href="https://app.trulyplaced.com" class="cx-btn p emx-btn cta-shine"><span class="lb-d">Get started free</span><span class="lb-m">Try it free</span></a></div>
 </section>
+
+
+
 
 
 
@@ -4177,75 +4310,6 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
 })();
 </script>
 <script>
-/* Google One Tap */
-(function(){
-  var CLIENT='873182343892-cdrfm5inguku5sfmjrt9n5ngopamf3fl.apps.googleusercontent.com',
-      APP='https://app.trulyplaced.com', DELAY=1500;
-  // trulyplaced.com/?gsidebug shows each step on screen (for checking on a phone); nobody else sees it
-  var DBG=/[?&]gsidebug/.test(location.search),box=null;
-  function log(t){if(!DBG)return;if(!box){box=document.createElement('pre');box.style.cssText='position:fixed;left:8px;right:8px;top:70px;z-index:2147483647;margin:0;padding:10px;max-height:45vh;overflow:auto;background:rgba(0,0,0,.85);color:#7CFC9A;font:12px/1.45 ui-monospace,monospace;white-space:pre-wrap;border-radius:10px';document.body.appendChild(box)}box.textContent+=(Math.round(performance.now())+'ms '+t+String.fromCharCode(10))}
-  if(DBG){log('page version: one-tap v6 (fallback on computers too)');log('browser: '+navigator.userAgent);log('FedCM (IdentityCredential): '+('IdentityCredential' in window?'yes':'no'));
-    var ce=console.error;console.error=function(){try{log('console: '+[].slice.call(arguments).join(' ').slice(0,300))}catch(e){}return ce.apply(console,arguments)};
-    var cw=console.warn;console.warn=function(){try{log('warn: '+[].slice.call(arguments).join(' ').slice(0,300))}catch(e){}return cw.apply(console,arguments)}}
-  if(!window.crypto||!crypto.subtle||!window.fetch){log('stopped: no crypto/fetch');return}
-  var cn=navigator.connection;if(cn&&cn.saveData)log('Data Saver is on (shown anyway)');
-  // When Chrome refuses Google's own card (phones and computers). First seen on Android:
-  // Phones: Chrome on Android refuses Google's own card for our sign-in app ("FedCM ... Error retrieving a token", seen on
-  // the owner's phone 14 Nov), so phones get our sheet instead, with Google's official "Continue as <name>" button in it
-  // (a different, long-standing Google sign-in path). Closed: not again for 3 days. Computers keep Google's card.
-  var PHONE=matchMedia('(max-width: 640px)').matches,KEY='tp_gsheet_closed';
-  function sheet(){
-    if(document.getElementById('gSheet'))return;
-    if(!DBG){try{if(Date.now()-(+localStorage.getItem(KEY)||0)<3*864e5){log('sheet closed recently');return}}catch(e){}}
-    var st=document.createElement('style');st.textContent="#gSheet{position:fixed;left:0;right:0;bottom:0;z-index:2147483000;transform:translateY(105%);transition:transform .55s cubic-bezier(.32,.72,0,1);background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -14px 44px rgba(10,14,30,.22);padding:10px 20px calc(20px + env(safe-area-inset-bottom));font:400 14px/1.4 ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#1D1D1F}#gSheet.on{transform:none}#gSheet .gs-grab{display:block;width:36px;height:5px;margin:0 auto 12px;border-radius:9px;background:#DCDCE0}#gSheet .gs-hd{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid #EFEFF2}#gSheet .gs-hd svg{width:20px;height:20px;flex:none}#gSheet .gs-hd b{flex:1;font-weight:500;font-size:14.5px}#gSheet .gs-x{width:36px;height:36px;margin:-6px -8px -6px 0;border:0;background:none;border-radius:99px;display:grid;place-items:center;color:#3C3C43;cursor:pointer}#gSheet .gs-x svg{width:18px;height:18px}#gSheet .gs-lead{margin:14px 0 12px;font-size:15px;font-weight:600;letter-spacing:-.01em}#gSheet .gs-btn{min-height:44px;display:flex;justify-content:center}#gSheet .gs-fine{margin:12px 0 0;font-size:12.5px;color:#6E6E73;text-align:center}html[data-theme=dark] #gSheet{background:#1C1C1E;color:#F5F5F7;box-shadow:0 -14px 44px rgba(0,0,0,.6)}html[data-theme=dark] #gSheet .gs-hd{border-color:rgba(255,255,255,.1)}html[data-theme=dark] #gSheet .gs-x{color:#EBEBF5}html[data-theme=dark] #gSheet .gs-fine{color:#A1A1A6}@media(min-width:641px){#gSheet{left:auto;right:20px;top:72px;bottom:auto;width:380px;border-radius:16px;padding:14px 18px 16px;box-shadow:0 18px 50px -12px rgba(10,14,30,.28),0 0 0 1px rgba(10,14,30,.06);opacity:0;transform:translateY(-10px);transition:opacity .35s ease,transform .45s cubic-bezier(.2,.8,.2,1)}#gSheet.on{opacity:1;transform:none}#gSheet .gs-grab{display:none}}@media(prefers-reduced-motion:reduce){#gSheet{transition:none}}";document.head.appendChild(st);
-    var el=document.createElement('div');el.id='gSheet';el.setAttribute('role','dialog');el.setAttribute('aria-label','Sign in to TrulyPlaced with Google');
-    el.innerHTML="<span class=\"gs-grab\" aria-hidden=\"true\"></span><div class=\"gs-hd\"><svg viewBox=\"0 0 48 48\" aria-hidden=\"true\"><path fill=\"#EA4335\" d=\"M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z\"/><path fill=\"#4285F4\" d=\"M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z\"/><path fill=\"#FBBC05\" d=\"M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z\"/><path fill=\"#34A853\" d=\"M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z\"/></svg><b>Sign in to TrulyPlaced with Google</b><button type=\"button\" class=\"gs-x\" aria-label=\"Close\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M6 6l12 12M18 6 6 18\"/></svg></button></div><p class=\"gs-lead\">See the jobs that fit you, free.</p><div class=\"gs-btn\"></div><p class=\"gs-fine\">Nothing is sent to an employer until you approve it.</p>";
-    document.body.appendChild(el);
-    var w=Math.max(200,Math.min(400,el.querySelector('.gs-btn').clientWidth||320));
-    google.accounts.id.renderButton(el.querySelector('.gs-btn'),{type:'standard',theme:document.documentElement.getAttribute('data-theme')==='dark'?'filled_black':'outline',size:'large',text:'continue_with',shape:'pill',logo_alignment:'left',width:w});
-    el.querySelector('.gs-x').addEventListener('click',function(){el.classList.remove('on');try{localStorage.setItem(KEY,String(Date.now()))}catch(e){}setTimeout(function(){el.remove()},600)});
-    requestAnimationFrame(function(){requestAnimationFrame(function(){el.classList.add('on')})});
-    log('phone sheet shown with Google button (width '+w+')');
-  }
-  var started=false;
-  function hex(buf){return Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2)}).join('')}
-  function post(cred,raw){
-    try{localStorage.setItem('tp_onetap','1')}catch(e){}
-    var f=document.createElement('form');f.method='POST';f.action=APP+'/auth/one-tap';f.style.display='none';
-    [['credential',cred],['nonce',raw]].forEach(function(p){var i=document.createElement('input');i.type='hidden';i.name=p[0];i.value=p[1];f.appendChild(i)});
-    document.body.appendChild(f);f.submit();
-  }
-  function start(){
-    if(started)return;started=true;
-    var a=new Uint8Array(16);crypto.getRandomValues(a);var raw=hex(a.buffer);
-    crypto.subtle.digest('SHA-256',new TextEncoder().encode(raw)).then(function(h){
-      log('loading Google script');var sc=document.createElement('script');sc.src='https://accounts.google.com/gsi/client';sc.async=true;sc.onerror=function(){log('Google script failed to load (blocked?)')};
-      sc.onload=function(){
-        if(!window.google||!google.accounts||!google.accounts.id){log('Google script loaded but no google.accounts.id');return}log('Google script ready, asking for the sheet');
-        // Product Hunt's settings and nothing more (extra options broke the phone sheet: "FedCM ... Error retrieving a token").
-        // ?gsidebug&nononce tries it without the nonce too, to tell the two apart on a phone.
-        var noNonce=/[?&]nononce/.test(location.search),opts={client_id:CLIENT,context:'signin',auto_select:false,
-          callback:function(r){if(r&&r.credential)post(r.credential,noNonce?'':raw)}};
-        if(!noNonce)opts.nonce=hex(h);
-        log('settings: '+Object.keys(opts).join(', '));
-        google.accounts.id.initialize(opts);
-        // Google's own card first, everywhere. On a phone, if Chrome refuses to show it (it does that silently, e.g. while
-        // the site is paused after the card was closed), our sheet with Google's button takes its place.
-        google.accounts.id.prompt(function(n){try{
-          var shown=n.isDisplayed&&n.isDisplayed(),not=n.isNotDisplayed&&n.isNotDisplayed(),skip=n.isSkippedMoment&&n.isSkippedMoment(),
-              why=not?n.getNotDisplayedReason():skip?n.getSkippedReason():'';
-          log('prompt: displayed='+shown+' notDisplayed='+(not?why:'-')+' skipped='+(skip?why:'-')+' dismissed='+(n.isDismissedMoment&&n.isDismissedMoment()?n.getDismissedReason():'-'));
-          if(not||(skip&&why!=='user_cancel'&&why!=='tap_outside'))sheet();
-        }catch(e){log('prompt note error: '+e.message)}});
-      };
-      document.head.appendChild(sc);
-    }).catch(function(){});
-  }
-  function later(){log('page loaded, waiting '+DELAY+'ms');setTimeout(start,DELAY)}
-  if(document.readyState==='complete')later();else addEventListener('load',later,{once:true});
-})();
-</script>
-<script>
 /* sun / moon theme toggle */
 (function(){
   var root=document.documentElement,btns=document.querySelectorAll("#tpBar [data-set-theme]"),meta=document.querySelector('meta[name="theme-color"]');
@@ -4282,21 +4346,6 @@ html[data-theme="dark"] #tpBar .cb-name{color:#F5F5F7}
   new IntersectionObserver(function(es){bar.classList.toggle('cb-named',!es[0].isIntersecting)},{rootMargin:'-72px 0px 0px 0px'}).observe(word);
 })();
 </script>
-<style>
-/* Phones: "Try it free" in the bar grows in and out instead of popping. It opens to its width while it fades and
-   settles in (so "Client login" glides across rather than jumping), over 0.8s. */
-@media(max-width:640px){
-  #tpBar .cb-pill.cb-app{display:inline-flex!important;max-width:124px;overflow:hidden;opacity:1;transform:none;visibility:visible;
-    transition:max-width .8s cubic-bezier(.65,0,.35,1),padding .8s cubic-bezier(.65,0,.35,1),margin .8s cubic-bezier(.65,0,.35,1),opacity .55s ease .3s,transform .7s cubic-bezier(.2,.8,.2,1) .2s,visibility 0s linear 0s!important}
-  #tpBar.cb-named .cb-pill.cb-app{display:inline-flex!important;max-width:0!important;padding-left:0!important;padding-right:0!important;margin-left:-6px!important;
-    opacity:0;transform:scale(.88);visibility:hidden;pointer-events:none;
-    transition:max-width .8s cubic-bezier(.65,0,.35,1),padding .8s cubic-bezier(.65,0,.35,1),margin .8s cubic-bezier(.65,0,.35,1),opacity .25s ease,transform .3s ease,visibility 0s linear .8s!important}
-  #tpBar .cb-pill.cb-login{transition:transform .8s cubic-bezier(.65,0,.35,1)}
-}
-@media(max-width:640px) and (prefers-reduced-motion:reduce){
-  #tpBar .cb-pill.cb-app,#tpBar.cb-named .cb-pill.cb-app{transition:none!important}
-}
-</style>
 <style>
 /* the one verified tick on the site: under "Real interview emails", where it vouches for what it sits on */
 .emx-verified{display:flex;width:fit-content;align-items:center;gap:7px;margin:18px auto 0;padding:6px 12px 6px 8px;border-radius:999px;background:#fff;border:1px solid rgba(10,10,11,.08);box-shadow:0 6px 18px -12px rgba(18,26,51,.3);font:500 13px/1 "Inter",ui-sans-serif,system-ui,sans-serif;color:#52525B}

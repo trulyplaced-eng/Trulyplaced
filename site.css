@@ -894,3 +894,10 @@ html[data-theme="dark"] .blg-back:hover{color:#F5F5F7}
 @media(max-width:360px){.bcta-art{display:none}}
 @media(min-width:641px) and (max-width:900px){.bcta{bottom:calc(20px + env(safe-area-inset-bottom))}}
 @media(prefers-reduced-motion:reduce){.bcta,.bcta.on{transition:opacity .2s ease,visibility 0s}.bcta{transform:none}.bcta.on .bcta-art,.bcta.on .bcta-go::after{animation:none}}
+
+/* "Top resumes" in the top bar (2026-11-18): a plain link, so "Try it free" stays the one black button. Phones: in the menu. */
+#tpBar .cb-link{display:inline-flex;align-items:center;height:38px;padding:0 12px;border-radius:999px;font:500 14px/1 "Inter",ui-sans-serif,system-ui,sans-serif;color:#0F1733;text-decoration:none;white-space:nowrap;transition:background .15s}
+#tpBar .cb-link:hover{background:rgba(15,23,51,.06)}
+html[data-theme="dark"] #tpBar .cb-link{color:#EEF0F8}
+html[data-theme="dark"] #tpBar .cb-link:hover{background:rgba(255,255,255,.08)}
+@media(max-width:900px){#tpBar .cb-link{display:none}}
