@@ -2654,7 +2654,7 @@ main#top>.trx{order:1}
 .trx-tabs button{flex:none;height:36px;padding:0 16px;border-radius:999px;border:0;background:transparent;color:#4B5163;font:500 14px/20px "Inter",ui-sans-serif,system-ui,sans-serif;cursor:pointer;transition:background .15s,color .15s}
 .trx-tabs button:hover{background:rgba(10,10,11,.05);color:#0A0A0B}
 .trx-tabs button[aria-pressed="true"]{background:#0A0A0B;color:#fff}
-.trx-row{list-style:none;margin:20px 0 0;padding:4px 0 24px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.trx-row{list-style:none;margin:32px 0 0;padding:4px 0 24px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px 16px}
 .trx-row li[hidden]{display:none}
 /* Computers: one row of five (four on smaller screens); phones swipe through all of them. */
 @media(min-width:901px){.trx-row li.trx-over{display:none}}
@@ -2940,7 +2940,6 @@ html[data-theme="dark"] .trx-card{background:#1A1D26}
       </div>
       <a class="trx-all" href="https://app.trulyplaced.com/resumes">See all <span aria-hidden="true">→</span></a>
     </div>
-    <div class="trx-tabs" id="trxTabs" role="group" aria-label="Filter by role"></div>
     <ul class="trx-row" id="trxRow" aria-label="Top resumes"></ul>
     <p class="trx-more"><a class="trx-all" href="https://app.trulyplaced.com/resumes">See all top resumes <span aria-hidden="true">→</span></a></p>
   </div>
@@ -3030,14 +3029,12 @@ var HT = (function () {
   return { mount: mount, effects: ["wipe", "ripple", "parallax", "curtain", "diagonal", "morph", "strips", "slide"] };
 })();
 (function () {
-  var box = document.getElementById("top-resumes"), row = document.getElementById("trxRow"), tabs = document.getElementById("trxTabs");
+  var box = document.getElementById("top-resumes"), row = document.getElementById("trxRow");
   if (!box || !row || !window.fetch) return;
   fetch("https://app.trulyplaced.com/api/showcase").then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
     if (!d || !d.items || !d.items.length) return;
-    var roles = [];
     var canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     d.items.forEach(function (it, idx) {
-      if (roles.indexOf(it.role) < 0) roles.push(it.role);
       var li = document.createElement("li"); li.setAttribute("data-role", it.role);
       var a = document.createElement("a"); a.className = "trx-card"; a.href = it.url;
       a.setAttribute("aria-label", it.headline + ": " + it.interviews + " interviews");
@@ -3070,21 +3067,8 @@ var HT = (function () {
       } else a.insertBefore(f, a.firstChild);
       li.appendChild(a); row.appendChild(li);
     });
-    // Role tabs, when there's more than one role.
-    if (roles.length > 1) {
-      ["All"].concat(roles).forEach(function (r, i) {
-        var bt = document.createElement("button"); bt.type = "button"; bt.textContent = r; bt.setAttribute("aria-pressed", i === 0 ? "true" : "false");
-        bt.addEventListener("click", function () {
-          tabs.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", x === bt ? "true" : "false"); });
-          row.querySelectorAll("li").forEach(function (li) { li.hidden = r !== "All" && li.getAttribute("data-role") !== r; });
-          limit();
-          fit();
-        });
-        tabs.appendChild(bt);
-      });
-    } else tabs.remove();
-    // A row of five on a computer (four on a smaller one): the rest are behind See all.
-    function limit() { var n = 0, max = window.innerWidth <= 1100 ? 4 : 5; row.querySelectorAll("li").forEach(function (li) { if (li.hidden) return; li.classList.toggle("trx-over", ++n > max); }); }
+    // Two rows on a computer: ten cards (eight on a smaller screen); the rest are behind See all.
+    function limit() { var n = 0, max = window.innerWidth <= 1100 ? 8 : 10; row.querySelectorAll("li").forEach(function (li) { if (li.hidden) return; li.classList.toggle("trx-over", ++n > max); }); }
     limit(); window.addEventListener("resize", limit);
     box.hidden = false;
     // Each page drawn at Letter size, shrunk to sit inside its card with a margin.
