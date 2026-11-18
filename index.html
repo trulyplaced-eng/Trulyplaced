@@ -2675,16 +2675,6 @@ main#top>.trx{order:1}
 .trx-btn{display:flex;align-items:center;justify-content:center;gap:7px;height:42px;margin-top:12px;border-radius:999px;background:#fff;color:#0A0A0B;font:600 14px/1 "Inter",ui-sans-serif,system-ui,sans-serif;box-shadow:0 6px 18px -8px rgba(10,10,11,.5);transition:transform .2s,background .15s}
 .trx-btn svg{width:15px;height:15px}
 .trx-card:hover .trx-btn{background:#F3F4F7;transform:translateY(-1px)}
-/* Where this client got interviews: logos drifting past in a seamless loop (the list twice, moved by half). */
-.trx-co{margin:0 -14px 12px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
-.trx-co-l{display:block;padding:0 18px 7px;font:500 11.5px/14px "Inter",ui-sans-serif,system-ui,sans-serif;letter-spacing:.02em;color:rgba(255,255,255,.72)}
-.trx-co-t{display:flex;width:max-content;gap:8px;animation:trx-co 22s linear infinite}
-.trx-card:hover .trx-co-t{animation-play-state:paused}
-.trx-co-i{flex:none;display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 10px 0 4px;border-radius:999px;background:rgba(255,255,255,.95);color:#0A0A0B;font:600 12px/1 "Inter",ui-sans-serif,system-ui,sans-serif;white-space:nowrap}
-.trx-co-i img{width:24px;height:24px;border-radius:50%;object-fit:contain;background:#fff}
-.trx-co-i.no-logo{padding-left:11px}
-@keyframes trx-co{to{transform:translateX(calc(-50% - 4px))}}
-@media(prefers-reduced-motion:reduce){.trx-co-t{animation:none}}
 html[data-theme="dark"] .trx{background:var(--bg)}
 html[data-theme="dark"] .trx-h{color:#EEF0F8}
 html[data-theme="dark"] .trx-p{color:#9AA1B8}
@@ -2950,21 +2940,6 @@ html[data-theme="dark"] .trx-card{background:#1A1D26}
       if (it.assessments) { var as = document.createElement("span"); as.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'; as.appendChild(document.createTextNode(it.assessments)); var al = document.createElement("small"); al.textContent = it.assessments === 1 ? "assessment" : "assessments"; as.appendChild(al); st.appendChild(as); }
       if (it.applications) { var ap = document.createElement("span"); ap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>'; ap.appendChild(document.createTextNode(it.applications)); var pl = document.createElement("small"); pl.textContent = "applied"; ap.appendChild(pl); st.appendChild(ap); }
       var btn = document.createElement("span"); btn.className = "trx-btn"; btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Craft mine like this';
-      if (it.companies && it.companies.length) {
-        var co = document.createElement("span"); co.className = "trx-co";
-        var cl = document.createElement("span"); cl.className = "trx-co-l"; cl.textContent = it.companiesLabel || "Interviews at";
-        var track = document.createElement("span"); track.className = "trx-co-t";
-        // Twice over, so the loop has no seam; and enough of them to fill the card's width.
-        var list = it.companies.slice(); while (list.length < 5) list = list.concat(it.companies);
-        list.concat(list).forEach(function (c) {
-          var chip = document.createElement("span"); chip.className = "trx-co-i";
-          if (c.logo) { var im = document.createElement("img"); im.alt = ""; im.loading = "lazy"; im.src = c.logo; im.onerror = function () { im.remove(); chip.className += " no-logo"; }; chip.appendChild(im); } else chip.className += " no-logo";
-          chip.appendChild(document.createTextNode(c.name));
-          track.appendChild(chip);
-        });
-        co.appendChild(cl); co.appendChild(track); foot.appendChild(co);
-        a.setAttribute("aria-label", a.getAttribute("aria-label") + ". " + (it.companiesLabel || "Interviews at") + " " + it.companies.map(function (c) { return c.name; }).join(", "));
-      }
       foot.appendChild(st); foot.appendChild(btn);
       a.appendChild(f); a.appendChild(role); a.appendChild(foot);
       li.appendChild(a); row.appendChild(li);
