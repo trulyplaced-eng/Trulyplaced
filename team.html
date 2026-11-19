@@ -6101,7 +6101,24 @@ function loadLeads(){
    (app-hook push_to_app, kind admin_*; the app answers owners only). Each person shows whether they're already a
    client or a lead here, and goes into Leads in one click.
    ===================================================================== */
-var AU = {data:null, at:0, f:'all', q:'', fs:{stage:'', plan:'', phone:'', active:'', crm:''}};
+var AU = {data:null, at:0, f:'all', q:'', fs:{stage:'', plan:'', phone:'', active:'', crm:'', up:''}, from:'', to:'', sort:'best'};
+/* Resume upload dates (2026-11-19): the start of a day in this computer's time zone, and whether a time falls in the
+   chosen window. "up" is today / yesterday / 7 / 30 / range; people with no upload never match a date filter. */
+function auDay(d){ var x = new Date(d); x.setHours(0, 0, 0, 0); return x.getTime(); }
+function auUpWindow(){
+  var F = AU.fs, now = Date.now(), today = auDay(now);
+  if(F.up === 'today') return [today, Infinity];
+  if(F.up === 'yesterday') return [today - 864e5, today];
+  if(F.up === '7') return [today - 6 * 864e5, Infinity];
+  if(F.up === '30') return [today - 29 * 864e5, Infinity];
+  if(F.up === 'range'){
+    var a = AU.from ? auDay(AU.from + 'T00:00') : -Infinity, b = AU.to ? auDay(AU.to + 'T00:00') + 864e5 : Infinity;
+    return [a, b];
+  }
+  return null;
+}
+function auUpIn(p, w){ if(!w) return true; if(!p.resumeAt) return false; var t = Date.parse(p.resumeAt); return t >= w[0] && t < w[1]; }
+function auWhen(iso){ var d = new Date(iso); return d.toLocaleDateString('en-US', {month:'short', day:'numeric', year: d.getFullYear() === new Date().getFullYear() ? undefined : 'numeric'}) + ', ' + d.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'}); }
 function auLoad(force){
   if(AU.data && !force && Date.now() - AU.at < 60000) return Promise.resolve(AU.data);
   return Promise.all([TP.fn('app-hook', {action:'push_to_app', kind:'admin_overview'}, 60000), loadLeads().catch(function(){ return []; }), loadList().catch(function(){ return null; })]).then(function(rs){
@@ -6161,12 +6178,26 @@ function auDraw(){
     sel('phone', 'Phone', [['', 'Any'], ['yes', 'Has a phone'], ['no', 'No phone']]) +
     sel('active', 'Activity', [['', 'Any'], ['online', 'Online now'], ['week', 'Active this week'], ['quiet', 'Quiet 7+ days'], ['new', 'Joined this week']]) +
     sel('crm', 'In our lists', [['', 'Any'], ['none', 'Not a lead or client yet'], ['lead', 'In Leads'], ['client', 'Client']]) +
-    '<button class="btn sm" type="button" id="auClear"' + (Object.keys(AU.fs).some(function(k){ return AU.fs[k]; }) ? '' : ' hidden') + '>Clear filters</button><span class="fine" id="auCount"></span></div>';
+    sel('up', 'Resume uploaded', [['', 'Any time'], ['today', 'Today'], ['yesterday', 'Yesterday'], ['7', 'Last 7 days'], ['30', 'Last 30 days'], ['range', 'Choose dates…']]) +
+    '<span class="aufl" id="auRange"' + (AU.fs.up === 'range' ? '' : ' hidden') + '><span>From</span><input class="inp sm" type="date" id="auFrom" value="' + esc(AU.from) + '"></span>' +
+    '<span class="aufl" id="auRange2"' + (AU.fs.up === 'range' ? '' : ' hidden') + '><span>To</span><input class="inp sm" type="date" id="auTo" value="' + esc(AU.to) + '"></span>' +
+    '<label class="aufl"><span>Order</span><select class="inp sm" id="auSort">' + [['best', 'Best leads first'], ['up-new', 'Newest uploads first'], ['up-old', 'Oldest uploads first'], ['join-new', 'Newest sign-ups first'], ['join-old', 'Oldest sign-ups first']].map(function(o){
+        return '<option value="' + o[0] + '"' + (AU.sort === o[0] ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join('') + '</select></label>' +
+    '<button class="btn sm" type="button" id="auClear"' + (Object.keys(AU.fs).some(function(k){ return AU.fs[k]; }) ? '' : ' hidden') + '>Clear filters</button><span class="fine" id="auCount"></span></div>' +
+    '<div class="fine" id="auUpSum" style="margin:-4px 0 10px"></div>';
   b.innerHTML = head + filters + '<div id="auList"></div>';
   var fsBox = $('#auFs');
   if(fsBox){
-    fsBox.addEventListener('change', function(e){ var k = e.target.getAttribute('data-fk'); if(!k) return; AU.fs[k] = e.target.value; $('#auClear').hidden = !Object.keys(AU.fs).some(function(x){ return AU.fs[x]; }); auList(); });
-    $('#auClear').addEventListener('click', function(){ Object.keys(AU.fs).forEach(function(k){ AU.fs[k] = ''; }); auDraw(); });
+    fsBox.addEventListener('change', function(e){
+      if(e.target.id === 'auSort'){ AU.sort = e.target.value; return auList(); }
+      if(e.target.id === 'auFrom'){ AU.from = e.target.value; return auList(); }
+      if(e.target.id === 'auTo'){ AU.to = e.target.value; return auList(); }
+      var k = e.target.getAttribute('data-fk'); if(!k) return; AU.fs[k] = e.target.value;
+      // Picking an upload date sorts newest uploads first, unless an order was chosen.
+      if(k === 'up' && AU.fs.up && AU.sort === 'best') { AU.sort = 'up-new'; $('#auSort').value = 'up-new'; }
+      $('#auRange').hidden = $('#auRange2').hidden = AU.fs.up !== 'range';
+      $('#auClear').hidden = !Object.keys(AU.fs).some(function(x){ return AU.fs[x]; }); auList(); });
+    $('#auClear').addEventListener('click', function(){ Object.keys(AU.fs).forEach(function(k){ AU.fs[k] = ''; }); AU.from = AU.to = ''; AU.sort = 'best'; auDraw(); });
   }
   $('#auF').addEventListener('click', function(e){
     var x = e.target.closest('[data-f]'); if(!x) return; var f = x.getAttribute('data-f');
@@ -6179,7 +6210,21 @@ function auDraw(){
 function auList(){
   var box = $('#auList'), d = AU.data; if(!box || !d) return;
   var n = AU.q.trim().toLowerCase(), ranked = (d.people || []).some(function(p){ return p.lead; });
-  var wk = Date.now() - 7 * 864e5, F = AU.fs;
+  var wk = Date.now() - 7 * 864e5, F = AU.fs, upW = auUpWindow();
+  var tsOf = function(iso){ return iso ? Date.parse(iso) : 0; };
+  var orders = {
+    'up-new': function(a, b){ return (tsOf(b.resumeAt) - tsOf(a.resumeAt)) || (tsOf(b.joined) - tsOf(a.joined)); },
+    'up-old': function(a, b){ return (a.resumeAt ? 0 : 1) - (b.resumeAt ? 0 : 1) || (tsOf(a.resumeAt) - tsOf(b.resumeAt)); },
+    'join-new': function(a, b){ return tsOf(b.joined) - tsOf(a.joined); },
+    'join-old': function(a, b){ return tsOf(a.joined) - tsOf(b.joined); }
+  };
+  // Uploads today and yesterday, whatever else is filtered.
+  var sum = $('#auUpSum');
+  if(sum){
+    var all = d.people || [], tdy = auDay(Date.now()), by = function(a, b){ return all.filter(function(p){ var t = tsOf(p.resumeAt); return p.resumeAt && t >= a && t < b; }).length; };
+    var hasTimes = all.some(function(p){ return 'resumeAt' in p; });
+    sum.textContent = hasTimes ? 'Resumes uploaded: ' + by(tdy, Infinity) + ' today · ' + by(tdy - 864e5, tdy) + ' yesterday · ' + by(tdy - 6 * 864e5, Infinity) + ' in the last 7 days' : 'Upload dates appear once the app is updated.';
+  }
   var stageOf = function(p){ return p.stage || (p.onboarded ? 'done' : (p.headline || p.location) ? 'setup' : 'resume'); };   // older app builds send no stage
   var rows = (d.people || []).filter(function(p){ return AU.f !== 'opted' || p.optedIn; })
     .filter(function(p){
@@ -6196,10 +6241,11 @@ function auList(){
       if(F.crm === 'none' && (cl || ld)) return false;
       if(F.crm === 'lead' && !ld) return false;
       if(F.crm === 'client' && !cl) return false;
+      if(!auUpIn(p, upW)) return false;
       return true;
     })
     .filter(function(p){ return !n || [p.name, p.email, p.phone, p.location, p.headline].concat(p.roles || []).some(function(v){ return v && String(v).toLowerCase().indexOf(n) >= 0; }); })
-    .sort(function(a, b){ return (auOnline(b) - auOnline(a)) || (ranked ? ((b.lead && b.lead.score) || -1) - ((a.lead && a.lead.score) || -1) : 0) || (b.optedIn - a.optedIn) || String(b.last || '').localeCompare(String(a.last || '')); });
+    .sort(orders[AU.sort] || function(a, b){ return (auOnline(b) - auOnline(a)) || (ranked ? ((b.lead && b.lead.score) || -1) - ((a.lead && a.lead.score) || -1) : 0) || (b.optedIn - a.optedIn) || String(b.last || '').localeCompare(String(a.last || '')); });
   var cnt = $('#auCount'); if(cnt) cnt.textContent = rows.length + ' of ' + (d.people || []).length;
   if(!rows.length){ box.innerHTML = '<div class="empty"><h3>No one matches</h3></div>'; return; }
   box.innerHTML = '<div class="card aul">' + rows.map(function(p){
@@ -6213,6 +6259,7 @@ function auList(){
     return '<div class="li aurow"><div class="main"><div class="t">' + esc(p.name || '(no name yet)') + ' ' + chips + '</div>' +
         (p.lead && p.lead.reason ? '<div class="m">' + esc(p.lead.reason) + '</div>' : '') +
         '<div class="m">' + esc([p.headline, p.location].filter(Boolean).join(' · ') || 'No resume yet') + '</div>' +
+        (p.resumeAt ? '<div class="m fine" title="' + esc(p.resumeLast && p.resumeLast !== p.resumeAt ? 'Last uploaded ' + auWhen(p.resumeLast) : '') + '">Resume uploaded ' + esc(auWhen(p.resumeAt)) + ' · ' + esc(TP.ago(p.resumeAt)) + '</div>' : '') +
         ((p.roles || []).length ? '<div class="m fine">Wants: ' + esc(p.roles.join(', ')) + '</div>' : '') + '</div>' +
       '<div class="aucon"><div>' + esc(p.email || '—') + '</div><div class="m">' + esc(p.phone || 'No phone on resume') + '</div></div>' +
       '<div class="auuse m"><div>' + esc(p.plan) + ' · ' + p.used + '/' + p.quota + ' used</div><div>' + p.sent + ' sent · ' + p.waiting + ' waiting</div><div>Joined ' + esc(TP.ago(p.joined)) + (p.seen && !auOnline(p) ? ' · last seen ' + esc(TP.ago(p.seen)) : !p.seen && p.last ? ' · active ' + esc(TP.ago(p.last)) : '') + '</div></div>' +
