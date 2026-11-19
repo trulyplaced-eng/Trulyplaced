@@ -2658,30 +2658,31 @@ main#top>.trx{order:1}
 .trx-row li[hidden]{display:none}
 /* Computers: one row of five (four on smaller screens); phones swipe through all of them. */
 @media(min-width:901px){.trx-row li.trx-over{display:none}}
-.trx-card{position:relative;display:block;border-radius:18px;overflow:hidden;background:#fff;color:#fff;text-decoration:none;aspect-ratio:9/16;box-shadow:0 0 0 1px rgba(10,10,11,.07),0 30px 60px -38px rgba(10,10,11,.45);transform:translateZ(0);transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s}
+.trx-card{position:relative;display:block;border-radius:18px;overflow:hidden;background:#fff;color:#0A0A0B;text-decoration:none;aspect-ratio:9/16;box-shadow:0 0 0 1px rgba(10,10,11,.07),0 30px 60px -38px rgba(10,10,11,.45);transform:translateZ(0);transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s}
 .trx-card:hover{transform:translateY(-4px);box-shadow:0 0 0 1px rgba(10,10,11,.1),0 40px 70px -36px rgba(10,10,11,.55)}
+/* Design B, "Result first" (2026-11-19): the result on top, the resume rising from below, one black pill. */
+.trx-card{box-shadow:0 0 0 1px #E3E7EF,0 24px 48px -34px rgba(15,23,51,.35)}
+.trx-card:hover{box-shadow:0 0 0 1px #D5DBE7,0 34px 60px -34px rgba(15,23,51,.45)}
+.trx-face{position:absolute;inset:0;display:block;background:#fff;color:#0A0A0B;overflow:hidden}
+.trx-meta{position:absolute;left:18px;right:18px;top:18px;display:block}
+.trx-hl{display:block;font:500 12.5px/16px "Inter",ui-sans-serif,system-ui,sans-serif;color:#6B7287;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trx-num{display:block;margin-top:10px;font:500 52px/1 "Geist",system-ui,sans-serif;letter-spacing:-.045em;color:#0A0A0B}
+.trx-nl{display:block;margin-top:6px;font:500 14px/18px "Inter",ui-sans-serif,system-ui,sans-serif;color:#0A0A0B}
+.trx-sub{display:block;margin-top:3px;font:400 12.5px/16px "Inter",ui-sans-serif,system-ui,sans-serif;color:#6B7287;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trx-sheet{position:absolute;left:18px;right:18px;top:158px;bottom:-40px;display:block;overflow:hidden;border-radius:8px 8px 0 0;background:#fff;box-shadow:0 0 0 1px #E8ECF3,0 14px 34px -16px rgba(15,23,51,.28);transition:transform .45s cubic-bezier(.22,1,.36,1)}
+.trx-card:hover .trx-sheet{transform:translateY(-6px)}
+.trx-sheet iframe{position:absolute;top:0;left:0}
+.trx-fade{position:absolute;left:0;right:0;bottom:0;height:112px;display:block;background:linear-gradient(180deg,rgba(255,255,255,0),#fff 62%)}
+.trx-pill{position:absolute;left:14px;right:14px;bottom:14px;z-index:1;display:flex;align-items:center;justify-content:center;gap:6px;height:44px;border-radius:999px;background:#0A0A0B;color:#fff;font:500 14px/1 "Inter",ui-sans-serif,system-ui,sans-serif}
+.trx-pill i{font-style:normal;transition:transform .2s}
+.trx-card:hover .trx-pill i{transform:translateX(2px)}
 .trx-card iframe{position:absolute;top:0;left:0;width:816px;height:1500px;border:0;transform-origin:0 0;pointer-events:none;background:#fff}
-.trx-role{position:absolute;top:14px;left:14px;z-index:2;max-width:calc(100% - 28px);padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.94);color:#0A0A0B;font:600 12.5px/16px "Inter",ui-sans-serif,system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 1px 2px rgba(10,10,11,.1)}
-.trx-lock{position:absolute;left:50%;top:42%;z-index:2;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:#0A0A0B;display:grid;place-items:center;box-shadow:0 0 0 5px rgba(255,255,255,.7);transition:transform .25s}
-.trx-card:hover .trx-lock{transform:scale(1.08)}
-.trx-lock svg{width:18px;height:18px}
-.trx-foot{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:70px 14px 14px;background:linear-gradient(180deg,rgba(10,10,11,0),rgba(10,10,11,.5) 42%,rgba(10,10,11,.8))}
-.trx-t{display:block;font:600 17px/22px "Inter",ui-sans-serif,system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.trx-stats{display:flex;flex-wrap:wrap;gap:4px 16px;padding:0 4px;font:600 14px/20px "Inter",ui-sans-serif,system-ui,sans-serif;color:#fff}
-.trx-stats span{display:inline-flex;align-items:center;gap:5px}
-.trx-stats svg{width:16px;height:16px}
-.trx-stats .trx-win{color:#fff}
-.trx-stats small{font:500 12.5px/20px "Inter",ui-sans-serif,system-ui,sans-serif;color:rgba(255,255,255,.78);margin-left:-1px}
-.trx-btn{display:flex;align-items:center;justify-content:center;gap:7px;height:42px;margin-top:12px;border-radius:999px;background:#fff;color:#0A0A0B;font:600 14px/1 "Inter",ui-sans-serif,system-ui,sans-serif;box-shadow:0 6px 18px -8px rgba(10,10,11,.5);transition:transform .2s,background .15s}
-.trx-btn svg{width:15px;height:15px}
-.trx-card:hover .trx-btn{background:#F3F4F7;transform:translateY(-1px)}
 html[data-theme="dark"] .trx{background:var(--bg)}
 html[data-theme="dark"] .trx-h{color:#EEF0F8}
 html[data-theme="dark"] .trx-p{color:#9AA1B8}
 html[data-theme="dark"] .trx-all{color:#EEF0F8;border-color:rgba(255,255,255,.22)}
 html[data-theme="dark"] .trx-tabs button{color:#9AA1B8}
 html[data-theme="dark"] .trx-tabs button[aria-pressed="true"]{background:#fff;color:#0A0A0B}
-html[data-theme="dark"] .trx-card{background:#1A1D26}
 @media(min-width:901px) and (max-width:1100px){.trx-row{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:900px){
   .trx{padding:40px 0 12px}
@@ -2699,24 +2700,16 @@ html[data-theme="dark"] .trx-card{background:#1A1D26}
 .trx-stage{position:absolute;inset:0;transform-style:preserve-3d}
 .trx-base,.trx-ly{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .trx-ly>.trx-in2{position:absolute;inset:0}
-.trx-hv{position:absolute;inset:0;display:block;padding:62px 20px 0;color:#fff;background:radial-gradient(circle at 82% 10%,rgba(79,93,255,.5),transparent 44%),linear-gradient(160deg,#1d2230,#07080b)}
-.trx-hv b{display:block;margin:0 0 16px;font:500 11.5px/14px "Inter",ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.62)}
+.trx-hv{position:absolute;inset:0;display:block;padding:22px 18px 0;color:#fff;background:radial-gradient(120% 60% at 100% 0%,rgba(110,155,255,.55),transparent 60%),#0938D5}
+.trx-hv b{display:block;margin:0 0 18px;font:500 11.5px/14px "Inter",ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#C4D2FF}
+.trx-hv-n{display:block;position:absolute;left:18px;right:18px;bottom:72px;font:500 12.5px/16px "Inter",ui-sans-serif,system-ui,sans-serif;color:#C4D2FF}
+.trx-hv-btn{position:absolute;left:14px;right:14px;bottom:14px;display:flex;align-items:center;justify-content:center;gap:6px;height:44px;border-radius:999px;background:#fff;color:#0938D5;font:500 14px/1 "Inter",ui-sans-serif,system-ui,sans-serif;box-shadow:0 10px 24px -12px rgba(3,15,60,.6)}
 .trx-hv-l{display:grid;gap:16px}
 .trx-hv-l>span{display:grid;grid-template-columns:22px 1fr;gap:6px;font:500 17px/23px "Geist",system-ui,sans-serif;letter-spacing:-.02em}
-.trx-hv-l i{font:600 12px/23px "Inter",ui-sans-serif,system-ui,sans-serif;font-style:normal;color:rgba(255,255,255,.5)}
+.trx-hv-l i{font:600 12px/23px "Inter",ui-sans-serif,system-ui,sans-serif;font-style:normal;color:#C4D2FF}
 .trx-hv-q{display:block;font:500 24px/30px "Geist",system-ui,sans-serif;letter-spacing:-.03em}
-.trx-hv-s{display:block;margin-top:14px;font:500 14px/20px "Inter",ui-sans-serif,system-ui,sans-serif;color:rgba(255,255,255,.72)}
-.trx-card[data-tone="0"] .trx-hv{background:radial-gradient(110% 60% at 85% 0%,rgba(255,255,255,.28),transparent 60%),linear-gradient(165deg,#6E9BFF 0%,#3A72FF 42%,#0938D5 100%)}
-.trx-card[data-tone="1"] .trx-hv{background:radial-gradient(120% 80% at 100% 0%,#2453D8 0%,#0F1733 62%)}
-.trx-card[data-tone="2"] .trx-hv{background:radial-gradient(90% 60% at 0% 100%,rgba(47,91,255,.5),transparent 62%),linear-gradient(180deg,#131623,#0A0A0B)}
-.trx-card[data-tone="3"] .trx-hv{background:radial-gradient(90% 55% at 100% 0%,rgba(140,194,255,.45),transparent 60%),linear-gradient(160deg,#2F6BFF 0%,#0938D5 60%,#06228A 100%)}
-.trx-card[data-tone="4"] .trx-hv{background:radial-gradient(100% 70% at 50% 0%,#3B7BFF 0%,#131623 62%)}
-.trx-card[data-tone="5"] .trx-hv{background:radial-gradient(80% 50% at 0% 0%,rgba(79,141,255,.55),transparent 60%),linear-gradient(200deg,#2F5BFF 0%,#0938D5 48%,#0F1733 100%)}
+.trx-hv-s{display:block;margin-top:14px;font:500 14px/20px "Inter",ui-sans-serif,system-ui,sans-serif;color:#C4D2FF}
 .trx-gl{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;background:radial-gradient(circle 180px at var(--hover-glare-x,50%) var(--hover-glare-y,50%),rgba(255,255,255,.22),rgba(255,255,255,.05) 48%,transparent 78%);opacity:0}
-/* The dark fade behind the counts is for the white page; over a coloured panel it fades back. */
-.trx-card.ht .trx-foot{background:none}
-.trx-card.ht .trx-foot::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(10,10,11,0),rgba(10,10,11,.5) 42%,rgba(10,10,11,.8));transition:opacity .5s cubic-bezier(.22,1,.36,1)}
-.trx-card.ht.on .trx-foot::before{opacity:.35}
 .trx-card.ht:hover{transform:none}
 /* Phones: the same heading as How Autopilot works (2026-11-18). */
 @media(max-width:640px){.trx-h{font:600 28px/34px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:-.03em}}
@@ -2960,7 +2953,7 @@ var HT = (function () {
     var vec = V[direction], dx = vec[0] * 100, dy = vec[1] * 100;
     var stage = document.createElement("span"); stage.className = "trx-stage";
     var dup = effect === "parallax" || effect === "curtain" || effect === "diagonal" || effect === "slide";
-    var base = document.createElement("span"); base.className = "trx-base"; base.appendChild(before()); if (dup) base.style.visibility = "hidden";
+    var base = document.createElement("span"); base.className = "trx-base"; base.appendChild(before()); if (dup && effect !== "curtain" && effect !== "diagonal") base.style.visibility = "hidden"; // the split halves keep the page under them, so no seam shows at rest
     stage.appendChild(base);
     var L = [], strips = [];
     function add(child) { var l = layer(child); stage.appendChild(l); L.push(l); return l; }
@@ -3039,18 +3032,22 @@ var HT = (function () {
       var a = document.createElement("a"); a.className = "trx-card"; a.href = it.url;
       a.setAttribute("aria-label", it.headline + ": " + it.interviews + " interviews");
       var f = document.createElement("iframe"); f.setAttribute("sandbox", ""); f.setAttribute("tabindex", "-1"); f.setAttribute("aria-hidden", "true"); f.setAttribute("loading", "lazy"); f.title = it.headline; f.srcdoc = it.html;
-      var role = document.createElement("span"); role.className = "trx-role"; role.textContent = it.headline;
-      var foot = document.createElement("span"); foot.className = "trx-foot";
-      var st = document.createElement("span"); st.className = "trx-stats";
-      var w = document.createElement("span"); w.className = "trx-win"; w.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>'; w.appendChild(document.createTextNode(it.interviews)); var wl = document.createElement("small"); wl.textContent = it.interviews === 1 ? "interview" : "interviews"; w.appendChild(wl);
-      st.appendChild(w);
-      if (it.assessments) { var as = document.createElement("span"); as.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'; as.appendChild(document.createTextNode(it.assessments)); var al = document.createElement("small"); al.textContent = it.assessments === 1 ? "assessment" : "assessments"; as.appendChild(al); st.appendChild(as); }
-      if (it.applications) { var ap = document.createElement("span"); ap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>'; ap.appendChild(document.createTextNode(it.applications)); var pl = document.createElement("small"); pl.textContent = "applied"; ap.appendChild(pl); st.appendChild(ap); }
-      var btn = document.createElement("span"); btn.className = "trx-btn"; btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Craft mine like this';
-      foot.appendChild(st); foot.appendChild(btn);
-      a.appendChild(role); a.appendChild(foot);
+      var plural = function (n, w) { return n + " " + w + (n === 1 ? "" : "s"); };
+      // At rest: the result on top, the resume rising from below, the button.
+      var face = document.createElement("span"); face.className = "trx-face";
+      var meta = document.createElement("span"); meta.className = "trx-meta";
+      var hl = document.createElement("span"); hl.className = "trx-hl"; hl.textContent = it.headline; meta.appendChild(hl);
+      var num = document.createElement("span"); num.className = "trx-num"; num.textContent = it.interviews; meta.appendChild(num);
+      var nl = document.createElement("span"); nl.className = "trx-nl"; nl.textContent = (it.interviews === 1 ? "interview" : "interviews") + " from this resume"; meta.appendChild(nl);
+      var more = [it.assessments ? plural(it.assessments, "assessment") : null, it.applications ? it.applications + " applied" : null].filter(Boolean).join(" \u00b7 ");
+      if (more) { var sub = document.createElement("span"); sub.className = "trx-sub"; sub.textContent = more; meta.appendChild(sub); }
+      var sheet = document.createElement("span"); sheet.className = "trx-sheet"; sheet.appendChild(f);
+      var fade = document.createElement("span"); fade.className = "trx-fade";
+      var pill = document.createElement("span"); pill.className = "trx-pill"; pill.innerHTML = 'Craft mine like this <i aria-hidden="true">\u2192</i>';
+      face.appendChild(meta); face.appendChild(sheet); face.appendChild(fade); face.appendChild(pill);
+      a.setAttribute("aria-label", it.headline + ": " + plural(it.interviews, "interview") + (more ? ", " + more : "") + ". Craft mine like this");
       if (canHover) {
-        // "After": why this resume worked (or, before any are written, what it leads to).
+        // On hover: why this resume worked (or, before any are written, what it leads to), and the button.
         var hv = document.createElement("span"); hv.className = "trx-hv";
         var hb = document.createElement("b"); hb.textContent = "Why this resume worked"; hv.appendChild(hb);
         if (it.why && it.why.length) {
@@ -3058,13 +3055,13 @@ var HT = (function () {
           it.why.forEach(function (t, i) { var wl = document.createElement("span"), n = document.createElement("i"); n.textContent = "0" + (i + 1); wl.appendChild(n); wl.appendChild(document.createTextNode(t)); ol.appendChild(wl); });
           hv.appendChild(ol);
         } else {
-          var q = document.createElement("span"); q.className = "trx-hv-q"; q.textContent = "See what got this resume " + it.interviews + " interview" + (it.interviews === 1 ? "" : "s"); hv.appendChild(q);
-          var sb = document.createElement("span"); sb.className = "trx-hv-s"; sb.textContent = "Open it \u2192"; hv.appendChild(sb);
+          var q = document.createElement("span"); q.className = "trx-hv-q"; q.textContent = "See what got this resume " + plural(it.interviews, "interview"); hv.appendChild(q);
         }
-        a.setAttribute("data-tone", String(idx % 6));
-        var first = true;
-        HT.mount(a, function () { if (first) { first = false; return f; } var c = f.cloneNode(); c.srcdoc = it.html; return c; }, function () { return hv.cloneNode(true); }, HT.effects[idx % HT.effects.length], "right");
-      } else a.insertBefore(f, a.firstChild);
+        var hn = document.createElement("span"); hn.className = "trx-hv-n"; hn.textContent = plural(it.interviews, "interview") + (more ? " \u00b7 " + more : ""); hv.appendChild(hn);
+        var hbtn = document.createElement("span"); hbtn.className = "trx-hv-btn"; hbtn.innerHTML = 'Craft mine like this <i aria-hidden="true">\u2192</i>'; hv.appendChild(hbtn);
+        var firstFace = true;
+        HT.mount(a, function () { if (firstFace) { firstFace = false; return face; } return face.cloneNode(true); }, function () { return hv.cloneNode(true); }, HT.effects[idx % HT.effects.length], "right");
+      } else a.appendChild(face);
       li.appendChild(a); row.appendChild(li);
     });
     // Two rows on a computer: ten cards (eight on a smaller screen); the rest are behind See all.
@@ -3072,7 +3069,7 @@ var HT = (function () {
     limit(); window.addEventListener("resize", limit);
     box.hidden = false;
     // Each page drawn at Letter size, shrunk to sit inside its card with a margin.
-    function fit() { row.querySelectorAll(".trx-card").forEach(function (c) { c.querySelectorAll("iframe").forEach(function (fr) { fr.style.transform = "scale(" + c.clientWidth / 816 + ")"; }); }); }
+    function fit() { row.querySelectorAll(".trx-sheet iframe").forEach(function (fr) { fr.style.transform = "scale(" + fr.parentNode.clientWidth / 816 + ")"; }); }
     fit(); window.addEventListener("resize", fit);
   }).catch(function () {});
 })();
