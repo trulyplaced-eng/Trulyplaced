@@ -3554,15 +3554,16 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
   var PH=['every business day.','by a real specialist.','tailored to every role.','while you sleep.','and tracked in your app.'];
   setTimeout(function(){el.classList.add('ul')},450); // the underline draws in once the page settles
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-  // Timed to match conductor.build's headline: a new phrase every 3s; the swap runs in ~28ms steps (about 0.5s).
+  // Timed after conductor.build's headline, then made quicker (owner review, 2026-11-19: a visitor caught it mid-swap,
+  // reading as gibberish): a new phrase every 4s, and the swap runs in ~22ms steps (about 0.3s).
   // Each position i keeps the old letter until a random start step, then shows random lowercase letters, and locks
   // to the new letter at step 3+i, so the new words lock in strictly left to right while the old phrase decays
   // behind them; the line grows or shrinks as positions open or close.
-  var POOL='abcdefghijklmnopqrstuvwxyz',idx=0,timer=0,STEP=32; // conductor.build: letters change every ~32ms
+  var POOL='abcdefghijklmnopqrstuvwxyz',idx=0,timer=0,STEP=22; // letters change every ~22ms
   function rl(){return POOL[(Math.random()*26)|0]}
   function scramble(to){
     var from=el.textContent,n=Math.max(from.length,to.length),q=[];clearInterval(timer);el.classList.remove('ul');
-    var rate=Math.min(.95,18/Math.max(1,to.length)); // ~1 letter per step, but the whole swap stays near 0.55s
+    var rate=Math.min(.6,10/Math.max(1,to.length)); // the whole swap stays near 0.3s
     for(var i=0;i<n;i++){var end=3+Math.round(i*rate);
       if(i>=to.length)end=1+((Math.random()*2)|0); // positions past the new phrase close almost at once
       q.push({from:from[i]||'',to:to[i]||'',start:Math.floor(Math.random()*end*.85),end:end,ch:''})}
@@ -3576,7 +3577,7 @@ html[data-theme="dark"] body #tpBar .mobnav{border-top-color:rgba(255,255,255,.0
     tick();timer=setInterval(tick,STEP);
   }
   var vis=true;new IntersectionObserver(function(es){vis=es[0].isIntersecting},{threshold:0}).observe(el);
-  setInterval(function(){if(document.hidden||!vis)return;idx=(idx+1)%PH.length;scramble(PH[idx])},3000); // conductor.build: a new phrase every 3s
+  setInterval(function(){if(document.hidden||!vis)return;idx=(idx+1)%PH.length;scramble(PH[idx])},4000); // a new phrase every 4s
 })();
 </script>
 <script>
