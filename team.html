@@ -6101,7 +6101,7 @@ function loadLeads(){
    (app-hook push_to_app, kind admin_*; the app answers owners only). Each person shows whether they're already a
    client or a lead here, and goes into Leads in one click.
    ===================================================================== */
-var AU = {data:null, at:0, f:'all', q:'', fs:{stage:'', plan:'', phone:'', active:'', crm:'', up:''}, from:'', to:'', sort:'best'};
+var AU = {data:null, at:0, f:'all', q:'', fs:{stage:'', plan:'', phone:'', active:'', crm:'', up:'', fix:''}, from:'', to:'', sort:'best'};
 /* Resume upload dates (2026-11-19): the start of a day in this computer's time zone, and whether a time falls in the
    chosen window. "up" is today / yesterday / 7 / 30 / range; people with no upload never match a date filter. */
 function auDay(d){ var x = new Date(d); x.setHours(0, 0, 0, 0); return x.getTime(); }
@@ -6150,6 +6150,16 @@ function auWhatsapp(p){
   var text = 'Hi ' + first + ', this is ' + me + ' from TrulyPlaced. Thanks for using TrulyPlaced Autopilot! Our expert team can also take your job search off your hands and apply to roles for you. Would you like to hear how it works?';
   return 'https://wa.me/' + digits + '?text=' + encodeURIComponent(text);
 }
+/* Fix my resume (2026-11-19): how far each person got in the app's three-step flow (journey: the first time of each
+   step), and a WhatsApp message for those who asked for a free review, to the number they confirmed. */
+function auJ(p){ return p.journey || {}; }
+function auFixOf(p){ var j = auJ(p); return j.booked ? 'booked' : j.review ? 'review' : j.session ? 'session' : (j.opened || j.compare) ? 'opened' : ''; }
+function auWaReview(p){
+  var digits = String(auJ(p).reviewPhone || p.phone || '').replace(/\D/g, ''); if(digits.length === 10) digits = '1' + digits;
+  var first = String(p.name || p.email || 'there').split(/\s+/)[0], me = (ME.name || ME.email.split('@')[0]).split(' ')[0];
+  var text = 'Hi ' + first + ', this is ' + me + ' from TrulyPlaced. You asked for a free review of your resume in the app. I’ve had a look and have a few suggestions. Is now a good time to share them?';
+  return 'https://wa.me/' + digits + '?text=' + encodeURIComponent(text);
+}
 function vAppUsers(){
   setTitle(R.sub === 'reports' ? 'Job reports' : 'App users', null);
   V.innerHTML = '<div class="pageh"><div class="grow"><h1>' + (R.sub === 'reports' ? 'Job reports' : 'App users') + '</h1><div class="sub">' +
@@ -6164,6 +6174,7 @@ function auDraw(){
   var st = d.stats || {}, reports = d.reports || [];
   var head = '<div class="stats s4">' + auStat('People', st.people) + '<div class="stat"><span><i class="auon"></i>Online now</span><b id="auOnN">' + esc(st.onlineNow == null ? '—' : st.onlineNow) + '</b></div>' + auStat('Opted in to contact', st.optedIn) + auStat('Active this week', st.activeWeek) + '</div>' +
     '<div class="stats s4">' + auStat('Open US jobs', '~' + (st.openUsJobs || 0).toLocaleString('en-US')) + auStat('Added, last 24h', (st.dayCountsExact ? '' : '~') + (st.added24h || 0).toLocaleString('en-US') + (st.added7d != null ? ' · ' + st.added7d.toLocaleString('en-US') + ' this week' : '')) + auStat('Closed, last 24h', (st.dayCountsExact ? '' : '~') + (st.closed24h || 0).toLocaleString('en-US')) + auStat('Fake-job reports open', st.reportsOpen) + '</div>' +
+    ('fixOpened' in st ? '<div class="stats s4">' + auStat('Opened Fix my resume', st.fixOpened) + auStat('Reached the session step', st.fixSession) + auStat('Asked for a WhatsApp review', st.fixReview) + auStat('Booked a session', st.fixBooked) + '</div>' : '') +
     '<div class="tools"><div class="seg" id="auF">' + [['all', 'Everyone'], ['opted', 'Opted in only'], ['reports', 'Job reports' + (reports.length ? ' (' + reports.length + ')' : '')]].map(function(f){
         var on = R.sub === 'reports' ? f[0] === 'reports' : AU.f === f[0];
         return '<button type="button" data-f="' + f[0] + '" class="' + (on ? 'on' : '') + '">' + esc(f[1]) + '</button>'; }).join('') + '</div>' +
@@ -6178,6 +6189,7 @@ function auDraw(){
     sel('phone', 'Phone', [['', 'Any'], ['yes', 'Has a phone'], ['no', 'No phone']]) +
     sel('active', 'Activity', [['', 'Any'], ['online', 'Online now'], ['week', 'Active this week'], ['quiet', 'Quiet 7+ days'], ['new', 'Joined this week']]) +
     sel('crm', 'In our lists', [['', 'Any'], ['none', 'Not a lead or client yet'], ['lead', 'In Leads'], ['client', 'Client']]) +
+    sel('fix', 'Fix my resume', [['', 'Any'], ['review', 'Asked for a review'], ['booked', 'Booked a session'], ['session', 'Reached the session step'], ['any', 'Opened it'], ['none', 'Not opened']]) +
     sel('up', 'Resume uploaded', [['', 'Any time'], ['today', 'Today'], ['yesterday', 'Yesterday'], ['7', 'Last 7 days'], ['30', 'Last 30 days'], ['range', 'Choose dates…']]) +
     '<span class="aufl" id="auRange"' + (AU.fs.up === 'range' ? '' : ' hidden') + '><span>From</span><input class="inp sm" type="date" id="auFrom" value="' + esc(AU.from) + '"></span>' +
     '<span class="aufl" id="auRange2"' + (AU.fs.up === 'range' ? '' : ' hidden') + '><span>To</span><input class="inp sm" type="date" id="auTo" value="' + esc(AU.to) + '"></span>' +
@@ -6242,10 +6254,16 @@ function auList(){
       if(F.crm === 'lead' && !ld) return false;
       if(F.crm === 'client' && !cl) return false;
       if(!auUpIn(p, upW)) return false;
+      var J = auJ(p);
+      if(F.fix === 'review' && !J.review) return false;
+      if(F.fix === 'booked' && !J.booked) return false;
+      if(F.fix === 'session' && !J.session) return false;
+      if(F.fix === 'any' && !J.opened) return false;
+      if(F.fix === 'none' && J.opened) return false;
       return true;
     })
     .filter(function(p){ return !n || [p.name, p.email, p.phone, p.location, p.headline].concat(p.roles || []).some(function(v){ return v && String(v).toLowerCase().indexOf(n) >= 0; }); })
-    .sort(orders[AU.sort] || function(a, b){ return (auOnline(b) - auOnline(a)) || (ranked ? ((b.lead && b.lead.score) || -1) - ((a.lead && a.lead.score) || -1) : 0) || (b.optedIn - a.optedIn) || String(b.last || '').localeCompare(String(a.last || '')); });
+    .sort(orders[AU.sort] || function(a, b){ var w = function(p){ var j = auJ(p); return j.review && !j.booked ? 1 : 0; }; return (w(b) - w(a)) || (auOnline(b) - auOnline(a)) || (ranked ? ((b.lead && b.lead.score) || -1) - ((a.lead && a.lead.score) || -1) : 0) || (b.optedIn - a.optedIn) || String(b.last || '').localeCompare(String(a.last || '')); });
   var cnt = $('#auCount'); if(cnt) cnt.textContent = rows.length + ' of ' + (d.people || []).length;
   if(!rows.length){ box.innerHTML = '<div class="empty"><h3>No one matches</h3></div>'; return; }
   box.innerHTML = '<div class="card aul">' + rows.map(function(p){
@@ -6254,14 +6272,19 @@ function auList(){
       (!p.onboarded ? ' <span class="st wait">' + ({terms:'Left on first screen', resume:'No resume yet', setup:'Didn’t finish setup'}[stageOf(p)] || 'Didn’t finish setup') + '</span>' : '') +
       (p.lead ? ' <span class="st ' + (p.lead.score >= 70 ? 'interview' : 'closed') + '" title="' + esc(p.lead.reason || '') + '">Lead ' + p.lead.score + '</span>' : '') +
       (cl ? ' <a class="st applied" href="' + esc(cUrl(cl.id, '')) + '" data-go title="Already a client">Client</a>' : ld ? ' <a class="st interview" href="/team.html#leads" data-go title="Already in Leads">In Leads</a>' : '');
-    var acts = (p.phone && p.optedIn ? '<a class="btn sm wa" href="' + esc(auWhatsapp(p)) + '" target="_blank" rel="noopener">WhatsApp</a><a class="btn sm" href="tel:' + esc(String(p.phone).replace(/[^\d+]/g, '')) + '">Call</a>' : '') +
+    var J = auJ(p), fx = auFixOf(p);
+    if(J.review) chips += ' <span class="st interview" title="Asked ' + esc(auWhen(J.review)) + '">Asked for a review</span>';
+    if(J.booked) chips += ' <span class="st applied" title="Booked ' + esc(auWhen(J.booked)) + '">Booked a session</span>';
+    else if(fx === 'session' || fx === 'opened') chips += ' <span class="st closed" title="Opened ' + esc(auWhen(J.opened || J.compare)) + '">' + (fx === 'session' ? 'Saw the session step' : 'Opened Fix my resume') + '</span>';
+    var acts = (J.review ? '<a class="btn sm wa" href="' + esc(auWaReview(p)) + '" target="_blank" rel="noopener" title="To ' + esc(J.reviewPhone || p.phone || '') + ', the number they confirmed">Send the review</a>' : '') +
+      (p.phone && p.optedIn && !J.review ? '<a class="btn sm wa" href="' + esc(auWhatsapp(p)) + '" target="_blank" rel="noopener">WhatsApp</a><a class="btn sm" href="tel:' + esc(String(p.phone).replace(/[^\d+]/g, '')) + '">Call</a>' : '') +
       (!cl && !ld ? '<button class="btn sm" type="button" data-act="aulead" data-id="' + esc(p.id) + '">' + I.plus + 'Add to Leads</button>' : '');
     return '<div class="li aurow"><div class="main"><div class="t">' + esc(p.name || '(no name yet)') + ' ' + chips + '</div>' +
         (p.lead && p.lead.reason ? '<div class="m">' + esc(p.lead.reason) + '</div>' : '') +
         '<div class="m">' + esc([p.headline, p.location].filter(Boolean).join(' · ') || 'No resume yet') + '</div>' +
         (p.resumeAt ? '<div class="m fine" title="' + esc(p.resumeLast && p.resumeLast !== p.resumeAt ? 'Last uploaded ' + auWhen(p.resumeLast) : '') + '">Resume uploaded ' + esc(auWhen(p.resumeAt)) + ' · ' + esc(TP.ago(p.resumeAt)) + '</div>' : '') +
         ((p.roles || []).length ? '<div class="m fine">Wants: ' + esc(p.roles.join(', ')) + '</div>' : '') + '</div>' +
-      '<div class="aucon"><div>' + esc(p.email || '—') + '</div><div class="m">' + esc(p.phone || 'No phone on resume') + '</div></div>' +
+      '<div class="aucon"><div>' + esc(p.email || '—') + '</div><div class="m">' + esc(p.phone || 'No phone on resume') + '</div>' + (J.reviewPhone && String(J.reviewPhone).replace(/\D/g, '') !== String(p.phone || '').replace(/\D/g, '') ? '<div class="m fine">WhatsApp: ' + esc(J.reviewPhone) + '</div>' : '') + '</div>' +
       '<div class="auuse m"><div>' + esc(p.plan) + ' · ' + p.used + '/' + p.quota + ' used</div><div>' + p.sent + ' sent · ' + p.waiting + ' waiting</div><div>Joined ' + esc(TP.ago(p.joined)) + (p.seen && !auOnline(p) ? ' · last seen ' + esc(TP.ago(p.seen)) : !p.seen && p.last ? ' · active ' + esc(TP.ago(p.last)) : '') + '</div></div>' +
       '<div class="auact">' + acts + '</div></div>';
   }).join('') + '</div>';
