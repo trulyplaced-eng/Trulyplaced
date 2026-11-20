@@ -6064,8 +6064,10 @@ function teamMenu(email){
    ===================================================================== */
 var LD_STAGES = [['new', 'New', 'draft'], ['call_booked', 'Call booked', 'interview'], ['call_done', 'Call done', 'applied'], ['link_sent', 'Payment link sent', 'wait'], ['won', 'Won', 'offer'], ['lost', 'Lost', 'rejected']];
 var LD_SRC = [['whatsapp', 'WhatsApp'], ['app', 'AI app'], ['website', 'Website'], ['calendly', 'Calendly'], ['instagram', 'Instagram'], ['linkedin', 'LinkedIn'], ['referral', 'Referral'], ['other', 'Other']];
-var LD_F = [['open', 'Open'], ['new', 'New'], ['call_booked', 'Call booked'], ['call_done', 'Call done'], ['link_sent', 'Link sent'], ['won', 'Won'], ['lost', 'Lost'], ['all', 'All']];
+var LD_F = [['open', 'Open'], ['resume', 'Resume review'], ['new', 'New'], ['call_booked', 'Call booked'], ['call_done', 'Call done'], ['link_sent', 'Link sent'], ['won', 'Won'], ['lost', 'Lost'], ['all', 'All']];
 var LD = {q:'', f:'open', rows:null};
+/* Booked the app's "Free resume review" on Calendly (2026-11-19): those come from Fix my resume in the AI app. */
+function ldResume(l){ return /resume review/i.test(l.call_event || ''); }
 function ldStage(s){ return LD_STAGES.filter(function(x){ return x[0] === s; })[0] || LD_STAGES[0]; }
 function ldPill(s){ var x = ldStage(s); return '<span class="st ' + x[2] + '">' + x[1] + '</span>'; }
 function ldSrc(s){ var x = LD_SRC.filter(function(y){ return y[0] === s; })[0]; return x ? x[1] : 'Other'; }
@@ -6987,12 +6989,12 @@ function vLeads(){
 function drawLeads(){
   var box = $('#ll'); if(!box || !LD.rows) return;
   var all = LD.rows, qq = LD.q.toLowerCase().trim(), qd = digits(qq), t = istYmd(Date.now());
-  var inF = function(l, f){ return f === 'all' || (f === 'open' ? ldOpen(l) : l.stage === f); };
+  var inF = function(l, f){ return f === 'all' || (f === 'open' ? ldOpen(l) : f === 'resume' ? ldResume(l) : l.stage === f); };
   LD_F.forEach(function(f){ var el = $('#lf [data-n="' + f[0] + '"]'); if(el) el.textContent = all.filter(function(l){ return inF(l, f[0]); }).length; });
   var open = all.filter(ldOpen), calls = open.filter(function(l){ return l.call_at && istYmd(l.call_at) === t; }).length, due = open.filter(function(l){ return l.follow_up && l.follow_up <= t; }).length;
   $('#ldSub').textContent = all.length ? [open.length + ' open', calls + ' call' + (calls === 1 ? '' : 's') + ' today', due + ' follow-up' + (due === 1 ? '' : 's') + ' due'].join(' · ') : '';
   var rows = all.filter(function(l){ return inF(l, LD.f); }).filter(function(l){
-    return !qq || [l.full_name, l.email, l.phone, l.interest, ldSrc(l.source)].join(' ').toLowerCase().indexOf(qq) > -1 || (qd.length >= 4 && digits(l.phone).indexOf(qd) > -1);
+    return !qq || [l.full_name, l.email, l.phone, l.interest, ldSrc(l.source), l.call_event].join(' ').toLowerCase().indexOf(qq) > -1 || (qd.length >= 4 && digits(l.phone).indexOf(qd) > -1);
   });
   if(LD.f === 'open') rows.sort(function(a, b){ var x = ldRank(a), y = ldRank(b); return x[0] - y[0] || (x[1] < y[1] ? -1 : x[1] > y[1] ? 1 : 0); });
   if(!all.length){ box.innerHTML = '<div class="empty">' + I.users + '<h3>No leads yet</h3><p>Add everyone who asks about TrulyPlaced — on WhatsApp, the website or a call — and keep track of them until they pay.</p><button class="btn pri" type="button" data-act="newlead">' + I.plus + 'New lead</button></div>'; return; }
@@ -7000,7 +7002,7 @@ function drawLeads(){
   box.innerHTML = '<div class="list leads">' + rows.map(function(l){
     var nx = ldNext(l);
     return '<a class="li ldrow" href="/team.html#leads" data-act="leadopen" data-id="' + esc(l.id) + '"><span class="av" style="background:' + TP.hue(l.id) + '">' + esc(TP.initials(l.full_name, l.email)) + '</span>' +
-      '<div class="main"><div class="t">' + esc(l.full_name) + '</div><div class="m">' + esc([ldSrc(l.source), l.interest, l.phone || l.email].filter(Boolean).join(' · ')) + '</div></div>' +
+      '<div class="main"><div class="t">' + esc(l.full_name) + (ldResume(l) ? ' <span class="st interview" title="' + esc(l.call_event) + '">Resume review</span>' : '') + '</div><div class="m">' + esc([ldSrc(l.source), l.interest, l.phone || l.email].filter(Boolean).join(' · ')) + '</div></div>' +
       '<div class="side"><span class="ldnext ' + nx.cls + '">' + esc(nx.text) + '</span>' + ldPill(l.stage) + '<span class="ldwho">' + esc(l.owner_email ? who(l.owner_email) : '—') + '</span></div>' +
       I.chev.replace('<svg', '<svg class="chev"') + '</a>';
   }).join('') + '</div>';
