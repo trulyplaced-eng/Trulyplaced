@@ -770,8 +770,8 @@ a.blg-btn:hover svg,.blg-feat:hover .blg-btn svg{transform:translateX(2px)}
 .blg-cta-tx{align-self:center;padding:56px}
 .blg-cta h2{margin:0;font:600 clamp(28px,3.4vw,42px)/1.08 "Geist",system-ui,sans-serif;letter-spacing:-.035em;color:#fff;text-wrap:balance}
 .blg-cta p{max-width:440px;margin:16px 0 28px;font-size:16.5px;line-height:1.55;color:rgba(255,255,255,.88)}
-.blg-cta-ph{align-self:end;justify-self:center;width:300px;height:380px;overflow:hidden}
-.blg-cta-ph img{display:block;width:100%;height:auto;border-radius:44px 44px 0 0;box-shadow:0 -10px 50px -10px rgba(0,20,90,.5)}
+.blg-cta-ph{align-self:end;justify-self:center;width:300px;height:380px;overflow:hidden;border-radius:44px 44px 0 0;box-shadow:0 0 0 1px rgba(255,255,255,.28),0 -10px 50px -10px rgba(0,20,90,.5)}
+.blg-cta-ph img{display:block;width:100%;height:auto}
 /* dark */
 html[data-theme="dark"] .blg-hd h1,html[data-theme="dark"] .blg-ph h1,html[data-theme="dark"] .blg-tx b,html[data-theme="dark"] .blg-more h2{color:#F5F5F7}
 html[data-theme="dark"] .blg-hd p{color:#A1A1AA}
@@ -797,8 +797,8 @@ html[data-theme="dark"] .blg-back:hover{color:#F5F5F7}
   .blg-cv img{border-radius:18px}
   .blg-cta{grid-template-columns:1fr;border-radius:24px;min-height:0}
   .blg-cta-tx{padding:32px 24px 8px}
-  .blg-cta-ph{width:240px;height:250px;margin-top:20px}
-  .blg-cta-ph img{border-radius:34px 34px 0 0}
+  .blg-cta-ph{width:240px;height:250px;margin-top:20px;border-radius:34px 34px 0 0}
+  
 }
 @media(prefers-reduced-motion:reduce){.blg-wm,.blg-ic,.blg-btn,.blg-btn svg{transition:none}}
 /* post hero: the illustration on the blue sky (the titled cover stays for share previews) */
@@ -895,3 +895,6 @@ html[data-theme="dark"] .blg-back:hover{color:#F5F5F7}
 @media(min-width:641px) and (max-width:900px){.bcta{bottom:calc(20px + env(safe-area-inset-bottom))}}
 @media(prefers-reduced-motion:reduce){.bcta,.bcta.on{transition:opacity .2s ease,visibility 0s}.bcta{transform:none}.bcta.on .bcta-art,.bcta.on .bcta-go::after{animation:none}}
 
+
+/* Blog: the space under the closing app card matches the space above it (the footer's own margin was stacked on two paddings: 160px under, 72px over). */
+.blg .blg-end{padding-bottom:0}.blg .blg-ls:has(.blg-end){padding-bottom:0}main.blg+footer{margin-top:clamp(40px,6vw,72px)}
