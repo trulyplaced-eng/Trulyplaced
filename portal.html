@@ -369,6 +369,24 @@ body{background:#fff}
   .greet h2{font-size:20px}
   .tabbar{background:#fff;box-shadow:none}
 }
+/* ===== Requested (2026-11-24): the jobs the client asked their specialist for in the app, until each is sent (my_requests in
+   sql/supabase-my-requests.sql). A strip of small cards at the top of Applications, a line on the Dashboard. ===== */
+.jrs{margin-bottom:14px}
+.jrs h3 small{white-space:nowrap}
+.jrs .hint{margin:2px 0 12px}
+.jrg{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.jrc{display:flex;align-items:flex-start;gap:10px;min-width:0;padding:10px 12px;border:1px solid var(--line);border-radius:var(--rc);background:#fff}
+.jrc .main{flex:1;min-width:0}
+.jrc .t{font-size:13.5px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jrc .m{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jrc .f{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;margin-top:6px;font-size:12px;color:var(--muted)}
+.jrs .more{display:flex;justify-content:center;margin-top:10px}
+.jrline{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 16px;border:1px solid var(--line);border-radius:var(--r);background:#fff;color:inherit;text-decoration:none;font-size:13.5px;min-width:0}
+.jrline:hover{border-color:var(--line-2)}
+.jrline b{color:var(--ink);font-weight:600;white-space:nowrap}
+.jrline span{flex:1;min-width:0;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jrline svg{width:16px;height:16px;flex:none;color:var(--muted)}
+@media (max-width:900px){ .jrg{grid-template-columns:minmax(0,1fr)} .jrline{padding:10px 14px} }
 </style>
 </head>
 <body>
@@ -401,6 +419,7 @@ body{background:#fff}
 var $ = TP.$, $$ = TP.$$, esc = TP.esc, I = TP.I, q = TP.q;
 var SB = null, ME = null, CL = null, PROG = null, STATS = null, WEEKS = null, STERR = false, A = null, V = $('#view');
 var F = {f:'all', q:'', n:50};
+var JR = {rows:null, off:false, all:false, seq:0};   // Requested: the jobs asked for in the app, not sent yet (off: my_requests isn't in the database yet)
 var RES = null, RV = null;   // the Resume page: the client's resumes with how each one did, their requests; the version on show
 var TEAM = 'the TrulyPlaced team', WA = TP.CONFIG.WHATSAPP, MAIL = TP.CONFIG.SUPPORT_EMAIL;
 var PLAN = {250:'Starter', 500:'Growth', 1000:'Super Saver'};
@@ -547,11 +566,51 @@ function vHome(){
       (tot ? '<div class="hbar"><i style="width:' + pct + '%"></i></div><div class="hfoot"><span>' + (done >= tot ? 'Plan complete' : (tot - done).toLocaleString() + ' to go') + '</span>' +
         (PROG.last_applied_at ? '<span>Last sent ' + esc(TP.ago(PROG.last_applied_at)) + '</span>' : '') + '</div>' : '<div class="hfoot"><span>Your plan details will appear here soon.</span></div>') +
     '</div>' + (tot ? '<div class="ring" style="--p:' + pct + '" aria-hidden="true"><span><b>' + pct + '%</b>complete</span></div>' : '') + '</section>' +
-    '<div class="kpis" id="kpis">' + kpisHTML() + '</div>' + appCardHTML() +
+    '<div class="kpis" id="kpis">' + kpisHTML() + '</div><div id="jrLine">' + jrLineHTML() + '</div>' + appCardHTML() +
     (done ? '<div class="duo"><section class="panel"><h3>Applications per week <small>last 8 weeks</small></h3><div id="wk">' + weeksHTML() + '</div></section>' +
         '<section class="panel"><h3>Where they stand <small>' + done.toLocaleString() + ' sent</small></h3><div id="mix">' + mixHTML() + '</div></section></div>' +
       '<div class="seeall"><a class="btn" href="#applications" data-go>See all ' + done.toLocaleString() + ' application' + (done === 1 ? '' : 's') + I.chev + '</a></div>'
      : onboardingHTML());
+  loadReqs();
+}
+
+/* ---------- Requested: the jobs they asked their specialist for in the app (the app's "Apply by Team"), until each is sent.
+   Read with my_requests() (sql/supabase-my-requests.sql: clients can't read drafts). Until that has run, nothing shows. ---------- */
+function jrRows(){ return JR.rows || []; }
+function jrLineHTML(){
+  var n = jrRows().length; if(!n) return '';
+  return '<a class="jrline" href="#applications" data-go><b>' + n.toLocaleString() + ' with your specialist</b><span>Jobs you asked for in the app, not sent yet</span>' + I.chev + '</a>';
+}
+function jrStripHTML(){
+  var L = jrRows(); if(!L.length) return '';
+  var shown = JR.all ? L : L.slice(0, 6), working = L.filter(function(r){ return r.stage === 'working'; }).length;
+  return '<section class="panel jrs" aria-label="Requested jobs"><h3>Requested <small>' + L.length.toLocaleString() + ' with your specialist' + (working ? ' · ' + working.toLocaleString() + ' in progress' : '') + '</small></h3>' +
+    '<p class="hint">Jobs you asked for in the app. Your specialist applies to each one by hand; it moves to the list below once it’s sent.</p>' +
+    '<div class="jrg">' + shown.map(function(r){
+      var w = r.stage === 'working';
+      return '<div class="jrc">' + TP.logo(r.company) + '<div class="main"><div class="t" title="' + esc(r.title || 'Role') + '">' + esc(r.title || 'Role') + '</div>' +
+        '<div class="m">' + esc([r.company, r.location].filter(Boolean).join(' · ')) + '</div>' +
+        '<div class="f"><span class="st ' + (w ? 'stg-progress' : 'stg-new') + '">' + (w ? 'In progress' : 'Requested') + '</span><span>Asked ' + esc(TP.ago(r.requested_at)) + '</span></div></div></div>';
+    }).join('') + '</div>' +
+    (L.length > 6 ? '<div class="more"><button class="btn sm" type="button" data-act="jrall">' + (JR.all ? 'Show fewer' : 'Show all ' + L.length.toLocaleString()) + '</button></div>' : '') + '</section>';
+}
+function paintReqs(){
+  var s = $('#jrStrip'), l = $('#jrLine');
+  if(s) s.innerHTML = jrStripHTML();
+  if(l) l.innerHTML = jrLineHTML();
+}
+function loadReqs(){
+  if(JR.off) return;
+  var seq = ++JR.seq;
+  SB.rpc('my_requests').then(function(r){
+    if(seq !== JR.seq) return;
+    if(r.error){
+      var c = r.error.code || '';
+      if(c === '42883' || c === 'PGRST202' || /could not find the function/i.test(r.error.message || '')) JR.off = true;   // not in the database yet: show nothing
+      JR.rows = []; return paintReqs();
+    }
+    JR.rows = Array.isArray(r.data) ? r.data : []; paintReqs();
+  }, function(){ if(seq === JR.seq){ JR.rows = []; paintReqs(); } });
 }
 
 /* ---------- Applications: every one sent, newest first, with search and the status filters ---------- */
@@ -560,11 +619,13 @@ function vApps(){
   var done = PROG.done || 0;
   V.innerHTML = '<div class="greet" id="listTop"><div><h2>Applications</h2><p>' + (done ? 'Everything we’ve sent for you, newest first. Open one to see the job, your resume as sent and the company’s confirmation.' : 'Your first applications are on the way — each appears here the moment it’s sent.') +
       '</p></div><span class="ct" id="alc"></span></div>' +
+    '<div id="jrStrip">' + jrStripHTML() + '</div>' +
     (done ? '<div class="tools"><input class="inp" id="aq" type="search" placeholder="Search role or company" value="' + esc(F.q) + '" autocomplete="off" aria-label="Search your applications">' +
         (PROG.ai_done ? '<div class="seg" id="asrc">' + SRC_F.map(function(f){ return '<button type="button" data-src="' + f[0] + '" class="' + ((F.src || '') === f[0] ? 'on' : '') + '">' + f[1] + '</button>'; }).join('') + '</div>' : '') +
         '<div class="seg" id="af">' + FILTERS.map(function(f){ return '<button type="button" data-f="' + f[0] + '" class="' + (F.f === f[0] ? 'on' : '') + '"' + (f[0] === 'withdrawn' && F.f !== 'withdrawn' ? ' hidden' : '') + '>' + f[1] + '</button>'; }).join('') + '</div></div>' +
       '<div id="al"><div class="skel"></div><div class="skel"></div></div>'
      : '<div class="empty">' + IC.apps + '<h3>Nothing sent yet</h3><p>We start applying as soon as your resume is ready. You’ll see every application here, with exactly what was sent.</p></div>');
+  loadReqs();
   if(!done) return;
   var t; $('#aq').addEventListener('input', function(e){ clearTimeout(t); t = setTimeout(function(){ F.q = e.target.value; F.n = 50; loadList(); }, 250); });
   $('#af').addEventListener('click', function(e){ var b = e.target.closest('[data-f]'); if(b) setFilter(b.getAttribute('data-f')); });
@@ -894,6 +955,7 @@ document.addEventListener('click', function(e){
   if(act === 'out') return TP.signOut();
   if(act === 'appcardok'){ TP.lsSet(APPCARD_KEY(), 1); var ac = $('#appCard'); if(ac) ac.outerHTML = appCardHTML(); return; }
   if(act === 'more'){ F.n += 50; loadList(); }
+  if(act === 'jrall'){ JR.all = !JR.all; paintReqs(); return; }
   if(act === 'ask') askModal();
   if(act === 'pdf'){ var fw = $('#' + (b.getAttribute('data-f') || 'rvF')); try{ if(fw && fw.contentWindow && fw.contentWindow.downloadPDF){ fw.contentWindow.downloadPDF(); return; } }catch(x){} TP.toast('One moment — the resume is still opening'); }
   if(act === 'pfsave') pfSave(b);
