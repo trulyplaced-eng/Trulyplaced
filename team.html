@@ -90,6 +90,42 @@
 .stats.s4{grid-template-columns:repeat(4,1fr)}.aul{padding:0}.aurow{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1.4fr) minmax(0,1.3fr) 280px;gap:8px 24px;align-items:start;padding:16px 16px;border-bottom:1px solid var(--line)}.aurow:last-child{border-bottom:0}
 .aurow .main{min-width:0}@media (max-width:900px){.aurow{grid-template-columns:1fr}}.aurow .t .st{margin-left:4px;vertical-align:1px}.aucon{min-width:0;overflow-wrap:anywhere;font-size:var(--fs-14)}.auuse{font-size:var(--fs-12)}
 .auact{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end}.btn.wa{background:#25D366;color:#fff;border-color:#25D366}.aurep{margin-bottom:12px}.aurep .ch{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.aurr{margin:12px 0 0;padding-left:16px;font-size:var(--fs-14)}
+/* Catalog (#catalog): the app's jobs and Top resumes */
+.ctpaste{margin-bottom:20px}.cth{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:4px 0 8px}.cth h3{margin:0}
+.stats.ctst{grid-template-columns:repeat(auto-fit,minmax(128px,1fr));margin-bottom:8px}
+.ctcats{display:flex;flex-wrap:wrap;gap:4px 16px;margin:0 0 24px}.ctcats b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.ctlive{display:inline-flex;align-items:center;gap:6px}
+.ctprog{display:flex;align-items:center;gap:12px;margin:0 0 4px}.ctbar{flex:0 1 240px;height:6px;border-radius:999px;background:var(--g-100);overflow:hidden}.ctbar i{display:block;height:100%;background:var(--blue);border-radius:inherit;transition:width .3s}
+.tbl.ctl .thead,.tbl.ctl .li{grid-template-columns:minmax(0,1.3fr) 168px minmax(0,1.5fr) 80px minmax(0,1fr) minmax(0,1.6fr)}
+.tbl.ctj .thead,.tbl.ctj .li{grid-template-columns:minmax(0,2fr) 80px minmax(0,1.1fr) 136px 96px 292px}
+.ctlink{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--body)}.ctlink:hover{color:var(--blue)}
+.ctjob{min-width:0}.ctjob a{color:inherit;text-decoration:none}.ctjob a:hover b{color:var(--blue)}.ctjob b{display:block;font-weight:500;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ctjob small,.tbl.ctl .m small,.ctnote small{display:block;color:var(--muted);font-size:var(--fs-12);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ctnote{min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-size:var(--fs-12)}.ctwhy{color:var(--bad);font-size:var(--fs-12)}
+.ctrep{display:flex;gap:6px;width:100%}.ctrep .inp{flex:1;min-width:0}
+.ctacts{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}.tbl.ctj select.inp{width:100%;min-width:0}
+.ctmore{display:flex;justify-content:center;margin:12px 0}.ctjf .inp[type=search]{max-width:260px}.ctstale{opacity:.55;transition:opacity .2s}
+.csgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.csgrid .card.cscard{padding:0;margin:0;overflow:hidden;display:flex;flex-direction:column}#ctBatch{width:auto;max-width:min(420px,100%)}
+.csprev{--s:.4;position:relative;height:240px;overflow:hidden;background:var(--g-50);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+.csprev iframe{position:absolute;top:0;left:0;width:820px;height:1100px;border:0;background:#fff;transform:scale(var(--s));transform-origin:0 0;pointer-events:none}
+.csbody{padding:12px 16px 16px;display:flex;flex-direction:column;gap:4px;flex:1}.csbody .t{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.csbody .t b{font-weight:600;color:var(--ink)}
+.csact{margin-top:auto;padding-top:8px;gap:6px}
+.ceemp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:8px 12px;align-items:center;margin-top:8px}.ceemp label{font-size:var(--fs-13);color:var(--body);overflow:hidden;text-overflow:ellipsis}
+.cewh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.cewh .lbl{margin-right:auto}
+.cewhy{display:grid;grid-template-columns:minmax(0,1fr) 28px;gap:6px 8px;padding:8px 0;border-top:1px solid var(--line)}.cewhy:first-child{border-top:0}.cewhy textarea{grid-column:1}.cewhy .icb{grid-column:2;grid-row:1}
+#ceConN{margin-top:8px}.cepub{font-weight:500}
+@media (max-width:760px){
+  .tbl.ctl .li{grid-template-columns:minmax(0,1fr) auto;row-gap:4px;padding-top:10px;padding-bottom:10px}
+  .tbl.ctl .li > :nth-child(1){grid-column:1}.tbl.ctl .li > :nth-child(2){grid-column:2;grid-row:1}
+  .tbl.ctl .li > :nth-child(n+3){grid-column:1 / -1}.tbl.ctl .li > :nth-child(4),.tbl.ctl .li > :nth-child(5){display:none}
+  .tbl.ctj .li{grid-template-columns:minmax(0,1fr) auto;row-gap:8px;padding-top:12px;padding-bottom:12px}
+  .tbl.ctj .li > :nth-child(1){grid-column:1}.tbl.ctj .li > :nth-child(2){display:none}.tbl.ctj .li > :nth-child(5){grid-column:2;grid-row:1}
+  .tbl.ctj .li > :nth-child(3){grid-column:1}.tbl.ctj .li > :nth-child(4){grid-column:2}.tbl.ctj .li > :nth-child(6){grid-column:1 / -1;justify-content:flex-start}
+  .ctjf .inp[type=search]{max-width:none;flex:1 1 100%}
+  .tbl.ctl .ctjob:has(> .muted){display:none}.ctbar{flex:1 1 auto}.ctprog .fine{white-space:nowrap}
+  .ceemp{grid-template-columns:1fr}
+}
 .stat b{display:block;}
 
 /* application page */
@@ -1755,7 +1791,7 @@ function meMenu(btn){
     it('/team.html#myday', J.day, 'My day', 'Your work, and who still needs an application') +
     '<button role="menuitem" type="button" data-act="switch">' + J.swap + '<span>Switch client<small>Ctrl K</small></span></button>' +
     '<button role="menuitem" type="button" data-act="hoaway">' + J.load + '<span>Set my status<small>Away or on leave, and who covers</small></span></button>' +
-    it('/team.html#tasks', J.clip, 'Tasks') + it('/team.html#clients', I.users, 'All clients') + (ME.owner ? it('/team.html#leads', J.star, 'Leads') + it('/team.html#appusers', J.bag, 'App users', 'Who signed up to the AI app') + it('/team.html#ops', J.ops, 'Operations') + it('/team.html#team', I.team, 'Team') : '') +
+    it('/team.html#tasks', J.clip, 'Tasks') + it('/team.html#clients', I.users, 'All clients') + (ME.owner ? it('/team.html#leads', J.star, 'Leads') + it('/team.html#appusers', J.bag, 'App users', 'Who signed up to the AI app') + it('/team.html#catalog', J.tag, 'Catalog', 'The app’s jobs and Top resumes') + it('/team.html#ops', J.ops, 'Operations') + it('/team.html#team', I.team, 'Team') : '') +
     '<button role="menuitem" type="button" data-act="keys">' + J.clip + '<span>Keyboard shortcuts<small>?</small></span></button>' +
     '<button role="menuitem" type="button" data-act="out">' + I.out + '<span>Sign out</span></button></div>');
   btn.setAttribute('aria-expanded', 'true');
@@ -1785,6 +1821,7 @@ function route(){
     var emp = !!ME && ME.owner === false, oe = /^ops\/emp=(.+)$/.exec(h);
     if(oe){ r.page = emp ? 'myday' : 'opsemp'; try{ r.emp = decodeURIComponent(oe[1]).toLowerCase(); }catch(e){ r.page = 'ops'; } return r; }   // one employee on Operations
     if(h === 'appusers' || h === 'appusers/reports'){ r.page = emp ? 'myday' : 'appusers'; r.sub = h === 'appusers/reports' ? 'reports' : ''; return r; }   // the AI app's users, the owners'
+    if(h === 'catalog' || h === 'catalog/jobs' || h === 'catalog/resumes'){ r.page = emp ? 'myday' : 'catalog'; r.sub = h.split('/')[1] || ''; return r; }   // the app's jobs and Top resumes, the owners'
     r.page = h === 'review' ? (emp ? 'queue' : 'review') : h === 'workload' ? (emp ? 'queue' : 'workload') : h === 'team' || h === 'leads' || h === 'ops' || h === 'opsclients' || h === 'opsmistakes' ? (emp ? 'myday' : h) : h === 'tasks' ? 'tasks' : h === 'queue' || (emp && !h) ? 'queue' : h === 'myday' ? 'myday' : 'clients';   // Leads, Operations and Team are the owners'
     return r;
   }
@@ -1847,16 +1884,16 @@ function draw(){
   R = route();
   $('#me').innerHTML = meHTML();
   qCounts();   // the sidebar's counts (at most every 15 s; a minute's timer keeps them fresh)
-  var cl = R.page === 'clients', tm = R.page === 'team', md = R.page === 'myday', tk = R.page === 'tasks', ld = R.page === 'leads', au = R.page === 'appusers', op = /^ops/.test(R.page || '');
+  var cl = R.page === 'clients', tm = R.page === 'team', md = R.page === 'myday', tk = R.page === 'tasks', ld = R.page === 'leads', au = R.page === 'appusers', ct = R.page === 'catalog', op = /^ops/.test(R.page || '');
   var qu = R.page === 'queue';
   $('#pnav').innerHTML = '<div class="ngl">Workspace</div><a href="/team.html#queue" data-go title="My queue" class="' + (qu ? 'on' : '') + '"' + (qu ? ' aria-current="page"' : '') + '>' + J.queue + '<span>My queue</span>' + qBadge('queue') + '</a>' +
     '<a href="/team.html#myday" data-go title="My day" class="' + (md ? 'on' : '') + '"' + (md ? ' aria-current="page"' : '') + '>' + J.day + '<span>My day</span></a>' +
     '<a href="/team.html#tasks" data-go title="Tasks" class="' + (tk ? 'on' : '') + '"' + (tk ? ' aria-current="page"' : '') + '>' + J.clip + '<span>Tasks</span>' + qBadge('tasks') + '</a>' +
     '<a href="/team.html#clients" data-go title="Clients" class="' + (cl ? 'on' : '') + '"' + (cl ? ' aria-current="page"' : '') + '>' + I.users + '<span>Clients</span>' + qBadge('unassigned') + '</a><div class="otabs" id="otabs" hidden></div>' +
-    (ME.owner ? '<div class="ngl">Sales</div><a href="/team.html#leads" data-go title="Leads" class="' + (ld ? 'on' : '') + '"' + (ld ? ' aria-current="page"' : '') + '>' + J.star + '<span>Leads</span></a><a href="/team.html#appusers" data-go title="App users" class="' + (au ? 'on' : '') + '"' + (au ? ' aria-current="page"' : '') + '>' + J.bag + '<span>App users</span></a>' : '') +
+    (ME.owner ? '<div class="ngl">Sales</div><a href="/team.html#leads" data-go title="Leads" class="' + (ld ? 'on' : '') + '"' + (ld ? ' aria-current="page"' : '') + '>' + J.star + '<span>Leads</span></a><a href="/team.html#appusers" data-go title="App users" class="' + (au ? 'on' : '') + '"' + (au ? ' aria-current="page"' : '') + '>' + J.bag + '<span>App users</span></a><a href="/team.html#catalog" data-go title="Catalog — the app’s jobs and Top resumes" class="' + (ct ? 'on' : '') + '"' + (ct ? ' aria-current="page"' : '') + '>' + J.tag + '<span>Catalog</span></a>' : '') +
     (ME.owner ? '<div class="ngl">Organisation</div><a href="/team.html#workload" data-go title="Workload" class="' + (R.page === 'workload' ? 'on' : '') + '"' + (R.page === 'workload' ? ' aria-current="page"' : '') + '>' + J.load + '<span>Workload</span>' + wlBadge() + '</a><a href="/team.html#review" data-go title="Review" class="' + (R.page === 'review' ? 'on' : '') + '"' + (R.page === 'review' ? ' aria-current="page"' : '') + '>' + J.review + '<span>Review</span></a><a href="/team.html#ops" data-go title="Operations" class="' + (op ? 'on' : '') + '"' + (op ? ' aria-current="page"' : '') + '>' + J.ops + '<span>Operations</span></a><a href="/team.html#team" data-go title="Team" class="' + (tm ? 'on' : '') + '"' + (tm ? ' aria-current="page"' : '') + '>' + I.team + '<span>Team</span></a>' : '');   // the Team page is the owners'; the titles name the icons when the sidebar is a rail
   drawOpenTabs();
-  if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : R.page === 'queue' ? vQueue() : R.page === 'workload' ? vWorkload() : R.page === 'review' ? vReview() : md ? vMyDay() : tk ? vTasks() : ld ? vLeads() : au ? vAppUsers() : R.page === 'ops' ? vOps() : R.page === 'opsemp' ? vOpsEmp(R.emp) : R.page === 'opsclients' ? vOpsClients() : R.page === 'opsmistakes' ? vOpsMistakes() : vClients(); }
+  if(!R.client){ $('#cbar').innerHTML = ''; $('#phead').innerHTML = ''; drawPhone(null); return tm ? vTeam() : R.page === 'queue' ? vQueue() : R.page === 'workload' ? vWorkload() : R.page === 'review' ? vReview() : md ? vMyDay() : tk ? vTasks() : ld ? vLeads() : au ? vAppUsers() : ct ? vCatalog() : R.page === 'ops' ? vOps() : R.page === 'opsemp' ? vOpsEmp(R.emp) : R.page === 'opsclients' ? vOpsClients() : R.page === 'opsmistakes' ? vOpsMistakes() : vClients(); }
   vClient();
 }
 // phones: a top bar with the client and Switch, and the sections along the bottom
@@ -1867,7 +1904,7 @@ function drawPhone(c){
       '<button class="icb" type="button" data-act="switch" title="Switch client">' + J.swap + '<span class="sr">Switch client</span></button>' : '<span class="grow"></span>') +
     '<button class="icb" type="button" data-act="out" title="Sign out">' + I.out + '<span class="sr">Sign out</span></button>';
   var items = c ? TABS.map(function(t){ return [cUrl(c.id, t[0]), t[3] || t[1], t[2], R.tab === t[0]]; })
-    : [['/team.html#queue', 'Queue', J.queue, R.page === 'queue'], ['/team.html#myday', 'My day', J.day, R.page === 'myday'], ['/team.html#tasks', 'Tasks', J.clip, R.page === 'tasks'], ['/team.html#clients', 'Clients', I.users, R.page === 'clients']].concat(ME.owner ? [['/team.html#leads', 'Leads', J.star, R.page === 'leads'], ['/team.html#appusers', 'App users', J.bag, R.page === 'appusers'], ['/team.html#workload', 'Workload', J.load, R.page === 'workload'], ['/team.html#review', 'Review', J.review, R.page === 'review'], ['/team.html#ops', 'Operations', J.ops, /^ops/.test(R.page || '')], ['/team.html#team', 'Team', I.team, R.page === 'team']] : []);
+    : [['/team.html#queue', 'Queue', J.queue, R.page === 'queue'], ['/team.html#myday', 'My day', J.day, R.page === 'myday'], ['/team.html#tasks', 'Tasks', J.clip, R.page === 'tasks'], ['/team.html#clients', 'Clients', I.users, R.page === 'clients']].concat(ME.owner ? [['/team.html#leads', 'Leads', J.star, R.page === 'leads'], ['/team.html#appusers', 'App users', J.bag, R.page === 'appusers'], ['/team.html#catalog', 'Catalog', J.tag, R.page === 'catalog'], ['/team.html#workload', 'Workload', J.load, R.page === 'workload'], ['/team.html#review', 'Review', J.review, R.page === 'review'], ['/team.html#ops', 'Operations', J.ops, /^ops/.test(R.page || '')], ['/team.html#team', 'Team', I.team, R.page === 'team']] : []);
   $('#tabbar').innerHTML = items.map(function(n){ return '<a href="' + esc(n[0]) + '" data-go class="' + (n[3] ? 'on' : '') + '"' + (n[3] ? ' aria-current="page"' : '') + '>' + n[2] + '<span>' + n[1] + '</span></a>'; }).join('');
 }
 function setTitle(t, c){
@@ -6323,6 +6360,470 @@ function auLead(btn){
     if(l && l.email) AU.leads[l.email.toLowerCase()] = l; LD.rows = null;
     TP.toast((p.name || 'They') + ' added to Leads'); auList();
   }, function(e){ TP.toast(TP.errText(e)); });
+}
+/* =====================================================================
+   Catalog (#catalog, #catalog/jobs, #catalog/resumes; owners only, 2026-11-23): the AI app's shared jobs and its Top
+   resumes, run from here so nothing owner-facing lives in the app.
+   - Add links: hand-found job links (about 600 a day) pasted, sent in chunks of 200 (admin_links_add, one batch per
+     paste); the app reads each in the background. Today's figures, the newest batch's results (or an earlier one), Try
+     again for a failed link, the employer's link for one from a listing site. Refreshes every 20 s while any link is
+     still waiting (not while the tab is hidden or something is being typed).
+   - Jobs: the hand-picked jobs (admin_jobs_list), their category and experience, Take down and Remove mark, with Undo.
+   - Top resumes: the app's Resume Showcase (admin_showcase_*): add from a file (uploaded to client-files/showcase/),
+     edit every field, publish or take down, delete.
+   Every call is app-hook push_to_app; the app answers owners only. The message formats are the shared contract
+   (catalog-contract.md); an answer with `error` is a plain sentence for the owner.
+   ===================================================================== */
+var CT = {st:null, batch:null, f:'all', show:300, adding:false, jobs:null, jf:{q:'', kind:'', category:'', exp:'', open:'open'}, jseq:0, sc:null};
+var CT_ST = {waiting:['wait', 'Waiting'], adding:['wait', 'Reading'], added:['applied', 'Added'], marked:['applied', 'Marked hand-picked'], duplicate:['closed', 'Duplicate'],
+  needs_link:['interview', 'Needs the employer’s link'], unreadable:['closed', 'Unreadable'], not_us:['closed', 'Not in the US'], closed:['closed', 'Closed'], failed:['closed', 'Failed']};
+var CT_RETRY = {failed:1, unreadable:1, closed:1, not_us:1};
+var CT_GROUPS = [['all', 'All', null], ['wait', 'Waiting', ['waiting', 'adding']], ['ok', 'Added', ['added', 'marked']], ['link', 'Needs link', ['needs_link']], ['dup', 'Duplicates', ['duplicate']], ['bad', 'Problems', ['failed', 'unreadable', 'not_us', 'closed']]];
+var CT_EXP = [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 15];
+// app-hook sets `role` (the caller's) and `kind` (the message) itself, so the resume's role also goes as show_role and the
+// jobs filter as job_kind (told to the app side, 2026-11-23)
+function ctFn(kind, args, ms){
+  var body = {action:'push_to_app', kind:kind}; Object.keys(args || {}).forEach(function(k){ body[k] = args[k]; });
+  return TP.fn('app-hook', body, ms || 30000).then(function(r){ if(r && r.error) throw {app:true, message:String(r.error)}; return r || {}; });
+}
+function ctErr(e){ return e && e.app ? e.message : TP.errText(e); }
+function ctN(v){ return (+v || 0).toLocaleString('en-US'); }
+function ctPl(n, one, many){ return ctN(n) + ' ' + (+n === 1 ? one : many); }
+function vCatalog(){
+  var sub = R.sub || '';
+  setTitle(sub === 'jobs' ? 'Catalog · Jobs' : sub === 'resumes' ? 'Catalog · Top resumes' : 'Catalog', null);
+  V.innerHTML = '<div class="pageh"><div class="grow"><h1>Catalog</h1><div class="sub">' + esc({
+      '':'Job links found by hand go into the app’s shared jobs for every member, marked Hand-picked. The app reads each link in the background.',
+      jobs:'The hand-picked jobs in the app: their category and experience, taking one down, or removing the Hand-picked mark.',
+      resumes:'The Top resumes members see in the app. Add one from a file, check what it says, then publish it.'}[sub]) + '</div></div>' +
+      '<a class="btn" href="https://app.trulyplaced.com/app" target="_blank" rel="noopener">Open the app' + I.ext + '</a></div>' +
+    '<div class="tools"><div class="seg" id="ctTabs" role="tablist" aria-label="Catalog">' + [['', 'Add links'], ['jobs', 'Jobs'], ['resumes', 'Top resumes']].map(function(t){
+        return '<button type="button" role="tab" data-to="' + t[0] + '" aria-selected="' + (sub === t[0]) + '" class="' + (sub === t[0] ? 'on' : '') + '">' + t[1] + '</button>'; }).join('') + '</div></div>' +
+    '<div id="ctBody"><div class="skel"></div><div class="skel"></div></div>';
+  $('#ctTabs').addEventListener('click', function(e){
+    var b = e.target.closest('[data-to]'); if(!b) return; var to = b.getAttribute('data-to');
+    if(to !== sub) go('/team.html#catalog' + (to ? '/' + to : ''));
+  });
+  if(sub === 'jobs') return cjStart();
+  if(sub === 'resumes') return csStart();
+  clStart();
+}
+
+/* ---------- Add links ---------- */
+function ctUniq(text){
+  var seen = {};
+  return linksIn(text).map(function(u){ return u.slice(0, 2000); }).filter(function(u){ var k = u.toLowerCase(); if(seen[k]) return false; seen[k] = 1; return true; });
+}
+function ctSize(){   // the box grows with what's in it, and the button says how many links it found
+  var t = $('#ctIn'), b = $('#ctGo'); if(!t || !b) return;
+  t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight + 2, 260) + 'px'; t.style.overflowY = t.scrollHeight > 258 ? 'auto' : 'hidden';
+  if(CT.adding) return;
+  var n = ctUniq(t.value).length; b.textContent = n ? 'Add ' + ctPl(n, 'link', 'links') : 'Add links'; b.disabled = !n;
+}
+function clStart(){
+  var b = $('#ctBody'); if(!b) return;
+  b.innerHTML = '<div class="card lkpaste ctpaste"><h3>' + J.link + 'Add job links</h3>' +
+      '<p class="hint">Paste as many as you have — one per line, or a whole message: the links are picked out and the same one twice counts once. The employer’s own page works best (Greenhouse, Lever, Workday, a careers page); a LinkedIn or Indeed link asks for the employer’s link.</p>' +
+      '<form id="ctF" class="row" novalidate style="align-items:flex-start"><textarea class="inp grow" id="ctIn" rows="1" placeholder="https://…" autocomplete="off" spellcheck="false" aria-label="Job links" style="min-width:220px"></textarea><button class="btn pri" type="submit" id="ctGo" disabled>Add links</button></form></div>' +
+    '<div id="ctToday"></div><div id="ctRes"><div class="skel"></div></div>';
+  var t = $('#ctIn'); t.value = TP.lsGet('tp_ct_paste', '') || ''; ctSize();   // a paste not added yet is kept on this computer
+  t.addEventListener('input', function(){ ctSize(); TP.lsSet('tp_ct_paste', t.value); });
+  t.addEventListener('keydown', function(e){ if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)){ e.preventDefault(); clAdd(); } });
+  $('#ctF').addEventListener('submit', function(e){ e.preventDefault(); clAdd(); });
+  var rb = $('#ctRes');
+  rb.addEventListener('change', function(e){
+    if(e.target.id !== 'ctBatch') return;
+    CT.batch = e.target.value || null; CT.f = 'all'; CT.show = 300;
+    clLoad().then(clDraw, function(er){ TP.toast(ctErr(er)); });
+  });
+  rb.addEventListener('click', function(e){
+    var f = e.target.closest('[data-cf]'); if(f){ CT.f = f.getAttribute('data-cf'); CT.show = 300; return clDraw(); }
+    var b2 = e.target.closest('[data-cl]'); if(!b2) return;
+    var a = b2.getAttribute('data-cl');
+    if(a === 'retry') return clRetry([b2.getAttribute('data-id')], b2);
+    if(a === 'retryall') return clRetry(((CT.st && CT.st.items) || []).filter(function(x){ return CT_RETRY[x.status]; }).map(function(x){ return x.id; }), b2);
+    if(a === 'more'){ CT.show += 1500; return clDraw(); }
+  });
+  rb.addEventListener('submit', function(e){ var fm = e.target.closest('form.ctrep'); if(!fm) return; e.preventDefault(); clReplace(fm); });
+  if(CT.st) clDraw();   // what was loaded last, at once; fresh in the background
+  clLoad().then(clDraw, function(e){ var r = $('#ctRes'); if(r && R.page === 'catalog' && !R.sub) r.innerHTML = '<div class="note bad">The app couldn’t be reached: ' + esc(ctErr(e)) + '. Check APP_HOOK_URL and APP_LINK_SECRET (Supabase → Edge Functions → Secrets).</div>'; });
+}
+function clLoad(){
+  return ctFn('admin_links_status', CT.batch ? {batch:CT.batch} : {}, 45000).then(function(r){ CT.st = r; return r; });
+}
+function clAdd(){
+  var t = $('#ctIn'), b = $('#ctGo'); if(!t || !b || CT.adding) return;
+  var links = ctUniq(t.value); if(!links.length) return;
+  var chunks = [], cur = [], size = 0;   // 200 at a time, and well under the 400,000-character message limit
+  links.forEach(function(u){ if(cur.length >= 200 || size + u.length > 300000){ chunks.push(cur); cur = []; size = 0; } cur.push(u); size += u.length + 4; });
+  if(cur.length) chunks.push(cur);
+  var tot = {queued:0, duplicates:0, needs_link:0, unreadable:0}, batch = null, done = 0, at = 0;
+  CT.adding = true; b.disabled = true; t.readOnly = true;
+  var next = function(){
+    if(at >= chunks.length) return Promise.resolve();
+    b.textContent = 'Adding ' + ctN(done) + ' of ' + ctN(links.length) + '…';
+    var args = {links:chunks[at]}; if(batch) args.batch = batch;
+    return ctFn('admin_links_add', args, 60000).then(function(r){
+      batch = r.batch || batch; done += chunks[at].length; at++;
+      Object.keys(tot).forEach(function(k){ tot[k] += +r[k] || 0; });
+      return next();
+    });
+  };
+  next().then(function(){
+    t.value = ''; TP.lsSet('tp_ct_paste', '');
+    var more = [tot.duplicates ? ctN(tot.duplicates) + ' already listed' : '', tot.needs_link ? ctN(tot.needs_link) + ' need the employer’s link' : '', tot.unreadable ? ctN(tot.unreadable) + ' unreadable' : ''].filter(Boolean);
+    TP.toast(ctPl(tot.queued, 'link', 'links') + ' queued — the app reads them in the background' + (more.length ? ' · ' + more.join(' · ') : ''), {ms:7000});
+  }, function(e){
+    var left = [].concat.apply([], chunks.slice(at));   // what didn't go stays in the box, to add again
+    t.value = left.join('\n'); TP.lsSet('tp_ct_paste', t.value);
+    TP.toast((done ? ctN(done) + ' added; the other ' + ctN(left.length) + ' are still in the box — ' : 'Couldn’t add them — ') + ctErr(e), {ms:9000});
+  }).then(function(){
+    CT.adding = false; t.readOnly = false; ctSize();
+    if(batch){ CT.batch = batch; CT.f = 'all'; CT.show = 300; }
+    return clLoad().then(clDraw, function(){});
+  });
+}
+function clRetry(ids, btn){
+  if(!ids.length) return;
+  TP.busy(btn, ctFn('admin_links_retry', {ids:ids})).then(function(r){
+    TP.toast(ctPl(r.retried != null ? r.retried : ids.length, 'link goes', 'links go') + ' back to the queue');
+    return clLoad().then(clDraw);
+  }, function(e){ TP.toast(ctErr(e)); });
+}
+function clReplace(form){
+  var id = form.getAttribute('data-id'), inp = $('input', form), u = ctUniq(inp.value)[0];
+  if(!u){ inp.focus(); TP.toast('Paste the job’s link from the employer’s own site'); return; }
+  TP.busy($('button', form), ctFn('admin_links_replace', {id:id, link:u})).then(function(){
+    TP.toast('Got it — the app reads the employer’s link next');
+    var x = ((CT.st && CT.st.items) || []).filter(function(i){ return i.id === id; })[0]; if(x){ x.status = 'waiting'; x.link = u; x.reason = ''; }
+    CT.st.working = true; clDraw(); return clLoad().then(clDraw);
+  }, function(e){ TP.toast(ctErr(e)); });
+}
+// every 20 s while a link anywhere is still waiting; never while the tab is hidden, something is being typed here, or a paste is going in
+function clTick(){
+  clearTimeout(CT.tick);
+  if(!CT.st || !CT.st.working) return;
+  CT.tick = setTimeout(function(){
+    if(R.page !== 'catalog' || R.sub) return;
+    var a = document.activeElement;
+    if(document.hidden || CT.adding || (a && a.closest && a.closest('#ctBody') && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))) return clTick();
+    clLoad().then(clDraw, function(){ clTick(); });
+  }, 20000);
+}
+function clDraw(){
+  if(R.page !== 'catalog' || R.sub) return;
+  var d = CT.st, tb = $('#ctToday'), rb = $('#ctRes'); if(!d || !tb || !rb) return;
+  var td = d.today || {}, cats = (td.by_category || []).filter(function(c){ return c.n; }).sort(function(a, b){ return b.n - a.n; });
+  tb.innerHTML = '<div class="cth"><h3>Today</h3><span class="fine">Links the app finished since midnight UTC</span></div>' +
+    '<div class="stats ctst">' + auStat('New jobs', ctN(td.added)) + auStat('Marked hand-picked', ctN(td.marked)) + auStat('Autopilot', ctN(td.autopilot)) + auStat('Manual', ctN(td.manual)) +
+      auStat('New companies', ctN(td.new_companies)) + auStat('Duplicates', ctN(td.duplicate)) + auStat('Failed', ctN(td.failed)) + '</div>' +
+    (cats.length ? '<div class="fine ctcats">' + cats.slice(0, 14).map(function(c){ return '<span>' + esc(c.label) + ' <b>' + ctN(c.n) + '</b></span>'; }).join('') + '</div>' : '');
+  var batches = d.batches || [], items = d.items || [];
+  if(!batches.length){ rb.innerHTML = '<div class="empty"><h3>No links added yet</h3><p>Paste job links above. Each one is read by the app and added to the shared jobs, marked Hand-picked.</p></div>'; return clTick(); }
+  var keep = {}; $$('form.ctrep', rb).forEach(function(f){ var v = $('input', f).value; if(v) keep[f.getAttribute('data-id')] = v; });   // a link half-pasted survives the refresh
+  var cnt = {}; items.forEach(function(x){ cnt[x.status] = (cnt[x.status] || 0) + 1; });
+  var gN = function(g){ return g[2] ? g[2].reduce(function(s, k){ return s + (cnt[k] || 0); }, 0) : items.length; };
+  var grp = CT_GROUPS.filter(function(g){ return g[0] === CT.f; })[0] || CT_GROUPS[0];
+  if(grp[2] && !gN(grp)) grp = CT_GROUPS[0];
+  var rows = grp[2] ? items.filter(function(x){ return grp[2].indexOf(x.status) >= 0; }) : items;
+  var cur = batches.filter(function(x){ return x.id === d.batch; })[0] || batches[0];
+  var read = items.length - (cnt.waiting || 0) - (cnt.adding || 0), canRetry = items.filter(function(x){ return CT_RETRY[x.status]; }).length;
+  rb.innerHTML = '<div class="cth"><h3>' + (cur && cur.id === batches[0].id ? 'Newest batch' : 'Earlier batch') + '</h3>' +
+      '<select class="inp sm" id="ctBatch" aria-label="Which batch">' + batches.map(function(x, i){
+        return '<option value="' + (i ? esc(x.id) : '') + '"' + (cur && x.id === cur.id ? ' selected' : '') + '>' + esc(auWhen(x.created_at) + ' · ' + ctPl(x.total, 'link', 'links') + ' · ' + who(x.by)) + '</option>'; }).join('') + '</select>' +
+      (d.working ? '<span class="fine ctlive"><i class="auon"></i>Reading links — this refreshes every 20 seconds</span>' : '') +
+      (canRetry ? '<button class="btn sm" type="button" data-cl="retryall" style="margin-left:auto">Try all ' + ctN(canRetry) + ' again</button>' : '') + '</div>' +
+    '<div class="ctprog"><div class="ctbar" role="progressbar" aria-label="Links read" aria-valuemin="0" aria-valuemax="' + items.length + '" aria-valuenow="' + read + '"><i style="width:' + (items.length ? Math.round(read / items.length * 100) : 0) + '%"></i></div>' +
+      '<span class="fine">' + ctN(read) + ' of ' + ctN(items.length) + ' read · ' + ctN((cnt.added || 0) + (cnt.marked || 0)) + ' added</span></div>' +
+    '<div class="tools"><div class="seg sm" id="ctFilt" role="group" aria-label="Status">' + CT_GROUPS.filter(function(g){ return !g[2] || gN(g); }).map(function(g){
+        return '<button type="button" data-cf="' + g[0] + '" class="' + (g === grp ? 'on' : '') + '">' + g[1] + '<b>' + ctN(gN(g)) + '</b></button>'; }).join('') + '</div></div>' +
+    (rows.length ? '<div class="tbl ctl"><div class="thead"><span>Link</span><span>Status</span><span>Job</span><span>Type</span><span>Category</span><span>Note</span></div>' + rows.slice(0, CT.show).map(clRow).join('') + '</div>' +
+      (rows.length > CT.show ? '<div class="ctmore"><button class="btn" type="button" data-cl="more">Show all ' + ctN(rows.length) + '</button></div>' : '')
+      : '<div class="empty"><h3>No links in this batch yet</h3></div>');
+  Object.keys(keep).forEach(function(id){ var f = $('form.ctrep[data-id="' + id + '"] input', rb); if(f) f.value = keep[id]; });
+  clTick();
+}
+function clRow(x){
+  var s = CT_ST[x.status] || ['closed', x.status], job = x.title ? '<b>' + esc(x.title) + '</b>' + (x.company ? '<small>' + esc(x.company) + '</small>' : '') : '<span class="muted">—</span>';
+  if(x.title && x.app_url) job = '<a href="' + esc(TP.safeHref(x.app_url)) + '" target="_blank" rel="noopener" title="Open it in the app">' + job + '</a>';
+  var note = x.status === 'needs_link'
+    ? '<form class="ctrep" data-id="' + esc(x.id) + '" novalidate><input class="inp sm" type="url" placeholder="The employer’s link" aria-label="The employer’s own link for this job" autocomplete="off" spellcheck="false"><button class="btn sm" type="submit">Use it</button></form>' + (x.reason ? '<small>' + esc(x.reason) + '</small>' : '')
+    : CT_RETRY[x.status] ? '<span class="ctwhy">' + esc(x.reason || s[1]) + '</span><button class="btn sm" type="button" data-cl="retry" data-id="' + esc(x.id) + '">Try again</button>'
+    : '<span class="m">' + esc(x.reason || '') + '</span>';
+  return '<div class="li" data-id="' + esc(x.id) + '"><a class="ctlink" href="' + esc(TP.safeHref(x.link)) + '" target="_blank" rel="noopener" title="' + esc(x.link) + '">' + esc(shortLink(x.link)) + '</a>' +
+    '<span><span class="st ' + s[0] + '">' + esc(s[1]) + '</span></span><span class="ctjob">' + job + '</span>' +
+    '<span class="m">' + (x.kind === 'autopilot' ? 'Autopilot' : x.kind === 'manual' ? 'Manual' : '—') + '</span>' +
+    '<span class="m">' + esc(x.category || '—') + (x.exp_years != null ? '<small>' + esc(x.exp_years) + '+ years</small>' : '') + '</span>' +
+    '<span class="ctnote">' + note + '</span></div>';
+}
+
+/* ---------- Jobs: the hand-picked ones ---------- */
+function cjStart(){
+  var b = $('#ctBody'); if(!b) return;
+  var F = CT.jf, seg = function(id, k, opts, label){ return '<div class="seg sm" id="' + id + '" role="group" aria-label="' + label + '">' + opts.map(function(o){
+    return '<button type="button" data-v="' + o[0] + '" class="' + (F[k] === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</div>'; };
+  b.innerHTML = '<div class="tools ctjf" id="cjF"><input class="inp" id="cjQ" type="search" placeholder="Title, company or link" value="' + esc(F.q) + '" autocomplete="off" aria-label="Search the hand-picked jobs">' +
+      seg('cjKind', 'kind', [['', 'All'], ['autopilot', 'Autopilot'], ['manual', 'Manual']], 'Type') +
+      '<select class="inp sm" id="cjCat" aria-label="Category"></select><select class="inp sm" id="cjExp" aria-label="Experience"></select>' +
+      seg('cjOpen', 'open', [['open', 'Open'], ['closed', 'Taken down'], ['all', 'All']], 'Open or taken down') +
+      '<span class="fine" id="cjN"></span></div><div id="cjL"><div class="skel"></div><div class="skel"></div></div>';
+  cjOpts();
+  var qi = $('#cjQ'), tm;
+  qi.addEventListener('input', function(){ clearTimeout(tm); tm = setTimeout(function(){ if(F.q === qi.value.trim()) return; F.q = qi.value.trim(); cjLoad(false); }, 300); });
+  $('#cjF').addEventListener('click', function(e){
+    var x = e.target.closest('[data-v]'); if(!x) return; var g = x.parentNode.id === 'cjKind' ? 'kind' : x.parentNode.id === 'cjOpen' ? 'open' : null; if(!g) return;
+    F[g] = x.getAttribute('data-v'); $$('#' + x.parentNode.id + ' button').forEach(function(y){ y.classList.toggle('on', y === x); }); cjLoad(false);
+  });
+  $('#cjF').addEventListener('change', function(e){
+    if(e.target.id === 'cjCat'){ F.category = e.target.value; cjLoad(false); }
+    if(e.target.id === 'cjExp'){ F.exp = e.target.value; cjLoad(false); }
+  });
+  var l = $('#cjL');
+  l.addEventListener('change', function(e){ var s = e.target.closest('select[data-cj]'); if(s) cjUpdate(s); });
+  l.addEventListener('click', function(e){
+    if(e.target.closest('#cjMore')) return TP.busy(e.target.closest('#cjMore'), cjLoad(true));
+    var a = e.target.closest('[data-cja]'); if(!a) return;
+    var id = a.closest('[data-id]').getAttribute('data-id'), k = a.getAttribute('data-cja');
+    if(k === 'close') return cjClose(id, a);
+    if(k === 'reopen') return cjFlip(id, a, 'admin_jobs_reopen', 'admin_jobs_close', 'Back up for every member', 'Taken down again');
+    if(k === 'unpick') return cjFlip(id, a, 'admin_jobs_unpick', 'admin_jobs_pick', 'Hand-picked mark removed — it stays listed in the app', 'Marked hand-picked again');
+  });
+  if(CT.jobs && CT.jobs.key === JSON.stringify(F)) cjDraw();
+  cjLoad(false);
+}
+function cjOpts(){   // the category and experience choices, as the app lists them
+  var c = $('#cjCat'), x = $('#cjExp'), F = CT.jf; if(!c || !x) return;
+  var o = function(v, t, on){ return '<option value="' + esc(v) + '"' + (on ? ' selected' : '') + '>' + esc(t) + '</option>'; };
+  c.innerHTML = o('', 'Every category', !F.category) + (CT.jcats || []).map(function(k){ return o(k.id, k.label, String(k.id) === F.category); }).join('');
+  x.innerHTML = o('', 'Any experience', !F.exp) + (CT.jexp || []).map(function(k){ return o(k.id, k.label, String(k.id) === F.exp); }).join('');
+}
+function cjLoad(more){
+  var F = CT.jf, key = JSON.stringify(F), seq = ++CT.jseq;
+  var args = {open:F.open || 'open', offset:more && CT.jobs ? CT.jobs.jobs.length : 0};
+  if(F.q) args.q = F.q; if(F.kind) args.job_kind = F.kind;   // `kind` is the message kind itself, so the filter goes as job_kind if(F.exp) args.exp = F.exp;
+  if(F.category){ var cat = (CT.jcats || []).filter(function(k){ return String(k.id) === F.category; })[0]; args.category = cat ? cat.id : F.category; }
+  var l = $('#cjL'); if(l && !more) l.classList.add('ctstale');
+  return ctFn('admin_jobs_list', args, 45000).then(function(r){
+    if(seq !== CT.jseq) return;
+    CT.jobs = {key:key, jobs:(more && CT.jobs ? CT.jobs.jobs : []).concat(r.jobs || []), total:+r.total || 0, more:!!r.more};
+    if(r.categories) CT.jcats = r.categories; if(r.experience) CT.jexp = r.experience;
+    cjOpts(); cjDraw();
+  }, function(e){
+    if(seq !== CT.jseq) return; var l2 = $('#cjL'); if(l2) l2.classList.remove('ctstale');
+    if(l2 && !CT.jobs) l2.innerHTML = '<div class="note bad">The app couldn’t be reached: ' + esc(ctErr(e)) + '.</div>'; else TP.toast(ctErr(e));
+  });
+}
+function cjFind(id){ return ((CT.jobs && CT.jobs.jobs) || []).filter(function(j){ return String(j.id) === String(id); })[0]; }
+function cjShows(j){ var o = CT.jf.open || 'open'; return !j._unpicked && (o === 'all' || (o === 'open') === !!j.is_open); }
+function cjDraw(){
+  if(R.page !== 'catalog' || R.sub !== 'jobs') return;
+  var l = $('#cjL'), d = CT.jobs, F = CT.jf; if(!l || !d) return;
+  l.classList.remove('ctstale');
+  var rows = d.jobs.filter(cjShows), total = Math.max(0, d.total - (d.jobs.length - rows.length));
+  $('#cjN').textContent = ctPl(total, 'job', 'jobs');
+  if(!rows.length){ l.innerHTML = '<div class="empty"><h3>No hand-picked jobs match</h3><p>' + (F.q || F.kind || F.category || F.exp || F.open !== 'open' ? 'Try fewer filters.' : 'Jobs added from links on Add links show here.') + '</p></div>'; return; }
+  l.innerHTML = '<div class="tbl ctj"><div class="thead"><span>Job</span><span>Type</span><span>Category</span><span>Experience</span><span>Status</span><span></span></div>' + rows.map(cjRow).join('') + '</div>' +
+    (d.more ? '<div class="ctmore"><button class="btn" type="button" id="cjMore">Show more</button></div>' : '');
+}
+function cjRow(j){
+  var o = function(v, t, on){ return '<option value="' + esc(v) + '"' + (on ? ' selected' : '') + '>' + esc(t) + '</option>'; };
+  var cats = CT.jcats || [], has = cats.some(function(k){ return String(k.id) === String(j.category); });
+  var cat = '<select class="inp sm" data-cj="category" aria-label="Category for ' + esc(j.title) + '">' + (has ? '' : o('', j.category_label || 'No category', true)) +
+    cats.map(function(k){ return o(k.id, k.label, String(k.id) === String(j.category)); }).join('') + '</select>';
+  var ys = CT_EXP.slice(); if(j.exp_years != null && ys.indexOf(+j.exp_years) < 0){ ys.push(+j.exp_years); ys.sort(function(a, b){ return a - b; }); }
+  var exp = '<select class="inp sm" data-cj="exp_years" aria-label="Years of experience for ' + esc(j.title) + '">' + o('', 'Not stated', j.exp_years == null) +
+    ys.map(function(y){ return o(y, y ? y + '+ years' : 'Entry level', j.exp_years != null && +j.exp_years === y); }).join('') + '</select>';
+  var name = '<b>' + esc(j.title || 'Role') + '</b><small>' + esc([j.company, j.location, j.ats].filter(Boolean).join(' · ')) + '</small>';
+  return '<div class="li" data-id="' + esc(j.id) + '"><span class="ctjob">' + (j.app_url ? '<a href="' + esc(TP.safeHref(j.app_url)) + '" target="_blank" rel="noopener" title="Open it in the app">' + name + '</a>' : name) + '</span>' +
+    '<span class="m">' + (j.kind === 'autopilot' ? 'Autopilot' : j.kind === 'manual' ? 'Manual' : '—') + '</span><span>' + cat + '</span><span>' + exp + '</span>' +
+    '<span>' + (j.is_open ? '<span class="st applied">Open</span>' : '<span class="st closed">Taken down</span>') + '</span>' +
+    '<span class="ctacts">' + (j.apply_url ? '<a class="btn sm" href="' + esc(TP.safeHref(j.apply_url)) + '" target="_blank" rel="noopener">Posting' + I.ext + '</a>' : '') +
+      (j.is_open ? '<button class="btn sm" type="button" data-cja="close">Take down</button>' : '<button class="btn sm" type="button" data-cja="reopen">Put back</button>') +
+      '<button class="btn sm ghost" type="button" data-cja="unpick" title="It stays listed in the app, without the Hand-picked mark">Remove mark</button></span></div>';
+}
+function cjUpdate(sel){
+  var id = sel.closest('[data-id]').getAttribute('data-id'), f = sel.getAttribute('data-cj'), j = cjFind(id); if(!j) return;
+  var was = f === 'category' ? j.category : j.exp_years, wasLabel = j.category_label, v, label;
+  if(f === 'category'){ var k = (CT.jcats || []).filter(function(c){ return String(c.id) === sel.value; })[0]; if(!k) return; v = k.id; label = k.label; }
+  else { v = sel.value === '' ? null : +sel.value; label = v == null ? 'not stated' : v ? v + '+ years' : 'entry level'; }
+  var set = function(val, lab){ var a = {id:j.id}; a[f] = val;
+    return ctFn('admin_jobs_update', a).then(function(){ if(f === 'category'){ j.category = val; j.category_label = lab; } else j.exp_years = val; }); };
+  sel.disabled = true;
+  set(v, label).then(function(){
+    sel.disabled = false;
+    var back = f === 'category' && was == null ? null : function(){ set(was, wasLabel).then(function(){ cjDraw(); TP.toast('Put back'); }, function(e){ TP.toast(ctErr(e)); }); };
+    TP.toast((f === 'category' ? 'Category: ' : 'Experience: ') + label + ' — ' + (j.title || 'the job'), back ? {undo:back} : undefined);
+  }, function(e){ sel.disabled = false; cjDraw(); TP.toast(ctErr(e)); });
+}
+function cjClose(id, btn){
+  var j = cjFind(id); if(!j) return;
+  TP.confirmBox('Take down ' + (j.title || 'this job') + (j.company ? ' at ' + j.company : '') + '?', 'It closes for every member of the app: it leaves their job lists, and nobody can apply to it there any more. Undo or Put back opens it again.', 'Take it down', true).then(function(ok){
+    if(ok) cjFlip(id, btn, 'admin_jobs_close', 'admin_jobs_reopen', 'Taken down for every member', 'Back up for every member');
+  });
+}
+// one change and its opposite, with Undo: close ↔ reopen, unpick ↔ pick
+function cjFlip(id, btn, kind, back, said, undone){
+  var j = cjFind(id); if(!j) return;
+  var apply = function(k){ if(k === 'admin_jobs_close') j.is_open = false; if(k === 'admin_jobs_reopen') j.is_open = true; if(k === 'admin_jobs_unpick') j._unpicked = true; if(k === 'admin_jobs_pick') j._unpicked = false; };
+  TP.busy(btn, ctFn(kind, {id:j.id})).then(function(){
+    apply(kind); cjDraw();
+    TP.toast(said, {undo:function(){ ctFn(back, {id:j.id}).then(function(){ apply(back); cjDraw(); TP.toast(undone); }, function(e){ TP.toast(ctErr(e)); }); }});
+  }, function(e){ TP.toast(ctErr(e)); });
+}
+
+/* ---------- Top resumes ---------- */
+var CS_TYPES = {pdf:'application/pdf', docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document', txt:'text/plain'};
+function csStart(){
+  var b = $('#ctBody'); if(!b) return;
+  b.innerHTML = '<div class="cth"><h3>Top resumes</h3><span class="fine" id="csN"></span><button class="btn pri sm" type="button" id="csAdd" style="margin-left:auto">' + I.plus + 'Add a resume</button></div><div id="csL"><div class="skel"></div><div class="skel"></div></div>';
+  $('#csAdd').addEventListener('click', csAddOpen);
+  $('#csL').addEventListener('click', function(e){
+    var a = e.target.closest('[data-cs]'); if(!a) return;
+    var id = a.closest('[data-id]').getAttribute('data-id');
+    if(a.getAttribute('data-cs') === 'edit') return csEdit(id);
+    if(a.getAttribute('data-cs') === 'del') return csDel(id, a);
+  });
+  if(CT.sc) csDraw();
+  csLoad().then(csDraw, function(e){ var l = $('#csL'); if(l && !CT.sc) l.innerHTML = '<div class="note bad">The app couldn’t be reached: ' + esc(ctErr(e)) + '.</div>'; });
+}
+function csLoad(){ return ctFn('admin_showcase_list', {}, 45000).then(function(r){ CT.sc = r; return r; }); }
+function csFind(id){ return ((CT.sc && CT.sc.rows) || []).filter(function(r){ return String(r.id) === String(id); })[0]; }
+function csDraw(){
+  if(R.page !== 'catalog' || R.sub !== 'resumes') return;
+  var l = $('#csL'), d = CT.sc; if(!l || !d) return;
+  var rows = d.rows || [], pub = rows.filter(function(r){ return r.published; }).length;
+  $('#csN').textContent = ctN(pub) + ' published · ' + ctPl(rows.length - pub, 'draft', 'drafts');
+  l.innerHTML = (d.missing_migration ? '<div class="note bad">The app’s database doesn’t have the Top resumes update yet — run its migration, then come back here.</div>' : '') +
+    (rows.length ? '<div class="csgrid">' + rows.map(csCard).join('') + '</div>' : '<div class="empty"><h3>No Top resumes yet</h3><p>Add one from a resume file: the app reads it and saves a draft to check before publishing.</p></div>');
+  rows.forEach(function(r){ var f = $('.cscard[data-id="' + r.id + '"] iframe', l); if(f && r.preview_html) f.srcdoc = r.preview_html; });   // the app's own card, scripts off (sandbox)
+  csFit();
+}
+function csFit(){ $$('.csprev').forEach(function(p){ p.style.setProperty('--s', String((p.clientWidth || 320) / 820)); }); }
+window.addEventListener('resize', function(){ if(R && R.page === 'catalog' && R.sub === 'resumes') requestAnimationFrame(csFit); }, {passive:true});
+function csCard(r){
+  var figs = [ctPl(r.interviews, 'interview', 'interviews'), r.applications != null ? ctPl(r.applications, 'application', 'applications') : '', r.assessments != null ? ctPl(r.assessments, 'assessment', 'assessments') : '',
+    r.used_by_extra ? ctPl(r.used_by_extra, 'person used it', 'people used it') : '', r.period || ''].filter(Boolean);
+  return '<div class="card cscard" data-id="' + esc(r.id) + '"><div class="csprev">' + (r.preview_html ? '<iframe sandbox="" loading="lazy" tabindex="-1" title="Preview: ' + esc(r.role || 'resume') + '"></iframe>' : '<span class="fine">No preview yet</span>') + '</div>' +
+    '<div class="csbody"><div class="t"><b>' + esc(r.role || 'No role yet') + '</b>' + (r.published ? '<span class="st applied">Published</span>' : '<span class="st draft">Draft</span>') + '</div>' +
+      (r.headline ? '<div class="m">' + esc(r.headline) + '</div>' : '') +
+      '<div class="m fine">' + esc(figs.join(' · ')) + '</div>' +
+      ((r.companies || []).length ? '<div class="m fine">Interviews at ' + esc(r.companies.join(', ')) + '</div>' : '') +
+      (r.consent ? '' : '<div class="m ctwhy">No consent recorded</div>') +
+      '<div class="row csact"><button class="btn sm" type="button" data-cs="edit">' + J.edit + 'Edit</button>' +
+        (r.published && r.public_url ? '<a class="btn sm" href="' + esc(TP.safeHref(r.public_url)) + '" target="_blank" rel="noopener">View in the app' + I.ext + '</a>' : '') +
+        '<button class="btn sm ghost" type="button" data-cs="del">Delete</button></div></div></div>';
+}
+function csType(f){ var ext = String(f.name || '').split('.').pop().toLowerCase(); return CS_TYPES[ext] || f.type || ''; }
+function csCheck(f, wordOnly){
+  if(!f) return 'Choose a file first.';
+  var t = csType(f);
+  if(wordOnly ? !/wordprocessingml|text\/plain/.test(t) : [CS_TYPES.pdf, CS_TYPES.docx, CS_TYPES.txt].indexOf(t) < 0) return wordOnly ? 'Matching the layout needs the Word (.docx) or text file — a PDF doesn’t keep it.' : 'Choose a PDF, a Word (.docx) or a text file.';
+  if(f.size > 4 * 1024 * 1024) return 'That file is over 4 MB.';
+  return '';
+}
+// the file into client-files/showcase/, then a one-hour private link the app reads it from
+function csUpload(f){
+  var id = window.crypto && crypto.randomUUID ? crypto.randomUUID() : TP.uid() + TP.uid() + TP.uid();
+  var name = String(f.name || 'resume').replace(/[^\w.\-]+/g, '-').replace(/-+/g, '-').slice(-80), path = 'showcase/' + id + '-' + name;
+  return TP.upload(path, f, csType(f)).then(function(){ return TP.fileUrl(path); }).then(function(url){ return {path:path, url:url, name:f.name, type:csType(f)}; });
+}
+function csAddOpen(){
+  var roles = (CT.sc && CT.sc.roles) || [];
+  var m = TP.modal('<h2>Add a Top resume</h2><p class="hint">The app reads the file (10–20 seconds) and saves it as a draft. Members see nothing until you publish it.</p>' +
+    '<form id="caF" class="stack" style="margin-top:16px" novalidate>' +
+    '<div class="field"><label for="caFile">Resume file</label><input id="caFile" type="file" accept=".pdf,.docx,.txt"><small class="fine">PDF, Word (.docx) or text, up to 4 MB.</small></div>' +
+    '<div class="field"><label for="caRole">Role</label>' + (roles.length ? '<select id="caRole">' + roles.map(function(r){ return '<option>' + esc(r) + '</option>'; }).join('') + '</select>' : '<input id="caRole" maxlength="80" placeholder="e.g. Data Analyst">') + '</div>' +
+    '<p class="err" id="caErr" hidden></p><div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="caGo">Add it</button></div></form>', false, {keep:true});
+  $('#caF', m).addEventListener('submit', function(e){
+    e.preventDefault();
+    var f = $('#caFile', m).files[0], role = $('#caRole', m).value.trim(), err = $('#caErr', m), btn = $('#caGo', m);
+    var bad = csCheck(f) || (role ? '' : 'Choose the role.'); if(bad){ err.hidden = false; err.textContent = bad; return; }
+    err.hidden = true; btn.disabled = true; btn.textContent = 'Uploading…';
+    csUpload(f).then(function(up){ btn.textContent = 'Reading the resume…'; return ctFn('admin_showcase_add', {file_url:up.url, name:up.name, type:up.type, role:role, show_role:role}, 120000); }).then(function(r){
+      TP.closeModal(); TP.toast('Saved as a draft — check it, then publish');
+      return csLoad().then(function(){ csDraw(); if(r.id && csFind(r.id)) csEdit(r.id); });
+    }, function(er){ btn.disabled = false; btn.textContent = 'Add it'; err.hidden = false; err.textContent = ctErr(er); });
+  });
+}
+function csWhyRow(w){
+  return '<div class="cewhy"><input class="inp" data-w="title" maxlength="120" placeholder="The point, in a few words" value="' + esc(w.title || '') + '" aria-label="Point">' +
+    '<textarea class="inp" data-w="detail" rows="2" maxlength="600" placeholder="Why it worked" aria-label="Why it worked">' + esc(w.detail || '') + '</textarea>' +
+    '<button class="icb" type="button" data-ce="whydel" title="Remove this point">' + I.x + '<span class="sr">Remove this point</span></button></div>';
+}
+function csEdit(id){
+  var r = csFind(id); if(!r) return;
+  var roles = ((CT.sc && CT.sc.roles) || []).slice(); if(r.role && roles.indexOf(r.role) < 0) roles.unshift(r.role);
+  var tpls = (CT.sc && CT.sc.templates) || [];
+  var num = function(fid, label, v, opt){ return '<div class="field"><label for="' + fid + '">' + label + (opt ? ' <span class="muted">(optional)</span>' : '') + '</label><input id="' + fid + '" type="number" min="0" step="1" inputmode="numeric" value="' + (v == null ? '' : esc(v)) + '"></div>'; };
+  var m = TP.modal('<h2>' + esc(r.role || 'Top resume') + '</h2><p class="hint">' + (r.published ? 'Published — members see it in the app.' : 'A draft — members don’t see it until it’s published.') + '</p>' +
+    '<form id="ceF" class="stack" style="margin-top:16px" novalidate>' +
+    '<div class="grid2"><div class="field"><label for="ceRole">Role</label><select id="ceRole">' + roles.map(function(x){ return '<option' + (x === r.role ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('') + '</select></div>' +
+      '<div class="field"><label for="ceTpl">Template</label><select id="ceTpl">' + (tpls.some(function(t){ return t.id === r.template; }) ? '' : '<option value="' + esc(r.template || '') + '" selected>' + esc(r.template || 'Default') + '</option>') +
+        tpls.map(function(t){ return '<option value="' + esc(t.id) + '"' + (t.id === r.template ? ' selected' : '') + '>' + esc(t.name) + '</option>'; }).join('') + '</select></div></div>' +
+    '<div class="field"><label for="ceHead">Headline</label><input id="ceHead" maxlength="200" value="' + esc(r.headline || '') + '"></div>' +
+    '<div class="grid3">' + num('ceInt', 'Interviews', r.interviews) + num('ceApps', 'Applications', r.applications, 1) + num('ceAss', 'Assessments', r.assessments, 1) + '</div>' +
+    '<div class="grid3">' + num('ceUsed', 'People who used it', r.used_by_extra) + '<div class="field" style="grid-column:span 2"><label for="cePer">Period</label><input id="cePer" maxlength="60" placeholder="e.g. Sep–Nov 2026" value="' + esc(r.period || '') + '"></div></div>' +
+    '<div class="field"><label for="ceCos">Companies that interviewed</label><input id="ceCos" maxlength="400" placeholder="Stripe, Ramp, Notion" value="' + esc((r.companies || []).join(', ')) + '"></div>' +
+    ((r.employers || []).length ? '<div class="field"><span class="lbl">Employer names on the resume</span><small class="fine">Rename one to keep it private (e.g. “A Fortune 500 bank”); blank keeps the real name.</small><div class="ceemp">' +
+      r.employers.map(function(x, i){ return '<label for="ceE' + i + '">' + esc(x.name) + '</label><input class="inp" id="ceE' + i + '" data-emp="' + esc(x.name) + '" maxlength="80" placeholder="Keep the name" value="' + esc(x.alias || '') + '">'; }).join('') + '</div></div>' : '') +
+    '<div class="field"><div class="cewh"><span class="lbl">Why it worked</span><button class="btn sm" type="button" data-ce="whydraft">' + I.spark + 'Draft from the resume</button><button class="btn sm ghost" type="button" data-ce="whyadd">' + I.plus + 'Add a point</button></div>' +
+      '<div id="ceWhy">' + (r.why || []).map(csWhyRow).join('') + '</div><div class="fine" id="ceWhyNote" aria-live="polite"></div></div>' +
+    '<div class="field"><label class="check"><input type="checkbox" id="ceCon"' + (r.consent ? ' checked' : '') + '> They agreed to us showing this resume</label>' +
+      '<input id="ceConN" maxlength="300" placeholder="How and when they agreed (e.g. WhatsApp, 21 Nov)" value="' + esc(r.consent_note || '') + '" aria-label="Consent note"></div>' +
+    '<div class="field"><span class="lbl">Match the original layout</span><small class="fine">From the Word (.docx) or text file — a PDF doesn’t keep the layout.</small><div class="row"><input type="file" id="ceLay" accept=".docx,.txt" aria-label="Word or text file"><button class="btn sm" type="button" data-ce="layout">Match the layout</button></div></div>' +
+    '<label class="check cepub"><input type="checkbox" id="cePub"' + (r.published ? ' checked' : '') + '> Published — members see it in the app</label>' +
+    '<p class="err" id="ceErr" hidden></p><div class="acts"><button class="btn" type="button" data-mclose="1">Cancel</button><button class="btn pri" type="submit" id="ceGo">Save</button></div></form>', true, {keep:true});
+  var whyBox = $('#ceWhy', m), note = $('#ceWhyNote', m), err = $('#ceErr', m), dirty = function(){ var M = TP.isModal() && m.isConnected; if(M) m.dispatchEvent(new Event('input', {bubbles:true})); };
+  m.addEventListener('click', function(e){
+    var b = e.target.closest('[data-ce]'); if(!b) return; var k = b.getAttribute('data-ce');
+    if(k === 'whyadd'){ whyBox.insertAdjacentHTML('beforeend', csWhyRow({})); $$('.cewhy input', whyBox).pop().focus(); dirty(); return; }
+    if(k === 'whydel'){ b.closest('.cewhy').remove(); dirty(); return; }
+    if(k === 'whydraft'){
+      var before = whyBox.innerHTML;
+      TP.busy(b, ctFn('admin_showcase_why', {id:r.id}, 60000)).then(function(x){
+        var w = (x.why || []).filter(function(p){ return p && (p.title || p.detail); }); if(!w.length){ note.textContent = 'Nothing came back — write the points yourself.'; return; }
+        whyBox.innerHTML = w.map(csWhyRow).join(''); dirty();
+        note.innerHTML = 'Drafted ' + ctPl(w.length, 'point', 'points') + ' from the resume — nothing is saved until Save. ' + (/\S/.test(before) && $$('.cewhy', m).length ? '<button class="wdmk" type="button" data-ce="whyback">Put back the earlier points</button>' : '');
+        CT.whyBefore = before;
+      }, function(er){ note.textContent = ctErr(er); });
+      return;
+    }
+    if(k === 'whyback'){ whyBox.innerHTML = CT.whyBefore || ''; note.textContent = ''; dirty(); return; }
+    if(k === 'layout'){
+      var f = $('#ceLay', m).files[0], bad = csCheck(f, true); if(bad){ err.hidden = false; err.textContent = bad; return; }
+      err.hidden = true;
+      TP.busy(b, csUpload(f).then(function(up){ return ctFn('admin_showcase_layout', {id:r.id, file_url:up.url, name:up.name, type:up.type}, 120000); })).then(function(x){
+        TP.toast('Layout matched' + (x.skill_rows != null ? ' — ' + ctPl(x.skill_rows, 'skills row', 'skills rows') : ''));
+        csLoad().then(csDraw, function(){});
+      }, function(er){ err.hidden = false; err.textContent = ctErr(er); });
+    }
+  });
+  $('#ceF', m).addEventListener('submit', function(e){
+    e.preventDefault();
+    var v = function(fid){ var el = $('#' + fid, m); return el ? el.value.trim() : ''; }, int = function(fid){ var s = v(fid); return s === '' ? null : Math.max(0, Math.round(+s) || 0); };
+    var emp = {}; $$('[data-emp]', m).forEach(function(x){ emp[x.getAttribute('data-emp')] = x.value.trim(); });
+    var why = $$('.cewhy', m).map(function(w){ return {title:$('[data-w=title]', w).value.trim(), detail:$('[data-w=detail]', w).value.trim()}; }).filter(function(w){ return w.title || w.detail; });
+    var edit = {role:v('ceRole'), headline:v('ceHead'), interviews:int('ceInt') || 0, applications:int('ceApps'), assessments:int('ceAss'), usedByExtra:int('ceUsed') || 0,
+      companies:v('ceCos').split(',').map(function(s){ return s.trim(); }).filter(Boolean).join(', '), period:v('cePer'), why:why, employers:emp, template:v('ceTpl'),
+      consent:$('#ceCon', m).checked, consentNote:v('ceConN'), published:$('#cePub', m).checked};
+    if(!edit.role || !edit.headline){ err.hidden = false; err.textContent = 'The role and the headline are needed.'; return; }
+    if(edit.published && !edit.consent){ err.hidden = false; err.textContent = 'Tick that they agreed before publishing — members would see their resume.'; return; }
+    err.hidden = true;
+    TP.busy($('#ceGo', m), ctFn('admin_showcase_save', {id:r.id, edit:edit}, 60000)).then(function(){
+      TP.closeModal();
+      TP.toast(edit.published && !r.published ? 'Published — members see it in the app' : !edit.published && r.published ? 'Taken down — members no longer see it' : 'Saved');
+      return csLoad().then(csDraw, function(){});
+    }, function(er){ err.hidden = false; err.textContent = ctErr(er); });
+  });
+}
+function csDel(id, btn){
+  var r = csFind(id); if(!r) return;
+  TP.confirmBox('Delete the ' + (r.role || 'Top') + ' resume?', 'It comes off the app for good, with its figures and points' + (r.published ? ', and members stop seeing it at once' : '') + '. This can’t be undone.', 'Delete it', true, {type:'delete'}).then(function(ok){
+    if(!ok) return;
+    TP.busy(btn, ctFn('admin_showcase_delete', {id:r.id})).then(function(){
+      CT.sc.rows = CT.sc.rows.filter(function(x){ return x.id !== r.id; }); csDraw(); TP.toast('Deleted');
+    }, function(e){ TP.toast(ctErr(e)); });
+  });
 }
 var AP_NEXT_SRC = null;
 /* =====================================================================
